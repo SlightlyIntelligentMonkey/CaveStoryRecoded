@@ -1,0 +1,155 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;hm;inl;inc;xsd</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="Source Files\modules">
+      <UniqueIdentifier>{6ac8c2af-c217-44c8-94f4-f76a6ff22d8e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\classes">
+      <UniqueIdentifier>{8af45837-cea6-45a3-9b88-ed0998b1c352}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\classes\npcs">
+      <UniqueIdentifier>{dd025e45-f001-4d20-b7b6-f19fd265abff}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="main.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="render.cpp">
+      <Filter>Source Files\modules</Filter>
+    </ClCompile>
+    <ClCompile Include="level.cpp">
+      <Filter>Source Files\modules</Filter>
+    </ClCompile>
+    <ClCompile Include="player.cpp">
+      <Filter>Source Files\classes</Filter>
+    </ClCompile>
+    <ClCompile Include="math.cpp">
+      <Filter>Source Files\modules</Filter>
+    </ClCompile>
+    <ClCompile Include="script.cpp">
+      <Filter>Source Files\modules</Filter>
+    </ClCompile>
+    <ClCompile Include="filesystem.cpp">
+      <Filter>Source Files\modules</Filter>
+    </ClCompile>
+    <ClCompile Include="input.cpp">
+      <Filter>Source Files\modules</Filter>
+    </ClCompile>
+    <ClCompile Include="flags.cpp">
+      <Filter>Source Files\modules</Filter>
+    </ClCompile>
+    <ClCompile Include="npc.cpp">
+      <Filter>Source Files\classes</Filter>
+    </ClCompile>
+    <ClCompile Include="npcAct.cpp">
+      <Filter>Source Files\classes</Filter>
+    </ClCompile>
+    <ClCompile Include="sound.cpp">
+      <Filter>Source Files\modules</Filter>
+    </ClCompile>
+    <ClCompile Include="npc000.cpp">
+      <Filter>Source Files\classes\npcs</Filter>
+    </ClCompile>
+    <ClCompile Include="npc020.cpp">
+      <Filter>Source Files\classes\npcs</Filter>
+    </ClCompile>
+    <ClCompile Include="npc040.cpp">
+      <Filter>Source Files\classes\npcs</Filter>
+    </ClCompile>
+    <ClCompile Include="npc060.cpp">
+      <Filter>Source Files\classes\npcs</Filter>
+    </ClCompile>
+    <ClCompile Include="npc200.cpp">
+      <Filter>Source Files\classes\npcs</Filter>
+    </ClCompile>
+    <ClCompile Include="npcCollision.cpp">
+      <Filter>Source Files\modules</Filter>
+    </ClCompile>
+    <ClCompile Include="playerCollision.cpp">
+      <Filter>Source Files\modules</Filter>
+    </ClCompile>
+    <ClCompile Include="npc340.cpp">
+      <Filter>Source Files\classes\npcs</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="common.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="render.h">
+      <Filter>Source Files\modules</Filter>
+    </ClInclude>
+    <ClInclude Include="level.h">
+      <Filter>Source Files\modules</Filter>
+    </ClInclude>
+    <ClInclude Include="player.h">
+      <Filter>Source Files\classes</Filter>
+    </ClInclude>
+    <ClInclude Include="math.h">
+      <Filter>Source Files\modules</Filter>
+    </ClInclude>
+    <ClInclude Include="sound.h">
+      <Filter>Source Files\modules</Filter>
+    </ClInclude>
+    <ClInclude Include="script.h">
+      <Filter>Source Files\modules</Filter>
+    </ClInclude>
+    <ClInclude Include="filesystem.h">
+      <Filter>Source Files\modules</Filter>
+    </ClInclude>
+    <ClInclude Include="input.h">
+      <Filter>Source Files\modules</Filter>
+    </ClInclude>
+    <ClInclude Include="npc.h">
+      <Filter>Source Files\classes</Filter>
+    </ClInclude>
+    <ClInclude Include="npcAct.h">
+      <Filter>Source Files\classes</Filter>
+    </ClInclude>
+    <ClInclude Include="npc000.h">
+      <Filter>Source Files\classes\npcs</Filter>
+    </ClInclude>
+    <ClInclude Include="npc020.h">
+      <Filter>Source Files\classes\npcs</Filter>
+    </ClInclude>
+    <ClInclude Include="npc040.h">
+      <Filter>Source Files\classes\npcs</Filter>
+    </ClInclude>
+    <ClInclude Include="npc060.h">
+      <Filter>Source Files\classes\npcs</Filter>
+    </ClInclude>
+    <ClInclude Include="npc200.h">
+      <Filter>Source Files\classes\npcs</Filter>
+    </ClInclude>
+    <ClInclude Include="resource.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="npcCollision.h">
+      <Filter>Source Files\modules</Filter>
+    </ClInclude>
+    <ClInclude Include="playerCollision.h">
+      <Filter>Source Files\modules</Filter>
+    </ClInclude>
+    <ClInclude Include="npc340.h">
+      <Filter>Source Files\classes\npcs</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="CaveStoryRemake.rc">
+      <Filter>Resource Files</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+</Project>
