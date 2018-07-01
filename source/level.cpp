@@ -65,6 +65,7 @@ void createNpc(int x, int y, int direction, int xsp, int ysp, short flag, short 
 void loadLevel(int levelIndex) {
 	if (stblSize < 0)
 		doCustomError("stage.tbl failed to load");
+
 	//Get stage's stage.tbl offset
 	int tbloffset = levelIndex * 0xE5;
 
@@ -90,17 +91,10 @@ void loadLevel(int levelIndex) {
 	BYTE *pxm = nullptr;
 	int pxmSize = loadFile(pxmPath, &pxm);
 	if (pxmSize < 0 ) { doCustomError("Couldn't read pxm."); doCustomError(pxmPath); }
-<<<<<<< HEAD
 	
 	levelWidth = readLEshort(pxm, 4);
 	levelHeight = readLEshort(pxm, 6);
 
-=======
-
-	levelWidth = (int) readLEshort(pxm, 4);
-	levelHeight = (int) readLEshort(pxm, 6);
-
->>>>>>> organya
 	if (levelMap)
 		delete levelMap;
 

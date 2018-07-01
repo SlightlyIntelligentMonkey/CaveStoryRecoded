@@ -89,7 +89,7 @@
       <ConformanceMode>true</ConformanceMode>
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
-      <Optimization>Disabled</Optimization>
+      <Optimization>MaxSpeed</Optimization>
       <UndefinePreprocessorDefinitions>_DEBUG</UndefinePreprocessorDefinitions>
     </ClCompile>
     <Link>
@@ -103,7 +103,7 @@
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <Optimization>Disabled</Optimization>
+      <Optimization>MaxSpeed</Optimization>
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
       <UndefinePreprocessorDefinitions>_DEBUG</UndefinePreprocessorDefinitions>
     </ClCompile>
@@ -120,7 +120,7 @@
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <Optimization>Disabled</Optimization>
+      <Optimization>MaxSpeed</Optimization>
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
       <UndefinePreprocessorDefinitions>_DEBUG</UndefinePreprocessorDefinitions>
     </ClCompile>
@@ -139,7 +139,7 @@
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <Optimization>Disabled</Optimization>
+      <Optimization>MaxSpeed</Optimization>
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
       <UndefinePreprocessorDefinitions>_DEBUG</UndefinePreprocessorDefinitions>
     </ClCompile>
@@ -176,7 +176,6 @@
     <ClCompile Include="render.cpp" />
     <ClCompile Include="script.cpp" />
     <ClCompile Include="sound.cpp" />
-
     <ClCompile Include="../liborganya/file.c" />
     <ClCompile Include="../liborganya/decoder.c" />
   </ItemGroup>
@@ -201,7 +200,6 @@
     <ClInclude Include="resource.h" />
     <ClInclude Include="script.h" />
     <ClInclude Include="sound.h" />
-
     <ClInclude Include="../liborganya/decoder.h" />
     <ClInclude Include="../liborganya/file.h" />
     <ClInclude Include="../liborganya/organya.h" />

@@ -19,7 +19,7 @@ class CLASS_player {
 		int frame = 0;
 
 		//State
-		u_int cond = 0;
+		UINT cond = 0;
 
 		bool lookingUp = false;
 		bool lookingDown = false;
@@ -27,7 +27,7 @@ class CLASS_player {
 		bool key = true;
 
 		//Collision state
-		u_int flags = 0;
+		UINT flags = 0;
 
 		//physics
 		int maxDash = 0x32C;

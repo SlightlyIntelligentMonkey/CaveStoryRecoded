@@ -4,6 +4,8 @@
  *
  *  Created by Vincent Spader on 6/20/09.
  *  Modified by 20kdc on 6/30/18.
+ *  Modified by Cucky on 7/01/18.
+ *
  *  (I assume the library README's Public Domain statement
  *    takes precedence over the IDE-generated,
  *    and thus not written by the author,
@@ -15,6 +17,8 @@
 
 #include <stdint.h>
 #include <stdio.h>
+
+#pragma pack(push, 1)
 
 typedef struct {
 	uint16_t  tempo; // milliseconds per beat
@@ -45,6 +49,8 @@ typedef struct {
 	org_header_t header;
 	org_instrument_t instruments[16];
 } org_file_t;
+
+#pragma pack(pop)
 
 // File reading helpers
 uint8_t _org_read_8(FILE *fin);

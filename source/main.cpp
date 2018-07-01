@@ -72,28 +72,9 @@ SDL_Texture* sprites[0x28];
 int init() {
 	//Create the window and renderer
 	SDL_Init(SDL_INIT_TIMER | SDL_INIT_AUDIO | SDL_INIT_VIDEO);
-<<<<<<< HEAD
-	createView(320, 240, 2);
-
-	//Organya
-	orgModule = LoadLibrary("Org001.dll");
-
-	HWND handle = GetActiveWindow();
-
-	startOrganya = (pstartOrganya)GetProcAddress(orgModule, "StartOrganya");
-	loadOrganya = (ploadOrganya)GetProcAddress(orgModule, "LoadOrganya");
-	setOrganyaPosition = (psetOrganyaPosition)GetProcAddress(orgModule, "SetOrganyaPosition");
-	getOrganyaPosition = (pgetOrganyaPosition)GetProcAddress(orgModule, "GetOrganyaPosition");
-	playOrganyaMusic = (pplayOrganyaMusic)GetProcAddress(orgModule, "PlayOrganyaMusic");
-	changeOrganyaVolume = (pchangeOrganyaVolume)GetProcAddress(orgModule, "ChangeOrganyaVolume");
-	stopOrganyaMusic = (pstopOrganyaMusic)GetProcAddress(orgModule, "StopOrganyaMusic");
-	endOrganya = (pendOrganya)GetProcAddress(orgModule, "EndOrganya");
-
-	startOrganya(handle);
-=======
+	
 	createView(426, 240, 2);
 	sound::init();
->>>>>>> organya
 
 	//Load assets
 	loadBMP("data/Title.bmp", &sprites[0x00]);
@@ -151,12 +132,15 @@ int drawEnd() {
 
 int game() {
 	while (mode > -1) {
-		if (SDL_GetTicks() > framerateTicks + framerate)
-		{
+		Uint32 timeNow = SDL_GetTicks();
+		Uint32 timeNext = framerateTicks + framerate;
+
+		if (timeNow >= timeNext) {
 			framerateTicks = SDL_GetTicks();
 		}
 		else
 		{
+			SDL_Delay(timeNext - timeNow);
 			continue;
 		}
 

@@ -84,6 +84,12 @@
     <ClCompile Include="npc340.cpp">
       <Filter>Source Files\classes\npcs</Filter>
     </ClCompile>
+    <ClCompile Include="../liborganya/file.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="../liborganya/decoder.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="common.h">
@@ -145,6 +151,15 @@
     </ClInclude>
     <ClInclude Include="npc340.h">
       <Filter>Source Files\classes\npcs</Filter>
+    </ClInclude>
+    <ClInclude Include="../liborganya/decoder.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="../liborganya/file.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="../liborganya/organya.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

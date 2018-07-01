@@ -17,11 +17,16 @@ const char* sound::musicList[42] = {
 
 sound::OrganyaTrack::OrganyaTrack(const char * fn) {
 	orgDecoder = org_decoder_create(fn, "liborganya/samples", 0);
+
+	if (!orgDecoder)
+		doCustomError("Failed to load ORG samples");
 }
+
 sound::OrganyaTrack::~OrganyaTrack() {
 	if (orgDecoder)
 		org_decoder_destroy(orgDecoder);
 }
+
 void sound::OrganyaTrack::audio(int16_t * stream, int len) {
 	if (orgDecoder)
 		org_decode_samples(orgDecoder, stream, len);
@@ -74,9 +79,12 @@ void sound::init() {
 	want.freq = 44100;
 	want.format = AUDIO_S16;
 	want.channels = 2;
-	want.samples = 4096;
+	want.samples = 0x1000;
 	want.callback = soundMixer;
-	SDL_OpenAudio(&want, NULL);
+
+	if (SDL_OpenAudio(&want, NULL))
+		doCustomError("SDL audio noped");
+
 	SDL_PauseAudio(0);
 }
 

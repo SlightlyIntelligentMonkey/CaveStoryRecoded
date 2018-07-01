@@ -4,6 +4,8 @@
  *
  *  Created by Vincent Spader on 6/20/09.
  *  Modified by 20kdc on 6/30/18.
+ *  Modified by Cucky on 7/01/18.
+ *
  *  (I assume the library README's Public Domain statement
  *    takes precedence over the IDE-generated,
  *    and thus not written by the author,
@@ -260,12 +262,12 @@ uint8_t _org_decoder_load_samples(org_decoder_t *decoder, const char *resource_p
 		}
 		
 		// Files for the sample data are just <instrument>.dat. drums have 100 added, as noted above.
-		char dat_path[PATH_MAX+1];
-		snprintf(dat_path, PATH_MAX, "%s/%03i.dat", resource_path, instrument);
+		char dat_path[256+1];
+		snprintf(dat_path, 256, "%s/%03i.dat", resource_path, instrument);
 		
 		int16_t *wave = NULL;
 		size_t size = 0;
-		FILE *fin = fopen(dat_path, "r");
+		FILE *fin = fopen(dat_path, "rb");
 		if (!fin) {
 			fprintf(stderr, "liborganya: error loading sample data: %s\n", dat_path);
 			return i;

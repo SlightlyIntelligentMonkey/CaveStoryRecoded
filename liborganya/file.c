@@ -4,6 +4,8 @@
  *
  *  Created by Vincent Spader on 6/20/09.
  *  Modified by 20kdc on 6/30/18.
+ *  Modified by Cucky on 7/01/18.
+ *
  *  (I assume the library README's Public Domain statement
  *    takes precedence over the IDE-generated,
  *    and thus not written by the author,
@@ -86,7 +88,7 @@ void _org_read_notes(org_note_t notes[], FILE *fin, uint16_t note_count)
 
 // Rather straightforward just follows the file format.
 org_file_t *_org_file_create(const char *filename) {
-	FILE *fin = fopen(filename, "r");
+	FILE *fin = fopen(filename, "rb");
 	if (NULL == fin) {
 		// Could not open the file.
 		return NULL;
