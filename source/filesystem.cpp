@@ -1,15 +1,23 @@
 #include "filesystem.h"
 
+<<<<<<< HEAD
 unsigned short readLEshort(BYTE *data, unsigned int offset) {
 	return ((data[offset + 1] << 8) + data[offset]);
 }
 
 unsigned long readLElong(BYTE *data, unsigned int offset) {
 	return ((data[offset + 3] << 24) + (data[offset + 2] << 16) + (data[offset + 1] << 8) + data[offset]);
+=======
+uint16_t readLEshort(BYTE *data, unsigned int offset) {
+	return (data[offset + 1] * 0x100 + data[offset]);
 }
 
-int loadFile(char *name, BYTE **data)
-{
+uint32_t readLElong(BYTE *data, unsigned int offset) {
+	return (data[offset + 3] * 0x1000000 + data[offset + 2] * 0x10000 + data[offset + 1] * 0x100 + data[offset]);
+>>>>>>> organya
+}
+
+int loadFile(const char *name, BYTE **data) {
 	int amount = 0;
 	FILE *file = nullptr;
 	file = fopen(name, "rb");

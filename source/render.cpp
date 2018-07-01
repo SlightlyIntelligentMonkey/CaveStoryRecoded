@@ -7,6 +7,20 @@ int getTextureDimensions(SDL_Texture *texture) {
 }
 
 void loadBMP(const char *file, SDL_Texture **tex) {
+
+	if (!strcmp(file, "data/BkBlue.bmp")) {
+		file = "data/bkBlue.bmp";
+	}
+	if (!strcmp(file, "data/BkGreen.bmp")) {
+		file = "data/bkGreen.bmp";
+	}
+	if (!strcmp(file, "data/BkGray.bmp")) {
+		file = "data/bkGray.bmp";
+	}
+	if (!strcmp(file, "data/BkMoon.bmp")) {
+		file = "data/bkMoon.bmp";
+	}
+
 	//Destroy previously existing texture
 	if (*tex != NULL) {
 		SDL_DestroyTexture(*tex);
