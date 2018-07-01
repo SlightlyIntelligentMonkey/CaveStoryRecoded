@@ -31,31 +31,23 @@ int mode;
 
 bool exitGame = false;
 
-//Organya init
-HMODULE orgModule = NULL;
+// Some global functions
 
-pstartOrganya startOrganya;
-ploadOrganya loadOrganya;
-psetOrganyaPosition setOrganyaPosition;
-pgetOrganyaPosition getOrganyaPosition;
-pplayOrganyaMusic playOrganyaMusic;
-pchangeOrganyaVolume changeOrganyaVolume;
-pstopOrganyaMusic stopOrganyaMusic;
-pendOrganya endOrganya;
+static void doQuit() {
+	sound::quit();
+	SDL_Quit();
+}
 
-//Some global functions
 void doError() {
 	SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Critical Error", SDL_GetError(), NULL);
 	SDL_ClearError();
-	endOrganya();
-	SDL_Quit();
+	doQuit();
 	exit(EXIT_FAILURE);
 }
 
 void doCustomError(const char *msg) {
 	SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Critical Error", msg, NULL);
-	endOrganya();
-	SDL_Quit();
+	doQuit();
 	exit(EXIT_FAILURE);
 }
 
@@ -81,22 +73,7 @@ int init() {
 	//Create the window and renderer
 	SDL_Init(SDL_INIT_TIMER | SDL_INIT_AUDIO | SDL_INIT_VIDEO);
 	createView(426, 240, 2);
-
-	//Organya
-	orgModule = LoadLibrary("Org001.dll");
-
-	HWND handle = GetActiveWindow();
-
-	startOrganya = (pstartOrganya)GetProcAddress(orgModule, "StartOrganya");
-	loadOrganya = (ploadOrganya)GetProcAddress(orgModule, "LoadOrganya");
-	setOrganyaPosition = (psetOrganyaPosition)GetProcAddress(orgModule, "SetOrganyaPosition");
-	getOrganyaPosition = (pgetOrganyaPosition)GetProcAddress(orgModule, "GetOrganyaPosition");
-	playOrganyaMusic = (pplayOrganyaMusic)GetProcAddress(orgModule, "PlayOrganyaMusic");
-	changeOrganyaVolume = (pchangeOrganyaVolume)GetProcAddress(orgModule, "ChangeOrganyaVolume");
-	stopOrganyaMusic = (pstopOrganyaMusic)GetProcAddress(orgModule, "StopOrganyaMusic");
-	endOrganya = (pendOrganya)GetProcAddress(orgModule, "EndOrganya");
-
-	startOrganya(handle);
+	sound::init();
 
 	//Load assets
 	loadBMP("data/Title.bmp", &sprites[0x00]);
@@ -130,6 +107,7 @@ int init() {
 	//Load level
 	loadLevel(13);
 	currentPlayer.init(10, 8, 2);
+	sound::playOrg(8);
 
 	runScriptEvent(200);
 
@@ -170,43 +148,49 @@ int game() {
 			loadLevel(13);
 			currentPlayer.init(10, 8, 2);
 
-			playOrg(8);
+			sound::playOrg(8);
 		}
 		else if (keyPressed(SDL_SCANCODE_2)) {
 			loadLevel(12);
 			currentPlayer.init(37, 11, 0);
 
-			playOrg(8);
+			sound::playOrg(8);
 		}
 		else if (keyPressed(SDL_SCANCODE_3)){
 			loadLevel(2);
 			currentPlayer.init(5, 6, 2);
 
-			playOrg(1);
+			sound::playOrg(1);
 		}
 		else if (keyPressed(SDL_SCANCODE_4)) {
 			loadLevel(11);
 			currentPlayer.init(13, 34, 2);
 
-			playOrg(9);
+			sound::playOrg(9);
 		}
 		else if (keyPressed(SDL_SCANCODE_5)) {
 			loadLevel(67);
 			currentPlayer.init(7, 52, 2);
 
-			playOrg(29);
+			sound::playOrg(29);
 		}
 		else if (keyPressed(SDL_SCANCODE_6)) {
 			loadLevel(56);
 			currentPlayer.init(118, 83, 0);
 
-			playOrg(24);
+			sound::playOrg(24);
 		}
 		else if (keyPressed(SDL_SCANCODE_7)) {
 			loadLevel(6);
 			currentPlayer.init(4, 18, 0);
 
-			playOrg(5);
+			sound::playOrg(5);
+		}
+		else if (keyPressed(SDL_SCANCODE_8)) {
+			loadLevel(53);
+			currentPlayer.init(16, 166, 2);
+
+			sound::playOrg(25);
 		}
 
 		updateNPC();
@@ -248,7 +232,6 @@ int main(int argc, char **argv) {
 
 	game();
 
-	SDL_Quit();
-	endOrganya();
+	doQuit();
 	return 0;
 }

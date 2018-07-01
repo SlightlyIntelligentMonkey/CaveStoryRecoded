@@ -1,10 +1,19 @@
 #pragma once
 //This includes everything that everything needs.
 #include <SDL.h>
-#include <sdl_image.h>
+#include <SDL_image.h>
 
 #define NOMINMAX
-#include "windows.h"
+#define LONG int32_t
+#define BYTE uint8_t
+#define UINT uint32_t
+
+typedef struct {
+ LONG left, top, right, bottom;
+} RECT;
+typedef struct {
+ LONG x, y;
+} POINT;
 
 #include <string>
 #include <iostream>

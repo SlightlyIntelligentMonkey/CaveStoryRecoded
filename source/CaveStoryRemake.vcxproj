@@ -176,6 +176,9 @@
     <ClCompile Include="render.cpp" />
     <ClCompile Include="script.cpp" />
     <ClCompile Include="sound.cpp" />
+
+    <ClCompile Include="../liborganya/file.c" />
+    <ClCompile Include="../liborganya/decoder.c" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="npc340.h" />
@@ -198,6 +201,10 @@
     <ClInclude Include="resource.h" />
     <ClInclude Include="script.h" />
     <ClInclude Include="sound.h" />
+
+    <ClInclude Include="../liborganya/decoder.h" />
+    <ClInclude Include="../liborganya/file.h" />
+    <ClInclude Include="../liborganya/organya.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="CaveStoryRemake.rc" />

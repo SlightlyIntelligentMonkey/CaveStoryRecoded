@@ -3,8 +3,8 @@
 int levelWidth;
 int levelHeight;
 
-BYTE *levelMap;
-BYTE *levelTileAttributes;
+BYTE *levelMap = nullptr;
+BYTE *levelTileAttributes = nullptr;
 
 //SDL_Texture *levelTileset;
 
@@ -83,18 +83,17 @@ void loadLevel(int levelIndex) {
 
 	//Load pxm
 	char pxmPath[256];
-	strcpy(pxmPath,"data/Stage/");
-	strcat(pxmPath, levelFilename);
-	strcat(pxmPath, ".pxm");
+	snprintf(pxmPath, 256, "data/Stage/%s.pxm", levelFilename);
 
 	BYTE *pxm = nullptr;
 	int pxmSize = loadFile(pxmPath, &pxm);
 	if (pxmSize < 0 ) { doCustomError("Couldn't read pxm."); doCustomError(pxmPath); }
-	
-	short *nums = (short*)pxm;
 
-	levelWidth = (int)nums[2];
-	levelHeight = (int)nums[3];
+	levelWidth = (int) readLEshort(pxm, 4);
+	levelHeight = (int) readLEshort(pxm, 6);
+
+	if (levelMap)
+		delete levelMap;
 
 	levelMap = new BYTE[pxmSize-8];
 
@@ -107,14 +106,14 @@ void loadLevel(int levelIndex) {
 
 	//Load pxa
 	char pxaPath[256];
-	strcpy(pxaPath, "data/Stage/");
-	strcat(pxaPath, tilesetFilename);
-	strcat(pxaPath, ".pxa");
+	snprintf(pxaPath, 256, "data/Stage/%s.pxa", tilesetFilename);
 
 	BYTE *pxa = nullptr;
 	int pxaSize = loadFile(pxaPath, &pxa);
 	if (pxaSize < 0) { doCustomError("Couldn't read pxa."); doCustomError(pxaPath); }
 
+	if (levelTileAttributes)
+		delete levelTileAttributes;
 	levelTileAttributes = new BYTE[pxaSize];
 	
 	for (int i = 0; i < pxaSize; i++) {
@@ -126,9 +125,7 @@ void loadLevel(int levelIndex) {
 
 	//Load pxe
 	char pxePath[256];
-	strcpy(pxePath, "data/Stage/");
-	strcat(pxePath, levelFilename);
-	strcat(pxePath, ".pxe");
+	snprintf(pxePath, 256, "data/Stage/%s.pxe", levelFilename);
 
 	BYTE *pxe = nullptr;
 	int pxeSize = loadFile(pxePath, &pxe);
@@ -171,31 +168,26 @@ void loadLevel(int levelIndex) {
 
 	//Load tileset
 	char tileImagePath[256];
-	strcpy(tileImagePath, "data/Stage/Prt");
-	strcat(tileImagePath, tilesetFilename);
-	strcat(tileImagePath, ".bmp");
+	snprintf(tileImagePath, 256, "data/Stage/Prt%s.bmp", tilesetFilename);
 
 	loadBMP(tileImagePath, &sprites[0x02]);
 
 	//Load background
 	char bgImagePath[256];
-	strcpy(bgImagePath, "data/");
-	strcat(bgImagePath, backgroundFilename);
-	strcat(bgImagePath, ".bmp");
+	snprintf(bgImagePath, 256, "data/%s.bmp", backgroundFilename);
 
 	loadBMP(bgImagePath, &sprites[0x1C]);
 
 	//Load npc sheets
 	//Load sheet 1
 	char npcSheet1Path[256];
-	strcpy(npcSheet1Path, "data/Npc/Npc");
-	strcat(npcSheet1Path, npcSheet1);
-	strcat(npcSheet1Path, ".bmp");
+	snprintf(npcSheet1Path, 256, "data/Npc/Npc%s.bmp", npcSheet1);
 
 	loadBMP(npcSheet1Path, &sprites[0x15]);
 
 	//Load sheet 2
 	char npcSheet2Path[256];
+	snprintf(npcSheet2Path, 256, "data/Npc/Npc%s.bmp", npcSheet2);
 	strcpy(npcSheet2Path, "data/Npc/Npc");
 	strcat(npcSheet2Path, npcSheet2);
 	strcat(npcSheet2Path, ".bmp");
@@ -204,9 +196,7 @@ void loadLevel(int levelIndex) {
 
 	//Load tsc script
 	char tscPath[256];
-	strcpy(tscPath, "data/Stage/");
-	strcat(tscPath, levelFilename);
-	strcat(tscPath, ".tsc");
+	snprintf(tscPath, 256, "data/Stage/%s.tsc", levelFilename);
 
 	loadTsc(tscPath);
 
@@ -264,8 +254,8 @@ void drawLevel(bool foreground) {
 		for (int y = yFrom; y < yTo; y++) {
 			int i = x + y * levelWidth;
 
-			if (levelMap[i] != NULL) {
-				int tile = levelMap[i];
+			int tile = levelMap[i];
+			if (tile) {
 				int attribute = levelTileAttributes[tile];
 
 				if ((attribute < 0x20 && foreground == false) || (attribute >= 0x40 && foreground == true))

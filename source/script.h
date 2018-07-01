@@ -3,7 +3,7 @@
 
 extern std::vector<char> scriptEvents;
 
-void loadTsc(char* path);
+void loadTsc(const char * path);
 void runScriptEvent(int event_num);
 
 void updateTsc();

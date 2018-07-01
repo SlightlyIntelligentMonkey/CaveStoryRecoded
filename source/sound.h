@@ -1,26 +1,29 @@
 #pragma once
 #include "common.h"
 
-const char* musicList[];
+extern "C" {
+	// sound.cpp includes liborganya, but sound.h does not!
+	struct org_decoder_t;
+}
 
-extern HMODULE orgModule;
-
-typedef int(__stdcall *pstartOrganya)(HWND);
-typedef int(__stdcall *ploadOrganya)(const char *);
-typedef int(__stdcall *psetOrganyaPosition)(int);
-typedef int(__stdcall *pgetOrganyaPosition)(void);
-typedef int(__stdcall *pplayOrganyaMusic)(void);
-typedef int(__stdcall *pchangeOrganyaVolume)(int);
-typedef int(__stdcall *pstopOrganyaMusic)(void);
-typedef int(__stdcall *pendOrganya)(void);
-
-extern pstartOrganya startOrganya;
-extern ploadOrganya loadOrganya;
-extern psetOrganyaPosition setOrganyaPosition;
-extern pgetOrganyaPosition getOrganyaPosition;
-extern pplayOrganyaMusic playOrganyaMusic;
-extern pchangeOrganyaVolume changeOrganyaVolume;
-extern pstopOrganyaMusic stopOrganyaMusic;
-extern pendOrganya endOrganya;
-
-void playOrg(int id);
+namespace sound {
+	class AudioTrack {
+		public:
+			virtual void audio(int16_t* stream, int len) = 0;
+			double volume = 0.75;
+	};
+	class OrganyaTrack : public AudioTrack {
+		public:
+			OrganyaTrack(const char * orgfn);
+			~OrganyaTrack();
+			// len is length in frames.
+			// stream is signed 16-bit stereo 44100hz.
+			void audio(int16_t* stream, int len) override;
+		private:
+			org_decoder_t * orgDecoder;
+	};
+	extern const char* musicList[];
+	void playOrg(int id);
+	void init();
+	void quit();
+}
