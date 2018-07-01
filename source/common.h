@@ -16,7 +16,9 @@
 
 #include "sound.h"
 
-//using namespace std;
+#ifndef WINDOWS
+#define BYTE uint8_t
+#endif
 
 //Defines
 enum Collisions

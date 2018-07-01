@@ -80,7 +80,7 @@ SDL_Texture* sprites[0x28];
 int init() {
 	//Create the window and renderer
 	SDL_Init(SDL_INIT_TIMER | SDL_INIT_AUDIO | SDL_INIT_VIDEO);
-	createView(426, 240, 2);
+	createView(320, 240, 2);
 
 	//Organya
 	orgModule = LoadLibrary("Org001.dll");

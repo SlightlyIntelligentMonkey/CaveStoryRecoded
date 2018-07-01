@@ -19,10 +19,12 @@ SDL_Rect blackBack;
 void updateNPC()
 {
 	//Remove stuff
-	for (unsigned int i = npcs.size() - 1; i > 0; i--) {
+	for (size_t i = npcs.size() - 1; i > 0; i--) {
 		if (!(npcs[i].cond & npccond_alive))
 			npcs.erase(npcs.begin() + i);
 	}
+
+	SDL_SetWindowTitle(window, std::to_string(npcs.size()).c_str());
 
 	//Update
 	for (unsigned int i = 0; i < npcs.size(); i++) {
@@ -73,7 +75,7 @@ void loadLevel(int levelIndex) {
 	char* levelFilename = (char*)&stageData[tbloffset+0x20];
 
 	//Get background stuff
-	backgroundScroll = stageData[tbloffset + 0x40];
+	backgroundScroll = readLElong(stageData, tbloffset + 0x40);
 
 	char* backgroundFilename = (char*)&stageData[tbloffset + 0x44];
 
@@ -91,10 +93,11 @@ void loadLevel(int levelIndex) {
 	int pxmSize = loadFile(pxmPath, &pxm);
 	if (pxmSize < 0 ) { doCustomError("Couldn't read pxm."); doCustomError(pxmPath); }
 	
-	short *nums = (short*)pxm;
+	levelWidth = readLEshort(pxm, 4);
+	levelHeight = readLEshort(pxm, 6);
 
-	levelWidth = (int)nums[2];
-	levelHeight = (int)nums[3];
+	if (levelMap)
+		delete levelMap;
 
 	levelMap = new BYTE[pxmSize-8];
 
