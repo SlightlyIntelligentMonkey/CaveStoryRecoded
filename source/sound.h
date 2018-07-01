@@ -10,7 +10,7 @@ namespace sound {
 	class AudioTrack {
 		public:
 			virtual void audio(int16_t* stream, int len) = 0;
-			double volume = 0.75;
+			int16_t volume = 75;
 	};
 	class OrganyaTrack : public AudioTrack {
 		public:

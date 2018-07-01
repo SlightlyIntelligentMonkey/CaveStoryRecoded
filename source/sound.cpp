@@ -58,12 +58,12 @@ void sound::playOrg(int id) {
 static void soundMixer(void * userdata, Uint8 * stream, int len) {
 	len /= sizeof(int16_t);
 	int16_t * samples = (int16_t *) stream;
-	int16_t * temp = (int16_t *) alloca(len * 4);
+	int16_t * temp = (int16_t *) alloca(len * sizeof(int16_t));
 	memset(samples, 0, sizeof(int16_t) * len);
 	for (sound::AudioTrack * trk : tracks) {
 		trk->audio(temp, len / 2);
 		for (int i = 0; i < len; i++) {
-			int32_t p = samples[i] + (int32_t) (temp[i] * trk->volume);
+			int32_t p = samples[i] + ((((int32_t)temp[i]) * trk->volume) / 100);
 			if (p > 0x7FFF)
 				p = 0x7FFF;
 			if (p < -0x8000)

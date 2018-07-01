@@ -70,7 +70,12 @@ int createView(int width, int height, int scale) {
 SDL_Texture* sprites[0x28];
 
 int init() {
-	//Create the window and renderer
+	//Initiate SDL and window stuff
+
+	#ifdef WINDOWS //A hack to fix popping with audio on Windows (SDL2 can't XAudio2 fast enough)
+		_putenv("SDL_AUDIODRIVER=directsound");
+	#endif
+
 	SDL_Init(SDL_INIT_TIMER | SDL_INIT_AUDIO | SDL_INIT_VIDEO);
 	
 	createView(426, 240, 2);
