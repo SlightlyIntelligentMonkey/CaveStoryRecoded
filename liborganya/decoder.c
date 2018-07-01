@@ -155,11 +155,11 @@ size_t org_decode_samples(org_decoder_t *decoder, int16_t *buffer, size_t num_sa
 			
 			uint32_t note_sample_dist = 1;
 
-			if (freq > 1) {
+			//if (freq > 1) {
 				// wanpak2 interpolation prep.
 				// Technically not very accurate but it sounds decent
-				note_sample_dist = (uint32_t) freq;
-			}
+				//note_sample_dist = (uint32_t) freq;
+			//}
 
 			uint32_t note_sample_pos_a = (uint32_t) note_sample_pos;
 			uint32_t note_sample_pos_b = note_sample_pos_a + note_sample_dist;

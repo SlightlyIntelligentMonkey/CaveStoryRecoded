@@ -253,7 +253,7 @@ void CLASS_player::actNormal() {
 			{
 				if (xsp > 0x200 || xsp < -0x200)
 				{
-					for (int waterit = 0; waterit <= 511; ++waterit)
+					for (int waterit = 0; waterit <= 7; ++waterit)
 					{
 						int spawnX = (random(-8, 8) << 9) + x;
 						int waterYsp = random(-0x200, 0x80);
@@ -266,7 +266,7 @@ void CLASS_player::actNormal() {
 			}
 			else
 			{
-				for (int waterit = 0; waterit <= 511; ++waterit)
+				for (int waterit = 0; waterit <= 7; ++waterit)
 				{
 					int spawnX = (random(-8, 8) << 9) + x;
 					int waterYsp = random(-0x200, 0x80) - (ysp / 2);

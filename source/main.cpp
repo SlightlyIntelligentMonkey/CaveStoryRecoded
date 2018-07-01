@@ -201,6 +201,12 @@ int game() {
 
 			sound::playOrg(25);
 		}
+		else if (keyPressed(SDL_SCANCODE_9)) {
+			loadLevel(49);
+			currentPlayer.init(7, 6, 2);
+
+			sound::playOrg(27);
+		}
 
 		updateNPC();
 		currentPlayer.update();
