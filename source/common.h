@@ -23,13 +23,11 @@ typedef struct {
 
 #include <vector>
 
-#include "sound.h"
-
 #ifndef WINDOWS
 #define BYTE uint8_t
 #endif
 
-//Defines
+//Enums
 enum Collisions
 {
 	leftWall = 0b0001, //Touching a left wall
@@ -140,6 +138,11 @@ bool getFlag(int a);
 
 #include "playerCollision.h"
 #include "npcCollision.h"
+
+#include "sound.h"
+#include "smixer.h"
+#include "pxt.h"
+#include "org.h"
 
 //Classes
 #include "player.h"

@@ -34,7 +34,7 @@ bool exitGame = false;
 // Some global functions
 
 static void doQuit() {
-	sound::quit();
+	endSound();
 	SDL_Quit();
 }
 
@@ -71,15 +71,11 @@ SDL_Texture* sprites[0x28];
 
 int init() {
 	//Initiate SDL and window stuff
-
-	#ifdef WINDOWS //A hack to fix popping with audio on Windows (SDL2 can't XAudio2 fast enough)
-		_putenv("SDL_AUDIODRIVER=directsound");
-	#endif
-
 	SDL_Init(SDL_INIT_TIMER | SDL_INIT_AUDIO | SDL_INIT_VIDEO);
 	
+	initSound();
+	
 	createView(426, 240, 2);
-	sound::init();
 
 	//Load assets
 	loadBMP("data/Title.bmp", &sprites[0x00]);
@@ -113,7 +109,8 @@ int init() {
 	//Load level
 	loadLevel(13);
 	currentPlayer.init(10, 8, 2);
-	sound::playOrg(8);
+
+	playORG(8);
 
 	runScriptEvent(200);
 
@@ -157,55 +154,25 @@ int game() {
 			loadLevel(13);
 			currentPlayer.init(10, 8, 2);
 
-			sound::playOrg(8);
+			playORG(8);
 		}
 		else if (keyPressed(SDL_SCANCODE_2)) {
 			loadLevel(12);
 			currentPlayer.init(37, 11, 0);
 
-			sound::playOrg(8);
+			playORG(8);
 		}
 		else if (keyPressed(SDL_SCANCODE_3)){
 			loadLevel(2);
 			currentPlayer.init(5, 6, 2);
 
-			sound::playOrg(1);
+			playORG(1);
 		}
 		else if (keyPressed(SDL_SCANCODE_4)) {
 			loadLevel(11);
 			currentPlayer.init(13, 34, 2);
 
-			sound::playOrg(9);
-		}
-		else if (keyPressed(SDL_SCANCODE_5)) {
-			loadLevel(67);
-			currentPlayer.init(7, 52, 2);
-
-			sound::playOrg(29);
-		}
-		else if (keyPressed(SDL_SCANCODE_6)) {
-			loadLevel(56);
-			currentPlayer.init(118, 83, 0);
-
-			sound::playOrg(24);
-		}
-		else if (keyPressed(SDL_SCANCODE_7)) {
-			loadLevel(6);
-			currentPlayer.init(4, 18, 0);
-
-			sound::playOrg(5);
-		}
-		else if (keyPressed(SDL_SCANCODE_8)) {
-			loadLevel(53);
-			currentPlayer.init(16, 166, 2);
-
-			sound::playOrg(25);
-		}
-		else if (keyPressed(SDL_SCANCODE_9)) {
-			loadLevel(49);
-			currentPlayer.init(7, 6, 2);
-
-			sound::playOrg(27);
+			playORG(9);
 		}
 
 		updateNPC();

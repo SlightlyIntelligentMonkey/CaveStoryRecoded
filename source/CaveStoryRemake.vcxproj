@@ -89,7 +89,7 @@
       <ConformanceMode>true</ConformanceMode>
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
-      <Optimization>MaxSpeed</Optimization>
+      <Optimization>Disabled</Optimization>
       <UndefinePreprocessorDefinitions>_DEBUG</UndefinePreprocessorDefinitions>
     </ClCompile>
     <Link>
@@ -103,7 +103,7 @@
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <Optimization>MaxSpeed</Optimization>
+      <Optimization>Disabled</Optimization>
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
       <UndefinePreprocessorDefinitions>_DEBUG</UndefinePreprocessorDefinitions>
     </ClCompile>
@@ -120,7 +120,7 @@
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <Optimization>MaxSpeed</Optimization>
+      <Optimization>Disabled</Optimization>
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
       <UndefinePreprocessorDefinitions>_DEBUG</UndefinePreprocessorDefinitions>
     </ClCompile>
@@ -139,7 +139,7 @@
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <Optimization>MaxSpeed</Optimization>
+      <Optimization>Disabled</Optimization>
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
       <UndefinePreprocessorDefinitions>_DEBUG</UndefinePreprocessorDefinitions>
     </ClCompile>
@@ -166,6 +166,7 @@
     <ClCompile Include="npc060.cpp" />
     <ClCompile Include="npc200.cpp" />
     <ClCompile Include="npcAct.cpp" />
+    <ClCompile Include="org.cpp" />
     <ClCompile Include="player.cpp">
       <Optimization Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Disabled</Optimization>
       <Optimization Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Disabled</Optimization>
@@ -173,11 +174,11 @@
       <Optimization Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Disabled</Optimization>
     </ClCompile>
     <ClCompile Include="playerCollision.cpp" />
+    <ClCompile Include="pxt.cpp" />
     <ClCompile Include="render.cpp" />
     <ClCompile Include="script.cpp" />
+    <ClCompile Include="smixer.cpp" />
     <ClCompile Include="sound.cpp" />
-    <ClCompile Include="../liborganya/file.c" />
-    <ClCompile Include="../liborganya/decoder.c" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="npc340.h" />
@@ -194,15 +195,15 @@
     <ClInclude Include="npc060.h" />
     <ClInclude Include="npc200.h" />
     <ClInclude Include="npcAct.h" />
+    <ClInclude Include="org.h" />
     <ClInclude Include="player.h" />
     <ClInclude Include="playerCollision.h" />
+    <ClInclude Include="pxt.h" />
     <ClInclude Include="render.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="script.h" />
+    <ClInclude Include="smixer.h" />
     <ClInclude Include="sound.h" />
-    <ClInclude Include="../liborganya/decoder.h" />
-    <ClInclude Include="../liborganya/file.h" />
-    <ClInclude Include="../liborganya/organya.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="CaveStoryRemake.rc" />
