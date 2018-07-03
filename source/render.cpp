@@ -1,5 +1,7 @@
 #include "common.h"
 
+SDL_Rect drawRectangle = {0};
+
 void loadBMP(const char *file, SDL_Texture **tex) {
 	//Destroy previously existing texture
 	if (*tex != NULL) {
@@ -36,4 +38,14 @@ void drawTexture(SDL_Texture *texture, int x, int y, bool fixed) {
 		doError();
 
 	return;
+}
+
+void drawRect(int x, int y, int w, int h)
+{
+	drawRectangle.x = x;
+	drawRectangle.y = y;
+	drawRectangle.w = w;
+	drawRectangle.h = h;
+
+	SDL_RenderFillRect(renderer, &drawRectangle);
 }

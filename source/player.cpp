@@ -392,16 +392,10 @@ void CLASS_player::draw() {
 	//Draw
 	drawTexture(sprites[0x10], x - 0x1000, y - 0x1000, false);
 
-	/* COLLISION DEBUG
+	// COLLISION DEBUG
 	SDL_SetRenderDrawColor(renderer, 255, 255, 0, 255);
 
-	playerCollisionDebug.x = (x - 0xA00 - viewX) >> 9;
-	playerCollisionDebug.y = (y - 0x1000 - viewY) >> 9;
-	playerCollisionDebug.w = 0xA00 >> 8;
-	playerCollisionDebug.h = 0x1000 >> 8;
-
-	SDL_RenderFillRect(renderer, &playerCollisionDebug);
-	*/
+	drawRect((x - 0xA00 - viewX) >> 9, (y - 0x1000 - viewY) >> 9, 0xA00 >> 8, 0x1000 >> 8);
 }
 
 void CLASS_player::update() {

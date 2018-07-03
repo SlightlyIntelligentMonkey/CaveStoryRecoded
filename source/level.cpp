@@ -13,8 +13,6 @@ BYTE backgroundScroll;
 
 std::vector<npc> npcs(0);
 
-SDL_Rect blackBack;
-
 //NPC Functions
 void updateNPC()
 {
@@ -236,12 +234,7 @@ void drawLevel(bool foreground) {
 			case(4):
 				SDL_SetRenderDrawColor(renderer, 0, 0, 32, 255);
 
-				blackBack.x = 0;
-				blackBack.y = 0;
-				blackBack.w = screenWidth;
-				blackBack.h = screenHeight;
-
-				SDL_RenderFillRect(renderer, &blackBack);
+				drawRect(0, 0, screenWidth, screenHeight);
 				break;
 		}
 	}

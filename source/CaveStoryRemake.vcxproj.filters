@@ -96,6 +96,9 @@
     <ClCompile Include="pxt.cpp">
       <Filter>Source Files\modules\sound</Filter>
     </ClCompile>
+    <ClCompile Include="hud.cpp">
+      <Filter>Source Files\modules</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="common.h">

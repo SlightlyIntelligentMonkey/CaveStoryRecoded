@@ -52,7 +52,10 @@ void doCustomError(const char *msg) {
 }
 
 //View
-int createView(int width, int height, int scale) {
+int createView(int width, int height, int scale, bool fullscreen) {
+	SDL_DisplayMode DM;
+	SDL_GetCurrentDisplayMode(0, &DM);
+
 	screenWidth = width;
 	screenHeight = height;
 	screenScale = scale;
@@ -61,6 +64,7 @@ int createView(int width, int height, int scale) {
 	int createHeight = height * scale;
 
 	window = SDL_CreateWindow("Cave Story Remake", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, createWidth, createHeight, 0);
+	
 	renderer = SDL_CreateRenderer(window, -1, 0);
 	SDL_RenderSetLogicalSize(renderer, screenWidth, screenHeight);
 
@@ -75,7 +79,7 @@ int init() {
 	
 	initSound();
 	
-	createView(426, 240, 2);
+	createView(426, 240, 2, false);
 
 	//Load assets
 	loadBMP("data/Title.bmp", &sprites[0x00]);
@@ -173,6 +177,12 @@ int game() {
 			currentPlayer.init(13, 34, 2);
 
 			playORG(9);
+		}
+		else if (keyPressed(SDL_SCANCODE_5)) {
+			loadLevel(49);
+			currentPlayer.init(7, 6, 2);
+
+			playORG(27);
 		}
 
 		updateNPC();

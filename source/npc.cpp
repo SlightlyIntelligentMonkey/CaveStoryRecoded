@@ -8,8 +8,6 @@ int npcTblSize = loadFile(npcTblPath, &npcAttributes);
 
 int npcAmmount = npcTblSize / 24;
 
-SDL_Rect npcCollisionDebug;
-
 int getNPCAttribute(UINT npcId, UINT offset, UINT offset2, UINT offsetSize, UINT returnSize)
 {
 	int absOffset = (offset * npcAmmount) + (offsetSize * npcId) + offset2;
@@ -112,15 +110,9 @@ void npc::draw()
 
 		drawTexture(sprites[spriteSheet], x - offset.x, y - offset.y, false);
 
-		/* COLLISION DEBUG
+		// COLLISION DEBUG
 		SDL_SetRenderDrawColor(renderer, 255, 255, 0, 255);
 
-		npcCollisionDebug.x = (x - collideRect.left - viewX) >> 9;
-		npcCollisionDebug.y = (y - collideRect.top - viewY) >> 9;
-		npcCollisionDebug.w = (collideRect.left + collideRect.right) >> 9;
-		npcCollisionDebug.h = (collideRect.top + collideRect.bottom) >> 9;
-
-		SDL_RenderFillRect(renderer, &npcCollisionDebug);
-		*/
+		drawRect((x - collideRect.left - viewX) >> 9, (y - collideRect.top - viewY) >> 9, (collideRect.left + collideRect.right) >> 9, (collideRect.top + collideRect.bottom) >> 9);
 	}
 }

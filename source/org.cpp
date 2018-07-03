@@ -17,15 +17,15 @@ const char* musicList[42] = {
 	"balcony", "lastbtl", "lastbt3", "ending", "zonbie", "bdown", "hell", "jenka2", "marine", "ballos", "toroko", "white",
 };
 
-int orgLerp(int16_t v1, int16_t v2, uint16_t f)
+int orgLerp(int16_t v1, int16_t v2, int16_t f)
 {
-	uint32_t v4;
+	int64_t fv;
 
 	if (!f)
-		return (uint16_t)v1;
+		return (int)v1;
 
-	v4 = (v2 - v1) * f;
-	return ((int)((v4 >> 20) + v4) >> 12) + (uint16_t)v1;
+	fv = (v2 - v1) * f;
+	return ((int)((fv >> 20) + fv) >> 12) + (uint16_t)v1;
 }
 
 ORG *loadORG(const char *path)
@@ -43,24 +43,29 @@ ORG *loadORG(const char *path)
 
 	int currentStreamPos = 6;
 
+	//Tempo
 	org->tempo = readLEshort(orgRaw, currentStreamPos);
 	currentStreamPos += 2;
 
+	//Time signature
 	org->spb = orgRaw[8];
 	currentStreamPos++;
 
 	org->bps = orgRaw[9];
 	currentStreamPos++;
 
+	//Loop
 	org->loopStart = readLElong(orgRaw, currentStreamPos);
 	currentStreamPos += 4;
 
 	org->loopEnd = readLElong(orgRaw, currentStreamPos);
 	currentStreamPos += 4;
 
+	//Set org to play at beginning with nothing doing anything
 	org->samples = 0;
 	org->pos = 0;
 
+	//Get track instrument data
 	for (int i = 0; i <= 15; ++i)
 	{
 		org->track[i].freq = readLEshort(orgRaw, currentStreamPos);
@@ -75,25 +80,18 @@ ORG *loadORG(const char *path)
 		org->track[i].num_notes = readLEshort(orgRaw, currentStreamPos);
 		currentStreamPos += 2;
 		
+		//Track doesn't play anything
 		org->track[i].note = 0;
 		org->track[i].pos = 0;
 		org->track[i].playing = 0;
 		org->track[i].samples = 0;
 	}
 
-	uint32_t v1 = 0;
-	uint32_t v2 = 0;
-	NOTE *v3;
-	uint32_t *v4;
-	uint32_t v5;
-
 	for (int i = 0; i <= 15; ++i)
 	{
 		if (org->track[i].num_notes)
 		{
-			v1 = i;
-
-			org->track[v1].note = (NOTE *)calloc(org->track[i].num_notes, 8u);
+			org->track[i].note = (NOTE *)calloc(org->track[i].num_notes, 8u);
 
 			for (int j = 0; org->track[i].num_notes > j; ++j)
 			{
@@ -127,20 +125,23 @@ ORG *loadORG(const char *path)
 
 			if (!org->track[i].note->start)
 			{
-				if (org->track[i].note->note != -1)
+				if (org->track[i].note->note != 255)
 				{
+					int playLength;
+
 					if (org->track[i].pi)
-						v2 = 1;
+						playLength = 1;
 					else
-						v2 = org->track[i].note->length;
-					org->track[i].playing = v2;
+						playLength = org->track[i].note->length;
+
+					org->track[i].playing = playLength;
 				}
 
 				org->track[i].pos = 1;
-				v3 = org->track[i].note;
-				v4 = &org->loopEnd + 9 * i;
-				v5 = *(uint32_t *)&v3->note;
 
+				NOTE *v3 = org->track[i].note;
+				uint32_t *v4 = &org->loopEnd + 9 * i;
+				uint32_t v5 = *(uint32_t *)&v3->note;
 				v4[3] = v3->start;
 				v4[4] = v5;
 			}
@@ -170,21 +171,6 @@ void freeORG(ORG *org)
 	}
 }
 
-void playORG(int id)
-{
-	freeORG(currentOrg);
-
-	char path[256];
-	snprintf(path, 256, "data/Org/%s.org", musicList[id]);
-
-	currentOrg = loadORG(path);
-	SDL_LockAudio();
-	orgPlayer.org = currentOrg;
-	orgPlayer.volume = 100;
-	orgPlayer.fadeout = 0;
-	SDL_UnlockAudio();
-}
-
 uint32_t getORGPosition(ORG *org)
 {
 	uint32_t result;
@@ -199,41 +185,55 @@ uint32_t getORGPosition(ORG *org)
 
 void setORGPosition(ORG *org, uint32_t position)
 {
-	char v2;
-	int16_t v3;
-	NOTE *v4;
-	uint32_t *v5;
-	uint32_t v6;
-	int i;
+	int16_t playNote;
 
 	org->pos = position;
 
-	for (i = 0; i <= 15; ++i)
+	for (int track = 0; track <= 15; ++track)
 	{
-		for (org->track[i].pos = 0; ; ++org->track[i].pos)
+		for (org->track[track].pos = 0; ; ++org->track[track].pos)
 		{
-			v2 = org->track[i].pos >= org->track[i].num_notes || org->track[i].note[org->track[i].pos].start >= org->pos ? 0 : 1;
+			bool posCheck = org->track[track].pos >= org->track[track].num_notes || org->track[track].note[org->track[track].pos].start >= org->pos ? 0 : 1;
 
-			if (!v2)
+			if (!posCheck)
 				break;
 		}
 
-		org->track[i].playing = 0;
-		org->track[i].samples = 0;
+		//Reset current playing and samples
+		org->track[track].playing = 0;
+		org->track[track].samples = 0;
 
-		if (org->track[i].pos < org->track[i].num_notes && org->track[i].note[org->track[i].pos].start == org->pos)
+		if (org->track[track].pos < org->track[track].num_notes && org->track[track].note[org->track[track].pos].start == org->pos)
 		{
-			if (org->track[i].note[org->track[i].pos].note != -1)
+			if (org->track[track].note[org->track[track].pos].note != 255)
 			{
-				if (org->track[i].pi)
-					v3 = 1;
+				if (org->track[track].pi)
+					playNote = 1;
 				else
-					v3 = org->track[i].note[org->track[i].pos].length;
+					playNote = org->track[track].note[org->track[track].pos].length;
 
-				org->track[i].playing = v3;
+				org->track[track].playing = playNote;
 			}
 		}
 	}
+}
+
+void playORG(int id)
+{
+	freeORG(currentOrg); //Remove old song from memory
+
+	char path[256];
+	snprintf(path, 256, "data/Org/%s.org", musicList[id]);
+
+	currentOrg = loadORG(path);
+
+	SDL_LockAudio(); //Lock audio while changing song
+
+	orgPlayer.org = currentOrg;
+	orgPlayer.volume = 100;
+	orgPlayer.fadeout = 0;
+
+	SDL_UnlockAudio(); //Okay, we're done here.
 }
 
 void renderDrumWave(int32_t *buffer, int no, TRACK *instrument, int len)
@@ -248,9 +248,9 @@ void renderOrgWave(Sint32 *buffer, TRACK *instrument, int len)
 	Sint32 val;
 	int i;
 	__int16 pan;
-	float volume_f;
-	float left_f;
-	float right_f;
+	long double volume_f;
+	long double left_f;
+	long double right_f;
 	Sint8 *org_wave;
 
 	volume_f = (long double)instrument->cur_note.volume / 254.0;
@@ -289,20 +289,16 @@ void renderOrgWave(Sint32 *buffer, TRACK *instrument, int len)
 
 void orgMixer(void *param, uint8_t *stream, int len)
 {
-	Sint16 v3;
+	Sint16 noteLength;
 	unsigned int samples_per_beat;
 	int samples;
 	int samples_left;
 	signed int render_samples;
 	int samples_rendered;
-	int i;
-	int ia;
-	int j;
-	int ja;
-	int track_pos;
+	int trackPosition;
 	Sint32 *buffer;
-	Uint8 b_notestart;
-	float f_volume;
+	Uint8 noteStart;
+	long double f_volume;
 
 	samples = len / 4;
 
@@ -321,7 +317,7 @@ void orgMixer(void *param, uint8_t *stream, int len)
 			if (render_samples > samples_left)
 				render_samples = samples_left;
 
-			for (i = 0; i <= 15; ++i)
+			for (int i = 0; i <= 15; ++i)
 			{
 				if (orgPlayer.org->track[i].note && orgPlayer.org->track[i].playing > 0)
 				{
@@ -346,42 +342,56 @@ void orgMixer(void *param, uint8_t *stream, int len)
 				if (++orgPlayer.org->pos >= orgPlayer.org->loopEnd)
 					setORGPosition(orgPlayer.org, orgPlayer.org->loopStart);
 
-				for (ia = 0; ia <= 15; ++ia)
+				for (int ia = 0; ia <= 15; ++ia)
 				{
-					track_pos = orgPlayer.org->track[ia].pos;
+					trackPosition = orgPlayer.org->track[ia].pos;
+
 					if (orgPlayer.org->track[ia].note)
 					{
-						b_notestart = 0;
-						if (orgPlayer.org->track[ia].num_notes > track_pos
-							&& orgPlayer.org->pos == orgPlayer.org->track[ia].note[track_pos].start)
+						noteStart = 0;
+
+						if (orgPlayer.org->track[ia].num_notes > trackPosition
+							&& orgPlayer.org->pos == orgPlayer.org->track[ia].note[trackPosition].start)
 						{
+							//Move track along
 							++orgPlayer.org->track[ia].pos;
-							if (orgPlayer.org->track[ia].note[track_pos].note != 255)
+
+							if (orgPlayer.org->track[ia].note[trackPosition].note != 255)
 							{
 								orgPlayer.org->track[ia].samples = 0;
+
+								//Get note's playing length
 								if (orgPlayer.org->track[ia].pi)
-									v3 = 1;
+									noteLength = 1; //I'm not so sure about this?
 								else
-									v3 = orgPlayer.org->track[ia].note[track_pos].length;
-								orgPlayer.org->track[ia].playing = v3;
-								orgPlayer.org->track[ia].cur_note.note = orgPlayer.org->track[ia].note[track_pos].note;
-								b_notestart = 1;
+									noteLength = orgPlayer.org->track[ia].note[trackPosition].length;
+								
+								orgPlayer.org->track[ia].playing = noteLength;
+
+								//Set note to this note
+								orgPlayer.org->track[ia].cur_note.note = orgPlayer.org->track[ia].note[trackPosition].note;
+
+								noteStart = 1;
 							}
 
-							if (orgPlayer.org->track[ia].note[track_pos].pan != 255)
-								orgPlayer.org->track[ia].cur_note.pan = orgPlayer.org->track[ia].note[track_pos].pan;
+							//Pan event
+							if (orgPlayer.org->track[ia].note[trackPosition].pan != 255)
+								orgPlayer.org->track[ia].cur_note.pan = orgPlayer.org->track[ia].note[trackPosition].pan;
 
-							if (orgPlayer.org->track[ia].note[track_pos].volume != 255)
-								orgPlayer.org->track[ia].cur_note.volume = orgPlayer.org->track[ia].note[track_pos].volume;
+							//Volume event
+							if (orgPlayer.org->track[ia].note[trackPosition].volume != 255)
+								orgPlayer.org->track[ia].cur_note.volume = orgPlayer.org->track[ia].note[trackPosition].volume;
 						}
-						if (!b_notestart && orgPlayer.org->track[ia].playing > 0 && ia <= 7)
+
+						//End note (and go through a lengthened one)
+						if (!noteStart && orgPlayer.org->track[ia].playing > 0 && ia <= 7)
 							--orgPlayer.org->track[ia].playing;
 					}
 				}
 			}
 		}
 
-		for (j = 0; 2 * samples > j; ++j)
+		for (int j = 0; 2 * samples > j; ++j)
 		{
 			if (buffer[j] <= 0x7FFF)
 			{
@@ -400,7 +410,7 @@ void orgMixer(void *param, uint8_t *stream, int len)
 
 		f_volume = (long double)orgPlayer.volume / 192.0;
 
-		for (ja = 0; ja < samples; ++ja)
+		for (int ja = 0; ja < samples; ++ja)
 		{
 			*(int16_t *)&stream[4 * ja] = (int16_t)((long double)buffer[2 * ja] * f_volume);
 			*(int16_t *)&stream[2 * (2 * ja + 1)] = (int16_t)((long double)buffer[2 * ja + 1] * f_volume);
@@ -412,13 +422,17 @@ void orgMixer(void *param, uint8_t *stream, int len)
 
 void initORG()
 {
+	//Clear org
+	if (orgPlayer.org)
+		freeORG(orgPlayer.org);
+
 	orgPlayer.org = NULL;
 	
-	org_waves = nullptr;
-	int orgWavesSize = loadFile("data/ORGWave.dat", &org_waves);
+	//Load wave100
+	int orgWavesSize = loadFile("data/Wave100.dat", &org_waves);
 
 	if (orgWavesSize < 0)
-		doCustomError("ORGWave.dat not found");
+		doCustomError("Wave100.dat not found");
 }
 
 void stopORG()
