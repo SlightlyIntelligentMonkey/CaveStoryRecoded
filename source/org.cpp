@@ -17,9 +17,9 @@ const char* musicList[42] = {
 	"balcony", "lastbtl", "lastbt3", "ending", "zonbie", "bdown", "hell", "jenka2", "marine", "ballos", "toroko", "white",
 };
 
-int orgLerp(int16_t v1, int16_t v2, int16_t f)
+int orgLerp(int16_t v1, int16_t v2, int16_t f) //only supports unsigned integers I guess
 {
-	int64_t fv;
+	uint64_t fv;
 
 	if (!f)
 		return (int)v1;
@@ -41,7 +41,7 @@ ORG *loadORG(const char *path)
 	org = (ORG *)malloc(orgAlloc);
 	memset(org, 0, orgAlloc);
 
-	int currentStreamPos = 6;
+	int currentStreamPos = 6; //yes, I faked streaming, I guess this can be changed
 
 	//Tempo
 	org->tempo = readLEshort(orgRaw, currentStreamPos);
@@ -87,43 +87,43 @@ ORG *loadORG(const char *path)
 		org->track[i].samples = 0;
 	}
 
-	for (int i = 0; i <= 15; ++i)
+	for (int i = 0; i <= 15; ++i) //Load events
 	{
 		if (org->track[i].num_notes)
 		{
 			org->track[i].note = (NOTE *)calloc(org->track[i].num_notes, 8u);
 
-			for (int j = 0; org->track[i].num_notes > j; ++j)
+			for (int j = 0; org->track[i].num_notes > j; ++j) //When event is played
 			{
 				org->track[i].note[j].start = readLElong(orgRaw, currentStreamPos);
 				currentStreamPos += 4;
 			}
 
-			for (int j = 0; org->track[i].num_notes > j; ++j)
+			for (int j = 0; org->track[i].num_notes > j; ++j) //Tone (if a note)
 			{
 				org->track[i].note[j].note = orgRaw[currentStreamPos];
 				currentStreamPos++;
 			}
 
-			for (int j = 0; org->track[i].num_notes > j; ++j)
+			for (int j = 0; org->track[i].num_notes > j; ++j) //Length
 			{
 				org->track[i].note[j].length = orgRaw[currentStreamPos];
 				currentStreamPos++;
 			}
 
-			for (int j = 0; org->track[i].num_notes > j; ++j)
+			for (int j = 0; org->track[i].num_notes > j; ++j) //Volume
 			{
 				org->track[i].note[j].volume = orgRaw[currentStreamPos];
 				currentStreamPos++;
 			}
 
-			for (int j = 0; org->track[i].num_notes > j; ++j)
+			for (int j = 0; org->track[i].num_notes > j; ++j) //Panning
 			{
 				org->track[i].note[j].pan = orgRaw[currentStreamPos];
 				currentStreamPos++;
 			}
 
-			if (!org->track[i].note->start)
+			if (!org->track[i].note->start) //Get currently playing note at start of org
 			{
 				if (org->track[i].note->note != 255)
 				{
@@ -185,8 +185,6 @@ uint32_t getORGPosition(ORG *org)
 
 void setORGPosition(ORG *org, uint32_t position)
 {
-	int16_t playNote;
-
 	org->pos = position;
 
 	for (int track = 0; track <= 15; ++track)
@@ -205,14 +203,16 @@ void setORGPosition(ORG *org, uint32_t position)
 
 		if (org->track[track].pos < org->track[track].num_notes && org->track[track].note[org->track[track].pos].start == org->pos)
 		{
-			if (org->track[track].note[org->track[track].pos].note != 255)
+			if (org->track[track].note[org->track[track].pos].note != 255) //Determine currently playing note at position
 			{
-				if (org->track[track].pi)
-					playNote = 1;
-				else
-					playNote = org->track[track].note[org->track[track].pos].length;
+				int16_t noteLength;
 
-				org->track[track].playing = playNote;
+				if (org->track[track].pi)
+					noteLength = 1;
+				else
+					noteLength = org->track[track].note[org->track[track].pos].length;
+
+				org->track[track].playing = noteLength;
 			}
 		}
 	}
@@ -222,6 +222,7 @@ void playORG(int id)
 {
 	freeORG(currentOrg); //Remove old song from memory
 
+	//Load new song
 	char path[256];
 	snprintf(path, 256, "data/Org/%s.org", musicList[id]);
 
@@ -238,10 +239,11 @@ void playORG(int id)
 
 void renderDrumWave(int32_t *buffer, int no, TRACK *instrument, int len)
 {
+	//DISABLED UNTIL PXT
 	return;
 }
 
-void renderOrgWave(Sint32 *buffer, TRACK *instrument, int len)
+void renderOrgWave(Sint32 *buffer, TRACK *instrument, int len) //This REALLY needs to get cleaned up.
 {
 	long double v3;
 	int s_offset_1;
@@ -271,7 +273,7 @@ void renderOrgWave(Sint32 *buffer, TRACK *instrument, int len)
 		* 32.0
 		+ (long double)instrument->freq
 		- 1000.0)
-		/ 44100.0
+		/ audioFrequency
 		* 4096.0;
 	for (i = 0; i < len; ++i)
 	{
@@ -287,7 +289,7 @@ void renderOrgWave(Sint32 *buffer, TRACK *instrument, int len)
 	}
 }
 
-void orgMixer(void *param, uint8_t *stream, int len)
+void orgMixer(void *param, uint8_t *stream, int len) //This too, but not as bad as above
 {
 	Sint16 noteLength;
 	unsigned int samples_per_beat;
@@ -304,7 +306,7 @@ void orgMixer(void *param, uint8_t *stream, int len)
 
 	if (orgPlayer.org)
 	{
-		samples_per_beat = 44100 * orgPlayer.org->tempo / 1000;
+		samples_per_beat = audioFrequency * orgPlayer.org->tempo / 1000;
 		buffer = (Sint32 *)malloc(8 * samples);
 		memset(buffer, 0, 8 * samples);
 		samples_left = len / 4;

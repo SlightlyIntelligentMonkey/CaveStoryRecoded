@@ -110,9 +110,10 @@ void npc::draw()
 
 		drawTexture(sprites[spriteSheet], x - offset.x, y - offset.y, false);
 
-		// COLLISION DEBUG
+		/*/ COLLISION DEBUG
 		SDL_SetRenderDrawColor(renderer, 255, 255, 0, 255);
 
 		drawRect((x - collideRect.left - viewX) >> 9, (y - collideRect.top - viewY) >> 9, (collideRect.left + collideRect.right) >> 9, (collideRect.top + collideRect.bottom) >> 9);
+		*/
 	}
 }

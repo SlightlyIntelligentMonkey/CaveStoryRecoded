@@ -182,6 +182,8 @@
     <ClCompile Include="sound.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="weapons.h" />
+    <ClInclude Include="hud.h" />
     <ClInclude Include="npc340.h" />
     <ClInclude Include="npcCollision.h" />
     <ClInclude Include="common.h" />

@@ -12,6 +12,16 @@ class CLASS_player {
 
 		int direction = 0;
 
+		int health = 3;
+		int maxHealth = 3;
+
+		int lastHealth = 3;
+		int healthDrainCount = 0;
+
+		int air = 1000;
+
+		int airShow = 0;
+
 		//Animation
 		int animation = 0;
 		int animationWait = 0;

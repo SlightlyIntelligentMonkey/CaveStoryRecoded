@@ -13,6 +13,13 @@ void CLASS_player::init(int createX, int createY, int createDirection) {
 
 	direction = createDirection;
 
+	lastHealth = health;
+	healthDrainCount = 0;
+
+	air = 1000;
+
+	airShow = 0;
+
 	//Camera
 	viewOffX = 0;
 	viewOffY = 0;
@@ -392,10 +399,11 @@ void CLASS_player::draw() {
 	//Draw
 	drawTexture(sprites[0x10], x - 0x1000, y - 0x1000, false);
 
-	// COLLISION DEBUG
+	/*/ COLLISION DEBUG
 	SDL_SetRenderDrawColor(renderer, 255, 255, 0, 255);
 
 	drawRect((x - 0xA00 - viewX) >> 9, (y - 0x1000 - viewY) >> 9, 0xA00 >> 8, 0x1000 >> 8);
+	*/
 }
 
 void CLASS_player::update() {
@@ -418,6 +426,25 @@ void CLASS_player::update() {
 		actNormal();
 
 		collide();
+	}
+
+	//Air
+	if (flags & water)
+	{
+		airShow = 60;
+
+		//Drowning
+		if (--air <= 0)
+		{
+			//Drowning code
+			air = 0;
+		}
+	}
+	else if (airShow)
+	{
+		//Reset air stuff
+		air = 1000;
+		--airShow;
 	}
 
 	animate();

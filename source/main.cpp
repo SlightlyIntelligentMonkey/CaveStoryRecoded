@@ -1,4 +1,5 @@
 #include "common.h"
+#include "hud.h"
 
 //get some variables
 SDL_Window *window;
@@ -197,8 +198,16 @@ int game() {
 		viewX += viewXsp;
 		viewY += viewYsp;
 
-		viewX = clamp(viewX, 0, ((levelWidth - 1) << 13) - (screenWidth << 9));
-		viewY = clamp(viewY, 0, ((levelHeight - 1) << 13) - (screenHeight << 9));
+		//Keep view in level
+		if ((levelWidth - 1) << 4 > screenWidth)
+			viewX = clamp(viewX, 0, ((levelWidth - 1) << 13) - (screenWidth << 9));
+		else
+			viewX = ((levelWidth - 1) << 12) - (screenWidth << 8);
+
+		if ((levelHeight - 1) << 4 > screenHeight)
+			viewY = clamp(viewY, 0, ((levelHeight - 1) << 13) - (screenHeight << 9));
+		else
+			viewY = ((levelHeight - 1) << 12) - (screenHeight << 8);
 
 		//////DRAW//////
 		drawStart();
@@ -212,6 +221,9 @@ int game() {
 
 		//Draw foreground tiles
 		drawLevel(true);
+
+		//Draw hud
+		drawHud(false);
 
 		drawEnd();
 	}

@@ -85,7 +85,8 @@ void smixerCallback(void *userdata, Uint8 *stream, int len)
 		accum = 0;
 		for (c = 0; c < mixNextFree; ++c)
 		{
-			cur_chan = (MIXCHAN *)(16 * c + 136110560);
+			cur_chan = &mixChannels[c];
+
 			if (mixChannels[c].data)
 			{
 				accum += (short)interpolate(cur_chan, left);
@@ -123,7 +124,7 @@ void smixerInit()
 {
 	SDL_zero(soundDevice);
 
-	soundDevice.freq = 44100;
+	soundDevice.freq = audioFrequency;
 	soundDevice.samples = 1024;
 	soundDevice.format = AUDIO_S16;
 	soundDevice.channels = 2;
@@ -263,7 +264,7 @@ void smixerSetPan(SOUND *c, Uint16 pan)
 void smixerSetFrequency(SOUND *c, Uint32 freq)
 {
 	SDL_LockAudio();
-	c->freq = (freq << 10) / 0x15888;
+	c->freq = (freq << 10) / (audioFrequency << 1);
 	SDL_UnlockAudio();
 }
 

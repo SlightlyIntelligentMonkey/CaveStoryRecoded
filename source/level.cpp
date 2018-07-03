@@ -45,7 +45,10 @@ char stblPath[256] = "data/stage.tbl";
 int stblSize = loadFile(stblPath, &stageData);
 
 BYTE getTileAttribute(int x, int y) {
-	return levelTileAttributes[levelMap[(x + y * levelWidth)]];
+	if (x >= 0 && x < levelWidth && y >= 0 && y < levelHeight)
+		return levelTileAttributes[levelMap[(x + y * levelWidth)]];
+
+	return 0;
 }
 
 void createNpc(int x, int y, int direction, int xsp, int ysp, short flag, short event, short type, short flags)
@@ -240,11 +243,11 @@ void drawLevel(bool foreground) {
 	}
 
 	//Render tiles
-	int xFrom = (viewX + 0x1000) >> 13;
-	int xTo = (((viewX + 0x1000) + (screenWidth << 9)) >> 13) + 1; //add 1 because edge wouldn't appear
+	int xFrom = clamp((viewX + 0x1000) >> 13, 0, levelWidth);
+	int xTo = clamp((((viewX + 0x1000) + (screenWidth << 9)) >> 13) + 1, 0, levelWidth); //add 1 because edge wouldn't appear
 
-	int yFrom = (viewY + 0x1000) >> 13;
-	int yTo = (((viewY + 0x1000) + (screenHeight << 9)) >> 13) + 1; //add 1 because edge wouldn't appear
+	int yFrom = clamp((viewY + 0x1000) >> 13, 0, levelHeight);
+	int yTo = clamp((((viewY + 0x1000) + (screenHeight << 9)) >> 13) + 1, 0, levelHeight); //add 1 because edge wouldn't appear
 
 	for (int x = xFrom; x < xTo; x++) {
 		for (int y = yFrom; y < yTo; y++) {
