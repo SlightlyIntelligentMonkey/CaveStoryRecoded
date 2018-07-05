@@ -1,7 +1,7 @@
 #pragma once
 #include "common.h"
 
-class CLASS_player {
+class player {
 	public:
 		//Important varialbes
 		int x = 0;
@@ -22,6 +22,8 @@ class CLASS_player {
 
 		int airShow = 0;
 
+		int shock = 0;
+
 		//Animation
 		int animation = 0;
 		int animationWait = 0;
@@ -35,6 +37,8 @@ class CLASS_player {
 		bool lookingDown = false;
 
 		bool key = true;
+
+		bool interacting = false;
 
 		//Collision state
 		UINT flags = 0;
@@ -57,6 +61,8 @@ class CLASS_player {
 	public:
 		void init(int createX, int createY, int createDirection);
 
+		void hit(int damage);
+
 		void collide();
 
 		void actNormal();
@@ -68,4 +74,4 @@ class CLASS_player {
 		void update();
 };
 
-extern CLASS_player currentPlayer;
+extern player currentPlayer;

@@ -11,8 +11,6 @@ BYTE *levelTileAttributes = nullptr;
 BYTE backgroundScroll;
 //SDL_Texture *levelBackground;
 
-std::vector<npc> npcs(0);
-
 //NPC Functions
 void updateNPC()
 {
@@ -237,7 +235,7 @@ void drawLevel(bool foreground) {
 			case(4):
 				SDL_SetRenderDrawColor(renderer, 0, 0, 32, 255);
 
-				drawRect(0, 0, screenWidth, screenHeight);
+				drawRect(0, 0, screenWidth << 9, screenHeight << 9);
 				break;
 		}
 	}
@@ -286,6 +284,26 @@ void drawLevel(bool foreground) {
 					}
 				}
 			}
+		}
+	}
+
+	//Render black bars in foreground
+	if (foreground)
+	{
+		SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
+
+		if ((levelWidth - 1) << 4 < screenWidth)
+		{
+			drawRect(0, 0, -viewX, screenHeight << 9);
+			drawRect((screenWidth << 9) + viewX, 0, -viewX, screenHeight << 9);
+		}
+
+		if ((levelHeight - 1) << 4 < screenHeight)
+		{
+			uint32_t diff = (((levelHeight - 1) << 13) - (screenHeight << 9)) >> 1;
+
+			drawRect(0, 0, screenWidth << 9, -viewY);
+			drawRect(0, (screenHeight << 9) + viewY, screenWidth << 9, -viewY);
 		}
 	}
 }

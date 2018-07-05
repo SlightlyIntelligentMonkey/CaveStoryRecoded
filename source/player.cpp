@@ -1,9 +1,8 @@
 #include "player.h"
 
-CLASS_player currentPlayer;
-SDL_Rect playerCollisionDebug;
+player currentPlayer;
 
-void CLASS_player::init(int createX, int createY, int createDirection) {
+void player::init(int createX, int createY, int createDirection) {
 	x = createX << 13;
 
 	y = createY << 13;
@@ -20,6 +19,8 @@ void CLASS_player::init(int createX, int createY, int createDirection) {
 
 	airShow = 0;
 
+	shock = 0;
+
 	//Camera
 	viewOffX = 0;
 	viewOffY = 0;
@@ -34,51 +35,71 @@ void CLASS_player::init(int createX, int createY, int createDirection) {
 	frame = 0;
 
 	//State
-	cond = 0;
+	cond = player_visible;
 
 	lookingUp = false;
 	lookingDown = false;
+
+	interacting = false;
 
 	//Collision state
 	flags = 0;
 }
 
-void CLASS_player::collide() {
-	int wasGround = (flags & ground);
+void player::hit(int damage) {
+	if (shock == 0)
+	{
+		//PlaySoundObject(16, 1);
+		if (cond & player_removed)
+			cond ^= player_removed;
 
-	flags = 0;
+		shock = -128;
 
+		//if (unk_81C8594 != 1) { unk_81C85B8 = -1024; }
+		ysp = -0x400;
+
+		health -= damage;
+
+		//if (unk_81C8598 & 0x80 && unk_81C8616 > 0) { unk_81C8616--; }
+		//if (unk_81C8598 & 4) { v1 = gArmsData[gSelectedArms].exp - damage; }
+		//else { v1 = gArmsData[gSelectedArms].exp - 2 * damage; }
+		//gArmsData[gSelectedArms].exp = v1;
+		//while (gArmsData[gSelectedArms].exp < 0)
+		//{
+		//	if (gArmsData[gSelectedArms].level <= 1)
+		//	{
+		//		gArmsData[gSelectedArms].exp = 0;
+		//	}
+		//	else
+		//	{
+		//		gArmsData[gSelectedArms].exp += gArmsLevelTable[0].exp[gArmsData[gSelectedArms].level--
+		//			- 1
+		//			+ 3 * gArmsData[gSelectedArms].code];
+		//		if (gMC.life > 0 && gArmsData[gSelectedArms].code != 13) { SetCaret(x, y, 10, 2); }
+		//	}
+		//}
+		//SetValueView(&x, &y, -damage);
+		//if (gMC.life <= 0)
+		//{
+		//	PlaySoundObject(17, 1);
+		//	gMC.cond = 0;
+		//	SetDestroyNpChar(x, y, 5120, 64);
+		//	StartTextScript(40);
+		//}
+	}
+}
+
+void player::collide() {
 	int width = 0xA00;
 	int height = 0x1000;
 
 	RECT hitRect = { width, height, width, height };
-
-	flags |= playerHitMap(&hitRect, &x, &y, false, wasGround);
-
-	if (flags & leftWall)
-	{
-		if (xsp < -384) { xsp = -384; }
-		if (key && keyDown(SDL_SCANCODE_LEFT) == false && xsp < 0) { xsp = 0; }
-	}
-
-	if (flags & ceiling)
-	{
-		if (ysp < 0) { ysp = 0; }
-	}
-
-	if (flags & rightWall)
-	{
-		if (xsp > 384) { xsp = 384; }
-		if (key && keyDown(SDL_SCANCODE_RIGHT) == false && xsp > 0) { xsp = 0; }
-	}
-
-	if (flags & ground)
-	{
-		if (ysp > 0) { ysp = 0; }
-	}
+	
+	flags = playerHitMap(&hitRect);
+	playerHitNpcs(&hitRect);
 }
 
-void CLASS_player::actNormal() {
+void player::actNormal() {
 	if (!(cond & 2))
 	{
 		if (flags & water)
@@ -102,27 +123,34 @@ void CLASS_player::actNormal() {
 			resist = 0x33;
 		}
 
+		interacting = false;
+
 		if (flags & ground || flags & slopeLeft || flags & slopeRight)
 		{
 			if (key)
 			{
 				if (!keyPressed(SDL_SCANCODE_DOWN) || (cond & player_inspect))
 				{
-					if (keyDown(SDL_SCANCODE_LEFT) && xsp > -maxDash)
+					if (keyDown(SDL_SCANCODE_LEFT))
 					{
 						direction = 0;
-						xsp -= dashGround;
+
+						if (xsp > -maxDash)
+							xsp -= dashGround;
 					}
 
-					if (keyDown(SDL_SCANCODE_RIGHT) && xsp < maxDash)
+					if (keyDown(SDL_SCANCODE_RIGHT))
 					{
 						direction = 2;
-						xsp += dashGround;
+
+						if (xsp < maxDash)
+							xsp += dashGround;
 					}
 				}
 				else
 				{
 					cond |= player_inspect;
+					interacting = true;
 				}
 			}
 
@@ -148,16 +176,20 @@ void CLASS_player::actNormal() {
 		{
 			if (key)
 			{
-				if (keyDown(SDL_SCANCODE_LEFT) && xsp > -maxDash)
+				if (keyDown(SDL_SCANCODE_LEFT))
 				{
 					direction = 0;
-					xsp -= dashAir;
+
+					if (xsp > -maxDash)
+						xsp -= dashAir;
 				}
 
-				if (keyDown(SDL_SCANCODE_RIGHT) && xsp < maxDash)
+				if (keyDown(SDL_SCANCODE_RIGHT))
 				{
 					direction = 2;
-					xsp += dashAir;
+
+					if (xsp < maxDash)
+						xsp += dashAir;
 				}
 			}
 		}
@@ -179,7 +211,7 @@ void CLASS_player::actNormal() {
 		}
 
 		//If pressed anything, stop inspecting
-		if (keyDown(SDL_SCANCODE_X) || keyDown(SDL_SCANCODE_Z) || keyDown(SDL_SCANCODE_UP) || keyDown(SDL_SCANCODE_RIGHT) || keyDown(SDL_SCANCODE_LEFT))
+		if (key == false || keyDown(SDL_SCANCODE_X) || keyDown(SDL_SCANCODE_Z) || keyDown(SDL_SCANCODE_UP) || keyDown(SDL_SCANCODE_RIGHT) || keyDown(SDL_SCANCODE_LEFT))
 		{
 			if (cond & player_inspect)
 				cond ^= player_inspect;
@@ -293,6 +325,10 @@ void CLASS_player::actNormal() {
 				cond ^= player_wasWater;
 		}
 
+		//Get hurt by spikes
+		if (flags & spike)
+			hit(10);
+
 		//Move camera
 		if (direction)
 			viewOffX = std::min(viewOffX + 0x200, 0x8000);
@@ -306,8 +342,8 @@ void CLASS_player::actNormal() {
 		else
 			viewOffY = std::max(std::abs(viewOffY) - 0x200, 0) * sign(viewOffY);
 
-		viewGoalX = x - (screenWidth * 0x100) + viewOffX;
-		viewGoalY = y - (screenHeight * 0x100) + viewOffY;
+		viewGoalX = x - (screenWidth << 8) + viewOffX;
+		viewGoalY = y - (screenHeight << 8) + viewOffY;
 
 		//Move Quote
 		if (xsp > resist || xsp < -resist) //If moving above friction speed
@@ -317,7 +353,7 @@ void CLASS_player::actNormal() {
 	}
 }
 
-void CLASS_player::animate() //Basically the decomp code (thanks 20kdc for the help)
+void player::animate() //Basically the decomp code (thanks 20kdc for the help)
 {
 	if (flags & ground)
 	{
@@ -382,70 +418,97 @@ void CLASS_player::animate() //Basically the decomp code (thanks 20kdc for the h
 	}
 }
 
-void CLASS_player::draw() {
-	//Set framerect
-	int frameMap[12] = { 0,1,0,2,0,3,4,3,5,3,6,7 };
+void player::draw() {
+	if (cond & player_visible)
+	{
+		//Set framerect
+		int frameMap[12] = { 0,1,0,2,0,3,4,3,5,3,6,7 };
 
-	ImageRect.x = frameMap[frame] * 16;
-	ImageRect.y = 0;
+		ImageRect.x = frameMap[frame] * 16;
+		ImageRect.y = 0;
 
-	//Offset for directional and mimiga mask purposes
-	if (direction)
-		ImageRect.y += 16;
+		//Offset for directional and mimiga mask purposes
+		if (direction)
+			ImageRect.y += 16;
 
-	ImageRect.w = 16;
-	ImageRect.h = 16;
-	
-	//Draw
-	drawTexture(sprites[0x10], x - 0x1000, y - 0x1000, false);
+		ImageRect.w = 16;
+		ImageRect.h = 16;
 
-	/*/ COLLISION DEBUG
-	SDL_SetRenderDrawColor(renderer, 255, 255, 0, 255);
+		//Draw
+		bool shockFlash = ((shock >> 1) & 1);
 
-	drawRect((x - 0xA00 - viewX) >> 9, (y - 0x1000 - viewY) >> 9, 0xA00 >> 8, 0x1000 >> 8);
-	*/
+		if (!shockFlash)
+			drawTexture(sprites[0x10], x - 0x1000, y - 0x1000, false);
+
+		/*/ COLLISION DEBUG
+		SDL_SetRenderDrawColor(renderer, 255, 255, 0, 255);
+
+		drawRect((x - 0xA00 - viewX) >> 9, (y - 0x1000 - viewY) >> 9, 0xA00 >> 8, 0x1000 >> 8);
+		*/
+	}
 }
 
-void CLASS_player::update() {
-	if (keyDown(SDL_SCANCODE_LCTRL))
+void player::update() {
+	if (cond & player_visible)
 	{
-		if (keyDown(SDL_SCANCODE_LEFT))
-			x -= 0x1000;
-		if (keyDown(SDL_SCANCODE_RIGHT))
-			x += 0x1000;
-		if (keyDown(SDL_SCANCODE_UP))
-			y -= 0x1000;
-		if (keyDown(SDL_SCANCODE_DOWN))
-			y += 0x1000;
+		if (shock)
+			++shock;
 
-		viewGoalX = x - (screenWidth * 0x100);
-		viewGoalY = y - (screenHeight * 0x100);
-	}
-	else
-	{
-		actNormal();
-
-		collide();
-	}
-
-	//Air
-	if (flags & water)
-	{
-		airShow = 60;
-
-		//Drowning
-		if (--air <= 0)
+		if (keyDown(SDL_SCANCODE_LCTRL))
 		{
-			//Drowning code
-			air = 0;
-		}
-	}
-	else if (airShow)
-	{
-		//Reset air stuff
-		air = 1000;
-		--airShow;
-	}
+			if (keyPressed(SDL_SCANCODE_MINUS))
+				--maxHealth;
 
-	animate();
+			if (keyPressed(SDL_SCANCODE_EQUALS))
+				++maxHealth;
+
+			if (keyDown(SDL_SCANCODE_LEFT))
+				x -= 0x1000;
+			if (keyDown(SDL_SCANCODE_RIGHT))
+				x += 0x1000;
+			if (keyDown(SDL_SCANCODE_UP))
+				y -= 0x1000;
+			if (keyDown(SDL_SCANCODE_DOWN))
+				y += 0x1000;
+
+			viewGoalX = x - (screenWidth * 0x100);
+			viewGoalY = y - (screenHeight * 0x100);
+		}
+		else
+		{
+			if (keyPressed(SDL_SCANCODE_MINUS))
+				--health;
+
+			if (keyPressed(SDL_SCANCODE_EQUALS))
+				++health;
+
+			actNormal();
+
+			collide();
+		}
+
+		//Air
+		if (flags & water)
+		{
+			airShow = 60;
+
+			//Drowning
+			if (--air <= 0)
+			{
+				//Drowning code
+				air = 0;
+			}
+		}
+		else if (airShow)
+		{
+			//Reset air stuff
+			air = 1000;
+			--airShow;
+		}
+
+		if (flags & player_noFriction)
+			flags ^= player_noFriction;
+
+		animate();
+	}
 }

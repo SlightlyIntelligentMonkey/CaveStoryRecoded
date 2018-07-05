@@ -3,7 +3,6 @@
 #include <SDL.h>
 #include <SDL_image.h>
 
-#define NOMINMAX
 #define LONG int32_t
 #define BYTE uint8_t
 #define UINT uint32_t
@@ -11,6 +10,7 @@
 typedef struct {
  LONG left, top, right, bottom;
 } RECT;
+
 typedef struct {
  LONG x, y;
 } POINT;
@@ -128,11 +128,13 @@ bool getFlag(int a);
 //Modules
 #include "math.h"
 
+#include "level.h"
+
+
 #include "filesystem.h"
 #include "render.h"
 
 #include "script.h"
-#include "level.h"
 
 #include "input.h"
 

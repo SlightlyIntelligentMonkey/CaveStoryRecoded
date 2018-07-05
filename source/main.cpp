@@ -185,6 +185,12 @@ int game() {
 
 			playORG(27);
 		}
+		else if (keyPressed(SDL_SCANCODE_6)) {
+			loadLevel(67);
+			currentPlayer.init(7, 52, 2);
+
+			playORG(29);
+		}
 
 		updateNPC();
 		currentPlayer.update();

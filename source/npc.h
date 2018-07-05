@@ -55,3 +55,5 @@ class npc
 		void update();
 		void draw();
 };
+
+extern std::vector<npc> npcs;

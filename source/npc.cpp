@@ -8,6 +8,8 @@ int npcTblSize = loadFile(npcTblPath, &npcAttributes);
 
 int npcAmmount = npcTblSize / 24;
 
+std::vector<npc> npcs(0);
+
 int getNPCAttribute(UINT npcId, UINT offset, UINT offset2, UINT offsetSize, UINT returnSize)
 {
 	int absOffset = (offset * npcAmmount) + (offsetSize * npcId) + offset2;
@@ -54,6 +56,8 @@ void npc::init(int spawnX, int spawnY, short flagId, short eventId, short npcTyp
 	offset.y = getNPCAttribute(npcType, 20, 1, 4, 1) << 9;
 
 	spriteSheet = getNPCAttribute(npcType, 4, 0, 1, 1);
+
+	damage = getNPCAttribute(npcType, 12, 0, 4, 4);
 
 	targetX = 0;
 	targetY = 0;

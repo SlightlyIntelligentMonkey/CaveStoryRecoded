@@ -15,7 +15,7 @@ void drawPlayerHealth(bool hide)
 		}
 		else if (currentPlayer.healthDrainCount++ > 30)
 		{
-			currentPlayer.healthDrainCount--;
+			currentPlayer.lastHealth--;
 		}
 
 		//Set rects
@@ -54,6 +54,6 @@ void drawPlayerAir()
 
 void drawHud(bool hide)
 {
-	drawPlayerHealth(hide);
+	drawPlayerHealth(hide || ((currentPlayer.shock >> 1) & 1));
 	drawPlayerAir();
 }

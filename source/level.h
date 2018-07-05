@@ -1,5 +1,6 @@
 #pragma once
 #include "common.h"
+#include "npc.h"
 
 extern int levelWidth;
 extern int levelHeight;
