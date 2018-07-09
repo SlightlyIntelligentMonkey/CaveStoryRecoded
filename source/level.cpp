@@ -20,11 +20,13 @@ void updateNPC()
 			npcs.erase(npcs.begin() + i);
 	}
 
-	SDL_SetWindowTitle(window, std::to_string(npcs.size()).c_str());
-
 	//Update
 	for (unsigned int i = 0; i < npcs.size(); i++) {
-		npcs[i].update();
+		if (npcs[i].cond & npccond_alive)
+		{
+			npcs[i].update();
+			npcHitMap(i);
+		}
 	}
 }
 
@@ -292,16 +294,14 @@ void drawLevel(bool foreground) {
 	{
 		SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
 
-		if ((levelWidth - 1) << 4 < screenWidth)
+		if (viewX < 0) //Typically won't be out of bounds unless centred to stage
 		{
 			drawRect(0, 0, -viewX, screenHeight << 9);
 			drawRect((screenWidth << 9) + viewX, 0, -viewX, screenHeight << 9);
 		}
 
-		if ((levelHeight - 1) << 4 < screenHeight)
+		if (viewY < 0)
 		{
-			uint32_t diff = (((levelHeight - 1) << 13) - (screenHeight << 9)) >> 1;
-
 			drawRect(0, 0, screenWidth << 9, -viewY);
 			drawRect(0, (screenHeight << 9) + viewY, screenWidth << 9, -viewY);
 		}

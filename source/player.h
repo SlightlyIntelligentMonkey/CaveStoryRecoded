@@ -1,5 +1,6 @@
 #pragma once
 #include "common.h"
+#include "playerCollision.h"
 
 class player {
 	public:
@@ -61,6 +62,7 @@ class player {
 	public:
 		void init(int createX, int createY, int createDirection);
 
+		void explode(int x, int y, int w, int num);
 		void hit(int damage);
 
 		void collide();
@@ -70,7 +72,6 @@ class player {
 		void animate();
 
 		void draw();
-
 		void update();
 };
 

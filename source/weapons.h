@@ -1,6 +1,12 @@
 #pragma once
 #include "common.h"
 
+//Weapon stuff
+struct WEAPONEXP
+{
+	int exp[3];
+};
+
 struct WEAPON
 {
 	int id;
@@ -12,49 +18,26 @@ struct WEAPON
 	int maxAmmo;
 };
 
+//Bullet things
 enum bulletFlags {
 	bullet_ignoreSolid = 0x4,
 	bullet_goThroughWalls = 0x8,
 	bullet_breakBlocks = 0x20,
 	bullet_pierceBlocks = 0x40,
+	bullet_alive = 0x80,
 };
 
-struct BULLET
+struct BULLETSTATS
 {
-	int flag;
-	int type;
-	int flags;
-	int cond;
-
-	int x;
-	int y;
-
-	int xsp;
-	int ysp;
-
-	int targetX;
-	int targetY;
-
-	int action;
-	int actionWait;
-
-	int animation;
-	int animationWait;
-
-	RECT frameRect;
-	POINT offset;
-
-	int count1;
-	int count2;
-
+	int damage;
 	int hits;
 	int range;
+	int flags;
 
-	int damage;
-	
 	int enemyWidth;
 	int enemyHeight;
-
 	int blockWidth;
 	int blockHeight;
+
+	RECT view;
 };

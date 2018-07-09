@@ -103,7 +103,7 @@
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <Optimization>Disabled</Optimization>
+      <Optimization>MaxSpeed</Optimization>
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
       <UndefinePreprocessorDefinitions>_DEBUG</UndefinePreprocessorDefinitions>
     </ClCompile>
@@ -139,7 +139,7 @@
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <Optimization>Disabled</Optimization>
+      <Optimization>MaxSpeed</Optimization>
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
       <UndefinePreprocessorDefinitions>_DEBUG</UndefinePreprocessorDefinitions>
     </ClCompile>
@@ -151,6 +151,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="bullet.cpp" />
     <ClCompile Include="hud.cpp" />
     <ClCompile Include="npc340.cpp" />
     <ClCompile Include="npcCollision.cpp" />
@@ -175,13 +176,16 @@
       <Optimization Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Disabled</Optimization>
     </ClCompile>
     <ClCompile Include="playerCollision.cpp" />
-    <ClCompile Include="pxt.cpp" />
+    <ClCompile Include="polarStarBullets.cpp" />
     <ClCompile Include="render.cpp" />
     <ClCompile Include="script.cpp" />
     <ClCompile Include="smixer.cpp" />
     <ClCompile Include="sound.cpp" />
+    <ClCompile Include="weapons.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="bullet.h" />
+    <ClInclude Include="org.h" />
     <ClInclude Include="weapons.h" />
     <ClInclude Include="hud.h" />
     <ClInclude Include="npc340.h" />
@@ -198,10 +202,8 @@
     <ClInclude Include="npc060.h" />
     <ClInclude Include="npc200.h" />
     <ClInclude Include="npcAct.h" />
-    <ClInclude Include="org.h" />
     <ClInclude Include="player.h" />
     <ClInclude Include="playerCollision.h" />
-    <ClInclude Include="pxt.h" />
     <ClInclude Include="render.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="script.h" />

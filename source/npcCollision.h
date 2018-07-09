@@ -1,4 +1,5 @@
 #pragma once
 #include "common.h"
+#include "npc.h"
 
-int npcHitMap(RECT *rcHit, int *x, int *y, bool b44, bool wasGround);
+void npcHitMap(int NPCid);

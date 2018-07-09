@@ -3,6 +3,7 @@
 
 void npcAct000(npc *NPC);
 void npcAct002(npc *NPC);
+void npcAct004(npc *NPC);
 void npcAct005(npc *NPC);
 void npcAct006(npc *NPC);
 void npcAct007(npc *NPC);

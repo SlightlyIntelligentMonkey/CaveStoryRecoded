@@ -1,5 +1,6 @@
 #pragma once
 #include "common.h"
+#include "npcCollision.h"
 
 extern BYTE *npcAttributes;
 
@@ -28,7 +29,7 @@ class npc
 		int animation;
 		int animationWait;
 
-		short hit;
+		int hit;
 
 		int direction;
 

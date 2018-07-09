@@ -1,6 +1,18 @@
 #include "math.h"
 
-int random(UINT mi, UINT ma) {
+//Basically the original game's but instead of using an array it generates on the fly
+int getSin(BYTE deg)
+{
+	return (int)(sin(deg * (M_PI / 0x80)) * 512.0);
+}
+
+int getCos(BYTE deg)
+{
+	return (int)(cos(deg * (M_PI / 0x80)) * 512.0);
+}
+
+//these are good functions
+int random(uint32_t mi, uint32_t ma) {
 	return rand() % (ma - mi + 1) + mi;
 }
 

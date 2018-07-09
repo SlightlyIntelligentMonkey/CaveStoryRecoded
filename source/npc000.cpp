@@ -133,6 +133,58 @@ void npcAct002(npc *NPC) //Behemoth
 	NPC->frameRect = { setRect->left, setRect->top, setRect->right, setRect->bottom };
 }
 
+void npcAct004(npc *NPC) //Smoke
+{
+	if (NPC->action)
+	{
+		NPC->xsp = 20 * NPC->xsp / 21;
+		NPC->ysp = 20 * NPC->ysp / 21;
+
+		NPC->x += NPC->xsp;
+		NPC->y += NPC->ysp;
+	}
+	else
+	{
+		if (!NPC->direction || NPC->direction == 1)
+		{
+			BYTE deg = random(0, 255);
+
+			int degCos = getCos(deg);
+			NPC->xsp = degCos * random(0x200, 0x5FF) / 0x200;
+
+			int degSin = getSin(deg);
+			NPC->ysp = degSin * random(0x200, 0x5FF) / 0x200;
+		}
+
+		NPC->animation = random(0, 4);
+		NPC->animationWait = random(0, 3);
+
+		NPC->action = 1;
+	}
+
+	if (++NPC->animationWait > 4)
+	{
+		NPC->animationWait = 0;
+		++NPC->animation;
+	}
+
+	if (NPC->animation <= 7)
+	{
+		if (NPC->direction != 1)
+		{
+			NPC->frameRect = { (NPC->animation + 1) << 4, 0, (NPC->animation + 2) << 4, 16 }; //Broken
+		}
+		else
+		{
+			NPC->frameRect = { (NPC->animation) << 4, 128, (NPC->animation + 1) << 4, 144 }; //Really broken
+		}
+	}
+	else
+	{
+		NPC->cond = 0;
+	}
+}
+
 void npcAct005(npc *NPC) //Egg Corridor critter
 {
 	int action = NPC->action;

@@ -1,7 +1,7 @@
 #include "npcCollision.h"
 
 //Judging functions
-int playerJudgeBlock(RECT *rcHit, int tx, int ty, player *me)
+int playerJudgeBlock(RECT *rcHit, player *me, int tx, int ty)
 {
 	int hit = 0; // [esp+1Ch] [ebp-Ch]
 
@@ -73,7 +73,7 @@ int playerJudgeBlock(RECT *rcHit, int tx, int ty, player *me)
 }
 
 //Ceiling slopes
-int playerJudgeTriangleA(RECT *rcHit, int tx, int ty, player *me)
+int playerJudgeTriangleA(RECT *rcHit, player *me, int tx, int ty)
 {
 	int hit = 0;
 	
@@ -93,7 +93,7 @@ int playerJudgeTriangleA(RECT *rcHit, int tx, int ty, player *me)
 	return hit;
 }
 
-int playerJudgeTriangleB(RECT *rcHit, int tx, int ty, player *me)
+int playerJudgeTriangleB(RECT *rcHit, player *me, int tx, int ty)
 {
 	int hit = 0;
 
@@ -113,7 +113,7 @@ int playerJudgeTriangleB(RECT *rcHit, int tx, int ty, player *me)
 	return hit;
 }
 
-int playerJudgeTriangleC(RECT *rcHit, int tx, int ty, player *me)
+int playerJudgeTriangleC(RECT *rcHit, player *me, int tx, int ty)
 {
 	int hit = 0;
 
@@ -133,7 +133,7 @@ int playerJudgeTriangleC(RECT *rcHit, int tx, int ty, player *me)
 	return hit;
 }
 
-int playerJudgeTriangleD(RECT *rcHit, int tx, int ty, player *me)
+int playerJudgeTriangleD(RECT *rcHit, player *me, int tx, int ty)
 {
 	int hit = 0;
 
@@ -154,7 +154,7 @@ int playerJudgeTriangleD(RECT *rcHit, int tx, int ty, player *me)
 }
 
 //Floor slopes
-int playerJudgeTriangleE(RECT *rcHit, int tx, int ty, player *me)
+int playerJudgeTriangleE(RECT *rcHit, player *me, int tx, int ty)
 {
 	if (me->x > (2 * tx - 1) << 12
 		&& me->x < (2 * tx + 1) << 12
@@ -172,7 +172,7 @@ int playerJudgeTriangleE(RECT *rcHit, int tx, int ty, player *me)
 	return slopeE;
 }
 
-int playerJudgeTriangleF(RECT *rcHit, int tx, int ty, player *me)
+int playerJudgeTriangleF(RECT *rcHit, player *me, int tx, int ty)
 {
 	if (me->x < (2 * tx + 1) << 12
 		&& me->x >(2 * tx - 1) << 12
@@ -187,7 +187,7 @@ int playerJudgeTriangleF(RECT *rcHit, int tx, int ty, player *me)
 	return slopeF;
 }
 
-int playerJudgeTriangleG(RECT *rcHit, int tx, int ty, player *me)
+int playerJudgeTriangleG(RECT *rcHit, player *me, int tx, int ty)
 {
 	if (me->x > (2 * tx - 1) << 12
 		&& me->x < (2 * tx + 1) << 12
@@ -205,7 +205,7 @@ int playerJudgeTriangleG(RECT *rcHit, int tx, int ty, player *me)
 	return slopeG;
 }
 
-int playerJudgeTriangleH(RECT *rcHit, int tx, int ty, player *me)
+int playerJudgeTriangleH(RECT *rcHit, player *me, int tx, int ty)
 {
 	if (me->x > (2 * tx - 1) << 12
 		&& me->x < (2 * tx + 1) << 12
@@ -223,7 +223,7 @@ int playerJudgeTriangleH(RECT *rcHit, int tx, int ty, player *me)
 	return slopeH;
 }
 
-int playerJudgeWater(RECT *rcHit, int tx, int ty, player *me)
+int playerJudgeWater(RECT *rcHit, player *me, int tx, int ty)
 {
 	int hit = 0;
 
@@ -238,7 +238,7 @@ int playerJudgeWater(RECT *rcHit, int tx, int ty, player *me)
 	return hit;
 }
 
-int playerJudgeSpike(RECT *rcHit, int tx, int ty, player *me)
+int playerJudgeSpike(RECT *rcHit, player *me, int tx, int ty)
 {
 	if (me->x - 0x800 < (4 * tx + 1) << 11
 		&& me->x + 0x800 > (4 * tx - 1) << 11
@@ -251,7 +251,7 @@ int playerJudgeSpike(RECT *rcHit, int tx, int ty, player *me)
 	return 0;
 }
 
-int playerJudgeWaterSpike(RECT *rcHit, int tx, int ty, player *me)
+int playerJudgeWaterSpike(RECT *rcHit, player *me, int tx, int ty)
 {
 	if (me->x - 0x800 < (4 * tx + 1) << 11
 		&& me->x + 0x800 > (4 * tx - 1) << 11
@@ -265,7 +265,7 @@ int playerJudgeWaterSpike(RECT *rcHit, int tx, int ty, player *me)
 }
 
 //Current
-int playerJudgeCurrentLeft(RECT *rcHit, int tx, int ty, player *me)
+int playerJudgeCurrentLeft(RECT *rcHit, player *me, int tx, int ty)
 {
 	if (me->x - rcHit->left < (4 * (2 * tx + 1) - 1) << 10
 		&& me->x + rcHit->right > (4 * (2 * tx - 1) + 1) << 10
@@ -278,7 +278,7 @@ int playerJudgeCurrentLeft(RECT *rcHit, int tx, int ty, player *me)
 	return 0;
 }
 
-int playerJudgeCurrentUp(RECT *rcHit, int tx, int ty, player *me)
+int playerJudgeCurrentUp(RECT *rcHit, player *me, int tx, int ty)
 {
 	if (me->x - rcHit->left < (4 * (2 * tx + 1) - 1) << 10
 		&& me->x + rcHit->right >(4 * (2 * tx - 1) + 1) << 10
@@ -291,7 +291,7 @@ int playerJudgeCurrentUp(RECT *rcHit, int tx, int ty, player *me)
 	return 0;
 }
 
-int playerJudgeCurrentRight(RECT *rcHit, int tx, int ty, player *me)
+int playerJudgeCurrentRight(RECT *rcHit, player *me, int tx, int ty)
 {
 	if (me->x - rcHit->left < (4 * (2 * tx + 1) - 1) << 10
 		&& me->x + rcHit->right >(4 * (2 * tx - 1) + 1) << 10
@@ -304,7 +304,7 @@ int playerJudgeCurrentRight(RECT *rcHit, int tx, int ty, player *me)
 	return 0;
 }
 
-int playerJudgeCurrentDown(RECT *rcHit, int tx, int ty, player *me)
+int playerJudgeCurrentDown(RECT *rcHit, player *me, int tx, int ty)
 {
 	if (me->x - rcHit->left < (4 * (2 * tx + 1) - 1) << 10
 		&& me->x + rcHit->right >(4 * (2 * tx - 1) + 1) << 10
@@ -329,149 +329,149 @@ int playerHitMap(RECT *rcHit)
 	int toX = (me->x + rcHit->right + 0x1000) >> 13;
 	int toY = (me->y + rcHit->bottom + 0x1000) >> 13;
 
-	for (int current_X = fromX; current_X <= toX; current_X++)
+	for (int currentX = fromX; currentX <= toX; currentX++)
 	{
-		for (int current_Y = fromY; current_Y <= toY; current_Y++)
+		for (int currentY = fromY; currentY <= toY; currentY++)
 		{
-			switch (getTileAttribute(current_X, current_Y))
+			switch (getTileAttribute(currentX, currentY))
 			{
 				//Solid
 			case 0x05u: case 0x41u: case 0x43u: case 0x46u:
-				hit |= playerJudgeBlock(rcHit, current_X, current_Y, me);
+				hit |= playerJudgeBlock(rcHit, me, currentX, currentY);
 				break;
 
 				//Spike
 			case 0x42u:
-				hit |= playerJudgeSpike(rcHit, current_X, current_Y, me);
+				hit |= playerJudgeSpike(rcHit, me, currentX, currentY);
 				break;
 
 				//Ceiling slopes
 			case 0x50u:
-				hit |= playerJudgeTriangleA(rcHit, current_X, current_Y, me);
+				hit |= playerJudgeTriangleA(rcHit, me, currentX, currentY);
 				break;
 
 			case 0x51u:
-				hit |= playerJudgeTriangleB(rcHit, current_X, current_Y, me);
+				hit |= playerJudgeTriangleB(rcHit, me, currentX, currentY);
 				break;
 
 			case 0x52u:
-				hit |= playerJudgeTriangleC(rcHit, current_X, current_Y, me);
+				hit |= playerJudgeTriangleC(rcHit, me, currentX, currentY);
 				break;
 
 			case 0x53u:
-				hit |= playerJudgeTriangleD(rcHit, current_X, current_Y, me);
+				hit |= playerJudgeTriangleD(rcHit, me, currentX, currentY);
 				break;
 
 				//Floor slopes
 			case 0x54u:
-				hit |= playerJudgeTriangleE(rcHit, current_X, current_Y, me);
+				hit |= playerJudgeTriangleE(rcHit, me, currentX, currentY);
 				break;
 
 			case 0x55u:
-				hit |= playerJudgeTriangleF(rcHit, current_X, current_Y, me);
+				hit |= playerJudgeTriangleF(rcHit, me, currentX, currentY);
 				break;
 
 			case 0x56u:
-				hit |= playerJudgeTriangleG(rcHit, current_X, current_Y, me);
+				hit |= playerJudgeTriangleG(rcHit, me, currentX, currentY);
 				break;
 
 			case 0x57u:
-				hit |= playerJudgeTriangleH(rcHit, current_X, current_Y, me);
+				hit |= playerJudgeTriangleH(rcHit, me, currentX, currentY);
 				break;
 
 				//Water, water solid, and water spike
 			case 0x60u:
-				hit |= playerJudgeWater(rcHit, current_X, current_Y, me);
+				hit |= playerJudgeWater(rcHit, me, currentX, currentY);
 				break;
 
 			case 0x61u:
-				hit |= playerJudgeBlock(rcHit, current_X, current_Y, me);
-				hit |= playerJudgeWater(rcHit, current_X, current_Y, me);
+				hit |= playerJudgeBlock(rcHit, me, currentX, currentY);
+				hit |= playerJudgeWater(rcHit, me, currentX, currentY);
 				break;
 
 			case 0x62u:
-				hit |= playerJudgeWaterSpike(rcHit, current_X, current_Y, me);
+				hit |= playerJudgeWaterSpike(rcHit, me, currentX, currentY);
 				break;
 
 					//Water slopes
 				//Ceiling slopes
 			case 0x70u:
-				hit |= playerJudgeTriangleA(rcHit, current_X, current_Y, me);
-				hit |= playerJudgeWater(rcHit, current_X, current_Y, me);
+				hit |= playerJudgeTriangleA(rcHit, me, currentX, currentY);
+				hit |= playerJudgeWater(rcHit, me, currentX, currentY);
 				break;
 
 			case 0x71u:
-				hit |= playerJudgeTriangleB(rcHit, current_X, current_Y, me);
-				hit |= playerJudgeWater(rcHit, current_X, current_Y, me);
+				hit |= playerJudgeTriangleB(rcHit, me, currentX, currentY);
+				hit |= playerJudgeWater(rcHit, me, currentX, currentY);
 				break;
 
 			case 0x72u:
-				hit |= playerJudgeTriangleC(rcHit, current_X, current_Y, me);
-				hit |= playerJudgeWater(rcHit, current_X, current_Y, me);
+				hit |= playerJudgeTriangleC(rcHit, me, currentX, currentY);
+				hit |= playerJudgeWater(rcHit, me, currentX, currentY);
 				break;
 
 			case 0x73u:
-				hit |= playerJudgeTriangleD(rcHit, current_X, current_Y, me);
-				hit |= playerJudgeWater(rcHit, current_X, current_Y, me);
+				hit |= playerJudgeTriangleD(rcHit, me, currentX, currentY);
+				hit |= playerJudgeWater(rcHit, me, currentX, currentY);
 				break;
 				
 				//Floor slopes
 			case 0x74u:
-				hit |= playerJudgeTriangleE(rcHit, current_X, current_Y, me);
-				hit |= playerJudgeWater(rcHit, current_X, current_Y, me);
+				hit |= playerJudgeTriangleE(rcHit, me, currentX, currentY);
+				hit |= playerJudgeWater(rcHit, me, currentX, currentY);
 				break;
 
 			case 0x75u:
-				hit |= playerJudgeTriangleF(rcHit, current_X, current_Y, me);
-				hit |= playerJudgeWater(rcHit, current_X, current_Y, me);
+				hit |= playerJudgeTriangleF(rcHit, me, currentX, currentY);
+				hit |= playerJudgeWater(rcHit, me, currentX, currentY);
 				break;
 
 			case 0x76u:
-				hit |= playerJudgeTriangleG(rcHit, current_X, current_Y, me);
-				hit |= playerJudgeWater(rcHit, current_X, current_Y, me);
+				hit |= playerJudgeTriangleG(rcHit, me, currentX, currentY);
+				hit |= playerJudgeWater(rcHit, me, currentX, currentY);
 				break;
 
 			case 0x77u:
-				hit |= playerJudgeTriangleH(rcHit, current_X, current_Y, me);
-				hit |= playerJudgeWater(rcHit, current_X, current_Y, me);
+				hit |= playerJudgeTriangleH(rcHit, me, currentX, currentY);
+				hit |= playerJudgeWater(rcHit, me, currentX, currentY);
 				break;
 
 				//Wind
 			case 0x80u:
-				hit |= playerJudgeCurrentLeft(rcHit, current_X, current_Y, me);
+				hit |= playerJudgeCurrentLeft(rcHit, me, currentX, currentY);
 				break;
 
 			case 0x81u:
-				hit |= playerJudgeCurrentUp(rcHit, current_X, current_Y, me);
+				hit |= playerJudgeCurrentUp(rcHit, me, currentX, currentY);
 				break;
 
 			case 0x82u:
-				hit |= playerJudgeCurrentRight(rcHit, current_X, current_Y, me);
+				hit |= playerJudgeCurrentRight(rcHit, me, currentX, currentY);
 				break;
 
 			case 0x83u:
-				hit |= playerJudgeCurrentDown(rcHit, current_X, current_Y, me);
+				hit |= playerJudgeCurrentDown(rcHit, me, currentX, currentY);
 				break;
 
 				//Water current
 			case 0xA0u:
-				hit |= playerJudgeCurrentLeft(rcHit, current_X, current_Y, me);
-				hit |= playerJudgeWater(rcHit, current_X, current_Y, me);
+				hit |= playerJudgeCurrentLeft(rcHit, me, currentX, currentY);
+				hit |= playerJudgeWater(rcHit, me, currentX, currentY);
 				break;
 
 			case 0xA1u:
-				hit |= playerJudgeCurrentUp(rcHit, current_X, current_Y, me);
-				hit |= playerJudgeWater(rcHit, current_X, current_Y, me);
+				hit |= playerJudgeCurrentUp(rcHit, me, currentX, currentY);
+				hit |= playerJudgeWater(rcHit, me, currentX, currentY);
 				break;
 
 			case 0xA2u:
-				hit |= playerJudgeCurrentRight(rcHit, current_X, current_Y, me);
-				hit |= playerJudgeWater(rcHit, current_X, current_Y, me);
+				hit |= playerJudgeCurrentRight(rcHit, me, currentX, currentY);
+				hit |= playerJudgeWater(rcHit, me, currentX, currentY);
 				break;
 
 			case 0xA3u:
-				hit |= playerJudgeCurrentDown(rcHit, current_X, current_Y, me);
-				hit |= playerJudgeWater(rcHit, current_X, current_Y, me);
+				hit |= playerJudgeCurrentDown(rcHit, me, currentX, currentY);
+				hit |= playerJudgeWater(rcHit, me, currentX, currentY);
 				break;
 
 				//Default

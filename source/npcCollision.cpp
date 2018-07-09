@@ -1,347 +1,356 @@
 #include "npcCollision.h"
 
-//Judging functions
-int npcJudgeBlock(RECT *rcHit, int tx, int ty, int *x, int *y)
+void npcJudgeBlock(RECT *rcHit, npc *NPC, int tx, int ty)
 {
-	int hit = 0;
-
-	if (*y - rcHit->top < (2 * (2 * ty + 1) - 1) << 11
-		&& *y + rcHit->bottom >(2 * (2 * ty - 1) + 1) << 11
-		&& *x - rcHit->right < (2 * tx + 1) << 12
-		&& *x - rcHit->right > tx << 13)
+	if (NPC->y - rcHit->top < ((2 * ty + 1) << 12) - 0x600
+		&& NPC->y + rcHit->bottom > ((2 * ty - 1) << 12) + 0x600
+		&& NPC->x - rcHit->right < (2 * tx + 1) << 12
+		&& NPC->x - rcHit->right > tx << 13)
 	{
-		*x = ((2 * tx + 1) << 12) + rcHit->right;
+		NPC->x = ((2 * tx + 1) << 12) + rcHit->right;
 
-		hit |= leftWall;
+		NPC->hit |= leftWall;
 	}
 
-	if (*y - rcHit->top < (2 * (2 * ty + 1) - 1) << 11
-		&& *y + rcHit->bottom >(2 * (2 * ty - 1) + 1) << 11
-		&& *x + rcHit->right >(2 * tx - 1) << 12
-		&& *x + rcHit->right < tx << 13)
+	if (NPC->y - rcHit->top < ((2 * ty + 1) << 12) - 0x600
+		&& NPC->y + rcHit->bottom > ((2 * ty - 1) << 12) + 0x600
+		&& NPC->x + rcHit->right > (2 * tx - 1) << 12
+		&& NPC->x + rcHit->right < tx << 13)
 	{
-		*x = ((2 * tx - 1) << 12) - rcHit->right;
+		NPC->x = ((2 * tx - 1) << 12) - rcHit->right;
 
-		hit |= rightWall;
+		NPC->hit |= rightWall;
 	}
 
-	if (*x - rcHit->right < ((2 * tx + 1) << 12) - 0x600
-		&& *x + rcHit->right >((2 * tx - 1) << 12) + 0x600
-		&& *y - rcHit->top < (2 * ty + 1) << 12
-		&& *y - rcHit->top > ty << 13)
+	if (NPC->x - rcHit->right < ((2 * tx + 1) << 12) - 0x600
+		&& NPC->x + rcHit->right > ((2 * tx - 1) << 12) + 0x600
+		&& NPC->y - rcHit->top < (2 * ty + 1) << 12
+		&& NPC->y - rcHit->top > ty << 13)
 	{
-		*y = ((2 * ty + 1) << 12) + rcHit->top;
+		NPC->y = ((2 * ty + 1) << 12) + rcHit->top;
+		NPC->ysp = 0;
 
-		hit |= ceiling;
+		NPC->hit |= ceiling;
 	}
 
-	if (*x - rcHit->right < ((2 * tx + 1) << 12) - 0x600
-		&& *x + rcHit->right >((2 * tx - 1) << 12) + 0x600
-		&& *y + rcHit->bottom >(2 * ty - 1) << 12
-		&& *y + rcHit->bottom < ty << 13)
+	if (NPC->x - rcHit->right < ((2 * tx + 1) << 12) - 0x600
+		&& NPC->x + rcHit->right > ((2 * tx - 1) << 12) + 0x600
+		&& NPC->y + rcHit->bottom > (2 * ty - 1) << 12
+		&& NPC->y + rcHit->bottom < ty << 13)
 	{
-		*y = ((2 * ty - 1) << 12) - rcHit->bottom;
+		NPC->y = ((2 * ty - 1) << 12) - rcHit->bottom;
+		NPC->ysp = 0;
 
-		hit |= ground;
+		NPC->hit |= ground;
 	}
-
-	return hit;
 }
 
 //Ceiling slopes
-int npcJudgeTriangleA(RECT *rcHit, int tx, int ty, int *x, int *y)
+void npcJudgeTriangleA(RECT *rcHit, npc *NPC, int tx, int ty)
 {
-	int hit = 0;
-
-	if (*x > (2 * tx - 1) << 12
-		&& *x < (2 * tx + 1) << 12
-		&& *y - rcHit->top < (ty << 13) - (-0x2000 * tx + *x) / 2 + 0x800
-		&& *y + rcHit->bottom >(2 * ty - 1) << 12)
+	if (NPC->x > (2 * tx - 1) << 12
+		&& NPC->x < (2 * tx + 1) << 12
+		&& NPC->y - rcHit->top < (ty << 13) - (-0x2000 * tx + NPC->x) / 2 + 0x800
+		&& NPC->y + rcHit->bottom >(2 * ty - 1) << 12)
 	{
-		*y = (ty << 13) - (-0x2000 * tx + *x) / 2 + 0x800 + rcHit->top;
+		if (NPC->ysp < 0)
+			NPC->ysp = 0;
 
-		hit = ceiling;
+		NPC->y = (ty << 13) - (-0x2000 * tx + NPC->x) / 2 + 0x800 + rcHit->top;
+
+		NPC->hit |= ceiling;
 	}
-
-	return hit;
 }
 
-int npcJudgeTriangleB(RECT *rcHit, int tx, int ty, int *x, int *y)
+void npcJudgeTriangleB(RECT *rcHit, npc *NPC, int tx, int ty)
 {
-	int hit = 0;
-
-	if (*x > (2 * tx - 1) << 12
-		&& *x < (2 * tx + 1) << 12
-		&& *y - rcHit->top < (ty << 13) - (-0x2000 * tx + *x) / 2 - 0x800
-		&& *y + rcHit->bottom >(2 * ty - 1) << 12)
+	if (NPC->x > (2 * tx - 1) << 12
+		&& NPC->x < (2 * tx + 1) << 12
+		&& NPC->y - rcHit->top < (ty << 13) - (-0x2000 * tx + NPC->x) / 2 - 0x800
+		&& NPC->y + rcHit->bottom >(2 * ty - 1) << 12)
 	{
-		*y = (ty << 13) - (-0x2000 * tx + *x) / 2 - 0x800 + rcHit->top;
+		if (NPC->ysp < 0)
+			NPC->ysp = 0;
 
-		hit = ceiling;
+		NPC->y = (ty << 13) - (-0x2000 * tx + NPC->x) / 2 - 0x800 + rcHit->top;
+
+		NPC->hit |= ceiling;
 	}
-
-	return hit;
 }
 
-int npcJudgeTriangleC(RECT *rcHit, int tx, int ty, int *x, int *y)
+void npcJudgeTriangleC(RECT *rcHit, npc *NPC, int tx, int ty)
 {
-	int hit = 0;
-
-	if (*x > (2 * tx - 1) << 12
-		&& *x < (2 * tx + 1) << 12
-		&& *y - rcHit->top < (ty << 13) + (-0x2000 * tx + *x) / 2 - 0x800
-		&& *y + rcHit->bottom >(2 * ty - 1) << 12)
+	if (NPC->x > (2 * tx - 1) << 12
+		&& NPC->x < (2 * tx + 1) << 12
+		&& NPC->y - rcHit->top < (ty << 13) + (-0x2000 * tx + NPC->x) / 2 - 0x800
+		&& NPC->y + rcHit->bottom >(2 * ty - 1) << 12)
 	{
-		*y = (ty << 13) + (-0x2000 * tx + *x) / 2 - 0x800 + rcHit->top;
+		if (NPC->ysp < 0)
+			NPC->ysp = 0;
 
-		hit = ceiling;
+		NPC->y = (ty << 13) + (-0x2000 * tx + NPC->x) / 2 - 0x800 + rcHit->top;
+
+		NPC->hit |= ceiling;
 	}
-
-	return hit;
 }
 
-int npcJudgeTriangleD(RECT *rcHit, int tx, int ty, int *x, int *y)
+void npcJudgeTriangleD(RECT *rcHit, npc *NPC, int tx, int ty)
 {
-	int hit = 0;
-
-	if (*x > (2 * tx - 1) << 12
-		&& *x < (2 * tx + 1) << 12
-		&& *y - rcHit->top < (ty << 13) + (-0x2000 * tx + *x) / 2 + 0x800
-		&& *y + rcHit->bottom >(2 * ty - 1) << 12)
+	if (NPC->x > (2 * tx - 1) << 12
+		&& NPC->x < (2 * tx + 1) << 12
+		&& NPC->y - rcHit->top < (ty << 13) + (-0x2000 * tx + NPC->x) / 2 + 0x800
+		&& NPC->y + rcHit->bottom >(2 * ty - 1) << 12)
 	{
-		*y = (ty << 13) + (-0x2000 * tx + *x) / 2 + 0x800 + rcHit->top;
+		if (NPC->ysp < 0)
+			NPC->ysp = 0;
 
-		hit = ceiling;
+		NPC->y = (ty << 13) + (-0x2000 * tx + NPC->x) / 2 + 0x800 + rcHit->top;
+
+		NPC->hit |= ceiling;
 	}
-
-	return hit;
 }
 
 //Floor slopes
-int npcJudgeTriangleE(RECT *rcHit, int tx, int ty, int *x, int *y, int wasGround)
+void npcJudgeTriangleE(RECT *rcHit, npc *NPC, int tx, int ty)
 {
-	int hit = slopeE;
+	NPC->hit |= slopeE;
 
-	if (*x > (2 * tx - 1) << 12
-		&& *x < (2 * tx + 1) << 12
-		&& *y + rcHit->bottom >(ty << 13) + (-0x2000 * tx + *x) / 2 - 0x800
-		&& *y - rcHit->top < (2 * ty + 1) << 12)
+	if (NPC->x > (2 * tx - 1) << 12
+		&& NPC->x < (2 * tx + 1) << 12
+		&& NPC->y + rcHit->bottom >(ty << 13) + (-0x2000 * tx + NPC->x) / 2 - 0x800
+		&& NPC->y - rcHit->top < (2 * ty + 1) << 12)
 	{
-		*y = (ty << 13) + (-0x2000 * tx + *x) / 2 - 0x800 - rcHit->bottom;
+		NPC->y = (ty << 13) + (-0x2000 * tx + NPC->x) / 2 - 0x800 - rcHit->bottom;
 
-		hit |= (ground | slopeLeft);
+		if (NPC->ysp > 0)
+			NPC->ysp = 0;
+
+		NPC->hit |= (ground | slopeLeft);
 	}
-
-	return hit;
 }
 
-int npcJudgeTriangleF(RECT *rcHit, int tx, int ty, int *x, int *y, int wasGround)
+void npcJudgeTriangleF(RECT *rcHit, npc *NPC, int tx, int ty)
 {
-	int hit = slopeF;
+	NPC->hit |= slopeF;
 
-	if (*x > (2 * tx - 1) << 12
-		&& *x < (2 * tx + 1) << 12
-		&& *y + rcHit->bottom >(ty << 13) + (-0x2000 * tx + *x) / 2 + 0x800
-		&& *y - rcHit->top < (2 * ty + 1) << 12)
+	if (NPC->x < (2 * tx + 1) << 12
+		&& NPC->x >(2 * tx - 1) << 12
+		&& NPC->y + rcHit->bottom > (ty << 13) + (-0x2000 * tx + NPC->x) / 2 + 0x800
+		&& NPC->y - rcHit->top < (2 * ty + 1) << 12)
 	{
-		*y = (ty << 13) + (-0x2000 * tx + *x) / 2 + 0x800 - rcHit->bottom;
+		NPC->y = (ty << 13) + (-0x2000 * tx + NPC->x) / 2 + 0x800 - rcHit->bottom;
 
-		hit |= (ground | slopeLeft);
+		NPC->hit |= (ground | slopeLeft);
 	}
-	return hit;
 }
 
-int npcJudgeTriangleG(RECT *rcHit, int tx, int ty, int *x, int *y, int wasGround)
+void npcJudgeTriangleG(RECT *rcHit, npc *NPC, int tx, int ty)
 {
-	int hit = slopeG;
+	NPC->hit |= slopeG;
 
-	if (*x > (2 * tx - 1) << 12
-		&& *x < (2 * tx + 1) << 12
-		&& *y + rcHit->bottom >(ty << 13) - (-0x2000 * tx + *x) / 2 + 0x800
-		&& *y - rcHit->top < (2 * ty + 1) << 12)
+	if (NPC->x > (2 * tx - 1) << 12
+		&& NPC->x < (2 * tx + 1) << 12
+		&& NPC->y + rcHit->bottom >(ty << 13) - (-0x2000 * tx + NPC->x) / 2 + 0x800
+		&& NPC->y - rcHit->top < (2 * ty + 1) << 12)
 	{
-		*y = (ty << 13) - (-0x2000 * tx + *x) / 2 + 0x800 - rcHit->bottom;
+		NPC->y = (ty << 13) - (-0x2000 * tx + NPC->x) / 2 + 0x800 - rcHit->bottom;
 
-		hit |= (ground | slopeRight);
+		if (NPC->ysp > 0)
+			NPC->ysp = 0;
+
+		NPC->hit |= (ground | slopeRight);
 	}
-
-	return hit;
 }
 
-int npcJudgeTriangleH(RECT *rcHit, int tx, int ty, int *x, int *y, int wasGround)
+void npcJudgeTriangleH(RECT *rcHit, npc *NPC, int tx, int ty)
 {
-	int hit = slopeH;
+	NPC->hit |= slopeH;
 
-	if (*x > (2 * tx - 1) << 12
-		&& *x < (2 * tx + 1) << 12
-		&& *y + rcHit->bottom >(ty << 13) - (-0x2000 * tx + *x) / 2 - 0x800
-		&& *y - rcHit->top < (2 * ty + 1) << 12)
+	if (NPC->x > (2 * tx - 1) << 12
+		&& NPC->x < (2 * tx + 1) << 12
+		&& NPC->y + rcHit->bottom >(ty << 13) - (-0x2000 * tx + NPC->x) / 2 - 0x800
+		&& NPC->y - rcHit->top < (2 * ty + 1) << 12)
 	{
-		*y = (ty << 13) - (-0x2000 * tx + *x) / 2 - 0x800 - rcHit->bottom;
+		NPC->y = (ty << 13) - (-0x2000 * tx + NPC->x) / 2 - 0x800 - rcHit->bottom;
 
-		hit |= (ground | slopeRight);
+		if (NPC->ysp > 0)
+			NPC->ysp = 0;
+
+		NPC->hit |= (ground | slopeRight);
 	}
-
-	return hit;
 }
 
-int npcJudgeWater(RECT *rcHit, int tx, int ty, int *x, int *y)
+void npcJudgeWater(RECT *rcHit, npc *NPC, int tx, int ty)
 {
-	int hit = 0;
-
-	if (*x - rcHit->right < (4 * (2 * tx + 1) - 1) << 10
-		&& *x + rcHit->right > (4 * (2 * tx - 1) + 1) << 10
-		&& *y - rcHit->top < (4 * (2 * ty + 1) - 1) << 10
-		&& *y + rcHit->bottom > (4 * (2 * ty - 1) + 1) << 10)
+	if (NPC->x - rcHit->right < (4 * (2 * tx + 1) - 1) << 10
+		&& NPC->x + rcHit->right > (4 * (2 * tx - 1) + 1) << 10
+		&& NPC->y - rcHit->top < (4 * (2 * ty + 1) - 1) << 10
+		&& NPC->y + rcHit->bottom > (4 * (2 * ty - 1) + 1) << 10)
 	{
-		hit = water;
+		NPC->hit |= water;
 	}
-
-	return hit;
 }
 
-int npcJudgeSpike(RECT *rcHit, int tx, int ty, int *x, int *y)
+void npcHitMap(int NPCid)
 {
-	int hit = 0;
+	npc *NPC = &npcs[NPCid];
 
-	if (*x - 0x800 < (4 * tx + 1) << 11
-		&& *x + 0x800 > (4 * tx - 1) << 11
-		&& *y - 0x800 < (ty << 13) + 0x600
-		&& *y + 0x800 > (ty << 13) - 0x600)
-	{
-		hit = spike;
-	}
+	NPC->hit = 0; //clear
 
-	return hit;
-}
-
-int npcJudgeWaterSpike(RECT *rcHit, int tx, int ty, int *x, int *y)
-{
-	int hit = 0;
-
-	if (*x - 0x800 < (4 * tx + 1) << 11
-		&& *x + 0x800 > (4 * tx - 1) << 11
-		&& *y - 0x800 < (ty << 13) + 0x600
-		&& *y + 0x800 > (ty << 13) - 0x600)
-	{
-		hit = (spike | water | 0x800);
-	}
-
-	return hit;
-}
-
-int npcHitMap(RECT *rcHit, int *x, int *y, bool b44, bool wasGround)
-{
-	int hit = 0;
+	RECT *rcHit = &NPC->collideRect;
 	
-	int fromX = (*x - rcHit->right + 0x1000) >> 13;
-	int fromY = (*y - rcHit->top + 0x1000) >> 13;
-	int toX = (*x + rcHit->right + 0x1000) >> 13;
-	int toY = (*y + rcHit->bottom + 0x1000) >> 13;
+	int fromX = (NPC->x - rcHit->right + 0x1000) >> 13;
+	int fromY = (NPC->y - rcHit->top + 0x1000) >> 13;
+
+	int toX = (NPC->x + rcHit->right + 0x1000) >> 13;
+	int toY = (NPC->y + rcHit->bottom + 0x1000) >> 13;
 	
-	for (int current_X = fromX; current_X <= toX; current_X++)
+	if (!(NPC->flags & npc_ignoresolid))
 	{
-		for (int current_Y = fromY; current_Y <= toY; current_Y++)
+		for (int currentX = fromX; currentX <= toX; currentX++)
 		{
-			switch (getTileAttribute(current_X, current_Y))
+			for (int currentY = fromY; currentY <= toY; currentY++)
 			{
-				//Solid
-			case(0x41): case(0x43):
-				hit |= npcJudgeBlock(rcHit, current_X, current_Y, x, y);
-				continue;
+				switch (getTileAttribute(currentX, currentY))
+				{
+					//Solid
+				case 0x03: case 0x05: case 0x41: case 0x43:
+					npcJudgeBlock(rcHit, NPC, currentX, currentY);
+					break;
 
-				//No NPC
-			case(0x03): case(0x04): case(0x44): case(0x46):
-				if (b44 == true) { hit |= npcJudgeBlock(rcHit, current_X, current_Y, x, y); }
-				continue;
+					//Npc Only solid
+				case 0x44u:
+					if (!(NPC->flags & npc_ignore44))
+						npcJudgeBlock(rcHit, NPC, currentX, currentY);
+					break;
 
-				//Water solid
-			case(0x61):
-				hit |= npcJudgeBlock(rcHit, current_X, current_Y, x, y);
-				hit |= npcJudgeWater(rcHit, current_X, current_Y, x, y);
-				continue;
+					//Water
+				case 0x02: case 0x60: case 0x62:
+					npcJudgeWater(rcHit, NPC, currentX, currentY);
+					break;
 
-				//Water
-			case(0x02): case(0x60):
-				hit |= npcJudgeWater(rcHit, current_X, current_Y, x, y);
-				continue;
+					//Water solid
+				case 0x04: case 0x61: case 0x64:
+					npcJudgeBlock(rcHit, NPC, currentX, currentY);
+					npcJudgeWater(rcHit, NPC, currentX, currentY);
+					break;
 
-				//Spikes
-			case(0x42):
-				hit |= npcJudgeSpike(rcHit, current_X, current_Y, x, y);
-				continue;
+					//Ceiling slopes
+				case 0x50u:
+					npcJudgeTriangleA(rcHit, NPC, currentX, currentY);
+					break;
 
-				//Water spikes
-			case(0x62):
-				hit |= npcJudgeWaterSpike(rcHit, current_X, current_Y, x, y);
-				continue;
+				case 0x51u:
+					npcJudgeTriangleB(rcHit, NPC, currentX, currentY);
+					break;
 
-				//Slopes
-			case(0x50):
-				hit |= npcJudgeTriangleA(rcHit, current_X, current_Y, x, y);
-				continue;
-			case(0x51):
-				hit |= npcJudgeTriangleB(rcHit, current_X, current_Y, x, y);
-				continue;
-			case(0x52):
-				hit |= npcJudgeTriangleC(rcHit, current_X, current_Y, x, y);
-				continue;
-			case(0x53):
-				hit |= npcJudgeTriangleD(rcHit, current_X, current_Y, x, y);
-				continue;
-			case(0x54):
-				hit |= npcJudgeTriangleE(rcHit, current_X, current_Y, x, y, wasGround);
-				continue;
-			case(0x55):
-				hit |= npcJudgeTriangleF(rcHit, current_X, current_Y, x, y, wasGround);
-				continue;
-			case(0x56):
-				hit |= npcJudgeTriangleG(rcHit, current_X, current_Y, x, y, wasGround);
-				continue;
-			case(0x57):
-				hit |= npcJudgeTriangleH(rcHit, current_X, current_Y, x, y, wasGround);
-				continue;
+				case 0x52u:
+					npcJudgeTriangleC(rcHit, NPC, currentX, currentY);
+					break;
 
-				//Water slopes
-			case(0x70):
-				hit |= npcJudgeWater(rcHit, current_X, current_Y, x, y);
-				hit |= npcJudgeTriangleA(rcHit, current_X, current_Y, x, y);
-				continue;
-			case(0x71):
-				hit |= npcJudgeWater(rcHit, current_X, current_Y, x, y);
-				hit |= npcJudgeTriangleB(rcHit, current_X, current_Y, x, y);
-				continue;
-			case(0x72):
-				hit |= npcJudgeWater(rcHit, current_X, current_Y, x, y);
-				hit |= npcJudgeTriangleC(rcHit, current_X, current_Y, x, y);
-				continue;
-			case(0x73):
-				hit |= npcJudgeWater(rcHit, current_X, current_Y, x, y);
-				hit |= npcJudgeTriangleD(rcHit, current_X, current_Y, x, y);
-				continue;
-			case(0x74):
-				hit |= npcJudgeWater(rcHit, current_X, current_Y, x, y);
-				hit |= npcJudgeTriangleE(rcHit, current_X, current_Y, x, y, wasGround);
-				continue;
-			case(0x75):
-				hit |= npcJudgeWater(rcHit, current_X, current_Y, x, y);
-				hit |= npcJudgeTriangleF(rcHit, current_X, current_Y, x, y, wasGround);
-				continue;
-			case(0x76):
-				hit |= npcJudgeWater(rcHit, current_X, current_Y, x, y);
-				hit |= npcJudgeTriangleG(rcHit, current_X, current_Y, x, y, wasGround);
-				continue;
-			case(0x77):
-				hit |= npcJudgeWater(rcHit, current_X, current_Y, x, y);
-				hit |= npcJudgeTriangleH(rcHit, current_X, current_Y, x, y, wasGround);
-				continue;
+				case 0x53u:
+					npcJudgeTriangleD(rcHit, NPC, currentX, currentY);
+					break;
 
-				//Default
-			default:
-				continue;
+					//Floor slopes
+				case 0x54u:
+					npcJudgeTriangleE(rcHit, NPC, currentX, currentY);
+					break;
+
+				case 0x55u:
+					npcJudgeTriangleF(rcHit, NPC, currentX, currentY);
+					break;
+
+				case 0x56u:
+					npcJudgeTriangleG(rcHit, NPC, currentX, currentY);
+					break;
+
+				case 0x57u:
+					npcJudgeTriangleH(rcHit, NPC, currentX, currentY);
+					break;
+
+					//Water slopes
+					//Ceiling slopes
+				case 0x70u:
+					npcJudgeTriangleA(rcHit, NPC, currentX, currentY);
+					npcJudgeWater(rcHit, NPC, currentX, currentY);
+					break;
+
+				case 0x71u:
+					npcJudgeTriangleB(rcHit, NPC, currentX, currentY);
+					npcJudgeWater(rcHit, NPC, currentX, currentY);
+					break;
+
+				case 0x72u:
+					npcJudgeTriangleC(rcHit, NPC, currentX, currentY);
+					npcJudgeWater(rcHit, NPC, currentX, currentY);
+					break;
+
+				case 0x73u:
+					npcJudgeTriangleD(rcHit, NPC, currentX, currentY);
+					npcJudgeWater(rcHit, NPC, currentX, currentY);
+					break;
+
+					//Floor slopes
+				case 0x74u:
+					npcJudgeTriangleE(rcHit, NPC, currentX, currentY);
+					npcJudgeWater(rcHit, NPC, currentX, currentY);
+					break;
+
+				case 0x75u:
+					npcJudgeTriangleF(rcHit, NPC, currentX, currentY);
+					npcJudgeWater(rcHit, NPC, currentX, currentY);
+					break;
+
+				case 0x76u:
+					npcJudgeTriangleG(rcHit, NPC, currentX, currentY);
+					npcJudgeWater(rcHit, NPC, currentX, currentY);
+					break;
+
+				case 0x77u:
+					npcJudgeTriangleH(rcHit, NPC, currentX, currentY);
+					npcJudgeWater(rcHit, NPC, currentX, currentY);
+					break;
+
+					//Currents
+				case 0x80u:
+					NPC->hit |= (windLeft);
+					break;
+
+				case 0x81u:
+					NPC->hit |= (windUp);
+					break;
+
+				case 0x82u:
+					NPC->hit |= (windRight);
+					break;
+
+				case 0x83u:
+					NPC->hit |= (windDown);
+					break;
+
+					//Water current
+				case 0xA0u:
+					NPC->hit |= (water | windLeft);
+					break;
+
+				case 0xA1u:
+					NPC->hit |= (water | windUp);
+					break;
+
+				case 0xA2u:
+					NPC->hit |= (water | windRight);
+					break;
+
+				case 0xA3u:
+					NPC->hit |= (water | windDown);
+					break;
+
+					//Default
+				default:
+					break;
+				}
 			}
 		}
 	}
-
-	return hit;
 }

@@ -36,6 +36,8 @@ int getNPCAttribute(UINT npcId, UINT offset, UINT offset2, UINT offsetSize, UINT
 
 void npc::init(int spawnX, int spawnY, short flagId, short eventId, short npcType, short npcFlags)
 {
+	memset(this, 0, sizeof(*this));
+
 	x = spawnX;
 	y = spawnY;
 	flag = flagId;
@@ -50,8 +52,6 @@ void npc::init(int spawnX, int spawnY, short flagId, short eventId, short npcTyp
 	collideRect.right = getNPCAttribute(npcType, 16, 2, 4, 1) << 9;
 	collideRect.bottom = getNPCAttribute(npcType, 16, 3, 4, 1) << 9;
 
-	frameRect = { 0, 0, 0, 0 };
-
 	offset.x = getNPCAttribute(npcType, 20, 0, 4, 1) << 9;
 	offset.y = getNPCAttribute(npcType, 20, 1, 4, 1) << 9;
 
@@ -59,51 +59,14 @@ void npc::init(int spawnX, int spawnY, short flagId, short eventId, short npcTyp
 
 	damage = getNPCAttribute(npcType, 12, 0, 4, 4);
 
-	targetX = 0;
-	targetY = 0;
-
-	xsp = 0;
-	ysp = 0;
-
-	action = 0;
-	actionWait = 0;
-
-	animation = 0;
-	animationWait = 0;
-
-	hit = 0;
-
-	direction = 0;
-
-	shock = 0;
-
-	count1 = 0;
-
 	return;
 }
 
 void npc::update()
 {
-	if (cond & npccond_alive)
-	{
-		if (npcActs[type])
-		{
-			npcActs[type](this);
+	npcActs[type](this);
 
-			if (shock) { --shock; }
-		}
-
-		if (!(flags & npc_ignoresolid)) {
-			bool wasGround = (hit & ground);
-			hit = npcHitMap(&collideRect, &x, &y, true, wasGround);
-
-			if (hit & ceiling && ysp < 0)
-				ysp = 0;
-
-			if (hit & ground && ysp > 0)
-				ysp = 0;
-		}
-	}
+	if (shock) { --shock; }
 }
 
 void npc::draw()

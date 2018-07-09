@@ -13,7 +13,7 @@ npcAct npcActs[] =
 	&npcAct000,
 	&npcAct002,
 	&npcAct000,
-	&npcAct000,
+	&npcAct004,
 	&npcAct005,
 	&npcAct006,
 	&npcAct007,

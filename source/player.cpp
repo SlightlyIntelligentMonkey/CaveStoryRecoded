@@ -3,47 +3,40 @@
 player currentPlayer;
 
 void player::init(int createX, int createY, int createDirection) {
-	x = createX << 13;
+	memset(this, 0, sizeof(*this));
 
+	x = createX << 13;
 	y = createY << 13;
 
-	xsp = 0;
-	ysp = 0;
+	health = 3;
+	maxHealth = 3;
 
 	direction = createDirection;
 
-	lastHealth = health;
-	healthDrainCount = 0;
-
 	air = 1000;
 
-	airShow = 0;
-
-	shock = 0;
-
-	//Camera
-	viewOffX = 0;
-	viewOffY = 0;
-
-	viewX = x - (screenWidth * 0x100);
-	viewY = y - (screenHeight * 0x100);
-
-	//Animation
-	animation = 0;
-	animationWait = 0;
-
-	frame = 0;
-
-	//State
 	cond = player_visible;
 
-	lookingUp = false;
-	lookingDown = false;
+	key = true;
+}
 
-	interacting = false;
+void player::explode(int x, int y, int w, int num)
+{
+	int offset_x;
+	int offset_y;
+	int wa;
 
-	//Collision state
-	flags = 0;
+	wa = w / 512;
+
+	for (int i = 0; i < num; ++i)
+	{
+		offset_x = random(-wa, wa) << 9;
+		offset_y = random(-wa, wa) << 9;
+
+		createNpc(x + offset_x, offset_y + y, 0, 0, 0, 0, 0, 4, 0);
+	}
+
+	//SetCaret(x, y, 12, 0); //What caret is this?
 }
 
 void player::hit(int damage) {
@@ -59,6 +52,13 @@ void player::hit(int damage) {
 		ysp = -0x400;
 
 		health -= damage;
+
+		if (health <= 0)
+		{
+			cond = 0;
+
+			explode(x, y, 0x1400, 0x40);
+		}
 
 		//if (unk_81C8598 & 0x80 && unk_81C8616 > 0) { unk_81C8616--; }
 		//if (unk_81C8598 & 4) { v1 = gArmsData[gSelectedArms].exp - damage; }

@@ -130,7 +130,6 @@ bool getFlag(int a);
 
 #include "level.h"
 
-
 #include "filesystem.h"
 #include "render.h"
 
@@ -138,15 +137,11 @@ bool getFlag(int a);
 
 #include "input.h"
 
-#include "playerCollision.h"
-#include "npcCollision.h"
-
 #include "sound.h"
 #include "smixer.h"
-#include "pxt.h"
 #include "org.h"
 
 //Classes
 #include "player.h"
-
 #include "npc.h"
+#include "bullet.h"

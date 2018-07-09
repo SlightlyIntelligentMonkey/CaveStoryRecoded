@@ -19,14 +19,23 @@
     <Filter Include="Source Files\classes">
       <UniqueIdentifier>{8af45837-cea6-45a3-9b88-ed0998b1c352}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\classes\npcs">
-      <UniqueIdentifier>{dd025e45-f001-4d20-b7b6-f19fd265abff}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Source Files\modules\sound">
       <UniqueIdentifier>{b5c05ef0-304a-407a-8aa8-b2ea2bbd4ed1}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source Files\classes\player">
       <UniqueIdentifier>{9f59141a-ca26-4191-a411-a781c776450f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\classes\weapon">
+      <UniqueIdentifier>{1c05a025-f740-4e51-9dfc-042f8e8411cd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\classes\npc">
+      <UniqueIdentifier>{dd025e45-f001-4d20-b7b6-f19fd265abff}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\classes\npc\act">
+      <UniqueIdentifier>{4ff93f4a-c3c8-4ee2-9f39-03301d066c06}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\classes\weapon\bulletAct">
+      <UniqueIdentifier>{754df458-b380-47d1-a7ca-725b1365a1b9}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -54,46 +63,16 @@
     <ClCompile Include="flags.cpp">
       <Filter>Source Files\modules</Filter>
     </ClCompile>
-    <ClCompile Include="npc.cpp">
-      <Filter>Source Files\classes</Filter>
-    </ClCompile>
-    <ClCompile Include="npcAct.cpp">
-      <Filter>Source Files\classes</Filter>
-    </ClCompile>
-    <ClCompile Include="npc000.cpp">
-      <Filter>Source Files\classes\npcs</Filter>
-    </ClCompile>
-    <ClCompile Include="npc020.cpp">
-      <Filter>Source Files\classes\npcs</Filter>
-    </ClCompile>
-    <ClCompile Include="npc040.cpp">
-      <Filter>Source Files\classes\npcs</Filter>
-    </ClCompile>
-    <ClCompile Include="npc060.cpp">
-      <Filter>Source Files\classes\npcs</Filter>
-    </ClCompile>
-    <ClCompile Include="npc200.cpp">
-      <Filter>Source Files\classes\npcs</Filter>
-    </ClCompile>
     <ClCompile Include="npcCollision.cpp">
       <Filter>Source Files\modules</Filter>
     </ClCompile>
     <ClCompile Include="playerCollision.cpp">
       <Filter>Source Files\modules</Filter>
     </ClCompile>
-    <ClCompile Include="npc340.cpp">
-      <Filter>Source Files\classes\npcs</Filter>
-    </ClCompile>
     <ClCompile Include="sound.cpp">
       <Filter>Source Files\modules\sound</Filter>
     </ClCompile>
     <ClCompile Include="smixer.cpp">
-      <Filter>Source Files\modules\sound</Filter>
-    </ClCompile>
-    <ClCompile Include="org.cpp">
-      <Filter>Source Files\modules\sound</Filter>
-    </ClCompile>
-    <ClCompile Include="pxt.cpp">
       <Filter>Source Files\modules\sound</Filter>
     </ClCompile>
     <ClCompile Include="hud.cpp">
@@ -102,11 +81,44 @@
     <ClCompile Include="player.cpp">
       <Filter>Source Files\classes\player</Filter>
     </ClCompile>
+    <ClCompile Include="weapons.cpp">
+      <Filter>Source Files\classes\weapon</Filter>
+    </ClCompile>
+    <ClCompile Include="bullet.cpp">
+      <Filter>Source Files\classes\weapon</Filter>
+    </ClCompile>
+    <ClCompile Include="npc.cpp">
+      <Filter>Source Files\classes\npc</Filter>
+    </ClCompile>
+    <ClCompile Include="npc000.cpp">
+      <Filter>Source Files\classes\npc\act</Filter>
+    </ClCompile>
+    <ClCompile Include="npc020.cpp">
+      <Filter>Source Files\classes\npc\act</Filter>
+    </ClCompile>
+    <ClCompile Include="npc040.cpp">
+      <Filter>Source Files\classes\npc\act</Filter>
+    </ClCompile>
+    <ClCompile Include="npc060.cpp">
+      <Filter>Source Files\classes\npc\act</Filter>
+    </ClCompile>
+    <ClCompile Include="npc200.cpp">
+      <Filter>Source Files\classes\npc\act</Filter>
+    </ClCompile>
+    <ClCompile Include="npc340.cpp">
+      <Filter>Source Files\classes\npc\act</Filter>
+    </ClCompile>
+    <ClCompile Include="npcAct.cpp">
+      <Filter>Source Files\classes\npc\act</Filter>
+    </ClCompile>
+    <ClCompile Include="polarStarBullets.cpp">
+      <Filter>Source Files\classes\weapon\bulletAct</Filter>
+    </ClCompile>
+    <ClCompile Include="org.cpp">
+      <Filter>Source Files\modules\sound</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="common.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="render.h">
       <Filter>Source Files\modules</Filter>
     </ClInclude>
@@ -125,27 +137,6 @@
     <ClInclude Include="input.h">
       <Filter>Source Files\modules</Filter>
     </ClInclude>
-    <ClInclude Include="npc.h">
-      <Filter>Source Files\classes</Filter>
-    </ClInclude>
-    <ClInclude Include="npcAct.h">
-      <Filter>Source Files\classes</Filter>
-    </ClInclude>
-    <ClInclude Include="npc000.h">
-      <Filter>Source Files\classes\npcs</Filter>
-    </ClInclude>
-    <ClInclude Include="npc020.h">
-      <Filter>Source Files\classes\npcs</Filter>
-    </ClInclude>
-    <ClInclude Include="npc040.h">
-      <Filter>Source Files\classes\npcs</Filter>
-    </ClInclude>
-    <ClInclude Include="npc060.h">
-      <Filter>Source Files\classes\npcs</Filter>
-    </ClInclude>
-    <ClInclude Include="npc200.h">
-      <Filter>Source Files\classes\npcs</Filter>
-    </ClInclude>
     <ClInclude Include="resource.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -155,19 +146,10 @@
     <ClInclude Include="playerCollision.h">
       <Filter>Source Files\modules</Filter>
     </ClInclude>
-    <ClInclude Include="npc340.h">
-      <Filter>Source Files\classes\npcs</Filter>
-    </ClInclude>
     <ClInclude Include="sound.h">
       <Filter>Source Files\modules\sound</Filter>
     </ClInclude>
     <ClInclude Include="smixer.h">
-      <Filter>Source Files\modules\sound</Filter>
-    </ClInclude>
-    <ClInclude Include="org.h">
-      <Filter>Source Files\modules\sound</Filter>
-    </ClInclude>
-    <ClInclude Include="pxt.h">
       <Filter>Source Files\modules\sound</Filter>
     </ClInclude>
     <ClInclude Include="hud.h">
@@ -177,7 +159,40 @@
       <Filter>Source Files\classes\player</Filter>
     </ClInclude>
     <ClInclude Include="weapons.h">
-      <Filter>Source Files\classes\player</Filter>
+      <Filter>Source Files\classes\weapon</Filter>
+    </ClInclude>
+    <ClInclude Include="bullet.h">
+      <Filter>Source Files\classes\weapon</Filter>
+    </ClInclude>
+    <ClInclude Include="npc.h">
+      <Filter>Source Files\classes\npc</Filter>
+    </ClInclude>
+    <ClInclude Include="npc000.h">
+      <Filter>Source Files\classes\npc\act</Filter>
+    </ClInclude>
+    <ClInclude Include="npc020.h">
+      <Filter>Source Files\classes\npc\act</Filter>
+    </ClInclude>
+    <ClInclude Include="npc040.h">
+      <Filter>Source Files\classes\npc\act</Filter>
+    </ClInclude>
+    <ClInclude Include="npc060.h">
+      <Filter>Source Files\classes\npc\act</Filter>
+    </ClInclude>
+    <ClInclude Include="npc200.h">
+      <Filter>Source Files\classes\npc\act</Filter>
+    </ClInclude>
+    <ClInclude Include="npc340.h">
+      <Filter>Source Files\classes\npc\act</Filter>
+    </ClInclude>
+    <ClInclude Include="npcAct.h">
+      <Filter>Source Files\classes\npc\act</Filter>
+    </ClInclude>
+    <ClInclude Include="org.h">
+      <Filter>Source Files\modules\sound</Filter>
+    </ClInclude>
+    <ClInclude Include="common.h">
+      <Filter>Source Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

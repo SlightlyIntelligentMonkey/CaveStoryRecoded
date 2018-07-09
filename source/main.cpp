@@ -57,14 +57,35 @@ int createView(int width, int height, int scale, bool fullscreen) {
 	SDL_DisplayMode DM;
 	SDL_GetCurrentDisplayMode(0, &DM);
 
-	screenWidth = width;
-	screenHeight = height;
-	screenScale = scale;
+	int createWidth;
+	int createHeight;
 
-	int createWidth = width * scale;
-	int createHeight = height * scale;
+	if (fullscreen)
+	{
+		screenScale = (int)floor(DM.h / height);
+
+		screenHeight = DM.h / screenScale;
+		screenWidth = DM.w / screenScale;
+
+		createWidth = screenWidth;
+		createHeight = screenHeight;
+	}
+	else
+	{
+		screenWidth = width;
+		screenHeight = height;
+		screenScale = scale;
+
+		createWidth = width * scale;
+		createHeight = height * scale;
+	}
 
 	window = SDL_CreateWindow("Cave Story Remake", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, createWidth, createHeight, 0);
+
+	if (fullscreen)
+	{
+		SDL_SetWindowFullscreen(window, SDL_WINDOW_FULLSCREEN_DESKTOP);
+	}
 	
 	renderer = SDL_CreateRenderer(window, -1, 0);
 	SDL_RenderSetLogicalSize(renderer, screenWidth, screenHeight);
@@ -80,7 +101,7 @@ int init() {
 	
 	initSound();
 	
-	createView(426, 240, 2, false);
+	createView(320, 240, 2, false);
 
 	//Load assets
 	loadBMP("data/Title.bmp", &sprites[0x00]);
@@ -115,7 +136,7 @@ int init() {
 	loadLevel(13);
 	currentPlayer.init(10, 8, 2);
 
-	playORG(8);
+	//playOrg(8);
 
 	runScriptEvent(200);
 
@@ -159,37 +180,43 @@ int game() {
 			loadLevel(13);
 			currentPlayer.init(10, 8, 2);
 
-			playORG(8);
+			//playOrg(8);
 		}
 		else if (keyPressed(SDL_SCANCODE_2)) {
 			loadLevel(12);
 			currentPlayer.init(37, 11, 0);
 
-			playORG(8);
+			//playOrg(8);
 		}
 		else if (keyPressed(SDL_SCANCODE_3)){
 			loadLevel(2);
 			currentPlayer.init(5, 6, 2);
 
-			playORG(1);
+			//playOrg(1);
 		}
 		else if (keyPressed(SDL_SCANCODE_4)) {
 			loadLevel(11);
 			currentPlayer.init(13, 34, 2);
 
-			playORG(9);
+			//playOrg(9);
 		}
 		else if (keyPressed(SDL_SCANCODE_5)) {
 			loadLevel(49);
 			currentPlayer.init(7, 6, 2);
 
-			playORG(27);
+			//playOrg(27);
 		}
 		else if (keyPressed(SDL_SCANCODE_6)) {
 			loadLevel(67);
 			currentPlayer.init(7, 52, 2);
 
-			playORG(29);
+			//playOrg(29);
+		}
+		else if (keyPressed(SDL_SCANCODE_7)) {
+			loadLevel(48);
+			currentPlayer.init(155, 1, 0);
+
+			//playOrg(38);
 		}
 
 		updateNPC();

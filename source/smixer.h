@@ -23,12 +23,7 @@ struct MIXCHAN
 //Functions
 void smixerInit();
 
-void smixerFreeChunks();
-
-void smixerInitChunk(SOUND *c);
-
 void smixerStart();
 void smixerQuit();
 
-extern SOUND *chunks[160]; // idb
-//extern SOUND *orgs[8][8][2];
+extern SOUND *chunks[160];
