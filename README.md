@@ -31,10 +31,6 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 
 ## Licenses & sources of libraries
-
-Modified liborganya: Public Domain, including modifications (see liborganya/README)
-Original version at http://eu.os4depot.net/download.php?file=development/library/misc/liborganya.lha
-
 SDL2: MIT-Style license (see SDL2-2.0.8/COPYING)
 Original version at https://www.libsdl.org/release/SDL2-devel-2.0.8-VC.zip
 
