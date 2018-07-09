@@ -31,8 +31,8 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 
 ## Licenses & sources of libraries
-SDL2: MIT-Style license (see SDL2-2.0.8/COPYING)
+SDL2: zlib license (see SDL2-2.0.8/COPYING)
 Original version at https://www.libsdl.org/release/SDL2-devel-2.0.8-VC.zip
 
-SDL2\_image: MIT-Style license (see SDL2_image-2.0.8/COPYING)
+SDL2\_image: zlib license (see SDL2_image-2.0.8/COPYING)
 Original version at https://www.libsdl.org/projects/SDL_image/release/SDL2_image-devel-2.0.3-VC.zip
