@@ -89,18 +89,11 @@ extern SDL_Renderer *renderer;
 extern SDL_Rect DrawRect;
 extern SDL_Rect ImageRect;
 
-extern int screenWidth;
-extern int screenHeight;
-
-extern int screenScale;
-
 extern int viewX;
 extern int viewY;
 extern int viewGoalX;
 extern int viewGoalY;
 
-extern int viewXsp;
-extern int viewYsp;
 extern int viewSpeed;
 
 extern SDL_Texture* sprites[40];

@@ -104,13 +104,13 @@ void player::actNormal() {
 	{
 		if (flags & water)
 		{
-			maxDash = 406;
-			gravity = 40;
-			gravityHold = 16;
-			jump = 640;
-			dashGround = 42;
-			dashAir = 16;
-			resist = 25;
+			maxDash = 0x196;
+			gravity = 0x28;
+			gravityHold = 0x10;
+			jump = 0x280;
+			dashGround = 0x2A;
+			dashAir = 0x10;
+			resist = 0x19;
 		}
 		else
 		{
@@ -221,7 +221,7 @@ void player::actNormal() {
 		if (flags & windLeft)
 			xsp -= 0x88;
 		if (flags & windUp)
-			ysp -= 0x100;
+			ysp -= 0x80;
 		if (flags & windRight)
 			xsp += 0x88;
 		if (flags & windDown)
@@ -261,10 +261,13 @@ void player::actNormal() {
 		{
 			if (xsp < -0x5FF)
 				xsp = -0x5FF;
+
 			if (xsp > 0x5FF)
 				xsp = 0x5FF;
+
 			if (ysp < -0x5FF)
 				ysp = -0x5FF;
+
 			if (ysp > 0x5FF)
 				ysp = 0x5FF;
 		}
@@ -272,10 +275,13 @@ void player::actNormal() {
 		{
 			if (xsp < -0x2FF)
 				xsp = -0x2FF;
+
 			if (xsp > 0x2FF)
 				xsp = 0x2FF;
+
 			if (ysp < -0x2FF)
 				ysp = -0x2FF;
+
 			if (ysp > 0x2FF)
 				ysp = 0x2FF;
 		}
@@ -300,6 +306,7 @@ void player::actNormal() {
 
 						createNpc(spawnX, y, waterDir, xsp + xspDiff, waterYsp, 0, 0, 73, 0);
 					}
+
 					//PlaySoundObject(56, 1);
 				}
 			}
@@ -313,6 +320,7 @@ void player::actNormal() {
 
 					createNpc(spawnX, y, waterDir, xsp + xspDiff, waterYsp, 0, 0, 73, 0);
 				}
+
 				//PlaySoundObject(56, 1);
 			}
 

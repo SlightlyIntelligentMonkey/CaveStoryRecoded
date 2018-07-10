@@ -6,10 +6,9 @@ int levelHeight;
 BYTE *levelMap = nullptr;
 BYTE *levelTileAttributes = nullptr;
 
-//SDL_Texture *levelTileset;
-
 BYTE backgroundScroll;
-//SDL_Texture *levelBackground;
+
+int backgroundEffect = 0;
 
 //NPC Functions
 void updateNPC()
@@ -210,34 +209,88 @@ void loadLevel(int levelIndex) {
 
 void drawLevel(bool foreground) {
 	if (foreground == false) { //Draw background
-		int xMove = 0;
-		int yMove = 0;
+		RECT rect;
+
+		int skyOff;
+
+		int w, h;
+		SDL_QueryTexture(sprites[0x1C], NULL, NULL, &w, &h);
+
+		rect = { 0, 0, w, h };
+
+		//Update background effect
+		if (backgroundScroll == 5)
+		{
+			backgroundEffect += 0xC00;
+		}
+
+		else if (backgroundScroll >= 5 && backgroundScroll <= 7)
+		{
+			++backgroundEffect;
+			backgroundEffect %= (w * 2);
+		}
 
 		switch (backgroundScroll)
 		{
-			case(0): case(1): case(2):
-				int w, h;
-				SDL_QueryTexture(sprites[0x1C], NULL, NULL, &w, &h);
-				
-				if (backgroundScroll == 1) { xMove = (viewX >> 1) % (w << 9); yMove = (viewY >> 1) % (h << 9); }
-				if (backgroundScroll == 2) { xMove = viewX % (w << 9); yMove = viewY % (h << 9); }
-
-				ImageRect.x = 0;
-				ImageRect.y = 0;
-				ImageRect.w = w;
-				ImageRect.h = h;
-
-				for (int x = 0; x <= (screenWidth / w + 1); x++) {
-					for (int y = 0; y <= (screenHeight / h + 1); y++) {
-						drawTexture(sprites[0x1C], (x * w << 9) - xMove, (y * h << 9) - yMove, true);
-					}
+			case 0:
+				for (int x = 0; x < screenWidth; x += w)
+				{
+					for (int y = 0; y < screenHeight; y += h)
+						drawTextureFromRect(sprites[0x1C], &rect, x, y, true);
 				}
+
 				break;
 
-			case(4):
-				SDL_SetRenderDrawColor(renderer, 0, 0, 32, 255);
+			case 1:
+				for (int x = -(viewX / 0x400 % w); x < screenWidth; x += w)
+				{
+					for (int y = -(viewY / 0x400 % h); y < screenHeight; y += h)
+						drawTextureFromRect(sprites[0x1C], &rect, x << 9, y << 9, true);
+				}
 
-				drawRect(0, 0, screenWidth << 9, screenHeight << 9);
+				break;
+
+			case 2:
+				for (int x = -(viewX / 0x200 % w); x < screenWidth; x += w)
+				{
+					for (int y = -(viewY / 0x200 % h); y < screenHeight; y += h)
+						drawTextureFromRect(sprites[0x1C], &rect, x << 9, y << 9, true);
+				}
+
+				break;
+
+			case 6: case 7:
+				//Draw sky
+				rect = { 0, 0, w, 88 };
+
+				skyOff = (((w - screenWidth) / 2) << 9);
+				
+				drawTextureFromRect(sprites[0x1C], &rect, -skyOff, 0, true);
+
+				//Cloud layers
+				rect.top = 88;
+				rect.bottom = 123;
+				for (int i = 0; i <= (screenWidth / w) + 1; ++i)
+					drawTextureFromRect(sprites[0x1C], &rect, ((w * i) - ((backgroundEffect / 2) % w)) << 9, rect.top << 9, true);
+
+				rect.top = 123;
+				rect.bottom = 146;
+				for (int i = 0; i <= (screenWidth / w) + 1; ++i)
+					drawTextureFromRect(sprites[0x1C], &rect, ((w * i) - (backgroundEffect % w)) << 9, rect.top << 9, true);
+
+				rect.top = 146;
+				rect.bottom = 176;
+				for (int i = 0; i <= (screenWidth / w) + 1; ++i)
+					drawTextureFromRect(sprites[0x1C], &rect, ((w * i) - ((backgroundEffect * 2) % w)) << 9, rect.top << 9, true);
+
+				rect.top = 176;
+				rect.bottom = 240;
+				for (int i = 0; i <= (screenWidth / w) + 1; ++i)
+					drawTextureFromRect(sprites[0x1C], &rect, ((w * i) - ((backgroundEffect * 4) % w)) << 9, rect.top << 9, true);
+
+				break;
+
+			default:
 				break;
 		}
 	}

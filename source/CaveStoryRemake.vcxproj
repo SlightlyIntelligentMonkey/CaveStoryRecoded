@@ -152,6 +152,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="bullet.cpp" />
+    <ClCompile Include="game.cpp" />
     <ClCompile Include="hud.cpp" />
     <ClCompile Include="npc340.cpp" />
     <ClCompile Include="npcCollision.cpp" />
@@ -185,6 +186,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="bullet.h" />
+    <ClInclude Include="game.h" />
     <ClInclude Include="org.h" />
     <ClInclude Include="weapons.h" />
     <ClInclude Include="hud.h" />

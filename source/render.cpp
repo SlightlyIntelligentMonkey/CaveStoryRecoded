@@ -2,6 +2,58 @@
 
 SDL_Rect drawRectangle = {0};
 
+int screenWidth = 0;
+int screenHeight = 0;
+
+int screenScale = 0;
+
+//Create window
+int createWindow(int width, int height, int scale, bool fullscreen) {
+	SDL_DisplayMode DM;
+	SDL_GetCurrentDisplayMode(0, &DM);
+
+	int createWidth;
+	int createHeight;
+
+	if (fullscreen)
+	{
+		screenScale = (int)floor(DM.h / height);
+
+		screenHeight = DM.h / screenScale;
+		screenWidth = DM.w / screenScale;
+
+		createWidth = screenWidth;
+		createHeight = screenHeight;
+	}
+	else
+	{
+		screenWidth = width;
+		screenHeight = height;
+		screenScale = scale;
+
+		createWidth = width * scale;
+		createHeight = height * scale;
+	}
+
+	//Set window
+	if (!window)
+		window = SDL_CreateWindow("Cave Story Remake", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, createWidth, createHeight, 0);
+	else
+		SDL_SetWindowSize(window, createWidth, createHeight);
+
+	if (fullscreen)
+		SDL_SetWindowFullscreen(window, SDL_WINDOW_FULLSCREEN_DESKTOP);
+
+	//Set renderer
+	if (!renderer)
+		renderer = SDL_CreateRenderer(window, -1, 0);
+
+	SDL_RenderSetLogicalSize(renderer, screenWidth, screenHeight); //This is done to make sure the view is scaled up to the window (hardware sided)
+
+	return 0;
+}
+
+//Texture and drawing stuff
 void loadBMP(const char *file, SDL_Texture **tex) {
 	//Destroy previously existing texture
 	if (*tex != NULL) {
@@ -84,50 +136,6 @@ void drawNumber(int number, int x, int y, const char *style, int disappear)
 
 			number /= 10;
 		}
-	}
-	else if (style == "numberPositive")
-	{
-		int drawX = x + 0x3000;
-		bool first = true; //Render if 0
-
-		while (number > 0 || first)
-		{
-			first = false;
-
-			int thisNumber = number % 10;
-			
-			drawRect = { thisNumber * 8, 56 + disappear, (thisNumber + 1) * 8, 64 };
-			drawTextureFromRect(sprites[0x1A], &drawRect, drawX, y - disappear, true);
-
-			drawX -= 0x1000;
-
-			number /= 10;
-		}
-
-		drawRect = { 32, 48, 40, 56 };
-		drawTextureFromRect(sprites[0x1A], &drawRect, drawX, y - disappear, true);
-	}
-	else if (style == "numberNegative")
-	{
-		int drawX = x + 0x3000;
-		bool first = true; //Render if 0
-
-		while (number > 0 || first)
-		{
-			first = false;
-
-			int thisNumber = number % 10;
-
-			drawRect = { thisNumber * 8, 64 + disappear, (thisNumber + 1) * 8, 72 };
-			drawTextureFromRect(sprites[0x1A], &drawRect, drawX, y - disappear, true);
-
-			drawX -= 0x1000;
-
-			number /= 10;
-		}
-
-		drawRect = { 40, 48, 48, 56 };
-		drawTextureFromRect(sprites[0x1A], &drawRect, drawX, y - disappear, true);
 	}
 }
 
