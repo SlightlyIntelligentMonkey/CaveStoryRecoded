@@ -49,36 +49,41 @@ SDL_Texture* sprites[0x28];
 
 int init() {
 	//Initiate SDL and window stuff
-	SDL_Init(SDL_INIT_TIMER | SDL_INIT_AUDIO | SDL_INIT_VIDEO);
+	if (SDL_Init(SDL_INIT_TIMER | SDL_INIT_AUDIO | SDL_INIT_VIDEO) < 0)
+		doCustomError("Couldn't initiate SDL");
+
+	//Initiate SDL_image
+	if (!(IMG_Init(IMG_INIT_PNG) & IMG_INIT_PNG))
+		doCustomError("Couldn't initiate SDL Image");
 	
 	initSound();
 	
 	createWindow(240 * 16 / 9, 240, 2, false);
 
 	//Load assets
-	loadBMP("data/Title.bmp", &sprites[0x00]);
+	loadImage("data/Title.png", &sprites[0x00]);
 
-	loadBMP("data/Fade.bmp", &sprites[0x06]);
+	loadImage("data/Fade.png", &sprites[0x06]);
 
-	loadBMP("data/ItemImage.bmp", &sprites[0x08]);
+	loadImage("data/ItemImage.png", &sprites[0x08]);
 
-	loadBMP("data/Arms.bmp", &sprites[0x0B]);
-	loadBMP("data/ArmsImage.bmp", &sprites[0x0C]);
+	loadImage("data/Arms.png", &sprites[0x0B]);
+	loadImage("data/ArmsImage.png", &sprites[0x0C]);
 
-	loadBMP("data/StageImage.bmp", &sprites[0x0E]);
+	loadImage("data/StageImage.png", &sprites[0x0E]);
 
-	loadBMP("data/Loading.bmp", &sprites[0x0F]);
+	loadImage("data/Loading.png", &sprites[0x0F]);
 
-	loadBMP("data/MyChar.bmp", &sprites[0x10]);
+	loadImage("data/MyChar.png", &sprites[0x10]);
 
-	loadBMP("data/Bullet.bmp", &sprites[0x11]);
-	loadBMP("data/Caret.bmp", &sprites[0x13]);
+	loadImage("data/Bullet.png", &sprites[0x11]);
+	loadImage("data/Caret.png", &sprites[0x13]);
 
-	loadBMP("data/Npc/NpcSym.bmp", &sprites[0x14]);
-	loadBMP("data/Npc/NpcRegu.bmp", &sprites[0x17]);
+	loadImage("data/Npc/NpcSym.png", &sprites[0x14]);
+	loadImage("data/Npc/NpcRegu.png", &sprites[0x17]);
 
-	loadBMP("data/TextBox.bmp", &sprites[0x1A]);
-	loadBMP("data/Face.bmp", &sprites[0x1B]);
+	loadImage("data/TextBox.png", &sprites[0x1A]);
+	loadImage("data/Face.png", &sprites[0x1B]);
 
 	//Start game
 	//init flags

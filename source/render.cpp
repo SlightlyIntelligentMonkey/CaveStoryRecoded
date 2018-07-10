@@ -9,40 +9,18 @@ int screenScale = 0;
 
 //Create window
 int createWindow(int width, int height, int scale, bool fullscreen) {
-	SDL_DisplayMode DM;
-	SDL_GetCurrentDisplayMode(0, &DM);
+	int createWidth = width * scale;
+	int createHeight = height * scale;
 
-	int createWidth;
-	int createHeight;
-
-	if (fullscreen)
-	{
-		screenScale = (int)floor(DM.h / height);
-
-		screenHeight = DM.h / screenScale;
-		screenWidth = DM.w / screenScale;
-
-		createWidth = screenWidth;
-		createHeight = screenHeight;
-	}
-	else
-	{
-		screenWidth = width;
-		screenHeight = height;
-		screenScale = scale;
-
-		createWidth = width * scale;
-		createHeight = height * scale;
-	}
+	screenWidth = width;
+	screenHeight = height;
+	screenScale = scale;
 
 	//Set window
 	if (!window)
 		window = SDL_CreateWindow("Cave Story Remake", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, createWidth, createHeight, 0);
 	else
 		SDL_SetWindowSize(window, createWidth, createHeight);
-
-	if (fullscreen)
-		SDL_SetWindowFullscreen(window, SDL_WINDOW_FULLSCREEN_DESKTOP);
 
 	//Set renderer
 	if (!renderer)
@@ -54,24 +32,17 @@ int createWindow(int width, int height, int scale, bool fullscreen) {
 }
 
 //Texture and drawing stuff
-void loadBMP(const char *file, SDL_Texture **tex) {
-	//Destroy previously existing texture
-	if (*tex != NULL) {
-		SDL_DestroyTexture(*tex);
-	}
+void loadImage(const char *file, SDL_Texture **tex) {
+	//Destroy previously existing texture and load new one
+	if (*tex != NULL) { SDL_DestroyTexture(*tex); }
+	*tex = IMG_LoadTexture(renderer, file);
 
-	SDL_Surface *tempSurface = SDL_LoadBMP(file);
+	//Crash if anything failed
+	if (*tex == NULL)
+		doError();
 
-	if (tempSurface == NULL) { doError(); }
-
-	SDL_SetColorKey(tempSurface, SDL_TRUE, 0);
-	*tex = SDL_CreateTextureFromSurface(renderer, tempSurface);
-
-	if (tex == NULL) { doError(); }
-
-	SDL_FreeSurface(tempSurface);
-
-	return;
+	if (SDL_SetTextureBlendMode(*tex, SDL_BLENDMODE_BLEND) != 0)
+		doError();
 }
 
 void drawTexture(SDL_Texture *texture, int x, int y, bool fixed) {

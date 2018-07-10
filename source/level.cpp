@@ -171,31 +171,31 @@ void loadLevel(int levelIndex) {
 
 	//Load tileset
 	char tileImagePath[256];
-	snprintf(tileImagePath, 256, "data/Stage/Prt%s.bmp", tilesetFilename);
+	snprintf(tileImagePath, 256, "data/Stage/Prt%s.png", tilesetFilename);
 
-	loadBMP(tileImagePath, &sprites[0x02]);
+	loadImage(tileImagePath, &sprites[0x02]);
 
 	//Load background
 	char bgImagePath[256];
-	snprintf(bgImagePath, 256, "data/%s.bmp", backgroundFilename);
+	snprintf(bgImagePath, 256, "data/%s.png", backgroundFilename);
 
-	loadBMP(bgImagePath, &sprites[0x1C]);
+	loadImage(bgImagePath, &sprites[0x1C]);
 
 	//Load npc sheets
 	//Load sheet 1
 	char npcSheet1Path[256];
-	snprintf(npcSheet1Path, 256, "data/Npc/Npc%s.bmp", npcSheet1);
+	snprintf(npcSheet1Path, 256, "data/Npc/Npc%s.png", npcSheet1);
 
-	loadBMP(npcSheet1Path, &sprites[0x15]);
+	loadImage(npcSheet1Path, &sprites[0x15]);
 
 	//Load sheet 2
 	char npcSheet2Path[256];
-	snprintf(npcSheet2Path, 256, "data/Npc/Npc%s.bmp", npcSheet2);
+	snprintf(npcSheet2Path, 256, "data/Npc/Npc%s.png", npcSheet2);
 	strcpy(npcSheet2Path, "data/Npc/Npc");
 	strcat(npcSheet2Path, npcSheet2);
-	strcat(npcSheet2Path, ".bmp");
+	strcat(npcSheet2Path, ".png");
 
-	loadBMP(npcSheet2Path, &sprites[0x16]);
+	loadImage(npcSheet2Path, &sprites[0x16]);
 
 	//Load tsc script
 	char tscPath[256];
