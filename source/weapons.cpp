@@ -1,6 +1,6 @@
 #include "weapons.h"
 
-WEAPONEXP gArmsLevelTable[14] = {
+WEAPONEXP weaponLevels[14] = {
 	{{ 0,	0,	100 }},
 	{{ 30,	40,	16 }},
 	{{ 10,	20,	10 }},

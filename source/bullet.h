@@ -28,7 +28,7 @@ public: //Variables
 	int animationWait;
 
 	RECT frameRect;
-	POINT offset;
+	RECT offset; //RECT... b-but why pixel
 
 	int count1;
 	int count2;
@@ -44,8 +44,10 @@ public: //Variables
 	int blockWidth;
 	int blockHeight;
 
+	int level;
+
 public: //Functions
-	void init(int id, int setX, int setY, int dir);
+	void init(int id, int setX, int setY, int dir, int setLevel);
 
 	void update();
 };

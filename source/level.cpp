@@ -207,8 +207,9 @@ void loadLevel(int levelIndex) {
 	return;
 }
 
-void drawLevel(bool foreground) {
-	if (foreground == false) { //Draw background
+void drawLevel(bool foreground)
+{
+	if (!foreground) { //Draw background
 		RECT rect;
 
 		int skyOff;
@@ -261,13 +262,26 @@ void drawLevel(bool foreground) {
 
 			case 6: case 7:
 				//Draw sky
-				rect = { 0, 0, w, 88 };
+				rect = { 0, 0, w / 2, 88 };
 
-				skyOff = (((w - screenWidth) / 2) << 9);
+				skyOff = ((((w / 2) - screenWidth) / 2) * 0x200);
 				
+				//Draw middle
 				drawTextureFromRect(sprites[0x1C], &rect, -skyOff, 0, true);
 
+				//Repeat stars or whatever
+				rect = { w / 2, 0, w, 88 };
+
+				for (int i = 0; i < screenWidth - (skyOff / 2 + rect.left); i += rect.left)
+				{
+					drawTextureFromRect(sprites[0x1C], &rect, -skyOff + ((rect.left + i) * 0x200), 0, true);
+					drawTextureFromRect(sprites[0x1C], &rect, -skyOff - ((rect.left + i) * 0x200), 0, true);
+				}
+
 				//Cloud layers
+				rect.left = 0;
+				rect.right = w;
+
 				rect.top = 88;
 				rect.bottom = 123;
 				for (int i = 0; i <= (screenWidth / w) + 1; ++i)

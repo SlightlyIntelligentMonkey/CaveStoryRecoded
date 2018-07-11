@@ -73,9 +73,7 @@ void npc::draw()
 {
 	if (cond & npccond_alive)
 	{
-		ImageRect = { frameRect.left, frameRect.top, frameRect.right - frameRect.left, frameRect.bottom - frameRect.top };
-
-		drawTexture(sprites[spriteSheet], x - offset.x, y - offset.y, false);
+		drawTextureFromRect(sprites[spriteSheet], &frameRect, x - offset.x, y - offset.y, false);
 
 		/*/ COLLISION DEBUG
 		SDL_SetRenderDrawColor(renderer, 255, 255, 0, 255);

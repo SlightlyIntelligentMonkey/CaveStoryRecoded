@@ -18,7 +18,7 @@ int createWindow(int width, int height, int scale, bool fullscreen) {
 
 	//Set window
 	if (!window)
-		window = SDL_CreateWindow("Cave Story Remake", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, createWidth, createHeight, 0);
+		window = SDL_CreateWindow("Cave Story Engine", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, createWidth, createHeight, 0);
 	else
 		SDL_SetWindowSize(window, createWidth, createHeight);
 
@@ -83,30 +83,35 @@ void drawTextureFromRect(SDL_Texture *texture, RECT *rect, int x, int y, bool fi
 	return;
 }
 
-void drawNumber(int number, int x, int y, const char *style, int disappear)
+void drawNumber(int value, int x, int y, bool bZero)
 {
-	RECT drawRect;
+	int offset = 0;
+	int pos = 1000; //replacing an array a day keeps the doctor away
 
-	number = std::abs(number);
+	if (value > 9999)
+		value = 9999;
 
-	if (style == "hudrl")
+	int count = 0;
+	while (offset < 4)
 	{
-		int drawX = x + 0x3000;
-		bool first = true; //Render if 0
+		int drawValue = 0;
 
-		while (number > 0 || first)
+		while (pos <= value)
 		{
-			first = false;
+			value -= pos;
 
-			int thisNumber = number % 10;
-
-			drawRect = {thisNumber * 8, 56 + disappear, (thisNumber + 1) * 8, 64};
-			drawTextureFromRect(sprites[0x1A], &drawRect, drawX, y - disappear, true);
-
-			drawX -= 0x1000;
-
-			number /= 10;
+			++drawValue;
+			++count;
 		}
+
+		if (bZero && offset == 2 || count != 0 || offset == 3) //I don't really understand this
+		{
+			ImageRect = { drawValue << 3, 56, 8, 8 };
+			drawTexture(sprites[26], x + (offset << 12), y, true);
+		}
+
+		offset++;
+		pos /= 10;
 	}
 }
 

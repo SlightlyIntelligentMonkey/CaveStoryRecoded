@@ -28,7 +28,7 @@ void drawPlayerHealth(bool hide)
 		drawTextureFromRect(sprites[0x1A], &rcBr, 40 << 9, 40 << 9, true);
 		drawTextureFromRect(sprites[0x1A], &rcLife, 40 << 9, 40 << 9, true);
 
-		drawNumber(currentPlayer.lastHealth, 8 << 9, 40 << 9, "hudrl", 0);
+		drawNumber(currentPlayer.lastHealth, 8 << 9, 40 << 9, false);
 	}
 }
 
@@ -38,13 +38,14 @@ void drawPlayerAir()
 	rcAir[0] = { 112, 72, 144, 80 };
 	rcAir[1] = { 112, 80, 144, 88 };
 
-	int x = (screenWidth * 0x100) - 0x2800;
-	int y = 0xD000;
+	int x = (screenWidth << 8) - 0x5000;
+	int y = (screenHeight << 8) - 0x2000;
 
 	if (currentPlayer.airShow)
 	{
 		//Amount of air left divided
-		if (currentPlayer.airShow % 6 <= 3) { drawNumber(currentPlayer.air / 10, x + (32 << 9), y, "hudrl", 0); }
+		if (currentPlayer.airShow % 6 <= 3)
+			drawNumber(currentPlayer.air / 10, x + (32 << 9), y, false);
 
 		//Draw the "AIR" thing
 		drawTextureFromRect(sprites[0x1A], &rcAir[(currentPlayer.air % 30 <= 10)], x, y, true);

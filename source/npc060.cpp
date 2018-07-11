@@ -11,12 +11,13 @@ void npcAct060(npc *NPC) //Toroko
 	switch(action)
 	{
 	case 0:
-		NPC->action = 1;
+		NPC->action = 6;
+		NPC->direction = 2;
 		NPC->animation = 0;
 		NPC->animationWait = 0;
 		NPC->xsp = 0;
 		
-		goto npc060act1;
+		break;//goto npc060act4;
 
 	case 1:
 npc060act1:
@@ -187,12 +188,12 @@ npc060act9:
 	NPC->y += NPC->ysp;
 
 	//Framerect
-	int yOff = 64;
+	int yOff = 80;
 
 	if (NPC->direction)
-		yOff = 80;
+		yOff += 16;
 
-	NPC->frameRect = { frameMap[NPC->animation] << 4, yOff, 16 + (frameMap[NPC->animation] << 4), yOff + 16 };
+	NPC->frameRect = { frameMap[NPC->animation] << 4, yOff, 16 + (frameMap[NPC->animation] << 4), yOff};
 }
 
 void npcAct064(npc *NPC) //First Cave critter

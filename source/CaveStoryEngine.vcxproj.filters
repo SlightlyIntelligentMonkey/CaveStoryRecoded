@@ -34,11 +34,11 @@
     <Filter Include="Source Files\classes\npc\act">
       <UniqueIdentifier>{4ff93f4a-c3c8-4ee2-9f39-03301d066c06}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\classes\weapon\bulletAct">
-      <UniqueIdentifier>{754df458-b380-47d1-a7ca-725b1365a1b9}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Source Files\states">
       <UniqueIdentifier>{a4b019f6-de34-4577-9b8b-64cf1ee3b5ac}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\classes\weapon\act">
+      <UniqueIdentifier>{754df458-b380-47d1-a7ca-725b1365a1b9}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -114,14 +114,14 @@
     <ClCompile Include="npcAct.cpp">
       <Filter>Source Files\classes\npc\act</Filter>
     </ClCompile>
-    <ClCompile Include="polarStarBullets.cpp">
-      <Filter>Source Files\classes\weapon\bulletAct</Filter>
-    </ClCompile>
     <ClCompile Include="org.cpp">
       <Filter>Source Files\modules\sound</Filter>
     </ClCompile>
     <ClCompile Include="game.cpp">
       <Filter>Source Files\states</Filter>
+    </ClCompile>
+    <ClCompile Include="polarStar.cpp">
+      <Filter>Source Files\classes\weapon\act</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -203,9 +203,12 @@
     <ClInclude Include="game.h">
       <Filter>Source Files\states</Filter>
     </ClInclude>
+    <ClInclude Include="polarStar.h">
+      <Filter>Source Files\classes\weapon\act</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ResourceCompile Include="CaveStoryRemake.rc">
+    <ResourceCompile Include="CaveStoryEngine.rc">
       <Filter>Resource Files</Filter>
     </ResourceCompile>
   </ItemGroup>

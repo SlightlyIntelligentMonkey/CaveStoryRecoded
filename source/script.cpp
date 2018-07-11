@@ -85,8 +85,5 @@ void runScriptEvent(int event_num) {
 }
 
 void updateTsc() {
-	if (tsc_wait > 0) {
-		tsc_wait--;
-		return;
-	}
+	
 }

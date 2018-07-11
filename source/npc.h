@@ -38,6 +38,7 @@ class npc
 		int shock;
 
 		int count1;
+		int count2;
 
 		int cond;
 

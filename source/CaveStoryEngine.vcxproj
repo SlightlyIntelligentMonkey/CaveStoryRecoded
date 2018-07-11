@@ -23,7 +23,7 @@
     <ProjectGuid>{8DE67CE2-BCF9-4B5E-8260-C58044628838}</ProjectGuid>
     <RootNamespace>source</RootNamespace>
     <WindowsTargetPlatformVersion>10.0.16299.0</WindowsTargetPlatformVersion>
-    <ProjectName>CaveStoryRemake</ProjectName>
+    <ProjectName>CaveStoryEngine</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -177,7 +177,7 @@
       <Optimization Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Disabled</Optimization>
     </ClCompile>
     <ClCompile Include="playerCollision.cpp" />
-    <ClCompile Include="polarStarBullets.cpp" />
+    <ClCompile Include="polarStar.cpp" />
     <ClCompile Include="render.cpp" />
     <ClCompile Include="script.cpp" />
     <ClCompile Include="smixer.cpp" />
@@ -188,6 +188,7 @@
     <ClInclude Include="bullet.h" />
     <ClInclude Include="game.h" />
     <ClInclude Include="org.h" />
+    <ClInclude Include="polarStar.h" />
     <ClInclude Include="weapons.h" />
     <ClInclude Include="hud.h" />
     <ClInclude Include="npc340.h" />
@@ -213,7 +214,7 @@
     <ClInclude Include="sound.h" />
   </ItemGroup>
   <ItemGroup>
-    <ResourceCompile Include="CaveStoryRemake.rc" />
+    <ResourceCompile Include="CaveStoryEngine.rc" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -13,6 +13,6 @@ void loadImage(const char *file, SDL_Texture **tex);
 void drawTexture(SDL_Texture *texture, int x, int y, bool fixed);
 void drawTextureFromRect(SDL_Texture *texture, RECT *rect, int x, int y, bool fixed);
 
-void drawNumber(int number, int x, int y, const char *style, int disappear);
+void drawNumber(int value, int x, int y, bool bZero);
 
 void drawRect(int x, int y, int w, int h);
