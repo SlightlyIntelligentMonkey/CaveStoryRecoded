@@ -1,5 +1,5 @@
-# CaveStoryRemake
-An open-source Cave Story remake.
+# Cave Story Engine
+An open-source Cave Story Engine.
 
 Essentially 1:1 to the original game.
 
