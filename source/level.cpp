@@ -8,7 +8,9 @@ BYTE *levelTileAttributes = nullptr;
 
 BYTE backgroundScroll;
 
+//Effect things
 int backgroundEffect = 0;
+int currentEffect = 0;
 
 //NPC Functions
 void updateNPC()
@@ -309,6 +311,12 @@ void drawLevel(bool foreground)
 		}
 	}
 
+	//Animate currents
+	RECT currentRect = { 0 };
+
+	if (foreground)
+		currentEffect += 2;
+
 	//Render tiles
 	int xFrom = clamp((viewX + 0x1000) >> 13, 0, levelWidth);
 	int xTo = clamp((((viewX + 0x1000) + (screenWidth << 9)) >> 13) + 1, 0, levelWidth); //add 1 because edge wouldn't appear
@@ -329,27 +337,62 @@ void drawLevel(bool foreground)
 					int drawX = i % levelWidth;
 					int drawY = i / levelWidth;
 
-					switch (attribute)
+					if (attribute == 0x43)
 					{
-						case(0x43):
-							ImageRect.x = 256;
-							ImageRect.y = 48;
-							ImageRect.w = 16;
-							ImageRect.h = 16;
+						ImageRect = { 256, 48, 16, 16 };
 
-							drawTexture(sprites[0x14], (drawX << 13) - 0x1000, (drawY << 13) - 0x1000, false);
-
-							continue;
-
-						default:
-							ImageRect.x = (tile % 16) * 16;
-							ImageRect.y = (tile / 16) * 16;
-							ImageRect.w = 16;
-							ImageRect.h = 16;
+						drawTexture(sprites[0x14], (drawX << 13) - 0x1000, (drawY << 13) - 0x1000, false);
+					}
+					else
+					{
+						if (attribute < 0x80)
+						{
+							ImageRect = { (tile % 16) * 16, (tile / 16) * 16, 16, 16 };
 
 							drawTexture(sprites[0x02], (drawX << 13) - 0x1000, (drawY << 13) - 0x1000, false);
+						}
+						else
+						{
+							bool draw = true;
 
-							continue;
+							switch (attribute)
+							{
+							case 128: case 160:
+								currentRect.left = (currentEffect & 0xF) + 224;
+								currentRect.right = (currentEffect & 0xF) + 240;
+								currentRect.top = 48;
+								currentRect.bottom = 64;
+								break;
+
+							case 129: case 161:
+								currentRect.left = 224;
+								currentRect.right = 240;
+								currentRect.top = (currentEffect & 0xF) + 48;
+								currentRect.bottom = (currentEffect & 0xF) + 64;
+								break;
+
+							case 130: case 162:
+								currentRect.left = 240 - (currentEffect & 0xF);
+								currentRect.right = currentRect.left + 16;
+								currentRect.top = 48;
+								currentRect.bottom = 64;
+								break;
+
+							case 131: case 163:
+								currentRect.left = 224;
+								currentRect.right = 240;
+								currentRect.top = 64 - (currentEffect & 0xF);
+								currentRect.bottom = currentRect.top + 16;
+								break;
+
+							default:
+								draw = false;
+								break;
+							}
+
+							if (draw)
+								drawTextureFromRect(sprites[0x13], &currentRect, (drawX << 13) - 0x1000, (drawY << 13) - 0x1000, false);
+						}
 					}
 				}
 			}

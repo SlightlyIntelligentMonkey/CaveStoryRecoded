@@ -5,13 +5,15 @@
 static char *tsc = 0;
 
 // -- TSC State --
-static int tsc_pos = -1;
-static int tsc_wait = 0;
+int tscMode = 0;
 
-static int tscMsgOpen = -1;
+int tscPos = -1;
+int tscWait = 0;
+
+int tscMsgOpen = -1;
 
 // Decrypt into tsc buffer
-static void tscDecrypt(int start, BYTE * code, int size) {
+void tscDecrypt(int start, BYTE * code, int size) {
 	int headHalf = size >> 1;
 	int headCipher = code[headHalf];
 
@@ -26,8 +28,8 @@ static void tscDecrypt(int start, BYTE * code, int size) {
 }
 
 void loadTsc(const char * path) {
-	tsc_pos = -1;
-	tsc_wait = 0;
+	tscPos = -1;
+	tscWait = 0;
 	tscMsgOpen = -1;
 
 	// Load head tsc
@@ -81,7 +83,7 @@ void runScriptEvent(int event_num) {
 	if (pLocation == NULL)
 		doCustomError("Event wasn't found.");
 
-	tsc_pos = (pLocation - tsc) + 7;
+	tscPos = (pLocation - tsc) + 7;
 }
 
 void updateTsc() {

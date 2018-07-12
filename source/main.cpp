@@ -58,7 +58,7 @@ int init() {
 	
 	initSound();
 	
-	createWindow(320 * 5, 240, 1, true);
+	createWindow(320, 240, 2, true);
 
 	//Load assets
 	loadImage("data/Title.png", &sprites[0x00]);

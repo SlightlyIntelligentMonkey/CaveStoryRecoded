@@ -5,38 +5,15 @@ void npcAct059(npc *NPC) //Eye door
 	RECT *setRect;
 	RECT rect[4];
 
-	rect[0].left = 224;
-	rect[0].top = 16;
-	rect[0].right = 240;
-	rect[0].bottom = 40;
-	rect[1].left = 208;
-	rect[1].top = 80;
-	rect[1].right = 224;
-	rect[1].bottom = 104;
-	rect[2].left = 224;
-	rect[2].top = 80;
-	rect[2].right = 240;
-	rect[2].bottom = 104;
-	rect[3].left = 240;
-	rect[3].top = 80;
-	rect[3].right = 256;
-	rect[3].bottom = 104;
+	rect[0] = { 224, 16, 240, 40 };
+	rect[1] = { 208, 80, 224, 104 };
+	rect[2] = { 224, 80, 240, 104 };
+	rect[3] = { 240, 80, 256, 104 };
 
 	switch (NPC->action)
 	{
 	case 0:
 		NPC->action = 1;
-		goto npc059start;
-
-	case 1:
-	npc059start:
-		if (NPC->x - 0x8000 < currentPlayer.x && NPC->x + 0x8000 > currentPlayer.x && NPC->y - 0x8000 < currentPlayer.y && NPC->y + 0x8000 > currentPlayer.y)
-		{
-			NPC->action = 2;
-			NPC->animationWait = 0;
-		}
-
-		break;
 
 	case 2:
 		if (++NPC->animationWait > 2)
@@ -74,14 +51,19 @@ void npcAct059(npc *NPC) //Eye door
 		break;
 	}
 
-	if (NPC->shock)
+	if (NPC->action == 1) //replaces some dumb label and goto ewww acts the same anyways.
 	{
-		NPC->frameRect = { rect[3].left, rect[3].top, rect[3].right, rect[3].bottom };
+		if (NPC->x - 0x8000 < currentPlayer.x && NPC->x + 0x8000 > currentPlayer.x && NPC->y - 0x8000 < currentPlayer.y && NPC->y + 0x8000 > currentPlayer.y)
+		{
+			NPC->action = 2;
+			NPC->animationWait = 0;
+		}
 	}
+
+	if (NPC->shock)
+		setRect = &rect[3];
 	else
-	{
 		setRect = &rect[NPC->animation];
 
-		NPC->frameRect = { setRect->left, setRect->top, setRect->right, setRect->bottom };
-	}
+	NPC->frameRect = { setRect->left, setRect->top, setRect->right, setRect->bottom };
 }

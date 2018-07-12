@@ -13,7 +13,7 @@ int playerJudgeBlock(RECT *rcHit, player *me, int tx, int ty)
 		me->x = ((2 * tx + 1) << 12) + rcHit->left;
 
 		if (me->xsp < -0x180)
-			me->xsp = -384;
+			me->xsp = -0x180;
 
 		if (!(me->key && keyDown(SDL_SCANCODE_LEFT)) && me->xsp < 0)
 			me->xsp = 0;
@@ -28,8 +28,8 @@ int playerJudgeBlock(RECT *rcHit, player *me, int tx, int ty)
 	{
 		me->x = ((2 * tx - 1) << 12) - rcHit->right;
 
-		if (me->xsp > 384)
-			me->xsp = 384;
+		if (me->xsp > 0x180)
+			me->xsp = 0x180;
 
 		if (!(me->key && keyDown(SDL_SCANCODE_RIGHT)) && me->xsp > 0)
 			me->xsp = 0;

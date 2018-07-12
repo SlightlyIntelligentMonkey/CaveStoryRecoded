@@ -5,6 +5,7 @@ void npcAct000(npc *NPC) //Null
 	if (!NPC->action)
 	{
 		NPC->action = 1;
+
 		if (NPC->direction == 2)
 			NPC->y += 0x2000;
 	}
@@ -189,10 +190,47 @@ void npcAct005(npc *NPC) //Egg Corridor critter
 {
 	int action = NPC->action;
 
-	//Idle
+	switch (action)
+	{
+	case 0: //Initialize
+		NPC->y += 0x5FF;
+		NPC->action = 1;
+
+		break;
+
+	case 2: //Going to jump
+		if (++NPC->actionWait > 8)
+		{
+			//Jump
+			NPC->action = 3;
+			NPC->animation = 2;
+
+			NPC->hit &= ~ground;
+			NPC->ysp = -0x5FF;
+
+			//Jump in direction facing
+			if (NPC->direction)
+				NPC->xsp = 0x100;
+			else
+				NPC->xsp = -0x100;
+		}
+
+		break;
+
+	case 3: //In air
+		if (NPC->hit & ground) //Landed on the ground after jumping
+		{
+			NPC->action = 1;
+			NPC->actionWait = 0;
+
+			NPC->animation = 0;
+
+			NPC->xsp = 0;
+		}
+	}
+
 	if (action == 1)
 	{
-	npc005act:
 		//Face towards player
 		if (NPC->x <= currentPlayer.x)
 			NPC->direction = 2;
@@ -237,50 +275,8 @@ void npcAct005(npc *NPC) //Egg Corridor critter
 
 			NPC->animation = 0;
 		}
-		goto npc005end;
 	}
 
-	//Initialize
-	if (action <= 1)
-	{
-		if (action)
-			goto npc005end;
-
-		NPC->y += 0x5FF;
-		NPC->action = 1;
-		goto npc005act;
-	}
-
-	//Going to jump.. (squished, ready to jump)
-	if (action == 2)
-	{
-		if (++NPC->actionWait > 8)
-		{
-			//Jump
-			NPC->action = 3;
-			NPC->animation = 2;
-
-			NPC->hit ^= ground;
-			NPC->ysp = -0x5FF;
-
-			//Jump in direction facing
-			if (NPC->direction)
-				NPC->xsp = 0x100;
-			else
-				NPC->xsp = -0x100;
-		}
-	}
-	else if (action == 3 && NPC->hit & ground)
-	{
-		//Landed on the ground after jumping
-		NPC->action = 1;
-		NPC->actionWait = 0;
-
-		NPC->animation = 0;
-
-		NPC->xsp = 0;
-	}
-npc005end:
 	//Gravity
 	NPC->ysp += 0x40;
 	if (NPC->ysp > 0x5FF)
@@ -292,37 +288,9 @@ npc005end:
 
 	//Change framerect
 	if (NPC->direction)
-	{
-		switch (NPC->animation) {
-		case(0):
-			NPC->frameRect = { 0,64,16,80 };
-			break;
-
-		case(1):
-			NPC->frameRect = { 16,64,32,80 };
-			break;
-
-		case(2):
-			NPC->frameRect = { 32,64,48,80 };
-			break;
-		}
-	}
+		NPC->frameRect = { (NPC->animation << 4), 64, ((NPC->animation + 1) << 4), 80 };
 	else
-	{
-		switch (NPC->animation) {
-		case(0):
-			NPC->frameRect = { 0,48,16,64 };
-			break;
-
-		case(1):
-			NPC->frameRect = { 16,48,32,64 };
-			break;
-
-		case(2):
-			NPC->frameRect = { 32,48,48,64 };
-			break;
-		}
-	}
+		NPC->frameRect = { (NPC->animation << 4), 48, ((NPC->animation + 1) << 4), 64 };
 }
 
 void npcAct006(npc *NPC) //Beetle

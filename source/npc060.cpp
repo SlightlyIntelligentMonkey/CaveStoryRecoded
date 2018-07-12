@@ -11,13 +11,12 @@ void npcAct060(npc *NPC) //Toroko
 	switch(action)
 	{
 	case 0:
-		NPC->action = 6;
-		NPC->direction = 2;
+		NPC->action = 1;
 		NPC->animation = 0;
 		NPC->animationWait = 0;
 		NPC->xsp = 0;
 		
-		break;//goto npc060act4;
+		goto npc060act1;
 
 	case 1:
 npc060act1:
@@ -188,22 +187,59 @@ npc060act9:
 	NPC->y += NPC->ysp;
 
 	//Framerect
-	int yOff = 80;
+	int yOff = 64;
 
 	if (NPC->direction)
 		yOff += 16;
 
-	NPC->frameRect = { frameMap[NPC->animation] << 4, yOff, 16 + (frameMap[NPC->animation] << 4), yOff};
+	NPC->frameRect = { frameMap[NPC->animation] << 4, yOff, 16 + (frameMap[NPC->animation] << 4), yOff + 16};
 }
 
 void npcAct064(npc *NPC) //First Cave critter
 {
 	int action = NPC->action;
 
-	//Idle
+	switch (action)
+	{
+	case 0: //Initialize
+		NPC->y += 0x5FF;
+		NPC->action = 1;
+
+		break;
+
+	case 2: //Going to jump
+		if (++NPC->actionWait > 8)
+		{
+			//Jump
+			NPC->action = 3;
+			NPC->animation = 2;
+
+			NPC->hit &= ~ground;
+			NPC->ysp = -0x5FF;
+
+			//Jump in direction facing
+			if (NPC->direction)
+				NPC->xsp = 0x100;
+			else
+				NPC->xsp = -0x100;
+		}
+
+		break;
+
+	case 3: //In air
+		if (NPC->hit & ground) //Landed on the ground after jumping
+		{
+			NPC->action = 1;
+			NPC->actionWait = 0;
+
+			NPC->animation = 0;
+
+			NPC->xsp = 0;
+		}
+	}
+
 	if (action == 1)
 	{
-	npc064act:
 		//Face towards player
 		if (NPC->x <= currentPlayer.x)
 			NPC->direction = 2;
@@ -248,50 +284,8 @@ void npcAct064(npc *NPC) //First Cave critter
 
 			NPC->animation = 0;
 		}
-		goto npc064end;
 	}
 
-	//Initialize
-	if (action <= 1)
-	{
-		if (action)
-			goto npc064end;
-
-		NPC->y += 0x5FF;
-		NPC->action = 1;
-		goto npc064act;
-	}
-
-	//Going to jump.. (squished, ready to jump)
-	if (action == 2)
-	{
-		if (++NPC->actionWait > 8)
-		{
-			//Jump
-			NPC->action = 3;
-			NPC->animation = 2;
-
-			NPC->hit ^= ground;
-			NPC->ysp = -0x5FF;
-
-			//Jump in direction facing
-			if (NPC->direction)
-				NPC->xsp = 0x100;
-			else
-				NPC->xsp = -0x100;
-		}
-	}
-	else if (action == 3 && NPC->hit & ground)
-	{
-		//Landed on the ground after jumping
-		NPC->action = 1;
-		NPC->actionWait = 0;
-
-		NPC->animation = 0;
-
-		NPC->xsp = 0;
-	}
-npc064end:
 	//Gravity
 	NPC->ysp += 0x40;
 	if (NPC->ysp > 0x5FF)
@@ -303,88 +297,53 @@ npc064end:
 
 	//Change framerect
 	if (NPC->direction)
-	{
-		switch (NPC->animation) {
-		case(0):
-			NPC->frameRect = { 0,16,16,32 };
-			break;
-
-		case(1):
-			NPC->frameRect = { 16,16,32,32 };
-			break;
-
-		case(2):
-			NPC->frameRect = { 32,16,48,32 };
-			break;
-		}
-	}
+		NPC->frameRect = { (NPC->animation << 4), 16, ((NPC->animation + 1) << 4), 32 };
 	else
-	{
-		switch (NPC->animation) {
-		case(0):
-			NPC->frameRect = { 0,0,16,16 };
-			break;
-
-		case(1):
-			NPC->frameRect = { 16,0,32,16 };
-			break;
-
-		case(2):
-			NPC->frameRect = { 32,0,48,16 };
-			break;
-		}
-	}
+		NPC->frameRect = { (NPC->animation << 4), 0, ((NPC->animation + 1) << 4), 16 };
 }
 
 void npcAct065(npc *NPC) //First Cave Bat
 {
 	int action = NPC->action;
 
-	//Start moving bat
+	switch (action)
+	{
+	case 0:
+		NPC->targetX = NPC->x;
+		NPC->targetY = NPC->y;
+		NPC->action = 1;
+		NPC->actionWait = random(0, 50);
+
+	case 2:
+		//Face towards player
+		if (currentPlayer.x >= NPC->x)
+			NPC->direction = 2;
+		else
+			NPC->direction = 0;
+
+		//Fly up and down
+		if (NPC->targetY < NPC->y)
+			NPC->ysp -= 0x10;
+		if (NPC->targetY > NPC->y)
+			NPC->ysp += 0x10;
+
+		//Limit speed
+		if (NPC->ysp > 0x300)
+			NPC->ysp = 0x300;
+		if (NPC->ysp < -0x300)
+			NPC->ysp = -0x300;
+	}
+
 	if (action == 1)
 	{
-	npc065start:
 		if (++NPC->actionWait >= 50)
 		{
 			NPC->actionWait = 0;
 			NPC->action = 2;
 			NPC->ysp = 0x300;
 		}
-		goto npc065end;
 	}
 
-	//Initialize
-	if (action != 2)
-	{
-		if (action)
-			goto npc065end;
-
-		NPC->targetX = NPC->x;
-		NPC->targetY = NPC->y;
-		NPC->action = 1;
-		NPC->actionWait = random(0, 50);
-		goto npc065start;
-	}
-
-	//Face towards player
-	if (currentPlayer.x >= NPC->x)
-		NPC->direction = 2;
-	else
-		NPC->direction = 0;
-
-	//Fly up and down
-	if (NPC->targetY < NPC->y)
-		NPC->ysp -= 0x10;
-	if (NPC->targetY > NPC->y)
-		NPC->ysp += 0x10;
-
-	//Limit speed
-	if (NPC->ysp > 0x300)
-		NPC->ysp = 0x300;
-	if (NPC->ysp < -0x300)
-		NPC->ysp = -0x300;
-
-npc065end:
 	//Move bat
 	NPC->x += NPC->xsp;
 	NPC->y += NPC->ysp;
@@ -398,50 +357,13 @@ npc065end:
 
 	NPC->animation %= 3;
 
-	//Change framerect
 	if (NPC->direction)
-	{
-		switch (NPC->animation) {
-		case(0):
-			NPC->frameRect = { 32,48,48,64 };
-			break;
-
-		case(1):
-			NPC->frameRect = { 48,48,64,64 };
-			break;
-
-		case(2):
-			NPC->frameRect = { 64,48,80,64 };
-			break;
-
-		case(3):
-			NPC->frameRect = { 80,48,96,64 };
-			break;
-		}
-	}
+		NPC->frameRect = { 32 + (NPC->animation << 4), 48, 48 + (NPC->animation << 4), 64 };
 	else
-	{
-		switch (NPC->animation) {
-		case(0):
-			NPC->frameRect = { 32,32,48,48 };
-			break;
-
-		case(1):
-			NPC->frameRect = { 48,32,64,48 };
-			break;
-
-		case(2):
-			NPC->frameRect = { 64,32,80,48 };
-			break;
-
-		case(3):
-			NPC->frameRect = { 80,32,96,48 };
-			break;
-		}
-	}
+		NPC->frameRect = { 32 + (NPC->animation << 4), 32, 48 + (NPC->animation << 4), 48 };
 }
 
-void npcAct073(npc *NPC)
+void npcAct073(npc *NPC) //Water drop
 {
 	NPC->ysp += 0x20;
 
