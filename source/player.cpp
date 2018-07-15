@@ -33,7 +33,7 @@ void player::explode(int x, int y, int w, int num)
 		offset_x = random(-wa, wa) << 9;
 		offset_y = random(-wa, wa) << 9;
 
-		createNpc(x + offset_x, offset_y + y, 0, 0, 0, 0, 0, 4, 0);
+		createNpc(4, x + offset_x, offset_y + y, 0, 0, 0, nullptr);
 	}
 
 	//SetCaret(x, y, 12, 0); //What caret is this?
@@ -43,8 +43,7 @@ void player::hit(int damage) {
 	if (shock == 0)
 	{
 		//PlaySoundObject(16, 1);
-		if (cond & player_removed)
-			cond ^= player_removed;
+		cond &= ~player_removed;
 
 		shock = -128;
 
@@ -52,6 +51,8 @@ void player::hit(int damage) {
 		ysp = -0x400;
 
 		health -= damage;
+
+		createCaret(x, y, 10, 2);
 
 		if (health <= 0)
 		{
@@ -129,9 +130,9 @@ void player::actNormal() {
 		{
 			if (key)
 			{
-				if (!keyPressed(SDL_SCANCODE_DOWN) || (cond & player_inspect))
+				if (!isKeyPressed(keyDown) || (cond & player_inspect))
 				{
-					if (keyDown(SDL_SCANCODE_LEFT))
+					if (isKeyDown(keyLeft))
 					{
 						direction = 0;
 
@@ -139,7 +140,7 @@ void player::actNormal() {
 							xsp -= dashGround;
 					}
 
-					if (keyDown(SDL_SCANCODE_RIGHT))
+					if (isKeyDown(keyRight))
 					{
 						direction = 2;
 
@@ -176,7 +177,7 @@ void player::actNormal() {
 		{
 			if (key)
 			{
-				if (keyDown(SDL_SCANCODE_LEFT))
+				if (isKeyDown(keyLeft))
 				{
 					direction = 0;
 
@@ -184,7 +185,7 @@ void player::actNormal() {
 						xsp -= dashAir;
 				}
 
-				if (keyDown(SDL_SCANCODE_RIGHT))
+				if (isKeyDown(keyRight))
 				{
 					direction = 2;
 
@@ -197,11 +198,11 @@ void player::actNormal() {
 		if (key)
 		{
 			//Looking up and down
-			lookingUp = (keyDown(SDL_SCANCODE_UP)) != 0;
-			lookingDown = keyDown(SDL_SCANCODE_DOWN) && !(flags & ground);
+			lookingUp = (isKeyDown(keyUp)) != 0;
+			lookingDown = isKeyDown(keyDown) && !(flags & ground);
 
 			//Jump
-			if (keyPressed(SDL_SCANCODE_Z)
+			if (isKeyPressed(keyJump)
 				&& (flags & ground || flags & slopeLeft || flags & slopeRight)
 				&& !(flags & windUp))
 			{
@@ -211,10 +212,10 @@ void player::actNormal() {
 		}
 
 		//If pressed anything, stop inspecting
-		if (key == false || keyDown(SDL_SCANCODE_X) || keyDown(SDL_SCANCODE_Z) || keyDown(SDL_SCANCODE_UP) || keyDown(SDL_SCANCODE_RIGHT) || keyDown(SDL_SCANCODE_LEFT))
+		if (key == false || isKeyDown(keyShoot) || isKeyDown(keyJump) || isKeyDown(keyUp) || isKeyDown(keyRight) || isKeyDown(keyLeft))
 		{
-			if (cond & player_inspect)
-				cond ^= player_inspect;
+			cond &= ~player_inspect;
+			interacting = false;
 		}
 
 		//Wind
@@ -228,7 +229,7 @@ void player::actNormal() {
 			ysp += 0x55;
 
 		//Gravity
-		if (ysp < 0 && keyDown(SDL_SCANCODE_Z))
+		if (ysp < 0 && isKeyDown(keyJump))
 		{
 			ysp += gravityHold;
 		}
@@ -238,7 +239,7 @@ void player::actNormal() {
 		}
 
 		//Keep Quote on slopes
-		if (!keyPressed(SDL_SCANCODE_Z))
+		if (!isKeyPressed(keyJump))
 		{
 			if (flags & slopeRight && xsp < 0)
 				ysp = -xsp;
@@ -304,7 +305,7 @@ void player::actNormal() {
 						int waterYsp = random(-0x200, 0x80);
 						int xspDiff = random(-0x200, 0x200);
 
-						createNpc(spawnX, y, waterDir, xsp + xspDiff, waterYsp, 0, 0, 73, 0);
+						createNpc(73, spawnX, y, xsp + xspDiff, waterYsp, waterDir, nullptr);
 					}
 
 					//PlaySoundObject(56, 1);
@@ -318,7 +319,7 @@ void player::actNormal() {
 					int waterYsp = random(-0x200, 0x80) - (ysp / 2);
 					int xspDiff = random(-0x200, 0x200);
 
-					createNpc(spawnX, y, waterDir, xsp + xspDiff, waterYsp, 0, 0, 73, 0);
+					createNpc(73, spawnX, y, xsp + xspDiff, waterYsp, waterDir, nullptr);
 				}
 
 				//PlaySoundObject(56, 1);
@@ -329,8 +330,7 @@ void player::actNormal() {
 
 		if (!(flags & 0x100))
 		{
-			if (cond & player_wasWater)
-				cond ^= player_wasWater;
+			cond &= ~player_wasWater;
 		}
 
 		//Get hurt by spikes
@@ -343,9 +343,9 @@ void player::actNormal() {
 		else
 			viewOffX = std::max(viewOffX - 0x200, -0x8000);
 
-		if (keyDown(SDL_SCANCODE_UP))
+		if (isKeyDown(keyUp))
 			viewOffY = std::max(viewOffY - 0x200, -0x8000);
-		else if (keyDown(SDL_SCANCODE_DOWN))
+		else if (isKeyDown(keyDown))
 			viewOffY = std::min(viewOffY + 0x200, 0x8000);
 		else
 			viewOffY = std::max(std::abs(viewOffY) - 0x200, 0) * sign(viewOffY);
@@ -367,47 +367,39 @@ void player::animate() //Basically the decomp code (thanks 20kdc for the help)
 	{
 		if (cond & player_inspect)
 		{
+			//Inspecting
 			frame = 11;
 		}
-		else if (key && (keyDown(SDL_SCANCODE_RIGHT) || keyDown(SDL_SCANCODE_LEFT)))
+		else if (key && (isKeyDown(keyRight) || isKeyDown(keyLeft)))
 		{
+			//Walking
 			cond |= player_walk;
 
-			if (key && keyDown(SDL_SCANCODE_UP))
-			{
-				if (++animationWait > 4)
-				{
-					animationWait = 0;
-					++frame;
+			int base = 0;
 
-					//if (unk_81C85C0 == 8 || unk_81C85C0 == 9)
-					//	PlaySoundObject(24, 1);
-				}
-
-				if (frame > 9 || frame <= 5)
-					frame = 6;
-			}
+			if (key && isKeyDown(keyUp))
+				base = 6;
 			else
+				base = 1;
+
+			if (++animationWait > 4)
 			{
-				if (++animationWait > 4)
-				{
-					animationWait = 0;
-					++frame;
+				animationWait = 0;
+				++frame;
 
-					//if (unk_81C85C0 == 3 || unk_81C85C0 == 4)
-					//	PlaySoundObject(24, 1);
-				}
-
-				if (frame > 4 || frame <= 0)
-					frame = 1;
+				//if (frame == (base + 1) || frame == (base + 3))
+				//	PlaySoundObject(24, 1);
 			}
+
+			if (frame > base + 3 || frame < base)
+				frame = base;
 		}
 		else
 		{
-			if (cond & player_walk)
-				cond ^= player_walk;
+			//Idle
+			cond &= ~player_walk;
 
-			if (key && keyDown(SDL_SCANCODE_UP))
+			if (key && isKeyDown(keyUp))
 				frame = 5;
 			else
 				frame = 0;
@@ -415,6 +407,7 @@ void player::animate() //Basically the decomp code (thanks 20kdc for the help)
 	}
 	else
 	{
+		//Air animations
 		if (lookingUp)
 			frame = 6;
 		else if (lookingDown)
@@ -462,21 +455,21 @@ void player::update() {
 		if (shock)
 			++shock;
 
-		if (keyDown(SDL_SCANCODE_LCTRL))
+		if (isKeyDown(SDL_SCANCODE_LCTRL))
 		{
-			if (keyPressed(SDL_SCANCODE_MINUS))
+			if (isKeyPressed(SDL_SCANCODE_MINUS))
 				--maxHealth;
 
-			if (keyPressed(SDL_SCANCODE_EQUALS))
+			if (isKeyPressed(SDL_SCANCODE_EQUALS))
 				++maxHealth;
 
-			if (keyDown(SDL_SCANCODE_LEFT))
+			if (isKeyDown(keyLeft))
 				x -= 0x1000;
-			if (keyDown(SDL_SCANCODE_RIGHT))
+			if (isKeyDown(keyRight))
 				x += 0x1000;
-			if (keyDown(SDL_SCANCODE_UP))
+			if (isKeyDown(keyUp))
 				y -= 0x1000;
-			if (keyDown(SDL_SCANCODE_DOWN))
+			if (isKeyDown(keyDown))
 				y += 0x1000;
 
 			viewGoalX = x - (screenWidth * 0x100);
@@ -484,10 +477,10 @@ void player::update() {
 		}
 		else
 		{
-			if (keyPressed(SDL_SCANCODE_MINUS))
+			if (isKeyPressed(SDL_SCANCODE_MINUS))
 				--health;
 
-			if (keyPressed(SDL_SCANCODE_EQUALS))
+			if (isKeyPressed(SDL_SCANCODE_EQUALS))
 				++health;
 
 			actNormal();
@@ -503,8 +496,13 @@ void player::update() {
 			//Drowning
 			if (--air <= 0)
 			{
-				//Drowning code
-				air = 0;
+				//Drowning
+				if (direction)
+					createCaret(x, y, 8, 2);
+				else
+					createCaret(x, y, 8, 0);
+
+				cond &= ~player_visible;
 			}
 		}
 		else if (airShow)
@@ -514,8 +512,7 @@ void player::update() {
 			--airShow;
 		}
 
-		if (flags & player_noFriction)
-			flags ^= player_noFriction;
+		cond &= ~player_noFriction;
 
 		animate();
 	}

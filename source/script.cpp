@@ -1,4 +1,4 @@
-#include "script.h"
+﻿#include "script.h"
 
 // -- TSC Code --
 // This is a string, not a fixed buffer.
@@ -6,11 +6,27 @@ static char *tsc = 0;
 
 // -- TSC State --
 int tscMode = 0;
+enum modes
+{
+	parsingCheck = 0,
+	defaultMode = 1,
+	NOD = 2,
+	dunno = 3,
+	WAI = 4,
+	FADE = 5,
+	YNJ = 6,
+	someCheck = 7
+};
 
 int tscPos = -1;
 int tscWait = 0;
+int tscCounter = 0;
 
 int tscMsgOpen = -1;
+
+// -- command variables --
+unsigned int waitAmount = 0;
+int yesnoSelect = 0;
 
 // Decrypt into tsc buffer
 void tscDecrypt(int start, BYTE * code, int size) {
@@ -65,27 +81,39 @@ void loadTsc(const char * path) {
 
 void runScriptEvent(int event_num) {
 	int position = 4;
-	int rolamount = 0;
-	char *pLocation;
-	const int ascii_offset = 0x30;
-	char event_char[6] = "#0000";
+	char *location;
+	char eventChar[6] = "#0000";
 
 	if (event_num > 9999) { event_num = 9999; }
+
 	while (event_num > 0)
 	{
-		event_char[position] = (char)((event_num % 10) + ascii_offset);
+		eventChar[position] = (char)((event_num % 10) + 0x30);
 		position--;
 		event_num /= 10;
 	}
 
-	pLocation = strstr(tsc, event_char);
+	location = strstr(tsc, eventChar);
 
-	if (pLocation == NULL)
+	if (location == NULL)
 		doCustomError("Event wasn't found.");
 
-	tscPos = (pLocation - tsc) + 7;
+	tscMode = 1;
+	tscPos = (location - tsc) + 7;
 }
 
-void updateTsc() {
-	
+//Read numbers of a string
+int getValue(char *str, int digits)
+{
+    int value = 0;
+
+    for (int i = 0; i < digits; i++)
+        value += (str[i] - 0x30) * std::pow(10, (digits - i) - 1);
+
+    return value;
+}
+
+int updateTsc() {
+	//I need working code here
+	return 0;
 }

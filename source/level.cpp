@@ -12,33 +12,6 @@ BYTE backgroundScroll;
 int backgroundEffect = 0;
 int currentEffect = 0;
 
-//NPC Functions
-void updateNPC()
-{
-	//Remove stuff
-	for (size_t i = npcs.size() - 1; i > 0; i--) {
-		if (!(npcs[i].cond & npccond_alive))
-			npcs.erase(npcs.begin() + i);
-	}
-
-	//Update
-	for (unsigned int i = 0; i < npcs.size(); i++) {
-		if (npcs[i].cond & npccond_alive)
-		{
-			npcs[i].update();
-			npcHitMap(i);
-		}
-	}
-}
-
-void drawNPC()
-{
-	//Draw
-	for (unsigned int i = 0; i < npcs.size(); i++) {
-		npcs[i].draw();
-	}
-}
-
 //Get stage data
 BYTE *stageData = nullptr;
 char stblPath[256] = "data/stage.tbl";
@@ -50,18 +23,6 @@ BYTE getTileAttribute(int x, int y) {
 		return levelTileAttributes[levelMap[(x + y * levelWidth)]];
 
 	return 0;
-}
-
-void createNpc(int x, int y, int direction, int xsp, int ysp, short flag, short event, short type, short flags)
-{
-	npc newNPC;
-	newNPC.init(x, y, flag, event, type, flags);
-
-	newNPC.direction = direction;
-	newNPC.xsp = xsp;
-	newNPC.ysp = ysp;
-
-	npcs.push_back(newNPC);
 }
 
 void loadLevel(int levelIndex) {
@@ -140,18 +101,22 @@ void loadLevel(int levelIndex) {
 	npcs.clear();
 	npcs.shrink_to_fit();
 
+	//Clear old carets
+	carets.clear();
+	carets.shrink_to_fit();
+
 	//Load npcs
-	int entityCount = (int)pxe[4];
+	int entityCount = readLElong(pxe, 4);
 
 	for (int i = 0; i < entityCount; i++) {
 		int offset = (i * 12) + 8;
 
-		short x = readLEshort(pxe, offset);
-		short y = readLEshort(pxe, offset + 2);
-		short flag = readLEshort(pxe, offset + 4);
-		short event = readLEshort(pxe, offset + 6);
-		short type = readLEshort(pxe, offset + 8);
-		short flags = readLEshort(pxe, offset + 10);
+		uint16_t x = readLEshort(pxe, offset);
+		uint16_t y = readLEshort(pxe, offset + 2);
+		uint16_t flag = readLEshort(pxe, offset + 4);
+		uint16_t event = readLEshort(pxe, offset + 6);
+		uint16_t type = readLEshort(pxe, offset + 8);
+		uint16_t flags = readLEshort(pxe, offset + 10);
 
 		bool create = true;
 
@@ -166,7 +131,14 @@ void loadLevel(int levelIndex) {
 		if (create == true)
 		{
 			npc newNPC;
-			newNPC.init(x << 13, y << 13, flag, event, type, flags);
+			newNPC.init(type, x << 13, y << 13, 0, 0, 0, nullptr);
+
+			newNPC.code_event = event;
+			newNPC.bits |= flags;
+
+			if (flags & npc_altdir)
+				newNPC.direct = 2;
+
 			npcs.push_back(newNPC);
 		}
 	}

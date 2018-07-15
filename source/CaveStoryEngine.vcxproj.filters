@@ -40,6 +40,9 @@
     <Filter Include="Source Files\classes\weapon\act">
       <UniqueIdentifier>{754df458-b380-47d1-a7ca-725b1365a1b9}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\classes\caret">
+      <UniqueIdentifier>{c4140a78-85b3-4b3d-be75-d6bda949fe8a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -123,6 +126,15 @@
     <ClCompile Include="polarStar.cpp">
       <Filter>Source Files\classes\weapon\act</Filter>
     </ClCompile>
+    <ClCompile Include="npc080.cpp">
+      <Filter>Source Files\classes\npc\act</Filter>
+    </ClCompile>
+    <ClCompile Include="npc180.cpp">
+      <Filter>Source Files\classes\npc\act</Filter>
+    </ClCompile>
+    <ClCompile Include="caret.cpp">
+      <Filter>Source Files\classes\caret</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="render.h">
@@ -205,6 +217,15 @@
     </ClInclude>
     <ClInclude Include="polarStar.h">
       <Filter>Source Files\classes\weapon\act</Filter>
+    </ClInclude>
+    <ClInclude Include="npc080.h">
+      <Filter>Source Files\classes\npc\act</Filter>
+    </ClInclude>
+    <ClInclude Include="npc180.h">
+      <Filter>Source Files\classes\npc\act</Filter>
+    </ClInclude>
+    <ClInclude Include="caret.h">
+      <Filter>Source Files\classes\caret</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

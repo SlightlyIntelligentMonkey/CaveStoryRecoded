@@ -9,15 +9,24 @@ uint32_t readLElong(BYTE *data, unsigned int offset) {
 }
 
 int loadFile(const char *name, BYTE **data) {
-	int amount = 0;
+	int filesize = 0;
+
+	//Open file
 	FILE *file = nullptr;
 	file = fopen(name, "rb");
 	if (file == nullptr) { return -1; }
+
+	//Get filesize
 	fseek(file, 0, SEEK_END);
-	amount = ftell(file);
+	filesize = ftell(file);
 	fseek(file, 0, 0);
-	*data = (BYTE*)malloc(amount);
-	if (fread(*data, 1, amount, file) == 0) { return -1; }
+
+	//Load data
+	*data = (BYTE*)malloc(filesize);
+	if (fread(*data, 1, filesize, file) == 0) { return -1; }
+
+	//Close file
 	fclose(file);
-	return amount;
+	
+	return filesize;
 }

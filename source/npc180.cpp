@@ -1,49 +1,49 @@
 #include "npc180.h"
 
-void npcAct199(npc *NPC)
+void npcAct199(npc *NPC) //Current / fan effect
 {
-	if (!NPC->action)
+	if (!NPC->act_no)
 	{
-		NPC->action = 1;
-		NPC->animation = random(0, 2);
+		NPC->act_no = 1;
+		NPC->ani_no = random(0, 2);
 
-		int direction = NPC->direction;
+		int direction = NPC->direct;
 
 		if (direction == 1)
 		{
-			NPC->ysp = -1;
+			NPC->ym = -1;
 		}
 		else if (direction > 1)
 		{
 			if (direction == 2)
 			{
-				NPC->xsp = 1;
+				NPC->xm = 1;
 			}
 			else if (direction == 3)
 			{
-				NPC->ysp = 1;
+				NPC->ym = 1;
 			}
 		}
 		else if (!direction)
 		{
-			NPC->xsp = -1;
+			NPC->xm = -1;
 		}
 
-		NPC->xsp = (random(4, 8) << 9) / 2 * NPC->xsp;
-		NPC->ysp = (random(4, 8) << 9) / 2 * NPC->ysp;
+		NPC->xm = (random(4, 8) << 9) / 2 * NPC->xm;
+		NPC->ym = (random(4, 8) << 9) / 2 * NPC->ym;
 	}
 
-	if (++NPC->animationWait > 6)
+	if (++NPC->ani_wait > 6)
 	{
-		NPC->animationWait = 0;
-		++NPC->animation;
+		NPC->ani_wait = 0;
+		++NPC->ani_no;
 	}
 
-	if (NPC->animation > 4)
+	if (NPC->ani_no > 4)
 		NPC->cond = 0;
 
-	NPC->x += NPC->xsp;
-	NPC->y += NPC->ysp;
+	NPC->x += NPC->xm;
+	NPC->y += NPC->ym;
 
-	NPC->frameRect = { 72 + (NPC->animation << 1),16,74 + (NPC->animation << 1),18 };
+	NPC->rect = { 72 + (NPC->ani_no << 1),16,74 + (NPC->ani_no << 1),18 };
 }

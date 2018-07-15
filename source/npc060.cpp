@@ -2,7 +2,7 @@
 
 void npcAct060(npc *NPC) //Toroko
 {
-	int action = NPC->action;
+	int action = NPC->act_no;
 	int wait;
 	int reset;
 
@@ -11,10 +11,10 @@ void npcAct060(npc *NPC) //Toroko
 	switch(action)
 	{
 	case 0:
-		NPC->action = 1;
-		NPC->animation = 0;
-		NPC->animationWait = 0;
-		NPC->xsp = 0;
+		NPC->act_no = 1;
+		NPC->ani_no = 0;
+		NPC->ani_wait = 0;
+		NPC->xm = 0;
 		
 		goto npc060act1;
 
@@ -22,150 +22,150 @@ void npcAct060(npc *NPC) //Toroko
 npc060act1:
 		if (random(0, 120) == 10)
 		{
-			NPC->action = 2;
-			NPC->actionWait = 0;
-			NPC->animation = 1;
+			NPC->act_no = 2;
+			NPC->act_wait = 0;
+			NPC->ani_no = 1;
 		}
 
 		if (NPC->x - 0x2000 < currentPlayer.x && NPC->x + 0x2000 > currentPlayer.x && NPC->y - 0x2000 < currentPlayer.y && NPC->y + 0x2000 > currentPlayer.y)
 		{
 			if (NPC->x <= currentPlayer.x)
-				NPC->direction = 2;
+				NPC->direct = 2;
 			else
-				NPC->direction = 0;
+				NPC->direct = 0;
 		}
 
 		break;
 
 	case 2:
-		if (++NPC->actionWait > 8)
+		if (++NPC->act_wait > 8)
 		{
-			NPC->action = 1;
-			NPC->animation = 0;
+			NPC->act_no = 1;
+			NPC->ani_no = 0;
 		}
 
 		break;
 
 	case 3:
-		NPC->action = 4;
-		NPC->animation = 1;
-		NPC->animationWait = 0;
+		NPC->act_no = 4;
+		NPC->ani_no = 1;
+		NPC->ani_wait = 0;
 		goto npc060act4;
 
 	case 4:
 npc060act4:
-		if (++NPC->animationWait > 2)
+		if (++NPC->ani_wait > 2)
 		{
-			NPC->animationWait = 0;
-			++NPC->animation;
+			NPC->ani_wait = 0;
+			++NPC->ani_no;
 		}
-		if (NPC->animation > 4)
-			NPC->animation = 1;
+		if (NPC->ani_no > 4)
+			NPC->ani_no = 1;
 
-		if (NPC->hit & leftWall)
+		if (NPC->flag & leftWall)
 		{
-			NPC->direction = 2;
-			NPC->xsp = 0x200;
+			NPC->direct = 2;
+			NPC->xm = 0x200;
 		}
-		if (NPC->hit & rightWall)
+		if (NPC->flag & rightWall)
 		{
-			NPC->direction = 0;
-			NPC->xsp = -0x200;
+			NPC->direct = 0;
+			NPC->xm = -0x200;
 		}
 
-		if (NPC->direction)
-			NPC->xsp = 0x400;
+		if (NPC->direct)
+			NPC->xm = 0x400;
 		else
-			NPC->xsp = -0x400;
+			NPC->xm = -0x400;
 
 		break;
 
 	case 6:
-		NPC->action = 7;
-		NPC->actionWait = 0;
-		NPC->animation = 1;
-		NPC->animationWait = 0;
-		NPC->ysp = -0x400;
+		NPC->act_no = 7;
+		NPC->act_wait = 0;
+		NPC->ani_no = 1;
+		NPC->ani_wait = 0;
+		NPC->ym = -0x400;
 		goto npc060act7;
 
 	case 7:
 npc060act7:
-		if (++NPC->animationWait > 2)
+		if (++NPC->ani_wait > 2)
 		{
-			NPC->animationWait = 0;
-			++NPC->animation;
+			NPC->ani_wait = 0;
+			++NPC->ani_no;
 		}
 
-		if (NPC->animation > 4)
-			NPC->animation = 1;
+		if (NPC->ani_no > 4)
+			NPC->ani_no = 1;
 
-		if (NPC->direction)
-			NPC->xsp = 256;
+		if (NPC->direct)
+			NPC->xm = 256;
 		else
-			NPC->xsp = -256;
+			NPC->xm = -256;
 
 		//Landing on the ground, I think?
-		wait = NPC->actionWait;
-		NPC->actionWait++;
+		wait = NPC->act_wait;
+		NPC->act_wait++;
 
-		reset = wait != 0 && NPC->hit & ground;
+		reset = wait != 0 && NPC->flag & ground;
 
 		if (reset)
-			NPC->action = 3;
+			NPC->act_no = 3;
 
 		break;
 
 	case 8:
-		NPC->animation = 1;
-		NPC->actionWait = 0;
-		NPC->action = 9;
-		NPC->ysp = -512;
+		NPC->ani_no = 1;
+		NPC->act_wait = 0;
+		NPC->act_no = 9;
+		NPC->ym = -512;
 
 		goto npc060act9;
 
 	case 9:
 npc060act9:
 		//Same as above in action 7
-		wait = NPC->actionWait;
-		NPC->actionWait++;
+		wait = NPC->act_wait;
+		NPC->act_wait++;
 
-		reset = wait != 0 && NPC->hit & ground;
+		reset = wait != 0 && NPC->flag & ground;
 
 		if (reset)
-			NPC->action = 0;
+			NPC->act_no = 0;
 
 		break;
 
 	case 10:
-		NPC->action = 11;
-		NPC->animation = 9;
-		NPC->ysp = -0x400;
+		NPC->act_no = 11;
+		NPC->ani_no = 9;
+		NPC->ym = -0x400;
 		//PlaySoundObject(50, 1);
 
-		if (NPC->direction)
-			NPC->xsp = 0x100;
+		if (NPC->direct)
+			NPC->xm = 0x100;
 		else
-			NPC->xsp = -0x100;
+			NPC->xm = -0x100;
 
 		break;
 
 	case 11:
-		wait = NPC->actionWait;
-		NPC->actionWait++;
+		wait = NPC->act_wait;
+		NPC->act_wait++;
 
-		reset = wait != 0 && NPC->hit & ground;
+		reset = wait != 0 && NPC->flag & ground;
 		if (reset)
 		{
-			NPC->action = 12;
-			NPC->animation = 10;
+			NPC->act_no = 12;
+			NPC->ani_no = 10;
 
-			NPC->flags |= npc_shootable;
+			NPC->bits |= npc_shootable;
 		}
 
 		break;
 
 	case 12:
-		NPC->xsp = 0;
+		NPC->xm = 0;
 		break;
 
 	default:
@@ -173,68 +173,68 @@ npc060act9:
 	}
 
 	//Move
-	NPC->ysp += 0x40;
+	NPC->ym += 0x40;
 
-	if (NPC->ysp > 0x5FF)
-		NPC->ysp = 0x5FF;
+	if (NPC->ym > 0x5FF)
+		NPC->ym = 0x5FF;
 
-	if (NPC->xsp > 0x400)
-		NPC->xsp = 0x400;
-	if (NPC->xsp < -0x400)
-		NPC->xsp = -0x400;
+	if (NPC->xm > 0x400)
+		NPC->xm = 0x400;
+	if (NPC->xm < -0x400)
+		NPC->xm = -0x400;
 
-	NPC->x += NPC->xsp;
-	NPC->y += NPC->ysp;
+	NPC->x += NPC->xm;
+	NPC->y += NPC->ym;
 
 	//Framerect
 	int yOff = 64;
 
-	if (NPC->direction)
+	if (NPC->direct)
 		yOff += 16;
 
-	NPC->frameRect = { frameMap[NPC->animation] << 4, yOff, 16 + (frameMap[NPC->animation] << 4), yOff + 16};
+	NPC->rect = { frameMap[NPC->ani_no] << 4, yOff, 16 + (frameMap[NPC->ani_no] << 4), yOff + 16};
 }
 
 void npcAct064(npc *NPC) //First Cave critter
 {
-	int action = NPC->action;
+	int action = NPC->act_no;
 
 	switch (action)
 	{
 	case 0: //Initialize
 		NPC->y += 0x5FF;
-		NPC->action = 1;
+		NPC->act_no = 1;
 
 		break;
 
 	case 2: //Going to jump
-		if (++NPC->actionWait > 8)
+		if (++NPC->act_wait > 8)
 		{
 			//Jump
-			NPC->action = 3;
-			NPC->animation = 2;
+			NPC->act_no = 3;
+			NPC->ani_no = 2;
 
-			NPC->hit &= ~ground;
-			NPC->ysp = -0x5FF;
+			NPC->flag &= ~ground;
+			NPC->ym = -0x5FF;
 
 			//Jump in direction facing
-			if (NPC->direction)
-				NPC->xsp = 0x100;
+			if (NPC->direct)
+				NPC->xm = 0x100;
 			else
-				NPC->xsp = -0x100;
+				NPC->xm = -0x100;
 		}
 
 		break;
 
 	case 3: //In air
-		if (NPC->hit & ground) //Landed on the ground after jumping
+		if (NPC->flag & ground) //Landed on the ground after jumping
 		{
-			NPC->action = 1;
-			NPC->actionWait = 0;
+			NPC->act_no = 1;
+			NPC->act_wait = 0;
 
-			NPC->animation = 0;
+			NPC->ani_no = 0;
 
-			NPC->xsp = 0;
+			NPC->xm = 0;
 		}
 	}
 
@@ -242,157 +242,157 @@ void npcAct064(npc *NPC) //First Cave critter
 	{
 		//Face towards player
 		if (NPC->x <= currentPlayer.x)
-			NPC->direction = 2;
+			NPC->direct = 2;
 		else
-			NPC->direction = 0;
+			NPC->direct = 0;
 
 		//TargetX being used as timer (10/10 pixel code)
-		if (NPC->targetX < 100)
-			++NPC->targetX;
+		if (NPC->tgt_x < 100)
+			++NPC->tgt_x;
 
 		//Timer for looking at Quote
-		if (NPC->actionWait < 8 || NPC->x - 0xE000 >= currentPlayer.x || NPC->x + 0xE000 <= currentPlayer.x || NPC->y - 0xA000 >= currentPlayer.y || NPC->y + 0xA000 <= currentPlayer.y)
+		if (NPC->act_wait < 8 || NPC->x - 0xE000 >= currentPlayer.x || NPC->x + 0xE000 <= currentPlayer.x || NPC->y - 0xA000 >= currentPlayer.y || NPC->y + 0xA000 <= currentPlayer.y)
 		{
-			if (NPC->actionWait <= 7)
-				++NPC->actionWait;
-			NPC->animation = 0;
+			if (NPC->act_wait <= 7)
+				++NPC->act_wait;
+			NPC->ani_no = 0;
 		}
 		else
 		{
-			NPC->animation = 1;
+			NPC->ani_no = 1;
 		}
 
 		//If shocked, jump
 		if (NPC->shock)
 		{
-			NPC->action = 2;
-			NPC->actionWait = 0;
+			NPC->act_no = 2;
+			NPC->act_wait = 0;
 
-			NPC->animation = 0;
+			NPC->ani_no = 0;
 		}
 
 		//Go into "going to jump" state
-		if (NPC->actionWait >= 8
-			&& NPC->targetX >= 100
+		if (NPC->act_wait >= 8
+			&& NPC->tgt_x >= 100
 			&& NPC->x - 0x8000 < currentPlayer.x
 			&& NPC->x + 0x8000 > currentPlayer.x
 			&& NPC->y - 0xA000 < currentPlayer.y
 			&& NPC->y + 0x6000 > currentPlayer.y)
 		{
-			NPC->action = 2;
-			NPC->actionWait = 0;
+			NPC->act_no = 2;
+			NPC->act_wait = 0;
 
-			NPC->animation = 0;
+			NPC->ani_no = 0;
 		}
 	}
 
 	//Gravity
-	NPC->ysp += 0x40;
-	if (NPC->ysp > 0x5FF)
-		NPC->ysp = 0x5FF;
+	NPC->ym += 0x40;
+	if (NPC->ym > 0x5FF)
+		NPC->ym = 0x5FF;
 
 	//Move critter
-	NPC->x += NPC->xsp;
-	NPC->y += NPC->ysp;
+	NPC->x += NPC->xm;
+	NPC->y += NPC->ym;
 
 	//Change framerect
-	if (NPC->direction)
-		NPC->frameRect = { (NPC->animation << 4), 16, ((NPC->animation + 1) << 4), 32 };
+	if (NPC->direct)
+		NPC->rect = { (NPC->ani_no << 4), 16, ((NPC->ani_no + 1) << 4), 32 };
 	else
-		NPC->frameRect = { (NPC->animation << 4), 0, ((NPC->animation + 1) << 4), 16 };
+		NPC->rect = { (NPC->ani_no << 4), 0, ((NPC->ani_no + 1) << 4), 16 };
 }
 
 void npcAct065(npc *NPC) //First Cave Bat
 {
-	int action = NPC->action;
+	int action = NPC->act_no;
 
 	switch (action)
 	{
 	case 0:
-		NPC->targetX = NPC->x;
-		NPC->targetY = NPC->y;
-		NPC->action = 1;
-		NPC->actionWait = random(0, 50);
+		NPC->tgt_x = NPC->x;
+		NPC->tgt_y = NPC->y;
+		NPC->act_no = 1;
+		NPC->act_wait = random(0, 50);
 
 	case 2:
 		//Face towards player
 		if (currentPlayer.x >= NPC->x)
-			NPC->direction = 2;
+			NPC->direct = 2;
 		else
-			NPC->direction = 0;
+			NPC->direct = 0;
 
 		//Fly up and down
-		if (NPC->targetY < NPC->y)
-			NPC->ysp -= 0x10;
-		if (NPC->targetY > NPC->y)
-			NPC->ysp += 0x10;
+		if (NPC->tgt_y < NPC->y)
+			NPC->ym -= 0x10;
+		if (NPC->tgt_y > NPC->y)
+			NPC->ym += 0x10;
 
 		//Limit speed
-		if (NPC->ysp > 0x300)
-			NPC->ysp = 0x300;
-		if (NPC->ysp < -0x300)
-			NPC->ysp = -0x300;
+		if (NPC->ym > 0x300)
+			NPC->ym = 0x300;
+		if (NPC->ym < -0x300)
+			NPC->ym = -0x300;
 	}
 
 	if (action == 1)
 	{
-		if (++NPC->actionWait >= 50)
+		if (++NPC->act_wait >= 50)
 		{
-			NPC->actionWait = 0;
-			NPC->action = 2;
-			NPC->ysp = 0x300;
+			NPC->act_wait = 0;
+			NPC->act_no = 2;
+			NPC->ym = 0x300;
 		}
 	}
 
 	//Move bat
-	NPC->x += NPC->xsp;
-	NPC->y += NPC->ysp;
+	NPC->x += NPC->xm;
+	NPC->y += NPC->ym;
 
 	//Animate
-	if (++NPC->animationWait > 1)
+	if (++NPC->ani_wait > 1)
 	{
-		NPC->animationWait = 0;
-		++NPC->animation;
+		NPC->ani_wait = 0;
+		++NPC->ani_no;
 	}
 
-	NPC->animation %= 3;
+	NPC->ani_no %= 3;
 
-	if (NPC->direction)
-		NPC->frameRect = { 32 + (NPC->animation << 4), 48, 48 + (NPC->animation << 4), 64 };
+	if (NPC->direct)
+		NPC->rect = { 32 + (NPC->ani_no << 4), 48, 48 + (NPC->ani_no << 4), 64 };
 	else
-		NPC->frameRect = { 32 + (NPC->animation << 4), 32, 48 + (NPC->animation << 4), 48 };
+		NPC->rect = { 32 + (NPC->ani_no << 4), 32, 48 + (NPC->ani_no << 4), 48 };
 }
 
 void npcAct073(npc *NPC) //Water drop
 {
-	NPC->ysp += 0x20;
+	NPC->ym += 0x20;
 
-	if (NPC->ysp > 0x5FF)
-		NPC->ysp = 0x5FF;
+	if (NPC->ym > 0x5FF)
+		NPC->ym = 0x5FF;
 
-	NPC->animation = random(0, 4);
+	NPC->ani_no = random(0, 4);
 
-	NPC->x += NPC->xsp;
-	NPC->y += NPC->ysp;
+	NPC->x += NPC->xm;
+	NPC->y += NPC->ym;
 	
 	//Set frameRect
-	NPC->frameRect = { 72 + (NPC->animation << 1),16,74 + (NPC->animation << 1),18 };
+	NPC->rect = { 72 + (NPC->ani_no << 1),16,74 + (NPC->ani_no << 1),18 };
 
-	if (NPC->direction == 2) //Blood
+	if (NPC->direct == 2) //Blood
 	{
-		NPC->frameRect.top += 2;
-		NPC->frameRect.bottom += 2;
+		NPC->rect.top += 2;
+		NPC->rect.bottom += 2;
 	}
 
-	if (++NPC->actionWait > 10)
+	if (++NPC->act_wait > 10)
 	{
-		if (NPC->hit & leftWall)
+		if (NPC->flag & leftWall)
 			NPC->cond = 0;
-		if (NPC->hit & rightWall)
+		if (NPC->flag & rightWall)
 			NPC->cond = 0;
-		if (NPC->hit & ground)
+		if (NPC->flag & ground)
 			NPC->cond = 0;
-		if (NPC->hit & water)
+		if (NPC->flag & water)
 			NPC->cond = 0;
 	}
 

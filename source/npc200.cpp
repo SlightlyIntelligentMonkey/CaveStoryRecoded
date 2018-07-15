@@ -22,7 +22,7 @@ void npcAct211(npc *NPC) //Spikes
 	rect[3].right = 320;
 	rect[3].bottom = 216;
 
-	setRect = &rect[NPC->event];
+	setRect = &rect[NPC->code_event];
 
-	NPC->frameRect = { setRect->left, setRect->top, setRect->right, setRect->bottom };
+	NPC->rect = { setRect->left, setRect->top, setRect->right, setRect->bottom };
 }

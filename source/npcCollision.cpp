@@ -9,7 +9,7 @@ void npcJudgeBlock(RECT *rcHit, npc *NPC, int tx, int ty)
 	{
 		NPC->x = ((2 * tx + 1) << 12) + rcHit->right;
 
-		NPC->hit |= leftWall;
+		NPC->flag |= leftWall;
 	}
 
 	if (NPC->y - rcHit->top < ((2 * ty + 1) << 12) - 0x600
@@ -19,7 +19,7 @@ void npcJudgeBlock(RECT *rcHit, npc *NPC, int tx, int ty)
 	{
 		NPC->x = ((2 * tx - 1) << 12) - rcHit->right;
 
-		NPC->hit |= rightWall;
+		NPC->flag |= rightWall;
 	}
 
 	if (NPC->x - rcHit->right < ((2 * tx + 1) << 12) - 0x600
@@ -28,9 +28,9 @@ void npcJudgeBlock(RECT *rcHit, npc *NPC, int tx, int ty)
 		&& NPC->y - rcHit->top > ty << 13)
 	{
 		NPC->y = ((2 * ty + 1) << 12) + rcHit->top;
-		NPC->ysp = 0;
+		NPC->ym = 0;
 
-		NPC->hit |= ceiling;
+		NPC->flag |= ceiling;
 	}
 
 	if (NPC->x - rcHit->right < ((2 * tx + 1) << 12) - 0x600
@@ -39,9 +39,9 @@ void npcJudgeBlock(RECT *rcHit, npc *NPC, int tx, int ty)
 		&& NPC->y + rcHit->bottom < ty << 13)
 	{
 		NPC->y = ((2 * ty - 1) << 12) - rcHit->bottom;
-		NPC->ysp = 0;
+		NPC->ym = 0;
 
-		NPC->hit |= ground;
+		NPC->flag |= ground;
 	}
 }
 
@@ -53,12 +53,12 @@ void npcJudgeTriangleA(RECT *rcHit, npc *NPC, int tx, int ty)
 		&& NPC->y - rcHit->top < (ty << 13) - (-0x2000 * tx + NPC->x) / 2 + 0x800
 		&& NPC->y + rcHit->bottom >(2 * ty - 1) << 12)
 	{
-		if (NPC->ysp < 0)
-			NPC->ysp = 0;
+		if (NPC->ym < 0)
+			NPC->ym = 0;
 
 		NPC->y = (ty << 13) - (-0x2000 * tx + NPC->x) / 2 + 0x800 + rcHit->top;
 
-		NPC->hit |= ceiling;
+		NPC->flag |= ceiling;
 	}
 }
 
@@ -69,12 +69,12 @@ void npcJudgeTriangleB(RECT *rcHit, npc *NPC, int tx, int ty)
 		&& NPC->y - rcHit->top < (ty << 13) - (-0x2000 * tx + NPC->x) / 2 - 0x800
 		&& NPC->y + rcHit->bottom >(2 * ty - 1) << 12)
 	{
-		if (NPC->ysp < 0)
-			NPC->ysp = 0;
+		if (NPC->ym < 0)
+			NPC->ym = 0;
 
 		NPC->y = (ty << 13) - (-0x2000 * tx + NPC->x) / 2 - 0x800 + rcHit->top;
 
-		NPC->hit |= ceiling;
+		NPC->flag |= ceiling;
 	}
 }
 
@@ -85,12 +85,12 @@ void npcJudgeTriangleC(RECT *rcHit, npc *NPC, int tx, int ty)
 		&& NPC->y - rcHit->top < (ty << 13) + (-0x2000 * tx + NPC->x) / 2 - 0x800
 		&& NPC->y + rcHit->bottom >(2 * ty - 1) << 12)
 	{
-		if (NPC->ysp < 0)
-			NPC->ysp = 0;
+		if (NPC->ym < 0)
+			NPC->ym = 0;
 
 		NPC->y = (ty << 13) + (-0x2000 * tx + NPC->x) / 2 - 0x800 + rcHit->top;
 
-		NPC->hit |= ceiling;
+		NPC->flag |= ceiling;
 	}
 }
 
@@ -101,19 +101,19 @@ void npcJudgeTriangleD(RECT *rcHit, npc *NPC, int tx, int ty)
 		&& NPC->y - rcHit->top < (ty << 13) + (-0x2000 * tx + NPC->x) / 2 + 0x800
 		&& NPC->y + rcHit->bottom >(2 * ty - 1) << 12)
 	{
-		if (NPC->ysp < 0)
-			NPC->ysp = 0;
+		if (NPC->ym < 0)
+			NPC->ym = 0;
 
 		NPC->y = (ty << 13) + (-0x2000 * tx + NPC->x) / 2 + 0x800 + rcHit->top;
 
-		NPC->hit |= ceiling;
+		NPC->flag |= ceiling;
 	}
 }
 
 //Floor slopes
 void npcJudgeTriangleE(RECT *rcHit, npc *NPC, int tx, int ty)
 {
-	NPC->hit |= slopeE;
+	NPC->flag |= slopeE;
 
 	if (NPC->x > (2 * tx - 1) << 12
 		&& NPC->x < (2 * tx + 1) << 12
@@ -122,16 +122,16 @@ void npcJudgeTriangleE(RECT *rcHit, npc *NPC, int tx, int ty)
 	{
 		NPC->y = (ty << 13) + (-0x2000 * tx + NPC->x) / 2 - 0x800 - rcHit->bottom;
 
-		if (NPC->ysp > 0)
-			NPC->ysp = 0;
+		if (NPC->ym > 0)
+			NPC->ym = 0;
 
-		NPC->hit |= (ground | slopeLeft);
+		NPC->flag |= (ground | slopeLeft);
 	}
 }
 
 void npcJudgeTriangleF(RECT *rcHit, npc *NPC, int tx, int ty)
 {
-	NPC->hit |= slopeF;
+	NPC->flag |= slopeF;
 
 	if (NPC->x < (2 * tx + 1) << 12
 		&& NPC->x >(2 * tx - 1) << 12
@@ -140,13 +140,13 @@ void npcJudgeTriangleF(RECT *rcHit, npc *NPC, int tx, int ty)
 	{
 		NPC->y = (ty << 13) + (-0x2000 * tx + NPC->x) / 2 + 0x800 - rcHit->bottom;
 
-		NPC->hit |= (ground | slopeLeft);
+		NPC->flag |= (ground | slopeLeft);
 	}
 }
 
 void npcJudgeTriangleG(RECT *rcHit, npc *NPC, int tx, int ty)
 {
-	NPC->hit |= slopeG;
+	NPC->flag |= slopeG;
 
 	if (NPC->x > (2 * tx - 1) << 12
 		&& NPC->x < (2 * tx + 1) << 12
@@ -155,16 +155,16 @@ void npcJudgeTriangleG(RECT *rcHit, npc *NPC, int tx, int ty)
 	{
 		NPC->y = (ty << 13) - (-0x2000 * tx + NPC->x) / 2 + 0x800 - rcHit->bottom;
 
-		if (NPC->ysp > 0)
-			NPC->ysp = 0;
+		if (NPC->ym > 0)
+			NPC->ym = 0;
 
-		NPC->hit |= (ground | slopeRight);
+		NPC->flag |= (ground | slopeRight);
 	}
 }
 
 void npcJudgeTriangleH(RECT *rcHit, npc *NPC, int tx, int ty)
 {
-	NPC->hit |= slopeH;
+	NPC->flag |= slopeH;
 
 	if (NPC->x > (2 * tx - 1) << 12
 		&& NPC->x < (2 * tx + 1) << 12
@@ -173,10 +173,10 @@ void npcJudgeTriangleH(RECT *rcHit, npc *NPC, int tx, int ty)
 	{
 		NPC->y = (ty << 13) - (-0x2000 * tx + NPC->x) / 2 - 0x800 - rcHit->bottom;
 
-		if (NPC->ysp > 0)
-			NPC->ysp = 0;
+		if (NPC->ym > 0)
+			NPC->ym = 0;
 
-		NPC->hit |= (ground | slopeRight);
+		NPC->flag |= (ground | slopeRight);
 	}
 }
 
@@ -187,7 +187,7 @@ void npcJudgeWater(RECT *rcHit, npc *NPC, int tx, int ty)
 		&& NPC->y - rcHit->top < (4 * (2 * ty + 1) - 1) << 10
 		&& NPC->y + rcHit->bottom > (4 * (2 * ty - 1) + 1) << 10)
 	{
-		NPC->hit |= water;
+		NPC->flag |= water;
 	}
 }
 
@@ -195,9 +195,9 @@ void npcHitMap(int NPCid)
 {
 	npc *NPC = &npcs[NPCid];
 
-	NPC->hit = 0; //clear
+	NPC->flag = 0; //clear
 
-	RECT *rcHit = &NPC->collideRect;
+	RECT *rcHit = &NPC->hit;
 	
 	int fromX = (NPC->x - rcHit->right + 0x1000) >> 13;
 	int fromY = (NPC->y - rcHit->top + 0x1000) >> 13;
@@ -205,7 +205,7 @@ void npcHitMap(int NPCid)
 	int toX = (NPC->x + rcHit->right + 0x1000) >> 13;
 	int toY = (NPC->y + rcHit->bottom + 0x1000) >> 13;
 	
-	if (!(NPC->flags & npc_ignoresolid))
+	if (!(NPC->bits & npc_ignoresolid))
 	{
 		for (int currentX = fromX; currentX <= toX; currentX++)
 		{
@@ -220,7 +220,7 @@ void npcHitMap(int NPCid)
 
 					//Npc Only solid
 				case 0x44u:
-					if (!(NPC->flags & npc_ignore44))
+					if (!(NPC->bits & npc_ignore44))
 						npcJudgeBlock(rcHit, NPC, currentX, currentY);
 					break;
 
@@ -314,36 +314,36 @@ void npcHitMap(int NPCid)
 
 					//Currents
 				case 0x80u:
-					NPC->hit |= (windLeft);
+					NPC->flag |= (windLeft);
 					break;
 
 				case 0x81u:
-					NPC->hit |= (windUp);
+					NPC->flag |= (windUp);
 					break;
 
 				case 0x82u:
-					NPC->hit |= (windRight);
+					NPC->flag |= (windRight);
 					break;
 
 				case 0x83u:
-					NPC->hit |= (windDown);
+					NPC->flag |= (windDown);
 					break;
 
 					//Water current
 				case 0xA0u:
-					NPC->hit |= (water | windLeft);
+					NPC->flag |= (water | windLeft);
 					break;
 
 				case 0xA1u:
-					NPC->hit |= (water | windUp);
+					NPC->flag |= (water | windUp);
 					break;
 
 				case 0xA2u:
-					NPC->hit |= (water | windRight);
+					NPC->flag |= (water | windRight);
 					break;
 
 				case 0xA3u:
-					NPC->hit |= (water | windDown);
+					NPC->flag |= (water | windDown);
 					break;
 
 					//Default

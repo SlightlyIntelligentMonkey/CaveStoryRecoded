@@ -14,17 +14,17 @@ void npcAct032(npc *NPC) //Life Capsule
 	rect[1].right = 64;
 	rect[1].bottom = 112;
 
-	if (++NPC->animationWait > 2)
+	if (++NPC->ani_wait > 2)
 	{
-		NPC->animationWait = 0;
-		++NPC->animation;
+		NPC->ani_wait = 0;
+		++NPC->ani_no;
 	}
 
-	NPC->animation %= 2;
+	NPC->ani_no %= 2;
 
-	setRect = &rect[NPC->animation];
+	setRect = &rect[NPC->ani_no];
 
-	NPC->frameRect = { setRect->left, setRect->top, setRect->right, setRect->bottom };
+	NPC->rect = { setRect->left, setRect->top, setRect->right, setRect->bottom };
 }
 
 void npcAct039(npc *NPC) //Save Sign
@@ -41,12 +41,12 @@ void npcAct039(npc *NPC) //Save Sign
 	rect[1].right = 256;
 	rect[1].bottom = 80;
 
-	if (NPC->direction)
-		NPC->animation = 1;
+	if (NPC->direct)
+		NPC->ani_no = 1;
 	else
-		NPC->animation = 0;
+		NPC->ani_no = 0;
 
-	setRect = &rect[NPC->animation];
+	setRect = &rect[NPC->ani_no];
 
-	NPC->frameRect = { setRect->left, setRect->top, setRect->right, setRect->bottom };
+	NPC->rect = { setRect->left, setRect->top, setRect->right, setRect->bottom };
 }

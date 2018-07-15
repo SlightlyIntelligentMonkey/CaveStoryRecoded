@@ -18,6 +18,8 @@ int viewSpeed = 16;
 SDL_Event events;
 
 //Game variables
+int gameFlags = 0;
+
 int framerate = 20; //17 for 60-ish fps
 unsigned int framerateTicks;
 
@@ -61,6 +63,8 @@ int init() {
 	createWindow(320, 240, 2, true);
 
 	//Load assets
+	loadNpcTable();
+
 	loadImage("data/Title.png", &sprites[0x00]);
 
 	loadImage("data/Fade.png", &sprites[0x06]);
@@ -80,10 +84,13 @@ int init() {
 	loadImage("data/Caret.png", &sprites[0x13]);
 
 	loadImage("data/Npc/NpcSym.png", &sprites[0x14]);
+
 	loadImage("data/Npc/NpcRegu.png", &sprites[0x17]);
 
 	loadImage("data/TextBox.png", &sprites[0x1A]);
 	loadImage("data/Face.png", &sprites[0x1B]);
+
+	loadImage("data/Missing.png", &sprites[0x27]); //Used for missing npcs
 
 	//Start game
 	//init flags
@@ -94,8 +101,6 @@ int init() {
 	currentPlayer.init(10, 8, 2);
 
 	//playOrg(8);
-
-	runScriptEvent(200);
 
 	return 0;
 }

@@ -1,6 +1,8 @@
 #pragma once
 #include "common.h"
 
+void npcActNone(npc *NPC);
+
 void npcAct000(npc *NPC);
 void npcAct002(npc *NPC);
 void npcAct004(npc *NPC);

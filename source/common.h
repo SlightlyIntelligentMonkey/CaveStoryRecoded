@@ -5,6 +5,8 @@
 
 #define LONG int32_t
 #define BYTE uint8_t
+#define WORD uint16_t
+#define DWORD uint32_t
 #define UINT uint32_t
 
 typedef struct {
@@ -109,6 +111,8 @@ extern int mode;
 
 extern bool exitGame;
 
+extern int gameFlags;
+
 //Functions
 void doError();
 void doCustomError(const char *msg);
@@ -120,8 +124,6 @@ bool getFlag(int a);
 
 //Modules
 #include "math.h"
-
-#include "level.h"
 
 #include "filesystem.h"
 #include "render.h"
@@ -138,3 +140,4 @@ bool getFlag(int a);
 #include "player.h"
 #include "npc.h"
 #include "bullet.h"
+#include "caret.h"

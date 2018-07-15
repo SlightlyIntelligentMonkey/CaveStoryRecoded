@@ -1,70 +1,132 @@
 #include "npc.h"
 #include "npcAct.h"
 
-BYTE *npcAttributes = nullptr;
-char npcTblPath[256] = "data/npc.tbl";
-
-int npcTblSize = loadFile(npcTblPath, &npcAttributes);
-
-int npcAmmount = npcTblSize / 24;
-
 std::vector<npc> npcs(0);
 
-int getNPCAttribute(UINT npcId, UINT offset, UINT offset2, UINT offsetSize, UINT returnSize)
+NPC_TABLE *npcTable;
+
+//NPC Functions
+void createNpc(int setCode, int setX, int setY, int setXm, int setYm, int setDir, npc *parentNpc)
 {
-	int absOffset = (offset * npcAmmount) + (offsetSize * npcId) + offset2;
+	npc newNPC;
+	newNPC.init(setCode, setX, setY, setXm, setYm, setDir, parentNpc);
 
-	switch (returnSize) {
-		case(1):
-			return npcAttributes[absOffset];
-			break;
+	npcs.push_back(newNPC);
+}
 
-		case(2):
-			return readLEshort(npcAttributes, absOffset);
-			break;
+void updateNPC()
+{
+	if (npcs.size())
+	{
+		//Remove stuff
+		for (size_t i = npcs.size() - 1; i > 0; i--) {
+			if (!(npcs[i].cond & npccond_alive))
+				npcs.erase(npcs.begin() + i);
+		}
 
-		case(4):
-			return readLElong(npcAttributes, absOffset);
-			break;
-
-		default:
-			doCustomError("INVALID getNPCAttribute RETURNSIZE VALUE");
-			return -1;
-			break;
+		//Update
+		for (unsigned int i = 0; i < npcs.size(); i++) {
+			npcs[i].update();
+			npcHitMap(i);
+		}
 	}
 }
 
-void npc::init(int spawnX, int spawnY, short flagId, short eventId, short npcType, short npcFlags)
+void drawNPC()
+{
+	if (npcs.size())
+	{
+		for (unsigned int i = 0; i < npcs.size(); i++)
+			npcs[i].draw();
+	}
+}
+
+void loadNpcTable()
+{
+	npcTable = nullptr;
+
+	BYTE *tbl = nullptr;
+	int tblSize = loadFile("data/npc.tbl", &tbl);
+	if (tblSize < 0)
+		doCustomError("Couldn't load npc table.");
+
+	free(tbl);
+
+	int npcs = tblSize / 0x18;
+	npcTable = (NPC_TABLE *)malloc(0x18 * npcs);
+	if (!npcTable)
+		doCustomError("Couldn't malloc npcTable");
+
+	SDL_RWops *tblStream = SDL_RWFromFile("data/npc.tbl", "rb");
+
+	int i;
+
+	if (tblStream)
+	{
+		for (i = 0; i < npcs; ++i) //bits
+			npcTable[i].bits = SDL_ReadLE16(tblStream);
+		for (i = 0; i < npcs; ++i) //life
+			npcTable[i].life = SDL_ReadLE16(tblStream);
+		for (i = 0; i < npcs; ++i) //surf
+			tblStream->read(tblStream, &npcTable[i].surf, 1, 1);
+		for (i = 0; i < npcs; ++i) //destroy_voice
+			tblStream->read(tblStream, &npcTable[i].destroy_voice, 1, 1);
+		for (i = 0; i < npcs; ++i) //hit_voice
+			tblStream->read(tblStream, &npcTable[i].hit_voice, 1, 1);
+		for (i = 0; i < npcs; ++i) //size
+			tblStream->read(tblStream, &npcTable[i].size, 1, 1);
+		for (i = 0; i < npcs; ++i) //exp
+			npcTable[i].exp = SDL_ReadLE32(tblStream);
+		for (i = 0; i < npcs; ++i) //damage
+			npcTable[i].damage = SDL_ReadLE32(tblStream);
+		for (i = 0; i < npcs; ++i) //hit
+			tblStream->read(tblStream, &npcTable[i].hit, 4, 1);
+		for (i = 0; i < npcs; ++i) //view
+			tblStream->read(tblStream, &npcTable[i].view, 4, 1);
+	}
+	else
+		doCustomError("Couldn't load npc table.");
+}
+
+void npc::init(int setCode, int setX, int setY, int setXm, int setYm, int setDir, npc *parentNpc)
 {
 	memset(this, 0, sizeof(*this));
 
-	x = spawnX;
-	y = spawnY;
-	flag = flagId;
-	event = eventId;
-	type = npcType;
-	flags = getNPCAttribute(npcType, 0, 0, 2, 2) | npcFlags;
-
 	cond = npccond_alive;
+	code_char = setCode;
 
-	collideRect.left = getNPCAttribute(npcType, 16, 0, 4, 1) << 9;
-	collideRect.top = getNPCAttribute(npcType, 16, 1, 4, 1) << 9;
-	collideRect.right = getNPCAttribute(npcType, 16, 2, 4, 1) << 9;
-	collideRect.bottom = getNPCAttribute(npcType, 16, 3, 4, 1) << 9;
+	x = setX;
+	y = setY;
+	xm = setXm;
+	ym = setYm;
+	direct = setDir;
 
-	offset.x = getNPCAttribute(npcType, 20, 0, 4, 1) << 9;
-	offset.y = getNPCAttribute(npcType, 20, 1, 4, 1) << 9;
+	pNpc = parentNpc;
+	bits = npcTable[code_char].bits;
+	exp = npcTable[code_char].exp;
+	
+	surf = npcTable[code_char].surf;
+	hit_voice = npcTable[code_char].hit_voice;
+	destroy_voice = npcTable[code_char].destroy_voice;
 
-	spriteSheet = getNPCAttribute(npcType, 4, 0, 1, 1);
+	damage = npcTable[code_char].damage;
+	size = npcTable[code_char].size;
+	life = npcTable[code_char].life;
 
-	damage = getNPCAttribute(npcType, 12, 0, 4, 4);
+	hit.left = npcTable[code_char].hit.front << 9;
+	hit.right = npcTable[code_char].hit.back << 9;
+	hit.top = npcTable[code_char].hit.top << 9;
+	hit.bottom = npcTable[code_char].hit.bottom << 9;
 
-	return;
+	view.left = npcTable[code_char].view.front << 9;
+	view.right = npcTable[code_char].view.back << 9;
+	view.top = npcTable[code_char].view.top << 9;
+	view.bottom = npcTable[code_char].view.bottom << 9;
 }
 
 void npc::update()
 {
-	npcActs[type](this);
+	npcActs[code_char](this);
 
 	if (shock) { --shock; }
 }
@@ -73,12 +135,11 @@ void npc::draw()
 {
 	if (cond & npccond_alive)
 	{
-		drawTextureFromRect(sprites[spriteSheet], &frameRect, x - offset.x, y - offset.y, false);
+		int side = view.left;
 
-		/*/ COLLISION DEBUG
-		SDL_SetRenderDrawColor(renderer, 255, 255, 0, 255);
+		if (direct)
+			side = view.right;
 
-		drawRect((x - collideRect.left - viewX) >> 9, (y - collideRect.top - viewY) >> 9, (collideRect.left + collideRect.right) >> 9, (collideRect.top + collideRect.bottom) >> 9);
-		*/
+		drawTextureFromRect(sprites[surf], &rect, x - side, y - view.top, false);
 	}
 }

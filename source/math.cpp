@@ -1,6 +1,6 @@
 #include "math.h"
 
-//Basically the original game's but instead of using an array it generates on the fly
+//Not the original code, because it's better
 int getSin(BYTE deg)
 {
 	return (int)(sin(deg * (M_PI / 0x80)) * 512.0);
@@ -11,13 +11,20 @@ int getCos(BYTE deg)
 	return (int)(cos(deg * (M_PI / 0x80)) * 512.0);
 }
 
+uint8_t getAtan(int x, int y)
+{
+	return (uint8_t)(atan2(-y, -x) * 0x80 / M_PI);
+}
+
 //these are good functions
 int random(uint32_t mi, uint32_t ma) {
 	return rand() % (ma - mi + 1) + mi;
 }
 
 int sign(int x) {
-	if (x != 0) return x / std::abs(x);
+	if (x != 0)
+		return x / std::abs(x);
+
 	return 0;
 }
 
