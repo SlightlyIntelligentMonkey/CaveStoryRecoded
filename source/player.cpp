@@ -36,7 +36,7 @@ void player::explode(int x, int y, int w, int num)
 		createNpc(4, x + offset_x, offset_y + y, 0, 0, 0, nullptr);
 	}
 
-	//SetCaret(x, y, 12, 0); //What caret is this?
+	createCaret(x, y, 12, 0);
 }
 
 void player::hit(int damage) {
@@ -299,7 +299,7 @@ void player::actNormal() {
 			{
 				if (xsp > 0x200 || xsp < -0x200)
 				{
-					for (int waterit = 0; waterit <= 7; ++waterit)
+					for (int waterit = 0; waterit < 8; ++waterit)
 					{
 						int spawnX = (random(-8, 8) << 9) + x;
 						int waterYsp = random(-0x200, 0x80);
@@ -313,7 +313,7 @@ void player::actNormal() {
 			}
 			else
 			{
-				for (int waterit = 0; waterit <= 7; ++waterit)
+				for (int waterit = 0; waterit < 8; ++waterit)
 				{
 					int spawnX = (random(-8, 8) << 9) + x;
 					int waterYsp = random(-0x200, 0x80) - (ysp / 2);

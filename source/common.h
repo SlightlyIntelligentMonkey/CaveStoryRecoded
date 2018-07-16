@@ -25,10 +25,6 @@ typedef struct {
 
 #include <vector>
 
-#ifndef WINDOWS
-#define BYTE uint8_t
-#endif
-
 //Enums
 enum Collisions
 {

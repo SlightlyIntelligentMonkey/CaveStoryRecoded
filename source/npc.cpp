@@ -24,6 +24,8 @@ void updateNPC()
 				npcs.erase(npcs.begin() + i);
 		}
 
+		SDL_SetWindowTitle(window, std::to_string(npcs.size()).c_str());
+
 		//Update
 		for (unsigned int i = 0; i < npcs.size(); i++) {
 			npcs[i].update();

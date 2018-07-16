@@ -185,6 +185,21 @@ void caretAct003(caret *CARET) //Star
 
 void caretAct004(caret *CARET) //Fireball impact?
 {
+	//Set framerects
+	RECT rcLeft[9];
+
+	rcLeft[0] = { 64, 32, 80, 48 };
+	rcLeft[1] = { 80, 32, 96, 48 };
+	rcLeft[2] = { 96, 32, 112, 48 };
+
+	rcLeft[3] = { 64, 48, 80, 64 };
+	rcLeft[4] = { 80, 48, 96, 64 };
+	rcLeft[5] = { 96, 48, 112, 64 };
+
+	rcLeft[6] = { 64, 64, 80, 80 };
+	rcLeft[7] = { 80, 64, 96, 80 };
+	rcLeft[8] = { 96, 64, 112, 80 };
+
 	//Animate
 	if (++CARET->animationWait > 1)
 	{
@@ -192,11 +207,23 @@ void caretAct004(caret *CARET) //Fireball impact?
 		if (++CARET->animation > 2) { CARET->cond = 0; }
 	}
 
-	//broken ass framerect code lmao
+	//framerect
+	CARET->frameRect = rcLeft[CARET->animation + CARET->direction * 3];
 }
 
 void caretAct005(caret *CARET) //Zzz...
 {
+	//Set framerects
+	RECT rcLeft[7];
+
+	rcLeft[0] = { 32, 64, 40, 72 };
+	rcLeft[1] = { 32, 72, 40, 80 };
+	rcLeft[2] = { 40, 64, 48, 72 };
+	rcLeft[3] = { 40, 72, 48, 80 };
+	rcLeft[4] = { 40, 64, 48, 72 };
+	rcLeft[5] = { 40, 72, 48, 80 };
+	rcLeft[6] = { 40, 64, 48, 72 };
+
 	//Animate
 	if (CARET->animationWait++ > 4)
 	{
@@ -211,7 +238,8 @@ void caretAct005(caret *CARET) //Zzz...
 	CARET->x += 128;
 	CARET->y -= 128;
 
-	//more broken ass framerect code XDDD
+	//framerect
+	CARET->frameRect = rcLeft[CARET->animation];
 }
 
 void caretAct007(caret *CARET) //Booster particles
@@ -278,6 +306,7 @@ void caretAct010(caret *CARET) //Level up and level down
 
 	rcLeft[0] = { 0, 0, 56, 16 };
 	rcLeft[1] = { 0, 16, 56, 32 };
+
 	rcRight[0] = { 0, 96, 56, 112 };
 	rcRight[1] = { 0, 112, 56, 128 };
 

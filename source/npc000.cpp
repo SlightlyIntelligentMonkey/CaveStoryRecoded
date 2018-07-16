@@ -25,7 +25,7 @@ void npcAct002(npc *NPC) //Behemoth
 
 	RECT rcLeft[7];
 	RECT rcRight[7];
-	RECT *setRect;
+	RECT setRect;
 
 	if (NPC->flag & leftWall)
 	{
@@ -38,7 +38,6 @@ void npcAct002(npc *NPC) //Behemoth
 
 	switch (act_no) {
 	case 0: //Normal act
-			//Start off moving in facing direct
 		if (NPC->direct)
 			NPC->xm = 0x100;
 		else
@@ -50,7 +49,8 @@ void npcAct002(npc *NPC) //Behemoth
 			++NPC->ani_no;
 		}
 
-		NPC->ani_no %= 4;
+		if (NPC->ani_no > 3)
+			NPC->ani_no = 0;
 
 		if (NPC->shock)
 		{
@@ -116,32 +116,53 @@ void npcAct002(npc *NPC) //Behemoth
 	NPC->y += NPC->ym;
 
 	//Framerect
-	rcLeft[0] = { 0, 0, 32, 24 };
-	rcLeft[1] = { 32, 0, 64, 24 };
-	rcLeft[2] = { 64, 0, 96, 24 };
-	rcLeft[3] = { 32, 0, 64, 24 };
+	rcLeft[0] = { 32, 0, 64, 24 };
+	rcLeft[1] = { 0, 0, 32, 24 };
+	rcLeft[2] = { 32, 0, 64, 24 };
+	rcLeft[3] = { 64, 0, 96, 24 };
 	rcLeft[4] = { 96, 0, 128, 24 };
 	rcLeft[5] = { 128, 0, 160, 24 };
-	rcLeft[6] = { 160, 0, 32, 24 };
+	rcLeft[6] = { 160, 0, 192, 24 };
 
-	rcRight[0] = { 0, 24, 32, 48 };
-	rcRight[1] = { 32, 24, 64, 48 };
-	rcRight[2] = { 64, 24, 96, 48 };
-	rcRight[3] = { 32, 24, 64, 48 };
+	rcRight[0] = { 32, 24, 64, 48 };
+	rcRight[1] = { 0, 24, 32, 48 };
+	rcRight[2] = { 32, 24, 64, 48 };
+	rcRight[3] = { 64, 24, 96, 48 };
 	rcRight[4] = { 96, 24, 128, 48 };
 	rcRight[5] = { 128, 24, 160, 48 };
-	rcRight[6] = { 160, 24, 32, 48 };
+	rcRight[6] = { 160, 24, 192, 48 };
 
 	if (NPC->direct)
-		setRect = &rcRight[NPC->ani_no];
+		setRect = rcRight[NPC->ani_no];
 	else
-		setRect = &rcLeft[NPC->ani_no];
+		setRect = rcLeft[NPC->ani_no];
 
-	NPC->rect = { setRect->left, setRect->top, setRect->right, setRect->bottom };
+	NPC->rect = setRect;
 }
 
 void npcAct004(npc *NPC) //Smoke
 {
+	RECT rcLeft[8];
+	RECT rcUp[8];
+
+	rcLeft[0] = { 16, 0, 17, 1 };
+	rcLeft[1] = { 16, 0, 32, 16 };
+	rcLeft[2] = { 32, 0, 48, 16 };
+	rcLeft[3] = { 48, 0, 64, 16 };
+	rcLeft[4] = { 64, 0, 80, 16 };
+	rcLeft[5] = { 80, 0, 96, 16 };
+	rcLeft[6] = { 96, 0, 112, 16 };
+	rcLeft[7] = { 112, 0, 128, 16 };
+
+	rcUp[0] = { 16, 0, 17, 1 };
+	rcUp[1] = { 80, 48, 96, 64 };
+	rcUp[2] = { 0, 128, 16, 144 };
+	rcUp[3] = { 16, 128, 32, 144 };
+	rcUp[4] = { 32, 128, 48, 144 };
+	rcUp[5] = { 48, 128, 64, 144 };
+	rcUp[6] = { 64, 128, 80, 144 };
+	rcUp[7] = { 80, 128, 96, 144 };
+
 	if (NPC->act_no)
 	{
 		NPC->xm = 20 * NPC->xm / 21;
@@ -179,17 +200,15 @@ void npcAct004(npc *NPC) //Smoke
 	{
 		if (NPC->direct != 1)
 		{
-			NPC->rect = { (NPC->ani_no + 1) << 4, 0, (NPC->ani_no + 2) << 4, 16 }; //Broken
+			NPC->rect = rcLeft[NPC->ani_no];
 		}
 		else
 		{
-			NPC->rect = { (NPC->ani_no) << 4, 128, (NPC->ani_no + 1) << 4, 144 }; //Really broken
+			NPC->rect = rcUp[NPC->ani_no]; //Really broken
 		}
 	}
 	else
-	{
 		NPC->cond = 0;
-	}
 }
 
 void npcAct005(npc *NPC) //Egg Corridor critter
@@ -490,7 +509,8 @@ void npcAct007(npc *NPC) //Basil
 		++NPC->ani_no;
 	}
 
-	NPC->ani_no %= 3;
+	if (NPC->ani_no > 2)
+		NPC->ani_no = 0;
 
 	//Set framerect
 	if (NPC->direct)
@@ -597,7 +617,8 @@ void npcAct008(npc *NPC) //Follow beetle (egg corridor)
 		++NPC->ani_no;
 	}
 
-	NPC->ani_no %= 2;
+	if (NPC->ani_no > 1)
+		NPC->ani_no = 0;
 
 	if (NPC->direct)
 	{
@@ -619,9 +640,15 @@ void npcAct015(npc *NPC) //Closed chest
 	case 0:
 		NPC->act_no = 1;
 
+		NPC->bits |= npc_interact;
+
+		//Spawn with smoke and stuff
 		if (NPC->direct == 2)
 		{
-			NPC->ym = -512;
+			NPC->ym = -0x200;
+
+			for (int i = 0; i < 4; ++i)
+				createNpc(4, NPC->x + (random(-12, 12) << 9), NPC->y + (random(-12, 12) << 9), random(-0x155, 0x155), random(-0x600, 0), 0, nullptr);
 		}
 
 		if (random(0, 30) == 0)
@@ -654,6 +681,7 @@ void npcAct015(npc *NPC) //Closed chest
 
 	//Gravity
 	NPC->ym += 0x40;
+
 	if (NPC->ym > 0x5FF)
 		NPC->ym = 0x5FF;
 
@@ -670,12 +698,20 @@ void npcAct016(npc *NPC) //Save point
 	if (!NPC->act_no)
 	{
 		NPC->act_no = 1;
+		NPC->bits |= npc_interact;
 
 		//Spawn with smoke and stuff
 		if (NPC->direct) {
 			NPC->ym = -0x200;
+			NPC->bits &= ~npc_interact;
+
+			for (int i = 0; i < 4; ++i)
+				createNpc(4, NPC->x + (random(-12, 12) << 9), NPC->y + (random(-12, 12) << 9), random(-0x155, 0x155), random(-0x600, 0), 0, nullptr);
 		}
 	}
+
+	if (NPC->flag & ground)
+		NPC->bits |= npc_interact;
 
 	//Animate
 	if (++NPC->ani_wait > 2)
@@ -684,13 +720,15 @@ void npcAct016(npc *NPC) //Save point
 		++NPC->ani_no;
 	}
 
-	NPC->ani_no %= 8;
+	if (NPC->ani_no > 7)
+		NPC->ani_no = 0;
 
 	//Set framerect
 	NPC->rect = { 96 + (NPC->ani_no << 4), 16, 112 + (NPC->ani_no << 4), 32 };
 
 	//Fall down
 	NPC->ym += 0x40;
+
 	if (NPC->ym > 0x5FF)
 		NPC->ym = 0x5FF;
 
@@ -708,6 +746,9 @@ void npcAct017(npc *NPC) //Health refill
 		//Spawn with smoke and stuff
 		if (NPC->direct) {
 			NPC->ym = -0x200;
+
+			for (int i = 0; i < 4; ++i)
+				createNpc(4, NPC->x + (random(-12, 12) << 9), NPC->y + (random(-12, 12) << 9), random(-0x155, 0x155), random(-0x600, 0), 0, nullptr);
 		}
 
 		goto npc017start;
@@ -769,6 +810,7 @@ void npcAct017(npc *NPC) //Health refill
 	default:
 		break;
 	}
+
 	NPC->ym += 0x40;
 
 	if (NPC->ym > 0x5FF)
