@@ -39,7 +39,10 @@ void drawNPC()
 	if (npcs.size())
 	{
 		for (unsigned int i = 0; i < npcs.size(); i++)
-			npcs[i].draw();
+		{
+			if (npcs[i].cond & npccond_alive)
+				npcs[i].draw();
+		}
 	}
 }
 

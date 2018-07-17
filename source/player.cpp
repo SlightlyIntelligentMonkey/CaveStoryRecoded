@@ -95,7 +95,7 @@ void player::collide() {
 	int height = 0x1000;
 
 	RECT hitRect = { width, height, width, height };
-	
+
 	flags = playerHitMap(&hitRect);
 	playerHitNpcs(&hitRect);
 }

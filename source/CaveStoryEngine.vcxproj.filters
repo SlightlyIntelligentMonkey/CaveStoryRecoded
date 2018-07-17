@@ -78,9 +78,6 @@
     <ClCompile Include="sound.cpp">
       <Filter>Source Files\modules\sound</Filter>
     </ClCompile>
-    <ClCompile Include="smixer.cpp">
-      <Filter>Source Files\modules\sound</Filter>
-    </ClCompile>
     <ClCompile Include="hud.cpp">
       <Filter>Source Files\modules</Filter>
     </ClCompile>
@@ -116,9 +113,6 @@
     </ClCompile>
     <ClCompile Include="npcAct.cpp">
       <Filter>Source Files\classes\npc\act</Filter>
-    </ClCompile>
-    <ClCompile Include="org.cpp">
-      <Filter>Source Files\modules\sound</Filter>
     </ClCompile>
     <ClCompile Include="game.cpp">
       <Filter>Source Files\states</Filter>
@@ -167,9 +161,6 @@
     <ClInclude Include="sound.h">
       <Filter>Source Files\modules\sound</Filter>
     </ClInclude>
-    <ClInclude Include="smixer.h">
-      <Filter>Source Files\modules\sound</Filter>
-    </ClInclude>
     <ClInclude Include="hud.h">
       <Filter>Source Files\modules</Filter>
     </ClInclude>
@@ -205,9 +196,6 @@
     </ClInclude>
     <ClInclude Include="npcAct.h">
       <Filter>Source Files\classes\npc\act</Filter>
-    </ClInclude>
-    <ClInclude Include="org.h">
-      <Filter>Source Files\modules\sound</Filter>
     </ClInclude>
     <ClInclude Include="common.h">
       <Filter>Source Files</Filter>

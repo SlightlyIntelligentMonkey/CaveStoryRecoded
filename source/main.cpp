@@ -30,7 +30,7 @@ bool exitGame = false;
 // Some global functions
 
 static void doQuit() {
-	endSound();
+	//sound::quit();
 	SDL_Quit();
 }
 
@@ -58,7 +58,7 @@ int init() {
 	if (!(IMG_Init(IMG_INIT_PNG) & IMG_INIT_PNG))
 		doCustomError("Couldn't initiate SDL Image");
 	
-	initSound();
+	//sound::init();
 	
 	createWindow(320, 240, 2, true);
 
@@ -100,7 +100,7 @@ int init() {
 	loadLevel(13);
 	currentPlayer.init(10, 8, 2);
 
-	//playOrg(8);
+	//sound::playOrg(8);
 
 	return 0;
 }

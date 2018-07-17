@@ -129,8 +129,6 @@ bool getFlag(int a);
 #include "input.h"
 
 #include "sound.h"
-#include "smixer.h"
-#include "org.h"
 
 //Classes
 #include "player.h"

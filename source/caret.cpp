@@ -48,7 +48,10 @@ void drawCarets()
 	if (carets.size())
 	{
 		for (unsigned int i = 0; i < carets.size(); i++)
-			carets[i].draw();
+		{
+			if (carets[i].cond & 0x80)
+				carets[i].draw();
+		}
 	}
 }
 
