@@ -2,6 +2,7 @@
 #include "common.h"
 
 BYTE tscFlags[1000]; //game flags
+BYTE skipFlags[64];
 
 void initFlags()
 {

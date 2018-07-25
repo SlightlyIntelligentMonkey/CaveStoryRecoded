@@ -8,27 +8,27 @@ void drawPlayerHealth(bool hide)
 
 	if (!hide)
 	{
-		if (currentPlayer.lastHealth <= currentPlayer.health)
+		if (currentPlayer.lifeBr <= currentPlayer.life)
 		{
-			currentPlayer.healthDrainCount = 0;
-			currentPlayer.lastHealth = currentPlayer.health;
+			currentPlayer.lifeBr_count = 0;
+			currentPlayer.lifeBr = currentPlayer.life;
 		}
-		else if (currentPlayer.healthDrainCount++ > 30)
+		else if (currentPlayer.lifeBr_count++ > 30)
 		{
-			currentPlayer.lastHealth--;
+			currentPlayer.lifeBr--;
 		}
 
 		//Set rects
 		rcCase.right = 64;
-		rcLife.right = 40 * currentPlayer.health / currentPlayer.maxHealth - 1;
-		rcBr.right = 40 * currentPlayer.lastHealth / currentPlayer.maxHealth - 1;
+		rcLife.right = 40 * currentPlayer.life / currentPlayer.max_life - 1;
+		rcBr.right = 40 * currentPlayer.lifeBr / currentPlayer.max_life - 1;
 
 		//Draw health bar
-		drawTextureFromRect(sprites[0x1A], &rcCase, 16 << 9, 40 << 9, true);
-		drawTextureFromRect(sprites[0x1A], &rcBr, 40 << 9, 40 << 9, true);
-		drawTextureFromRect(sprites[0x1A], &rcLife, 40 << 9, 40 << 9, true);
+		drawTexture(sprites[0x1A], &rcCase, 16, 40);
+		drawTexture(sprites[0x1A], &rcBr, 40, 40);
+		drawTexture(sprites[0x1A], &rcLife, 40, 40);
 
-		drawNumber(currentPlayer.lastHealth, 8 << 9, 40 << 9, false);
+		drawNumber(currentPlayer.lifeBr, 8, 40, false);
 	}
 }
 
@@ -38,23 +38,23 @@ void drawPlayerAir()
 	rcAir[0] = { 112, 72, 144, 80 };
 	rcAir[1] = { 112, 80, 144, 88 };
 
-	int x = (screenWidth << 8) - 0x5000;
-	int y = (screenHeight << 8) - 0x2000;
+	int x = (screenWidth / 2) - 40;
+	int y = (screenHeight / 2) - 16;
 
-	if (currentPlayer.airShow)
+	if (!(currentPlayer.equip & equip_airTank) && currentPlayer.air_get)
 	{
-		//Amount of air left divided
-		if (currentPlayer.airShow % 6 <= 3)
-			drawNumber(currentPlayer.air / 10, x + (32 << 9), y, false);
+		//Amount of air left
+		if (currentPlayer.air_get % 6 <= 3)
+			drawNumber(currentPlayer.air / 10, x + 32, y, false);
 
 		//Draw the "AIR" thing
-		drawTextureFromRect(sprites[0x1A], &rcAir[(currentPlayer.air % 30 <= 10)], x, y, true);
+		drawTexture(sprites[0x1A], &rcAir[(currentPlayer.air % 30 <= 10)], x, y);
 	}
 	return;
 }
 
 void drawHud(bool hide)
 {
-	drawPlayerHealth(hide || ((currentPlayer.shock >> 1) & 1));
+	drawPlayerHealth(hide);
 	drawPlayerAir();
 }

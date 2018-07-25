@@ -68,7 +68,7 @@ void npcAct096(npc *NPC) //Fan left
 		//Blow quote
 		if (currentPlayer.y < NPC->y + 0x1000 && currentPlayer.y > NPC->y - 0x1000 && currentPlayer.x < NPC->x && currentPlayer.x > NPC->x - 0xC000)
 		{
-			currentPlayer.flags |= windLeft;
+			currentPlayer.flag |= windLeft;
 			currentPlayer.cond |= player_noFriction;
 		}
 
@@ -115,7 +115,7 @@ void npcAct097(npc *NPC) //Fan up
 		//Blow quote
 		if (currentPlayer.x < NPC->x + 0x1000 && currentPlayer.x > NPC->x - 0x1000 && currentPlayer.y < NPC->y && currentPlayer.y > NPC->y - 0xC000)
 		{
-			currentPlayer.ysp -= 0x88;
+			currentPlayer.ym -= 0x88;
 		}
 
 		break;

@@ -2,7 +2,5 @@
 #include "common.h"
 #include "level.h"
 
-int playerHitMap(RECT *rcHit);
-int playerHitNpcs(RECT *rcHit);
-
-int playerHitNpcs(RECT *rcHit);
+void playerHitMap(RECT *rcHit);
+void playerHitNpcs(RECT *rcHit);

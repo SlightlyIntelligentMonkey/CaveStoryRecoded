@@ -248,10 +248,11 @@ void caretAct005(caret *CARET) //Zzz...
 void caretAct007(caret *CARET) //Booster particles
 {
 	//Animate and set framerect
-	if (CARET->animationWait++ > 1)
+	if (++CARET->animationWait > 1)
 	{
 		CARET->animationWait = 0;
-		if (CARET->animation++ >= 7)
+
+		if (++CARET->animation > 6)
 			CARET->cond = 0;
 	}
 
@@ -261,19 +262,19 @@ void caretAct007(caret *CARET) //Booster particles
 	switch (CARET->direction)
 	{
 	case 0:
-		CARET->x -= 1024;
+		CARET->x -= 0x400;
 		break;
 
 	case 1:
-		CARET->y -= 1024;
+		CARET->y -= 0x400;
 		break;
 
 	case 2:
-		CARET->x += 1024;
+		CARET->x += 0x400;
 		break;
 
 	case 3:
-		CARET->y += 1024;
+		CARET->y += 0x400;
 		break;
 	}
 }
@@ -402,12 +403,12 @@ void caretAct013(caret *CARET) //Headbump sparks
 		if (CARET->direction)
 		{
 			if (CARET->direction == 1)
-				CARET->ysp = -512 * random(1, 3);
+				CARET->ysp = -0x200 * random(1, 3);
 		}
 		else
 		{
-			CARET->xsp = random(-1536, 1536);
-			CARET->ysp = random(-512, 512);
+			CARET->xsp = random(-0x600, 0x600);
+			CARET->ysp = random(-0x200, 0x200);
 		}
 	}
 
@@ -520,7 +521,7 @@ void caret::update()
 
 void caret::draw()
 {
-	drawTextureFromRect(sprites[0x13], &frameRect, x - offset.x, y - offset.y, false);
+	drawTexture(sprites[0x13], &frameRect, (x - offset.x) / 0x200 - viewX / 0x200, (y - offset.y) / 0x200 - viewY / 0x200);
 }
 
 //Create code

@@ -1,7 +1,7 @@
 #include "common.h"
 #include "game.h"
 
-//get some variables
+//Rendering and view related variables
 SDL_Window *window;
 SDL_Renderer *renderer;
 
@@ -15,10 +15,11 @@ int viewGoalY = 0;
 
 int viewSpeed = 16;
 
+//Game variables
 SDL_Event events;
 
-//Game variables
 int gameFlags = 0;
+int gamePhysics = 0;
 
 int framerate = 20; //17 for 60-ish fps
 unsigned int framerateTicks;
@@ -98,7 +99,8 @@ int init() {
 
 	//Load level
 	loadLevel(13);
-	currentPlayer.init(10, 8, 2);
+	currentPlayer.init();
+	currentPlayer.setPos(10 << 13, 8 << 13);
 
 	//sound::playOrg(8);
 

@@ -45,34 +45,11 @@ void loadImage(const char *file, SDL_Texture **tex) {
 		doError();
 }
 
-void drawTexture(SDL_Texture *texture, int x, int y, bool fixed) {
-	DrawRect.x = x >> 9;
-	DrawRect.y = y >> 9;
-	
-	if (fixed == false) {
-		DrawRect.x -= (viewX >> 9);
-		DrawRect.y -= (viewY >> 9);
-	}
-
-	DrawRect.w = ImageRect.w;
-	DrawRect.h = ImageRect.h;
-	
-	if (SDL_RenderCopy(renderer, texture, &ImageRect, &DrawRect) != 0)
-		doError();
-
-	return;
-}
-
-void drawTextureFromRect(SDL_Texture *texture, RECT *rect, int x, int y, bool fixed) {
+void drawTexture(SDL_Texture *texture, RECT *rect, int x, int y) {
 	ImageRect = { rect->left, rect->top, rect->right - rect->left, rect->bottom - rect->top };
 
-	DrawRect.x = x >> 9;
-	DrawRect.y = y >> 9;
-
-	if (fixed == false) {
-		DrawRect.x -= (viewX >> 9);
-		DrawRect.y -= (viewY >> 9);
-	}
+	DrawRect.x = x;
+	DrawRect.y = y;
 
 	DrawRect.w = ImageRect.w;
 	DrawRect.h = ImageRect.h;
@@ -85,6 +62,8 @@ void drawTextureFromRect(SDL_Texture *texture, RECT *rect, int x, int y, bool fi
 
 void drawNumber(int value, int x, int y, bool bZero)
 {
+	RECT numbRect;
+
 	int offset = 0;
 	int pos = 1000; //replacing an array a day keeps the doctor away
 
@@ -106,8 +85,8 @@ void drawNumber(int value, int x, int y, bool bZero)
 
 		if (bZero && offset == 2 || count != 0 || offset == 3) //I don't really understand this
 		{
-			ImageRect = { drawValue << 3, 56, 8, 8 };
-			drawTexture(sprites[26], x + (offset << 12), y, true);
+			numbRect = { drawValue << 3, 56, (drawValue + 1) << 3, 64 };
+			drawTexture(sprites[26], &numbRect, x + (offset << 3), y);
 		}
 
 		offset++;
@@ -117,10 +96,10 @@ void drawNumber(int value, int x, int y, bool bZero)
 
 void drawRect(int x, int y, int w, int h)
 {
-	drawRectangle.x = x >> 9;
-	drawRectangle.y = y >> 9;
-	drawRectangle.w = w >> 9;
-	drawRectangle.h = h >> 9;
+	drawRectangle.x = x;
+	drawRectangle.y = y;
+	drawRectangle.w = w;
+	drawRectangle.h = h;
 
 	SDL_RenderFillRect(renderer, &drawRectangle);
 }

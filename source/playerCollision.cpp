@@ -1,8 +1,8 @@
 #include "npcCollision.h"
 
-void putlittleStar(RECT *rcHit, player *me)
+void putLittleStar(RECT *rcHit, player *me)
 {
-	if (!(me->cond & player_removed) && me->ysp < -0x200)
+	if (!(me->cond & player_removed) && me->ym < -0x200)
 	{
 		//PlaySoundObject(3, 1);
 		createCaret(me->x, me->y - rcHit->top, 13, 0);
@@ -22,11 +22,11 @@ int playerJudgeBlock(RECT *rcHit, player *me, int tx, int ty)
 	{
 		me->x = ((2 * tx + 1) << 12) + rcHit->left;
 
-		if (me->xsp < -0x180)
-			me->xsp = -0x180;
+		if (me->xm < -0x180)
+			me->xm = -0x180;
 
-		if (!(me->key && isKeyDown(keyLeft)) && me->xsp < 0)
-			me->xsp = 0;
+		if (!isKeyDown(keyLeft) && me->xm < 0)
+			me->xm = 0;
 
 		hit |= leftWall;
 	}
@@ -38,11 +38,11 @@ int playerJudgeBlock(RECT *rcHit, player *me, int tx, int ty)
 	{
 		me->x = ((2 * tx - 1) << 12) - rcHit->right;
 
-		if (me->xsp > 0x180)
-			me->xsp = 0x180;
+		if (me->xm > 0x180)
+			me->xm = 0x180;
 
-		if (!(me->key && isKeyDown(keyRight)) && me->xsp > 0)
-			me->xsp = 0;
+		if (!isKeyDown(keyRight) && me->xm > 0)
+			me->xm = 0;
 
 		hit |= rightWall;
 	}
@@ -54,10 +54,10 @@ int playerJudgeBlock(RECT *rcHit, player *me, int tx, int ty)
 	{
 		me->y = ((2 * ty + 1) << 12) + rcHit->top;
 
-		putlittleStar(rcHit, me);
+		putLittleStar(rcHit, me);
 
-		if (me->ysp < 0)
-			me->ysp = 0;
+		if (me->ym < 0)
+			me->ym = 0;
 
 		hit |= ceiling;
 	}
@@ -69,11 +69,11 @@ int playerJudgeBlock(RECT *rcHit, player *me, int tx, int ty)
 	{
 		me->y = ((2 * ty - 1) << 12) - rcHit->bottom;
 
-		//if (me->ysp > 1024)
+		//if (me->ym > 1024)
 			//PlaySoundObject(23, 1);
 
-		if (me->ysp > 0)
-			me->ysp = 0;
+		if (me->ym > 0)
+			me->ym = 0;
 
 		hit |= ground;
 	}
@@ -91,10 +91,10 @@ int playerJudgeTriangleA(RECT *rcHit, player *me, int tx, int ty)
 		&& me->y - rcHit->top < (ty << 13) - (-0x2000 * tx + me->x) / 2 + 0x800
 		&& me->y + rcHit->bottom > (2 * ty - 1) << 12)
 	{
-		putlittleStar(rcHit, me);
-
-		if (me->ysp < 0)
-			me->ysp = 0;
+		if (!(me->cond & player_removed) && me->ym < -0x200)
+			putLittleStar(rcHit, me);
+		if (me->ym < 0)
+			me->ym = 0;
 
 		me->y = (ty << 13) - (-0x2000 * tx + me->x) / 2 + 0x800 + rcHit->top;
 		
@@ -113,10 +113,10 @@ int playerJudgeTriangleB(RECT *rcHit, player *me, int tx, int ty)
 		&& me->y - rcHit->top < (ty << 13) - (-0x2000 * tx + me->x) / 2 - 0x800
 		&& me->y + rcHit->bottom >(2 * ty - 1) << 12)
 	{
-		putlittleStar(rcHit, me);
-
-		if (me->ysp < 0)
-			me->ysp = 0;
+		if (!(me->cond & player_removed) && me->ym < -0x200)
+			putLittleStar(rcHit, me);
+		if (me->ym < 0)
+			me->ym = 0;
 
 		me->y = (ty << 13) - (-0x2000 * tx + me->x) / 2 - 0x800 + rcHit->top;
 
@@ -135,10 +135,10 @@ int playerJudgeTriangleC(RECT *rcHit, player *me, int tx, int ty)
 		&& me->y - rcHit->top < (ty << 13) + (-0x2000 * tx + me->x) / 2 - 0x800
 		&& me->y + rcHit->bottom >(2 * ty - 1) << 12)
 	{
-		putlittleStar(rcHit, me);
-
-		if (me->ysp < 0)
-			me->ysp = 0;
+		if (!(me->cond & player_removed) && me->ym < -0x200)
+			putLittleStar(rcHit, me);
+		if (me->ym < 0)
+			me->ym = 0;
 
 		me->y = (ty << 13) + (-0x2000 * tx + me->x) / 2 - 0x800 + rcHit->top;
 
@@ -157,10 +157,10 @@ int playerJudgeTriangleD(RECT *rcHit, player *me, int tx, int ty)
 		&& me->y - rcHit->top < (ty << 13) + (-0x2000 * tx + me->x) / 2 + 0x800
 		&& me->y + rcHit->bottom >(2 * ty - 1) << 12)
 	{
-		putlittleStar(rcHit, me);
-
-		if (me->ysp < 0)
-			me->ysp = 0;
+		if (!(me->cond & player_removed) && me->ym < -0x200)
+			putLittleStar(rcHit, me);
+		if (me->ym < 0)
+			me->ym = 0;
 
 		me->y = (ty << 13) + (-0x2000 * tx + me->x) / 2 + 0x800 + rcHit->top;
 
@@ -180,8 +180,8 @@ int playerJudgeTriangleE(RECT *rcHit, player *me, int tx, int ty)
 	{
 		me->y = (ty << 13) + (-0x2000 * tx + me->x) / 2 - 0x800 - rcHit->bottom;
 
-		if (me->ysp > 0)
-			me->ysp = 0;
+		if (me->ym > 0)
+			me->ym = 0;
 		
 		return (ground | slopeLeft | slopeE);
 	}
@@ -198,6 +198,9 @@ int playerJudgeTriangleF(RECT *rcHit, player *me, int tx, int ty)
 	{
 		me->y = (ty << 13) + (-0x2000 * tx + me->x) / 2 + 0x800 - rcHit->bottom;
 
+		if (me->ym > 0)
+			me->ym = 0;
+
 		return (ground | slopeLeft | slopeF);
 	}
 
@@ -213,8 +216,8 @@ int playerJudgeTriangleG(RECT *rcHit, player *me, int tx, int ty)
 	{
 		me->y = (ty << 13) - (-0x2000 * tx + me->x) / 2 + 0x800 - rcHit->bottom;
 
-		if (me->ysp > 0)
-			me->ysp = 0;
+		if (me->ym > 0)
+			me->ym = 0;
 
 		return (ground | slopeRight | slopeG);
 	}
@@ -231,8 +234,8 @@ int playerJudgeTriangleH(RECT *rcHit, player *me, int tx, int ty)
 	{
 		me->y = (ty << 13) - (-0x2000 * tx + me->x) / 2 - 0x800 - rcHit->bottom;
 
-		if (me->ysp > 0)
-			me->ysp = 0;
+		if (me->ym > 0)
+			me->ym = 0;
 
 		return (ground | slopeRight | slopeH);
 	}
@@ -335,10 +338,8 @@ int playerJudgeCurrentDown(RECT *rcHit, player *me, int tx, int ty)
 }
 
 //Main function
-int playerHitMap(RECT *rcHit)
+void playerHitMap(RECT *rcHit)
 {
-	int hit = 0;
-
 	player *me = &currentPlayer;
 
 	int fromX = (me->x - rcHit->left + 0x1000) >> 13;
@@ -354,141 +355,141 @@ int playerHitMap(RECT *rcHit)
 			{
 				//Solid
 			case 0x05u: case 0x41u: case 0x43u: case 0x46u:
-				hit |= playerJudgeBlock(rcHit, me, currentX, currentY);
+				me->flag |= playerJudgeBlock(rcHit, me, currentX, currentY);
 				break;
 
 				//Spike
 			case 0x42u:
-				hit |= playerJudgeSpike(rcHit, me, currentX, currentY);
+				me->flag |= playerJudgeSpike(rcHit, me, currentX, currentY);
 				break;
 
 				//Ceiling slopes
 			case 0x50u:
-				hit |= playerJudgeTriangleA(rcHit, me, currentX, currentY);
+				me->flag |= playerJudgeTriangleA(rcHit, me, currentX, currentY);
 				break;
 
 			case 0x51u:
-				hit |= playerJudgeTriangleB(rcHit, me, currentX, currentY);
+				me->flag |= playerJudgeTriangleB(rcHit, me, currentX, currentY);
 				break;
 
 			case 0x52u:
-				hit |= playerJudgeTriangleC(rcHit, me, currentX, currentY);
+				me->flag |= playerJudgeTriangleC(rcHit, me, currentX, currentY);
 				break;
 
 			case 0x53u:
-				hit |= playerJudgeTriangleD(rcHit, me, currentX, currentY);
+				me->flag |= playerJudgeTriangleD(rcHit, me, currentX, currentY);
 				break;
 
 				//Floor slopes
 			case 0x54u:
-				hit |= playerJudgeTriangleE(rcHit, me, currentX, currentY);
+				me->flag |= playerJudgeTriangleE(rcHit, me, currentX, currentY);
 				break;
 
 			case 0x55u:
-				hit |= playerJudgeTriangleF(rcHit, me, currentX, currentY);
+				me->flag |= playerJudgeTriangleF(rcHit, me, currentX, currentY);
 				break;
 
 			case 0x56u:
-				hit |= playerJudgeTriangleG(rcHit, me, currentX, currentY);
+				me->flag |= playerJudgeTriangleG(rcHit, me, currentX, currentY);
 				break;
 
 			case 0x57u:
-				hit |= playerJudgeTriangleH(rcHit, me, currentX, currentY);
+				me->flag |= playerJudgeTriangleH(rcHit, me, currentX, currentY);
 				break;
 
 				//Water, water solid, and water spike
 			case 0x60u:
-				hit |= playerJudgeWater(rcHit, me, currentX, currentY);
+				me->flag |= playerJudgeWater(rcHit, me, currentX, currentY);
 				break;
 
 			case 0x61u:
-				hit |= playerJudgeBlock(rcHit, me, currentX, currentY);
-				hit |= playerJudgeWater(rcHit, me, currentX, currentY);
+				me->flag |= playerJudgeBlock(rcHit, me, currentX, currentY);
+				me->flag |= playerJudgeWater(rcHit, me, currentX, currentY);
 				break;
 
 			case 0x62u:
-				hit |= playerJudgeWaterSpike(rcHit, me, currentX, currentY);
+				me->flag |= playerJudgeWaterSpike(rcHit, me, currentX, currentY);
 				break;
 
 					//Water slopes
 				//Ceiling slopes
 			case 0x70u:
-				hit |= playerJudgeTriangleA(rcHit, me, currentX, currentY);
-				hit |= playerJudgeWater(rcHit, me, currentX, currentY);
+				me->flag |= playerJudgeTriangleA(rcHit, me, currentX, currentY);
+				me->flag |= playerJudgeWater(rcHit, me, currentX, currentY);
 				break;
 
 			case 0x71u:
-				hit |= playerJudgeTriangleB(rcHit, me, currentX, currentY);
-				hit |= playerJudgeWater(rcHit, me, currentX, currentY);
+				me->flag |= playerJudgeTriangleB(rcHit, me, currentX, currentY);
+				me->flag |= playerJudgeWater(rcHit, me, currentX, currentY);
 				break;
 
 			case 0x72u:
-				hit |= playerJudgeTriangleC(rcHit, me, currentX, currentY);
-				hit |= playerJudgeWater(rcHit, me, currentX, currentY);
+				me->flag |= playerJudgeTriangleC(rcHit, me, currentX, currentY);
+				me->flag |= playerJudgeWater(rcHit, me, currentX, currentY);
 				break;
 
 			case 0x73u:
-				hit |= playerJudgeTriangleD(rcHit, me, currentX, currentY);
-				hit |= playerJudgeWater(rcHit, me, currentX, currentY);
+				me->flag |= playerJudgeTriangleD(rcHit, me, currentX, currentY);
+				me->flag |= playerJudgeWater(rcHit, me, currentX, currentY);
 				break;
 				
 				//Floor slopes
 			case 0x74u:
-				hit |= playerJudgeTriangleE(rcHit, me, currentX, currentY);
-				hit |= playerJudgeWater(rcHit, me, currentX, currentY);
+				me->flag |= playerJudgeTriangleE(rcHit, me, currentX, currentY);
+				me->flag |= playerJudgeWater(rcHit, me, currentX, currentY);
 				break;
 
 			case 0x75u:
-				hit |= playerJudgeTriangleF(rcHit, me, currentX, currentY);
-				hit |= playerJudgeWater(rcHit, me, currentX, currentY);
+				me->flag |= playerJudgeTriangleF(rcHit, me, currentX, currentY);
+				me->flag |= playerJudgeWater(rcHit, me, currentX, currentY);
 				break;
 
 			case 0x76u:
-				hit |= playerJudgeTriangleG(rcHit, me, currentX, currentY);
-				hit |= playerJudgeWater(rcHit, me, currentX, currentY);
+				me->flag |= playerJudgeTriangleG(rcHit, me, currentX, currentY);
+				me->flag |= playerJudgeWater(rcHit, me, currentX, currentY);
 				break;
 
 			case 0x77u:
-				hit |= playerJudgeTriangleH(rcHit, me, currentX, currentY);
-				hit |= playerJudgeWater(rcHit, me, currentX, currentY);
+				me->flag |= playerJudgeTriangleH(rcHit, me, currentX, currentY);
+				me->flag |= playerJudgeWater(rcHit, me, currentX, currentY);
 				break;
 
 				//Wind
 			case 0x80u:
-				hit |= playerJudgeCurrentLeft(rcHit, me, currentX, currentY);
+				me->flag |= playerJudgeCurrentLeft(rcHit, me, currentX, currentY);
 				break;
 
 			case 0x81u:
-				hit |= playerJudgeCurrentUp(rcHit, me, currentX, currentY);
+				me->flag |= playerJudgeCurrentUp(rcHit, me, currentX, currentY);
 				break;
 
 			case 0x82u:
-				hit |= playerJudgeCurrentRight(rcHit, me, currentX, currentY);
+				me->flag |= playerJudgeCurrentRight(rcHit, me, currentX, currentY);
 				break;
 
 			case 0x83u:
-				hit |= playerJudgeCurrentDown(rcHit, me, currentX, currentY);
+				me->flag |= playerJudgeCurrentDown(rcHit, me, currentX, currentY);
 				break;
 
 				//Water current
 			case 0xA0u:
-				hit |= playerJudgeCurrentLeft(rcHit, me, currentX, currentY);
-				hit |= playerJudgeWater(rcHit, me, currentX, currentY);
+				me->flag |= playerJudgeCurrentLeft(rcHit, me, currentX, currentY);
+				me->flag |= playerJudgeWater(rcHit, me, currentX, currentY);
 				break;
 
 			case 0xA1u:
-				hit |= playerJudgeCurrentUp(rcHit, me, currentX, currentY);
-				hit |= playerJudgeWater(rcHit, me, currentX, currentY);
+				me->flag |= playerJudgeCurrentUp(rcHit, me, currentX, currentY);
+				me->flag |= playerJudgeWater(rcHit, me, currentX, currentY);
 				break;
 
 			case 0xA2u:
-				hit |= playerJudgeCurrentRight(rcHit, me, currentX, currentY);
-				hit |= playerJudgeWater(rcHit, me, currentX, currentY);
+				me->flag |= playerJudgeCurrentRight(rcHit, me, currentX, currentY);
+				me->flag |= playerJudgeWater(rcHit, me, currentX, currentY);
 				break;
 
 			case 0xA3u:
-				hit |= playerJudgeCurrentDown(rcHit, me, currentX, currentY);
-				hit |= playerJudgeWater(rcHit, me, currentX, currentY);
+				me->flag |= playerJudgeCurrentDown(rcHit, me, currentX, currentY);
+				me->flag |= playerJudgeWater(rcHit, me, currentX, currentY);
 				break;
 
 				//Default
@@ -497,8 +498,6 @@ int playerHitMap(RECT *rcHit)
 			}
 		}
 	}
-
-	return hit;
 }
 
 //Npc hit functions
@@ -506,54 +505,54 @@ int playerHitNpcSoftSolid(RECT *rcHit, player *me, npc *NPC)
 {
 	int hit = 0;
 
-	if (me->y - 0x1000 < NPC->y + NPC->hit.bottom - 0x600
-		&& me->y + 0x1000 > NPC->y - NPC->hit.top + 0x600
-		&& me->x - 0xA00 < NPC->x + NPC->hit.right
-		&& me->x - 0xA00 > NPC->x)
+	if (me->y - rcHit->top < NPC->y + NPC->hit.bottom - 0x600
+		&& me->y + rcHit->bottom > NPC->y - NPC->hit.top + 0x600
+		&& me->x - rcHit->left < NPC->x + NPC->hit.right
+		&& me->x - rcHit->left > NPC->x)
 	{
-		if (me->xsp <= 0x1FF)
-			me->xsp += 0x200;
+		if (me->xm <= 0x1FF)
+			me->xm += 0x200;
 
 		hit = leftWall;
 	}
 
-	if (me->y - 0x1000 < NPC->y + NPC->hit.bottom - 0x600
-		&& me->y + 0x1000 > NPC->y - NPC->hit.top + 0x600
-		&& me->x + 0xA00 - 0x200 > NPC->x - NPC->hit.right
-		&& me->x + 0xA00 - 0x200 < NPC->x)
+	if (me->y - rcHit->top < NPC->y + NPC->hit.bottom - 0x600
+		&& me->y + rcHit->bottom > NPC->y - NPC->hit.top + 0x600
+		&& me->x + rcHit->right - 0x200 > NPC->x - NPC->hit.right
+		&& me->x + rcHit->right - 0x200 < NPC->x)
 	{
-		if (me->xsp >= -0x1FF)
-			me->xsp -= 0x200;
+		if (me->xm >= -0x1FF)
+			me->xm -= 0x200;
 
 		hit |= rightWall;
 	}
 
-	if (me->x - 0xA00 < NPC->x + NPC->hit.right - 0x600
-		&& me->x + 0xA00 > NPC->x - NPC->hit.right + 0x600
-		&& me->y - 0x1000 < NPC->y + NPC->hit.bottom
-		&& me->y - 0x1000 > NPC->y)
+	if (me->x - rcHit->left < NPC->x + NPC->hit.right - 0x600
+		&& me->x + rcHit->right > NPC->x - NPC->hit.right + 0x600
+		&& me->y - rcHit->top < NPC->y + NPC->hit.bottom
+		&& me->y - rcHit->top > NPC->y)
 	{
-		if (me->ysp < 0)
-			me->ysp = 0;
+		if (me->ym < 0)
+			me->ym = 0;
 
 		hit |= ceiling;
 	}
 
-	if (me->x - 0xA00 < NPC->x + NPC->hit.right - 0x600
-		&& me->x + 0xA00 > NPC->x - NPC->hit.right + 0x600
-		&& me->y + 0x1000 > NPC->y - NPC->hit.top
-		&& me->y + 0x1000 < NPC->y + 0x600)
+	if (me->x - rcHit->left < NPC->x + NPC->hit.right - 0x600
+		&& me->x + rcHit->right > NPC->x - NPC->hit.right + 0x600
+		&& me->y + rcHit->bottom > NPC->y - NPC->hit.top
+		&& me->y + rcHit->bottom < NPC->y + 0x600)
 	{
 		if (NPC->bits & npc_bouncy)
 		{
-			me->ysp = NPC->ym - 0x200;
+			me->ym = NPC->ym - 0x200;
 
 			hit |= ground;
 		}
-		else if (!(me->flags & 8) && me->ysp > NPC->ym)
+		else if (!(me->flag & ground) && me->ym > NPC->ym)
 		{
-			me->y = NPC->y - NPC->hit.top - 0x1000 + 0x200;
-			me->ysp = NPC->ym;
+			me->y = NPC->y - NPC->hit.top - rcHit->bottom + 0x200;
+			me->ym = NPC->ym;
 
 			me->x += NPC->xm;
 			hit |= ground;
@@ -601,8 +600,8 @@ int playerHitNpcHardSolid(RECT *rcHit, player *me, npc *NPC)
 		{
 			if (me->x - rcHit->left < NPC->x + NPC->hit.right && me->x - rcHit->left > NPC->x)
 			{
-				if (me->xsp < NPC->xm)
-					me->xsp = NPC->xm;
+				if (me->xm < NPC->xm)
+					me->xm = NPC->xm;
 
 				me->x = NPC->hit.right + NPC->x + rcHit->left;
 
@@ -611,8 +610,8 @@ int playerHitNpcHardSolid(RECT *rcHit, player *me, npc *NPC)
 
 			if (me->x + rcHit->right > NPC->x - NPC->hit.right && me->x + rcHit->right < NPC->x)
 			{
-				if (me->xsp > NPC->xm)
-					me->xsp = NPC->xm;
+				if (me->xm > NPC->xm)
+					me->xm = NPC->xm;
 
 				me->x = NPC->x - NPC->hit.right - rcHit->right;
 
@@ -624,16 +623,16 @@ int playerHitNpcHardSolid(RECT *rcHit, player *me, npc *NPC)
 	{
 		if (me->y - rcHit->top < NPC->y + NPC->hit.bottom && me->y - rcHit->top > NPC->y)
 		{
-			if (me->ysp >= NPC->ym)
+			if (me->ym >= NPC->ym)
 			{
-				if (me->ysp < 0)
-					me->ysp = 0;
+				if (me->ym < 0)
+					me->ym = 0;
 			}
 			else
 			{
 				me->y = NPC->y + NPC->hit.bottom + rcHit->top + 0x200;
 
-				me->ysp = NPC->ym;
+				me->ym = NPC->ym;
 			}
 
 			hit = ceiling;
@@ -652,15 +651,15 @@ int playerHitNpcHardSolid(RECT *rcHit, player *me, npc *NPC)
 
 			if (NPC->bits & npc_bouncy)
 			{
-				me->ysp = NPC->ym - 0x200;
+				me->ym = NPC->ym - 0x200;
 
 				hit |= ground;
 			}
-			else if (!(me->flags & ground) && me->ysp > NPC->ym)
+			else if (!(me->flag & ground) && me->ym > NPC->ym)
 			{
 				me->y = NPC->y - NPC->hit.top - rcHit->bottom + 0x200;
 
-				me->ysp = NPC->ym;
+				me->ym = NPC->ym;
 				me->x += NPC->xm;
 
 				hit |= ground;
@@ -694,7 +693,7 @@ int playerHitNpcNonSolid(RECT *rcHit, player *me, npc *NPC)
 	return 0;
 }
 
-int playerHitNpcs(RECT *rcHit)
+void playerHitNpcs(RECT *rcHit)
 {
 	int hit = 0;
 
@@ -710,13 +709,13 @@ int playerHitNpcs(RECT *rcHit)
 				{
 					hit = playerHitNpcSoftSolid(rcHit, me, &npcs[i]);
 
-					me->flags |= hit;
+					me->flag |= hit;
 				}
 				else if (npcs[i].bits & npc_solidhard)
 				{
 					hit = playerHitNpcHardSolid(rcHit, me, &npcs[i]);
 
-					me->flags |= hit;
+					me->flag |= hit;
 				}
 				else
 				{
@@ -743,7 +742,7 @@ int playerHitNpcs(RECT *rcHit)
 					npcs[i].cond = 0;
 				}
 
-				if (npcs[i].bits & npc_eventtouch)//!(g_GameFlags & 4) && hit && gNPC[i].bits & 0x100)
+				if (hit && npcs[i].bits & npc_eventtouch)//!(g_GameFlags & 4) && hit && gNPC[i].bits & 0x100)
 				{
 					//StartTextScript(gNPC[i].code_event);
 				}
@@ -753,32 +752,30 @@ int playerHitNpcs(RECT *rcHit)
 					if (npcs[i].bits & npc_reartop)
 					{
 						if (hit & rightWall && npcs[i].xm < 0)
-							me->hit(npcs[i].damage);
+							me->damage(npcs[i].damage);
 						if (hit & leftWall && npcs[i].xm > 0)
-							me->hit(npcs[i].damage);
+							me->damage(npcs[i].damage);
 						if (hit & ground && npcs[i].ym < 0)
-							me->hit(npcs[i].damage);
+							me->damage(npcs[i].damage);
 						if (hit & ceiling && npcs[i].ym > 0)
-							me->hit(npcs[i].damage);
+							me->damage(npcs[i].damage);
 					}
 					else if (hit && npcs[i].damage)
 					{
-						me->hit(npcs[i].damage);
+						me->damage(npcs[i].damage);
 					}
 				}
 
-				if (hit && me->cond & player_inspect && npcs[i].bits & npc_interact)
+				if (hit && me->cond & player_interact && npcs[i].bits & npc_interact)
 				{
 					runScriptEvent(npcs[i].code_event);
-					me->xsp = 0;
-					me->interacting = false;
+					me->xm = 0;
+					me->ques = false;
 				}
 			}
 		}
 
-		if (me->interacting)
+		if (me->ques)
 			createCaret(me->x, me->y, 9, 0);
 	}
-
-	return 1;
 }

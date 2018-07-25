@@ -6,69 +6,69 @@ void gameUpdate()
 {
 	if (isKeyPressed(SDL_SCANCODE_1)) {
 		loadLevel(13);
-		currentPlayer.init(10, 8, 2);
+		currentPlayer.setPos(10 << 13, 8 << 13);
 
 		//sound::playOrg(8);
 	}
 	else if (isKeyPressed(SDL_SCANCODE_2)) {
 		loadLevel(12);
-		currentPlayer.init(37, 11, 0);
+		currentPlayer.setPos(37 << 13, 11 << 13);
 
 		//sound::playOrg(8);
 	}
 	else if (isKeyPressed(SDL_SCANCODE_3)) {
 		loadLevel(2);
-		currentPlayer.init(5, 6, 2);
+		currentPlayer.setPos(5 << 13, 6 << 13);
 
 		//sound::playOrg(1);
 	}
 	else if (isKeyPressed(SDL_SCANCODE_4)) {
 		loadLevel(11);
-		currentPlayer.init(13, 34, 2);
+		currentPlayer.setPos(13 << 13, 34 << 13);
 
 		//sound::playOrg(9);
 	}
 	else if (isKeyPressed(SDL_SCANCODE_5)) {
 		loadLevel(49);
-		currentPlayer.init(7, 6, 2);
+		currentPlayer.setPos(7 << 13, 6 << 13);
 
 		//sound::playOrg(27);
 	}
 	else if (isKeyPressed(SDL_SCANCODE_6)) {
 		loadLevel(67);
-		currentPlayer.init(7, 52, 2);
+		currentPlayer.setPos(7 << 13, 52 << 13);
 
 		//sound::playOrg(29);
 	}
 	else if (isKeyPressed(SDL_SCANCODE_7)) {
 		loadLevel(48);
-		currentPlayer.init(155, 1, 0);
+		currentPlayer.setPos(155 << 13, 1 << 13);
 
 		//sound::playOrg(38);
 	}
 	else if (isKeyPressed(SDL_SCANCODE_8)) {
 		loadLevel(53);
-		currentPlayer.init(4, 165, 2);
+		currentPlayer.setPos(4 << 13, 165 << 13);
 
 		//sound::playOrg(38);
 	}
 	else if (isKeyPressed(SDL_SCANCODE_9)) {
 		loadLevel(6);
-		currentPlayer.init(4, 18, 2);
+		currentPlayer.setPos(4 << 13, 18 << 13);
 
 		//sound::playOrg(38);
 	}
 
 	//Update stuff
 	updateNPC();
-	currentPlayer.update();
+	currentPlayer.update(true);
 	updateCarets();
 
 	updateTsc();
 
 	//Move view
-	viewX += (viewGoalX - viewX) / viewSpeed;
-	viewY += (viewGoalY - viewY) / viewSpeed;
+	viewX += ((viewGoalX - (screenWidth << 8)) - viewX) / viewSpeed;
+	viewY += ((viewGoalY - (screenHeight << 8)) - viewY) / viewSpeed;
 
 	//Keep view in level
 	if ((levelWidth - 1) << 4 > screenWidth)

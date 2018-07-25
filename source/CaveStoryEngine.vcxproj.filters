@@ -129,6 +129,9 @@
     <ClCompile Include="caret.cpp">
       <Filter>Source Files\classes\caret</Filter>
     </ClCompile>
+    <ClCompile Include="org.cpp">
+      <Filter>Source Files\modules\sound</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="render.h">
@@ -214,6 +217,9 @@
     </ClInclude>
     <ClInclude Include="caret.h">
       <Filter>Source Files\classes\caret</Filter>
+    </ClInclude>
+    <ClInclude Include="org.h">
+      <Filter>Source Files\modules\sound</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

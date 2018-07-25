@@ -24,8 +24,6 @@ void updateNPC()
 				npcs.erase(npcs.begin() + i);
 		}
 
-		SDL_SetWindowTitle(window, std::to_string(npcs.size()).c_str());
-
 		//Update
 		for (unsigned int i = 0; i < npcs.size(); i++) {
 			npcs[i].update();
@@ -145,6 +143,15 @@ void npc::draw()
 		if (direct)
 			side = view.right;
 
-		drawTextureFromRect(sprites[surf], &rect, x - side, y - view.top, false);
+		drawTexture(sprites[surf], &rect, (x - side) / 0x200 - viewX / 0x200, (y - view.top) / 0x200 - viewY / 0x200);
+
+		/*if (bits & npc_interact)
+			SDL_SetRenderDrawColor(renderer, 255, 255, 0, 255);
+		else if (damage > 0)
+			SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255);
+		else
+			SDL_SetRenderDrawColor(renderer, 0, 100, 255, 255);
+
+		drawRect(((x - hit.left) / 0x200) - (viewX / 0x200), ((y - hit.top) / 0x200) - (viewY / 0x200), (hit.left + hit.right) / 0x200, (hit.top + hit.bottom) / 0x200);*/
 	}
 }

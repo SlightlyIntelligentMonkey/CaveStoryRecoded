@@ -2,518 +2,797 @@
 
 player currentPlayer;
 
-void player::init(int createX, int createY, int createDirection) {
+void player::init() {
 	memset(this, 0, sizeof(*this));
 
-	x = createX << 13;
-	y = createY << 13;
-
-	health = 3;
-	maxHealth = 3;
-
-	direction = createDirection;
-
-	air = 1000;
+	direct = 2;
 
 	cond = player_visible;
 
-	key = true;
+	hit = { 0xA00, 0x1000, 0xA00, 0x1000 };
+	view = { 0x1000, 0x1000, 0x1000, 0x1000 };
+
+	life = 3;
+	max_life = 3;
 }
 
-void player::explode(int x, int y, int w, int num)
-{
-	int offset_x;
-	int offset_y;
-	int wa;
+void player::setPos(int setX, int setY) {
+	x = setX;
+	y = setY;
 
-	wa = w / 512;
+	viewGoalX = x;
+	viewGoalY = y;
+	index_x = 0;
+	index_y = 0;
 
-	for (int i = 0; i < num; ++i)
-	{
-		offset_x = random(-wa, wa) << 9;
-		offset_y = random(-wa, wa) << 9;
-
-		createNpc(4, x + offset_x, offset_y + y, 0, 0, 0, nullptr);
-	}
-
-	createCaret(x, y, 12, 0);
+	xm = 0;
+	ym = 0;
+	cond &= ~player_removed;
 }
 
-void player::hit(int damage) {
-	if (shock == 0)
+void player::damage(int damage) {
+	if (!shock)
 	{
-		//PlaySoundObject(16, 1);
 		cond &= ~player_removed;
+		shock = 0x80;
 
-		shock = -128;
+		if (!gamePhysics)
+			ym = -0x400;
 
-		//if (unk_81C8594 != 1) { unk_81C85B8 = -1024; }
-		ysp = -0x400;
+		life -= damage;
 
-		health -= damage;
+		if (equip & equip_whimsicalStar && star > 0)
+			--star;
 
-		createCaret(x, y, 10, 2);
-
-		if (health <= 0)
+		if (life <= 0)
 		{
+			//PlaySoundObject(17, 1);
 			cond = 0;
 
-			explode(x, y, 0x1400, 0x40);
-		}
+			int wa = 10;
 
-		//if (unk_81C8598 & 0x80 && unk_81C8616 > 0) { unk_81C8616--; }
-		//if (unk_81C8598 & 4) { v1 = gArmsData[gSelectedArms].exp - damage; }
-		//else { v1 = gArmsData[gSelectedArms].exp - 2 * damage; }
-		//gArmsData[gSelectedArms].exp = v1;
-		//while (gArmsData[gSelectedArms].exp < 0)
-		//{
-		//	if (gArmsData[gSelectedArms].level <= 1)
-		//	{
-		//		gArmsData[gSelectedArms].exp = 0;
-		//	}
-		//	else
-		//	{
-		//		gArmsData[gSelectedArms].exp += gArmsLevelTable[0].exp[gArmsData[gSelectedArms].level--
-		//			- 1
-		//			+ 3 * gArmsData[gSelectedArms].code];
-		//		if (gMC.life > 0 && gArmsData[gSelectedArms].code != 13) { SetCaret(x, y, 10, 2); }
-		//	}
-		//}
-		//SetValueView(&x, &y, -damage);
-		//if (gMC.life <= 0)
-		//{
-		//	PlaySoundObject(17, 1);
-		//	gMC.cond = 0;
-		//	SetDestroyNpChar(x, y, 5120, 64);
-		//	StartTextScript(40);
-		//}
+			for (int i = 0; i < 64; ++i)
+			{
+				int offsetX = random(-wa, wa) << 9;
+				int offsetY = random(-wa, wa) << 9;
+
+				createNpc(4, x + offsetX, offsetY + y, 0, 0, 0, nullptr);
+			}
+
+			createCaret(x, y, 12, 0);
+			//StartTextScript(40);
+		}
 	}
 }
 
 void player::collide() {
-	int width = 0xA00;
-	int height = 0x1000;
+	flag = 0;
 
-	RECT hitRect = { width, height, width, height };
-
-	flags = playerHitMap(&hitRect);
-	playerHitNpcs(&hitRect);
+	playerHitMap(&hit);
+	playerHitNpcs(&hit);
 }
 
-void player::actNormal() {
-	if (!(cond & 2))
+void player::actNormal(bool bKey) {
+	int max_dash;
+	int gravity1;
+	int gravity2;
+	int jump;
+	int dash1;
+	int dash2;
+	int resist;
+
+	if (!(cond & player_removed))
 	{
-		if (flags & water)
+		if (flag & water)
 		{
-			maxDash = 0x196;
-			gravity = 0x28;
-			gravityHold = 0x10;
+			max_dash = 0x196;
+			gravity1 = 0x28;
+			gravity2 = 0x10;
 			jump = 0x280;
-			dashGround = 0x2A;
-			dashAir = 0x10;
+			dash1 = 0x2A;
+			dash2 = 0x10;
 			resist = 0x19;
 		}
 		else
 		{
-			maxDash = 0x32C;
-			gravity = 0x50;
-			gravityHold = 0x20;
+			max_dash = 0x32C;
+			gravity1 = 0x50;
+			gravity2 = 0x20;
 			jump = 0x500;
-			dashGround = 0x55;
-			dashAir = 0x20;
+			dash1 = 0x55;
+			dash2 = 0x20;
 			resist = 0x33;
 		}
 
-		interacting = false;
+		ques = 0;
 
-		if (flags & ground || flags & slopeLeft || flags & slopeRight)
+		if (!bKey)
+			boost_sw = 0;
+
+		if (flag & ground || flag & slopeRight || flag & slopeLeft)
 		{
-			if (key)
+			boost_sw = 0;
+
+			//Fuel booster
+			if (equip & equip_booster08)
+				boost_cnt = 50;
+			else if (equip & equip_booster20)
+				boost_cnt = 50;
+			else
+				boost_cnt = 0;
+
+			if (bKey)
 			{
-				if (!isKeyPressed(keyDown) || (cond & player_inspect))
+				bool notDown = (isKeyDown(keyShoot) || isKeyDown(keyJump) || isKeyDown(keyUp) || isKeyDown(keyLeft) || isKeyDown(keyRight) || isKeyDown(keyMap) || isKeyDown(keyMenu) || isKeyDown(keyRotLeft) || isKeyDown(keyRotRight));
+				
+				if (notDown || cond & player_interact || gameFlags & 4) //Moving and interaction
 				{
+					//Move left and right
+					if (isKeyDown(keyLeft) && xm > -max_dash)
+						xm -= dash1;
+					if (isKeyDown(keyRight) && xm < max_dash)
+						xm += dash1;
+
+					//Face held direction
 					if (isKeyDown(keyLeft))
-					{
-						direction = 0;
-
-						if (xsp > -maxDash)
-							xsp -= dashGround;
-					}
-
+						direct = 0;
 					if (isKeyDown(keyRight))
+						direct = 2;
+				}
+				else if (isKeyPressed(keyDown))
+				{
+					cond |= player_interact;
+					ques = 1;
+				}
+
+				if (!(cond & player_noFriction)) //Friction
+				{
+					if (xm < 0)
 					{
-						direction = 2;
-
-						if (xsp < maxDash)
-							xsp += dashGround;
+						if (xm <= -resist)
+							xm += resist;
+						else
+							xm = 0;
 					}
-				}
-				else
-				{
-					cond |= player_inspect;
-					interacting = true;
-				}
-			}
-
-			if (!(cond & player_noFriction))
-			{
-				if (xsp < 0)
-				{
-					if (xsp <= -resist)
-						xsp += resist;
-					else
-						xsp = 0;
-				}
-				if (xsp > 0)
-				{
-					if (xsp >= resist)
-						xsp -= resist;
-					else
-						xsp = 0;
+					if (xm > 0)
+					{
+						if (xm >= resist)
+							xm -= resist;
+						else
+							xm = 0;
+					}
 				}
 			}
 		}
 		else
 		{
-			if (key)
+			if (bKey)
 			{
-				if (isKeyDown(keyLeft))
+				//Boosting
+				if (equip & (equip_booster08 | equip_booster20) && isKeyPressed(keyJump) && boost_cnt)
 				{
-					direction = 0;
+					if (equip & equip_booster08)
+					{
+						boost_sw = 1;
 
-					if (xsp > -maxDash)
-						xsp -= dashAir;
+						if (ym > 0x100)
+							ym /= 2;
+					}
+
+					if (equip & equip_booster20)
+					{
+						if (isKeyDown(keyUp))
+						{
+							boost_sw = 2;
+
+							xm = 0;
+							ym = -0x5FF;
+						}
+						else if (isKeyDown(keyLeft))
+						{
+							boost_sw = 1;
+
+							xm = -0x5FF;
+							ym = 0;
+						}
+						else if (isKeyDown(keyRight))
+						{
+							boost_sw = 1;
+							
+							xm = 0x5FF;
+							ym = 0;
+						}
+						else if (isKeyDown(keyDown))
+						{
+							boost_sw = 3;
+
+							xm = 0;
+							ym = 0x5FF;
+						}
+						else
+						{
+							boost_sw = 2;
+
+							xm = 0;
+							ym = -0x5FF;
+						}
+					}
 				}
 
-				if (isKeyDown(keyRight))
-				{
-					direction = 2;
+				//Move left and right
+				if (isKeyDown(keyLeft) && xm > -max_dash)
+					xm -= dash2;
+				if (isKeyDown(keyRight) && xm < max_dash)
+					xm += dash2;
 
-					if (xsp < maxDash)
-						xsp += dashAir;
+				//Face held direction
+				if (isKeyDown(keyLeft))
+					direct = 0;
+				if (isKeyDown(keyRight))
+					direct = 2;
+			}
+
+			//Ending boost (2.0)
+			if (equip & equip_booster20 && boost_sw && (!isKeyDown(keyJump) || !boost_cnt))
+			{
+				if (boost_sw == 1)
+				{
+					xm /= 2;
+				}
+				else if (boost_sw == 2)
+				{
+					ym /= 2;
 				}
 			}
+
+			if (!boost_cnt || !isKeyDown(keyJump))
+				boost_sw = 0;
 		}
-		
-		if (key)
+
+		if (bKey)
 		{
-			//Looking up and down
-			lookingUp = (isKeyDown(keyUp)) != 0;
-			lookingDown = isKeyDown(keyDown) && !(flags & ground);
+			//Look up and down
+			up = isKeyDown(keyUp);
+			down = isKeyDown(keyDown) && !(flag & ground);
 
 			//Jump
 			if (isKeyPressed(keyJump)
-				&& (flags & ground || flags & slopeLeft || flags & slopeRight)
-				&& !(flags & windUp))
+				&& (flag & ground || flag & slopeRight || flag & slopeLeft)
+				&& !(flag & windUp))
 			{
-				ysp = -jump;
+				ym = -jump;
 				//PlaySoundObject(15, 1);
 			}
 		}
 
-		//If pressed anything, stop inspecting
-		if (key == false || isKeyDown(keyShoot) || isKeyDown(keyJump) || isKeyDown(keyUp) || isKeyDown(keyRight) || isKeyDown(keyLeft))
-		{
-			cond &= ~player_inspect;
-			interacting = false;
-		}
+		//End interaction state
+		if (bKey && (isKeyDown(keyShoot) || isKeyDown(keyJump) || isKeyDown(keyUp) || isKeyDown(keyLeft) || isKeyDown(keyRight)))
+			cond &= ~player_interact;
+
+		//Boost timer
+		if (boost_sw && boost_cnt)
+			--boost_cnt;
 
 		//Wind
-		if (flags & windLeft)
-			xsp -= 0x88;
-		if (flags & windUp)
-			ysp -= 0x80;
-		if (flags & windRight)
-			xsp += 0x88;
-		if (flags & windDown)
-			ysp += 0x55;
+		if (flag & windLeft)
+			xm -= 0x88;
+		if (flag & windUp)
+			ym -= 0x80;
+		if (flag & windRight)
+			xm += 0x88;
+		if (flag & windDown)
+			ym += 0x55;
 
-		//Gravity
-		if (ysp < 0 && isKeyDown(keyJump))
+		//Booster 2.0 code
+		if (equip & equip_booster20 && boost_sw)
 		{
-			ysp += gravityHold;
-		}
-		else
-		{
-			ysp += gravity;
-		}
-
-		//Keep Quote on slopes
-		if (!isKeyPressed(keyJump))
-		{
-			if (flags & slopeRight && xsp < 0)
-				ysp = -xsp;
-
-			if (flags & slopeLeft && xsp > 0)
-				ysp = xsp;
-
-			if (flags & ground && flags & slopeH && xsp < 0)
-				ysp = 0x400;
-
-			if (flags & ground && flags & slopeE && xsp > 0)
-				ysp = 0x400;
-
-			if (flags & ground && flags & slopeF && flags & slopeG)
-				ysp = 0x400;
-		}
-
-		//Cap Quote's speed
-		if (!(flags & water) || flags & (windLeft | windUp | windRight | windDown))
-		{
-			if (xsp < -0x5FF)
-				xsp = -0x5FF;
-
-			if (xsp > 0x5FF)
-				xsp = 0x5FF;
-
-			if (ysp < -0x5FF)
-				ysp = -0x5FF;
-
-			if (ysp > 0x5FF)
-				ysp = 0x5FF;
-		}
-		else
-		{
-			if (xsp < -0x2FF)
-				xsp = -0x2FF;
-
-			if (xsp > 0x2FF)
-				xsp = 0x2FF;
-
-			if (ysp < -0x2FF)
-				ysp = -0x2FF;
-
-			if (ysp > 0x2FF)
-				ysp = 0x2FF;
-		}
-
-		//Entering water
-		if (!(cond & player_wasWater) && flags & water)
-		{
-			int waterDir = 0;
-
-			if (flags & bloodWater)
-				waterDir = 2;
-
-			if (flags & ground || ysp <= 0x200)
+			if (boost_sw == 1)
 			{
-				if (xsp > 0x200 || xsp < -0x200)
+				//Go up when hit wall
+				if (flag & (leftWall | rightWall))
+					ym = -0x100;
+
+				//Move in facing direction
+				if (!direct)
+					xm -= 0x20;
+				if (direct == 2)
+					xm += 32;
+
+				if (isKeyPressed(keyJump) || boost_cnt % 3 == 1)
 				{
-					for (int waterit = 0; waterit < 8; ++waterit)
+					if (!direct)
+						createCaret(x + 0x400, y + 0x400, 7, 2);
+					if (direct == 2)
+						createCaret(x - 0x400, y + 0x400, 7, 0);
+					//PlaySoundObject(113, 1);
+				}
+			}
+			else if (boost_sw == 2)
+			{
+				//Move up
+				ym -= 0x20;
+
+				if (isKeyPressed(keyJump) || boost_cnt % 3 == 1)
+				{
+					createCaret(x, y + 0xC00, 7, 3);
+					//PlaySoundObject(113, 1);
+				}
+			}
+			else if (boost_sw == 3 && (isKeyPressed(keyJump) || boost_cnt % 3 == 1))
+			{
+				createCaret(x, y - 0xC00, 7, 1);
+				//PlaySoundObject(113, 1);
+			}
+		}
+		else if (flag & windUp) //Gravity when in wind
+		{
+			ym += gravity1;
+		}
+		else if (equip & equip_booster08 && boost_sw && ym > -0x400) //Booster 8.0
+		{
+			ym -= 0x20;
+
+			if (!(boost_cnt % 3))
+			{
+				createCaret(x, hit.bottom / 2 + y, 7, 3);
+				//PlaySoundObject(113, 1);
+			}
+
+			if (flag & ceiling) //Bounce of ceilings
+				ym = 0x200;
+		}
+		else if (ym < 0 && bKey && isKeyDown(keyJump)) //Hold gravity
+		{
+			ym += gravity2;
+		}
+		else //Normal gravity
+		{
+			ym += gravity1;
+		}
+
+		//Keep Quote down on slopes
+		if (!bKey || !isKeyPressed(keyJump))
+		{
+			if (flag & slopeRight && xm < 0)
+				ym = -xm;
+			if (flag & slopeLeft && xm > 0)
+				ym = xm;
+
+			if (flag & ground && flag & slopeH && xm < 0)
+				ym = 0x400;
+			if (flag & ground && flag & slopeE && xm > 0)
+				ym = 0x400;
+			if (flag & ground && flag & slopeF && flag & slopeG)
+				ym = 0x400;
+		}
+
+		//Limit speed
+		if (!(flag & water) || flag & (windLeft | windUp | windRight | windDown)) //Out of water or in wind
+		{
+			if (xm < -0x5FF)
+				xm = -0x5FF;
+			if (xm > 0x5FF)
+				xm = 0x5FF;
+
+			if (ym < -0x5FF)
+				ym = -0x5FF;
+			if (ym > 0x5FF)
+				ym = 0x5FF;
+		}
+		else //Water and not in wind
+		{
+			if (xm < -0x2FF)
+				xm = -0x2FF;
+			if (xm > 0x2FF)
+				xm = 0x2FF;
+
+			if (ym < -0x2FF)
+				ym = -0x2FF;
+			if (ym > 0x2FF)
+				ym = 0x2FF;
+		}
+
+		//Splashing
+		if (!sprash && flag & water)
+		{
+			//Blood water stuff
+			int dir = 0;
+
+			if (flag & bloodWater)
+				dir = 2;
+			
+			//Splash stuff
+			if (flag & ground || ym <= 0x200)
+			{
+				if (xm > 0x200 || xm < -0x200)
+				{
+					for (int i = 0; i < 8; ++i)
 					{
-						int spawnX = (random(-8, 8) << 9) + x;
-						int waterYsp = random(-0x200, 0x80);
-						int xspDiff = random(-0x200, 0x200);
-
-						createNpc(73, spawnX, y, xsp + xspDiff, waterYsp, waterDir, nullptr);
+						createNpc(73, x + (random(-8, 8) << 9), y, xm + random(-512, 512), random(-0x200, 0x80), dir, nullptr);
 					}
-
 					//PlaySoundObject(56, 1);
 				}
 			}
 			else
 			{
-				for (int waterit = 0; waterit < 8; ++waterit)
+				for (int i = 0; i < 8; ++i)
 				{
-					int spawnX = (random(-8, 8) << 9) + x;
-					int waterYsp = random(-0x200, 0x80) - (ysp / 2);
-					int xspDiff = random(-0x200, 0x200);
-
-					createNpc(73, spawnX, y, xsp + xspDiff, waterYsp, waterDir, nullptr);
+					createNpc(73, x + (random(-8, 8) << 9), y, xm + random(-512, 512), random(-0x200, 0x80) - ym / 2, dir, nullptr);
 				}
-
 				//PlaySoundObject(56, 1);
 			}
 
-			cond |= player_wasWater;
+			sprash = 1;
 		}
 
-		if (!(flags & 0x100))
+		if (!(flag & water))
+			sprash = 0;
+
+		//Spike damage
+		if (flag & spike)
+			damage(10);
+
+		//Camera
+		if (direct)
 		{
-			cond &= ~player_wasWater;
+			//Move to the right
+			index_x += 0x200;
+
+			if (index_x > 0x8000)
+				index_x = 0x8000;
+		}
+		else
+		{
+			//Move to the left
+			index_x -= 0x200;
+
+			if (index_x < -0x8000)
+				index_x = -0x8000;
+		}
+		if (bKey && isKeyDown(keyUp))
+		{
+			//Move up
+			index_y -= 0x200;
+
+			if (index_y < -0x8000)
+				index_y = -0x8000;
+		}
+		else if (bKey && isKeyDown(keyDown))
+		{
+			//Move down
+			index_y += 0x200;
+
+			if (index_y > 0x8000)
+				index_y = 0x8000;
+		}
+		else
+		{
+			//Move to neutral position
+			if (index_y > 0x200)
+				index_y -= 0x200;
+
+			if (index_y < -0x200)
+				index_y += 0x200;
 		}
 
-		//Get hurt by spikes
-		if (flags & spike)
-			hit(10);
+		viewGoalX = x + index_x;
+		viewGoalY = y + index_y;
 
-		//Move camera
-		if (direction)
-			viewOffX = std::min(viewOffX + 0x200, 0x8000);
-		else
-			viewOffX = std::max(viewOffX - 0x200, -0x8000);
-
-		if (isKeyDown(keyUp))
-			viewOffY = std::max(viewOffY - 0x200, -0x8000);
-		else if (isKeyDown(keyDown))
-			viewOffY = std::min(viewOffY + 0x200, 0x8000);
-		else
-			viewOffY = std::max(std::abs(viewOffY) - 0x200, 0) * sign(viewOffY);
-
-		viewGoalX = x - (screenWidth << 8) + viewOffX;
-		viewGoalY = y - (screenHeight << 8) + viewOffY;
-
-		//Move Quote
-		if (xsp > resist || xsp < -resist) //If moving above friction speed
-			x += xsp;
-
-		y += ysp;
+		//Move
+		if (xm > resist || xm < -resist)
+			x += xm;
+		y += ym;
 	}
 }
 
-void player::animate() //Basically the decomp code (thanks 20kdc for the help)
+void player::actStream(bool bKey)
 {
-	if (flags & ground)
+	up = 0;
+	down = 0;
+
+	if (bKey)
 	{
-		if (cond & player_inspect)
+		//Move left and right
+		if (isKeyDown(keyLeft) || isKeyDown(keyRight))
 		{
-			//Inspecting
-			frame = 11;
+			if (isKeyDown(keyLeft))
+				xm -= 0x100;
+			if (isKeyDown(keyRight))
+				xm += 0x100;
 		}
-		else if (key && (isKeyDown(keyRight) || isKeyDown(keyLeft)))
+		else if (xm >= 0x80 || xm <= -0x80)
 		{
-			//Walking
-			cond |= player_walk;
-
-			int base = 0;
-
-			if (key && isKeyDown(keyUp))
-				base = 6;
+			if (xm <= 0)
+				xm += 0x80;
 			else
-				base = 1;
-
-			if (++animationWait > 4)
-			{
-				animationWait = 0;
-				++frame;
-
-				//if (frame == (base + 1) || frame == (base + 3))
-				//	PlaySoundObject(24, 1);
-			}
-
-			if (frame > base + 3 || frame < base)
-				frame = base;
+				xm -= 0x80;
 		}
 		else
-		{
-			//Idle
-			cond &= ~player_walk;
+			xm = 0;
 
-			if (key && isKeyDown(keyUp))
-				frame = 5;
-			else
-				frame = 0;
+		//Move up and down
+		if (isKeyDown(keyUp) || isKeyDown(keyDown))
+		{
+			if (isKeyDown(keyUp))
+				ym -= 0x100;
+			if (isKeyDown(keyDown))
+				ym += 0x100;
 		}
+		else if (ym >= 0x80 || ym <= -0x80)
+		{
+			if (ym <= 0)
+				ym += 0x80;
+			else
+				ym -= 0x80;
+		}
+		else
+			ym = 0;
 	}
 	else
 	{
-		//Air animations
-		if (lookingUp)
-			frame = 6;
-		else if (lookingDown)
-			frame = 10;
-		else if (ysp <= 0)
-			frame = 3;
+		//Stop moving
+		if (xm >= 0x80 || xm <= -0x40)
+		{
+			if (xm <= 0)
+				xm += 0x80;
+			else
+				xm -= 0x80;
+		}
 		else
-			frame = 1;
-	}
-}
+			xm = 0;
 
-void player::draw() {
-	if (cond & player_visible)
+		if (ym >= 0x80 || ym <= -0x40)
+		{
+			if (ym <= 0)
+				ym += 0x80;
+			else
+				ym -= 0x80;
+		}
+		else
+			ym = 0;
+	}
+
+	//Bump effect (this code doesn't work because pixel forgot about how ym is set to 0)
+	if (ym < -0x200 && flag & ceiling)
+		createCaret(x, y - hit.top, 13, 5);
+	if (ym > 0x200 && flag & ground)
+		createCaret(x, y + hit.bottom, 13, 5);
+
+	//Limit speed
+	if (xm > 0x400)
+		xm = 0x400;
+	if (xm < -0x400)
+		xm = -0x400;
+	if (ym > 0x400)
+		ym = 0x400;
+	if (ym < -0x400)
+		ym = -0x400;
+
+	//Diagonal speed
+	if (isKeyDown(keyLeft) && isKeyDown(keyUp))
 	{
-		//Set framerect
-		int frameMap[12] = { 0,1,0,2,0,3,4,3,5,3,6,7 };
+		if (xm < -0x30C)
+			xm = -0x30C;
+		if (ym < -0x30C)
+			ym = -0x30C;
+	}
+	if (isKeyDown(keyRight) && isKeyDown(keyUp))
+	{
+		if (xm > 0x30C)
+			xm = 0x30C;
+		if (ym < -0x30C)
+			ym = -0x30C;
+	}
+	if (isKeyDown(keyLeft) && isKeyDown(keyDown))
+	{
+		if (xm < -0x30C)
+			xm = -0x30C;
+		if (ym > 0x30C)
+			ym = 0x30C;
+	}
+	if (isKeyDown(keyRight) && isKeyDown(keyDown))
+	{
+		if (xm > 0x30C)
+			xm = 0x30C;
+		if (ym > 0x30C)
+			ym = 0x30C;
+	}
 
-		ImageRect.x = frameMap[frame] * 16;
-		ImageRect.y = 0;
+	x += xm;
+	y += ym;
+}
 
-		//Offset for directional and mimiga mask purposes
-		if (direction)
-			ImageRect.y += 16;
+void player::animate(bool bKey)
+{
+	RECT rcLeft[12];
+	RECT rcRight[12];
 
-		ImageRect.w = 16;
-		ImageRect.h = 16;
+	rcLeft[0] = { 0, 0, 16, 16 };
+	rcLeft[1] = { 16, 0, 32, 16 };
+	rcLeft[2] = { 0, 0, 16, 16 };
+	rcLeft[3] = { 32, 0, 48, 16 };
+	rcLeft[4] = { 0, 0, 16, 16 };
+	rcLeft[5] = { 48, 0, 64, 16 };
+	rcLeft[6] = { 64, 0, 80, 16 };
+	rcLeft[7] = { 48, 0, 64, 16 };
+	rcLeft[8] = { 80, 0, 96, 16 };
+	rcLeft[9] = { 48, 0, 64, 16 };
+	rcLeft[10] = { 96, 0, 112, 16 };
+	rcLeft[11] = { 112, 0, 128, 16 };
 
-		//Draw
-		bool shockFlash = ((shock >> 1) & 1);
+	rcRight[0] = { 0, 16, 16, 32 };
+	rcRight[1] = { 16, 16, 32, 32 };
+	rcRight[2] = { 0, 16, 16, 32 };
+	rcRight[3] = { 32, 16, 48, 32 };
+	rcRight[4] = { 0, 16, 16, 32 };
+	rcRight[5] = { 48, 16, 64, 32 };
+	rcRight[6] = { 64, 16, 80, 32 };
+	rcRight[7] = { 48, 16, 64, 32 };
+	rcRight[8] = { 80, 16, 96, 32 };
+	rcRight[9] = { 48, 16, 64, 32 };
+	rcRight[10] = { 96, 16, 112, 32 };
+	rcRight[11] = { 112, 16, 128, 32 };
 
-		if (!shockFlash)
-			drawTexture(sprites[0x10], x - 0x1000, y - 0x1000, false);
 
-		/*/ COLLISION DEBUG
-		SDL_SetRenderDrawColor(renderer, 255, 255, 0, 255);
+	if (!(cond & player_removed))
+	{
+		if (flag & ground)
+		{
+			if (cond & player_interact) //Look away
+			{
+				ani_no = 11;
+			}
+			else if (bKey && isKeyDown(keyUp) && (isKeyDown(keyLeft) || isKeyDown(keyRight))) //Look up while walking
+			{
+				cond |= player_walk;
 
-		drawRect((x - 0xA00 - viewX) >> 9, (y - 0x1000 - viewY) >> 9, 0xA00 >> 8, 0x1000 >> 8);
-		*/
+				if (++ani_wait > 4)
+				{
+					ani_wait = 0;
+					++ani_no;
+
+					//if (ani_no == 7 || ani_no == 9)
+					//	PlaySoundObject(24, 1);
+				}
+
+				if (ani_no > 9 || ani_no <= 5)
+					ani_no = 6;
+			}
+			else if (bKey && (isKeyDown(keyLeft) || isKeyDown(keyRight))) //Walk
+			{
+				cond |= player_walk;
+
+				if (++ani_wait > 4)
+				{
+					ani_wait = 0;
+					++ani_no;
+
+					//if (ani_no == 2 || ani_no == 4)
+					//	PlaySoundObject(24, 1);
+				}
+
+				if (ani_no > 4 || ani_no <= 0)
+					ani_no = 1;
+			}
+			else if (bKey && isKeyDown(keyUp)) //Look up
+			{
+				//if (cond & 4)
+				//	PlaySoundObject(24, 1);
+
+				cond &= ~player_walk;
+				ani_no = 5;
+			}
+			else //Idle
+			{
+				//if (cond & 4)
+				//	PlaySoundObject(24, 1);
+
+				cond &= ~player_walk;
+				ani_no = 0;
+			}
+		}
+		else if (up) //Look up in air
+			ani_no = 6;
+		else if (down) //Look down
+			ani_no = 10;
+		else if (ym <= 0) //Jumping
+			ani_no = 3;
+		else //Fall
+			ani_no = 1;
+	}
+
+	if (direct)
+		rect = rcRight[ani_no];
+	else
+		rect = rcLeft[ani_no];
+
+	if (equip & equip_mimigaMask)
+	{
+		rect.top += 32;
+		rect.bottom += 32;
 	}
 }
 
-void player::update() {
+void player::update(bool bKey) {
+
 	if (cond & player_visible)
 	{
 		if (shock)
-			++shock;
-
-		if (isKeyDown(SDL_SCANCODE_LCTRL))
+			--shock;
+		
+		if (gamePhysics == 1)
 		{
-			if (isKeyPressed(SDL_SCANCODE_MINUS))
-				--maxHealth;
-
-			if (isKeyPressed(SDL_SCANCODE_EQUALS))
-				++maxHealth;
-
-			if (isKeyDown(keyLeft))
-				x -= 0x1000;
-			if (isKeyDown(keyRight))
-				x += 0x1000;
-			if (isKeyDown(keyUp))
-				y -= 0x1000;
-			if (isKeyDown(keyDown))
-				y += 0x1000;
-
-			viewGoalX = x - (screenWidth * 0x100);
-			viewGoalY = y - (screenHeight * 0x100);
+			actStream(bKey);
 		}
 		else
 		{
-			if (isKeyPressed(SDL_SCANCODE_MINUS))
-				--health;
+			actNormal(bKey);
 
-			if (isKeyPressed(SDL_SCANCODE_EQUALS))
-				++health;
-
-			actNormal();
-
-			collide();
-		}
-
-		//Air
-		if (flags & water)
-		{
-			airShow = 60;
-
-			//Drowning
-			if (--air <= 0)
+			if (!(gameFlags & 4) && bKey)
 			{
-				//Drowning
-				if (direction)
-					createCaret(x, y, 8, 2);
+				//Air
+				if (equip & equip_airTank)
+				{
+					air = 1000;
+					air_get = 0;
+				}
 				else
-					createCaret(x, y, 8, 0);
+				{
+					if (flag & water)
+					{
+						air_get = 60;
 
-				cond &= ~player_visible;
+						if (--air <= 0)
+						{
+							if (direct)
+								createCaret(x, y, 8, 2);
+							else
+								createCaret(x, y, 8, 0);
+
+							cond &= ~player_visible;
+						}
+					}
+					else
+					{
+						if (air_get)
+							--air_get;
+
+						air = 1000;
+					}
+				}
 			}
-		}
-		else if (airShow)
-		{
-			//Reset air stuff
-			air = 1000;
-			--airShow;
 		}
 
 		cond &= ~player_noFriction;
 
-		animate();
+		collide();
+
+		animate(bKey);
+	}
+}
+
+void player::draw() {
+	RECT rcBubble[2];
+	rcBubble[0] = { 56, 96, 80, 120 };
+	rcBubble[1] = { 80, 96, 104, 120 };
+	
+	if ((cond & player_visible) != 0 && !(cond & player_removed))
+	{
+		if (!((shock >> 1) & 1))
+		{
+			//Draw quote
+			drawTexture(sprites[0x10], &rect, ((x - view.left) / 0x200) - (viewX / 0x200), ((y - view.top) / 0x200) - (viewY / 0x200));
+			
+			
+			/*SDL_SetRenderDrawColor(renderer, 0, 255, 0, 255);
+			drawRect(((x - hit.left) / 0x200) - (viewX / 0x200), ((y - hit.top) / 0x200) - (viewY / 0x200), (hit.left + hit.right) / 0x200, (hit.top + hit.bottom) / 0x200);
+			SDL_SetRenderDrawColor(renderer, 255, 255, 0, 255);
+			drawRect(((x - 0x400) / 0x200) - (viewX / 0x200), ((y - 0x400) / 0x200) - (viewY / 0x200), 0x800 / 0x200, 0x800 / 0x200);*/
+
+			//Draw bubble
+			bubble++;
+			if (equip & equip_airTank && flag & water)
+				drawTexture(sprites[0x13], &rcBubble[(bubble >> 1) & 1], (x / 0x200) - 12 - (viewX / 0x200), (y / 0x200) - 12 - (viewY / 0x200));
+		}
 	}
 }

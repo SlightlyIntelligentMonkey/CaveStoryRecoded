@@ -70,14 +70,23 @@ enum NPC_cond {
 };
 
 enum player_flag {
-	player_inspect = 0b0001, //Inspecting
+	player_interact = 0b0001, //Inspecting
 	player_removed = 0b0010, //Removed
 	player_walk = 0b0100, //Walking (used for animation)
 	player_noFriction = 0x20, //Disables friction
 	player_visible = 0x80, //Quote is visible
-	player_water = 0x100, //When Quote is underwater
-	
-	player_wasWater = 0x200, //Replaces some bool (used for splashing)
+};
+
+enum equipItems {
+	equip_booster08 = 0x01,
+	equip_mapSystem = 0x02,
+	equip_turboCharge = 0x04,
+	equip_armsBarrier = 0x08,
+	equip_airTank = 0x10,
+	equip_booster20 = 0x20,
+	equip_mimigaMask = 0x40,
+	equip_whimsicalStar = 0x80,
+	equip_nikumaruCounter = 0x100,
 };
 
 //Drawing related variables
@@ -108,6 +117,7 @@ extern int mode;
 extern bool exitGame;
 
 extern int gameFlags;
+extern int gamePhysics;
 
 //Functions
 void doError();

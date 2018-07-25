@@ -4,75 +4,81 @@
 
 class player {
 	public:
-		//Important varialbes
-		int x = 0;
-		int y = 0;
+		//State things
+		uint8_t cond;
+		uint32_t flag;
+		int direct;
+		int up;
+		int down;
+		int unit;
+		int equip;
 
-		int xsp = 0;
-		int ysp = 0;
+		//Positions
+		int x;
+		int y;
 
-		int direction = 0;
+		int tgt_x;
+		int tgt_y;
 
-		int health = 3;
-		int maxHealth = 3;
+		int index_x;
+		int index_y;
 
-		int lastHealth = 3;
-		int healthDrainCount = 0;
-
-		int air = 1000;
-
-		int airShow = 0;
-
-		int shock = 0;
+		//Movement
+		int xm;
+		int ym;
 
 		//Animation
-		int animation = 0;
-		int animationWait = 0;
+		int ani_wait;
+		int ani_no;
 
-		int frame = 0;
+		//Rects
+		RECT hit;
+		RECT view;
+		RECT rect;
+		RECT rect_arms;
 
-		//State
-		UINT cond = 0;
+		//Weapons, hud, and health
+		int level;
+		int exp_wait;
+		int exp_count;
+		uint8_t shock;
+		uint8_t no_life;
+		uint8_t rensha;
+		uint8_t bubble;
+		int16_t life;
+		int16_t star;
+		int16_t max_life;
+		int lifeBr;
+		int lifeBr_count;
 
-		bool lookingUp = false;
-		bool lookingDown = false;
+		//Air
+		int air;
+		int air_get;
 
-		bool key = true;
-
-		bool interacting = false;
-
-		//Collision state
-		UINT flags = 0;
-
-		//physics
-		int maxDash = 0x32C;
-		int gravity = 0x50;
-		int gravityHold = 0x20;
-		int jump = 0x500;
-		int dashGround = 0x55;
-		int dashAir = 0x20;
-		int resist = 0x33;
-
-		//Camera
-		int viewOffX = 0;
-		int viewOffY = 0;
+		//Other things
+		int8_t sprash;
+		int8_t ques;
+		int8_t boost_sw;
+		int boost_cnt;
 
 	private:
 
 	public:
-		void init(int createX, int createY, int createDirection);
+		void init();
 
-		void explode(int x, int y, int w, int num);
-		void hit(int damage);
+		void setPos(int setX, int setY);
+
+		void damage(int damage);
+
+		void actNormal(bool bKey);
+		void actStream(bool bKey);
+
+		void animate(bool bKey);
 
 		void collide();
 
-		void actNormal();
-
-		void animate();
-
+		void update(bool bKey);
 		void draw();
-		void update();
 };
 
 extern player currentPlayer;

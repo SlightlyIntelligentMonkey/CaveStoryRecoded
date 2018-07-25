@@ -211,7 +211,7 @@ void drawLevel(bool foreground)
 				for (int x = 0; x < screenWidth; x += w)
 				{
 					for (int y = 0; y < screenHeight; y += h)
-						drawTextureFromRect(sprites[0x1C], &rect, x, y, true);
+						drawTexture(sprites[0x1C], &rect, x, y);
 				}
 
 				break;
@@ -220,7 +220,7 @@ void drawLevel(bool foreground)
 				for (int x = -(viewX / 0x400 % w); x < screenWidth; x += w)
 				{
 					for (int y = -(viewY / 0x400 % h); y < screenHeight; y += h)
-						drawTextureFromRect(sprites[0x1C], &rect, x << 9, y << 9, true);
+						drawTexture(sprites[0x1C], &rect, x, y);
 				}
 
 				break;
@@ -229,7 +229,7 @@ void drawLevel(bool foreground)
 				for (int x = -(viewX / 0x200 % w); x < screenWidth; x += w)
 				{
 					for (int y = -(viewY / 0x200 % h); y < screenHeight; y += h)
-						drawTextureFromRect(sprites[0x1C], &rect, x << 9, y << 9, true);
+						drawTexture(sprites[0x1C], &rect, x, y);
 				}
 
 				break;
@@ -238,18 +238,18 @@ void drawLevel(bool foreground)
 				//Draw sky
 				rect = { 0, 0, w / 2, 88 };
 
-				skyOff = ((((w / 2) - screenWidth) / 2) * 0x200);
+				skyOff = (((w / 2) - screenWidth) / 2);
 				
 				//Draw middle
-				drawTextureFromRect(sprites[0x1C], &rect, -skyOff, 0, true);
+				drawTexture(sprites[0x1C], &rect, -skyOff, 0);
 
 				//Repeat stars or whatever
 				rect = { w / 2, 0, w, 88 };
 
 				for (int i = 0; i < screenWidth - (skyOff / 2 + rect.left); i += rect.left)
 				{
-					drawTextureFromRect(sprites[0x1C], &rect, -skyOff + ((rect.left + i) * 0x200), 0, true);
-					drawTextureFromRect(sprites[0x1C], &rect, -skyOff - ((rect.left + i) * 0x200), 0, true);
+					drawTexture(sprites[0x1C], &rect, -skyOff + (rect.left + i), 0);
+					drawTexture(sprites[0x1C], &rect, -skyOff - (rect.left + i), 0);
 				}
 
 				//Cloud layers
@@ -259,22 +259,22 @@ void drawLevel(bool foreground)
 				rect.top = 88;
 				rect.bottom = 123;
 				for (int i = 0; i <= (screenWidth / w) + 1; ++i)
-					drawTextureFromRect(sprites[0x1C], &rect, ((w * i) - ((backgroundEffect / 2) % w)) << 9, rect.top << 9, true);
+					drawTexture(sprites[0x1C], &rect, (w * i) - (backgroundEffect / 2) % w, rect.top);
 
 				rect.top = 123;
 				rect.bottom = 146;
 				for (int i = 0; i <= (screenWidth / w) + 1; ++i)
-					drawTextureFromRect(sprites[0x1C], &rect, ((w * i) - (backgroundEffect % w)) << 9, rect.top << 9, true);
+					drawTexture(sprites[0x1C], &rect, (w * i) - backgroundEffect % w, rect.top);
 
 				rect.top = 146;
 				rect.bottom = 176;
 				for (int i = 0; i <= (screenWidth / w) + 1; ++i)
-					drawTextureFromRect(sprites[0x1C], &rect, ((w * i) - ((backgroundEffect * 2) % w)) << 9, rect.top << 9, true);
+					drawTexture(sprites[0x1C], &rect, (w * i) - (backgroundEffect * 2) % w, rect.top);
 
 				rect.top = 176;
 				rect.bottom = 240;
 				for (int i = 0; i <= (screenWidth / w) + 1; ++i)
-					drawTextureFromRect(sprites[0x1C], &rect, ((w * i) - ((backgroundEffect * 4) % w)) << 9, rect.top << 9, true);
+					drawTexture(sprites[0x1C], &rect, (w * i) - (backgroundEffect * 4) % w, rect.top);
 
 				break;
 
@@ -284,12 +284,12 @@ void drawLevel(bool foreground)
 	}
 
 	//Animate currents
-	RECT currentRect = { 0 };
-
 	if (foreground)
 		currentEffect += 2;
 
 	//Render tiles
+	RECT tileRect;
+
 	int xFrom = clamp((viewX + 0x1000) >> 13, 0, levelWidth);
 	int xTo = clamp((((viewX + 0x1000) + (screenWidth << 9)) >> 13) + 1, 0, levelWidth); //add 1 because edge wouldn't appear
 
@@ -309,62 +309,56 @@ void drawLevel(bool foreground)
 					int drawX = i % levelWidth;
 					int drawY = i / levelWidth;
 
-					if (attribute == 0x43)
+					if (attribute < 0x80)
 					{
-						ImageRect = { 256, 48, 16, 16 };
+						tileRect = { (tile % 16) * 16, (tile / 16) * 16, (tile % 16) * 16 + 16, (tile / 16) * 16 + 16 };
 
-						drawTexture(sprites[0x14], (drawX << 13) - 0x1000, (drawY << 13) - 0x1000, false);
+						drawTexture(sprites[0x02], &tileRect, (drawX * 16) - viewX / 0x200 - 8, (drawY * 16) - viewY / 0x200 - 8);
+
+						if (attribute == 0x43) //Star block
+						{
+							tileRect = { 256, 48, 272, 64 };
+
+							drawTexture(sprites[0x14], &tileRect, (drawX * 16) - viewX / 0x200 - 8, (drawY * 16) - viewY / 0x200 - 8);
+						}
 					}
 					else
 					{
-						if (attribute < 0x80)
+						switch (attribute)
 						{
-							ImageRect = { (tile % 16) * 16, (tile / 16) * 16, 16, 16 };
+						case 0x80: case 0xA0:
+							tileRect.left = (currentEffect & 0xF) + 224;
+							tileRect.right = (currentEffect & 0xF) + 240;
+							tileRect.top = 48;
+							tileRect.bottom = 64;
+							break;
 
-							drawTexture(sprites[0x02], (drawX << 13) - 0x1000, (drawY << 13) - 0x1000, false);
+						case 0x81: case 0xA1:
+							tileRect.left = 224;
+							tileRect.right = 240;
+							tileRect.top = (currentEffect & 0xF) + 48;
+							tileRect.bottom = (currentEffect & 0xF) + 64;
+							break;
+
+						case 0x82: case 0xA2:
+							tileRect.left = 240 - (currentEffect & 0xF);
+							tileRect.right = 256 - (currentEffect & 0xF);
+							tileRect.top = 48;
+							tileRect.bottom = 64;
+							break;
+
+						case 0x83: case 0xA3:
+							tileRect.left = 224;
+							tileRect.right = 240;
+							tileRect.top = 64 - (currentEffect & 0xF);
+							tileRect.bottom = 80 - (currentEffect & 0xF);
+							break;
+
+						default:
+							return;
 						}
-						else
-						{
-							bool draw = true;
 
-							switch (attribute)
-							{
-							case 128: case 160:
-								currentRect.left = (currentEffect & 0xF) + 224;
-								currentRect.right = (currentEffect & 0xF) + 240;
-								currentRect.top = 48;
-								currentRect.bottom = 64;
-								break;
-
-							case 129: case 161:
-								currentRect.left = 224;
-								currentRect.right = 240;
-								currentRect.top = (currentEffect & 0xF) + 48;
-								currentRect.bottom = (currentEffect & 0xF) + 64;
-								break;
-
-							case 130: case 162:
-								currentRect.left = 240 - (currentEffect & 0xF);
-								currentRect.right = currentRect.left + 16;
-								currentRect.top = 48;
-								currentRect.bottom = 64;
-								break;
-
-							case 131: case 163:
-								currentRect.left = 224;
-								currentRect.right = 240;
-								currentRect.top = 64 - (currentEffect & 0xF);
-								currentRect.bottom = currentRect.top + 16;
-								break;
-
-							default:
-								draw = false;
-								break;
-							}
-
-							if (draw)
-								drawTextureFromRect(sprites[0x13], &currentRect, (drawX << 13) - 0x1000, (drawY << 13) - 0x1000, false);
-						}
+						drawTexture(sprites[0x13], &tileRect, (drawX * 16) - viewX / 0x200 - 8, (drawY * 16) - viewY / 0x200 - 8);
 					}
 				}
 			}
@@ -374,18 +368,18 @@ void drawLevel(bool foreground)
 	//Render black bars in foreground
 	if (foreground)
 	{
-		SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
+		SDL_SetRenderDrawColor(renderer, 0, 0, 32, 255);
 
-		if (viewX < 0) //Typically won't be out of bounds unless centred to stage
+		if (viewX < 0)
 		{
-			drawRect(0, 0, -viewX, screenHeight << 9);
-			drawRect((screenWidth << 9) + viewX, 0, -viewX, screenHeight << 9);
+			drawRect(0, 0, viewX / -0x200, screenHeight);
+			drawRect(screenWidth + viewX / 0x200, 0, viewX / -0x200, screenHeight);
 		}
 
 		if (viewY < 0)
 		{
-			drawRect(0, 0, screenWidth << 9, -viewY);
-			drawRect(0, (screenHeight << 9) + viewY, screenWidth << 9, -viewY);
+			drawRect(0, 0, screenWidth, viewY / -0x200);
+			drawRect(0, screenHeight + viewY / 0x200, screenWidth, viewY / -0x200);
 		}
 	}
 }
