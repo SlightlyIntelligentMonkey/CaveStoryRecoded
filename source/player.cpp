@@ -4,16 +4,13 @@ player currentPlayer;
 
 void player::init() {
 	memset(this, 0, sizeof(*this));
-
-	direct = 2;
-
 	cond = player_visible;
-
-	hit = { 0xA00, 0x1000, 0xA00, 0x1000 };
+	direct = 2;
 	view = { 0x1000, 0x1000, 0x1000, 0x1000 };
-
+	hit = { 0xA00, 0x1000, 0xA00, 0x1000 };
 	life = 3;
 	max_life = 3;
+	gamePhysics = 0;
 }
 
 void player::setPos(int setX, int setY) {

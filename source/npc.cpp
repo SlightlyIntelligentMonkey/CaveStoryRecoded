@@ -3,8 +3,6 @@
 
 std::vector<npc> npcs(0);
 
-NPC_TABLE *npcTable;
-
 //NPC Functions
 void createNpc(int setCode, int setX, int setY, int setXm, int setYm, int setDir, npc *parentNpc)
 {
@@ -44,6 +42,9 @@ void drawNPC()
 	}
 }
 
+//NPC Table
+NPC_TABLE *npcTable;
+
 void loadNpcTable()
 {
 	npcTable = nullptr;
@@ -51,14 +52,12 @@ void loadNpcTable()
 	BYTE *tbl = nullptr;
 	int tblSize = loadFile("data/npc.tbl", &tbl);
 	if (tblSize < 0)
-		doCustomError("Couldn't load npc table.");
+		doCustomError("Couldn't read npc.tbl");
 
 	free(tbl);
 
 	int npcs = tblSize / 0x18;
 	npcTable = (NPC_TABLE *)malloc(0x18 * npcs);
-	if (!npcTable)
-		doCustomError("Couldn't malloc npcTable");
 
 	SDL_RWops *tblStream = SDL_RWFromFile("data/npc.tbl", "rb");
 
@@ -88,7 +87,7 @@ void loadNpcTable()
 			tblStream->read(tblStream, &npcTable[i].view, 4, 1);
 	}
 	else
-		doCustomError("Couldn't load npc table.");
+		doError();
 }
 
 void npc::init(int setCode, int setX, int setY, int setXm, int setYm, int setDir, npc *parentNpc)

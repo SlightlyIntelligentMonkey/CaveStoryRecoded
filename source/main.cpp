@@ -65,6 +65,7 @@ int init() {
 
 	//Load assets
 	loadNpcTable();
+	loadStageTable();
 
 	loadImage("data/Title.png", &sprites[0x00]);
 
@@ -103,6 +104,8 @@ int init() {
 	currentPlayer.setPos(10 << 13, 8 << 13);
 
 	//sound::playOrg(8);
+
+	loadProfile();
 
 	return 0;
 }

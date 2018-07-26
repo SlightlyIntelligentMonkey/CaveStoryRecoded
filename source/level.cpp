@@ -1,5 +1,8 @@
 #include "level.h"
 
+int currentLevel;
+
+//Loaded level stuff
 int levelWidth;
 int levelHeight;
 
@@ -13,10 +16,42 @@ int backgroundEffect = 0;
 int currentEffect = 0;
 
 //Get stage data
-BYTE *stageData = nullptr;
-char stblPath[256] = "data/stage.tbl";
+STAGE_TABLE *stageTable;
 
-int stblSize = loadFile(stblPath, &stageData);
+void loadStageTable()
+{
+	stageTable = nullptr;
+
+	BYTE *tbl = nullptr;
+	int tblSize = loadFile("data/stage.tbl", &tbl);
+
+	if (tblSize < 0)
+		doCustomError("Couldn't read stage.tbl");
+
+	free(tbl);
+
+	int stages = tblSize / 200;
+	stageTable = (STAGE_TABLE *)malloc(tblSize);
+
+	SDL_RWops *tblStream = SDL_RWFromFile("data/stage.tbl", "rb");
+
+	if (tblStream)
+	{
+		for (int i = 0; i < stages; i++)
+		{
+			tblStream->read(tblStream, stageTable[i].tileset, 0x20, 1);
+			tblStream->read(tblStream, stageTable[i].filename, 0x20, 1);
+			stageTable[i].backgroundScroll = SDL_ReadLE32(tblStream);
+			tblStream->read(tblStream, stageTable[i].background, 0x20, 1);
+			tblStream->read(tblStream, stageTable[i].npc1, 0x20, 1);
+			tblStream->read(tblStream, stageTable[i].npc2, 0x20, 1);
+			tblStream->read(tblStream, &stageTable[i].boss, 1, 1);
+			tblStream->read(tblStream, stageTable[i].name, 0x23, 1);
+		}
+	}
+	else
+		doError();
+}
 
 BYTE getTileAttribute(int x, int y) {
 	if (x >= 0 && x < levelWidth && y >= 0 && y < levelHeight)
@@ -26,34 +61,24 @@ BYTE getTileAttribute(int x, int y) {
 }
 
 void loadLevel(int levelIndex) {
-	if (stblSize < 0)
-		doCustomError("stage.tbl failed to load");
+	currentLevel = levelIndex;
 
-	//Get stage's stage.tbl offset
-	int tbloffset = levelIndex * 0xE5;
-
-	//Get tileset filename
-	char* tilesetFilename = (char*)&stageData[tbloffset];
-
-	//Get filename
-	char* levelFilename = (char*)&stageData[tbloffset+0x20];
-
-	//Get background stuff
-	backgroundScroll = readLElong(stageData, tbloffset + 0x40);
-
-	char* backgroundFilename = (char*)&stageData[tbloffset + 0x44];
-
-	//Npc sprite sheets
-	char* npcSheet1 = (char*)&stageData[tbloffset + 0x64];
-	char* npcSheet2 = (char*)&stageData[tbloffset + 0x84];
+	backgroundScroll = stageTable[levelIndex].backgroundScroll;
 
 	//Load pxm
 	char pxmPath[256];
-	snprintf(pxmPath, 256, "data/Stage/%s.pxm", levelFilename);
+	snprintf(pxmPath, 256, "data/Stage/%s.pxm", stageTable[levelIndex].filename);
 
 	BYTE *pxm = nullptr;
 	int pxmSize = loadFile(pxmPath, &pxm);
-	if (pxmSize < 0 ) { doCustomError("Couldn't read pxm."); doCustomError(pxmPath); }
+
+	if (pxmSize < 0)
+	{
+		char errorMsg[256];
+		snprintf(errorMsg, 256, "Couldn't read %s", pxmPath);
+
+		doCustomError(errorMsg);
+	}
 	
 	levelWidth = readLEshort(pxm, 4);
 	levelHeight = readLEshort(pxm, 6);
@@ -61,41 +86,50 @@ void loadLevel(int levelIndex) {
 	if (levelMap)
 		delete levelMap;
 
-	levelMap = new BYTE[pxmSize-8];
-
-	for (int i = 8; i < pxmSize; i++) {
-		levelMap[i - 8] = pxm[i];
-	}
+	levelMap = new BYTE[pxmSize - 8];
+	memcpy(levelMap, pxm + 8, pxmSize - 8);
 
 	//DONE WITH PXM
 	free(pxm);
 
 	//Load pxa
 	char pxaPath[256];
-	snprintf(pxaPath, 256, "data/Stage/%s.pxa", tilesetFilename);
+	snprintf(pxaPath, 256, "data/Stage/%s.pxa", stageTable[levelIndex].tileset);
 
 	BYTE *pxa = nullptr;
 	int pxaSize = loadFile(pxaPath, &pxa);
-	if (pxaSize < 0) { doCustomError("Couldn't read pxa."); doCustomError(pxaPath); }
+
+	if (pxaSize < 0)
+	{
+		char errorMsg[256];
+		snprintf(errorMsg, 256, "Couldn't read %s", pxaPath);
+
+		doCustomError(errorMsg);
+	}
 
 	if (levelTileAttributes)
 		delete levelTileAttributes;
+
 	levelTileAttributes = new BYTE[pxaSize];
-	
-	for (int i = 0; i < pxaSize; i++) {
-		levelTileAttributes[i] = pxa[i];
-	}
+	memcpy(levelTileAttributes, pxa, pxaSize);
 
 	//DONE WITH PXA
 	free(pxa);
 
 	//Load pxe
 	char pxePath[256];
-	snprintf(pxePath, 256, "data/Stage/%s.pxe", levelFilename);
+	snprintf(pxePath, 256, "data/Stage/%s.pxe", stageTable[levelIndex].filename);
 
 	BYTE *pxe = nullptr;
 	int pxeSize = loadFile(pxePath, &pxe);
-	if (pxeSize < 0) { doCustomError("Couldn't read pxe."); doCustomError(pxePath); }
+
+	if (pxeSize < 0)
+	{
+		char errorMsg[256];
+		snprintf(errorMsg, 256, "Couldn't read %s", pxePath);
+
+		doCustomError(errorMsg);
+	}
 
 	//Clear old npcs
 	npcs.clear();
@@ -145,35 +179,32 @@ void loadLevel(int levelIndex) {
 
 	//Load tileset
 	char tileImagePath[256];
-	snprintf(tileImagePath, 256, "data/Stage/Prt%s.png", tilesetFilename);
+	snprintf(tileImagePath, 256, "data/Stage/Prt%s.png", stageTable[levelIndex].tileset);
 
 	loadImage(tileImagePath, &sprites[0x02]);
 
 	//Load background
 	char bgImagePath[256];
-	snprintf(bgImagePath, 256, "data/%s.png", backgroundFilename);
+	snprintf(bgImagePath, 256, "data/%s.png", stageTable[levelIndex].background);
 
 	loadImage(bgImagePath, &sprites[0x1C]);
 
 	//Load npc sheets
 	//Load sheet 1
 	char npcSheet1Path[256];
-	snprintf(npcSheet1Path, 256, "data/Npc/Npc%s.png", npcSheet1);
+	snprintf(npcSheet1Path, 256, "data/Npc/Npc%s.png", stageTable[levelIndex].npc1);
 
 	loadImage(npcSheet1Path, &sprites[0x15]);
 
 	//Load sheet 2
 	char npcSheet2Path[256];
-	snprintf(npcSheet2Path, 256, "data/Npc/Npc%s.png", npcSheet2);
-	strcpy(npcSheet2Path, "data/Npc/Npc");
-	strcat(npcSheet2Path, npcSheet2);
-	strcat(npcSheet2Path, ".png");
+	snprintf(npcSheet2Path, 256, "data/Npc/Npc%s.png", stageTable[levelIndex].npc2);
 
 	loadImage(npcSheet2Path, &sprites[0x16]);
 
 	//Load tsc script
 	char tscPath[256];
-	snprintf(tscPath, 256, "data/Stage/%s.tsc", levelFilename);
+	snprintf(tscPath, 256, "data/Stage/%s.tsc", stageTable[levelIndex].filename);
 
 	loadTsc(tscPath);
 

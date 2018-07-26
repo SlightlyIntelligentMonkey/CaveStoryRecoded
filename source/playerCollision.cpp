@@ -742,10 +742,8 @@ void playerHitNpcs(RECT *rcHit)
 					npcs[i].cond = 0;
 				}
 
-				if (hit && npcs[i].bits & npc_eventtouch)//!(g_GameFlags & 4) && hit && gNPC[i].bits & 0x100)
-				{
-					//StartTextScript(gNPC[i].code_event);
-				}
+				if (!(gameFlags & 4) && hit && npcs[i].bits & npc_eventtouch)
+					runScriptEvent(npcs[i].code_event);
 
 				if (!(npcs[i].bits & npc_interact))
 				{

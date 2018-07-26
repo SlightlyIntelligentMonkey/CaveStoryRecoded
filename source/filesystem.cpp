@@ -1,5 +1,6 @@
 #include "filesystem.h"
 
+//Read function stuff
 uint16_t readLEshort(BYTE *data, unsigned int offset) {
 	return ((data[offset + 1] << 8) + data[offset]);
 }
@@ -8,6 +9,20 @@ uint32_t readLElong(BYTE *data, unsigned int offset) {
 	return ((data[offset + 3] << 24) + (data[offset + 2] << 16) + (data[offset + 1] << 8) + data[offset]);
 }
 
+//Write stuff
+void writeLEshort(BYTE *data, uint16_t input, unsigned int offset) {
+	data[offset] = input;
+	data[offset + 1] = input >> 8;
+}
+
+void writeLElong(BYTE *data, uint32_t input, unsigned int offset) {
+	data[offset] = input;
+	data[offset + 1] = input >> 8;
+	data[offset + 2] = input >> 16;
+	data[offset + 3] = input >> 24;
+}
+
+//Loading and writing functions
 int loadFile(const char *name, BYTE **data) {
 	int filesize = 0;
 
@@ -29,4 +44,77 @@ int loadFile(const char *name, BYTE **data) {
 	fclose(file);
 	
 	return filesize;
+}
+
+int writeFile(char *name, void *data, int amount)
+{
+	FILE *file = nullptr;
+	file = fopen(name, "wb");
+	if (file == nullptr) { return -1; }
+
+	if (fwrite(data, 1, amount, file) == 0) { return -1; }
+	fclose(file);
+	return 0;
+}
+
+//Profile code
+const char *profileName = "Profile.dat";
+const char *profileCode = "Do041220";
+
+void loadProfile()
+{
+	SDL_RWops *profile = SDL_RWFromFile(profileName, "rb");
+
+	if (profile == nullptr)
+		return;
+
+	uint64_t code = SDL_ReadLE64(profile); //Code
+
+	loadLevel(SDL_ReadLE32(profile)); //level
+	SDL_ReadLE32(profile); //song
+
+	currentPlayer.init();
+
+	currentPlayer.x = SDL_ReadLE32(profile); //Player X
+	currentPlayer.y = SDL_ReadLE32(profile); //Player Y
+	currentPlayer.direct = SDL_ReadLE32(profile); //Player Direction
+
+	currentPlayer.max_life = SDL_ReadLE16(profile); //max health
+	currentPlayer.star = SDL_ReadLE16(profile); //whimsical star
+	currentPlayer.life = SDL_ReadLE16(profile); //health
+	
+	//Flags
+	SDL_RWseek(profile, 0x21C, 0);
+
+	for (Sint64 i = 0; i < 1000; i++)
+		SDL_RWread(profile, &tscFlags[i], 1, 1);
+}
+
+void saveProfile() {
+	BYTE *profile = (BYTE*)malloc(0x604);
+
+	//Set data
+	memset(profile, 0, 0x604);
+	memcpy(profile, profileCode, 8);
+
+	writeLElong(profile, currentLevel, 8); //Level
+
+	writeLElong(profile, currentPlayer.x, 16); //Player X
+	writeLElong(profile, currentPlayer.y, 20); //Player Y
+	writeLElong(profile, currentPlayer.direct, 24); //Player direction
+
+	writeLEshort(profile, currentPlayer.max_life, 28); //Player max health
+	writeLEshort(profile, currentPlayer.star, 30); //Whimsical star
+	writeLEshort(profile, currentPlayer.life, 32); //Player health
+
+	memcpy(profile + 0x218, "FLAG", 4);
+
+	for (Sint64 i = 0; i < 1000; i++)
+		profile[0x21C + i] = tscFlags[i];
+
+	//Save to file
+	writeFile((char*)profileName, profile, 0x604);
+
+	//End
+	free(profile);
 }
