@@ -764,7 +764,7 @@ void playerHitNpcs(RECT *rcHit)
 					}
 				}
 
-				if (hit && me->cond & player_interact && npcs[i].bits & npc_interact)
+				if (!(gameFlags & 4) && hit && me->cond & player_interact && npcs[i].bits & npc_interact)
 				{
 					runScriptEvent(npcs[i].code_event);
 					me->xm = 0;

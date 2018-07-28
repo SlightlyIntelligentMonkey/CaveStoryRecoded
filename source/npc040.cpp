@@ -1,5 +1,27 @@
 #include "npc040.h"
 
+void npcAct046(npc *NPC) //H/V trigger
+{
+	NPC->bits |= npc_eventtouch;
+
+	if (NPC->direct)
+	{
+		if (NPC->y >= currentPlayer.y)
+			NPC->y -= 0x5FF;
+		else
+			NPC->y += 0x5FF;
+	}
+	else
+	{
+		if (NPC->x >= currentPlayer.x)
+			NPC->x -= 0x5FF;
+		else
+			NPC->x += 0x5FF;
+	}
+
+	NPC->rect = { 0, 0, 16, 16 };
+}
+
 void npcAct058(npc *NPC) //Basu 1
 {
 	int action = NPC->act_no;

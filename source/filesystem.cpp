@@ -70,7 +70,7 @@ void loadProfile()
 
 	uint64_t code = SDL_ReadLE64(profile); //Code
 
-	loadLevel(SDL_ReadLE32(profile)); //level
+	int level = SDL_ReadLE32(profile); //level
 	SDL_ReadLE32(profile); //song
 
 	currentPlayer.init();
@@ -82,12 +82,22 @@ void loadProfile()
 	currentPlayer.max_life = SDL_ReadLE16(profile); //max health
 	currentPlayer.star = SDL_ReadLE16(profile); //whimsical star
 	currentPlayer.life = SDL_ReadLE16(profile); //health
+
+	SDL_ReadLE16(profile); // a?
+
+	SDL_ReadLE32(profile); //current weapon
+	SDL_ReadLE32(profile); //current item
+
+	currentPlayer.equip = SDL_ReadLE32(profile); //equipped items
 	
 	//Flags
 	SDL_RWseek(profile, 0x21C, 0);
 
 	for (Sint64 i = 0; i < 1000; i++)
 		SDL_RWread(profile, &tscFlags[i], 1, 1);
+
+	//Now load level
+	loadLevel(level);
 }
 
 void saveProfile() {
@@ -95,17 +105,19 @@ void saveProfile() {
 
 	//Set data
 	memset(profile, 0, 0x604);
-	memcpy(profile, profileCode, 8);
+	memcpy(profile, profileCode, 0x08);
 
-	writeLElong(profile, currentLevel, 8); //Level
+	writeLElong(profile, currentLevel, 0x08); //Level
 
-	writeLElong(profile, currentPlayer.x, 16); //Player X
-	writeLElong(profile, currentPlayer.y, 20); //Player Y
-	writeLElong(profile, currentPlayer.direct, 24); //Player direction
+	writeLElong(profile, currentPlayer.x, 0x10); //Player X
+	writeLElong(profile, currentPlayer.y, 0x14); //Player Y
+	writeLElong(profile, currentPlayer.direct, 0x18); //Player direction
 
-	writeLEshort(profile, currentPlayer.max_life, 28); //Player max health
-	writeLEshort(profile, currentPlayer.star, 30); //Whimsical star
-	writeLEshort(profile, currentPlayer.life, 32); //Player health
+	writeLEshort(profile, currentPlayer.max_life, 0x1C); //Player max health
+	writeLEshort(profile, currentPlayer.star, 0x1E); //Whimsical star
+	writeLEshort(profile, currentPlayer.life, 0x20); //Player health
+	
+	writeLElong(profile, currentPlayer.equip, 0x2C); //Equipped items
 
 	memcpy(profile + 0x218, "FLAG", 4);
 

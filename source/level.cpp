@@ -116,14 +116,16 @@ void loadLevel(int levelIndex) {
 	//DONE WITH PXA
 	free(pxa);
 
+	//Clear old carets
+	carets.clear();
+	carets.shrink_to_fit();
+
 	//Load pxe
 	char pxePath[256];
 	snprintf(pxePath, 256, "data/Stage/%s.pxe", stageTable[levelIndex].filename);
 
 	BYTE *pxe = nullptr;
-	int pxeSize = loadFile(pxePath, &pxe);
-
-	if (pxeSize < 0)
+	if (loadFile(pxePath, &pxe) < 0)
 	{
 		char errorMsg[256];
 		snprintf(errorMsg, 256, "Couldn't read %s", pxePath);
@@ -135,47 +137,32 @@ void loadLevel(int levelIndex) {
 	npcs.clear();
 	npcs.shrink_to_fit();
 
-	//Clear old carets
-	carets.clear();
-	carets.shrink_to_fit();
-
 	//Load npcs
-	int entityCount = readLElong(pxe, 4);
+	int npcAmount = readLElong(pxe, 4);
 
-	for (int i = 0; i < entityCount; i++) {
+	for (int i = 0; i < npcAmount; i++) {
 		int offset = (i * 12) + 8;
 
-		uint16_t x = readLEshort(pxe, offset);
-		uint16_t y = readLEshort(pxe, offset + 2);
-		uint16_t flag = readLEshort(pxe, offset + 4);
-		uint16_t event = readLEshort(pxe, offset + 6);
-		uint16_t type = readLEshort(pxe, offset + 8);
-		uint16_t flags = readLEshort(pxe, offset + 10);
+		if (readLEshort(pxe, offset + 10) & npc_appearset && getFlag(readLEshort(pxe, offset + 4)) == false)
+			continue;
 
-		bool create = true;
+		if (readLEshort(pxe, offset + 10) & npc_hideset && getFlag(readLEshort(pxe, offset + 4)) == true)
+			continue;
 
-		if (flags & npc_appearset) {
-			if (getFlag(flag) == false) { create = false; }
-		}
+		npc newNPC;
+		newNPC.init(readLEshort(pxe, offset + 8), readLEshort(pxe, offset) << 13, readLEshort(pxe, offset + 2) << 13, 0, 0, 0, nullptr);
 
-		if (flags & npc_hideset) {
-			if (getFlag(flag) == true) { create = false; }
-		}
+		newNPC.code_event = readLEshort(pxe, offset + 6);
+		newNPC.code_flag = readLEshort(pxe, offset + 4);
+		newNPC.bits |= readLEshort(pxe, offset + 10);
 
-		if (create == true)
-		{
-			npc newNPC;
-			newNPC.init(type, x << 13, y << 13, 0, 0, 0, nullptr);
+		if (readLEshort(pxe, offset + 10) & npc_altdir)
+			newNPC.direct = 2;
 
-			newNPC.code_event = event;
-			newNPC.bits |= flags;
-
-			if (flags & npc_altdir)
-				newNPC.direct = 2;
-
-			npcs.push_back(newNPC);
-		}
+		npcs.push_back(newNPC);
 	}
+
+	free(pxe);
 
 	//Load tileset
 	char tileImagePath[256];

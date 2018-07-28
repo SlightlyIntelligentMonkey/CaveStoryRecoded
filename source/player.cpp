@@ -27,6 +27,38 @@ void player::setPos(int setX, int setY) {
 	cond &= ~player_removed;
 }
 
+void player::setDir(int setDirect) {
+	if (setDirect == 3)
+	{
+		cond |= player_interact;
+		xm = 0;
+		animate(false);
+		return;
+	}
+	
+	cond &= ~player_interact;
+
+	if (setDirect < 10)
+	{
+		direct = setDirect;
+		xm = 0;
+		animate(false);
+		return;
+	}
+
+	for (size_t i = 0; i < npcs.size(); i++)
+	{
+		if (x <= npcs[i].x)
+			direct = 2;
+		else
+			direct = 0;
+
+		xm = 0;
+		animate(false);
+		return;
+	}
+}
+
 void player::damage(int damage) {
 	if (!shock)
 	{
@@ -141,23 +173,23 @@ void player::actNormal(bool bKey) {
 					cond |= player_interact;
 					ques = 1;
 				}
+			}
 
-				if (!(cond & player_noFriction)) //Friction
+			if (!(cond & player_noFriction)) //Friction
+			{
+				if (xm < 0)
 				{
-					if (xm < 0)
-					{
-						if (xm <= -resist)
-							xm += resist;
-						else
-							xm = 0;
-					}
-					if (xm > 0)
-					{
-						if (xm >= resist)
-							xm -= resist;
-						else
-							xm = 0;
-					}
+					if (xm <= -resist)
+						xm += resist;
+					else
+						xm = 0;
+				}
+				if (xm > 0)
+				{
+					if (xm >= resist)
+						xm -= resist;
+					else
+						xm = 0;
 				}
 			}
 		}
@@ -407,6 +439,7 @@ void player::actNormal(bool bKey) {
 					{
 						createNpc(73, x + (random(-8, 8) << 9), y, xm + random(-512, 512), random(-0x200, 0x80), dir, nullptr);
 					}
+
 					//PlaySoundObject(56, 1);
 				}
 			}
@@ -416,6 +449,7 @@ void player::actNormal(bool bKey) {
 				{
 					createNpc(73, x + (random(-8, 8) << 9), y, xm + random(-512, 512), random(-0x200, 0x80) - ym / 2, dir, nullptr);
 				}
+
 				//PlaySoundObject(56, 1);
 			}
 

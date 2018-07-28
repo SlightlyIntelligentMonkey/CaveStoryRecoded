@@ -61,12 +61,11 @@ class player {
 		int8_t boost_sw;
 		int boost_cnt;
 
-	private:
-
 	public:
 		void init();
 
 		void setPos(int setX, int setY);
+		void setDir(int setDirect);
 
 		void damage(int damage);
 
