@@ -12,6 +12,32 @@ void createNpc(int setCode, int setX, int setY, int setXm, int setYm, int setDir
 	npcs.push_back(newNPC);
 }
 
+void changeNpc(int code_event, int code_char, int dir)
+{
+	for (size_t i = 0; i < npcs.size(); ++i)
+	{
+		if ((npcs[i].cond & npccond_alive) && npcs[i].code_event == code_event)
+		{
+			npcs[i].init(code_char, npcs[i].x, npcs[i].y, 0, 0, npcs[i].direct, npcs[i].pNpc);
+
+			if (dir != 5)
+			{
+				if (dir == 4)
+				{
+					if (npcs[i].x >= currentPlayer.x)
+						npcs[i].direct = 0;
+					else
+						npcs[i].direct = 2;
+				}
+				else
+				{
+					npcs[i].direct = dir;
+				}
+			}
+		}
+	}
+}
+
 void updateNPC()
 {
 	if (npcs.size())

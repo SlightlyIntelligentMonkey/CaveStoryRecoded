@@ -48,14 +48,17 @@ void player::setDir(int setDirect) {
 
 	for (size_t i = 0; i < npcs.size(); i++)
 	{
-		if (x <= npcs[i].x)
-			direct = 2;
-		else
-			direct = 0;
+		if (npcs[i].code_event == setDirect)
+		{
+			if (x <= npcs[i].x)
+				direct = 2;
+			else
+				direct = 0;
 
-		xm = 0;
-		animate(false);
-		return;
+			xm = 0;
+			animate(false);
+			return;
+		}
 	}
 }
 

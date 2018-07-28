@@ -25,7 +25,23 @@ void npcAct002(npc *NPC) //Behemoth
 
 	RECT rcLeft[7];
 	RECT rcRight[7];
-	RECT setRect;
+	
+	//Framerect
+	rcLeft[0] = { 32, 0, 64, 24 };
+	rcLeft[1] = { 0, 0, 32, 24 };
+	rcLeft[2] = { 32, 0, 64, 24 };
+	rcLeft[3] = { 64, 0, 96, 24 };
+	rcLeft[4] = { 96, 0, 128, 24 };
+	rcLeft[5] = { 128, 0, 160, 24 };
+	rcLeft[6] = { 160, 0, 192, 24 };
+
+	rcRight[0] = { 32, 24, 64, 48 };
+	rcRight[1] = { 0, 24, 32, 48 };
+	rcRight[2] = { 32, 24, 64, 48 };
+	rcRight[3] = { 64, 24, 96, 48 };
+	rcRight[4] = { 96, 24, 128, 48 };
+	rcRight[5] = { 128, 24, 160, 48 };
+	rcRight[6] = { 160, 24, 192, 48 };
 
 	if (NPC->flag & leftWall)
 	{
@@ -115,29 +131,10 @@ void npcAct002(npc *NPC) //Behemoth
 	NPC->x += NPC->xm;
 	NPC->y += NPC->ym;
 
-	//Framerect
-	rcLeft[0] = { 32, 0, 64, 24 };
-	rcLeft[1] = { 0, 0, 32, 24 };
-	rcLeft[2] = { 32, 0, 64, 24 };
-	rcLeft[3] = { 64, 0, 96, 24 };
-	rcLeft[4] = { 96, 0, 128, 24 };
-	rcLeft[5] = { 128, 0, 160, 24 };
-	rcLeft[6] = { 160, 0, 192, 24 };
-
-	rcRight[0] = { 32, 24, 64, 48 };
-	rcRight[1] = { 0, 24, 32, 48 };
-	rcRight[2] = { 32, 24, 64, 48 };
-	rcRight[3] = { 64, 24, 96, 48 };
-	rcRight[4] = { 96, 24, 128, 48 };
-	rcRight[5] = { 128, 24, 160, 48 };
-	rcRight[6] = { 160, 24, 192, 48 };
-
 	if (NPC->direct)
-		setRect = rcRight[NPC->ani_no];
+		NPC->rect = rcRight[NPC->ani_no];
 	else
-		setRect = rcLeft[NPC->ani_no];
-
-	NPC->rect = setRect;
+		NPC->rect = rcLeft[NPC->ani_no];
 }
 
 void npcAct004(npc *NPC) //Smoke

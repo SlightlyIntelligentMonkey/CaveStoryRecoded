@@ -11,15 +11,15 @@ uint32_t readLElong(BYTE *data, unsigned int offset) {
 
 //Write stuff
 void writeLEshort(BYTE *data, uint16_t input, unsigned int offset) {
-	data[offset] = input;
-	data[offset + 1] = input >> 8;
+	data[offset] = (BYTE)input;
+	data[offset + 1] = (BYTE)(input >> 8);
 }
 
 void writeLElong(BYTE *data, uint32_t input, unsigned int offset) {
-	data[offset] = input;
-	data[offset + 1] = input >> 8;
-	data[offset + 2] = input >> 16;
-	data[offset + 3] = input >> 24;
+	data[offset] = (BYTE)input;
+	data[offset + 1] = (BYTE)(input >> 8);
+	data[offset + 2] = (BYTE)(input >> 16);
+	data[offset + 3] = (BYTE)(input >> 24);
 }
 
 //Loading and writing functions

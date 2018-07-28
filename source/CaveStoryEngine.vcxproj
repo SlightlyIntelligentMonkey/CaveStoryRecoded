@@ -160,6 +160,7 @@
     <ClCompile Include="game.cpp" />
     <ClCompile Include="hud.cpp" />
     <ClCompile Include="npc080.cpp" />
+    <ClCompile Include="npc100.cpp" />
     <ClCompile Include="npc180.cpp" />
     <ClCompile Include="npc220.cpp" />
     <ClCompile Include="npc340.cpp" />
@@ -196,6 +197,7 @@
     <ClInclude Include="caret.h" />
     <ClInclude Include="game.h" />
     <ClInclude Include="npc080.h" />
+    <ClInclude Include="npc100.h" />
     <ClInclude Include="npc180.h" />
     <ClInclude Include="npc220.h" />
     <ClInclude Include="org.h" />

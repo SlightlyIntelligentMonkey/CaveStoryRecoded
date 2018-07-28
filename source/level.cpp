@@ -20,20 +20,11 @@ STAGE_TABLE *stageTable;
 
 void loadStageTable()
 {
-	stageTable = nullptr;
-
-	BYTE *tbl = nullptr;
-	int tblSize = loadFile("data/stage.tbl", &tbl);
-
-	if (tblSize < 0)
-		doCustomError("Couldn't read stage.tbl");
-
-	free(tbl);
-
-	int stages = tblSize / 200;
-	stageTable = (STAGE_TABLE *)malloc(tblSize);
-
 	SDL_RWops *tblStream = SDL_RWFromFile("data/stage.tbl", "rb");
+
+	int stages = SDL_RWsize(tblStream) / 200;
+
+	stageTable = (STAGE_TABLE *)malloc(stages * 200);
 
 	if (tblStream)
 	{
