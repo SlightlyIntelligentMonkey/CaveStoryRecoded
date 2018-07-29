@@ -51,6 +51,27 @@ BYTE getTileAttribute(int x, int y) {
 	return 0;
 }
 
+void deleteTile(int x, int y)
+{
+	levelMap[x + y * levelWidth] = 0;
+}
+
+void shiftTile(int x, int y)
+{
+	--levelMap[x + y * levelWidth];
+}
+
+void changeTile(int x, int y, int tile)
+{
+	if (levelMap[x + y * levelWidth] == tile)
+		return;
+
+	levelMap[x + y * levelWidth] = tile;
+
+	for (int i = 0; i < 3; ++i)
+		createNpc(4, x << 13, y << 13, 0, 0, 0, nullptr);
+}
+
 void loadLevel(int levelIndex) {
 	currentLevel = levelIndex;
 

@@ -18,7 +18,10 @@ void changeNpc(int code_event, int code_char, int dir)
 	{
 		if ((npcs[i].cond & npccond_alive) && npcs[i].code_event == code_event)
 		{
+			int code_flag = npcs[i].code_flag;
 			npcs[i].init(code_char, npcs[i].x, npcs[i].y, 0, 0, npcs[i].direct, npcs[i].pNpc);
+			npcs[i].code_flag = code_flag;
+			npcs[i].code_event = code_event;
 
 			if (dir != 5)
 			{
@@ -34,6 +37,8 @@ void changeNpc(int code_event, int code_char, int dir)
 					npcs[i].direct = dir;
 				}
 			}
+
+			npcActs[code_char](&npcs[i]);
 		}
 	}
 }

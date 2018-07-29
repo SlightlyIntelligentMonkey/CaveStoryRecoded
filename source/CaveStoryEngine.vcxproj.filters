@@ -138,6 +138,12 @@
     <ClCompile Include="npc100.cpp">
       <Filter>Source Files\classes\npc\act</Filter>
     </ClCompile>
+    <ClCompile Include="npc280.cpp">
+      <Filter>Source Files\classes\npc\act</Filter>
+    </ClCompile>
+    <ClCompile Include="npc300.cpp">
+      <Filter>Source Files\classes\npc\act</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="render.h">
@@ -231,6 +237,12 @@
       <Filter>Source Files\classes\npc\act</Filter>
     </ClInclude>
     <ClInclude Include="npc100.h">
+      <Filter>Source Files\classes\npc\act</Filter>
+    </ClInclude>
+    <ClInclude Include="npc280.h">
+      <Filter>Source Files\classes\npc\act</Filter>
+    </ClInclude>
+    <ClInclude Include="npc300.h">
       <Filter>Source Files\classes\npc\act</Filter>
     </ClInclude>
   </ItemGroup>
