@@ -78,31 +78,31 @@ void caretAct001(caret *CARET) //Pulsing Disc Particles
 	rcRight[3] = { 88, 24, 96, 32 };
 	
 	//Movement
-	if (!CARET->action)
+	if (!CARET->act_no)
 	{
-		CARET->action = 1;
+		CARET->act_no = 1;
 
-		CARET->xsp = random(-0x400, 0x400);
-		CARET->ysp = random(-0x400, 0);
+		CARET->xm = random(-0x400, 0x400);
+		CARET->ym = random(-0x400, 0);
 	}
 	
-	CARET->ysp += 0x40;
+	CARET->ym += 0x40;
 	
-	CARET->x += CARET->xsp;
-	CARET->y += CARET->ysp;
+	CARET->x += CARET->xm;
+	CARET->y += CARET->ym;
 
 	//Animate
-	if (++CARET->animationWait > 5)
+	if (++CARET->ani_wait > 5)
 	{
-		CARET->animationWait = 0;
-		if (++CARET->animation > 3) { CARET->cond = 0; }
+		CARET->ani_wait = 0;
+		if (++CARET->ani_no > 3) { CARET->cond = 0; }
 	}
 
 	//Set framerect
-	if (CARET->direction)
-		CARET->frameRect = rcRight[CARET->animation];
+	if (CARET->direct)
+		CARET->rect = rcRight[CARET->ani_no];
 	else
-		CARET->frameRect = rcLeft[CARET->animation];
+		CARET->rect = rcLeft[CARET->ani_no];
 	
 	return;
 }
@@ -129,45 +129,45 @@ void caretAct002(caret *CARET) //Rising Disc / Exploding Diamond
 	rcUp[2] = { 16, 32, 32, 48 };
 
 	//Act
-	switch (CARET->direction)
+	switch (CARET->direct)
 	{
 	case 0:
-		CARET->ysp -= 16;
-		CARET->y += CARET->ysp;
+		CARET->ym -= 16;
+		CARET->y += CARET->ym;
 
 		//Animate
-		if (++CARET->animationWait > 5)
+		if (++CARET->ani_wait > 5)
 		{
-			CARET->animationWait = 0;
-			++CARET->animation;
+			CARET->ani_wait = 0;
+			++CARET->ani_no;
 		}
 
-		if (CARET->animation > 3)
+		if (CARET->ani_no > 3)
 			CARET->cond = 0;
 
-		CARET->frameRect = rcLeft[CARET->animation];
+		CARET->rect = rcLeft[CARET->ani_no];
 		break;
 
 	case 1:
 		//Animate ??
-		CARET->frameRect = rcUp[++CARET->animationWait / 2 % 3];
+		CARET->rect = rcUp[++CARET->ani_wait / 2 % 3];
 
-		if (CARET->animationWait > 24)
+		if (CARET->ani_wait > 24)
 			CARET->cond = 0;
 		break;
 
 	case 2:
 		//Animate
-		if (++CARET->animationWait > 2)
+		if (++CARET->ani_wait > 2)
 		{
-			CARET->animationWait = 0;
-			++CARET->animation;
+			CARET->ani_wait = 0;
+			++CARET->ani_no;
 		}
 
-		if (CARET->animation > 3)
+		if (CARET->ani_no > 3)
 			CARET->cond = 0;
 
-		CARET->frameRect = rcRight[CARET->animation];
+		CARET->rect = rcRight[CARET->ani_no];
 		break;
 	}
 }
@@ -175,15 +175,15 @@ void caretAct002(caret *CARET) //Rising Disc / Exploding Diamond
 void caretAct003(caret *CARET) //Star
 {
 	//Animate
-	if (CARET->animationWait++ > 2)
+	if (CARET->ani_wait++ > 2)
 	{
-		CARET->animationWait = 0;
+		CARET->ani_wait = 0;
 
-		if (CARET->animation++ > 3) 
+		if (CARET->ani_no++ > 3) 
 			CARET->cond = 0;
 	}
 	
-	CARET->frameRect = { (CARET->animation << 4), 48, 16 + (CARET->animation << 4), 64 };
+	CARET->rect = { (CARET->ani_no << 4), 48, 16 + (CARET->ani_no << 4), 64 };
 }
 
 void caretAct004(caret *CARET) //Fireball impact?
@@ -204,14 +204,14 @@ void caretAct004(caret *CARET) //Fireball impact?
 	rcLeft[8] = { 96, 64, 112, 80 };
 
 	//Animate
-	if (++CARET->animationWait > 1)
+	if (++CARET->ani_wait > 1)
 	{
-		CARET->animationWait = 0;
-		if (++CARET->animation > 2) { CARET->cond = 0; }
+		CARET->ani_wait = 0;
+		if (++CARET->ani_no > 2) { CARET->cond = 0; }
 	}
 
 	//framerect
-	CARET->frameRect = rcLeft[CARET->animation + CARET->direction * 3];
+	CARET->rect = rcLeft[CARET->ani_no + CARET->direct * 3];
 }
 
 void caretAct005(caret *CARET) //Zzz...
@@ -228,13 +228,13 @@ void caretAct005(caret *CARET) //Zzz...
 	rcLeft[6] = { 40, 64, 48, 72 };
 
 	//Animate
-	if (CARET->animationWait++ > 4)
+	if (CARET->ani_wait++ > 4)
 	{
-		CARET->animationWait = 0;
-		CARET->animation++;
+		CARET->ani_wait = 0;
+		CARET->ani_no++;
 	}
 
-	if (CARET->animation > 6)
+	if (CARET->ani_no > 6)
 		CARET->cond = 0;
 
 	//Move
@@ -242,24 +242,24 @@ void caretAct005(caret *CARET) //Zzz...
 	CARET->y -= 128;
 
 	//framerect
-	CARET->frameRect = rcLeft[CARET->animation];
+	CARET->rect = rcLeft[CARET->ani_no];
 }
 
 void caretAct007(caret *CARET) //Booster particles
 {
 	//Animate and set framerect
-	if (++CARET->animationWait > 1)
+	if (++CARET->ani_wait > 1)
 	{
-		CARET->animationWait = 0;
+		CARET->ani_wait = 0;
 
-		if (++CARET->animation > 6)
+		if (++CARET->ani_no > 6)
 			CARET->cond = 0;
 	}
 
-	CARET->frameRect = { 56 + (CARET->animation << 3), 0, 64 + (CARET->animation << 3), 8 };
+	CARET->rect = { 56 + (CARET->ani_no << 3), 0, 64 + (CARET->ani_no << 3), 8 };
 
 	//Move
-	switch (CARET->direction)
+	switch (CARET->direct)
 	{
 	case 0:
 		CARET->x -= 0x400;
@@ -281,26 +281,26 @@ void caretAct007(caret *CARET) //Booster particles
 
 void caretAct008(caret *CARET) //Drowned Quote
 {
-	if (CARET->direction)
-		CARET->frameRect = { 32, 80, 48, 96 };
+	if (CARET->direct)
+		CARET->rect = { 32, 80, 48, 96 };
 	else
-		CARET->frameRect = { 16, 80, 32, 96 };
+		CARET->rect = { 16, 80, 32, 96 };
 }
 
 void caretAct009(caret *CARET) //Question mark (when down is pressed)
 {
 	//Move
-	if (++CARET->animationWait <= 4)
+	if (++CARET->ani_wait <= 4)
 		CARET->y -= 2048;
 
 	//Deletion
-	if (CARET->animationWait >= 32)
+	if (CARET->ani_wait >= 32)
 		CARET->cond = 0;
 
-	if (CARET->direction)
-		CARET->frameRect = { 48, 64, 64, 80 };
+	if (CARET->direct)
+		CARET->rect = { 48, 64, 64, 80 };
 	else
-		CARET->frameRect = { 0, 80, 16, 96 };
+		CARET->rect = { 0, 80, 16, 96 };
 }
 
 void caretAct010(caret *CARET) //Level up and level down
@@ -314,61 +314,61 @@ void caretAct010(caret *CARET) //Level up and level down
 	rcRight[0] = { 0, 96, 56, 112 };
 	rcRight[1] = { 0, 112, 56, 128 };
 
-	CARET->animationWait++;
+	CARET->ani_wait++;
 
-	if (CARET->direction)
+	if (CARET->direct)
 	{
-		if (CARET->animationWait < 20) 
+		if (CARET->ani_wait < 20) 
 			CARET->y -= 0x200;
 
-		if (CARET->animationWait >= 80)
+		if (CARET->ani_wait >= 80)
 			CARET->cond = 0;
 	}
 	else
 	{
-		if (CARET->animationWait < 20) 
+		if (CARET->ani_wait < 20) 
 			CARET->y -= 0x400;
 
-		if (CARET->animationWait >= 80)
+		if (CARET->ani_wait >= 80)
 			CARET->cond = 0;
 	}
 
-	if (CARET->direction)
+	if (CARET->direct)
 	{
-		CARET->frameRect = rcRight[CARET->animationWait / 2 % 2];
+		CARET->rect = rcRight[CARET->ani_wait / 2 % 2];
 	}
 	else
 	{
-		CARET->frameRect = rcLeft[CARET->animationWait / 2 % 2];
+		CARET->rect = rcLeft[CARET->ani_wait / 2 % 2];
 	}
 }
 
 void caretAct011(caret *CARET) //Damage effect
 {
 	//Move
-	if (!CARET->action)
+	if (!CARET->act_no)
 	{
-		CARET->action = 1;
+		CARET->act_no = 1;
 
 		int deg = random(0, 255);
 
-		CARET->xsp = 2 * getCos(deg);
-		CARET->ysp = 2 * getSin(deg);
+		CARET->xm = 2 * getCos(deg);
+		CARET->ym = 2 * getSin(deg);
 	}
 	
-	CARET->x += CARET->xsp;
-	CARET->y += CARET->ysp;
+	CARET->x += CARET->xm;
+	CARET->y += CARET->ym;
 
 	//Animate
-	if (++CARET->animationWait > 2)
+	if (++CARET->ani_wait > 2)
 	{
-		CARET->animationWait = 0;
+		CARET->ani_wait = 0;
 
-		if (++CARET->animation > 6)
+		if (++CARET->ani_no > 6)
 			CARET->cond = 0;
 	}
 
-	CARET->frameRect = { 64 + (CARET->animation << 3), 8, 72 + (CARET->animation << 3), 16 };
+	CARET->rect = { 64 + (CARET->ani_no << 3), 8, 72 + (CARET->ani_no << 3), 16 };
 }
 
 void caretAct012(caret *CARET) //White "explosion" disc
@@ -378,15 +378,15 @@ void caretAct012(caret *CARET) //White "explosion" disc
 	rcLeft[0] = { 112, 0, 144, 32 };
 	rcLeft[1] = { 144, 0, 176, 32 };
 	
-	if (++CARET->animationWait > 2)
+	if (++CARET->ani_wait > 2)
 	{
-		CARET->animationWait = 0;
+		CARET->ani_wait = 0;
 
-		if (++CARET->animation > 1)
+		if (++CARET->ani_no > 1)
 			CARET->cond = 0;
 	}
 
-	CARET->frameRect = rcLeft[CARET->animation];
+	CARET->rect = rcLeft[CARET->ani_no];
 }
 
 void caretAct013(caret *CARET) //Headbump sparks
@@ -396,36 +396,36 @@ void caretAct013(caret *CARET) //Headbump sparks
 	rcLeft[0] = { 56, 24, 64, 32 };
 	rcLeft[1] = { 0, 0, 0, 0 };
 	
-	if (!CARET->action)
+	if (!CARET->act_no)
 	{
-		CARET->action = 1;
+		CARET->act_no = 1;
 		
-		if (CARET->direction)
+		if (CARET->direct)
 		{
-			if (CARET->direction == 1)
-				CARET->ysp = -0x200 * random(1, 3);
+			if (CARET->direct == 1)
+				CARET->ym = -0x200 * random(1, 3);
 		}
 		else
 		{
-			CARET->xsp = random(-0x600, 0x600);
-			CARET->ysp = random(-0x200, 0x200);
+			CARET->xm = random(-0x600, 0x600);
+			CARET->ym = random(-0x200, 0x200);
 		}
 	}
 
-	if (!CARET->direction)
+	if (!CARET->direct)
 	{
-		CARET->xsp = 4 * CARET->xsp / 5;
-		CARET->ysp = 4 * CARET->ysp / 5;
+		CARET->xm = 4 * CARET->xm / 5;
+		CARET->ym = 4 * CARET->ym / 5;
 	}
 
-	CARET->x += CARET->xsp;
-	CARET->y += CARET->ysp;
+	CARET->x += CARET->xm;
+	CARET->y += CARET->ym;
 
 	//Destroy
-	if (++CARET->animationWait > 20)
+	if (++CARET->ani_wait > 20)
 		CARET->cond = 0;
 
-	CARET->frameRect = rcLeft[CARET->animationWait / 2 % 2];
+	CARET->rect = rcLeft[CARET->ani_wait / 2 % 2];
 }
 
 void caretAct015(caret *CARET) //Small white pop
@@ -437,15 +437,15 @@ void caretAct015(caret *CARET) //Small white pop
 	rcLeft[2] = { 16, 72, 24, 80 };
 	rcLeft[3] = { 24, 72, 32, 80 };
 
-	if (++CARET->animationWait > 2)
+	if (++CARET->ani_wait > 2)
 	{
-		CARET->animationWait = 0;
+		CARET->ani_wait = 0;
 
-		if (++CARET->animation > 3)
+		if (++CARET->ani_no > 3)
 			CARET->cond = 0;
 	}
 
-	CARET->frameRect = rcLeft[CARET->animation];
+	CARET->rect = rcLeft[CARET->ani_no];
 }
 
 void caretAct016(caret *CARET) //EMPTY
@@ -455,24 +455,24 @@ void caretAct016(caret *CARET) //EMPTY
 	rcLeft[0] = { 104, 96, 144, 104 };
 	rcLeft[0] = { 104, 104, 144, 112 };
 
-	if (++CARET->animationWait < 10)
+	if (++CARET->ani_wait < 10)
 		CARET->y -= 1024;
 
-	if (CARET->animationWait >= 40)
+	if (CARET->ani_wait >= 40)
 		CARET->cond = 0;
 
-	CARET->frameRect = rcLeft[CARET->animationWait / 2 % 2];
+	CARET->rect = rcLeft[CARET->ani_wait / 2 % 2];
 }
 
 void caretAct017(caret *CARET) //PUSH JUMP KEY!
 {
-	if (++CARET->animationWait > 39)
-		CARET->animationWait = 0;
+	if (++CARET->ani_wait > 39)
+		CARET->ani_wait = 0;
 
-	if (CARET->animationWait > 29)
-		CARET->frameRect = { 0, 0, 0, 0 };
+	if (CARET->ani_wait > 29)
+		CARET->rect = { 0, 0, 0, 0 };
 	else
-		CARET->frameRect = { 0, 144, 144, 152 };
+		CARET->rect = { 0, 144, 144, 152 };
 }
 
 caretAct caretActs[] = {
@@ -502,26 +502,26 @@ void caret::init(int setX, int setY, int setType, int setDir)
 	memset(this, 0, sizeof(*this));
 
 	cond = 0x80;
-	type = setType;
+	code = setType;
 
 	x = setX;
 	y = setY;
 
-	direction = setDir;
+	direct = setDir;
 
-	offset.x = caretStats[type].offsetX;
-	offset.y = caretStats[type].offsetY;
+	view_left = caretStats[code].offsetX;
+	view_top = caretStats[code].offsetY;
 }
 
 //Update code
 void caret::update()
 {
-	caretActs[type](this);
+	caretActs[code](this);
 }
 
 void caret::draw()
 {
-	drawTexture(sprites[0x13], &frameRect, (x - offset.x) / 0x200 - viewX / 0x200, (y - offset.y) / 0x200 - viewY / 0x200);
+	drawTexture(sprites[0x13], &rect, (x - view_left) / 0x200 - viewX / 0x200, (y - view_top) / 0x200 - viewY / 0x200);
 }
 
 //Create code

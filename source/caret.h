@@ -9,28 +9,28 @@ struct CARETSTAT
 
 class caret
 {
-public: //variables
+public:
 	int cond;
-	int type;
+	int code;
 
+	int direct;
 	int x;
 	int y;
 
-	int direction;
+	int xm;
+	int ym;
 
-	int xsp;
-	int ysp;
+	int act_no;
+	int act_wait;
 
-	int action;
-	int actionWait;
+	int ani_no;
+	int ani_wait;
 
-	int animation;
-	int animationWait;
+	int view_left;
+	int view_top;
+	RECT rect;
 
-	POINT offset;
-	RECT frameRect;
-
-public: //functions
+public:
 	void init(int x, int y, int type, int dir);
 
 	void update();
