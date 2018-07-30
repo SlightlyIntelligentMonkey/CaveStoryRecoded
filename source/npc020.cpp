@@ -1,5 +1,18 @@
 #include "npc020.h"
 
+void npcAct021(npc *NPC) //Open chest
+{
+	if (!NPC->act_no)
+	{
+		NPC->act_no = 1;
+
+		if (NPC->direct == 2)
+			NPC->y += 0x2000;
+	}
+
+	NPC->rect = { 224, 40, 240, 48 };
+}
+
 void npcAct022(npc *NPC) //Teleporter
 {
 	RECT rect[2];
@@ -65,6 +78,26 @@ void npcAct032(npc *NPC) //Life Capsule
 	setRect = &rect[NPC->ani_no];
 
 	NPC->rect = { setRect->left, setRect->top, setRect->right, setRect->bottom };
+}
+
+void npcAct037(npc *NPC) //Sign
+{
+	RECT rect[2];
+
+	rect[0] = { 192, 64, 208, 80 };
+	rect[1] = { 208, 64, 224, 80 };
+
+	//Animate (pixel is dumb)
+	if (++NPC->ani_wait > 1)
+	{
+		NPC->ani_wait = 0;
+		++NPC->ani_no;
+	}
+
+	if (NPC->ani_no > 1)
+		NPC->ani_no = 0;
+
+	NPC->rect = rect[NPC->ani_no];
 }
 
 void npcAct039(npc *NPC) //Save Sign

@@ -154,71 +154,174 @@ void npcAct112(npc *NPC) //Quote teleport in
 		if (NPC->act_wait / 2 & 1)
 			++NPC->rect.left;
 	}
+}
 
-	/*if (v1 == 1)
+void npcAct117(npc *NPC)
+{
+	RECT rcLeft[10];
+	RECT rcRight[10];
+
+	switch (NPC->act_no)
 	{
-	LABEL_9:
-		if (++npc->act_wait == 64)
+	case 0: //Stand
+		//Look towards player if direction is 4
+		if (NPC->direct == 4)
 		{
-			npc->act_no = 2;
-			npc->act_wait = 0;
+			if (NPC->x <= currentPlayer.x)
+				NPC->direct = 2;
+			else
+				NPC->direct = 0;
 		}
-		goto LABEL_15;
-	}
-	if (v1 <= 1)
-	{
-		if (v1)
-			goto LABEL_15;
-		npc->act_no = 1;
-		npc->ani_no = 0;
-		npc->ani_wait = 0;
-		npc->x += 0x2000;
-		npc->y += 4096;
-		PlaySoundObject(29, 1);
-		goto LABEL_9;
-	}
-	if (v1 == 2)
-	{
-		if (++npc->act_wait > 20)
+		
+		NPC->act_no = 1;
+		NPC->ani_no = 0;
+		NPC->ani_wait = 0;
+		
+	case 1:
+		NPC->xm = 0;
+		NPC->ym += 0x40;
+		break;
+
+	case 3: //Walking
+		NPC->act_no = 4;
+		NPC->ani_no = 1;
+		NPC->ani_wait = 0;
+
+	case 4:
+		//Animate
+		if (++NPC->ani_wait > 4)
 		{
-			npc->act_no = 3;
-			npc->ani_no = 1;
-			npc->hit.bottom = 4096;
+			NPC->ani_wait = 0;
+			++NPC->ani_no;
 		}
+
+		if (NPC->ani_no > 4)
+			NPC->ani_no = 1;
+
+		//Gravity
+		NPC->ym += 0x40;
+
+		//Walk in facing direction
+		if (NPC->direct)
+			NPC->xm = 0x200;
+		else
+			NPC->xm = -0x200;
+
+		break;
+
+	case 5: //Hit ground with poof
+		NPC->act_no = 6;
+		NPC->ani_no = 5;
+		createSmoke(NPC->x, NPC->y, NPC->view.right, 8);
+		break;
+
+	case 6: //Lay on ground
+		NPC->ani_no = 5;
+		break;
+
+	case 10: //Walk towards player
+		NPC->act_no = 11;
+		NPC->ani_no = 1;
+		NPC->ani_wait = 0;
+
+		//Face towards player
+		if (NPC->x <= currentPlayer.x)
+			NPC->direct = 2;
+		else
+			NPC->direct = 0;
+		
+	case 11:
+		//Animate
+		if (++NPC->ani_wait > 4)
+		{
+			NPC->ani_wait = 0;
+			++NPC->ani_no;
+		}
+
+		if (NPC->ani_no > 4)
+			NPC->ani_no = 1;
+
+		//Move forward
+		if (NPC->direct)
+			NPC->x += 512;
+		else
+			NPC->x -= 512;
+
+		//Stop when close to the player
+		if (NPC->x + 0x2800 > currentPlayer.x && NPC->x - 0x2800 < currentPlayer.x)
+			NPC->act_no = 0;
+
+		break;
+
+	case 20: //Looking away
+		NPC->xm = 0;
+		NPC->ani_no = 6;
+		break;
+
+	case 21: //Looking up
+		NPC->xm = 0;
+		NPC->ani_no = 9;
+		break;
+
+	case 30: //Falling over
+		NPC->act_no = 31;
+		NPC->act_wait = 0;
+		NPC->ym = -1024;
+		
+	case 31:
+		NPC->ani_no = 7;
+
+		//Move opposite to facing direction
+		if (NPC->direct)
+			NPC->xm = -0x200;
+		else
+			NPC->xm = 0x200;
+
+		//Gravity
+		NPC->ym += 0x40;
+
+		//Check if Curly's on the ground
+		if (++NPC->act_wait > 1 && NPC->flag & ground)
+			NPC->act_no = 32;
+
+		break;
+
+	case 32: //Fallen
+		NPC->ym += 0x40;
+		NPC->ani_no = 8;
+		NPC->xm = 0;
+		break;
+
+	case 70: //Walk backwards slowly (Seal Chamber)
+		NPC->act_no = 71;
+		NPC->act_wait = 0;
+		NPC->ani_no = 1;
+		NPC->ani_wait = 0;
+
+	case 71:
+		if (NPC->direct)
+			NPC->x -= 0x100;
+		else
+			NPC->x += 0x100;
+
+		if (++NPC->ani_wait > 8)
+		{
+			NPC->ani_wait = 0;
+			++NPC->ani_no;
+		}
+
+		if (NPC->ani_no > 4)
+			NPC->ani_no = 1;
+		break;
+
+	default:
+		break;
 	}
-	else if (v1 == 3 && npc->flag & 8)
-	{
-		npc->act_no = 4;
-		npc->act_wait = 0;
-		npc->ani_no = 0;
-	}
-LABEL_15:
-	npc->ym += 64;
-	npc->y += npc->ym;
-	if (npc->direct)
-	{
-		v2 = npc;
-		v3 = (Sint32 *)&v6[16 * npc->ani_no - 64];
-	}
-	else
-	{
-		v2 = npc;
-		v3 = (Sint32 *)&v6[16 * npc->ani_no - 32];
-	}
-	npc->rect.left = *v3;
-	v2->rect.top = v3[1];
-	v2->rect.right = v3[2];
-	v2->rect.bottom = v3[3];
-	if (unk_81C8598 & 0x40)
-	{
-		npc->rect.top += 32;
-		npc->rect.bottom += 32;
-	}
-	if (npc->act_no == 1)
-	{
-		npc->rect.bottom = npc->act_wait / 4 + npc->rect.top;
-		if (npc->act_wait / 2 & 1)
-			++npc->rect.left;
-	}
-	*/
+
+	//Move and speed limit
+	if (NPC->ym > 0x5FF)
+		NPC->ym = 0x5FF;
+
+	NPC->x += NPC->xm;
+	NPC->y += NPC->ym;
 }

@@ -1,8 +1,8 @@
 #pragma once
 #include "common.h"
 
-int getSin(BYTE deg);
-int getCos(BYTE deg);
+int getSin(uint8_t deg);
+int getCos(uint8_t deg);
 uint8_t getAtan(int x, int y);
 
 int random(uint32_t mi, uint32_t ma);

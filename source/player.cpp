@@ -81,15 +81,7 @@ void player::damage(int damage) {
 			//PlaySoundObject(17, 1);
 			cond = 0;
 
-			int wa = 10;
-
-			for (int i = 0; i < 64; ++i)
-			{
-				int offsetX = random(-wa, wa) << 9;
-				int offsetY = random(-wa, wa) << 9;
-
-				createNpc(4, x + offsetX, offsetY + y, 0, 0, 0, nullptr);
-			}
+			createSmoke(x, y, 5120, 64);
 
 			createCaret(x, y, 12, 0);
 			//StartTextScript(40);

@@ -653,7 +653,7 @@ void npcAct015(npc *NPC) //Closed chest
 
 		break;
 
-	default: //case 1:
+	case 1:
 		NPC->ani_no = 0;
 
 		if (random(0, 30) == 0)
@@ -667,12 +667,16 @@ void npcAct015(npc *NPC) //Closed chest
 			NPC->ani_wait = 0;
 			++NPC->ani_no;
 		}
+
 		if (NPC->ani_no > 2)
 		{
 			NPC->act_no = 1;
 			NPC->ani_no = 0;
 		}
 
+		break;
+
+	default:
 		break;
 	}
 
@@ -748,10 +752,7 @@ void npcAct017(npc *NPC) //Health refill
 				createNpc(4, NPC->x + (random(-12, 12) << 9), NPC->y + (random(-12, 12) << 9), random(-0x155, 0x155), random(-0x600, 0), 0, nullptr);
 		}
 
-		goto npc017start;
-
 	case 1:
-	npc017start:
 		rand = random(0, 30);
 
 		if (rand > 9)

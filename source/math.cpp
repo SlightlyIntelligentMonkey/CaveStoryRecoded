@@ -1,12 +1,12 @@
 #include "math.h"
 
 //Not the original code, because it's better
-int getSin(BYTE deg)
+int getSin(uint8_t deg)
 {
 	return (int)(sin(deg * (M_PI / 0x80)) * 512.0);
 }
 
-int getCos(BYTE deg)
+int getCos(uint8_t deg)
 {
 	return (int)(cos(deg * (M_PI / 0x80)) * 512.0);
 }

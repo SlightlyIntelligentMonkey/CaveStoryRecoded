@@ -4,6 +4,19 @@
 std::vector<npc> npcs(0);
 
 //NPC Functions
+void createSmoke(int x, int y, int wa, int num)
+{
+	int w = wa / 0x200;
+
+	for (int i = 0; i < num; i++)
+	{
+		int offsetX = random(-wa, wa) << 9;
+		int offsetY = random(-wa, wa) << 9;
+
+		createNpc(4, x + offsetX, offsetY + y, 0, 0, 0, nullptr);
+	}
+}
+
 void createNpc(int setCode, int setX, int setY, int setXm, int setYm, int setDir, npc *parentNpc)
 {
 	npc newNPC;
