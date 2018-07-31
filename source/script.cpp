@@ -463,7 +463,7 @@ int updateTsc() {
 		//{
 		//	tscMode = PARSE;
 		//}
-		tscCheck();
+		tscCheck;
 		return 1;
 	case YNJ:
 		if (tscCounter > 15)
