@@ -22,13 +22,16 @@ void loadStageTable()
 {
 	SDL_RWops *tblStream = SDL_RWFromFile("data/stage.tbl", "rb");
 
-	int stages = SDL_RWsize(tblStream) / 200;
+	if (tblStream == nullptr)
+		doError();
 
-	stageTable = (STAGE_TABLE *)malloc(stages * 200);
+	size_t stages = (size_t)SDL_RWsize(tblStream) / 200;
+
+	stageTable = static_cast<STAGE_TABLE *>(malloc(stages * 200));
 
 	if (tblStream)
 	{
-		for (int i = 0; i < stages; i++)
+		for (size_t i = 0; i < stages; i++)
 		{
 			tblStream->read(tblStream, stageTable[i].tileset, 0x20, 1);
 			tblStream->read(tblStream, stageTable[i].filename, 0x20, 1);

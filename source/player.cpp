@@ -83,7 +83,7 @@ void player::damage(int damage) {
 
 			createSmoke(x, y, 5120, 64);
 			createCaret(x, y, 12, 0);
-			//StartTextScript(40);
+			runScriptEvent(40);
 		}
 	}
 }
@@ -96,16 +96,18 @@ void player::collide() {
 }
 
 void player::actNormal(bool bKey) {
-	int max_dash;
-	int gravity1;
-	int gravity2;
-	int jump;
-	int dash1;
-	int dash2;
-	int resist;
+
 
 	if (!(cond & player_removed))
 	{
+		int max_dash;
+		int gravity1;
+		int gravity2;
+		int jump;
+		int dash1;
+		int dash2;
+		int resist;
+
 		if (flag & water)
 		{
 			max_dash = 0x196;
@@ -769,12 +771,21 @@ void player::update(bool bKey) {
 
 						if (--air <= 0)
 						{
-							if (direct)
-								createCaret(x, y, 8, 2);
+							if (getFlag(4000))
+							{
+								runScriptEvent(1100);
+							}
 							else
-								createCaret(x, y, 8, 0);
+							{
+								runScriptEvent(41);
 
-							cond &= ~player_visible;
+								if (direct)
+									createCaret(x, y, 8, 2);
+								else
+									createCaret(x, y, 8, 0);
+
+								cond &= ~player_visible;
+							}
 						}
 					}
 					else
@@ -808,12 +819,6 @@ void player::draw() {
 			//Draw quote
 			drawTexture(sprites[0x10], &rect, ((x - view.left) / 0x200) - (viewX / 0x200), ((y - view.top) / 0x200) - (viewY / 0x200));
 			
-			
-			/*SDL_SetRenderDrawColor(renderer, 0, 255, 0, 255);
-			drawRect(((x - hit.left) / 0x200) - (viewX / 0x200), ((y - hit.top) / 0x200) - (viewY / 0x200), (hit.left + hit.right) / 0x200, (hit.top + hit.bottom) / 0x200);
-			SDL_SetRenderDrawColor(renderer, 255, 255, 0, 255);
-			drawRect(((x - 0x400) / 0x200) - (viewX / 0x200), ((y - 0x400) / 0x200) - (viewY / 0x200), 0x800 / 0x200, 0x800 / 0x200);*/
-
 			//Draw bubble
 			bubble++;
 			if (equip & equip_airTank && flag & water)

@@ -1,20 +1,10 @@
 #include "game.h"
-#include "common.h"
 #include "level.h"
 #include "hud.h"
 #include "script.h"
 
 int gameMode = 0;
 int prevGameMode = 0;
-
-enum gameStates
-{
-	QUIT = -1,
-	INTRO = 0,
-	MENU = 1,
-	PLAY = 2,
-	ESCAPE = 3
-};
 
 void debugLevels()
 {
@@ -166,8 +156,14 @@ RECT rcNew = { 144, 0, 176, 16 };
 RECT rcLoad = { 144, 16, 176, 32 };
 int gameUpdateMenu()
 {
-	int frame = 0;
+	uint32_t frame = 0;
 	BYTE frameOrder[] = { 0, 1, 0, 2 };
+
+	if (fileExists("Profile.dat"))
+		select = 1;
+	else
+		select = 0;
+
 	while (true)
 	{
 		//Framerate limiter
@@ -192,7 +188,7 @@ int gameUpdateMenu()
 		if (isKeyPressed(keyJump))
 		{
 			//playSound(18);
-			if (select == 0)
+			if (select == 0 || !fileExists("Profile.dat"))
 			{
 				gameFlags = 3;
 				memset(tscFlags, 0, sizeof(tscFlags));
@@ -239,12 +235,14 @@ int gameUpdateMenu()
 		SDL_RenderClear(renderer);
 		SDL_RenderPresent(renderer);
 	}
+
 	return PLAY;
 }
 
 int gameUpdateIntro()
 {
-	int frame = 0;
+	uint32_t frame = 0;
+
 	viewX = 0;
 	viewY = 0;
 	loadLevel(72);
@@ -347,7 +345,7 @@ int gameUpdateEscape()
 	return MENU;
 }
 
-int game() {
+int mainGameLoop() {
 	while (gameMode > -1) {
 		//////UPDATE//////
 		switch (gameMode)

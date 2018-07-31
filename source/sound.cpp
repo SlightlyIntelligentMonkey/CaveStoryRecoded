@@ -1,7 +1,7 @@
 #include "sound.h"
 #include <SDL.h>
 
-char *sfxList[] =
+const char *sfxList[] =
 {
 	NULL,
 	"menu_select.wav",
@@ -268,12 +268,7 @@ void loadSounds()
 		{
 			strcat(path, sfxList[s]);
 			SDL_LoadWAV(path, &soundSpec, &sounds[s].buf, &sounds[s].length);
-			if (sounds[s].buf == NULL)
-			{
-				strcpy(path, "Unable to load ");
-				strcat(path, sfxList[s]);
-				doCustomError(path);
-			}
+			if (sounds[s].buf == NULL) { doError(); }
 			strcpy(path, "data/soundfx/");
 		}
 		else

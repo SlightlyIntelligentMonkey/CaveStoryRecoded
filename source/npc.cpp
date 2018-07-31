@@ -4,9 +4,9 @@
 std::vector<npc> npcs(0);
 
 //NPC Functions
-void createSmoke(int x, int y, int wa, int num)
+void createSmoke(int x, int y, int w, int num)
 {
-	int w = wa / 0x200;
+	int wa = w / 0x200;
 
 	for (int i = 0; i < num; i++)
 	{
@@ -29,7 +29,7 @@ void changeNpc(int code_event, int code_char, int dir)
 {
 	for (size_t i = 0; i < npcs.size(); ++i)
 	{
-		if ((npcs[i].cond & npccond_alive) && npcs[i].code_event == code_event)
+		if (npcs[i].code_event == code_event)
 		{
 			int code_flag = npcs[i].code_flag;
 			npcs[i].init(code_char, npcs[i].x, npcs[i].y, 0, 0, npcs[i].direct, npcs[i].pNpc);
@@ -60,16 +60,19 @@ void updateNPC()
 {
 	if (npcs.size())
 	{
-		//Remove stuff
-		for (size_t i = npcs.size() - 1; i > 0; i--) {
-			if (!(npcs[i].cond & npccond_alive))
-				npcs.erase(npcs.begin() + i);
-		}
-
 		//Update
 		for (unsigned int i = 0; i < npcs.size(); i++) {
 			npcs[i].update();
 			npcHitMap(i);
+		}
+
+		//Remove dead npcs
+		for (size_t i = 0; i < npcs.size(); i++) {
+			if (!(npcs[i].cond & npccond_alive))
+			{
+				npcs.erase(npcs.begin() + i);
+				i--;
+			}
 		}
 	}
 }
@@ -78,11 +81,8 @@ void drawNPC()
 {
 	if (npcs.size())
 	{
-		for (unsigned int i = 0; i < npcs.size(); i++)
-		{
-			if (npcs[i].cond & npccond_alive)
-				npcs[i].draw();
-		}
+		for (size_t i = 0; i < npcs.size(); i++)
+			npcs[i].draw();
 	}
 }
 
@@ -91,47 +91,38 @@ NPC_TABLE *npcTable;
 
 void loadNpcTable()
 {
-	npcTable = nullptr;
-
-	BYTE *tbl = nullptr;
-	int tblSize = loadFile("data/npc.tbl", &tbl);
-	if (tblSize < 0)
-		doCustomError("Couldn't read npc.tbl");
-
-	free(tbl);
-
-	int npcs = tblSize / 0x18;
-	npcTable = (NPC_TABLE *)malloc(0x18 * npcs);
-
 	SDL_RWops *tblStream = SDL_RWFromFile("data/npc.tbl", "rb");
 
+	if (tblStream == nullptr)
+		doError();
+
+	int tblSize = (int)SDL_RWsize(tblStream);
+
+	int npcs = tblSize / 0x18;
+	npcTable = static_cast<NPC_TABLE *>(malloc(0x18 * npcs));
+	
 	int i;
 
-	if (tblStream)
-	{
-		for (i = 0; i < npcs; ++i) //bits
-			npcTable[i].bits = SDL_ReadLE16(tblStream);
-		for (i = 0; i < npcs; ++i) //life
-			npcTable[i].life = SDL_ReadLE16(tblStream);
-		for (i = 0; i < npcs; ++i) //surf
-			tblStream->read(tblStream, &npcTable[i].surf, 1, 1);
-		for (i = 0; i < npcs; ++i) //destroy_voice
-			tblStream->read(tblStream, &npcTable[i].destroy_voice, 1, 1);
-		for (i = 0; i < npcs; ++i) //hit_voice
-			tblStream->read(tblStream, &npcTable[i].hit_voice, 1, 1);
-		for (i = 0; i < npcs; ++i) //size
-			tblStream->read(tblStream, &npcTable[i].size, 1, 1);
-		for (i = 0; i < npcs; ++i) //exp
-			npcTable[i].exp = SDL_ReadLE32(tblStream);
-		for (i = 0; i < npcs; ++i) //damage
-			npcTable[i].damage = SDL_ReadLE32(tblStream);
-		for (i = 0; i < npcs; ++i) //hit
-			tblStream->read(tblStream, &npcTable[i].hit, 4, 1);
-		for (i = 0; i < npcs; ++i) //view
-			tblStream->read(tblStream, &npcTable[i].view, 4, 1);
-	}
-	else
-		doError();
+	for (i = 0; i < npcs; ++i) //bits
+		npcTable[i].bits = SDL_ReadLE16(tblStream);
+	for (i = 0; i < npcs; ++i) //life
+		npcTable[i].life = SDL_ReadLE16(tblStream);
+	for (i = 0; i < npcs; ++i) //surf
+		tblStream->read(tblStream, &npcTable[i].surf, 1, 1);
+	for (i = 0; i < npcs; ++i) //destroy_voice
+		tblStream->read(tblStream, &npcTable[i].destroy_voice, 1, 1);
+	for (i = 0; i < npcs; ++i) //hit_voice
+		tblStream->read(tblStream, &npcTable[i].hit_voice, 1, 1);
+	for (i = 0; i < npcs; ++i) //size
+		tblStream->read(tblStream, &npcTable[i].size, 1, 1);
+	for (i = 0; i < npcs; ++i) //exp
+		npcTable[i].exp = SDL_ReadLE32(tblStream);
+	for (i = 0; i < npcs; ++i) //damage
+		npcTable[i].damage = SDL_ReadLE32(tblStream);
+	for (i = 0; i < npcs; ++i) //hit
+		tblStream->read(tblStream, &npcTable[i].hit, 4, 1);
+	for (i = 0; i < npcs; ++i) //view
+		tblStream->read(tblStream, &npcTable[i].view, 4, 1);
 }
 
 void npc::init(int setCode, int setX, int setY, int setXm, int setYm, int setDir, npc *parentNpc)

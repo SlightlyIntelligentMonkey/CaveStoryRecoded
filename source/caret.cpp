@@ -28,6 +28,10 @@ void updateCarets()
 {
 	if (carets.size())
 	{
+		//Update
+		for (unsigned int i = 0; i < carets.size(); i++)
+			carets[i].update();
+
 		//Remove dead carets
 		for (size_t i = 0; i < carets.size(); i++) {
 			if (!(carets[i].cond & 0x80))
@@ -36,10 +40,6 @@ void updateCarets()
 				i--;
 			}
 		}
-
-		//Update
-		for (unsigned int i = 0; i < carets.size(); i++)
-			carets[i].update();
 	}
 }
 
@@ -48,10 +48,7 @@ void drawCarets()
 	if (carets.size())
 	{
 		for (unsigned int i = 0; i < carets.size(); i++)
-		{
-			if (carets[i].cond & 0x80)
-				carets[i].draw();
-		}
+			carets[i].draw();
 	}
 }
 
@@ -430,12 +427,12 @@ void caretAct013(caret *CARET) //Headbump sparks
 
 void caretAct015(caret *CARET) //Small white pop
 {
-	RECT rcLeft[4];
+	RECT rc[4];
 
-	rcLeft[0] = { 0, 72, 8, 80 };
-	rcLeft[1] = { 8, 72, 16, 80 };
-	rcLeft[2] = { 16, 72, 24, 80 };
-	rcLeft[3] = { 24, 72, 32, 80 };
+	rc[0] = { 0, 72, 8, 80 };
+	rc[1] = { 8, 72, 16, 80 };
+	rc[2] = { 16, 72, 24, 80 };
+	rc[3] = { 24, 72, 32, 80 };
 
 	if (++CARET->ani_wait > 2)
 	{
@@ -445,15 +442,15 @@ void caretAct015(caret *CARET) //Small white pop
 			CARET->cond = 0;
 	}
 
-	CARET->rect = rcLeft[CARET->ani_no];
+	CARET->rect = rc[CARET->ani_no];
 }
 
 void caretAct016(caret *CARET) //EMPTY
 {
-	RECT rcLeft[2]; // [esp+0h] [ebp-20h]
+	RECT rcLeft[2];
 
 	rcLeft[0] = { 104, 96, 144, 104 };
-	rcLeft[0] = { 104, 104, 144, 112 };
+	rcLeft[1] = { 104, 104, 144, 112 };
 
 	if (++CARET->ani_wait < 10)
 		CARET->y -= 1024;
@@ -482,7 +479,7 @@ caretAct caretActs[] = {
 	&caretAct003,
 	&caretAct004,
 	&caretAct005,
-		&caretAct004, //unused, apparently uses caret 4
+	&caretAct000, //unused
 	&caretAct007,
 	&caretAct008,
 	&caretAct009,
@@ -490,7 +487,7 @@ caretAct caretActs[] = {
 	&caretAct011,
 	&caretAct012,
 	&caretAct013,
-		&caretAct000, //unused
+	&caretAct000, //unused
 	&caretAct015,
 	&caretAct016,
 	&caretAct017,

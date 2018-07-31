@@ -97,9 +97,9 @@ void npcAct060(npc *NPC) //Toroko
 
 		//Run in facing direction
 		if (NPC->direct)
-			NPC->xm = 0x200;
+			NPC->xm = 0x100;
 		else
-			NPC->xm = -0x200;
+			NPC->xm = -0x100;
 
 		if (++NPC->act_wait > 1 && NPC->flag & ground)
 			NPC->act_no = 3;

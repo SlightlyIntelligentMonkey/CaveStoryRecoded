@@ -2,7 +2,6 @@
 
 void actPolarStar(bullet *BULLET)
 {
-	int frame;
 
 	if (++BULLET->count1 <= BULLET->range)
 	{
@@ -74,6 +73,9 @@ void actPolarStar(bullet *BULLET)
 			}
 		}
 
+		// Some dead code.
+		int frame;
+		
 		if (BULLET->ysp == 0)
 		{
 			frame = 1;
