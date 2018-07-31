@@ -102,7 +102,7 @@ class npc
 
 void loadNpcTable();
 
-void createSmoke(int x, int y, int wa, int num);
+void createSmoke(int x, int y, int w, int num);
 
 void createNpc(int setCode, int setX, int setY, int setXm, int setYm, int setDir, npc *parentNpc);
 void changeNpc(int code_event, int code_char, int dir);
