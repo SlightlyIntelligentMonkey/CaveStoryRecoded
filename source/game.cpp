@@ -158,6 +158,12 @@ int gameUpdateMenu()
 {
 	int frame = 0;
 	BYTE frameOrder[] = { 0, 1, 0, 2 };
+
+	if (fileExists("Profile.dat"))
+		select = 1;
+	else
+		select = 0;
+
 	while (true)
 	{
 		//Framerate limiter
@@ -182,7 +188,7 @@ int gameUpdateMenu()
 		if (isKeyPressed(keyJump))
 		{
 			//playSound(18);
-			if (select == 0)
+			if (select == 0 || !fileExists("Profile.dat"))
 			{
 				gameFlags = 3;
 				memset(tscFlags, 0, sizeof(tscFlags));
@@ -229,6 +235,7 @@ int gameUpdateMenu()
 		SDL_RenderClear(renderer);
 		SDL_RenderPresent(renderer);
 	}
+
 	return PLAY;
 }
 

@@ -23,6 +23,12 @@ void writeLElong(BYTE *data, uint32_t input, unsigned int offset) {
 }
 
 //Loading and writing functions
+bool fileExists(const char *name)
+{
+	struct stat buffer;
+	return (stat(name, &buffer) == 0);
+}
+
 int loadFile(const char *name, BYTE **data) {
 	int filesize = 0;
 

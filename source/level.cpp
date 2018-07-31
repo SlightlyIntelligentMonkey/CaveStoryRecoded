@@ -22,6 +22,9 @@ void loadStageTable()
 {
 	SDL_RWops *tblStream = SDL_RWFromFile("data/stage.tbl", "rb");
 
+	if (tblStream == nullptr)
+		doError();
+
 	int stages = SDL_RWsize(tblStream) / 200;
 
 	stageTable = (STAGE_TABLE *)malloc(stages * 200);
