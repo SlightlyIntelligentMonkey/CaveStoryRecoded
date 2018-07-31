@@ -28,6 +28,10 @@ void updateCarets()
 {
 	if (carets.size())
 	{
+		//Update
+		for (unsigned int i = 0; i < carets.size(); i++)
+			carets[i].update();
+
 		//Remove dead carets
 		for (size_t i = 0; i < carets.size(); i++) {
 			if (!(carets[i].cond & 0x80))
@@ -36,10 +40,6 @@ void updateCarets()
 				i--;
 			}
 		}
-
-		//Update
-		for (unsigned int i = 0; i < carets.size(); i++)
-			carets[i].update();
 	}
 }
 
@@ -48,10 +48,7 @@ void drawCarets()
 	if (carets.size())
 	{
 		for (unsigned int i = 0; i < carets.size(); i++)
-		{
-			if (carets[i].cond & 0x80)
-				carets[i].draw();
-		}
+			carets[i].draw();
 	}
 }
 
