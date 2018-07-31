@@ -63,6 +63,10 @@ int init() {
 	// TBD : Check for s_reverse, mute and fps files ?
 	// TBD : Init joypad
 	
+	// TBD : Load config data, initialise keybinds and screen resolution based on it
+	// TBD : Check for s_reverse, mute and fps files ?
+	// TBD : Init joypad
+
 	//sound::init();
 	
 	createWindow(320, 240, 2, true);
@@ -119,7 +123,7 @@ int init() {
 int main(int argc, char **argv) {
 	init();
 
-	game();
+	mainGameLoop();
 
 	doQuit();
 	return 0;

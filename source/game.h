@@ -10,4 +10,4 @@ enum gameStates
 	ESCAPE = 3
 };
 
-int game();
+int mainGameLoop();

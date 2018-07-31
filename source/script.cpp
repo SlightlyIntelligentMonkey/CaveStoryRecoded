@@ -14,7 +14,7 @@ int tscMode = 0;
 int tscPrevMode = 0;
 
 int tscPos = -1;
-int tscCounter = 0;
+unsigned int tscCounter = 0;
 int tscWait = 0;
 int tscDisplayFlags = 0;
 
@@ -174,7 +174,7 @@ void renderTextLine(int x, int y, char* str)
 	SDL_Rect rcChar = { 0, 0, charWidth, charHeight };
 	SDL_Rect dest = { 0, y, charWidth, charHeight };
 
-	for (int c = 0; c < strlen(str); c++)
+	for (size_t c = 0; c < strlen(str); c++)
 	{
 		rcChar.x = (charWidth << 1) + (((str[c] - 0x20) % 32)*charWidth);
 		rcChar.y = (charHeight << 1) + (((str[c] - 0x20) >> 5)*charHeight);
@@ -227,7 +227,7 @@ void drawMessageBox(int x, int y, char* str)
 	drawTexture(sprites[TEX_TEXTBOX], &rcFrame3, x, y + 56);
 
 	SDL_RenderSetClipRect(renderer, &msgClip);
-	for (int c = 0; c < strlen(str); c++)
+	for (size_t c = 0; c < strlen(str); c++)
 	{
 		//ignores non-displayable characters
 		if ((str[c] < 0x7F && str[c] > 0x1F) || str[c] == '\n')
@@ -244,7 +244,7 @@ void drawMessageBox(int x, int y, char* str)
 				{
 					scrollOffset = 0;
 					lineY--;
-					for (int c = 0; c < strlen(str); c++)
+					for (size_t c = 0; c < strlen(str); c++)
 					{
 						if (str[c] == '\n')
 						{
@@ -317,7 +317,7 @@ void drawTSC()
 		//renders cursor during text when text scrolling scrolling is paused
 		if (tscNumber++ % 20 > 12 && tscMode == NOD)
 		{
-			for (int i = 0; i < strlen(msgText); i++)
+			for (size_t i = 0; i < strlen(msgText); i++)
 			{
 				if (msgText[i] == '\n')
 				{
@@ -395,7 +395,7 @@ int ascii2num(char *pStr, const int num)
 	int result = 0;
 	for (int i = 0; i < num; i++)
 	{
-		result += (pStr[i] - 0x30) * (std::pow(10, (num - i) - 1));
+		result += (pStr[i] - 0x30) * (int)(std::pow(10, (num - i) - 1));
 	}
 
 	return result;
@@ -438,12 +438,12 @@ int updateTsc() {
 	case NOD:
 		if (isKeyPressed(keyJump) || isKeyPressed(keyShoot))
 			tscMode = tscPrevMode;
-		tscCheck;
+		tscCheck();
 		return 1;
 	case MSG:
 		if (tsc[tscPos] == '<') { break; }
 		updateMessageBox();
-		tscCheck;
+		tscCheck();
 		return 1;
 	case WAI:
 		if (waitAmount != 9999)
@@ -456,7 +456,7 @@ int updateTsc() {
 				tscCounter = 0;
 			}
 		}
-		tscCheck;
+		tscCheck();
 		return 1;
 	case FADE:
 		tscMode = 1;
@@ -465,7 +465,7 @@ int updateTsc() {
 		//{
 		//	tscMode = PARSE;
 		//}
-		tscCheck;
+		tscCheck();
 		return 1;
 	case YNJ:
 		if (tscCounter > 15)
@@ -499,14 +499,14 @@ int updateTsc() {
 		{
 			++tscCounter;
 		}
-		tscCheck;
+		tscCheck();
 		return 1;
 	case WAS:
 		if (currentPlayer.flag & 8)
 		{
 			tscMode = PARSE;
 		}
-		tscCheck;
+		tscCheck();
 		return 1;
 	}
 
@@ -553,7 +553,7 @@ int updateTsc() {
 			tscCleanup(2);
 			break;
 		case('<ANP'):
-			for (int i = 0; i < npcs.size(); i++)
+			for (size_t i = 0; i < npcs.size(); i++)
 			{
 				if ((npcs[i].cond & npccond_alive) && npcs[i].code_event == ascii2num(&tsc[tscPos + 4], 4))
 				{
@@ -626,7 +626,7 @@ int updateTsc() {
 			tscCleanup(1);
 			break;
 		case('<DNP'):
-			for (int i = 0; i < npcs.size(); i++)
+			for (size_t i = 0; i < npcs.size(); i++)
 			{
 				if (npcs[i].code_event == ascii2num(&tsc[tscPos + 4], 4))
 				{
@@ -637,7 +637,7 @@ int updateTsc() {
 			tscCleanup(1);
 			break;
 		case('<ECJ'):
-			for (int n = 0; n < npcs.size(); n++)
+			for (size_t n = 0; n < npcs.size(); n++)
 			{
 				if (npcs[n].code_char == ascii2num(&tsc[tscPos + 4], 4))
 				{
@@ -719,7 +719,7 @@ int updateTsc() {
 			tscCleanup(1);
 			break;
 		case('<FON'):
-			for (int n = 0; n < npcs.size(); n++)
+			for (size_t n = 0; n < npcs.size(); n++)
 			{
 				if (npcs[n].code_event == ascii2num(&tsc[tscPos + 4], 4))
 				{
