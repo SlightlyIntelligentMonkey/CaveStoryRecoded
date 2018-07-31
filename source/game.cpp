@@ -206,7 +206,6 @@ int gameUpdateMenu()
 			}
 			else
 			{
-				tscMode = END;
 				gameFlags = 3;
 				loadProfile();
 				break;

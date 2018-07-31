@@ -99,15 +99,10 @@ int init() {
 	//Start game
 	//init flags
 	initFlags();
-
-	//Load level
-	loadLevel(13);
-	currentPlayer.init();
-	currentPlayer.setPos(10 << 13, 8 << 13);
+	ini_audio();
+	
 
 	//sound::playOrg(8);
-
-	loadProfile();
 
 	return 0;
 }
