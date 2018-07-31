@@ -273,8 +273,6 @@ int mapNameDisplayTimer = 0;
 void drawTSC()
 {
 	RECT rcGit = { 0, 0, 32, 16 };
-	RECT rect;
-	Uint8 r;
 
 	if (tscMode != 0 && (tscDisplayFlags & TSCVIS) == 1)
 	{

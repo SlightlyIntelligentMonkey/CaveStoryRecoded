@@ -91,47 +91,38 @@ NPC_TABLE *npcTable;
 
 void loadNpcTable()
 {
-	npcTable = nullptr;
+	SDL_RWops *tblStream = SDL_RWFromFile("data/npc.tbl", "rb");
 
-	BYTE *tbl = nullptr;
-	int tblSize = loadFile("data/npc.tbl", &tbl);
-	if (tblSize < 0)
-		doCustomError("Couldn't read npc.tbl");
+	if (tblStream == nullptr)
+		doError();
 
-	free(tbl);
+	int tblSize = (int)SDL_RWsize(tblStream);
 
 	int npcs = tblSize / 0x18;
 	npcTable = static_cast<NPC_TABLE *>(malloc(0x18 * npcs));
+	
+	int i;
 
-	SDL_RWops *tblStream = SDL_RWFromFile("data/npc.tbl", "rb");
-
-	if (tblStream)
-	{
-		int i;
-
-		for (i = 0; i < npcs; ++i) //bits
-			npcTable[i].bits = SDL_ReadLE16(tblStream);
-		for (i = 0; i < npcs; ++i) //life
-			npcTable[i].life = SDL_ReadLE16(tblStream);
-		for (i = 0; i < npcs; ++i) //surf
-			tblStream->read(tblStream, &npcTable[i].surf, 1, 1);
-		for (i = 0; i < npcs; ++i) //destroy_voice
-			tblStream->read(tblStream, &npcTable[i].destroy_voice, 1, 1);
-		for (i = 0; i < npcs; ++i) //hit_voice
-			tblStream->read(tblStream, &npcTable[i].hit_voice, 1, 1);
-		for (i = 0; i < npcs; ++i) //size
-			tblStream->read(tblStream, &npcTable[i].size, 1, 1);
-		for (i = 0; i < npcs; ++i) //exp
-			npcTable[i].exp = SDL_ReadLE32(tblStream);
-		for (i = 0; i < npcs; ++i) //damage
-			npcTable[i].damage = SDL_ReadLE32(tblStream);
-		for (i = 0; i < npcs; ++i) //hit
-			tblStream->read(tblStream, &npcTable[i].hit, 4, 1);
-		for (i = 0; i < npcs; ++i) //view
-			tblStream->read(tblStream, &npcTable[i].view, 4, 1);
-	}
-	else
-		doError();
+	for (i = 0; i < npcs; ++i) //bits
+		npcTable[i].bits = SDL_ReadLE16(tblStream);
+	for (i = 0; i < npcs; ++i) //life
+		npcTable[i].life = SDL_ReadLE16(tblStream);
+	for (i = 0; i < npcs; ++i) //surf
+		tblStream->read(tblStream, &npcTable[i].surf, 1, 1);
+	for (i = 0; i < npcs; ++i) //destroy_voice
+		tblStream->read(tblStream, &npcTable[i].destroy_voice, 1, 1);
+	for (i = 0; i < npcs; ++i) //hit_voice
+		tblStream->read(tblStream, &npcTable[i].hit_voice, 1, 1);
+	for (i = 0; i < npcs; ++i) //size
+		tblStream->read(tblStream, &npcTable[i].size, 1, 1);
+	for (i = 0; i < npcs; ++i) //exp
+		npcTable[i].exp = SDL_ReadLE32(tblStream);
+	for (i = 0; i < npcs; ++i) //damage
+		npcTable[i].damage = SDL_ReadLE32(tblStream);
+	for (i = 0; i < npcs; ++i) //hit
+		tblStream->read(tblStream, &npcTable[i].hit, 4, 1);
+	for (i = 0; i < npcs; ++i) //view
+		tblStream->read(tblStream, &npcTable[i].view, 4, 1);
 }
 
 void npc::init(int setCode, int setX, int setY, int setXm, int setYm, int setDir, npc *parentNpc)
