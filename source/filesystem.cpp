@@ -33,9 +33,9 @@ int loadFile(const char *name, BYTE **data) {
 	int filesize = 0;
 
 	//Open file
-	FILE *file = nullptr;
-	file = fopen(name, "rb");
-	if (file == nullptr) { return -1; }
+	FILE *file = fopen(name, "rb");
+	if (file == nullptr)
+		return -1;
 
 	//Get filesize
 	fseek(file, 0, SEEK_END);
@@ -44,7 +44,11 @@ int loadFile(const char *name, BYTE **data) {
 
 	//Load data
 	*data = (BYTE*)malloc(filesize);
-	if (fread(*data, 1, filesize, file) == 0) { return -1; }
+	if (fread(*data, 1, filesize, file) == 0) 
+	{
+		fclose(file);
+		return -1;
+	}
 
 	//Close file
 	fclose(file);
@@ -54,11 +58,15 @@ int loadFile(const char *name, BYTE **data) {
 
 int writeFile(char *name, void *data, int amount)
 {
-	FILE *file = nullptr;
-	file = fopen(name, "wb");
-	if (file == nullptr) { return -1; }
+	FILE *file = fopen(name, "wb");
+	if (file == nullptr) 
+		return -1;
 
-	if (fwrite(data, 1, amount, file) == 0) { return -1; }
+	if (fwrite(data, 1, amount, file) == 0) 
+	{
+		fclose(file);
+		return -1;
+	}
 	fclose(file);
 	return 0;
 }

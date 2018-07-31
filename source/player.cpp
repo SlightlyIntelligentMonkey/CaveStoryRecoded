@@ -96,16 +96,18 @@ void player::collide() {
 }
 
 void player::actNormal(bool bKey) {
-	int max_dash;
-	int gravity1;
-	int gravity2;
-	int jump;
-	int dash1;
-	int dash2;
-	int resist;
+
 
 	if (!(cond & player_removed))
 	{
+		int max_dash;
+		int gravity1;
+		int gravity2;
+		int jump;
+		int dash1;
+		int dash2;
+		int resist;
+
 		if (flag & water)
 		{
 			max_dash = 0x196;

@@ -76,3 +76,4 @@ ipch/
 !*.[Cc]ache/
 
 # ------ Actual stuff that matters ------
+/source/Profile.dat

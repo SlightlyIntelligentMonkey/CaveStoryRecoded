@@ -450,7 +450,7 @@ void caretAct016(caret *CARET) //EMPTY
 	RECT rcLeft[2]; // [esp+0h] [ebp-20h]
 
 	rcLeft[0] = { 104, 96, 144, 104 };
-	rcLeft[0] = { 104, 104, 144, 112 };
+	rcLeft[1] = { 104, 104, 144, 112 };
 
 	if (++CARET->ani_wait < 10)
 		CARET->y -= 1024;
