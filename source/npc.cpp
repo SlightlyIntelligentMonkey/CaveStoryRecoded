@@ -29,7 +29,7 @@ void changeNpc(int code_event, int code_char, int dir)
 {
 	for (size_t i = 0; i < npcs.size(); ++i)
 	{
-		if ((npcs[i].cond & npccond_alive) && npcs[i].code_event == code_event)
+		if (npcs[i].code_event == code_event)
 		{
 			int code_flag = npcs[i].code_flag;
 			npcs[i].init(code_char, npcs[i].x, npcs[i].y, 0, 0, npcs[i].direct, npcs[i].pNpc);
@@ -60,16 +60,19 @@ void updateNPC()
 {
 	if (npcs.size())
 	{
-		//Remove stuff
-		for (size_t i = npcs.size() - 1; i > 0; i--) {
-			if (!(npcs[i].cond & npccond_alive))
-				npcs.erase(npcs.begin() + i);
-		}
-
 		//Update
 		for (unsigned int i = 0; i < npcs.size(); i++) {
 			npcs[i].update();
 			npcHitMap(i);
+		}
+
+		//Remove dead npcs
+		for (size_t i = 0; i < npcs.size(); i++) {
+			if (!(npcs[i].cond & npccond_alive))
+			{
+				npcs.erase(npcs.begin() + i);
+				i--;
+			}
 		}
 	}
 }
@@ -78,11 +81,8 @@ void drawNPC()
 {
 	if (npcs.size())
 	{
-		for (unsigned int i = 0; i < npcs.size(); i++)
-		{
-			if (npcs[i].cond & npccond_alive)
-				npcs[i].draw();
-		}
+		for (size_t i = 0; i < npcs.size(); i++)
+			npcs[i].draw();
 	}
 }
 

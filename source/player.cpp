@@ -771,14 +771,21 @@ void player::update(bool bKey) {
 
 						if (--air <= 0)
 						{
-							if (direct)
-								createCaret(x, y, 8, 2);
+							if (getFlag(4000))
+							{
+								runScriptEvent(1100);
+							}
 							else
-								createCaret(x, y, 8, 0);
+							{
+								runScriptEvent(41);
 
-							runScriptEvent(41);
+								if (direct)
+									createCaret(x, y, 8, 2);
+								else
+									createCaret(x, y, 8, 0);
 
-							cond &= ~player_visible;
+								cond &= ~player_visible;
+							}
 						}
 					}
 					else
