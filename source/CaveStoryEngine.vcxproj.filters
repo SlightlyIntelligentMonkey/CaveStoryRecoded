@@ -245,6 +245,9 @@
     <ClInclude Include="npc300.h">
       <Filter>Source Files\classes\npc\act</Filter>
     </ClInclude>
+    <ClInclude Include="flags.h">
+      <Filter>Source Files\modules</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="CaveStoryEngine.rc">

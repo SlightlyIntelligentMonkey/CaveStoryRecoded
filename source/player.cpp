@@ -82,7 +82,6 @@ void player::damage(int damage) {
 			cond = 0;
 
 			createSmoke(x, y, 5120, 64);
-
 			createCaret(x, y, 12, 0);
 			//StartTextScript(40);
 		}

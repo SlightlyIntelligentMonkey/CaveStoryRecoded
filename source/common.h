@@ -89,6 +89,9 @@ enum equipItems {
 	equip_nikumaruCounter = 0x100,
 };
 
+//Macro
+#define TILE2COORD(x) x << 13
+
 //Drawing related variables
 extern SDL_Window *window;
 extern SDL_Renderer *renderer;
@@ -123,16 +126,13 @@ extern int gamePhysics;
 void doError();
 void doCustomError(const char *msg);
 
-void initFlags();
-void setFlag(int a);
-void clearFlag(int a);
-bool getFlag(int a);
-
 //Modules
 #include "math.h"
 
 #include "filesystem.h"
 #include "render.h"
+
+#include "flags.h"
 
 #include "script.h"
 

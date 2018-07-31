@@ -94,6 +94,8 @@ int init() {
 
 	loadImage("data/Missing.png", &sprites[0x27]); //Used for missing npcs
 
+	loadImage("data/Font.png", &font);
+
 	//Start game
 	//init flags
 	initFlags();
@@ -108,52 +110,6 @@ int init() {
 	loadProfile();
 
 	return 0;
-}
-
-int drawStart() {
-	//CLEAR
-	SDL_SetRenderDrawColor(renderer, 0, 0, 32, 255);
-	SDL_RenderClear(renderer);
-
-	return 0;
-}
-
-int drawEnd() {
-	//Draw to the screen
-	SDL_RenderPresent(renderer);
-
-	return 0;
-}
-
-int game() {
-	while (mode > -1) {
-		//Framerate limiter
-		Uint32 timeNow = SDL_GetTicks();
-		Uint32 timeNext = framerateTicks + framerate;
-
-		if (timeNow >= timeNext) {
-			framerateTicks = SDL_GetTicks();
-		}
-		else
-		{
-			SDL_Delay(timeNext - timeNow);
-			continue;
-		}
-
-		//Handle events
-		getKeys(&events);
-		if (events.type == SDL_QUIT || exitGame) { return -1; }
-
-		//////UPDATE//////
-		gameUpdate();
-
-		//////DRAW//////
-		drawStart();
-		gameDraw();
-		drawEnd();
-	}
-	
-	return -1;
 }
 
 int main(int argc, char **argv) {

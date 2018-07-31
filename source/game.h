@@ -1,4 +1,3 @@
 #pragma once
 
-void gameUpdate();
-void gameDraw();
+int game();

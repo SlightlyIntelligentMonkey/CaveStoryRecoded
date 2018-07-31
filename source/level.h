@@ -31,6 +31,10 @@ extern SDL_Texture *levelBackground;
 
 BYTE getTileAttribute(int x, int y);
 
+void deleteTile(int x, int y);
+void shiftTile(int x, int y);
+void changeTile(int x, int y, int tile);
+
 void loadStageTable();
 
 void loadLevel(int levelIndex);

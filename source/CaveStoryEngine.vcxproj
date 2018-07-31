@@ -197,6 +197,7 @@
   <ItemGroup>
     <ClInclude Include="bullet.h" />
     <ClInclude Include="caret.h" />
+    <ClInclude Include="flags.h" />
     <ClInclude Include="game.h" />
     <ClInclude Include="npc080.h" />
     <ClInclude Include="npc100.h" />
