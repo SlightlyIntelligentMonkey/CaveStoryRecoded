@@ -1,6 +1,6 @@
 ﻿#include "script.h"
+//#include "fade.h"
 #include "npc.h"
-#include "flags.h"
 #include "filesystem.h"
 #include "weapons.h"
 #include "player.h"
@@ -19,6 +19,25 @@ int tscWait = 0;
 int tscDisplayFlags = 0;
 
 int tscUpdateFlags = 0;
+
+enum modes
+{
+	END = 0,
+	PARSE = 1,
+	NOD = 2,
+	MSG = 3,
+	WAI = 4,
+	FADE = 5,
+	YNJ = 6,
+	WAS = 7
+};
+
+enum displayFlags
+{
+	TSCINVIS = 0,
+	TSCVIS = 0b0001,
+	MSGbox = 0b0100
+};
 
 // -- command variables --
 unsigned int waitAmount = 0;
@@ -133,8 +152,8 @@ int getEventPos(int event_num)
 	return (location - tsc) + 7;
 }
 
-void runScriptEvent(int event_num)
-{
+void runScriptEvent(int event_num) {
+
 	tscPos = getEventPos(event_num);
 	tscMode = PARSE;
 	tscDisplayFlags = 0;
@@ -155,7 +174,7 @@ void renderTextLine(int x, int y, char* str)
 	SDL_Rect rcChar = { 0, 0, charWidth, charHeight };
 	SDL_Rect dest = { 0, y, charWidth, charHeight };
 
-	for (size_t c = 0; c < strlen(str); c++)
+	for (int c = 0; c < strlen(str); c++)
 	{
 		rcChar.x = (charWidth << 1) + (((str[c] - 0x20) % 32)*charWidth);
 		rcChar.y = (charHeight << 1) + (((str[c] - 0x20) >> 5)*charHeight);
@@ -198,17 +217,17 @@ void drawMessageBox(int x, int y, char* str)
 	int charX = 0;
 	char buf[256] = { 0 };
 
-	drawTexture(sprites[0x1A], &rcFrame1, x, y);
-	drawTexture(sprites[0x1A], &rcFrame2, x, y + 8);
-	drawTexture(sprites[0x1A], &rcFrame2, x, y + 16);
-	drawTexture(sprites[0x1A], &rcFrame2, x, y + 24);
-	drawTexture(sprites[0x1A], &rcFrame2, x, y + 32);
-	drawTexture(sprites[0x1A], &rcFrame2, x, y + 40);
-	drawTexture(sprites[0x1A], &rcFrame2, x, y + 48);;
-	drawTexture(sprites[0x1A], &rcFrame3, x, y + 56);
+	drawTexture(sprites[TEX_TEXTBOX], &rcFrame1, x, y);
+	drawTexture(sprites[TEX_TEXTBOX], &rcFrame2, x, y + 8);
+	drawTexture(sprites[TEX_TEXTBOX], &rcFrame2, x, y + 16);
+	drawTexture(sprites[TEX_TEXTBOX], &rcFrame2, x, y + 24);
+	drawTexture(sprites[TEX_TEXTBOX], &rcFrame2, x, y + 32);
+	drawTexture(sprites[TEX_TEXTBOX], &rcFrame2, x, y + 40);
+	drawTexture(sprites[TEX_TEXTBOX], &rcFrame2, x, y + 48);;
+	drawTexture(sprites[TEX_TEXTBOX], &rcFrame3, x, y + 56);
 
 	SDL_RenderSetClipRect(renderer, &msgClip);
-	for (size_t c = 0; c < strlen(str); c++)
+	for (int c = 0; c < strlen(str); c++)
 	{
 		//ignores non-displayable characters
 		if ((str[c] < 0x7F && str[c] > 0x1F) || str[c] == '\n')
@@ -225,7 +244,7 @@ void drawMessageBox(int x, int y, char* str)
 				{
 					scrollOffset = 0;
 					lineY--;
-					for (size_t c = 0; c < strlen(str); c++)
+					for (int c = 0; c < strlen(str); c++)
 					{
 						if (str[c] == '\n')
 						{
@@ -256,6 +275,8 @@ void drawTSC()
 	int num = 0;
 	int some_num = 0;
 	RECT rcGit = { 0, 0, 32, 16 };
+	RECT rect;
+	Uint8 r;
 	int i = 0;
 
 	if (tscMode != 0 && (tscDisplayFlags & TSCVIS) == 1)
@@ -286,7 +307,7 @@ void drawTSC()
 		rcFace.bottom = rcFace.top + 48;
 
 		if (faceX <= 26623) { faceX += 4096; }
-		drawTexture(sprites[0x1B], &rcFace, faceX, rcView.top - 3);
+		drawTexture(sprites[TEX_FACE], &rcFace, faceX, rcView.top - 3);
 
 		for (int i = 0; i <= 3; ++i)
 		{
@@ -296,7 +317,7 @@ void drawTSC()
 		//renders cursor during text when text scrolling scrolling is paused
 		if (tscNumber++ % 20 > 12 && tscMode == NOD)
 		{
-			for (size_t i = 0; i < strlen(msgText); i++)
+			for (int i = 0; i < strlen(msgText); i++)
 			{
 				if (msgText[i] == '\n')
 				{
@@ -313,19 +334,19 @@ void drawTSC()
 
 		if (gitNo != 0)
 		{
-			drawTexture(sprites[0x1A], &rcItemBox1, (screenWidth >> 1) - 40, (screenHeight >> 1) + 8);
-			drawTexture(sprites[0x1A], &rcItemBox2, (screenWidth >> 1) - 40, (screenHeight >> 1) + 24);
-			drawTexture(sprites[0x1A], &rcItemBox3, (screenWidth >> 1) + 32, (screenHeight >> 1) + 8);
-			drawTexture(sprites[0x1A], &rcItemBox4, (screenWidth >> 1) + 32, (screenHeight >> 1) + 16);
-			drawTexture(sprites[0x1A], &rcItemBox4, (screenWidth >> 1) + 32, (screenHeight >> 1) + 24);
-			drawTexture(sprites[0x1A], &rcItemBox5, (screenWidth >> 1) + 32, (screenHeight >> 1) + 32);
+			drawTexture(sprites[TEX_TEXTBOX], &rcItemBox1, (screenWidth >> 1) - 40, (screenHeight >> 1) + 8);
+			drawTexture(sprites[TEX_TEXTBOX], &rcItemBox2, (screenWidth >> 1) - 40, (screenHeight >> 1) + 24);
+			drawTexture(sprites[TEX_TEXTBOX], &rcItemBox3, (screenWidth >> 1) + 32, (screenHeight >> 1) + 8);
+			drawTexture(sprites[TEX_TEXTBOX], &rcItemBox4, (screenWidth >> 1) + 32, (screenHeight >> 1) + 16);
+			drawTexture(sprites[TEX_TEXTBOX], &rcItemBox4, (screenWidth >> 1) + 32, (screenHeight >> 1) + 24);
+			drawTexture(sprites[TEX_TEXTBOX], &rcItemBox5, (screenWidth >> 1) + 32, (screenHeight >> 1) + 32);
 			if (gitNo > 1000)
 			{
 				rcGit.left = ((gitNo - 1000) % 8) * 32;
 				rcGit.top = ((gitNo - 1000) / 8) * 16;
 				rcGit.right = rcGit.left + 32;
 				rcGit.bottom = rcGit.top + 16;
-				drawTexture(sprites[0x08], &rcGit, (screenWidth / 2) - 17, 136);
+				drawTexture(sprites[TEX_ITEMIMAGE], &rcGit, (screenWidth / 2) - 17, 136);
 			}
 			else
 			{
@@ -333,7 +354,7 @@ void drawTSC()
 				rcGit.top = 0;
 				rcGit.right = rcGit.left + 16;
 				rcGit.bottom = 16;
-				drawTexture(sprites[0x0C], &rcGit, (screenWidth / 2) - 10, 136);
+				drawTexture(sprites[TEX_ARMSIMAGE], &rcGit, (screenWidth / 2) - 10, 136);
 			}
 		}
 
@@ -344,10 +365,10 @@ void drawTSC()
 			if (tscCounter > 1) { i = 144; }
 			else { i = 4 * (38 - tscCounter); }
 
-			drawTexture(sprites[0x1A], &rect_yesno, 216, i);
+			drawTexture(sprites[TEX_TEXTBOX], &rect_yesno, 216, i);
 			if (tscCounter > 15)
 			{
-				drawTexture(sprites[0x1A], &rect_cur, 41 * yesnoSelect + 211, 154);
+				drawTexture(sprites[TEX_TEXTBOX], &rect_cur, 41 * yesnoSelect + 211, 154);
 			}
 		}
 
@@ -365,7 +386,6 @@ void tscCheck()
 		gameFlags |= 4;
 	else
 		gameFlags &= ~0x4;
-
 	return;
 }
 
@@ -375,7 +395,7 @@ int ascii2num(char *pStr, const int num)
 	int result = 0;
 	for (int i = 0; i < num; i++)
 	{
-		result += (pStr[i] - 0x30) * ((int)std::pow(10, (num - i) - 1));
+		result += (pStr[i] - 0x30) * (std::pow(10, (num - i) - 1));
 	}
 
 	return result;
@@ -418,12 +438,12 @@ int updateTsc() {
 	case NOD:
 		if (isKeyPressed(keyJump) || isKeyPressed(keyShoot))
 			tscMode = tscPrevMode;
-		tscCheck();
+		tscCheck;
 		return 1;
 	case MSG:
 		if (tsc[tscPos] == '<') { break; }
 		updateMessageBox();
-		tscCheck();
+		tscCheck;
 		return 1;
 	case WAI:
 		if (waitAmount != 9999)
@@ -436,11 +456,16 @@ int updateTsc() {
 				tscCounter = 0;
 			}
 		}
-		tscCheck();
+		tscCheck;
 		return 1;
 	case FADE:
-		tscMode = PARSE;
-		tscCheck();
+		tscMode = 1;
+		//if not in the middle of a <FAI/O, tscMode = 1
+		//if (fadeActive != true)
+		//{
+		//	tscMode = PARSE;
+		//}
+		tscCheck;
 		return 1;
 	case YNJ:
 		if (tscCounter > 15)
@@ -474,14 +499,14 @@ int updateTsc() {
 		{
 			++tscCounter;
 		}
-		tscCheck();
+		tscCheck;
 		return 1;
 	case WAS:
 		if (currentPlayer.flag & 8)
 		{
 			tscMode = PARSE;
 		}
-		tscCheck();
+		tscCheck;
 		return 1;
 	}
 
@@ -528,7 +553,7 @@ int updateTsc() {
 			tscCleanup(2);
 			break;
 		case('<ANP'):
-			for (size_t i = 0; i < npcs.size(); i++)
+			for (int i = 0; i < npcs.size(); i++)
 			{
 				if ((npcs[i].cond & npccond_alive) && npcs[i].code_event == ascii2num(&tsc[tscPos + 4], 4))
 				{
@@ -601,7 +626,7 @@ int updateTsc() {
 			tscCleanup(1);
 			break;
 		case('<DNP'):
-			for (size_t i = 0; i < npcs.size(); i++)
+			for (int i = 0; i < npcs.size(); i++)
 			{
 				if (npcs[i].code_event == ascii2num(&tsc[tscPos + 4], 4))
 				{
@@ -612,7 +637,7 @@ int updateTsc() {
 			tscCleanup(1);
 			break;
 		case('<ECJ'):
-			for (size_t n = 0; n < npcs.size(); n++)
+			for (int n = 0; n < npcs.size(); n++)
 			{
 				if (npcs[n].code_char == ascii2num(&tsc[tscPos + 4], 4))
 				{
@@ -632,7 +657,7 @@ int updateTsc() {
 			currentPlayer.cond &= ~player_interact;
 			return 1;
 		case('<EQ+'):
-			currentPlayer.equip |= ascii2num(&tsc[tscPos + 4], 4);
+			currentPlayer.equip &= ascii2num(&tsc[tscPos + 4], 4);
 			tscCleanup(1);
 			break;
 		case('<EQ-'):
@@ -688,9 +713,22 @@ int updateTsc() {
 			tscCleanup(2);
 			break;
 		case('<FOM'):
+			viewGoalX = currentPlayer.x;
+			viewGoalY = currentPlayer.y;
+			viewSpeed = ascii2num(&tsc[tscPos + 4], 4);
 			tscCleanup(1);
 			break;
 		case('<FON'):
+			for (int n = 0; n < npcs.size(); n++)
+			{
+				if (npcs[n].code_event == ascii2num(&tsc[tscPos + 4], 4))
+				{
+					viewGoalX = npcs[n].x;
+					viewGoalY = npcs[n].y;
+					viewSpeed = ascii2num(&tsc[tscPos + 9], 4);
+					break;
+				}
+			}
 			tscCleanup(2);
 			break;
 		case('<FRE'):
@@ -726,6 +764,7 @@ int updateTsc() {
 		case('<KEY'):
 			gameFlags |= 1;
 			gameFlags &= ~2;
+			currentPlayer.up = false;
 			tscCleanup(0);
 			break;
 		case('<LDP'):
@@ -921,10 +960,10 @@ int updateTsc() {
 			tscCleanup(1);
 			break;
 		case('<YNJ'):
-			yesnoSelect = 0;
 			tscPrevMode = tscMode;
 			tscMode = YNJ;
-			tscCleanup(1);
+			yesnoSelect = 0;
+			tscCleanup(0);
 			break;
 		case('<ZAM'):
 			tscCleanup(0);

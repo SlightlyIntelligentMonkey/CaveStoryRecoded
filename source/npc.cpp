@@ -4,9 +4,9 @@
 std::vector<npc> npcs(0);
 
 //NPC Functions
-void createSmoke(int x, int y, int wa, int num)
+void createSmoke(int x, int y, int w, int num)
 {
-	int w = wa / 0x200;
+	int wa = w / 0x200;
 
 	for (int i = 0; i < num; i++)
 	{

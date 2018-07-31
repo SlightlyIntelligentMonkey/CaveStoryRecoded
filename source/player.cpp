@@ -83,7 +83,7 @@ void player::damage(int damage) {
 
 			createSmoke(x, y, 5120, 64);
 			createCaret(x, y, 12, 0);
-			//StartTextScript(40);
+			runScriptEvent(40);
 		}
 	}
 }
@@ -774,6 +774,8 @@ void player::update(bool bKey) {
 							else
 								createCaret(x, y, 8, 0);
 
+							runScriptEvent(41);
+
 							cond &= ~player_visible;
 						}
 					}
@@ -808,12 +810,6 @@ void player::draw() {
 			//Draw quote
 			drawTexture(sprites[0x10], &rect, ((x - view.left) / 0x200) - (viewX / 0x200), ((y - view.top) / 0x200) - (viewY / 0x200));
 			
-			
-			/*SDL_SetRenderDrawColor(renderer, 0, 255, 0, 255);
-			drawRect(((x - hit.left) / 0x200) - (viewX / 0x200), ((y - hit.top) / 0x200) - (viewY / 0x200), (hit.left + hit.right) / 0x200, (hit.top + hit.bottom) / 0x200);
-			SDL_SetRenderDrawColor(renderer, 255, 255, 0, 255);
-			drawRect(((x - 0x400) / 0x200) - (viewX / 0x200), ((y - 0x400) / 0x200) - (viewY / 0x200), 0x800 / 0x200, 0x800 / 0x200);*/
-
 			//Draw bubble
 			bubble++;
 			if (equip & equip_airTank && flag & water)

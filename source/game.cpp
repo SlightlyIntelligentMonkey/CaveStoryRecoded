@@ -1,20 +1,10 @@
 #include "game.h"
-#include "common.h"
 #include "level.h"
 #include "hud.h"
 #include "script.h"
 
 int gameMode = 0;
 int prevGameMode = 0;
-
-enum gameStates
-{
-	QUIT = -1,
-	INTRO = 0,
-	MENU = 1,
-	PLAY = 2,
-	ESCAPE = 3
-};
 
 void debugLevels()
 {
@@ -206,7 +196,6 @@ int gameUpdateMenu()
 			}
 			else
 			{
-				tscMode = END;
 				gameFlags = 3;
 				loadProfile();
 				break;
