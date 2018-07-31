@@ -156,7 +156,7 @@ RECT rcNew = { 144, 0, 176, 16 };
 RECT rcLoad = { 144, 16, 176, 32 };
 int gameUpdateMenu()
 {
-	int frame = 0;
+	uint32_t frame = 0;
 	BYTE frameOrder[] = { 0, 1, 0, 2 };
 	while (true)
 	{
@@ -234,7 +234,8 @@ int gameUpdateMenu()
 
 int gameUpdateIntro()
 {
-	int frame = 0;
+	uint32_t frame = 0;
+
 	viewX = 0;
 	viewY = 0;
 	loadLevel(72);
@@ -337,7 +338,7 @@ int gameUpdateEscape()
 	return MENU;
 }
 
-int game() {
+int mainGameLoop() {
 	while (gameMode > -1) {
 		//////UPDATE//////
 		switch (gameMode)
