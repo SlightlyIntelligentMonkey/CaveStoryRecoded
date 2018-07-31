@@ -59,6 +59,10 @@ int init() {
 	if (!(IMG_Init(IMG_INIT_PNG) & IMG_INIT_PNG))
 		doCustomError("Couldn't initiate SDL Image");
 	
+	// TBD : Load config data, initialise keybinds and screen resolution based on it
+	// TBD : Check for s_reverse, mute and fps files ?
+	// TBD : Init joypad
+
 	//sound::init();
 	
 	createWindow(320, 240, 2, true);
