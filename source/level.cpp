@@ -25,9 +25,9 @@ void loadStageTable()
 	if (tblStream == nullptr)
 		doError();
 
-	int64_t stages = SDL_RWsize(tblStream) / 200;
+	size_t stages = SDL_RWsize(tblStream) / 200;
 
-	stageTable = (STAGE_TABLE *)malloc(stages * 200);
+	stageTable = static_cast<STAGE_TABLE *>(malloc(stages * 200));
 
 	if (tblStream)
 	{

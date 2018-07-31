@@ -272,12 +272,9 @@ void drawMessageBox(int x, int y, char* str)
 int mapNameDisplayTimer = 0;
 void drawTSC()
 {
-	int num = 0;
-	int some_num = 0;
 	RECT rcGit = { 0, 0, 32, 16 };
 	RECT rect;
 	Uint8 r;
-	int i = 0;
 
 	if (tscMode != 0 && (tscDisplayFlags & TSCVIS) == 1)
 	{
@@ -317,6 +314,8 @@ void drawTSC()
 		//renders cursor during text when text scrolling scrolling is paused
 		if (tscNumber++ % 20 > 12 && tscMode == NOD)
 		{
+			int num = 0;
+			int some_num = 0;
 			for (size_t i = 0; i < strlen(msgText); i++)
 			{
 				if (msgText[i] == '\n')
@@ -362,6 +361,7 @@ void drawTSC()
 		//renders the yes no box thing
 		if (tscMode == YNJ)
 		{
+			int i = 0;
 			if (tscCounter > 1) { i = 144; }
 			else { i = 4 * (38 - tscCounter); }
 

@@ -101,14 +101,14 @@ void loadNpcTable()
 	free(tbl);
 
 	int npcs = tblSize / 0x18;
-	npcTable = (NPC_TABLE *)malloc(0x18 * npcs);
+	npcTable = static_cast<NPC_TABLE *>(malloc(0x18 * npcs));
 
 	SDL_RWops *tblStream = SDL_RWFromFile("data/npc.tbl", "rb");
 
-	int i;
-
 	if (tblStream)
 	{
+		int i;
+
 		for (i = 0; i < npcs; ++i) //bits
 			npcTable[i].bits = SDL_ReadLE16(tblStream);
 		for (i = 0; i < npcs; ++i) //life

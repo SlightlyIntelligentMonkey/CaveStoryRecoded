@@ -695,7 +695,6 @@ int playerHitNpcNonSolid(RECT *rcHit, player *me, npc *NPC)
 
 void playerHitNpcs(RECT *rcHit)
 {
-	int hit = 0;
 
 	player *me = &currentPlayer;
 
@@ -705,6 +704,7 @@ void playerHitNpcs(RECT *rcHit)
 		{
 			if ((npcs[i].cond & npccond_alive))
 			{
+				int hit = 0;
 				if (npcs[i].bits & npc_solidsoft)
 				{
 					hit = playerHitNpcSoftSolid(rcHit, me, &npcs[i]);
