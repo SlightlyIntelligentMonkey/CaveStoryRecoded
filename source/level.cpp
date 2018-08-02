@@ -27,7 +27,7 @@ void loadStageTable()
 
 	size_t stages = (size_t)SDL_RWsize(tblStream) / 200;
 
-	stageTable = static_cast<STAGE_TABLE *>(malloc(stages * 200));
+	stageTable = static_cast<STAGE_TABLE*>(malloc(stages * 200));
 
 	if (tblStream)
 	{
@@ -403,16 +403,18 @@ void drawLevel(bool foreground)
 	{
 		SDL_SetRenderDrawColor(renderer, 0, 0, 32, 255);
 
-		if (viewX < 0)
-		{
-			drawRect(0, 0, viewX / -0x200, screenHeight);
-			drawRect(screenWidth + viewX / 0x200, 0, viewX / -0x200, screenHeight);
-		}
+		//Left and right
+		int leftBorder = -(viewX / 0x200);
+		int rightBorder = ((viewX / 0x200) + screenWidth) - ((levelWidth - 1) << 4);
 
-		if (viewY < 0)
-		{
-			drawRect(0, 0, screenWidth, viewY / -0x200);
-			drawRect(0, screenHeight + viewY / 0x200, screenWidth, viewY / -0x200);
-		}
+		drawRect(0, 0, leftBorder, screenHeight);
+		drawRect(screenWidth - rightBorder, 0, rightBorder, screenHeight);
+
+		//Top and bottom
+		int topBorder = -(viewY / 0x200);
+		int bottomBorder = ((viewY / 0x200) + screenHeight) - ((levelHeight - 1) << 4);
+		
+		drawRect(0, 0, screenWidth, topBorder);
+		drawRect(0, screenHeight - bottomBorder, screenWidth, bottomBorder);
 	}
 }

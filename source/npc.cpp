@@ -32,7 +32,12 @@ void changeNpc(int code_event, int code_char, int dir)
 		if (npcs[i].code_event == code_event)
 		{
 			int code_flag = npcs[i].code_flag;
+			int bits = npcs[i].bits;
+
+			bits &= 0x7F00; //Only bits that seem to determine interactability and other stuff
+
 			npcs[i].init(code_char, npcs[i].x, npcs[i].y, 0, 0, npcs[i].direct, npcs[i].pNpc);
+			npcs[i].bits |= bits;
 			npcs[i].code_flag = code_flag;
 			npcs[i].code_event = code_event;
 

@@ -6,6 +6,8 @@
 #include "npc060.h"
 #include "npc080.h"
 #include "npc100.h"
+#include "npc120.h"
+#include "npc140.h"
 
 #include "npc180.h"
 #include "npc200.h"
@@ -157,14 +159,14 @@ npcAct npcActs[] =
 	&npcActNone,
 	&npcActNone,
 	&npcActNone,
+	&npcAct139,
 	&npcActNone,
 	&npcActNone,
 	&npcActNone,
 	&npcActNone,
 	&npcActNone,
-	&npcActNone,
-	&npcActNone,
-	&npcActNone,
+	&npcAct145,
+	&npcAct146,
 	&npcActNone,
 	&npcActNone,
 	&npcActNone,

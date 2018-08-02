@@ -101,8 +101,8 @@ extern SDL_Rect ImageRect;
 
 extern int viewX;
 extern int viewY;
-extern int viewGoalX;
-extern int viewGoalY;
+extern int *viewGoalX;
+extern int *viewGoalY;
 
 extern int viewSpeed;
 

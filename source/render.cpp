@@ -1,11 +1,13 @@
 #include "common.h"
 
-SDL_Rect drawRectangle = {0};
+SDL_Rect drawRectangle = { 0 };
 
 int screenWidth = 0;
 int screenHeight = 0;
 
 int screenScale = 0;
+
+int windowFlags = 0;
 
 //Create window
 int createWindow(int width, int height, int scale, bool fullscreen) {
@@ -18,7 +20,10 @@ int createWindow(int width, int height, int scale, bool fullscreen) {
 
 	//Set window
 	if (!window)
-		window = SDL_CreateWindow("Cave Story Engine", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, createWidth, createHeight, 0);
+		window = SDL_CreateWindow("Cave Story Engine",
+			SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
+			createWidth, createHeight,
+			NULL);
 	else
 		SDL_SetWindowSize(window, createWidth, createHeight);
 
@@ -26,9 +31,16 @@ int createWindow(int width, int height, int scale, bool fullscreen) {
 	if (!renderer)
 		renderer = SDL_CreateRenderer(window, -1, 0);
 
-	SDL_RenderSetLogicalSize(renderer, screenWidth, screenHeight); //This is done to make sure the view is scaled up to the window (hardware sided)
+	SDL_RenderSetLogicalSize(renderer, screenWidth, screenHeight);
 
 	return 0;
+}
+
+void switchScreenMode()
+{
+	windowFlags ^= SDL_WINDOW_FULLSCREEN_DESKTOP;
+	SDL_SetWindowFullscreen(window, windowFlags);
+	return;
 }
 
 //Texture and drawing stuff
@@ -59,6 +71,7 @@ void drawTexture(SDL_Texture *texture, RECT *rect, int x, int y) {
 
 	return;
 }
+
 
 void drawNumber(int value, int x, int y, bool bZero)
 {

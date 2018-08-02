@@ -30,6 +30,7 @@ enum TextureNums
 };
 
 int createWindow(int width, int height, int scale, bool fullscreen);
+void switchScreenMode();
 
 void loadImage(const char *file, SDL_Texture **tex);
 

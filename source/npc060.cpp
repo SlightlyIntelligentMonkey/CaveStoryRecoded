@@ -305,7 +305,7 @@ void npcAct061(npc *NPC) //King
 		NPC->act_no = 0;
 		break;
 
-	case 30: //Fly across the screen
+	case 30: //Gets bitch slapped by lightning
 		NPC->act_no = 31;
 		NPC->act_wait = 0;
 		NPC->ani_wait = 0;
@@ -335,14 +335,15 @@ void npcAct061(npc *NPC) //King
 
 			createSmoke(NPC->x, NPC->y, 2048, 4);
 		}
+		break;
 
-	case 40:
+	case 40: //Die and leave sword
 		NPC->act_no = 42;
 		NPC->act_wait = 0;
 		NPC->ani_no = 8;
 		//PlaySoundObject(29, 1);
 
-	case 42: //Die and leave sword
+	case 42:
 		//Flash away
 		if (++NPC->ani_no > 9)
 			NPC->ani_no = 8;

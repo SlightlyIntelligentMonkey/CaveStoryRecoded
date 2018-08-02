@@ -8,6 +8,12 @@ void player::init() {
 	direct = 2;
 	view = { 0x1000, 0x1000, 0x1000, 0x1000 };
 	hit = { 0xA00, 0x1000, 0xA00, 0x1000 };
+
+	viewGoalX = &tgt_x;
+	viewGoalY = &tgt_y;
+
+	viewSpeed = 16;
+
 	life = 3;
 	max_life = 3;
 	gamePhysics = 0;
@@ -17,8 +23,8 @@ void player::setPos(int setX, int setY) {
 	x = setX;
 	y = setY;
 
-	viewGoalX = x;
-	viewGoalY = y;
+	tgt_x = x;
+	tgt_y = y;
 	index_x = 0;
 	index_y = 0;
 
@@ -476,6 +482,7 @@ void player::actNormal(bool bKey) {
 			if (index_x < -0x8000)
 				index_x = -0x8000;
 		}
+
 		if (bKey && isKeyDown(keyUp))
 		{
 			//Move up
@@ -502,8 +509,8 @@ void player::actNormal(bool bKey) {
 				index_y += 0x200;
 		}
 
-		viewGoalX = x + index_x;
-		viewGoalY = y + index_y;
+		tgt_x = x + index_x;
+		tgt_y = y + index_y;
 
 		//Move
 		if (xm > resist || xm < -resist)

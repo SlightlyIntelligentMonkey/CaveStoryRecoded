@@ -1,5 +1,4 @@
 #include "sound.h"
-#include <SDL.h>
 
 const char *sfxList[] =
 {
@@ -153,12 +152,12 @@ const char *sfxList[] =
 	NULL,
 	NULL,
 	NULL,
-	"bass_01.wav",
-	"snare_01.wav",
-	"hi_close.wav",
-	"hi_open.wav",
-	"tom_01.wav",
-	"per_01.wav",
+	NULL,//"org_bass_01.wav",
+	NULL,//"org_snare_01.wav",
+	NULL,//"org_hi_close.wav",
+	NULL,//"org_hi_open.wav",
+	NULL,//"org_tom_01.wav",
+	NULL,//"org_per_01.wav",
 	NULL,
 	NULL,
 	NULL,
@@ -170,6 +169,7 @@ struct SOUND_EFFECT
 	BYTE *buf;
 	Uint32 length;
 };
+
 SOUND_EFFECT sounds[_countof(sfxList)];
 
 SDL_AudioStream *audioStream;
@@ -177,21 +177,15 @@ SDL_AudioDeviceID soundDev = 0;
 SDL_AudioSpec soundSpec;
 SDL_AudioSpec want;
 
-void mixAudio(BYTE *dst, BYTE *src, Uint32 len, Uint8 lVolume, Uint8 rVolume)
+//use int pointers for easy use
+void mixAudio(int *dst, int *src, Uint32 len, Uint8 lVolume, Uint8 rVolume)
 {
 	//using 32 float point on native system 
-	for (int f = 0; f <= len; f + 4)
+	for (int i = 0; i <= (len / 4); i++)
 	{
-		//left pan
-		if (f % 2 == 0)
-		{
-			dst[f] = (float)dst[f] + (float)src[f];
-		}
-		//right pan
-		else
-		{
-			dst[f] = (float)dst[f] + (float)src[f];
-		}
+		//probably shouldn't leave it like this but I'll just leave it like this for now
+		//technically the best algorithm if you have infinite values
+		dst[i] = (dst[i] + src[i]);
 	}
 	return;
 }
@@ -212,7 +206,7 @@ void audio_callback(void *userdata, Uint8 *stream, int len)
 		{
 			if (audio->len > len) { tempLength = len; }
 			else { tempLength = audio->len; }
-			mixAudio(stream, audio->buf, tempLength, 100, 100);
+			mixAudio((int*)stream, (int*)audio->buf, tempLength, 100, 100);
 
 			audio->len -= tempLength;
 			audio->buf += tempLength;
@@ -235,9 +229,9 @@ void audio_callback(void *userdata, Uint8 *stream, int len)
 void ini_audio()
 {
 	want.channels = 2;
-	want.freq = 22050;
-	want.format = AUDIO_F32SYS;
-	want.samples = 2048;
+	want.freq = 44100;
+	want.format = AUDIO_S32SYS;
+	want.samples = 4096;
 	want.callback = audio_callback;
 	want.userdata = calloc(1, sizeof(AUDIO));
 
@@ -246,39 +240,86 @@ void ini_audio()
 		0,
 		&want,
 		&soundSpec,
-		SDL_AUDIO_ALLOW_ANY_CHANGE);
+		NULL);
 
-	if (soundDev == 0) { doCustomError("Sound device didn't start."); }
+	if (soundDev == 0)
+		doError();
 
-	memset(sounds, 0, sizeof(sounds));
+	SDL_PauseAudioDevice(soundDev, 0);
 
 	return;
 }
 
+//since sdl doesn't actually get the loaded wav in the specified format,
+//we have to do it ourselves
+void loadSound(char *path, SDL_AudioSpec *spec, BYTE **buf, Uint32 *length)
+{
+	int view = 0;
+	SDL_AudioSpec *lSpec = nullptr;
+
+	lSpec = SDL_LoadWAV(path, spec, buf, length);
+
+	if (lSpec == nullptr)
+		doError();
+
+	BYTE *pBuf = *buf;
+	int *fakeBuf = (int*)malloc(*length * 4);
+
+	//number of data points to interolate
+	int dist = 2;
+	int *fakeFakeBuf = (int *)malloc(*length * 4 * 2);
+	int *realBuf = (int*)calloc(dist, *length * 4 * 2);
+
+	//converting to 32 signed int format from unsigned 8 bit
+	for (int b = 0; b < *length; b++)
+	{
+		fakeBuf[b] = (0x7FFFFFFF / 0xFF) * (pBuf[b] - ((0xFF / 2) + 1));
+	}
+
+	//channels++
+	for (int i = 0; i < *length; i++)
+	{
+		fakeFakeBuf[i << 1] = fakeBuf[i];
+		fakeFakeBuf[(i << 1) + 1] = fakeBuf[i];
+	}
+
+	//interpolation
+	for (int i = 0; i < *length; i++)
+	{
+		realBuf[i << 1] = fakeFakeBuf[i];
+		realBuf[(i << 1) + 1] = fakeFakeBuf[i];
+	}
+
+	free(fakeBuf);
+	free(fakeFakeBuf);
+	SDL_FreeWAV(*buf);
+
+	*length *= (4 * dist * 2);
+	*buf = (BYTE*)realBuf;
+	return;
+}
+
+const char *pathToSounds = "data/Sound/";
 void loadSounds()
 {
-	char path[64] = "data/soundfx/";
-	Uint32 silentLength = 0;
-	BYTE *silentBuf = nullptr;
-	SDL_LoadWAV("data/soundfx/silence.wav", &soundSpec, &silentBuf, &silentLength);
+	char path[64];
 
 	for (int s = 0; s < _countof(sounds); s++)
 	{
 		if (sfxList[s] != NULL)
 		{
+			strcpy(path, pathToSounds);
 			strcat(path, sfxList[s]);
-			SDL_LoadWAV(path, &soundSpec, &sounds[s].buf, &sounds[s].length);
-			if (sounds[s].buf == NULL) { doError(); }
-			strcpy(path, "data/soundfx/");
+
+			loadSound(path, &soundSpec, &sounds[s].buf, &sounds[s].length);
+
+			if (sounds[s].buf == NULL)
+				doError();
 		}
 		else
-		{
-			sounds[s].buf = silentBuf;
-			sounds[s].length = silentLength;
-		}
+			sounds[s].buf = NULL;
 	}
 
-	SDL_PauseAudioDevice(soundDev, 0);
 	return;
 }
 
@@ -286,8 +327,12 @@ void freeSounds()
 {
 	for (int s = 0; s < _countof(sounds); s++)
 	{
-		SDL_FreeWAV(sounds[s].buf);
+		if (sounds[s].buf != NULL)
+		{
+			free(sounds[s].buf);
+		}
 	}
+
 	return;
 }
 
@@ -295,15 +340,21 @@ void playSound(int sound_no)
 {
 	AUDIO *sound = nullptr;
 	AUDIO *lastSound = (AUDIO*)want.userdata;
-	if (sound_no > _countof(sounds)) { return; }
+
+	if (sound_no > _countof(sounds))
+		return;
+
 	sound = (AUDIO*)calloc(1, sizeof(AUDIO));
-	sound->buf = sounds[sound_no].buf;
+
+	if (sounds[sound_no].buf != NULL)
+		sound->buf = sounds[sound_no].buf;
+	else
+		return;
+
 	sound->len = sounds[sound_no].length;
 
 	while (lastSound->next != nullptr)
-	{
 		lastSound = lastSound->next;
-	}
 
 	lastSound->next = sound;
 

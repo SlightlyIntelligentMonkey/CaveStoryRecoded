@@ -629,6 +629,84 @@ void npcAct008(npc *NPC) //Follow beetle (egg corridor)
 	NPC->rect = { setRect->left, setRect->top, setRect->right, setRect->bottom };
 }
 
+void npcAct009(npc *NPC) //Balrog drop in
+{
+	RECT rcLeft[3];
+	RECT rcRight[3];
+
+	rcLeft[0] = { 0, 0, 40, 24 };
+	rcLeft[1] = { 80, 0, 120, 24 };
+	rcLeft[2] = { 120, 0, 160, 24 };
+
+	rcRight[0] = { 0, 24, 40, 48 };
+	rcRight[1] = { 80, 24, 120, 48 };
+	rcRight[2] = { 120, 24, 160, 48 };
+
+	switch (NPC->act_no)
+	{
+	case 0:
+		NPC->act_no = 1;
+		NPC->ani_no = 2;
+
+	case 1: //Falling
+		NPC->ym += 0x20;
+
+		//Go through ceiling for the first 40 frames of existing, then become solid
+		if (NPC->count1 >= 40)
+		{
+			NPC->bits &= npc_ignoresolid;
+			NPC->bits |= npc_solidsoft;
+		}
+		else
+			++NPC->count1;
+
+		//Landing
+		if (NPC->flag & ground)
+		{
+			//Create smoke
+			for (int i = 0; i < 4; ++i)
+				createNpc(4, NPC->x + (random(-12, 12) << 9), NPC->y + (random(-12, 12) << 9), random(-0x155, 0x155), random(-0x600, 0), 0, nullptr);
+
+			//Go into landed state
+			NPC->act_no = 2;
+			NPC->ani_no = 1;
+			NPC->act_wait = 0;
+			//PlaySoundObject(26, 1);
+			//SetQuake(30);
+		}
+
+		break;
+
+	case 2: //Landed
+		if (++NPC->act_wait > 16)
+		{
+			NPC->act_no = 3;
+			NPC->ani_no = 0;
+			NPC->ani_wait = 0;
+		}
+
+		break;
+
+	default:
+		break;
+	}
+
+	//Speed limit and move
+	if (NPC->ym > 0x5FF)
+		NPC->ym = 0x5FF;
+	if (NPC->ym < -0x5FF)
+		NPC->ym = -0x5FF;
+
+	NPC->x += NPC->xm;
+	NPC->y += NPC->ym;
+
+	//Set framerect
+	if (NPC->direct)
+		NPC->rect = rcRight[NPC->ani_no];
+	else
+		NPC->rect = rcLeft[NPC->ani_no];
+}
+
 void npcAct015(npc *NPC) //Closed chest
 {
 	int act_no = NPC->act_no;

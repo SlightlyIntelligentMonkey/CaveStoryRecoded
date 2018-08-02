@@ -54,7 +54,8 @@ int msgBoxY = 0;
 // -- display variables --
 int tscNumber = 0;
 int faceX = 0;
-int gitNo;
+int gitNo = 0;
+int ynjBoxYOffset = 0;
 
 
 RECT rcFrame1 = { 0, 0, 244, 8 };
@@ -169,16 +170,16 @@ void jumpScriptEvent(int event_num)
 }
 
 //renders a line of text
-void renderTextLine(int x, int y, char* str)
+void renderTextLine(int x, int y, char *str)
 {
 	SDL_Rect rcChar = { 0, 0, charWidth, charHeight };
 	SDL_Rect dest = { 0, y, charWidth, charHeight };
 
 	for (size_t c = 0; c < strlen(str); c++)
 	{
-		rcChar.x = (charWidth << 1) + (((str[c] - 0x20) % 32)*charWidth);
-		rcChar.y = (charHeight << 1) + (((str[c] - 0x20) >> 5)*charHeight);
-		dest.x = x + (c*charWidth);
+		rcChar.x = ((str[c] - 0x20) % 32) * charWidth;
+		rcChar.y = ((str[c] - 0x20) >> 5) * charHeight;
+		dest.x = x + (c * charWidth);
 		SDL_RenderCopy(renderer, font, &rcChar, &dest);
 	}
 	return;
@@ -201,6 +202,7 @@ void updateMessageBox()
 		{
 			strncat(msgText, &tsc[tscPos], 1);
 			tscPos++;
+			playSound(2);
 		}
 	}
 
@@ -257,7 +259,7 @@ void drawMessageBox(int x, int y, char* str)
 			}
 			rcChar.x = (((str[c] - 0x20) % 32)*charWidth);
 			rcChar.y = (((str[c] - 0x20) >> 5)*charHeight);
-			dest.x = 8 + x + (charX*charWidth) + charWidth;
+			dest.x = 8 + x + (charX*charWidth) + charWidth + textOffset;
 			dest.y = 8 + y + ((lineY*charHeight * 4) / 3) + 1 - scrollOffset;
 
 			SDL_RenderCopy(renderer, font, &rcChar, &dest);
@@ -273,8 +275,9 @@ int mapNameDisplayTimer = 0;
 void drawTSC()
 {
 	RECT rcGit = { 0, 0, 32, 16 };
+	SDL_Rect rcClip = { 0, 0, 0, 0 };
 
-	if (tscMode != 0 && (tscDisplayFlags & TSCVIS) == 1)
+	if (tscMode != 0 && tscDisplayFlags & TSCVIS)
 	{
 
 		if (tscDisplayFlags & 0x20)
@@ -291,22 +294,25 @@ void drawTSC()
 		if (tscDisplayFlags & MSGbox)
 		{
 			drawMessageBox(msgBoxX, msgBoxY, msgText);
-		}
 
-		//displaying face
-		if (faceNo) { textOffset = 56; }
-		else { textOffset = 0; }
-		rcFace.left = 48 * (faceNo % 6);
-		rcFace.top = 48 * (faceNo / 6);
-		rcFace.right = rcFace.left + 48;
-		rcFace.bottom = rcFace.top + 48;
+			//displaying face
+			if (faceNo)
+			{
+				textOffset = 48;
+				rcClip = { msgBoxX + 8, msgBoxY + 8, 48, 48 };
 
-		if (faceX <= 26623) { faceX += 4096; }
-		drawTexture(sprites[TEX_FACE], &rcFace, faceX, rcView.top - 3);
+				rcFace.left = 48 * (faceNo % 6);
+				rcFace.top = 48 * (faceNo / 6);
+				rcFace.right = rcFace.left + 48;
+				rcFace.bottom = rcFace.top + 48;
 
-		for (int i = 0; i <= 3; ++i)
-		{
-			//drawTexture(sprites[i + 30], &gRect_line, textOffset + 52,  + dword_81D59CC[i + 68] + rcView.top);
+				faceX += 8;
+				if (faceX >= msgBoxX + 8) { faceX = msgBoxX + 8; }
+				SDL_RenderSetClipRect(renderer, &rcClip);
+				drawTexture(sprites[TEX_FACE], &rcFace, faceX, msgBoxY + 8);
+				SDL_RenderSetClipRect(renderer, NULL);
+			}
+			else { textOffset = 0; }
 		}
 
 		//renders cursor during text when text scrolling scrolling is paused
@@ -324,7 +330,7 @@ void drawTSC()
 			}
 			SDL_SetRenderDrawColor(renderer, 255, 255, 254, 255);
 			drawRect(
-				msgBoxX + 8 + charWidth + (strlen(msgText)*charWidth) - (some_num*charWidth),
+				msgBoxX + 8 + charWidth + (strlen(msgText)*charWidth) - (some_num*charWidth) + textOffset,
 				msgBoxY + 8 + ((num*charHeight * 4) / 3) + 1,
 				charWidth, charHeight);
 		}
@@ -359,21 +365,29 @@ void drawTSC()
 		//renders the yes no box thing
 		if (tscMode == YNJ)
 		{
-			int i = 0;
-			if (tscCounter > 1) { i = 144; }
-			else { i = 4 * (38 - tscCounter); }
-
-			drawTexture(sprites[TEX_TEXTBOX], &rect_yesno, 216, i);
-			if (tscCounter > 15)
+			if (ynjBoxYOffset >= 4)
 			{
-				drawTexture(sprites[TEX_TEXTBOX], &rect_cur, 41 * yesnoSelect + 211, 154);
+				ynjBoxYOffset = 4;
+			}
+			else { ynjBoxYOffset++; }
+			rcClip = { (screenWidth >> 1) + 56, ((screenHeight >> 1) + 22), 84, 32 };
+			SDL_RenderSetClipRect(renderer, &rcClip);
+			drawTexture(sprites[TEX_TEXTBOX], &rect_yesno, (screenWidth >> 1) + 56,
+				((screenHeight >> 1) + 54) - (ynjBoxYOffset << 3));
+			SDL_RenderSetClipRect(renderer, NULL);
+			if (ynjBoxYOffset >= 4)
+			{
+				drawTexture(sprites[TEX_TEXTBOX], &rect_cur,
+					41 * yesnoSelect + ((screenWidth >> 1) + 51),
+					(screenHeight >> 1) + 34);
 			}
 		}
+	}
 
-		if (mapNameDisplayTimer++ < 160)
-		{
-			renderTextLine(screenWidth << 1, 80, stageTable[currentLevel].name);
-		}
+	if (mapNameDisplayTimer++ < 160)
+	{
+		renderTextLine((screenWidth >> 1) - ((strlen(stageTable[currentLevel].name) * charWidth) >> 1),
+			80, stageTable[currentLevel].name);
 	}
 	return;
 }
@@ -470,7 +484,7 @@ int updateTsc() {
 		{
 			if (isKeyPressed(keyJump))
 			{
-				//PlaySoundObject(18, 1);
+				playSound(18);
 				if (yesnoSelect == 1)
 				{
 					runScriptEvent(ascii2num(&tsc[tscPos], 4));
@@ -485,12 +499,12 @@ int updateTsc() {
 			else if (isKeyPressed(keyLeft))
 			{
 				yesnoSelect = 0;
-				//PlaySoundObject(1, 1);
+				playSound(1);
 			}
 			else if (isKeyPressed(keyRight))
 			{
 				yesnoSelect = 1;
-				//PlaySoundObject(1, 1);
+				playSound(1);
 			}
 		}
 		else
@@ -621,6 +635,15 @@ int updateTsc() {
 			tscCleanup(0);
 			break;
 		case('<DNA'):
+			for (size_t i = 0; i < npcs.size(); i++)
+			{
+				if (npcs[i].code_char == ascii2num(&tsc[tscPos + 4], 4))
+				{
+					npcs[i].cond = 0;
+					setFlag(npcs[i].code_flag);
+				}
+			}
+
 			tscCleanup(1);
 			break;
 		case('<DNP'):
@@ -673,7 +696,8 @@ int updateTsc() {
 			gitNo = 0;
 			break;
 		case('<FAC'):
-			faceNo = ascii2num(&tsc[tscPos], 4);
+			faceX = msgBoxX - 40;
+			faceNo = ascii2num(&tsc[tscPos + 4], 4);
 			tscCleanup(1);
 			break;
 		case('<FAI'):
@@ -711,8 +735,8 @@ int updateTsc() {
 			tscCleanup(2);
 			break;
 		case('<FOM'):
-			viewGoalX = currentPlayer.x;
-			viewGoalY = currentPlayer.y;
+			viewGoalX = &currentPlayer.x;
+			viewGoalY = &currentPlayer.y;
 			viewSpeed = ascii2num(&tsc[tscPos + 4], 4);
 			tscCleanup(1);
 			break;
@@ -721,8 +745,8 @@ int updateTsc() {
 			{
 				if (npcs[n].code_event == ascii2num(&tsc[tscPos + 4], 4))
 				{
-					viewGoalX = npcs[n].x;
-					viewGoalY = npcs[n].y;
+					viewGoalX = &npcs[n].x;
+					viewGoalY = &npcs[n].y;
 					viewSpeed = ascii2num(&tsc[tscPos + 9], 4);
 					break;
 				}
@@ -961,6 +985,7 @@ int updateTsc() {
 			tscPrevMode = tscMode;
 			tscMode = YNJ;
 			yesnoSelect = 0;
+			ynjBoxYOffset = 0;
 			tscCleanup(0);
 			break;
 		case('<ZAM'):

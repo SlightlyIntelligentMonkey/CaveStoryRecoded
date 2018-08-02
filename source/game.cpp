@@ -69,6 +69,7 @@ int gameUpdatePlay()
 {
 	int swPlay = 1;
 	int tscResult = 0;
+	
 	while (true)
 	{
 		//Framerate limiter
@@ -90,6 +91,12 @@ int gameUpdatePlay()
 
 		if (isKeyDown(SDL_SCANCODE_ESCAPE)) { prevGameMode = PLAY; return ESCAPE; }
 
+		if (isKeyDown(SDL_SCANCODE_LALT) && isKeyPressed(SDL_SCANCODE_RETURN) ||
+			isKeyPressed(SDL_SCANCODE_LALT) && isKeyDown(SDL_SCANCODE_RETURN))
+		{
+			switchScreenMode();
+		}
+
 		debugLevels();
 
 		//Update stuff
@@ -102,8 +109,8 @@ int gameUpdatePlay()
 		}
 
 		//Move view
-		viewX += ((viewGoalX - (screenWidth << 8)) - viewX) / viewSpeed;
-		viewY += ((viewGoalY - (screenHeight << 8)) - viewY) / viewSpeed;
+		viewX += ((*viewGoalX - (screenWidth << 8)) - viewX) / viewSpeed;
+		viewY += ((*viewGoalY - (screenHeight << 8)) - viewY) / viewSpeed;
 
 		//Keep view in level
 		if ((levelWidth - 1) << 4 > screenWidth)
@@ -185,6 +192,12 @@ int gameUpdateMenu()
 
 		if (isKeyDown(SDL_SCANCODE_ESCAPE)) { prevGameMode = MENU; return ESCAPE; }
 
+		if (isKeyDown(SDL_SCANCODE_LALT) && isKeyPressed(SDL_SCANCODE_RETURN) ||
+			isKeyPressed(SDL_SCANCODE_LALT) && isKeyDown(SDL_SCANCODE_RETURN))
+		{
+			switchScreenMode();
+		}
+
 		if (isKeyPressed(keyJump))
 		{
 			//playSound(18);
@@ -265,11 +278,29 @@ int gameUpdateIntro()
 
 		//Handle events
 		getKeys(&events);
+
 		if (events.type == SDL_QUIT || exitGame) { return QUIT; }
 
 		if (isKeyDown(SDL_SCANCODE_ESCAPE)) { prevGameMode = INTRO; return ESCAPE; }
 
+		if (isKeyDown(SDL_SCANCODE_LALT) && isKeyPressed(SDL_SCANCODE_RETURN) ||
+			isKeyPressed(SDL_SCANCODE_LALT) && isKeyDown(SDL_SCANCODE_RETURN))
+		{
+			switchScreenMode();
+		}
+
 		if (isKeyPressed(keyJump) | isKeyDown(keyShoot)) { break; }
+
+		//Keep view in level
+		if ((levelWidth - 1) << 4 > screenWidth)
+			viewX = clamp(viewX, 0, ((levelWidth - 1) << 13) - (screenWidth << 9));
+		else
+			viewX = ((levelWidth - 1) << 12) - (screenWidth << 8);
+
+		if ((levelHeight - 1) << 4 > screenHeight)
+			viewY = clamp(viewY, 0, ((levelHeight - 1) << 13) - (screenHeight << 9));
+		else
+			viewY = ((levelHeight - 1) << 12) - (screenHeight << 8);
 
 		updateNPC();
 		updateCarets();
@@ -332,6 +363,12 @@ int gameUpdateEscape()
 		if (isKeyPressed(SDL_SCANCODE_ESCAPE)) { return QUIT; }
 		if (isKeyPressed(SDL_SCANCODE_F1)) { return prevGameMode; }
 		if (isKeyPressed(SDL_SCANCODE_F2)) { return INTRO; }
+
+		if (isKeyDown(SDL_SCANCODE_LALT) && isKeyPressed(SDL_SCANCODE_RETURN) ||
+			isKeyPressed(SDL_SCANCODE_LALT) && isKeyDown(SDL_SCANCODE_RETURN))
+		{
+			switchScreenMode();
+		}
 
 		SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
 		SDL_RenderClear(renderer);

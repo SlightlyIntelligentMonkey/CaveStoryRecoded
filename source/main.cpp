@@ -8,12 +8,12 @@ SDL_Renderer *renderer;
 SDL_Rect DrawRect;
 SDL_Rect ImageRect;
 
-int viewX = 0;
-int viewY = 0;
-int viewGoalX = 0;
-int viewGoalY = 0;
+int viewX;
+int viewY;
+int *viewGoalX;
+int *viewGoalY;
 
-int viewSpeed = 16;
+int viewSpeed;
 
 //Game variables
 SDL_Event events;
@@ -65,11 +65,12 @@ int init() {
 
 	//sound::init();
 	
-	createWindow(320, 240, 2, true);
+	createWindow(240 * 16 / 9, 240, 2, true);
 
 	//Load assets
 	loadNpcTable();
 	loadStageTable();
+	loadSounds();
 
 	loadImage("data/Title.png", &sprites[0x00]);
 
