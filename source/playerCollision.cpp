@@ -736,20 +736,20 @@ void playerHitNpcs(RECT *rcHit)
 
 				if (hit && npcs[i].code_char == 1)
 				{
-					//PlaySoundObject(14, 1);
+					playSound(14);
 					//AddExpMyChar(gNPC[i].exp);
 					npcs[i].cond = 0;
 				}
 				if (hit && npcs[i].code_char == 86)
 				{
-					//PlaySoundObject(42, 1);
+					playSound(42);
 					//AddBulletMyChar(gNPC[i].code_event, gNPC[i].exp);
 					npcs[i].cond = 0;
 				}
 
 				if (hit && npcs[i].code_char == 87)
 				{
-					//PlaySoundObject(20, 1);
+					playSound(20);
 					//AddLifeMyChar(gNPC[i].exp);
 					npcs[i].cond = 0;
 				}

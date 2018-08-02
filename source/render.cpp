@@ -42,6 +42,10 @@ void switchScreenMode()
 {
 	windowFlags ^= SDL_WINDOW_FULLSCREEN_DESKTOP;
 
+	//Unlike prevWidth and Height, this is used for fixing the view when going between fullscreen and windowed mode
+	int lastWidth = screenWidth;
+	int lastHeight = screenHeight;
+
 	if (windowFlags & SDL_WINDOW_FULLSCREEN_DESKTOP)
 	{
 		SDL_DisplayMode dm;
@@ -51,7 +55,8 @@ void switchScreenMode()
 
 		prevWidth = screenWidth;
 		prevHeight = screenHeight;
-		screenWidth = (dm.w / dm.h) * 240;
+
+		screenWidth = (dm.w * 240) / dm.h;
 		screenHeight = 240;
 	}
 	else
@@ -59,6 +64,10 @@ void switchScreenMode()
 		screenWidth = prevWidth;
 		screenHeight = prevHeight;
 	}
+
+	//Ensure that the view is shifted properly
+	viewX += (lastWidth - screenWidth) * 0x100;
+	viewY += (lastHeight - screenHeight) * 0x100;
 
 	SDL_SetWindowSize(window, screenWidth * screenScale, screenHeight * screenScale);
 	SDL_RenderSetLogicalSize(renderer, screenWidth, screenHeight);

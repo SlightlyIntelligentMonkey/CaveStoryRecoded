@@ -671,7 +671,7 @@ void npcAct009(npc *NPC) //Balrog drop in
 			NPC->act_no = 2;
 			NPC->ani_no = 1;
 			NPC->act_wait = 0;
-			//PlaySoundObject(26, 1);
+			playSound(26);
 			//SetQuake(30);
 		}
 

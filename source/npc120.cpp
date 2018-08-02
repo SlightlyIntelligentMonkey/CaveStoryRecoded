@@ -81,7 +81,7 @@ void npcAct139(npc *NPC) //Doctor with the crown
 		NPC->xm = 0;
 		NPC->ym = 0;
 		NPC->act_wait = 2 * (NPC->rect.bottom - NPC->rect.top);
-		//PlaySoundObject(29, 1);
+		playSound(29);
 
 	case 31:
 		--NPC->act_wait;
@@ -97,7 +97,7 @@ void npcAct139(npc *NPC) //Doctor with the crown
 		NPC->act_wait = 0;
 		NPC->xm = 0;
 		NPC->ym = 0;
-		//PlaySoundObject(29, 1);
+		playSound(29);
 
 	case 41:
 		NPC->ani_no = 2;

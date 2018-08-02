@@ -46,7 +46,7 @@ void npcAct111(npc *NPC) //Quote teleport out
 		{
 			NPC->act_no = 4;
 			NPC->act_wait = 64;
-			//PlaySoundObject(29, 1);
+			playSound(29);
 		}
 		break;
 	case 4:
@@ -101,7 +101,7 @@ void npcAct112(npc *NPC) //Quote teleport in
 		NPC->ani_wait = 0;
 		NPC->x += 0x2000;
 		NPC->y += 4096;
-		//PlaySoundObject(29, 1);
+		playSound(29);
 	}
 
 	switch (NPC->act_no)

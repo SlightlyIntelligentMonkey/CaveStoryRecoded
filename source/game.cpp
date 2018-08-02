@@ -194,7 +194,7 @@ int gameUpdateMenu()
 
 		if (isKeyPressed(keyJump))
 		{
-			//playSound(18);
+			playSound(18);
 			if (select == 0 || !fileExists("Profile.dat"))
 			{
 				gameFlags = 3;
@@ -216,7 +216,7 @@ int gameUpdateMenu()
 		}
 		if (isKeyPressed(keyUp) || isKeyPressed(keyDown))
 		{
-			//playSound(1);
+			playSound(1);
 			select ^= 1;
 		}
 

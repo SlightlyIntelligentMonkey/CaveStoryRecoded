@@ -37,7 +37,7 @@ void npcAct082(npc *NPC) //Misery standing
 	case 16:
 		if (++NPC->act_wait == 30)
 		{
-			//PlaySoundObject(21, 1);
+			playSound(21);
 			createNpc(66, NPC->x, NPC->y - 0x2000, 0, 0, 0, NPC);
 		}
 
@@ -70,7 +70,7 @@ void npcAct082(npc *NPC) //Misery standing
 
 		if (++NPC->act_wait == 30)
 		{
-			//PlaySoundObject(101, 1);
+			playSound(101);
 			//SetFlash(0, 0, 2);
 			NPC->act_no = 27;
 			NPC->ani_no = 7;
@@ -120,7 +120,7 @@ void npcAct082(npc *NPC) //Misery standing
 		if (something <= 0x14 && (1 << something) & 0x100401)
 		{
 			createNpc(11, NPC->x + 0x1000, NPC->y - 0x100, 0x600, random(-0x200, 0), 0, nullptr);
-			//PlaySoundObject(33, 1);
+			playSound(33);
 		}
 
 		if (NPC->act_wait > 50)

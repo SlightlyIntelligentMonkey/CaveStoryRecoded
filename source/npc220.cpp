@@ -21,10 +21,8 @@ void npcAct231(npc *NPC) //Momorin's rocket
 	case 10:
 		NPC->act_no = 11;
 		NPC->act_wait = 0;
-		goto npc231down;
 
 	case 11:
-npc231down:
 		++NPC->act_wait;
 		NPC->ym += 8;
 		if (NPC->flag & ground)
@@ -46,12 +44,10 @@ npc231down:
 		for (int i = 0; i < 10; ++i)
 		{
 			createNpc(4, NPC->x + (random(-16, 16) << 9), NPC->y + (random(-8, 8) << 9), 0, 0, 0, nullptr);
-			//PlaySoundObject(12, 1);
+			playSound(12);
 		}
-		goto npc231up;
 		
 	case 13:
-npc231up:
 		NPC->ym -= 8;
 
 		if (!(++NPC->act_wait & 1))
@@ -60,8 +56,8 @@ npc231up:
 		if (NPC->act_wait % 2 == 1)
 			createCaret(NPC->x + 0x1400, NPC->y + 0x1000, 7, 3);
 
-		//if (npc->act_wait % 4 == 1)
-		//	PlaySoundObject(34, 1);
+		if (NPC->act_wait % 4 == 1)
+			playSound(34);
 
 		if (NPC->flag & ceiling || currentPlayer.flag & ceiling || NPC->act_wait > 450)
 		{
@@ -73,7 +69,7 @@ npc231up:
 			for (int i = 0; i < 6; ++i)
 			{
 				createNpc(4, NPC->x + (random(-16, 16) << 9), NPC->y + (random(-8, 8) << 9), 0, 0, 0, nullptr);
-				//PlaySoundObject(12, 1);
+				playSound(12);
 			}
 		}
 		break;
@@ -90,8 +86,8 @@ npc231up:
 			if (NPC->act_wait % 8 == 4)
 				createCaret(NPC->x + 0x1400, NPC->y + 0x1000, 7, 3);
 
-			//if (NPC->act_wait % 16 == 1)
-			//	PlaySoundObject(34, 1);
+			if (NPC->act_wait % 16 == 1)
+				playSound(34);
 		}
 
 		if (NPC->flag & ground)

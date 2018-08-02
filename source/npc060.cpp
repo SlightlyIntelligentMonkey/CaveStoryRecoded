@@ -122,7 +122,7 @@ void npcAct060(npc *NPC) //Toroko
 		NPC->act_no = 11;
 		NPC->ani_no = 9;
 		NPC->ym = -0x400;
-		//PlaySoundObject(50, 1);
+		playSound(50);
 
 		if (NPC->direct)
 			NPC->xm = 0x100;
@@ -331,7 +331,7 @@ void npcAct061(npc *NPC) //King
 			NPC->ym = -0x400;
 			NPC->xm = 0x200;
 
-			//PlaySoundObject(71, 1);
+			playSound(71);
 
 			createSmoke(NPC->x, NPC->y, 2048, 4);
 		}
@@ -341,7 +341,7 @@ void npcAct061(npc *NPC) //King
 		NPC->act_no = 42;
 		NPC->act_wait = 0;
 		NPC->ani_no = 8;
-		//PlaySoundObject(29, 1);
+		playSound(29);
 
 	case 42:
 		//Flash away
@@ -632,7 +632,7 @@ void npcAct066(npc *NPC) //Bubble (to catch Toroko in the shack)
 			if (NPC->tgt_npc)
 				NPC->tgt_npc->cond = 0;
 
-			//PlaySoundObject(21, 1);
+			playSound(21);
 		}
 
 		break;

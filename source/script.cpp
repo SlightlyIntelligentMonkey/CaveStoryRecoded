@@ -200,8 +200,6 @@ void renderTextLine(int x, int y, char *str)
 
 void updateMessageBox()
 {
-	msgBoxX = (screenWidth >> 1) - 122;
-
 	if (tscCounter++ % 4 == 0 || isKeyDown(keyJump) || isKeyDown(keyShoot))
 	{
 		//play text scroll noise
@@ -320,13 +318,17 @@ void drawTSC()
 				rcFace.right = rcFace.left + 48;
 				rcFace.bottom = rcFace.top + 48;
 
+				//Move
 				faceX += 8;
-				if (faceX >= msgBoxX + 8) { faceX = msgBoxX + 8; }
+				if (faceX >= 8)
+					faceX = 8;
+
 				SDL_RenderSetClipRect(renderer, &rcClip);
-				drawTexture(sprites[TEX_FACE], &rcFace, faceX, msgBoxY + 8);
+				drawTexture(sprites[TEX_FACE], &rcFace, msgBoxX + faceX, msgBoxY + 8);
 				SDL_RenderSetClipRect(renderer, NULL);
 			}
-			else { textOffset = 0; }
+			else
+				textOffset = 0;
 		}
 
 		//renders cursor during text when text scrolling scrolling is paused
@@ -443,6 +445,8 @@ int updateTsc() {
 	char str[72];
 	bool bExit = false;
 	int num = 0;
+
+	msgBoxX = (screenWidth >> 1) - 122;
 
 	tscDisplayFlags |= TSCVIS;
 	switch (tscMode)
@@ -718,7 +722,7 @@ int updateTsc() {
 			gitNo = 0;
 			break;
 		case('<FAC'):
-			faceX = msgBoxX - 40;
+			faceX = -40;
 			faceNo = ascii2num(&tsc[tscPos + 4], 4);
 			tscCleanup(1);
 			break;
@@ -953,6 +957,7 @@ int updateTsc() {
 			tscCleanup(4);
 			break;
 		case('<SOU'):
+			playSound(ascii2num(&tsc[tscPos + 4], 4));
 			tscCleanup(1);
 			break;
 		case('<SPS'):
