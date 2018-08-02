@@ -200,6 +200,8 @@ void renderTextLine(int x, int y, char *str)
 
 void updateMessageBox()
 {
+	msgBoxX = (screenWidth >> 1) - 122;
+
 	if (tscCounter++ % 4 == 0 || isKeyDown(keyJump) || isKeyDown(keyShoot))
 	{
 		//play text scroll noise
@@ -648,10 +650,13 @@ int updateTsc() {
 		case('<DNA'):
 			for (size_t i = 0; i < npcs.size(); i++)
 			{
-				if (npcs[i].code_char == ascii2num(&tsc[tscPos + 4], 4))
+				if (npcs[i].cond & npccond_alive)
 				{
-					npcs[i].cond = 0;
-					setFlag(npcs[i].code_flag);
+					if (npcs[i].code_char == ascii2num(&tsc[tscPos + 4], 4))
+					{
+						npcs[i].cond = 0;
+						setFlag(npcs[i].code_flag);
+					}
 				}
 			}
 
@@ -660,10 +665,13 @@ int updateTsc() {
 		case('<DNP'):
 			for (size_t i = 0; i < npcs.size(); i++)
 			{
-				if (npcs[i].code_event == ascii2num(&tsc[tscPos + 4], 4))
+				if (npcs[i].cond & npccond_alive)
 				{
-					npcs[i].cond = 0;
-					setFlag(npcs[i].code_flag);
+					if (npcs[i].code_event == ascii2num(&tsc[tscPos + 4], 4))
+					{
+						npcs[i].cond = 0;
+						setFlag(npcs[i].code_flag);
+					}
 				}
 			}
 			tscCleanup(1);
@@ -671,10 +679,13 @@ int updateTsc() {
 		case('<ECJ'):
 			for (size_t n = 0; n < npcs.size(); n++)
 			{
-				if (npcs[n].code_char == ascii2num(&tsc[tscPos + 4], 4))
+				if (npcs[n].cond & npccond_alive)
 				{
-					jumpScriptEvent(ascii2num(&tsc[tscPos + 9], 4));
-					break;
+					if (npcs[n].code_char == ascii2num(&tsc[tscPos + 4], 4))
+					{
+						jumpScriptEvent(ascii2num(&tsc[tscPos + 9], 4));
+						break;
+					}
 				}
 			}
 			tscCleanup(2);
@@ -753,12 +764,15 @@ int updateTsc() {
 		case('<FON'):
 			for (size_t n = 0; n < npcs.size(); n++)
 			{
-				if (npcs[n].code_event == ascii2num(&tsc[tscPos + 4], 4))
+				if (npcs[n].cond & npccond_alive)
 				{
-					viewGoalX = &npcs[n].x;
-					viewGoalY = &npcs[n].y;
-					viewSpeed = ascii2num(&tsc[tscPos + 9], 4);
-					break;
+					if (npcs[n].code_event == ascii2num(&tsc[tscPos + 4], 4))
+					{
+						viewGoalX = &npcs[n].x;
+						viewGoalY = &npcs[n].y;
+						viewSpeed = ascii2num(&tsc[tscPos + 9], 4);
+						break;
+					}
 				}
 			}
 			tscCleanup(2);

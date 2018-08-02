@@ -33,6 +33,7 @@ bool exitGame = false;
 static void doQuit() {
 	//sound::quit();
 	SDL_Quit();
+	freeSounds();
 }
 
 void doError() {
@@ -65,12 +66,13 @@ int init() {
 
 	//sound::init();
 	
-	createWindow(240 * 16 / 9, 240, 2, true);
+	createWindow(320, 240, 2, true);
 
 	//Load assets
 	loadNpcTable();
 	loadStageTable();
-	loadSounds();
+
+	initSound();
 
 	loadImage("data/Title.png", &sprites[0x00]);
 

@@ -39,7 +39,7 @@ void npcAct145(npc *NPC) //King's blade
 		NPC->rect = rcLeft;
 }
 
-void npcAct146(npc *NPC)
+void npcAct146(npc *NPC) //Lightning
 {
 	switch (NPC->act_no)
 	{
@@ -53,7 +53,7 @@ void npcAct146(npc *NPC)
 		if (++NPC->act_wait > 10)
 		{
 			NPC->act_no = 2;
-			//PlaySoundObject(101, 1);
+			playSound(101);
 		}
 		break;
 

@@ -71,16 +71,16 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);$(SolutionDir)SDL2_image-2.0.3\include;$(SolutionDir)SDL2-2.0.8\include</IncludePath>
+    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);$(SolutionDir)SDL2_image-2.0.3\include;$(SolutionDir)SDL2-2.0.8\include;$(SolutionDir)SDL2_mixer-2.0.2\include</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);$(SolutionDir)SDL2_image-2.0.3\include;$(SolutionDir)SDL2-2.0.8\include</IncludePath>
+    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);$(SolutionDir)SDL2_image-2.0.3\include;$(SolutionDir)SDL2-2.0.8\include;$(SolutionDir)SDL2_mixer-2.0.2\include</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);$(SolutionDir)SDL2_image-2.0.3\include;$(SolutionDir)SDL2-2.0.8\include</IncludePath>
+    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);$(SolutionDir)SDL2_image-2.0.3\include;$(SolutionDir)SDL2-2.0.8\include;$(SolutionDir)SDL2_mixer-2.0.2\include</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);$(SolutionDir)SDL2_image-2.0.3\include;$(SolutionDir)SDL2-2.0.8\include</IncludePath>
+    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);$(SolutionDir)SDL2_image-2.0.3\include;$(SolutionDir)SDL2-2.0.8\include;$(SolutionDir)SDL2_mixer-2.0.2\include</IncludePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -95,7 +95,7 @@
       </AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;$(SolutionDir)SDL2-2.0.8\lib\SDL2.lib;$(SolutionDir)SDL2-2.0.8\lib\SDL2main.lib;$(SolutionDir)SDL2_image-2.0.3\lib\SDL2_image.lib;%(AdditionalDependencies);</AdditionalDependencies>
+      <AdditionalDependencies>kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;$(SolutionDir)SDL2-2.0.8\lib\SDL2.lib;$(SolutionDir)SDL2-2.0.8\lib\SDL2main.lib;$(SolutionDir)SDL2_image-2.0.3\lib\SDL2_image.lib;$(SolutionDir)SDL2_mixer-2.0.2\lib\SDL2_mixer.lib;%(AdditionalDependencies);</AdditionalDependencies>
       <SubSystem>Windows</SubSystem>
     </Link>
   </ItemDefinitionGroup>
@@ -110,7 +110,7 @@
       <UndefinePreprocessorDefinitions>_DEBUG</UndefinePreprocessorDefinitions>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;$(SolutionDir)SDL2-2.0.8\lib\SDL2.lib;$(SolutionDir)SDL2-2.0.8\lib\SDL2main.lib;$(SolutionDir)SDL2_image-2.0.3\lib\SDL2_image.lib;%(AdditionalDependencies);</AdditionalDependencies>
+      <AdditionalDependencies>kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;$(SolutionDir)SDL2-2.0.8\lib\SDL2.lib;$(SolutionDir)SDL2-2.0.8\lib\SDL2main.lib;$(SolutionDir)SDL2_image-2.0.3\lib\SDL2_image.lib;$(SolutionDir)SDL2_mixer-2.0.2\lib\SDL2_mixer.lib;%(AdditionalDependencies);</AdditionalDependencies>
       <SubSystem>Windows</SubSystem>
     </Link>
   </ItemDefinitionGroup>
@@ -131,7 +131,7 @@
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalDependencies>kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;$(SolutionDir)SDL2-2.0.8\lib\SDL2.lib;$(SolutionDir)SDL2-2.0.8\lib\SDL2main.lib;$(SolutionDir)SDL2_image-2.0.3\lib\SDL2_image.lib;%(AdditionalDependencies);</AdditionalDependencies>
+      <AdditionalDependencies>kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;$(SolutionDir)SDL2-2.0.8\lib\SDL2.lib;$(SolutionDir)SDL2-2.0.8\lib\SDL2main.lib;$(SolutionDir)SDL2_image-2.0.3\lib\SDL2_image.lib;$(SolutionDir)SDL2_mixer-2.0.2\lib\SDL2_mixer.lib;%(AdditionalDependencies);</AdditionalDependencies>
       <SubSystem>Windows</SubSystem>
     </Link>
   </ItemDefinitionGroup>
@@ -150,7 +150,7 @@
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalDependencies>kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;$(SolutionDir)SDL2-2.0.8\lib\SDL2.lib;$(SolutionDir)SDL2-2.0.8\lib\SDL2main.lib;$(SolutionDir)SDL2_image-2.0.3\lib\SDL2_image.lib;%(AdditionalDependencies);</AdditionalDependencies>
+      <AdditionalDependencies>kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;$(SolutionDir)SDL2-2.0.8\lib\SDL2.lib;$(SolutionDir)SDL2-2.0.8\lib\SDL2main.lib;$(SolutionDir)SDL2_image-2.0.3\lib\SDL2_image.lib;$(SolutionDir)SDL2_mixer-2.0.2\lib\SDL2_mixer.lib;%(AdditionalDependencies);</AdditionalDependencies>
       <SubSystem>Windows</SubSystem>
     </Link>
   </ItemDefinitionGroup>

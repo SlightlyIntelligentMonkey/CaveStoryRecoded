@@ -2,6 +2,7 @@
 //This includes everything that everything needs.
 #include <SDL.h>
 #include <SDL_image.h>
+#include <SDL_mixer.h>
 
 #define LONG int32_t
 #define BYTE uint8_t

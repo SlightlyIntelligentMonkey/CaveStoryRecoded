@@ -4,7 +4,7 @@ void putLittleStar(RECT *rcHit, player *me)
 {
 	if (!(me->cond & player_removed) && me->ym < -0x200)
 	{
-		//PlaySoundObject(3, 1);
+		playSound(3);
 		createCaret(me->x, me->y - rcHit->top, 13, 0);
 		createCaret(me->x, me->y - rcHit->top, 13, 0);
 	}
@@ -69,8 +69,8 @@ int playerJudgeBlock(RECT *rcHit, player *me, int tx, int ty)
 	{
 		me->y = ((2 * ty - 1) << 12) - rcHit->bottom;
 
-		//if (me->ym > 1024)
-			//PlaySoundObject(23, 1);
+		if (me->ym > 0x400)
+			playSound(23);
 
 		if (me->ym > 0)
 			me->ym = 0;
@@ -180,6 +180,9 @@ int playerJudgeTriangleE(RECT *rcHit, player *me, int tx, int ty)
 	{
 		me->y = (ty << 13) + (-0x2000 * tx + me->x) / 2 - 0x800 - rcHit->bottom;
 
+		if (me->ym > 0x400)
+			playSound(23);
+
 		if (me->ym > 0)
 			me->ym = 0;
 		
@@ -197,6 +200,9 @@ int playerJudgeTriangleF(RECT *rcHit, player *me, int tx, int ty)
 		&& me->y - rcHit->top < (2 * ty + 1) << 12)
 	{
 		me->y = (ty << 13) + (-0x2000 * tx + me->x) / 2 + 0x800 - rcHit->bottom;
+
+		if (me->ym > 0x400)
+			playSound(23);
 
 		if (me->ym > 0)
 			me->ym = 0;
@@ -216,6 +222,9 @@ int playerJudgeTriangleG(RECT *rcHit, player *me, int tx, int ty)
 	{
 		me->y = (ty << 13) - (-0x2000 * tx + me->x) / 2 + 0x800 - rcHit->bottom;
 
+		if (me->ym > 0x400)
+			playSound(23);
+
 		if (me->ym > 0)
 			me->ym = 0;
 
@@ -233,6 +242,9 @@ int playerJudgeTriangleH(RECT *rcHit, player *me, int tx, int ty)
 		&& me->y - rcHit->top < (2 * ty + 1) << 12)
 	{
 		me->y = (ty << 13) - (-0x2000 * tx + me->x) / 2 - 0x800 - rcHit->bottom;
+
+		if (me->ym > 0x400)
+			playSound(23);
 
 		if (me->ym > 0)
 			me->ym = 0;
@@ -640,8 +652,8 @@ int playerHitNpcHardSolid(RECT *rcHit, player *me, npc *NPC)
 
 		if (me->y + rcHit->bottom > NPC->y - NPC->hit.top && me->y + rcHit->bottom < NPC->y + 0x600)
 		{
-			//if (gMC.ysp - npc->ysp > 1024)
-			//	PlaySoundObject(23, 1);
+			if (me->ym - NPC->ym > 1024)
+				playSound(23);
 
 			if (gamePhysics == 1)
 			{
@@ -700,7 +712,7 @@ void playerHitNpcs(RECT *rcHit)
 
 	if ((me->cond & player_visible) && !(me->cond & player_removed))
 	{
-		for (uint32_t i = 0; i < npcs.size(); ++i)
+		for (size_t i = 0; i < npcs.size(); ++i)
 		{
 			if ((npcs[i].cond & npccond_alive))
 			{

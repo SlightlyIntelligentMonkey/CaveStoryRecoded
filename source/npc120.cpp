@@ -1,6 +1,6 @@
 #include "npc120.h"
 
-void npcAct139(npc *NPC)
+void npcAct139(npc *NPC) //Doctor with the crown
 {
 	RECT rcLeft[3];
 	RECT rcRight[3];

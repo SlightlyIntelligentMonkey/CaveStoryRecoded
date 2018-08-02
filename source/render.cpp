@@ -4,6 +4,8 @@ SDL_Rect drawRectangle = { 0 };
 
 int screenWidth = 0;
 int screenHeight = 0;
+int prevWidth = 0;
+int prevHeight = 0;
 
 int screenScale = 0;
 
@@ -39,6 +41,27 @@ int createWindow(int width, int height, int scale, bool fullscreen) {
 void switchScreenMode()
 {
 	windowFlags ^= SDL_WINDOW_FULLSCREEN_DESKTOP;
+
+	if (windowFlags & SDL_WINDOW_FULLSCREEN_DESKTOP)
+	{
+		SDL_DisplayMode dm;
+
+		if (SDL_GetDesktopDisplayMode(0, &dm) != 0)
+			doError();
+
+		prevWidth = screenWidth;
+		prevHeight = screenHeight;
+		screenWidth = (dm.w / dm.h) * 240;
+		screenHeight = 240;
+	}
+	else
+	{
+		screenWidth = prevWidth;
+		screenHeight = prevHeight;
+	}
+
+	SDL_SetWindowSize(window, screenWidth * screenScale, screenHeight * screenScale);
+	SDL_RenderSetLogicalSize(renderer, screenWidth, screenHeight);
 	SDL_SetWindowFullscreen(window, windowFlags);
 	return;
 }

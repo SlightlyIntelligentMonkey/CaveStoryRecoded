@@ -84,7 +84,7 @@ void player::damage(int damage) {
 
 		if (life <= 0)
 		{
-			//PlaySoundObject(17, 1);
+			playSound(17);
 			cond = 0;
 
 			createSmoke(x, y, 5120, 64);
@@ -292,7 +292,7 @@ void player::actNormal(bool bKey) {
 				&& !(flag & windUp))
 			{
 				ym = -jump;
-				//PlaySoundObject(15, 1);
+				playSound(15);
 			}
 		}
 
@@ -335,7 +335,8 @@ void player::actNormal(bool bKey) {
 						createCaret(x + 0x400, y + 0x400, 7, 2);
 					if (direct == 2)
 						createCaret(x - 0x400, y + 0x400, 7, 0);
-					//PlaySoundObject(113, 1);
+
+					playSound(113);
 				}
 			}
 			else if (boost_sw == 2)
@@ -346,13 +347,13 @@ void player::actNormal(bool bKey) {
 				if (isKeyPressed(keyJump) || boost_cnt % 3 == 1)
 				{
 					createCaret(x, y + 0xC00, 7, 3);
-					//PlaySoundObject(113, 1);
+					playSound(113);
 				}
 			}
 			else if (boost_sw == 3 && (isKeyPressed(keyJump) || boost_cnt % 3 == 1))
 			{
 				createCaret(x, y - 0xC00, 7, 1);
-				//PlaySoundObject(113, 1);
+				playSound(113);
 			}
 		}
 		else if (flag & windUp) //Gravity when in wind
@@ -366,7 +367,7 @@ void player::actNormal(bool bKey) {
 			if (!(boost_cnt % 3))
 			{
 				createCaret(x, hit.bottom / 2 + y, 7, 3);
-				//PlaySoundObject(113, 1);
+				playSound(113);
 			}
 
 			if (flag & ceiling) //Bounce of ceilings
@@ -442,7 +443,7 @@ void player::actNormal(bool bKey) {
 						createNpc(73, x + (random(-8, 8) << 9), y, xm + random(-512, 512), random(-0x200, 0x80), dir, nullptr);
 					}
 
-					//PlaySoundObject(56, 1);
+					playSound(56);
 				}
 			}
 			else
@@ -452,7 +453,7 @@ void player::actNormal(bool bKey) {
 					createNpc(73, x + (random(-8, 8) << 9), y, xm + random(-512, 512), random(-0x200, 0x80) - ym / 2, dir, nullptr);
 				}
 
-				//PlaySoundObject(56, 1);
+				playSound(56);
 			}
 
 			sprash = 1;
@@ -685,8 +686,8 @@ void player::animate(bool bKey)
 					ani_wait = 0;
 					++ani_no;
 
-					//if (ani_no == 7 || ani_no == 9)
-					//	PlaySoundObject(24, 1);
+					if (ani_no == 7 || ani_no == 9)
+						playSound(24);
 				}
 
 				if (ani_no > 9 || ani_no <= 5)
@@ -701,8 +702,8 @@ void player::animate(bool bKey)
 					ani_wait = 0;
 					++ani_no;
 
-					//if (ani_no == 2 || ani_no == 4)
-					//	PlaySoundObject(24, 1);
+					if (ani_no == 2 || ani_no == 4)
+						playSound(24);
 				}
 
 				if (ani_no > 4 || ani_no <= 0)
@@ -710,16 +711,16 @@ void player::animate(bool bKey)
 			}
 			else if (bKey && isKeyDown(keyUp)) //Look up
 			{
-				//if (cond & 4)
-				//	PlaySoundObject(24, 1);
+				if (cond & player_walk)
+					playSound(24);
 
 				cond &= ~player_walk;
 				ani_no = 5;
 			}
 			else //Idle
 			{
-				//if (cond & 4)
-				//	PlaySoundObject(24, 1);
+				if (cond & player_walk)
+					playSound(24);
 
 				cond &= ~player_walk;
 				ani_no = 0;

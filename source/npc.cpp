@@ -19,44 +19,65 @@ void createSmoke(int x, int y, int w, int num)
 
 void createNpc(int setCode, int setX, int setY, int setXm, int setYm, int setDir, npc *parentNpc)
 {
-	npc newNPC;
-	newNPC.init(setCode, setX, setY, setXm, setYm, setDir, parentNpc);
+	npc *repNpc = nullptr;
 
-	npcs.push_back(newNPC);
+	if (npcs.size())
+	{
+		for (size_t i = 0; i < npcs.size(); ++i)
+		{
+			if (!(npcs[i].cond & npccond_alive))
+			{
+				repNpc = &npcs[i];
+				break;
+			}
+		}
+	}
+
+	if (repNpc != nullptr)
+		repNpc->init(setCode, setX, setY, setXm, setYm, setDir, parentNpc);
+	else
+	{
+		npc newNpc;
+		newNpc.init(setCode, setX, setY, setXm, setYm, setDir, parentNpc);
+		npcs.push_back(newNpc);
+	}
 }
 
 void changeNpc(int code_event, int code_char, int dir)
 {
 	for (size_t i = 0; i < npcs.size(); ++i)
 	{
-		if (npcs[i].code_event == code_event)
+		if (npcs[i].cond & npccond_alive)
 		{
-			int code_flag = npcs[i].code_flag;
-			int bits = npcs[i].bits;
-
-			bits &= 0x7F00; //Only bits that seem to determine interactability and other stuff
-
-			npcs[i].init(code_char, npcs[i].x, npcs[i].y, 0, 0, npcs[i].direct, npcs[i].pNpc);
-			npcs[i].bits |= bits;
-			npcs[i].code_flag = code_flag;
-			npcs[i].code_event = code_event;
-
-			if (dir != 5)
+			if (npcs[i].code_event == code_event)
 			{
-				if (dir == 4)
-				{
-					if (npcs[i].x >= currentPlayer.x)
-						npcs[i].direct = 0;
-					else
-						npcs[i].direct = 2;
-				}
-				else
-				{
-					npcs[i].direct = dir;
-				}
-			}
+				int code_flag = npcs[i].code_flag;
+				int bits = npcs[i].bits;
 
-			npcActs[code_char](&npcs[i]);
+				bits &= 0x7F00; //Only bits that seem to determine interactability and other stuff
+
+				npcs[i].init(code_char, npcs[i].x, npcs[i].y, 0, 0, npcs[i].direct, npcs[i].pNpc);
+				npcs[i].bits |= bits;
+				npcs[i].code_flag = code_flag;
+				npcs[i].code_event = code_event;
+
+				if (dir != 5)
+				{
+					if (dir == 4)
+					{
+						if (npcs[i].x >= currentPlayer.x)
+							npcs[i].direct = 0;
+						else
+							npcs[i].direct = 2;
+					}
+					else
+					{
+						npcs[i].direct = dir;
+					}
+				}
+
+				npcActs[code_char](&npcs[i]);
+			}
 		}
 	}
 }
@@ -66,17 +87,11 @@ void updateNPC()
 	if (npcs.size())
 	{
 		//Update
-		for (unsigned int i = 0; i < npcs.size(); i++) {
-			npcs[i].update();
-			npcHitMap(i);
-		}
-
-		//Remove dead npcs
 		for (size_t i = 0; i < npcs.size(); i++) {
-			if (!(npcs[i].cond & npccond_alive))
+			if (npcs[i].cond & npccond_alive)
 			{
-				npcs.erase(npcs.begin() + i);
-				i--;
+				npcs[i].update();
+				npcHitMap(i);
 			}
 		}
 	}
@@ -86,8 +101,10 @@ void drawNPC()
 {
 	if (npcs.size())
 	{
-		for (size_t i = 0; i < npcs.size(); i++)
-			npcs[i].draw();
+		for (size_t i = 0; i < npcs.size(); i++) {
+			if (npcs[i].cond & npccond_alive)
+				npcs[i].draw();
+		}
 	}
 }
 
