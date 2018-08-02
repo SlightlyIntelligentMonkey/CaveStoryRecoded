@@ -654,7 +654,7 @@ void npcAct009(npc *NPC) //Balrog drop in
 		//Go through ceiling for the first 40 frames of existing, then become solid
 		if (NPC->count1 >= 40)
 		{
-			NPC->bits &= npc_ignoresolid;
+			NPC->bits &= ~npc_ignoresolid;
 			NPC->bits |= npc_solidsoft;
 		}
 		else
@@ -705,6 +705,40 @@ void npcAct009(npc *NPC) //Balrog drop in
 		NPC->rect = rcRight[NPC->ani_no];
 	else
 		NPC->rect = rcLeft[NPC->ani_no];
+}
+
+void npcAct011(npc *NPC) //Bubble
+{
+	RECT rect[3];
+
+	rect[0] = { 208, 104, 224, 120 };
+	rect[1] = { 224, 104, 240, 120 };
+	rect[2] = { 240, 104, 256, 120 };
+
+	if (NPC->flag & 0xFF)
+	{
+		NPC->cond = 0;
+		createCaret(NPC->x, NPC->y, 2, 0);
+	}
+
+	NPC->x += NPC->xm;
+	NPC->y += NPC->ym;
+	
+	if (++NPC->ani_wait > 1)
+	{
+		NPC->ani_wait = 0;
+
+		if (++NPC->ani_no > 2)
+			NPC->ani_no = 0;
+	}
+	
+	NPC->rect = rect[NPC->ani_no];
+
+	if (++NPC->count1 > 150)
+	{
+		createCaret(NPC->x, NPC->y, 2, 0);
+		NPC->cond = 0;
+	}
 }
 
 void npcAct015(npc *NPC) //Closed chest

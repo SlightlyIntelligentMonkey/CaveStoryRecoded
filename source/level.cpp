@@ -41,6 +41,9 @@ void loadStageTable()
 			tblStream->read(tblStream, stageTable[i].npc2, 0x20, 1);
 			tblStream->read(tblStream, &stageTable[i].boss, 1, 1);
 			tblStream->read(tblStream, stageTable[i].name, 0x23, 1);
+
+			if (!strcmp((const char *)stageTable[i].name, "u"))
+				strcpy(stageTable[i].name, "Studio Pixel presents");
 		}
 	}
 	else
@@ -79,6 +82,9 @@ void loadLevel(int levelIndex) {
 	currentLevel = levelIndex;
 
 	backgroundScroll = stageTable[levelIndex].backgroundScroll;
+
+	//NOTE: map name shit is cleared when a new level is loaded
+	mapNameDisplayTimer = 0xFF;
 
 	//Load pxm
 	char pxmPath[256];

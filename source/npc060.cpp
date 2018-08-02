@@ -580,6 +580,97 @@ void npcAct065(npc *NPC) //First Cave Bat
 		NPC->rect = { 32 + (NPC->ani_no << 4), 32, 48 + (NPC->ani_no << 4), 48 };
 }
 
+void npcAct066(npc *NPC) //Bubble (to catch Toroko in the shack)
+{
+	uint8_t deg;
+	RECT rect[4];
+
+	rect[0] = { 32, 192, 56, 216 };
+	rect[1] = { 56, 192, 80, 216 };
+	rect[2] = { 32, 216, 56, 240 };
+	rect[3] = { 56, 216, 80, 240 };
+	
+	switch (NPC->act_no)
+	{
+	case 0:
+		//Shoot towards Toroko
+		for (size_t i = 0; i < npcs.size(); i++)
+		{
+			if (npcs[i].code_event == 1000)
+			{
+				NPC->tgt_x = npcs[i].x;
+				NPC->tgt_y = npcs[i].y;
+				NPC->tgt_npc = &npcs[i];
+				deg = getAtan(NPC->x - NPC->tgt_x, NPC->y - NPC->tgt_y);
+				NPC->xm = 2 * getCos(deg);
+				NPC->ym = 2 * getSin(deg);
+				NPC->act_no = 1;
+				break;
+			}
+		}
+
+	case 1:
+		//Animate
+		if (++NPC->ani_wait > 1)
+		{
+			NPC->ani_wait = 0;
+			++NPC->ani_no;
+		}
+
+		if (NPC->ani_no > 1)
+			NPC->ani_no = 0;
+
+		//Check if hit Toroko
+		if (NPC->x - 0x600 < NPC->tgt_x
+			&& NPC->x + 0x600 > NPC->tgt_x
+			&& NPC->y - 0x600 < NPC->tgt_y
+			&& NPC->y + 0x600 > NPC->tgt_y)
+		{
+			NPC->act_no = 2;
+			NPC->ani_no = 2;
+
+			if (NPC->tgt_npc)
+				NPC->tgt_npc->cond = 0;
+
+			//PlaySoundObject(21, 1);
+		}
+
+		break;
+
+	case 2:
+		//Move a bit towards the top left
+		NPC->xm -= 0x20;
+		NPC->ym -= 0x20;
+
+		if (NPC->xm < -0x5FF)
+			NPC->xm = -0x5FF;
+		if (NPC->ym < -0x5FF)
+			NPC->ym = -0x5FF;
+
+		if (NPC->y < -4096)
+			NPC->cond = 0;
+
+		if (++NPC->ani_wait > 3)
+		{
+			NPC->ani_wait = 0;
+			++NPC->ani_no;
+		}
+
+		if (NPC->ani_no > 3)
+			NPC->ani_no = 2;
+
+		break;
+
+	default:
+		break;
+	}
+
+	NPC->x += NPC->xm;
+	NPC->y += NPC->ym;
+
+	NPC->rect = rect[NPC->ani_no];
+}
+
 void npcAct073(npc *NPC) //Water drop
 {
 	NPC->ym += 0x20;

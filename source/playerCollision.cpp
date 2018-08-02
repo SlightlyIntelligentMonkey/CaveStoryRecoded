@@ -643,11 +643,11 @@ int playerHitNpcHardSolid(RECT *rcHit, player *me, npc *NPC)
 			//if (gMC.ysp - npc->ysp > 1024)
 			//	PlaySoundObject(23, 1);
 
-			//if (unk_81C8594 == 1)
-			//{
-			//	y = npc->y - npc->collideRect.top - unk_81C85D0 + 512;
-			//	hit |= 8u;
-			//}
+			if (gamePhysics == 1)
+			{
+				me->y = NPC->y - NPC->rect.top - rcHit->bottom + 0x200;
+				hit |= ground;
+			}
 
 			if (NPC->bits & npc_bouncy)
 			{
@@ -745,7 +745,7 @@ void playerHitNpcs(RECT *rcHit)
 				if (!(gameFlags & 4) && hit && npcs[i].bits & npc_eventtouch)
 					runScriptEvent(npcs[i].code_event);
 
-				if (!(npcs[i].bits & npc_interact))
+				if (gameFlags & 2 && !(npcs[i].bits & npc_interact))
 				{
 					if (npcs[i].bits & npc_reartop)
 					{
@@ -758,10 +758,8 @@ void playerHitNpcs(RECT *rcHit)
 						if (hit & ceiling && npcs[i].ym > 0)
 							me->damage(npcs[i].damage);
 					}
-					else if (hit && npcs[i].damage)
-					{
+					else if (hit && npcs[i].damage && !(gameFlags & 4))
 						me->damage(npcs[i].damage);
-					}
 				}
 
 				if (!(gameFlags & 4) && hit && me->cond & player_interact && npcs[i].bits & npc_interact)

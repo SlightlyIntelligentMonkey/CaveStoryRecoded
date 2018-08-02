@@ -5,6 +5,8 @@ extern std::vector<char> scriptEvents;
 extern BYTE tscFlags[1000];
 extern SDL_Texture *font;
 
+extern int mapNameDisplayTimer;
+
 extern int tscMode;
 
 void loadTsc(const char * path);

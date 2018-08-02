@@ -338,6 +338,7 @@ void freeSounds()
 
 void playSound(int sound_no)
 {
+	return; //disabled
 	AUDIO *sound = nullptr;
 	AUDIO *lastSound = (AUDIO*)want.userdata;
 

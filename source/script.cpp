@@ -45,6 +45,8 @@ int yesnoSelect = 0;
 unsigned int faceNo = 0;
 RECT rcView;
 
+int mapNameDisplayTimer = 0;
+
 int textOffset = 0;
 
 char msgText[256];
@@ -166,7 +168,7 @@ void jumpScriptEvent(int event_num)
 	tscPos = getEventPos(event_num);
 	tscMode = PARSE;
 	tscDisplayFlags = 0;
-	return;
+	gameFlags |= 4;
 }
 
 //renders a line of text
@@ -180,6 +182,17 @@ void renderTextLine(int x, int y, char *str)
 		rcChar.x = ((str[c] - 0x20) % 32) * charWidth;
 		rcChar.y = ((str[c] - 0x20) >> 5) * charHeight;
 		dest.x = x + (c * charWidth);
+
+		//Draw shadow
+		SDL_SetTextureColorMod(font, 0, 0, 32);
+		dest.x++;
+		dest.y++;
+		SDL_RenderCopy(renderer, font, &rcChar, &dest);
+
+		//Draw front
+		SDL_SetTextureColorMod(font, 255, 255, 255);
+		dest.x--;
+		dest.y--;
 		SDL_RenderCopy(renderer, font, &rcChar, &dest);
 	}
 	return;
@@ -271,7 +284,6 @@ void drawMessageBox(int x, int y, char* str)
 	return;
 }
 
-int mapNameDisplayTimer = 0;
 void drawTSC()
 {
 	RECT rcGit = { 0, 0, 32, 16 };
@@ -384,12 +396,14 @@ void drawTSC()
 		}
 	}
 
-	if (mapNameDisplayTimer++ < 160)
+	if (mapNameDisplayTimer < 160)
 	{
-		renderTextLine((screenWidth >> 1) - ((strlen(stageTable[currentLevel].name) * charWidth) >> 1),
-			80, stageTable[currentLevel].name);
+		if (mapNameDisplayTimer++ < 160)
+		{
+			renderTextLine((screenWidth >> 1) - ((strlen(stageTable[currentLevel].name) * charWidth) >> 1),
+				80, stageTable[currentLevel].name);
+		}
 	}
-	return;
 }
 
 void tscCheck()
@@ -486,9 +500,7 @@ int updateTsc() {
 			{
 				playSound(18);
 				if (yesnoSelect == 1)
-				{
-					runScriptEvent(ascii2num(&tsc[tscPos], 4));
-				}
+					jumpScriptEvent(ascii2num(&tsc[tscPos], 4));
 				else
 				{
 					tscMode = tscPrevMode;
@@ -514,10 +526,9 @@ int updateTsc() {
 		tscCheck();
 		return 1;
 	case WAS:
-		if (currentPlayer.flag & 8)
-		{
+		if (currentPlayer.flag & ground)
 			tscMode = PARSE;
-		}
+
 		tscCheck();
 		return 1;
 	}
@@ -559,7 +570,7 @@ int updateTsc() {
 			//{
 			//	if (weapons[w].id == ascii2num(&tsc[tscPos + 4], 4))
 			//	{
-			//		runScriptEvent(ascii2num(&tsc[tscPos + 9], 4));
+			//		jumpScriptEvent(ascii2num(&tsc[tscPos + 9], 4));
 			//	}
 			//}
 			tscCleanup(2);
@@ -662,7 +673,7 @@ int updateTsc() {
 			{
 				if (npcs[n].code_char == ascii2num(&tsc[tscPos + 4], 4))
 				{
-					runScriptEvent(ascii2num(&tsc[tscPos + 9], 4));
+					jumpScriptEvent(ascii2num(&tsc[tscPos + 9], 4));
 					break;
 				}
 			}
@@ -690,7 +701,7 @@ int updateTsc() {
 		case('<EVE'):
 			jumpScriptEvent(ascii2num(&tsc[tscPos + 4], 4));
 			memset(msgText, 0, sizeof(msgText));
-			gameFlags |= 3;
+			//gameFlags |= 3;
 			tscUpdateFlags = 0;
 			faceNo = 0;
 			gitNo = 0;
@@ -722,11 +733,10 @@ int updateTsc() {
 			tscCleanup(0);
 			break;
 		case('<FLJ'):
-			if (getFlag(ascii2num(&tsc[tscPos + 4], 4))) { runScriptEvent(ascii2num(&tsc[tscPos + 9], 4)); }
+			if (getFlag(ascii2num(&tsc[tscPos + 4], 4)))
+				jumpScriptEvent(ascii2num(&tsc[tscPos + 9], 4));
 			else
-			{
 				tscCleanup(2);
-			}
 			break;
 		case('<FMU'):
 			tscCleanup(0);
@@ -903,7 +913,7 @@ int updateTsc() {
 		case('<SKJ'):
 			if (getSkipFlag(ascii2num(&tsc[tscPos + 4], 4)) == true)
 			{
-				runScriptEvent(ascii2num(&tsc[tscPos + 9], 4));
+				jumpScriptEvent(ascii2num(&tsc[tscPos + 9], 4));
 			}
 			else { tscCleanup(2); }
 			break;
@@ -954,8 +964,8 @@ int updateTsc() {
 			loadLevel(ascii2num(&tsc[tscPos + 4], 4));
 			viewX = currentPlayer.x - (screenWidth << 8);
 			viewY = currentPlayer.y - (screenHeight << 8);
-			runScriptEvent(num);
 			currentPlayer.cond &= ~player_interact;
+			jumpScriptEvent(num);
 			return 1;
 		case('<TUR'):
 			tscCleanup(0);

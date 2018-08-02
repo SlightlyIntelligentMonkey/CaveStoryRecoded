@@ -127,20 +127,14 @@ int gameUpdatePlay()
 		SDL_SetRenderDrawColor(renderer, 0, 0, 32, 255);
 		SDL_RenderClear(renderer);
 
-		//Draw background (and background tiles)
 		drawLevel(false);
-
-		//Draw stuff
 		drawNPC();
 		currentPlayer.draw();
-
-		//Draw foreground tiles
 		drawLevel(true);
-
-		//Draw carets
 		drawCarets();
 
-		drawHud(false);
+		if (gameFlags & 2)
+			drawHud(false);
 
 		if (swPlay & 1)
 		{
