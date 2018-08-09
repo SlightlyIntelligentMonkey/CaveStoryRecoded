@@ -2,7 +2,6 @@
 //This includes everything that everything needs.
 #include <SDL.h>
 #include <SDL_image.h>
-#include <SDL_mixer.h>
 
 #define LONG int32_t
 #define BYTE uint8_t
@@ -90,6 +89,18 @@ enum equipItems {
 	equip_nikumaruCounter = 0x100,
 };
 
+//Struct
+struct VIEW {
+	int x;
+	int y;
+	int *lookX;
+	int *lookY;
+	int speed;
+
+	int quake;
+	int quake2;
+};
+
 //Macro
 #define TILE2COORD(x) x << 13
 
@@ -100,12 +111,7 @@ extern SDL_Renderer *renderer;
 extern SDL_Rect DrawRect;
 extern SDL_Rect ImageRect;
 
-extern int viewX;
-extern int viewY;
-extern int *viewGoalX;
-extern int *viewGoalY;
-
-extern int viewSpeed;
+extern VIEW viewport;
 
 extern SDL_Texture* sprites[40];
 

@@ -6,6 +6,38 @@
 int gameMode = 0;
 int prevGameMode = 0;
 
+void handleView()
+{
+	//Move view
+	viewport.x += ((*viewport.lookX - (screenWidth << 8)) - viewport.x) / viewport.speed;
+	viewport.y += ((*viewport.lookY - (screenHeight << 8)) - viewport.y) / viewport.speed;
+
+	//Keep view in level
+	if ((levelWidth - 1) << 4 > screenWidth)
+		viewport.x = clamp(viewport.x, 0, ((levelWidth - 1) << 13) - (screenWidth << 9));
+	else
+		viewport.x = ((levelWidth - 1) << 12) - (screenWidth << 8);
+
+	if ((levelHeight - 1) << 4 > screenHeight)
+		viewport.y = clamp(viewport.y, 0, ((levelHeight - 1) << 13) - (screenHeight << 9));
+	else
+		viewport.y = ((levelHeight - 1) << 12) - (screenHeight << 8);
+
+	//Quake
+	if (viewport.quake2)
+	{
+		viewport.x += (random(-5, 5) << 9);
+		viewport.y += (random(-3, 3) << 9);
+		--viewport.quake2;
+	}
+	else if (viewport.quake)
+	{
+		viewport.x += (random(-1, 1) << 9);
+		viewport.y += (random(-1, 1) << 9);
+		--viewport.quake;
+	}
+}
+
 void debugLevels()
 {
 	if (isKeyPressed(SDL_SCANCODE_1)) {
@@ -87,15 +119,18 @@ int gameUpdatePlay()
 
 		//Handle events
 		getKeys(&events);
-		if (events.type == SDL_QUIT || exitGame) { return QUIT; }
 
-		if (isKeyDown(SDL_SCANCODE_ESCAPE)) { prevGameMode = PLAY; return ESCAPE; }
+		if (events.type == SDL_QUIT || exitGame)
+			return QUIT;
 
-		if (isKeyDown(SDL_SCANCODE_LALT) && isKeyPressed(SDL_SCANCODE_RETURN) ||
-			isKeyPressed(SDL_SCANCODE_LALT) && isKeyDown(SDL_SCANCODE_RETURN))
+		if (isKeyDown(SDL_SCANCODE_ESCAPE))
 		{
-			switchScreenMode();
+			prevGameMode = PLAY;
+			return ESCAPE;
 		}
+
+		if (isKeyDown(SDL_SCANCODE_LALT) && isKeyPressed(SDL_SCANCODE_RETURN) || isKeyPressed(SDL_SCANCODE_LALT) && isKeyDown(SDL_SCANCODE_RETURN))
+			switchScreenMode();
 
 		debugLevels();
 
@@ -103,25 +138,16 @@ int gameUpdatePlay()
 		if (gameFlags & 1)
 		{
 			updateNPC();
-			if (gameFlags & 2) { currentPlayer.update(true); }
-			else { currentPlayer.update(false); }
+
+			if (gameFlags & 2)
+				currentPlayer.update(true);
+			else
+				currentPlayer.update(false);
+
 			updateCarets();
+
+			handleView();
 		}
-
-		//Move view
-		viewX += ((*viewGoalX - (screenWidth << 8)) - viewX) / viewSpeed;
-		viewY += ((*viewGoalY - (screenHeight << 8)) - viewY) / viewSpeed;
-
-		//Keep view in level
-		if ((levelWidth - 1) << 4 > screenWidth)
-			viewX = clamp(viewX, 0, ((levelWidth - 1) << 13) - (screenWidth << 9));
-		else
-			viewX = ((levelWidth - 1) << 12) - (screenWidth << 8);
-
-		if ((levelHeight - 1) << 4 > screenHeight)
-			viewY = clamp(viewY, 0, ((levelHeight - 1) << 13) - (screenHeight << 9));
-		else
-			viewY = ((levelHeight - 1) << 12) - (screenHeight << 8);
 
 		// -- DRAW -- //
 		SDL_SetRenderDrawColor(renderer, 0, 0, 32, 255);
@@ -139,9 +165,13 @@ int gameUpdatePlay()
 		if (swPlay & 1)
 		{
 			tscResult = updateTsc();
-			if (!tscResult) { return QUIT; }
-			if (tscResult == 2) { return MENU; }
+
+			if (!tscResult)
+				return QUIT;
+			if (tscResult == 2)
+				return MENU;
 		}
+
 		drawTSC();
 
 		SDL_RenderPresent(renderer);
@@ -150,13 +180,21 @@ int gameUpdatePlay()
 	return QUIT;
 }
 
-int select;
-int anime;
-RECT rcTitle = { 0, 0, 144, 32 };
-RECT rcNew = { 144, 0, 176, 16 };
-RECT rcLoad = { 144, 16, 176, 32 };
 int gameUpdateMenu()
 {
+	int select = 0;
+	int anime = 0;
+
+	int version[4] = { 1, 0, 0, 6 };
+
+	RECT rcVersion = { 152, 80, 208, 88 };
+	RECT rcPeriod = { 152, 88, 208, 96 };
+
+	RECT rcTitle = { 0, 0, 144, 32 };
+	RECT rcNew = { 144, 0, 176, 16 };
+	RECT rcLoad = { 144, 16, 176, 32 };
+	RECT rcPixel = { 0, 0, 160, 16 };
+
 	uint32_t frame = 0;
 	BYTE frameOrder[] = { 0, 1, 0, 2 };
 
@@ -182,19 +220,23 @@ int gameUpdateMenu()
 
 		//Handle events
 		getKeys(&events);
-		if (events.type == SDL_QUIT || exitGame) { return QUIT; }
 
-		if (isKeyDown(SDL_SCANCODE_ESCAPE)) { prevGameMode = MENU; return ESCAPE; }
+		if (events.type == SDL_QUIT || exitGame)
+			return QUIT;
 
-		if (isKeyDown(SDL_SCANCODE_LALT) && isKeyPressed(SDL_SCANCODE_RETURN) ||
-			isKeyPressed(SDL_SCANCODE_LALT) && isKeyDown(SDL_SCANCODE_RETURN))
+		if (isKeyDown(SDL_SCANCODE_ESCAPE))
 		{
-			switchScreenMode();
+			prevGameMode = MENU;
+			return ESCAPE;
 		}
+
+		if (isKeyDown(SDL_SCANCODE_LALT) && isKeyPressed(SDL_SCANCODE_RETURN) || isKeyPressed(SDL_SCANCODE_LALT) && isKeyDown(SDL_SCANCODE_RETURN))
+			switchScreenMode();
 
 		if (isKeyPressed(keyJump))
 		{
 			playSound(18);
+
 			if (select == 0 || !fileExists("Profile.dat"))
 			{
 				gameFlags = 3;
@@ -214,23 +256,37 @@ int gameUpdateMenu()
 				break;
 			}
 		}
+
 		if (isKeyPressed(keyUp) || isKeyPressed(keyDown))
 		{
 			playSound(1);
 			select ^= 1;
 		}
 
+		if (++anime >= 40)
+			anime = 0;
+
 		// -- DRAW -- //
 		SDL_SetRenderDrawColor(renderer, 32, 32, 32, 255);
 		SDL_RenderClear(renderer);
 
+		//Draw version
+		drawTexture(sprites[0x1A], &rcVersion, (screenWidth >> 1) - 60, 216);
+		drawTexture(sprites[0x1A], &rcPeriod, (screenWidth >> 1) - 4, 216);
+		drawNumber(version[0], (screenWidth >> 1) - 20, 216, false);
+		drawNumber(version[1], (screenWidth >> 1) - 4, 216, false);
+		drawNumber(version[2], (screenWidth >> 1) + 12, 216, false);
+		drawNumber(version[3], (screenWidth >> 1) + 28, 216, false);
+
+		//Draw title, new, load, and pixel 12.2004 thing
 		drawTexture(sprites[0x00], &rcTitle, (screenWidth >> 1) - 72, 40);
-		drawTexture(sprites[0x00], &rcNew, (screenWidth >> 1) - 16, 128);
-		drawTexture(sprites[0x00], &rcLoad, (screenWidth >> 1) - 16, 148);
-		RECT rcChar = { 0 + (frameOrder[((anime / 10) % 4)] << 4), 16,
-			16 + (frameOrder[((anime / 10) % 4)] << 4), 32 };
-		drawTexture(sprites[0x10], &rcChar, (screenWidth >> 1) - 32, 127 + (20 * select));
-		anime++;
+		drawTexture(sprites[0x00], &rcNew, (screenWidth >> 1) - 24, 128);
+		drawTexture(sprites[0x00], &rcLoad, (screenWidth >> 1) - 24, 148);
+		drawTexture(sprites[0x01], &rcPixel, (screenWidth >> 1) - 80, 192);
+
+		//Draw the character cursor
+		RECT rcChar = { 0 + (frameOrder[((anime / 10) % 4)] << 4), 16, 16 + (frameOrder[((anime / 10) % 4)] << 4), 32 };
+		drawTexture(sprites[0x10], &rcChar, (screenWidth >> 1) - 44, 127 + (20 * select));
 
 		SDL_RenderPresent(renderer);
 	}
@@ -250,8 +306,8 @@ int gameUpdateIntro()
 {
 	uint32_t frame = 0;
 
-	viewX = 0;
-	viewY = 0;
+	viewport.x = 0;
+	viewport.y = 0;
 	loadLevel(72);
 	runScriptEvent(100);
 	while (frame < 500)
@@ -285,19 +341,10 @@ int gameUpdateIntro()
 
 		if (isKeyPressed(keyJump) | isKeyDown(keyShoot)) { break; }
 
-		//Keep view in level
-		if ((levelWidth - 1) << 4 > screenWidth)
-			viewX = clamp(viewX, 0, ((levelWidth - 1) << 13) - (screenWidth << 9));
-		else
-			viewX = ((levelWidth - 1) << 12) - (screenWidth << 8);
-
-		if ((levelHeight - 1) << 4 > screenHeight)
-			viewY = clamp(viewY, 0, ((levelHeight - 1) << 13) - (screenHeight << 9));
-		else
-			viewY = ((levelHeight - 1) << 12) - (screenHeight << 8);
-
 		updateNPC();
 		updateCarets();
+
+		handleView();
 
 		// -- DRAW -- //
 		SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);

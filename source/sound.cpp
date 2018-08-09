@@ -1,4 +1,5 @@
 #include "sound.h"
+#include <SDL.h>
 
 const char *sfxList[] =
 {
@@ -160,59 +161,162 @@ const char *sfxList[] =
 	"9B - Org drum.wav",
 };
 
-Mix_Chunk* sounds[_countof(sfxList)];
-const char *soundPath = "data/Sound/";
-
-void initSound()
+struct SOUND_EFFECT
 {
-	//Initialize SDL_mixer
-	if (Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 4096) != -1)
+	BYTE *buf;
+	Uint32 length;
+	Uint32 pos;
+};
+
+SOUND_EFFECT sounds[_countof(sfxList)];
+
+SDL_AudioStream *audioStream;
+SDL_AudioDeviceID soundDev = 0;
+SDL_AudioSpec soundSpec;
+SDL_AudioSpec want;
+
+//use int pointers for easy use
+void mixAudio(int *dst, int *src, Uint32 len, Uint8 lVolume, Uint8 rVolume)
+{
+	//using 32 float point on native system 
+	for (int i = 0; i <= (len / 4); i++)
 	{
-		Mix_AllocateChannels(_countof(sfxList));
+		//probably shouldn't leave it like this but I'll just leave it like this for now
+		dst[i] = clamp(dst[i] + src[i], -0x7FFFFFFF, 0x7FFFFFFF);
+	}
+	return;
+}
 
-		//Load sounds
-		char path[64];
+void audio_callback(void *userdata, Uint8 *stream, int len)
+{
+	int tempLength = 0;
 
-		for (int s = 0; s < _countof(sounds); s++)
+	memset(stream, 0, len);
+
+	for (int sfx = 0; sfx < _countof(sounds); sfx++)
+	{
+		if (sounds[sfx].pos < sounds[sfx].length)
 		{
-			if (sfxList[s] != NULL)
-			{
-				strcpy(path, soundPath);
-				strcat(path, sfxList[s]);
-
-				sounds[s] = Mix_LoadWAV(path);
-
-				if (sounds[s] == NULL)
-				{
-					char error[0x100];
-					snprintf(error, 0x100, "Couldn't load sound effect %s.", path);
-					doCustomError(error);
-				}
-			}
-			else
-			{
-				sounds[s] = nullptr;
-			}
+			if (sounds[sfx].length - sounds[sfx].pos > len) { tempLength = len; }
+			else { tempLength = sounds[sfx].length - sounds[sfx].pos; }
+			mixAudio((int*)stream, (int*)(sounds[sfx].buf + sounds[sfx].pos),
+				tempLength, 100, 100);
+			sounds[sfx].pos += tempLength;
 		}
 	}
-	else
-		doCustomError(Mix_GetError());
+
+	return;
+}
+
+void ini_audio()
+{
+	want.channels = 2;
+	want.freq = 88200;
+	want.format = AUDIO_S32SYS;
+	want.samples = 4096;
+	want.callback = audio_callback;
+	want.userdata = 0;
+
+	soundDev = SDL_OpenAudioDevice(
+		NULL,
+		0,
+		&want,
+		&soundSpec,
+		NULL);
+
+	if (soundDev == 0) { doError(); }
+	memset(sounds, 0, sizeof(sounds));
+
+	return;
+}
+
+//since sdl doesn't actually get the loaded wav in the specified format,
+//we have to do it ourselves
+void loadSound(char *path, SDL_AudioSpec *spec, BYTE **buf, Uint32 *length)
+{
+	int view = 0;
+	SDL_AudioSpec *lSpec = nullptr;
+	lSpec = SDL_LoadWAV(path, spec, buf, length);
+	BYTE *pBuf = *buf;
+	int *fakeBuf = (int*)malloc(*length * 4);
+	//number of data points to interolate
+	int dist = 4;
+	int *fakeFakeBuf = (int *)malloc(*length * 4 * 2);
+	int *realBuf = (int*)calloc(dist, *length * 4 * 2);
+
+	//converting to 32 signed int format from unsigned 8 bit
+	for (int b = 0; b < *length; b++)
+	{
+		fakeBuf[b] = (0x7FFFFFFF / 0xFF) * (pBuf[b] - ((0xFF / 2) + 1));
+	}
+
+	//channels++
+	for (int i = 0; i < *length; i++)
+	{
+		fakeFakeBuf[i << 1] = fakeBuf[i];
+		fakeFakeBuf[(i << 1) + 1] = fakeBuf[i];
+	}
+
+	//interpolation
+	for (int i = 0; i < *length << 1; i++)
+	{
+		realBuf[i << 2] = fakeFakeBuf[i];
+		realBuf[(i << 2) + 1] = fakeFakeBuf[i];
+		realBuf[(i << 2) + 2] = fakeFakeBuf[i];
+		realBuf[(i << 2) + 3] = fakeFakeBuf[i];
+	}
+
+	free(fakeBuf);
+	free(fakeFakeBuf);
+	SDL_FreeWAV(*buf);
+
+
+	*length *= (4 * dist * 2);
+	*buf = (BYTE*)realBuf;
+	return;
+}
+
+void loadSounds()
+{
+	char path[64] = "data/soundfx/";
+
+	for (int s = 0; s < _countof(sounds); s++)
+	{
+		if (sfxList[s] != NULL)
+		{
+			strcat(path, sfxList[s]);
+			loadSound(path, &soundSpec, &sounds[s].buf, &sounds[s].length);
+			if (sounds[s].buf == NULL) { doError(); }
+			sounds[s].pos = sounds[s].length;
+			strcpy(path, "data/soundfx/");
+		}
+		else
+		{
+			sounds[s].buf = NULL;
+		}
+	}
+
+	SDL_PauseAudioDevice(soundDev, 0);
+	return;
 }
 
 void freeSounds()
 {
 	for (int s = 0; s < _countof(sounds); s++)
 	{
-		if (sounds[s] != nullptr)
-			Mix_FreeChunk(sounds[s]);
+		if (sounds[s].buf != NULL)
+		{
+			free(sounds[s].buf);
+		}
 	}
+	return;
 }
 
 void playSound(int sound_no)
 {
-	if (sounds[sound_no] != nullptr)
-	{
-		Mix_HaltChannel(sound_no); //Cancel sound last playing
-		Mix_PlayChannel(sound_no, sounds[sound_no], 0);
-	}
+	if (sound_no > _countof(sounds)) { return; }
+	if (sounds[sound_no].buf == NULL) { return; }
+	sounds[sound_no].pos = 0;
+
+	return;
 }

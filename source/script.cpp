@@ -1,5 +1,4 @@
 ﻿#include "script.h"
-//#include "fade.h"
 #include "npc.h"
 #include "filesystem.h"
 #include "weapons.h"
@@ -13,6 +12,8 @@ static char *tsc = 0;
 int tscMode = 0;
 int tscPrevMode = 0;
 
+int fadeDirection = 0;
+
 int tscPos = -1;
 unsigned int tscCounter = 0;
 int tscWait = 0;
@@ -20,23 +21,14 @@ int tscDisplayFlags = 0;
 
 int tscUpdateFlags = 0;
 
-enum modes
-{
-	END = 0,
-	PARSE = 1,
-	NOD = 2,
-	MSG = 3,
-	WAI = 4,
-	FADE = 5,
-	YNJ = 6,
-	WAS = 7
-};
-
 enum displayFlags
 {
 	TSCINVIS = 0,
 	TSCVIS = 0b0001,
-	MSGbox = 0b0100
+	MSGbox = 0b0100,
+	FAI = 0b0100,
+	FAO = 0b1000,
+	invisMSG = 0x10
 };
 
 // -- command variables --
@@ -78,6 +70,7 @@ SDL_Rect rcSYmbol = { 64, 48, 8, 8 };
 SDL_Texture *font;
 const int charWidth = 6;
 const int charHeight = 12;
+const int charSeparation = 0;
 //const int 
 
 // Decrypt into tsc buffer
@@ -159,6 +152,7 @@ void runScriptEvent(int event_num) {
 
 	tscPos = getEventPos(event_num);
 	tscMode = PARSE;
+	faceNo = 0;
 	tscDisplayFlags = 0;
 	gameFlags |= 5;
 }
@@ -181,7 +175,7 @@ void renderTextLine(int x, int y, char *str)
 	{
 		rcChar.x = ((str[c] - 0x20) % 32) * charWidth;
 		rcChar.y = ((str[c] - 0x20) >> 5) * charHeight;
-		dest.x = x + (c * charWidth);
+		dest.x = x + (c * (charWidth + charSeparation));
 
 		//Draw shadow
 		SDL_SetTextureColorMod(font, 0, 0, 32);
@@ -200,26 +194,20 @@ void renderTextLine(int x, int y, char *str)
 
 void updateMessageBox()
 {
-	if (tscCounter++ % 4 == 0 || isKeyDown(keyJump) || isKeyDown(keyShoot))
+	if (tscUpdateFlags & 0x30)
 	{
-		//play text scroll noise
-		if (tscUpdateFlags & 0x10)
-		{
-			while (tsc[tscPos] != '<')
-			{
-				strncat(msgText, &tsc[tscPos], 1);
-				tscPos++;
-			}
-		}
-		else
+		while (tsc[tscPos] != '<')
 		{
 			strncat(msgText, &tsc[tscPos], 1);
 			tscPos++;
-			playSound(2);
 		}
 	}
-
-	return;
+	else if (tscCounter++ % 4 == 0 || isKeyDown(keyJump) || isKeyDown(keyShoot))
+	{
+		strncat(msgText, &tsc[tscPos], 1);
+		tscPos++;
+		playSound(2);
+	}
 }
 
 int scrollOffset = 0;
@@ -232,14 +220,17 @@ void drawMessageBox(int x, int y, char* str)
 	int charX = 0;
 	char buf[256] = { 0 };
 
-	drawTexture(sprites[TEX_TEXTBOX], &rcFrame1, x, y);
-	drawTexture(sprites[TEX_TEXTBOX], &rcFrame2, x, y + 8);
-	drawTexture(sprites[TEX_TEXTBOX], &rcFrame2, x, y + 16);
-	drawTexture(sprites[TEX_TEXTBOX], &rcFrame2, x, y + 24);
-	drawTexture(sprites[TEX_TEXTBOX], &rcFrame2, x, y + 32);
-	drawTexture(sprites[TEX_TEXTBOX], &rcFrame2, x, y + 40);
-	drawTexture(sprites[TEX_TEXTBOX], &rcFrame2, x, y + 48);;
-	drawTexture(sprites[TEX_TEXTBOX], &rcFrame3, x, y + 56);
+	if (!(tscDisplayFlags & invisMSG))
+	{
+		drawTexture(sprites[TEX_TEXTBOX], &rcFrame1, x, y);
+		drawTexture(sprites[TEX_TEXTBOX], &rcFrame2, x, y + 8);
+		drawTexture(sprites[TEX_TEXTBOX], &rcFrame2, x, y + 16);
+		drawTexture(sprites[TEX_TEXTBOX], &rcFrame2, x, y + 24);
+		drawTexture(sprites[TEX_TEXTBOX], &rcFrame2, x, y + 32);
+		drawTexture(sprites[TEX_TEXTBOX], &rcFrame2, x, y + 40);
+		drawTexture(sprites[TEX_TEXTBOX], &rcFrame2, x, y + 48);
+		drawTexture(sprites[TEX_TEXTBOX], &rcFrame3, x, y + 56);
+	}
 
 	SDL_RenderSetClipRect(renderer, &msgClip);
 	for (size_t c = 0; c < strlen(str); c++)
@@ -253,8 +244,9 @@ void drawMessageBox(int x, int y, char* str)
 				lineY++;
 				if (lineY >= 3)
 				{
-					scrollOffset += 2;
+					scrollOffset += 4;
 				}
+
 				if (scrollOffset > ((charHeight * 4) / 3) + 1)
 				{
 					scrollOffset = 0;
@@ -272,8 +264,8 @@ void drawMessageBox(int x, int y, char* str)
 			}
 			rcChar.x = (((str[c] - 0x20) % 32)*charWidth);
 			rcChar.y = (((str[c] - 0x20) >> 5)*charHeight);
-			dest.x = 8 + x + (charX*charWidth) + charWidth + textOffset;
-			dest.y = 8 + y + ((lineY*charHeight * 4) / 3) + 1 - scrollOffset;
+			dest.x = 8 + x + (charX * (charWidth + charSeparation)) + charWidth + textOffset;
+			dest.y = 8 + y + ((lineY * charHeight * 4) / 3) + 1 - scrollOffset;
 
 			SDL_RenderCopy(renderer, font, &rcChar, &dest);
 			charX++;
@@ -310,8 +302,8 @@ void drawTSC()
 			//displaying face
 			if (faceNo)
 			{
-				textOffset = 48;
-				rcClip = { msgBoxX + 8, msgBoxY + 8, 48, 48 };
+				textOffset = 56;
+				rcClip = { msgBoxX + 12, msgBoxY + 11, 48, 45 };
 
 				rcFace.left = 48 * (faceNo % 6);
 				rcFace.top = 48 * (faceNo / 6);
@@ -320,8 +312,8 @@ void drawTSC()
 
 				//Move
 				faceX += 8;
-				if (faceX >= 8)
-					faceX = 8;
+				if (faceX >= 14)
+					faceX = 14;
 
 				SDL_RenderSetClipRect(renderer, &rcClip);
 				drawTexture(sprites[TEX_FACE], &rcFace, msgBoxX + faceX, msgBoxY + 8);
@@ -332,10 +324,11 @@ void drawTSC()
 		}
 
 		//renders cursor during text when text scrolling scrolling is paused
-		if (tscNumber++ % 20 > 12 && tscMode == NOD)
+		if (tscNumber++ % 20 > 12 && tscMode == NOD && !(tscUpdateFlags & 0x30))
 		{
 			int num = 0;
 			int some_num = 0;
+
 			for (size_t i = 0; i < strlen(msgText); i++)
 			{
 				if (msgText[i] == '\n')
@@ -344,10 +337,11 @@ void drawTSC()
 					some_num = i + 1;
 				}
 			}
+
 			SDL_SetRenderDrawColor(renderer, 255, 255, 254, 255);
 			drawRect(
-				msgBoxX + 8 + charWidth + (strlen(msgText)*charWidth) - (some_num*charWidth) + textOffset,
-				msgBoxY + 8 + ((num*charHeight * 4) / 3) + 1,
+				msgBoxX + 8 + charWidth + (strlen(msgText) * (charWidth + charSeparation)) - (some_num * (charWidth + charSeparation)) + textOffset,
+				msgBoxY + 8 + ((num * charHeight * 4) / 3) + 1,
 				charWidth, charHeight);
 		}
 
@@ -404,7 +398,7 @@ void drawTSC()
 	{
 		if (mapNameDisplayTimer++ < 160)
 		{
-			renderTextLine((screenWidth >> 1) - ((strlen(stageTable[currentLevel].name) * charWidth) >> 1),
+			renderTextLine((screenWidth >> 1) - ((strlen(stageTable[currentLevel].name) * (charWidth + charSeparation)) / 2),
 				80, stageTable[currentLevel].name);
 		}
 	}
@@ -457,13 +451,6 @@ int updateTsc() {
 		return 1;
 	case PARSE:
 		++tscCounter;
-		//if (!(gameFlags & 2) && isKeyDown(keyJump) || isKeyDown(keyShoot))
-		//	tscCounter += 4;
-		//if (tscCounter <= 3)
-		//{
-		//	tscCheck;
-		//	return 1;
-		//}
 		tscCounter = 0;
 		bExit = 0;
 		break;
@@ -491,13 +478,7 @@ int updateTsc() {
 		tscCheck();
 		return 1;
 	case FADE:
-		tscMode = 1;
-		//if not in the middle of a <FAI/O, tscMode = 1
-		//if (fadeActive != true)
-		//{
-		//	tscMode = PARSE;
-		//}
-		//tscCheck();
+		tscCheck();
 		return 1;
 	case YNJ:
 		if (tscCounter > 15)
@@ -544,6 +525,7 @@ int updateTsc() {
 		tscCheck();
 		return 1;
 	}
+
 	while (true)
 	{
 		while (tsc[tscPos] == '\n' || tsc[tscPos] == '\r')
@@ -551,8 +533,11 @@ int updateTsc() {
 			strncat(msgText, &tsc[tscPos], 1);
 			tscPos++;
 		}
+
 		if (tsc[tscPos] != '<') { return 1; }
 
+		std::string debstr = &tsc[tscPos];
+		SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Critical Error", debstr.substr(0, 4).c_str(), NULL);
 
 		switch (tsc[tscPos + 3] + (tsc[tscPos + 2] << 8) + (tsc[tscPos + 1] << 16) + (tsc[tscPos] << 24))
 		{
@@ -612,6 +597,7 @@ int updateTsc() {
 			tscCleanup(1);
 			break;
 		case('<CAT'):
+			tscUpdateFlags |= 0x20;
 			tscCleanup(0);
 			break;
 		case('<CIL'):
@@ -692,7 +678,7 @@ int updateTsc() {
 					}
 				}
 			}
-			tscCleanup(2);
+
 			break;
 		case('<END'):
 			memset(msgText, 0, sizeof(msgText));
@@ -716,8 +702,6 @@ int updateTsc() {
 		case('<EVE'):
 			jumpScriptEvent(ascii2num(&tsc[tscPos + 4], 4));
 			memset(msgText, 0, sizeof(msgText));
-			//gameFlags |= 3;
-			tscUpdateFlags = 0;
 			faceNo = 0;
 			gitNo = 0;
 			break;
@@ -727,15 +711,11 @@ int updateTsc() {
 			tscCleanup(1);
 			break;
 		case('<FAI'):
-			tscMode = FADE;
-			//fadeIn(ascii2num(&tsc[tscPos + 4], 4));
 			tscCleanup(1);
-			return 1;
+			break;
 		case('<FAO'):
-			tscMode = FADE;
-			//fadeOut(ascii2num(&tsc[tscPos + 4], 4));
 			tscCleanup(1);
-			return 1;
+			break;
 		case('<FL+'):
 			setFlag(ascii2num(&tsc[tscPos + 4], 4));
 			tscCleanup(1);
@@ -760,9 +740,9 @@ int updateTsc() {
 			tscCleanup(2);
 			break;
 		case('<FOM'):
-			viewGoalX = &currentPlayer.x;
-			viewGoalY = &currentPlayer.y;
-			viewSpeed = ascii2num(&tsc[tscPos + 4], 4);
+			viewport.lookX = &currentPlayer.x;
+			viewport.lookY = &currentPlayer.y;
+			viewport.speed = ascii2num(&tsc[tscPos + 4], 4);
 			tscCleanup(1);
 			break;
 		case('<FON'):
@@ -772,9 +752,9 @@ int updateTsc() {
 				{
 					if (npcs[n].code_event == ascii2num(&tsc[tscPos + 4], 4))
 					{
-						viewGoalX = &npcs[n].x;
-						viewGoalY = &npcs[n].y;
-						viewSpeed = ascii2num(&tsc[tscPos + 9], 4);
+						viewport.lookX = &npcs[n].x;
+						viewport.lookY = &npcs[n].y;
+						viewport.speed = ascii2num(&tsc[tscPos + 9], 4);
 						break;
 					}
 				}
@@ -837,6 +817,7 @@ int updateTsc() {
 			tscCleanup(0);
 			break;
 		case('<MM0'):
+			currentPlayer.xm = 0;
 			tscCleanup(0);
 			break;
 		case('<MNA'):
@@ -860,29 +841,38 @@ int updateTsc() {
 		case('<MS2'):
 			scrollOffset = 0;
 			tscMode = MSG;
-			tscDisplayFlags |= MSGbox;
+			tscDisplayFlags |= (invisMSG | MSGbox);
 			msgBoxX = (screenWidth >> 1) - 122;
-			msgBoxY = 66;
+			msgBoxY = 24;
 			tscCounter = 4;
-			tscUpdateFlags = 0;
+			tscUpdateFlags &= ~0x10;
 			memset(msgText, 0, sizeof(msgText));
 			tscCleanup(0);
-			tscCleanup(0);
-			return 1;
+			break;
 		case('<MS3'):
+			scrollOffset = 0;
+			tscMode = MSG;
+			tscDisplayFlags &= ~invisMSG;
+			tscDisplayFlags |= MSGbox;
+			msgBoxX = (screenWidth >> 1) - 122;
+			msgBoxY = 24;
+			tscCounter = 4;
+			tscUpdateFlags &= ~0x10;
+			memset(msgText, 0, sizeof(msgText));
 			tscCleanup(0);
 			break;
 		case('<MSG'):
 			scrollOffset = 0;
 			tscMode = MSG;
+			tscDisplayFlags &= ~invisMSG;
 			tscDisplayFlags |= MSGbox;
 			msgBoxX = (screenWidth >> 1) - 122;
 			msgBoxY = (screenHeight - 2) - 64;
 			tscCounter = 4;
-			tscUpdateFlags = 0;
+			tscUpdateFlags &= ~0x10;
 			memset(msgText, 0, sizeof(msgText));
 			tscCleanup(0);
-			return 1;
+			break;
 		case('<MYB'):
 			tscCleanup(1);
 			break;
@@ -915,6 +905,7 @@ int updateTsc() {
 			tscCleanup(0);
 			break;
 		case('<SAT'):
+			tscUpdateFlags |= 0x20;
 			tscCleanup(0);
 			break;
 		case('<SIL'):
@@ -930,10 +921,9 @@ int updateTsc() {
 			break;
 		case('<SKJ'):
 			if (getSkipFlag(ascii2num(&tsc[tscPos + 4], 4)) == true)
-			{
 				jumpScriptEvent(ascii2num(&tsc[tscPos + 9], 4));
-			}
-			else { tscCleanup(2); }
+			else
+				tscCleanup(2);
 			break;
 		case('<SLP'):
 			tscCleanup(0);
@@ -981,8 +971,6 @@ int updateTsc() {
 			currentPlayer.setPos(TILE2COORD(ascii2num(&tsc[tscPos + 14], 4)),
 				TILE2COORD(ascii2num(&tsc[tscPos + 19], 4)));
 			loadLevel(ascii2num(&tsc[tscPos + 4], 4));
-			viewX = currentPlayer.x - (screenWidth << 8);
-			viewY = currentPlayer.y - (screenHeight << 8);
 			currentPlayer.cond &= ~player_interact;
 			jumpScriptEvent(num);
 			return 1;

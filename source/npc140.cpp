@@ -41,6 +41,14 @@ void npcAct145(npc *NPC) //King's blade
 
 void npcAct146(npc *NPC) //Lightning
 {
+	RECT rect[5];
+
+	rect[0] = { 0, 0, 0, 0 };
+	rect[1] = { 260, 0, 275, 240 };
+	rect[2] = { 275, 0, 290, 240 };
+	rect[3] = { 290, 0, 305, 240 };
+	rect[4] = { 305, 0, 320, 240 };
+
 	switch (NPC->act_no)
 	{
 	case 0:
@@ -77,5 +85,5 @@ void npcAct146(npc *NPC) //Lightning
 		break;
 	}
 
-	NPC->rect = { 260 + (NPC->ani_no * 15), 0, 275 + (NPC->ani_no * 15), 240 };
+	NPC->rect = rect[NPC->ani_no];
 }

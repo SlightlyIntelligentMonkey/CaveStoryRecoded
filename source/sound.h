@@ -1,6 +1,20 @@
 #pragma once
 #include "common.h"
 
-void initSound();
+//struct of audio to be played
+struct AUDIO
+{
+	BYTE *buf;
+	Uint32 len;
+
+	BYTE volume;
+
+	short id;
+
+	AUDIO *next;
+};
+
+void ini_audio();
+void loadSounds();
 void freeSounds();
 void playSound(int sound_no);

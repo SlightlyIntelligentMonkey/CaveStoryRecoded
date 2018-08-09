@@ -518,7 +518,7 @@ void caret::update()
 
 void caret::draw()
 {
-	drawTexture(sprites[0x13], &rect, (x - view_left) / 0x200 - viewX / 0x200, (y - view_top) / 0x200 - viewY / 0x200);
+	drawTexture(sprites[0x13], &rect, (x - view_left) / 0x200 - viewport.x / 0x200, (y - view_top) / 0x200 - viewport.y / 0x200);
 }
 
 //Create code

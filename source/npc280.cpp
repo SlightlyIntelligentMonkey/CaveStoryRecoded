@@ -1,5 +1,10 @@
 #include "npc280.h"
 
+void npcAct292(npc *NPC) //Quake
+{
+	viewport.quake = 10;
+}
+
 void npcAct298(npc *NPC) //Doctor without crown (intro)
 {
 	RECT rc[8];

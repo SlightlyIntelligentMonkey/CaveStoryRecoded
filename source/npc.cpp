@@ -199,7 +199,7 @@ void npc::draw()
 		if (direct)
 			side = view.right;
 
-		drawTexture(sprites[surf], &rect, (x - side) / 0x200 - viewX / 0x200, (y - view.top) / 0x200 - viewY / 0x200);
+		drawTexture(sprites[surf], &rect, (x - side) / 0x200 - viewport.x / 0x200, (y - view.top) / 0x200 - viewport.y / 0x200);
 
 		/*if (bits & npc_interact)
 			SDL_SetRenderDrawColor(renderer, 255, 255, 0, 255);
@@ -208,6 +208,6 @@ void npc::draw()
 		else
 			SDL_SetRenderDrawColor(renderer, 0, 100, 255, 255);
 
-		drawRect(((x - hit.left) / 0x200) - (viewX / 0x200), ((y - hit.top) / 0x200) - (viewY / 0x200), (hit.left + hit.right) / 0x200, (hit.top + hit.bottom) / 0x200);*/
+		drawRect(((x - hit.left) / 0x200) - (viewport.x / 0x200), ((y - hit.top) / 0x200) - (viewport.y / 0x200), (hit.left + hit.right) / 0x200, (hit.top + hit.bottom) / 0x200);*/
 	}
 }

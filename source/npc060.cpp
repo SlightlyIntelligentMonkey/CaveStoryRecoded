@@ -804,6 +804,14 @@ void npcAct074(npc *NPC) //Jack
 		NPC->rect = rcLeft[NPC->ani_no];
 }
 
+void npcAct076(npc *NPC)
+{
+	NPC->rect.left = 16 * NPC->code_event; // Rects depend on the event number... Weird
+	NPC->rect.top = 0;
+	NPC->rect.right = NPC->rect.left + 16;
+	NPC->rect.bottom = 16;
+}
+
 void npcAct078(npc *NPC) //Pot
 {
 	if (NPC->direct)

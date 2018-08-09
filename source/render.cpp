@@ -66,8 +66,8 @@ void switchScreenMode()
 	}
 
 	//Ensure that the view is shifted properly
-	viewX += (lastWidth - screenWidth) * 0x100;
-	viewY += (lastHeight - screenHeight) * 0x100;
+	viewport.x += (lastWidth - screenWidth) * 0x100;
+	viewport.y += (lastHeight - screenHeight) * 0x100;
 
 	SDL_SetWindowSize(window, screenWidth * screenScale, screenHeight * screenScale);
 	SDL_RenderSetLogicalSize(renderer, screenWidth, screenHeight);

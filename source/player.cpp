@@ -9,10 +9,10 @@ void player::init() {
 	view = { 0x1000, 0x1000, 0x1000, 0x1000 };
 	hit = { 0xA00, 0x1000, 0xA00, 0x1000 };
 
-	viewGoalX = &tgt_x;
-	viewGoalY = &tgt_y;
+	viewport.lookX = &tgt_x;
+	viewport.lookY = &tgt_y;
 
-	viewSpeed = 16;
+	viewport.speed = 16;
 
 	life = 3;
 	max_life = 3;
@@ -668,7 +668,6 @@ void player::animate(bool bKey)
 	rcRight[10] = { 96, 16, 112, 32 };
 	rcRight[11] = { 112, 16, 128, 32 };
 
-
 	if (!(cond & player_removed))
 	{
 		if (flag & ground)
@@ -684,9 +683,8 @@ void player::animate(bool bKey)
 				if (++ani_wait > 4)
 				{
 					ani_wait = 0;
-					++ani_no;
 
-					if (ani_no == 7 || ani_no == 9)
+					if (++ani_no == 7 || ani_no == 9)
 						playSound(24);
 				}
 
@@ -700,9 +698,8 @@ void player::animate(bool bKey)
 				if (++ani_wait > 4)
 				{
 					ani_wait = 0;
-					++ani_no;
 
-					if (ani_no == 2 || ani_no == 4)
+					if (++ani_no == 2 || ani_no == 4)
 						playSound(24);
 				}
 
@@ -825,12 +822,12 @@ void player::draw() {
 		if (!((shock >> 1) & 1))
 		{
 			//Draw quote
-			drawTexture(sprites[0x10], &rect, ((x - view.left) / 0x200) - (viewX / 0x200), ((y - view.top) / 0x200) - (viewY / 0x200));
+			drawTexture(sprites[0x10], &rect, ((x - view.left) / 0x200) - (viewport.x / 0x200), ((y - view.top) / 0x200) - (viewport.y / 0x200));
 			
 			//Draw bubble
 			bubble++;
 			if (equip & equip_airTank && flag & water)
-				drawTexture(sprites[0x13], &rcBubble[(bubble >> 1) & 1], (x / 0x200) - 12 - (viewX / 0x200), (y / 0x200) - 12 - (viewY / 0x200));
+				drawTexture(sprites[0x13], &rcBubble[(bubble >> 1) & 1], (x / 0x200) - 12 - (viewport.x / 0x200), (y / 0x200) - 12 - (viewport.y / 0x200));
 		}
 	}
 }
