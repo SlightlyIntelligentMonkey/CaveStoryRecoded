@@ -2,7 +2,6 @@
 #include "common.h"
 
 extern std::vector<char> scriptEvents;
-extern BYTE tscFlags[1000];
 extern SDL_Texture *font;
 
 enum modes

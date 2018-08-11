@@ -844,9 +844,13 @@ int updateTsc() {
 			tscCleanup(2);
 			break;
 		case('<MPJ'):
-			tscCleanup(1);
+			if (getMapFlag(currentLevel) == true)
+				jumpScriptEvent(ascii2num(&tsc[tscPos + 4], 4));
+			else
+				tscCleanup(1);
 			break;
 		case('<MP+'):
+			setMapFlag(ascii2num(&tsc[tscPos + 4], 4));
 			tscCleanup(1);
 			break;
 		case('<MS2'):
