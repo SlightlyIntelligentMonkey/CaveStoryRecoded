@@ -629,6 +629,442 @@ void npcAct008(npc *NPC) //Follow beetle (egg corridor)
 	NPC->rect = { setRect->left, setRect->top, setRect->right, setRect->bottom };
 }
 
+void npcAct009(npc *NPC) //Balrog drop in
+{
+	RECT rcLeft[3];
+	RECT rcRight[3];
+
+	rcLeft[0] = { 0, 0, 40, 24 };
+	rcLeft[1] = { 80, 0, 120, 24 };
+	rcLeft[2] = { 120, 0, 160, 24 };
+
+	rcRight[0] = { 0, 24, 40, 48 };
+	rcRight[1] = { 80, 24, 120, 48 };
+	rcRight[2] = { 120, 24, 160, 48 };
+
+	switch (NPC->act_no)
+	{
+	case 0:
+		NPC->act_no = 1;
+		NPC->ani_no = 2;
+
+	case 1: //Falling
+		NPC->ym += 0x20;
+
+		//Go through ceiling for the first 40 frames of existing, then become solid
+		if (NPC->count1 >= 40)
+		{
+			NPC->bits &= ~npc_ignoresolid;
+			NPC->bits |= npc_solidsoft;
+		}
+		else
+			++NPC->count1;
+
+		//Landing
+		if (NPC->flag & ground)
+		{
+			//Create smoke
+			for (int i = 0; i < 4; ++i)
+				createNpc(4, NPC->x + (random(-12, 12) << 9), NPC->y + (random(-12, 12) << 9), random(-0x155, 0x155), random(-0x600, 0), 0, nullptr);
+
+			//Go into landed state
+			NPC->act_no = 2;
+			NPC->ani_no = 1;
+			NPC->act_wait = 0;
+			playSound(26);
+			viewport.quake = 30;
+		}
+
+		break;
+
+	case 2: //Landed
+		if (++NPC->act_wait > 16)
+		{
+			NPC->act_no = 3;
+			NPC->ani_no = 0;
+			NPC->ani_wait = 0;
+		}
+
+		break;
+
+	default:
+		break;
+	}
+
+	//Speed limit and move
+	if (NPC->ym > 0x5FF)
+		NPC->ym = 0x5FF;
+	if (NPC->ym < -0x5FF)
+		NPC->ym = -0x5FF;
+
+	NPC->x += NPC->xm;
+	NPC->y += NPC->ym;
+
+	//Set framerect
+	if (NPC->direct)
+		NPC->rect = rcRight[NPC->ani_no];
+	else
+		NPC->rect = rcLeft[NPC->ani_no];
+}
+
+void npcAct011(npc *NPC) //Bubble
+{
+	RECT rect[3];
+
+	rect[0] = { 208, 104, 224, 120 };
+	rect[1] = { 224, 104, 240, 120 };
+	rect[2] = { 240, 104, 256, 120 };
+
+	if (NPC->flag & 0xFF)
+	{
+		NPC->cond = 0;
+		createCaret(NPC->x, NPC->y, 2, 0);
+	}
+
+	NPC->x += NPC->xm;
+	NPC->y += NPC->ym;
+	
+	if (++NPC->ani_wait > 1)
+	{
+		NPC->ani_wait = 0;
+
+		if (++NPC->ani_no > 2)
+			NPC->ani_no = 0;
+	}
+	
+	NPC->rect = rect[NPC->ani_no];
+
+	if (++NPC->count1 > 150)
+	{
+		createCaret(NPC->x, NPC->y, 2, 0);
+		NPC->cond = 0;
+	}
+}
+
+void npcAct012(npc *NPC) //Balrog cutscene
+{
+	int x;
+	int y;
+
+	RECT rcLeft[14];
+	RECT rcRight[14];
+
+	rcLeft[0] = { 0x000, 0x000, 0x028, 0x018 };
+	rcLeft[1] = { 0x0A0, 0x000, 0x0C8, 0x018 };
+	rcLeft[2] = { 0x050, 0x000, 0x078, 0x018 };
+	rcLeft[3] = { 0x078, 0x000, 0x0A0, 0x018 };
+	rcLeft[4] = { 0x0F0, 0x000, 0x118, 0x018 };
+	rcLeft[5] = { 0x0C8, 0x000, 0x0F0, 0x018 };
+	rcLeft[6] = { 0x118, 0x000, 0x140, 0x018 };
+	rcLeft[7] = { 0x000, 0x000, 0x000, 0x000 };
+	rcLeft[8] = { 0x050, 0x030, 0x078, 0x048 };
+	rcLeft[9] = { 0x000, 0x030, 0x028, 0x048 };
+	rcLeft[10] = { 0x000, 0x000, 0x028, 0x018 };
+	rcLeft[11] = { 0x028, 0x030, 0x050, 0x048 };
+	rcLeft[12] = { 0x000, 0x000, 0x028, 0x018 };
+	rcLeft[13] = { 0x118, 0x000, 0x140, 0x018 };
+
+	rcRight[0] = { 0x000, 0x018, 0x028, 0x030 };
+	rcRight[1] = { 0x0A0, 0x018, 0x0C8, 0x030 };
+	rcRight[2] = { 0x050, 0x018, 0x078, 0x030 };
+	rcRight[3] = { 0x078, 0x018, 0x0A0, 0x030 };
+	rcRight[4] = { 0x0F0, 0x018, 0x118, 0x030 };
+	rcRight[5] = { 0x0C8, 0x018, 0x0F0, 0x030 };
+	rcRight[6] = { 0x118, 0x018, 0x140, 0x030 };
+	rcRight[7] = { 0x000, 0x000, 0x000, 0x000 };
+	rcRight[8] = { 0x050, 0x048, 0x078, 0x060 };
+	rcRight[9] = { 0x000, 0x048, 0x028, 0x060 };
+	rcRight[10] = { 0x000, 0x018, 0x028, 0x030 };
+	rcRight[11] = { 0x028, 0x048, 0x050, 0x060 };
+	rcRight[12] = { 0x000, 0x018, 0x028, 0x030 };
+	rcRight[13] = { 0x118, 0x018, 0x140, 0x030 };
+
+	switch (NPC->act_no)
+	{
+	case 0: //Stand and blink
+		if (NPC->direct == 4)
+		{
+			if (NPC->x <= currentPlayer.x)
+				NPC->direct = 2;
+			else
+				NPC->direct = 0;
+		}
+
+		NPC->act_no = 1;
+		NPC->ani_no = 0;
+		
+	case 1: //Stand
+		if (random(0, 100) == 0)
+		{
+			NPC->act_no = 2;
+			NPC->act_wait = 0;
+			NPC->ani_no = 1;
+		}
+		break;
+
+	case 2: //Blinking
+		if (++NPC->act_wait > 16)
+		{
+			NPC->act_no = 1;
+			NPC->ani_no = 0;
+		}
+		break;
+
+	case 10: //Jump up
+		if (NPC->direct == 4)
+		{
+			if (NPC->x <= currentPlayer.x)
+				NPC->direct = 2;
+			else
+				NPC->direct = 0;
+		}
+
+		NPC->act_no = 11;
+		NPC->ani_no = 2;
+		NPC->act_wait = 0;
+		NPC->tgt_x = 0;
+		
+	case 11: //About to jump
+		if (++NPC->act_wait > 30)
+		{
+			NPC->act_no = 12;
+			NPC->act_wait = 0;
+			NPC->ani_no = 3;
+			NPC->ym = -0x800;
+			NPC->bits |= npc_ignoresolid;
+		}
+		break;
+
+	case 12: //Jumping up
+		if (NPC->flag & (leftWall | rightWall)) //Yeah let's ignore the fact that ignoresolid's been turned on
+			NPC->xm = 0;
+
+		if (NPC->y < 0)
+		{
+			NPC->code_char = 0;
+			playSound(26);
+			viewport.quake = 30;
+		}
+		break;
+
+	case 20: //Defeated?
+		if (NPC->direct == 4)
+		{
+			if (NPC->x <= currentPlayer.x)
+				NPC->direct = 2;
+			else
+				NPC->direct = 0;
+		}
+
+		NPC->act_no = 21;
+		NPC->ani_no = 5;
+		NPC->act_wait = 0;
+		NPC->count1 = 0;
+
+		for (int i = 0; i < 4; ++i)
+			createNpc(4, NPC->x + (random(-12, 12) << 9), NPC->y + (random(-12, 12) << 9), random(-0x155, 0x155), random(-0x600, 0), 0, nullptr);
+
+		playSound(72);
+		
+	case 21:
+		NPC->tgt_x = 1;
+
+		if (NPC->flag & ground)
+			++NPC->act_wait;
+
+		if (++NPC->count1 / 2 & 1)
+			NPC->x += 512;
+		else
+			NPC->x -= 512;
+		
+		if (NPC->act_wait > 100)
+		{
+			NPC->act_no = 11;
+			NPC->act_wait = 0;
+			NPC->ani_no = 2;
+		}
+
+		NPC->ym += 32;
+
+		if (NPC->ym > 0x5FF)
+			NPC->ym = 0x5FF;
+
+		break;
+
+	case 30: //Smile
+		NPC->ani_no = 4;
+
+		if (++NPC->act_wait > 100)
+		{
+			NPC->act_no = 0;
+			NPC->ani_no = 0;
+		}
+		break;
+
+	case 40: //"Super panic"
+		if (NPC->direct == 4)
+		{
+			if (NPC->x <= currentPlayer.x)
+				NPC->direct = 2;
+			else
+				NPC->direct = 0;
+		}
+
+		NPC->act_no = 41;
+		NPC->act_wait = 0;
+		NPC->ani_no = 5;
+		
+	case 41:
+		if (++NPC->ani_wait / 2 & 1)
+			NPC->ani_no = 5;
+		else
+			NPC->ani_no = 6;
+
+		break;
+
+	case 42: //"Uh oh! Image blinks"
+		if (NPC->direct == 4)
+		{
+			if (NPC->x <= currentPlayer.x)
+				NPC->direct = 2;
+			else
+				NPC->direct = 0;
+		}
+		
+		NPC->act_no = 43;
+		NPC->act_wait = 0;
+		NPC->ani_no = 6;
+		
+	case 43:
+		if (++NPC->ani_wait / 2 & 1)
+			NPC->ani_no = 7;
+		else
+			NPC->ani_no = 6;
+
+		break;
+
+	case 50: //Back turned
+		NPC->ani_no = 8;
+		NPC->xm = 0;
+		break;
+
+	case 60: //Walk forward no gravity
+		NPC->act_no = 61;
+		NPC->ani_no = 9;
+		NPC->ani_wait = 0;
+		
+	case 0x3D:
+		if (++NPC->ani_wait > 3)
+		{
+			NPC->ani_wait = 0;
+
+			if (++NPC->ani_no == 10 || NPC->ani_no == 11)
+				playSound(23);
+		}
+
+		if (NPC->ani_no > 12)
+			NPC->ani_no = 9;
+
+		if (NPC->direct)
+			NPC->xm = 0x200;
+		else
+			NPC->xm = -0x200;
+		break;
+
+	case 70: //"Uh oh! Vanish"
+		NPC->act_no = 71;
+		NPC->act_wait = 64;
+		playSound(29);
+		NPC->ani_no = 13;
+		
+	case 71:
+		if (!--NPC->act_wait)
+			NPC->cond = 0;
+		break;
+
+	case 80: //"Panic"
+		NPC->count1 = 0;
+		NPC->act_no = 81;
+		
+	case 81:
+		if (++NPC->count1 / 2 & 1)
+			NPC->x += 512;
+		else
+			NPC->x -= 512;
+		
+		NPC->ani_no = 5;
+		NPC->xm = 0;
+		NPC->ym += 32;
+		break;
+
+	case 100: //Jump up and destroy ceiling (ending)
+		NPC->act_no = 101;
+		NPC->act_wait = 0;
+		NPC->ani_no = 2;
+		
+	case 101: //Going to jump
+		if (++NPC->act_wait > 20)
+		{
+			NPC->act_no = 102;
+			NPC->act_wait = 0;
+			NPC->ani_no = 3;
+			NPC->ym = -2048;
+			NPC->bits |= 8u;
+
+			//DeleteNpCharCode(150, 0);
+			//DeleteNpCharCode(117, 0);
+			createNpc(355, 0, 0, 0, 0, 0, NPC);
+			createNpc(355, 0, 0, 0, 0, 1, NPC);
+		}
+		break;
+
+	case 102:
+		x = NPC->x / 0x2000;
+		y = NPC->y / 0x2000;
+
+		if (y >= 0 && y <= 34 && changeTile(x, y, 0))
+		{
+			changeTile(x - 1, y, 0);
+			changeTile(x + 1, y, 0);
+			playSound(44);
+			viewport.quake2 = 10;
+		}
+
+		if (NPC->y < -0x4000)
+		{
+			NPC->code_char = 0;
+			viewport.quake = 30;
+		}
+
+		break;
+
+	default:
+		break;
+	}
+
+	int createSmoke = NPC->tgt_x && !random(0, 10);
+	if (createSmoke)
+		createNpc(4, NPC->x + (random(-12, 12) << 9), NPC->y + (random(-12, 12) << 9), random(-0x155, 0x155), random(-0x600, 0), 0, nullptr);
+
+	if (NPC->ym > 0x5FF)
+		NPC->ym = 0x5FF;
+
+	NPC->x += NPC->xm;
+	NPC->y += NPC->ym;
+
+	if (NPC->direct)
+		NPC->rect = rcRight[NPC->ani_no];
+	else
+		NPC->rect = rcLeft[NPC->ani_no];
+
+	if (NPC->act_no == 71)
+	{
+		NPC->rect.bottom = NPC->act_wait / 2 + NPC->rect.top;
+		if (NPC->act_wait & 1)
+			++NPC->rect.left;
+	}
+}
+
 void npcAct015(npc *NPC) //Closed chest
 {
 	int act_no = NPC->act_no;

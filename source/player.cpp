@@ -8,6 +8,12 @@ void player::init() {
 	direct = 2;
 	view = { 0x1000, 0x1000, 0x1000, 0x1000 };
 	hit = { 0xA00, 0x1000, 0xA00, 0x1000 };
+
+	viewport.lookX = &tgt_x;
+	viewport.lookY = &tgt_y;
+
+	viewport.speed = 16;
+
 	life = 3;
 	max_life = 3;
 	gamePhysics = 0;
@@ -17,8 +23,8 @@ void player::setPos(int setX, int setY) {
 	x = setX;
 	y = setY;
 
-	viewGoalX = x;
-	viewGoalY = y;
+	tgt_x = x;
+	tgt_y = y;
 	index_x = 0;
 	index_y = 0;
 
@@ -78,7 +84,7 @@ void player::damage(int damage) {
 
 		if (life <= 0)
 		{
-			//PlaySoundObject(17, 1);
+			playSound(17);
 			cond = 0;
 
 			createSmoke(x, y, 5120, 64);
@@ -286,7 +292,7 @@ void player::actNormal(bool bKey) {
 				&& !(flag & windUp))
 			{
 				ym = -jump;
-				//PlaySoundObject(15, 1);
+				playSound(15);
 			}
 		}
 
@@ -329,7 +335,8 @@ void player::actNormal(bool bKey) {
 						createCaret(x + 0x400, y + 0x400, 7, 2);
 					if (direct == 2)
 						createCaret(x - 0x400, y + 0x400, 7, 0);
-					//PlaySoundObject(113, 1);
+
+					playSound(113);
 				}
 			}
 			else if (boost_sw == 2)
@@ -340,13 +347,13 @@ void player::actNormal(bool bKey) {
 				if (isKeyPressed(keyJump) || boost_cnt % 3 == 1)
 				{
 					createCaret(x, y + 0xC00, 7, 3);
-					//PlaySoundObject(113, 1);
+					playSound(113);
 				}
 			}
 			else if (boost_sw == 3 && (isKeyPressed(keyJump) || boost_cnt % 3 == 1))
 			{
 				createCaret(x, y - 0xC00, 7, 1);
-				//PlaySoundObject(113, 1);
+				playSound(113);
 			}
 		}
 		else if (flag & windUp) //Gravity when in wind
@@ -360,7 +367,7 @@ void player::actNormal(bool bKey) {
 			if (!(boost_cnt % 3))
 			{
 				createCaret(x, hit.bottom / 2 + y, 7, 3);
-				//PlaySoundObject(113, 1);
+				playSound(113);
 			}
 
 			if (flag & ceiling) //Bounce of ceilings
@@ -436,7 +443,7 @@ void player::actNormal(bool bKey) {
 						createNpc(73, x + (random(-8, 8) << 9), y, xm + random(-512, 512), random(-0x200, 0x80), dir, nullptr);
 					}
 
-					//PlaySoundObject(56, 1);
+					playSound(56);
 				}
 			}
 			else
@@ -446,7 +453,7 @@ void player::actNormal(bool bKey) {
 					createNpc(73, x + (random(-8, 8) << 9), y, xm + random(-512, 512), random(-0x200, 0x80) - ym / 2, dir, nullptr);
 				}
 
-				//PlaySoundObject(56, 1);
+				playSound(56);
 			}
 
 			sprash = 1;
@@ -476,6 +483,7 @@ void player::actNormal(bool bKey) {
 			if (index_x < -0x8000)
 				index_x = -0x8000;
 		}
+
 		if (bKey && isKeyDown(keyUp))
 		{
 			//Move up
@@ -502,8 +510,8 @@ void player::actNormal(bool bKey) {
 				index_y += 0x200;
 		}
 
-		viewGoalX = x + index_x;
-		viewGoalY = y + index_y;
+		tgt_x = x + index_x;
+		tgt_y = y + index_y;
 
 		//Move
 		if (xm > resist || xm < -resist)
@@ -660,7 +668,6 @@ void player::animate(bool bKey)
 	rcRight[10] = { 96, 16, 112, 32 };
 	rcRight[11] = { 112, 16, 128, 32 };
 
-
 	if (!(cond & player_removed))
 	{
 		if (flag & ground)
@@ -676,10 +683,9 @@ void player::animate(bool bKey)
 				if (++ani_wait > 4)
 				{
 					ani_wait = 0;
-					++ani_no;
 
-					//if (ani_no == 7 || ani_no == 9)
-					//	PlaySoundObject(24, 1);
+					if (++ani_no == 7 || ani_no == 9)
+						playSound(24);
 				}
 
 				if (ani_no > 9 || ani_no <= 5)
@@ -692,10 +698,9 @@ void player::animate(bool bKey)
 				if (++ani_wait > 4)
 				{
 					ani_wait = 0;
-					++ani_no;
 
-					//if (ani_no == 2 || ani_no == 4)
-					//	PlaySoundObject(24, 1);
+					if (++ani_no == 2 || ani_no == 4)
+						playSound(24);
 				}
 
 				if (ani_no > 4 || ani_no <= 0)
@@ -703,16 +708,16 @@ void player::animate(bool bKey)
 			}
 			else if (bKey && isKeyDown(keyUp)) //Look up
 			{
-				//if (cond & 4)
-				//	PlaySoundObject(24, 1);
+				if (cond & player_walk)
+					playSound(24);
 
 				cond &= ~player_walk;
 				ani_no = 5;
 			}
 			else //Idle
 			{
-				//if (cond & 4)
-				//	PlaySoundObject(24, 1);
+				if (cond & player_walk)
+					playSound(24);
 
 				cond &= ~player_walk;
 				ani_no = 0;
@@ -817,12 +822,12 @@ void player::draw() {
 		if (!((shock >> 1) & 1))
 		{
 			//Draw quote
-			drawTexture(sprites[0x10], &rect, ((x - view.left) / 0x200) - (viewX / 0x200), ((y - view.top) / 0x200) - (viewY / 0x200));
+			drawTexture(sprites[0x10], &rect, ((x - view.left) / 0x200) - (viewport.x / 0x200), ((y - view.top) / 0x200) - (viewport.y / 0x200));
 			
 			//Draw bubble
 			bubble++;
 			if (equip & equip_airTank && flag & water)
-				drawTexture(sprites[0x13], &rcBubble[(bubble >> 1) & 1], (x / 0x200) - 12 - (viewX / 0x200), (y / 0x200) - 12 - (viewY / 0x200));
+				drawTexture(sprites[0x13], &rcBubble[(bubble >> 1) & 1], (x / 0x200) - 12 - (viewport.x / 0x200), (y / 0x200) - 12 - (viewport.y / 0x200));
 		}
 	}
 }

@@ -9,6 +9,8 @@ struct AUDIO
 
 	BYTE volume;
 
+	short id;
+
 	AUDIO *next;
 };
 

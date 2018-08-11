@@ -144,6 +144,15 @@
     <ClCompile Include="npc300.cpp">
       <Filter>Source Files\classes\npc\act</Filter>
     </ClCompile>
+    <ClCompile Include="npc140.cpp">
+      <Filter>Source Files\classes\npc\act</Filter>
+    </ClCompile>
+    <ClCompile Include="npc120.cpp">
+      <Filter>Source Files\classes\npc\act</Filter>
+    </ClCompile>
+    <ClCompile Include="fade.cpp">
+      <Filter>Source Files\modules</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="render.h">
@@ -246,6 +255,15 @@
       <Filter>Source Files\classes\npc\act</Filter>
     </ClInclude>
     <ClInclude Include="flags.h">
+      <Filter>Source Files\modules</Filter>
+    </ClInclude>
+    <ClInclude Include="npc140.h">
+      <Filter>Source Files\classes\npc\act</Filter>
+    </ClInclude>
+    <ClInclude Include="npc120.h">
+      <Filter>Source Files\classes\npc\act</Filter>
+    </ClInclude>
+    <ClInclude Include="fade.h">
       <Filter>Source Files\modules</Filter>
     </ClInclude>
   </ItemGroup>

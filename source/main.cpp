@@ -8,12 +8,7 @@ SDL_Renderer *renderer;
 SDL_Rect DrawRect;
 SDL_Rect ImageRect;
 
-int viewX = 0;
-int viewY = 0;
-int viewGoalX = 0;
-int viewGoalY = 0;
-
-int viewSpeed = 16;
+VIEW viewport;
 
 //Game variables
 SDL_Event events;
@@ -33,6 +28,8 @@ bool exitGame = false;
 static void doQuit() {
 	//sound::quit();
 	SDL_Quit();
+	IMG_Quit();
+	freeSounds();
 }
 
 void doError() {
@@ -63,7 +60,8 @@ int init() {
 	// TBD : Check for s_reverse, mute and fps files ?
 	// TBD : Init joypad
 
-	//sound::init();
+	ini_audio();
+	loadSounds();
 	
 	createWindow(320, 240, 2, true);
 
@@ -72,6 +70,7 @@ int init() {
 	loadStageTable();
 
 	loadImage("data/Title.png", &sprites[0x00]);
+	loadImage("data/Pixel.png", &sprites[0x01]);
 
 	loadImage("data/Fade.png", &sprites[0x06]);
 

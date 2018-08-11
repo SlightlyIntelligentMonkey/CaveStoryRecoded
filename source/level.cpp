@@ -27,7 +27,7 @@ void loadStageTable()
 
 	size_t stages = (size_t)SDL_RWsize(tblStream) / 200;
 
-	stageTable = static_cast<STAGE_TABLE *>(malloc(stages * 200));
+	stageTable = static_cast<STAGE_TABLE*>(malloc(stages * 200));
 
 	if (tblStream)
 	{
@@ -41,6 +41,9 @@ void loadStageTable()
 			tblStream->read(tblStream, stageTable[i].npc2, 0x20, 1);
 			tblStream->read(tblStream, &stageTable[i].boss, 1, 1);
 			tblStream->read(tblStream, stageTable[i].name, 0x23, 1);
+
+			if (!strcmp((const char *)stageTable[i].name, "u"))
+				strcpy(stageTable[i].name, "Studio Pixel presents");
 		}
 	}
 	else
@@ -64,21 +67,26 @@ void shiftTile(int x, int y)
 	--levelMap[x + y * levelWidth];
 }
 
-void changeTile(int x, int y, int tile)
+bool changeTile(int x, int y, int tile)
 {
-	if (levelMap[x + y * levelWidth] == tile)
-		return;
+	if (levelMap[y * levelWidth + x] == tile)
+		return false;
 
 	levelMap[x + y * levelWidth] = tile;
 
 	for (int i = 0; i < 3; ++i)
 		createNpc(4, x << 13, y << 13, 0, 0, 0, nullptr);
+
+	return true;
 }
 
 void loadLevel(int levelIndex) {
 	currentLevel = levelIndex;
 
 	backgroundScroll = stageTable[levelIndex].backgroundScroll;
+
+	//NOTE: map name shit is cleared when a new level is loaded
+	mapNameDisplayTimer = 0xFF;
 
 	//Load pxm
 	char pxmPath[256];
@@ -210,8 +218,11 @@ void loadLevel(int levelIndex) {
 
 	loadTsc(tscPath);
 
-	//END
-	return;
+	//Some extra setup stuff
+	viewport.x = currentPlayer.x - (screenWidth << 8);
+	viewport.y = currentPlayer.y - (screenHeight << 8);
+	viewport.quake = 0;
+	viewport.quake2 = 0;
 }
 
 void drawLevel(bool foreground)
@@ -250,18 +261,18 @@ void drawLevel(bool foreground)
 				break;
 
 			case 1:
-				for (int x = -(viewX / 0x400 % w); x < screenWidth; x += w)
+				for (int x = -(viewport.x / 0x400 % w); x < screenWidth; x += w)
 				{
-					for (int y = -(viewY / 0x400 % h); y < screenHeight; y += h)
+					for (int y = -(viewport.y / 0x400 % h); y < screenHeight; y += h)
 						drawTexture(sprites[0x1C], &rect, x, y);
 				}
 
 				break;
 
 			case 2:
-				for (int x = -(viewX / 0x200 % w); x < screenWidth; x += w)
+				for (int x = -(viewport.x / 0x200 % w); x < screenWidth; x += w)
 				{
-					for (int y = -(viewY / 0x200 % h); y < screenHeight; y += h)
+					for (int y = -(viewport.y / 0x200 % h); y < screenHeight; y += h)
 						drawTexture(sprites[0x1C], &rect, x, y);
 				}
 
@@ -323,11 +334,11 @@ void drawLevel(bool foreground)
 	//Render tiles
 	RECT tileRect;
 
-	int xFrom = clamp((viewX + 0x1000) >> 13, 0, levelWidth);
-	int xTo = clamp((((viewX + 0x1000) + (screenWidth << 9)) >> 13) + 1, 0, levelWidth); //add 1 because edge wouldn't appear
+	int xFrom = clamp((viewport.x + 0x1000) >> 13, 0, levelWidth);
+	int xTo = clamp((((viewport.x + 0x1000) + (screenWidth << 9)) >> 13) + 1, 0, levelWidth); //add 1 because edge wouldn't appear
 
-	int yFrom = clamp((viewY + 0x1000) >> 13, 0, levelHeight);
-	int yTo = clamp((((viewY + 0x1000) + (screenHeight << 9)) >> 13) + 1, 0, levelHeight); //add 1 because edge wouldn't appear
+	int yFrom = clamp((viewport.y + 0x1000) >> 13, 0, levelHeight);
+	int yTo = clamp((((viewport.y + 0x1000) + (screenHeight << 9)) >> 13) + 1, 0, levelHeight); //add 1 because edge wouldn't appear
 
 	for (int x = xFrom; x < xTo; x++) {
 		for (int y = yFrom; y < yTo; y++) {
@@ -346,13 +357,13 @@ void drawLevel(bool foreground)
 					{
 						tileRect = { (tile % 16) * 16, (tile / 16) * 16, (tile % 16) * 16 + 16, (tile / 16) * 16 + 16 };
 
-						drawTexture(sprites[0x02], &tileRect, (drawX * 16) - viewX / 0x200 - 8, (drawY * 16) - viewY / 0x200 - 8);
+						drawTexture(sprites[0x02], &tileRect, (drawX * 16) - viewport.x / 0x200 - 8, (drawY * 16) - viewport.y / 0x200 - 8);
 
 						if (attribute == 0x43) //Star block
 						{
 							tileRect = { 256, 48, 272, 64 };
 
-							drawTexture(sprites[0x14], &tileRect, (drawX * 16) - viewX / 0x200 - 8, (drawY * 16) - viewY / 0x200 - 8);
+							drawTexture(sprites[0x14], &tileRect, (drawX * 16) - viewport.x / 0x200 - 8, (drawY * 16) - viewport.y / 0x200 - 8);
 						}
 					}
 					else
@@ -391,7 +402,7 @@ void drawLevel(bool foreground)
 							return;
 						}
 
-						drawTexture(sprites[0x13], &tileRect, (drawX * 16) - viewX / 0x200 - 8, (drawY * 16) - viewY / 0x200 - 8);
+						drawTexture(sprites[0x13], &tileRect, (drawX * 16) - viewport.x / 0x200 - 8, (drawY * 16) - viewport.y / 0x200 - 8);
 					}
 				}
 			}
@@ -403,16 +414,18 @@ void drawLevel(bool foreground)
 	{
 		SDL_SetRenderDrawColor(renderer, 0, 0, 32, 255);
 
-		if (viewX < 0)
-		{
-			drawRect(0, 0, viewX / -0x200, screenHeight);
-			drawRect(screenWidth + viewX / 0x200, 0, viewX / -0x200, screenHeight);
-		}
+		//Left and right
+		int leftBorder = -(viewport.x / 0x200);
+		int rightBorder = ((viewport.x / 0x200) + screenWidth) - ((levelWidth - 1) << 4);
 
-		if (viewY < 0)
-		{
-			drawRect(0, 0, screenWidth, viewY / -0x200);
-			drawRect(0, screenHeight + viewY / 0x200, screenWidth, viewY / -0x200);
-		}
+		drawRect(0, 0, leftBorder, screenHeight);
+		drawRect(screenWidth - rightBorder, 0, rightBorder, screenHeight);
+
+		//Top and bottom
+		int topBorder = -(viewport.y / 0x200);
+		int bottomBorder = ((viewport.y / 0x200) + screenHeight) - ((levelHeight - 1) << 4);
+		
+		drawRect(0, 0, screenWidth, topBorder);
+		drawRect(0, screenHeight - bottomBorder, screenWidth, bottomBorder);
 	}
 }

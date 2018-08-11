@@ -4,7 +4,7 @@ void putLittleStar(RECT *rcHit, player *me)
 {
 	if (!(me->cond & player_removed) && me->ym < -0x200)
 	{
-		//PlaySoundObject(3, 1);
+		playSound(3);
 		createCaret(me->x, me->y - rcHit->top, 13, 0);
 		createCaret(me->x, me->y - rcHit->top, 13, 0);
 	}
@@ -69,8 +69,8 @@ int playerJudgeBlock(RECT *rcHit, player *me, int tx, int ty)
 	{
 		me->y = ((2 * ty - 1) << 12) - rcHit->bottom;
 
-		//if (me->ym > 1024)
-			//PlaySoundObject(23, 1);
+		if (me->ym > 0x400)
+			playSound(23);
 
 		if (me->ym > 0)
 			me->ym = 0;
@@ -180,6 +180,9 @@ int playerJudgeTriangleE(RECT *rcHit, player *me, int tx, int ty)
 	{
 		me->y = (ty << 13) + (-0x2000 * tx + me->x) / 2 - 0x800 - rcHit->bottom;
 
+		if (me->ym > 0x400)
+			playSound(23);
+
 		if (me->ym > 0)
 			me->ym = 0;
 		
@@ -197,6 +200,9 @@ int playerJudgeTriangleF(RECT *rcHit, player *me, int tx, int ty)
 		&& me->y - rcHit->top < (2 * ty + 1) << 12)
 	{
 		me->y = (ty << 13) + (-0x2000 * tx + me->x) / 2 + 0x800 - rcHit->bottom;
+
+		if (me->ym > 0x400)
+			playSound(23);
 
 		if (me->ym > 0)
 			me->ym = 0;
@@ -216,6 +222,9 @@ int playerJudgeTriangleG(RECT *rcHit, player *me, int tx, int ty)
 	{
 		me->y = (ty << 13) - (-0x2000 * tx + me->x) / 2 + 0x800 - rcHit->bottom;
 
+		if (me->ym > 0x400)
+			playSound(23);
+
 		if (me->ym > 0)
 			me->ym = 0;
 
@@ -233,6 +242,9 @@ int playerJudgeTriangleH(RECT *rcHit, player *me, int tx, int ty)
 		&& me->y - rcHit->top < (2 * ty + 1) << 12)
 	{
 		me->y = (ty << 13) - (-0x2000 * tx + me->x) / 2 - 0x800 - rcHit->bottom;
+
+		if (me->ym > 0x400)
+			playSound(23);
 
 		if (me->ym > 0)
 			me->ym = 0;
@@ -640,14 +652,14 @@ int playerHitNpcHardSolid(RECT *rcHit, player *me, npc *NPC)
 
 		if (me->y + rcHit->bottom > NPC->y - NPC->hit.top && me->y + rcHit->bottom < NPC->y + 0x600)
 		{
-			//if (gMC.ysp - npc->ysp > 1024)
-			//	PlaySoundObject(23, 1);
+			if (me->ym - NPC->ym > 1024)
+				playSound(23);
 
-			//if (unk_81C8594 == 1)
-			//{
-			//	y = npc->y - npc->collideRect.top - unk_81C85D0 + 512;
-			//	hit |= 8u;
-			//}
+			if (gamePhysics == 1)
+			{
+				me->y = NPC->y - NPC->rect.top - rcHit->bottom + 0x200;
+				hit |= ground;
+			}
 
 			if (NPC->bits & npc_bouncy)
 			{
@@ -700,7 +712,7 @@ void playerHitNpcs(RECT *rcHit)
 
 	if ((me->cond & player_visible) && !(me->cond & player_removed))
 	{
-		for (uint32_t i = 0; i < npcs.size(); ++i)
+		for (size_t i = 0; i < npcs.size(); ++i)
 		{
 			if ((npcs[i].cond & npccond_alive))
 			{
@@ -724,20 +736,20 @@ void playerHitNpcs(RECT *rcHit)
 
 				if (hit && npcs[i].code_char == 1)
 				{
-					//PlaySoundObject(14, 1);
+					playSound(14);
 					//AddExpMyChar(gNPC[i].exp);
 					npcs[i].cond = 0;
 				}
 				if (hit && npcs[i].code_char == 86)
 				{
-					//PlaySoundObject(42, 1);
+					playSound(42);
 					//AddBulletMyChar(gNPC[i].code_event, gNPC[i].exp);
 					npcs[i].cond = 0;
 				}
 
 				if (hit && npcs[i].code_char == 87)
 				{
-					//PlaySoundObject(20, 1);
+					playSound(20);
 					//AddLifeMyChar(gNPC[i].exp);
 					npcs[i].cond = 0;
 				}
@@ -745,7 +757,7 @@ void playerHitNpcs(RECT *rcHit)
 				if (!(gameFlags & 4) && hit && npcs[i].bits & npc_eventtouch)
 					runScriptEvent(npcs[i].code_event);
 
-				if (!(npcs[i].bits & npc_interact))
+				if (gameFlags & 2 && !(npcs[i].bits & npc_interact))
 				{
 					if (npcs[i].bits & npc_reartop)
 					{
@@ -758,10 +770,8 @@ void playerHitNpcs(RECT *rcHit)
 						if (hit & ceiling && npcs[i].ym > 0)
 							me->damage(npcs[i].damage);
 					}
-					else if (hit && npcs[i].damage)
-					{
+					else if (hit && npcs[i].damage && !(gameFlags & 4))
 						me->damage(npcs[i].damage);
-					}
 				}
 
 				if (!(gameFlags & 4) && hit && me->cond & player_interact && npcs[i].bits & npc_interact)

@@ -122,7 +122,7 @@ void npcAct060(npc *NPC) //Toroko
 		NPC->act_no = 11;
 		NPC->ani_no = 9;
 		NPC->ym = -0x400;
-		//PlaySoundObject(50, 1);
+		playSound(50);
 
 		if (NPC->direct)
 			NPC->xm = 0x100;
@@ -305,7 +305,7 @@ void npcAct061(npc *NPC) //King
 		NPC->act_no = 0;
 		break;
 
-	case 30: //Fly across the screen
+	case 30: //Gets bitch slapped by lightning
 		NPC->act_no = 31;
 		NPC->act_wait = 0;
 		NPC->ani_wait = 0;
@@ -331,18 +331,19 @@ void npcAct061(npc *NPC) //King
 			NPC->ym = -0x400;
 			NPC->xm = 0x200;
 
-			//PlaySoundObject(71, 1);
+			playSound(71);
 
 			createSmoke(NPC->x, NPC->y, 2048, 4);
 		}
+		break;
 
-	case 40:
+	case 40: //Die and leave sword
 		NPC->act_no = 42;
 		NPC->act_wait = 0;
 		NPC->ani_no = 8;
-		//PlaySoundObject(29, 1);
+		playSound(29);
 
-	case 42: //Die and leave sword
+	case 42:
 		//Flash away
 		if (++NPC->ani_no > 9)
 			NPC->ani_no = 8;
@@ -438,6 +439,7 @@ void npcAct064(npc *NPC) //First Cave critter
 				NPC->xm = 0x100;
 			else
 				NPC->xm = -0x100;
+			playSound(30);
 		}
 
 		break;
@@ -579,6 +581,97 @@ void npcAct065(npc *NPC) //First Cave Bat
 		NPC->rect = { 32 + (NPC->ani_no << 4), 32, 48 + (NPC->ani_no << 4), 48 };
 }
 
+void npcAct066(npc *NPC) //Bubble (to catch Toroko in the shack)
+{
+	uint8_t deg;
+	RECT rect[4];
+
+	rect[0] = { 32, 192, 56, 216 };
+	rect[1] = { 56, 192, 80, 216 };
+	rect[2] = { 32, 216, 56, 240 };
+	rect[3] = { 56, 216, 80, 240 };
+	
+	switch (NPC->act_no)
+	{
+	case 0:
+		//Shoot towards Toroko
+		for (size_t i = 0; i < npcs.size(); i++)
+		{
+			if (npcs[i].code_event == 1000)
+			{
+				NPC->tgt_x = npcs[i].x;
+				NPC->tgt_y = npcs[i].y;
+				NPC->tgt_npc = &npcs[i];
+				deg = getAtan(NPC->x - NPC->tgt_x, NPC->y - NPC->tgt_y);
+				NPC->xm = 2 * getCos(deg);
+				NPC->ym = 2 * getSin(deg);
+				NPC->act_no = 1;
+				break;
+			}
+		}
+
+	case 1:
+		//Animate
+		if (++NPC->ani_wait > 1)
+		{
+			NPC->ani_wait = 0;
+			++NPC->ani_no;
+		}
+
+		if (NPC->ani_no > 1)
+			NPC->ani_no = 0;
+
+		//Check if hit Toroko
+		if (NPC->x - 0x600 < NPC->tgt_x
+			&& NPC->x + 0x600 > NPC->tgt_x
+			&& NPC->y - 0x600 < NPC->tgt_y
+			&& NPC->y + 0x600 > NPC->tgt_y)
+		{
+			NPC->act_no = 2;
+			NPC->ani_no = 2;
+
+			if (NPC->tgt_npc)
+				NPC->tgt_npc->cond = 0;
+
+			playSound(21);
+		}
+
+		break;
+
+	case 2:
+		//Move a bit towards the top left
+		NPC->xm -= 0x20;
+		NPC->ym -= 0x20;
+
+		if (NPC->xm < -0x5FF)
+			NPC->xm = -0x5FF;
+		if (NPC->ym < -0x5FF)
+			NPC->ym = -0x5FF;
+
+		if (NPC->y < -4096)
+			NPC->cond = 0;
+
+		if (++NPC->ani_wait > 3)
+		{
+			NPC->ani_wait = 0;
+			++NPC->ani_no;
+		}
+
+		if (NPC->ani_no > 3)
+			NPC->ani_no = 2;
+
+		break;
+
+	default:
+		break;
+	}
+
+	NPC->x += NPC->xm;
+	NPC->y += NPC->ym;
+
+	NPC->rect = rect[NPC->ani_no];
+}
+
 void npcAct073(npc *NPC) //Water drop
 {
 	NPC->ym += 0x20;
@@ -710,6 +803,14 @@ void npcAct074(npc *NPC) //Jack
 		NPC->rect = rcRight[NPC->ani_no];
 	else
 		NPC->rect = rcLeft[NPC->ani_no];
+}
+
+void npcAct076(npc *NPC)
+{
+	NPC->rect.left = 16 * NPC->code_event; // Rects depend on the event number... Weird
+	NPC->rect.top = 0;
+	NPC->rect.right = NPC->rect.left + 16;
+	NPC->rect.bottom = 16;
 }
 
 void npcAct078(npc *NPC) //Pot

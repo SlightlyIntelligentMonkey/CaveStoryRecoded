@@ -134,7 +134,7 @@ void npcAct058(npc *NPC) //Basu 1
 						int fireYm = 2 * getSin(deg);
 
 						createNpc(84, NPC->x, NPC->y, fireXm, fireYm, 0, nullptr);
-						//PlaySoundObject(39, 1);
+						playSound(39);
 					}
 
 					if (NPC->count2 > 8)
