@@ -270,6 +270,7 @@ void loadSound(char *path, SDL_AudioSpec *spec, int **buf, Uint32 *length)
 	return;
 }
 
+
 const char *soundPath = "data/Sound/";
 
 void loadSounds()

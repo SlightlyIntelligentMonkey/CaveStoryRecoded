@@ -2,6 +2,7 @@
 #include "level.h"
 #include "hud.h"
 #include "script.h"
+#include "fade.h"
 
 int gameMode = 0;
 int prevGameMode = 0;
@@ -260,6 +261,8 @@ int gameUpdateMenu()
 			{
 				gameFlags = 3;
 				loadProfile();
+				fadeCounter = 0xFFFFFFF;
+				fadedOut = false;
 				break;
 			}
 		}
@@ -312,6 +315,7 @@ int gameUpdateMenu()
 int gameUpdateIntro()
 {
 	uint32_t frame = 0;
+	fadedOut = true;
 
 	viewport.x = 0;
 	viewport.y = 0;

@@ -157,6 +157,7 @@
   <ItemGroup>
     <ClCompile Include="bullet.cpp" />
     <ClCompile Include="caret.cpp" />
+    <ClCompile Include="fade.cpp" />
     <ClCompile Include="game.cpp" />
     <ClCompile Include="hud.cpp" />
     <ClCompile Include="npc080.cpp" />
@@ -199,6 +200,7 @@
   <ItemGroup>
     <ClInclude Include="bullet.h" />
     <ClInclude Include="caret.h" />
+    <ClInclude Include="fade.h" />
     <ClInclude Include="flags.h" />
     <ClInclude Include="game.h" />
     <ClInclude Include="npc080.h" />

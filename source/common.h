@@ -111,6 +111,8 @@ extern SDL_Renderer *renderer;
 extern SDL_Rect DrawRect;
 extern SDL_Rect ImageRect;
 
+extern VIEW viewport;
+
 extern SDL_Texture* sprites[40];
 
 //Event variable

@@ -3,6 +3,7 @@
 #include "filesystem.h"
 #include "weapons.h"
 #include "player.h"
+#include "fade.h"
 
 // -- TSC Code --
 // This is a string, not a fixed buffer.
@@ -20,16 +21,6 @@ int tscWait = 0;
 int tscDisplayFlags = 0;
 
 int tscUpdateFlags = 0;
-
-enum displayFlags
-{
-	TSCINVIS = 0,
-	TSCVIS = 0b0001,
-	MSGbox = 0b0100,
-	FAI = 0b0100,
-	FAO = 0b1000,
-	invisMSG = 0x10
-};
 
 // -- command variables --
 unsigned int waitAmount = 0;
@@ -291,6 +282,22 @@ void drawTSC()
 	RECT rcGit = { 0, 0, 32, 16 };
 	SDL_Rect rcClip = { 0, 0, 0, 0 };
 
+	if (fadedOut == true)
+	{
+		SDL_SetRenderDrawColor(renderer, 0, 0, 32, 255);
+		SDL_RenderClear(renderer);
+	}
+
+	if (fadeCounter == 0xFFFFFFF) { tscDisplayFlags &= ~(FAI | FAO); }
+	if (tscDisplayFlags & FAI)
+	{
+		fadeIn(fadeDirection);
+	}
+	if (tscDisplayFlags & FAO)
+	{
+		fadeOut(fadeDirection);
+	}
+
 	if (tscMode != 0 && tscDisplayFlags & TSCVIS)
 	{
 
@@ -403,15 +410,13 @@ void drawTSC()
 			}
 		}
 	}
-
-	if (mapNameDisplayTimer < 160)
+	
+	if (mapNameDisplayTimer++ < 160)
 	{
-		if (mapNameDisplayTimer++ < 160)
-		{
-			renderTextLine((screenWidth >> 1) - ((strlen(stageTable[currentLevel].name) * (charWidth + charSeparation)) / 2),
-				80, stageTable[currentLevel].name);
-		}
+		renderTextLine((screenWidth >> 1) - ((strlen(stageTable[currentLevel].name) * charWidth) >> 1),
+			80, stageTable[currentLevel].name);
 	}
+	return;
 }
 
 void tscCheck()
@@ -443,6 +448,7 @@ void tscCleanup(int numargs)
 		tscPos += (numargs - 1);
 	return;
 }
+
 
 int updateTsc() {
 
@@ -490,6 +496,7 @@ int updateTsc() {
 		tscCheck();
 		return 1;
 	case FADE:
+		tscCounter++;
 		tscCheck();
 		return 1;
 	case YNJ:
@@ -549,7 +556,7 @@ int updateTsc() {
 		if (tsc[tscPos] != '<') { return 1; }
 
 		//std::string debstr = &tsc[tscPos];
-		//SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Critical Error", debstr.substr(0, 4).c_str(), NULL);
+		//SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "TSC command", debstr.substr(0, 4).c_str(), NULL);
 
 		switch (tsc[tscPos + 3] + (tsc[tscPos + 2] << 8) + (tsc[tscPos + 1] << 16) + (tsc[tscPos] << 24))
 		{
@@ -695,10 +702,11 @@ int updateTsc() {
 			memset(msgText, 0, sizeof(msgText));
 			gameFlags |= 3;
 			tscUpdateFlags = 0;
+			tscDisplayFlags = 0;
 			faceNo = 0;
 			gitNo = 0;
-			tscMode = END;
 			currentPlayer.cond &= ~player_interact;
+			tscMode = END;
 			return 1;
 		case('<EQ+'):
 			currentPlayer.equip &= ascii2num(&tsc[tscPos + 4], 4);
@@ -722,9 +730,19 @@ int updateTsc() {
 			tscCleanup(1);
 			break;
 		case('<FAI'):
+			tscMode = FADE;
+			tscDisplayFlags |= FAI;
+			tscDisplayFlags &= ~FAO;
+			fadeCounter = 0;
+			fadeDirection = ascii2num(&tsc[tscPos + 4], 4);
 			tscCleanup(1);
 			break;
 		case('<FAO'):
+			tscMode = FADE;
+			tscDisplayFlags |= FAO;
+			tscDisplayFlags &= ~FAI;
+			fadeCounter = 0;
+			fadeDirection = ascii2num(&tsc[tscPos + 4], 4);
 			tscCleanup(1);
 			break;
 		case('<FL+'):
@@ -1054,6 +1072,7 @@ int updateTsc() {
 			tscMode = YNJ;
 			yesnoSelect = 0;
 			ynjBoxYOffset = 0;
+			playSound(5);
 			tscCleanup(0);
 			break;
 		case('<ZAM'):
