@@ -163,11 +163,10 @@ const char *sfxList[] =
 
 struct SOUND_EFFECT
 {
-	BYTE *buf;
+	int *buf;
 	Uint32 length;
 	Uint32 pos;
 };
-
 SOUND_EFFECT sounds[_countof(sfxList)];
 
 SDL_AudioStream *audioStream;
@@ -176,32 +175,29 @@ SDL_AudioSpec soundSpec;
 SDL_AudioSpec want;
 
 //use int pointers for easy use
-void mixAudio(int *dst, int *src, Uint32 len, Uint8 lVolume, Uint8 rVolume)
+void mixAudioSFX(int *dst, Uint32 len, SOUND_EFFECT *sound, Uint8 lVolume, Uint8 rVolume)
 {
+	unsigned int currentPos = 0;
+	int temp = 0;
 	//using 32 float point on native system 
-	for (int i = 0; i <= (len / 4); i++)
+	while (sound->pos + currentPos < sound->length && (currentPos << 2) < len)
 	{
-		//probably shouldn't leave it like this but I'll just leave it like this for now
-		dst[i] = clamp(dst[i] + src[i], -0x7FFFFFFF, 0x7FFFFFFF);
+		dst[currentPos] += sound->buf[sound->pos + currentPos];
+		currentPos++;
 	}
+	sound->pos += currentPos;
 	return;
 }
 
 void audio_callback(void *userdata, Uint8 *stream, int len)
 {
-	int tempLength = 0;
-
 	memset(stream, 0, len);
 
 	for (int sfx = 0; sfx < _countof(sounds); sfx++)
 	{
 		if (sounds[sfx].pos < sounds[sfx].length)
 		{
-			if (sounds[sfx].length - sounds[sfx].pos > len) { tempLength = len; }
-			else { tempLength = sounds[sfx].length - sounds[sfx].pos; }
-			mixAudio((int*)stream, (int*)(sounds[sfx].buf + sounds[sfx].pos),
-				tempLength, 100, 100);
-			sounds[sfx].pos += tempLength;
+			mixAudioSFX((int*)stream, len, &sounds[sfx], 100, 100);
 		}
 	}
 
@@ -211,9 +207,9 @@ void audio_callback(void *userdata, Uint8 *stream, int len)
 void ini_audio()
 {
 	want.channels = 2;
-	want.freq = 88200;
+	want.freq = 44100;
 	want.format = AUDIO_S32SYS;
-	want.samples = 4096;
+	want.samples = 1024;
 	want.callback = audio_callback;
 	want.userdata = 0;
 
@@ -232,15 +228,16 @@ void ini_audio()
 
 //since sdl doesn't actually get the loaded wav in the specified format,
 //we have to do it ourselves
-void loadSound(char *path, SDL_AudioSpec *spec, BYTE **buf, Uint32 *length)
+void loadSound(char *path, SDL_AudioSpec *spec, int **buf, Uint32 *length)
 {
 	int view = 0;
+	BYTE *pBuf = nullptr;
 	SDL_AudioSpec *lSpec = nullptr;
-	lSpec = SDL_LoadWAV(path, spec, buf, length);
-	BYTE *pBuf = *buf;
+	lSpec = SDL_LoadWAV(path, spec, &pBuf, length);
+	if (pBuf == NULL) { doError(); }
 	int *fakeBuf = (int*)malloc(*length * 4);
 	//number of data points to interolate
-	int dist = 4;
+	int dist = 2;
 	int *fakeFakeBuf = (int *)malloc(*length * 4 * 2);
 	int *realBuf = (int*)calloc(dist, *length * 4 * 2);
 
@@ -260,35 +257,33 @@ void loadSound(char *path, SDL_AudioSpec *spec, BYTE **buf, Uint32 *length)
 	//interpolation
 	for (int i = 0; i < *length << 1; i++)
 	{
-		realBuf[i << 2] = fakeFakeBuf[i];
-		realBuf[(i << 2) + 1] = fakeFakeBuf[i];
-		realBuf[(i << 2) + 2] = fakeFakeBuf[i];
-		realBuf[(i << 2) + 3] = fakeFakeBuf[i];
+		realBuf[i << 1] = fakeFakeBuf[i];
+		realBuf[(i << 1) + 1] = fakeFakeBuf[i];
 	}
 
 	free(fakeBuf);
 	free(fakeFakeBuf);
-	SDL_FreeWAV(*buf);
+	SDL_FreeWAV(pBuf);
 
-
-	*length *= (4 * dist * 2);
-	*buf = (BYTE*)realBuf;
+	*length *= (2 + dist);
+	*buf = realBuf;
 	return;
 }
 
+const char *soundPath = "data/Sound/";
+
 void loadSounds()
 {
-	char path[64] = "data/soundfx/";
+	char path[64];
 
 	for (int s = 0; s < _countof(sounds); s++)
 	{
 		if (sfxList[s] != NULL)
 		{
+			strcpy(path, soundPath);
 			strcat(path, sfxList[s]);
 			loadSound(path, &soundSpec, &sounds[s].buf, &sounds[s].length);
-			if (sounds[s].buf == NULL) { doError(); }
 			sounds[s].pos = sounds[s].length;
-			strcpy(path, "data/soundfx/");
 		}
 		else
 		{

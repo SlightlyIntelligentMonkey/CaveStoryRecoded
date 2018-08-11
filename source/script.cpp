@@ -165,6 +165,16 @@ void jumpScriptEvent(int event_num)
 	gameFlags |= 4;
 }
 
+void endTsc()
+{
+	memset(msgText, 0, sizeof(msgText));
+	gameFlags |= 3;
+	tscUpdateFlags = 0;
+	faceNo = 0;
+	gitNo = 0;
+	tscMode = END;
+}
+
 //renders a line of text
 void renderTextLine(int x, int y, char *str)
 {
@@ -469,12 +479,14 @@ int updateTsc() {
 		{
 			if (tscCounter != 9999)
 				tscCounter++;
+
 			if (tscCounter >= waitAmount)
 			{
 				tscMode = tscPrevMode;
 				tscCounter = 0;
 			}
 		}
+
 		tscCheck();
 		return 1;
 	case FADE:
@@ -536,8 +548,8 @@ int updateTsc() {
 
 		if (tsc[tscPos] != '<') { return 1; }
 
-		std::string debstr = &tsc[tscPos];
-		SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Critical Error", debstr.substr(0, 4).c_str(), NULL);
+		//std::string debstr = &tsc[tscPos];
+		//SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Critical Error", debstr.substr(0, 4).c_str(), NULL);
 
 		switch (tsc[tscPos + 3] + (tsc[tscPos + 2] << 8) + (tsc[tscPos + 1] << 16) + (tsc[tscPos] << 24))
 		{
@@ -678,7 +690,6 @@ int updateTsc() {
 					}
 				}
 			}
-
 			break;
 		case('<END'):
 			memset(msgText, 0, sizeof(msgText));
@@ -874,6 +885,41 @@ int updateTsc() {
 			tscCleanup(0);
 			break;
 		case('<MYB'):
+			currentPlayer.cond &= ~player_interact;
+			currentPlayer.ym = -0x200;
+
+			switch(ascii2num(&tsc[tscPos + 4], 4))
+			{
+			case 0:
+				currentPlayer.direct = 0;
+				currentPlayer.xm = 0x200;
+				break;
+
+			case 2:
+				currentPlayer.direct = 2;
+				currentPlayer.xm = -0x200;
+				break;
+
+			default:
+				for (int i = 0; i < npcs.size(); i++)
+				{
+					if (npcs[i].cond & npccond_alive && npcs[i].code_event == ascii2num(&tsc[tscPos + 4], 4))
+					{
+						if (npcs[i].x >= currentPlayer.x)
+						{
+							currentPlayer.direct = 2;
+							currentPlayer.xm = -0x200;
+						}
+						else
+						{
+							currentPlayer.direct = 0;
+							currentPlayer.xm = 0x200;
+						}
+					}
+				}
+				break;
+			}
+			
 			tscCleanup(1);
 			break;
 		case('<MYD'):
@@ -979,6 +1025,7 @@ int updateTsc() {
 			tscUpdateFlags |= 0x10;
 			break;
 		case('<UNI'):
+			currentPlayer.unit = ascii2num(&tsc[tscPos + 4], 4);
 			tscCleanup(1);
 			break;
 		case('<UNJ'):

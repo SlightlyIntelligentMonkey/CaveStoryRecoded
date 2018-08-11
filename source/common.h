@@ -111,8 +111,6 @@ extern SDL_Renderer *renderer;
 extern SDL_Rect DrawRect;
 extern SDL_Rect ImageRect;
 
-extern VIEW viewport;
-
 extern SDL_Texture* sprites[40];
 
 //Event variable
@@ -122,12 +120,13 @@ extern SDL_Event events;
 extern int framerate;
 extern unsigned int framerateTicks;
 
+extern VIEW viewport;
+
 extern int mode;
 
 extern bool exitGame;
 
 extern int gameFlags;
-extern int gamePhysics;
 
 //Functions
 void doError();
@@ -135,16 +134,11 @@ void doCustomError(const char *msg);
 
 //Modules
 #include "math.h"
-
 #include "filesystem.h"
 #include "render.h"
-
 #include "flags.h"
-
 #include "script.h"
-
 #include "input.h"
-
 #include "sound.h"
 
 //Classes
@@ -152,3 +146,6 @@ void doCustomError(const char *msg);
 #include "npc.h"
 #include "bullet.h"
 #include "caret.h"
+
+//States
+#include "game.h"

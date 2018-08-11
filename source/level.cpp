@@ -218,11 +218,12 @@ void loadLevel(int levelIndex) {
 
 	loadTsc(tscPath);
 
-	//Some extra setup stuff
+	//Fix viewport
 	viewport.x = currentPlayer.x - (screenWidth << 8);
 	viewport.y = currentPlayer.y - (screenHeight << 8);
 	viewport.quake = 0;
 	viewport.quake2 = 0;
+	viewBounds();
 }
 
 void drawLevel(bool foreground)

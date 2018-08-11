@@ -16,7 +16,6 @@ void player::init() {
 
 	life = 3;
 	max_life = 3;
-	gamePhysics = 0;
 }
 
 void player::setPos(int setX, int setY) {
@@ -74,7 +73,7 @@ void player::damage(int damage) {
 		cond &= ~player_removed;
 		shock = 0x80;
 
-		if (!gamePhysics)
+		if (!unit)
 			ym = -0x400;
 
 		life -= damage;
@@ -752,11 +751,7 @@ void player::update(bool bKey) {
 		if (shock)
 			--shock;
 		
-		if (gamePhysics == 1)
-		{
-			actStream(bKey);
-		}
-		else
+		if (!unit)
 		{
 			actNormal(bKey);
 
@@ -802,6 +797,10 @@ void player::update(bool bKey) {
 					}
 				}
 			}
+		}
+		else if (unit == 1)
+		{
+			actStream(bKey);
 		}
 
 		cond &= ~player_noFriction;

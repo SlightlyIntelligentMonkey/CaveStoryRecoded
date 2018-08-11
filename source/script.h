@@ -22,7 +22,10 @@ extern int mapNameDisplayTimer;
 extern int tscMode;
 
 void loadTsc(const char * path);
+
 void runScriptEvent(int event_num);
+void endTsc();
+
 int updateTsc();
 void updateMessageBox();
 
