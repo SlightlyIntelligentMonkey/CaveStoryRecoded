@@ -272,6 +272,22 @@ void drawTSC()
 	RECT rcGit = { 0, 0, 32, 16 };
 	SDL_Rect rcClip = { 0, 0, 0, 0 };
 
+	if (fadedOut == true)
+	{
+		SDL_SetRenderDrawColor(renderer, 0, 0, 32, 255);
+		SDL_RenderClear(renderer);
+	}
+
+	if (fadeCounter == 0xFFFFFFF) { tscDisplayFlags &= ~(FAI | FAO); }
+	if (tscDisplayFlags & FAI)
+	{
+		fadeIn(fadeDirection);
+	}
+	if (tscDisplayFlags & FAO)
+	{
+		fadeOut(fadeDirection);
+	}
+
 	if (tscMode != 0 && tscDisplayFlags & TSCVIS)
 	{
 
@@ -333,32 +349,6 @@ void drawTSC()
 					(screenHeight >> 1) + 34);
 			}
 		}
-	}
-
-	if (mapNameDisplayTimer++ < 160)
-	{
-		renderTextLine((screenWidth >> 1) - ((strlen(stageTable[currentLevel].name) * charWidth) >> 1),
-			80, stageTable[currentLevel].name);
-	}
-
-	if (fadedOut == true)
-	{
-		SDL_SetRenderDrawColor(renderer, 0, 0, 32, 255);
-		SDL_RenderClear(renderer);
-	}
-
-	if (fadeCounter == 0xFFFFFFF) { tscDisplayFlags &= ~(FAI | FAO); }
-	if (tscDisplayFlags & FAI)
-	{
-		fadeIn(fadeDirection);
-	}
-	if (tscDisplayFlags & FAO)
-	{
-		fadeOut(fadeDirection);
-	}
-
-	if (tscMode != END && tscDisplayFlags & TSCVIS)
-	{
 		if (tscDisplayFlags & MSGbox)
 		{
 			drawMessageBox(msgBoxX, msgBoxY, msgText);
@@ -402,6 +392,12 @@ void drawTSC()
 				msgBoxY + 8 + ((num*charHeight * 4) / 3) + 1,
 				charWidth, charHeight);
 		}
+	}
+	
+	if (mapNameDisplayTimer++ < 160)
+	{
+		renderTextLine((screenWidth >> 1) - ((strlen(stageTable[currentLevel].name) * charWidth) >> 1),
+			80, stageTable[currentLevel].name);
 	}
 	return;
 }
