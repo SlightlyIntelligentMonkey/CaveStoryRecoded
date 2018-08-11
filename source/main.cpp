@@ -1,5 +1,4 @@
 #include "common.h"
-#include "game.h"
 
 //Rendering and view related variables
 SDL_Window *window;
@@ -8,13 +7,10 @@ SDL_Renderer *renderer;
 SDL_Rect DrawRect;
 SDL_Rect ImageRect;
 
-VIEW viewport;
-
 //Game variables
 SDL_Event events;
 
 int gameFlags = 0;
-int gamePhysics = 0;
 
 int framerate = 20; //17 for 60-ish fps
 unsigned int framerateTicks;
@@ -63,7 +59,7 @@ int init() {
 	ini_audio();
 	loadSounds();
 	
-	createWindow(320, 240, 2, true);
+	createWindow(240 * 16 / 9, 240, 2, true);
 
 	//Load assets
 	loadNpcTable();

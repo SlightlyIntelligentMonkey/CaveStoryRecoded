@@ -10,4 +10,6 @@ enum gameStates
 	ESCAPE = 3
 };
 
+void viewBounds();
+
 int mainGameLoop();

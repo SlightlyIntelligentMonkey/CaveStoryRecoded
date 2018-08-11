@@ -103,15 +103,22 @@ void loadProfile()
 	SDL_ReadLE32(profile); //current item
 
 	currentPlayer.equip = SDL_ReadLE32(profile); //equipped items
+	currentPlayer.unit = SDL_ReadLE32(profile); //physics
 	
 	//Flags
-	SDL_RWseek(profile, 0x21C, 0);
+	SDL_RWseek(profile, 0x198, 0);
+
+	for (Sint64 i = 0; i < 0x80; i++)
+		SDL_RWread(profile, &mapFlags[i], 1, 1);
+
+	SDL_ReadLE32(profile); //FLAG
 
 	for (Sint64 i = 0; i < 1000; i++)
 		SDL_RWread(profile, &tscFlags[i], 1, 1);
 
 	//Now load level
 	loadLevel(level);
+	endTsc();
 }
 
 void saveProfile() {
@@ -132,11 +139,11 @@ void saveProfile() {
 	writeLEshort(profile, currentPlayer.life, 0x20); //Player health
 	
 	writeLElong(profile, currentPlayer.equip, 0x2C); //Equipped items
+	writeLElong(profile, currentPlayer.unit, 0x30); //Current physics
 
+	memcpy(profile + 0x198, mapFlags, 0x80);
 	memcpy(profile + 0x218, "FLAG", 4);
-
-	for (Sint64 i = 0; i < 1000; i++)
-		profile[0x21C + i] = tscFlags[i];
+	memcpy(profile + 0x21C, tscFlags, 1000);
 
 	//Save to file
 	writeFile((char*)profileName, profile, 0x604);

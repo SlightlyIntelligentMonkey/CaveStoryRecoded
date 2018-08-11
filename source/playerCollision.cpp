@@ -655,7 +655,7 @@ int playerHitNpcHardSolid(RECT *rcHit, player *me, npc *NPC)
 			if (me->ym - NPC->ym > 1024)
 				playSound(23);
 
-			if (gamePhysics == 1)
+			if (me->unit == 1)
 			{
 				me->y = NPC->y - NPC->rect.top - rcHit->bottom + 0x200;
 				hit |= ground;

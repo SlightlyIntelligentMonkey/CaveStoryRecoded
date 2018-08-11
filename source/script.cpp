@@ -156,6 +156,16 @@ void jumpScriptEvent(int event_num)
 	gameFlags |= 4;
 }
 
+void endTsc()
+{
+	memset(msgText, 0, sizeof(msgText));
+	gameFlags |= 3;
+	tscUpdateFlags = 0;
+	faceNo = 0;
+	gitNo = 0;
+	tscMode = END;
+}
+
 //renders a line of text
 void renderTextLine(int x, int y, char *str)
 {
@@ -302,6 +312,56 @@ void drawTSC()
 			rcView.bottom = 232;
 		}
 
+		if (tscDisplayFlags & MSGbox)
+		{
+			drawMessageBox(msgBoxX, msgBoxY, msgText);
+
+			//displaying face
+			if (faceNo)
+			{
+				textOffset = 56;
+				rcClip = { msgBoxX + 12, msgBoxY + 11, 48, 45 };
+
+				rcFace.left = 48 * (faceNo % 6);
+				rcFace.top = 48 * (faceNo / 6);
+				rcFace.right = rcFace.left + 48;
+				rcFace.bottom = rcFace.top + 48;
+
+				//Move
+				faceX += 8;
+				if (faceX >= 14)
+					faceX = 14;
+
+				SDL_RenderSetClipRect(renderer, &rcClip);
+				drawTexture(sprites[TEX_FACE], &rcFace, msgBoxX + faceX, msgBoxY + 8);
+				SDL_RenderSetClipRect(renderer, NULL);
+			}
+			else
+				textOffset = 0;
+		}
+
+		//renders cursor during text when text scrolling scrolling is paused
+		if (tscNumber++ % 20 > 12 && tscMode == NOD && !(tscUpdateFlags & 0x30))
+		{
+			int num = 0;
+			int some_num = 0;
+
+			for (size_t i = 0; i < strlen(msgText); i++)
+			{
+				if (msgText[i] == '\n')
+				{
+					num++;
+					some_num = i + 1;
+				}
+			}
+
+			SDL_SetRenderDrawColor(renderer, 255, 255, 254, 255);
+			drawRect(
+				msgBoxX + 8 + charWidth + (strlen(msgText) * (charWidth + charSeparation)) - (some_num * (charWidth + charSeparation)) + textOffset,
+				msgBoxY + 8 + ((num * charHeight * 4) / 3) + 1,
+				charWidth, charHeight);
+		}
+
 		if (gitNo != 0)
 		{
 			drawTexture(sprites[TEX_TEXTBOX], &rcItemBox1, (screenWidth >> 1) - 40, (screenHeight >> 1) + 8);
@@ -348,49 +408,6 @@ void drawTSC()
 					41 * yesnoSelect + ((screenWidth >> 1) + 51),
 					(screenHeight >> 1) + 34);
 			}
-		}
-		if (tscDisplayFlags & MSGbox)
-		{
-			drawMessageBox(msgBoxX, msgBoxY, msgText);
-		}
-
-		//displaying face
-		if (faceNo)
-		{
-			textOffset = 56;
-			rcClip = { msgBoxX + 8, msgBoxY + 8, 48, 48 };
-
-			rcFace.left = 48 * (faceNo % 6);
-			rcFace.top = 48 * (faceNo / 6);
-			rcFace.right = rcFace.left + 48;
-			rcFace.bottom = rcFace.top + 48;
-
-			faceX += 8;
-			if (faceX >= msgBoxX + 8) { faceX = msgBoxX + 8; }
-			SDL_RenderSetClipRect(renderer, &rcClip);
-			drawTexture(sprites[TEX_FACE], &rcFace, faceX, msgBoxY + 8);
-			SDL_RenderSetClipRect(renderer, NULL);
-		}
-		else { textOffset = 0; }
-
-		//renders cursor during text when text scrolling scrolling is paused
-		if (tscNumber++ % 20 > 12 && tscMode == NOD)
-		{
-			int num = 0;
-			int some_num = 0;
-			for (size_t i = 0; i < strlen(msgText); i++)
-			{
-				if (msgText[i] == '\n')
-				{
-					num++;
-					some_num = i + 1;
-				}
-			}
-			SDL_SetRenderDrawColor(renderer, 255, 255, 254, 255);
-			drawRect(
-				msgBoxX + 8 + charWidth + (strlen(msgText)*charWidth) - (some_num*charWidth) + textOffset,
-				msgBoxY + 8 + ((num*charHeight * 4) / 3) + 1,
-				charWidth, charHeight);
 		}
 	}
 	
@@ -468,12 +485,14 @@ int updateTsc() {
 		{
 			if (tscCounter != 9999)
 				tscCounter++;
+
 			if (tscCounter >= waitAmount)
 			{
 				tscMode = tscPrevMode;
 				tscCounter = 0;
 			}
 		}
+
 		tscCheck();
 		return 1;
 	case FADE:
@@ -678,7 +697,6 @@ int updateTsc() {
 					}
 				}
 			}
-
 			break;
 		case('<END'):
 			memset(msgText, 0, sizeof(msgText));
@@ -718,7 +736,7 @@ int updateTsc() {
 			fadeCounter = 0;
 			fadeDirection = ascii2num(&tsc[tscPos + 4], 4);
 			tscCleanup(1);
-			return 1;
+			break;
 		case('<FAO'):
 			tscMode = FADE;
 			tscDisplayFlags |= FAO;
@@ -726,7 +744,7 @@ int updateTsc() {
 			fadeCounter = 0;
 			fadeDirection = ascii2num(&tsc[tscPos + 4], 4);
 			tscCleanup(1);
-			return 1;
+			break;
 		case('<FL+'):
 			setFlag(ascii2num(&tsc[tscPos + 4], 4));
 			tscCleanup(1);
@@ -844,9 +862,13 @@ int updateTsc() {
 			tscCleanup(2);
 			break;
 		case('<MPJ'):
-			tscCleanup(1);
+			if (getMapFlag(currentLevel) == true)
+				jumpScriptEvent(ascii2num(&tsc[tscPos + 4], 4));
+			else
+				tscCleanup(1);
 			break;
 		case('<MP+'):
+			setMapFlag(ascii2num(&tsc[tscPos + 4], 4));
 			tscCleanup(1);
 			break;
 		case('<MS2'):
@@ -885,6 +907,41 @@ int updateTsc() {
 			tscCleanup(0);
 			break;
 		case('<MYB'):
+			currentPlayer.cond &= ~player_interact;
+			currentPlayer.ym = -0x200;
+
+			switch(ascii2num(&tsc[tscPos + 4], 4))
+			{
+			case 0:
+				currentPlayer.direct = 0;
+				currentPlayer.xm = 0x200;
+				break;
+
+			case 2:
+				currentPlayer.direct = 2;
+				currentPlayer.xm = -0x200;
+				break;
+
+			default:
+				for (int i = 0; i < npcs.size(); i++)
+				{
+					if (npcs[i].cond & npccond_alive && npcs[i].code_event == ascii2num(&tsc[tscPos + 4], 4))
+					{
+						if (npcs[i].x >= currentPlayer.x)
+						{
+							currentPlayer.direct = 2;
+							currentPlayer.xm = -0x200;
+						}
+						else
+						{
+							currentPlayer.direct = 0;
+							currentPlayer.xm = 0x200;
+						}
+					}
+				}
+				break;
+			}
+			
 			tscCleanup(1);
 			break;
 		case('<MYD'):
@@ -990,6 +1047,7 @@ int updateTsc() {
 			tscUpdateFlags |= 0x10;
 			break;
 		case('<UNI'):
+			currentPlayer.unit = ascii2num(&tsc[tscPos + 4], 4);
 			tscCleanup(1);
 			break;
 		case('<UNJ'):

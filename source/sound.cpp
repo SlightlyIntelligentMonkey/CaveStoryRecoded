@@ -270,18 +270,21 @@ void loadSound(char *path, SDL_AudioSpec *spec, int **buf, Uint32 *length)
 	return;
 }
 
+
+const char *soundPath = "data/Sound/";
+
 void loadSounds()
 {
-	char path[64] = "data/Sound/";
+	char path[64];
 
 	for (int s = 0; s < _countof(sounds); s++)
 	{
 		if (sfxList[s] != NULL)
 		{
+			strcpy(path, soundPath);
 			strcat(path, sfxList[s]);
 			loadSound(path, &soundSpec, &sounds[s].buf, &sounds[s].length);
 			sounds[s].pos = sounds[s].length;
-			strcpy(path, "data/Sound/");
 		}
 		else
 		{

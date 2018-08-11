@@ -7,12 +7,10 @@
 int gameMode = 0;
 int prevGameMode = 0;
 
-void handleView()
-{
-	//Move view
-	viewport.x += ((*viewport.lookX - (screenWidth << 8)) - viewport.x) / viewport.speed;
-	viewport.y += ((*viewport.lookY - (screenHeight << 8)) - viewport.y) / viewport.speed;
+VIEW viewport;
 
+void viewBounds()
+{
 	//Keep view in level
 	if ((levelWidth - 1) << 4 > screenWidth)
 		viewport.x = clamp(viewport.x, 0, ((levelWidth - 1) << 13) - (screenWidth << 9));
@@ -23,6 +21,15 @@ void handleView()
 		viewport.y = clamp(viewport.y, 0, ((levelHeight - 1) << 13) - (screenHeight << 9));
 	else
 		viewport.y = ((levelHeight - 1) << 12) - (screenHeight << 8);
+}
+
+void handleView()
+{
+	//Move view
+	viewport.x += ((*viewport.lookX - (screenWidth << 8)) - viewport.x) / viewport.speed;
+	viewport.y += ((*viewport.lookY - (screenHeight << 8)) - viewport.y) / viewport.speed;
+
+	viewBounds();
 
 	//Quake
 	if (viewport.quake2)

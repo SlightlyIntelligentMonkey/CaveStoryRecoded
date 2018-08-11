@@ -95,41 +95,41 @@ BULLETSTATS bulletTable[] =
 #include "polarStar.h"
 
 //CLASS
-void bullet::init(int id, int setX, int setY, int dir, int setLevel)
+void bullet::init(int setCode, int setX, int setY, int setDir)
 {
 	memset(this, 0, sizeof(*this));
 
-	type = id;
-	cond = bullet_alive;
+	code_bullet = setCode;
+	cond = 0x80;
 
 	x = setX;
 	y = setY;
+	direct = setDir;
 
-	direction = dir;
+	damage = bulletTable[setCode].damage;
 
-	damage = bulletTable[id].damage;
+	life = bulletTable[setCode].life;
+	life_count = bulletTable[setCode].life_count;
 
-	hits = bulletTable[id].hits;
-	range = bulletTable[id].range;
+	bbits = bulletTable[setCode].bbits;
 
-	flags = bulletTable[id].flags;
+	enemyXL = bulletTable[setCode].enemyXL << 9;
+	enemyYL = bulletTable[setCode].enemyYL << 9;
+	blockXL = bulletTable[setCode].blockXL << 9;
+	blockYL = bulletTable[setCode].blockYL << 9;
 
-	enemyWidth = bulletTable[id].enemyWidth << 9;
-	enemyHeight = bulletTable[id].enemyHeight << 9;
-
-	blockWidth = bulletTable[id].blockWidth << 9;
-	blockHeight = bulletTable[id].blockHeight << 9;
-
-	level = setLevel;
-
-	offset.right = bulletTable[id].view.right << 9;
-	offset.left = bulletTable[id].view.left << 9;
-	offset.top = bulletTable[id].view.top << 9;
-	offset.bottom = bulletTable[id].view.bottom << 9;
+	view.right = bulletTable[setCode].view.right << 9;
+	view.left = bulletTable[setCode].view.left << 9;
+	view.top = bulletTable[setCode].view.top << 9;
+	view.bottom = bulletTable[setCode].view.bottom << 9;
 }
+
+//Bullet act functions
+bulletAct bulletActs[] = {
+	(bulletAct)nullptr,
+};
 
 void bullet::update()
 {
-	actPolarStar(this);
-	//bulletActs[type](this);
+	bulletActs[code_bullet](this);
 }

@@ -26,18 +26,3 @@ enum bulletFlags {
 	bullet_pierceBlocks = 0x40,
 	bullet_alive = 0x80,
 };
-
-struct BULLETSTATS
-{
-	int damage;
-	int hits;
-	int range;
-	int flags;
-
-	int enemyWidth;
-	int enemyHeight;
-	int blockWidth;
-	int blockHeight;
-
-	RECT view;
-};
