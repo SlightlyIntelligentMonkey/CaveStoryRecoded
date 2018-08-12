@@ -1,6 +1,7 @@
-#include "render.h"
+#include "fade.h"
 
-int fadeCounter = 0;
+unsigned int fadeCounter = 0;
+int fadeDirection = 0;
 
 const int numFadeFrames = 16;
 bool fadedOut = true;
@@ -31,7 +32,7 @@ void fadeOut(const int direction)
 				drawTexture(sprites[TEX_FADE], &rcFade, x << 4, y << 4);
 			}
 		}
-		if (fadeCounter++ > (screenWidth >> 4) + 1 + numFadeFrames)
+		if (fadeCounter++ >(screenWidth >> 4) + 1 + numFadeFrames)
 		{
 			tscMode = PARSE;
 			fadedOut = true;
@@ -49,7 +50,7 @@ void fadeOut(const int direction)
 				drawTexture(sprites[TEX_FADE], &rcFade, x << 4, y << 4);
 			}
 		}
-		if (fadeCounter++ > (screenHeight >> 4) + 1 + numFadeFrames)
+		if (fadeCounter++ >(screenHeight >> 4) + 1 + numFadeFrames)
 		{
 			tscMode = PARSE;
 			fadedOut = true;
@@ -67,7 +68,7 @@ void fadeOut(const int direction)
 				drawTexture(sprites[TEX_FADE], &rcFade, x << 4, y << 4);
 			}
 		}
-		if (fadeCounter++ > (screenWidth >> 4) + 1 + numFadeFrames)
+		if (fadeCounter++ >(screenWidth >> 4) + 1 + numFadeFrames)
 		{
 			tscMode = PARSE;
 			fadedOut = true;
@@ -85,7 +86,7 @@ void fadeOut(const int direction)
 				drawTexture(sprites[TEX_FADE], &rcFade, x << 4, y << 4);
 			}
 		}
-		if (fadeCounter++ > (screenHeight >> 4) + 1 + numFadeFrames)
+		if (fadeCounter++ >(screenHeight >> 4) + 1 + numFadeFrames)
 		{
 			tscMode = PARSE;
 			fadedOut = true;
@@ -97,18 +98,20 @@ void fadeOut(const int direction)
 		{
 			for (int y = 0; y < (screenHeight >> 4) + 1; y++)
 			{
-				rcFade.left = (fadeCounter - abs(x - (screenWidth >> 5)) - abs(y - (screenHeight>>5)) << 4);
+				rcFade.left = 240 - (((((screenWidth + screenHeight) >> 5) + 1 + numFadeFrames) - fadeCounter) - abs(x - (screenWidth >> 5)) - abs(y - (screenHeight >> 5)) << 4);
 				if (rcFade.left >= (numFadeFrames - 1) << 4) { rcFade.left = (numFadeFrames - 1) << 4; }
 				rcFade.right = rcFade.left + 16;
 				drawTexture(sprites[TEX_FADE], &rcFade, x << 4, y << 4);
 			}
 		}
-		if (fadeCounter++ > ((screenWidth + screenHeight) >> 5) + 1 + numFadeFrames) 
-		{ 
-			tscMode = PARSE; 
+		
+		if (fadeCounter++ > ((screenWidth + screenHeight) >> 5) + 1 + numFadeFrames)
+		{
+			tscMode = PARSE;
 			fadedOut = true;
 			tscDisplayFlags &= ~FAO;
 		}
+
 		break;
 	}
 	return;
@@ -118,7 +121,7 @@ void fadeIn(const int direction)
 {
 	RECT rcFade = { 0, 0, 16, 16 };
 	fadedOut = false;
-	
+
 	switch (direction)
 	{
 	case(left):
@@ -132,9 +135,9 @@ void fadeIn(const int direction)
 				drawTexture(sprites[TEX_FADE], &rcFade, x << 4, y << 4);
 			}
 		}
-		if (fadeCounter++ > (screenWidth >> 4) + 1 + numFadeFrames) 
-		{ 
-			tscMode = PARSE; 
+		if (fadeCounter++ >(screenWidth >> 4) + 1 + numFadeFrames)
+		{
+			tscMode = PARSE;
 			tscDisplayFlags &= ~FAI;
 		}
 		break;
@@ -149,7 +152,7 @@ void fadeIn(const int direction)
 				drawTexture(sprites[TEX_FADE], &rcFade, x << 4, y << 4);
 			}
 		}
-		if (fadeCounter++ > (screenHeight >> 4) + 1 + numFadeFrames) 
+		if (fadeCounter++ >(screenHeight >> 4) + 1 + numFadeFrames)
 		{
 			tscMode = PARSE;
 			tscDisplayFlags &= ~FAI;
@@ -183,7 +186,7 @@ void fadeIn(const int direction)
 				drawTexture(sprites[TEX_FADE], &rcFade, x << 4, y << 4);
 			}
 		}
-		if (fadeCounter++ > (screenHeight >> 4) + 1 + numFadeFrames)
+		if (fadeCounter++ >(screenHeight >> 4) + 1 + numFadeFrames)
 		{
 			tscMode = PARSE;
 			tscDisplayFlags &= ~FAI;
@@ -200,7 +203,7 @@ void fadeIn(const int direction)
 				drawTexture(sprites[TEX_FADE], &rcFade, x << 4, y << 4);
 			}
 		}
-		if (fadeCounter++ >((screenWidth + screenHeight) >> 5) + 1 + numFadeFrames)
+		if (fadeCounter++ > ((screenWidth + screenHeight) >> 5) + 1 + numFadeFrames)
 		{
 			tscMode = PARSE;
 			tscDisplayFlags &= ~FAI;
@@ -212,6 +215,20 @@ void fadeIn(const int direction)
 
 void drawFade()
 {
+	if (fadedOut == true)
+	{
+		SDL_SetRenderDrawColor(renderer, 0, 0, 32, 255);
+		SDL_RenderClear(renderer);
+	}
 
+	if (fadeCounter == 0xFFFFFFF) { tscDisplayFlags &= ~(FAI | FAO); }
+	if (tscDisplayFlags & FAI)
+	{
+		fadeIn(fadeDirection);
+	}
+	if (tscDisplayFlags & FAO)
+	{
+		fadeOut(fadeDirection);
+	}
 	return;
 }

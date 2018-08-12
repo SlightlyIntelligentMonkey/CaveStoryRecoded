@@ -1,4 +1,5 @@
 #include "filesystem.h"
+#include "fade.h"
 
 //Read function stuff
 uint16_t readLEshort(BYTE *data, unsigned int offset) {
@@ -77,48 +78,57 @@ const char *profileCode = "Do041220";
 
 void loadProfile()
 {
-	SDL_RWops *profile = SDL_RWFromFile(profileName, "rb");
+	if (fileExists(profileName))
+	{
+		SDL_RWops *profile = SDL_RWFromFile(profileName, "rb");
 
-	if (profile == nullptr)
-		return;
+		if (profile == nullptr)
+			return;
 
-	uint64_t code = SDL_ReadLE64(profile); //Code
+		uint64_t code = SDL_ReadLE64(profile); //Code
 
-	int level = SDL_ReadLE32(profile); //level
-	SDL_ReadLE32(profile); //song
+		int level = SDL_ReadLE32(profile); //level
+		SDL_ReadLE32(profile); //song
 
-	currentPlayer.init();
+		currentPlayer.init();
 
-	currentPlayer.x = SDL_ReadLE32(profile); //Player X
-	currentPlayer.y = SDL_ReadLE32(profile); //Player Y
-	currentPlayer.direct = SDL_ReadLE32(profile); //Player Direction
+		currentPlayer.x = SDL_ReadLE32(profile); //Player X
+		currentPlayer.y = SDL_ReadLE32(profile); //Player Y
+		currentPlayer.direct = SDL_ReadLE32(profile); //Player Direction
 
-	currentPlayer.max_life = SDL_ReadLE16(profile); //max health
-	currentPlayer.star = SDL_ReadLE16(profile); //whimsical star
-	currentPlayer.life = SDL_ReadLE16(profile); //health
+		currentPlayer.max_life = SDL_ReadLE16(profile); //max health
+		currentPlayer.star = SDL_ReadLE16(profile); //whimsical star
+		currentPlayer.life = SDL_ReadLE16(profile); //health
 
-	SDL_ReadLE16(profile); // a?
+		SDL_ReadLE16(profile); // a?
 
-	SDL_ReadLE32(profile); //current weapon
-	SDL_ReadLE32(profile); //current item
+		SDL_ReadLE32(profile); //current weapon
+		SDL_ReadLE32(profile); //current item
 
-	currentPlayer.equip = SDL_ReadLE32(profile); //equipped items
-	currentPlayer.unit = SDL_ReadLE32(profile); //physics
-	
-	//Flags
-	SDL_RWseek(profile, 0x198, 0);
+		currentPlayer.equip = SDL_ReadLE32(profile); //equipped items
+		currentPlayer.unit = SDL_ReadLE32(profile); //physics
 
-	for (Sint64 i = 0; i < 0x80; i++)
-		SDL_RWread(profile, &mapFlags[i], 1, 1);
+		//Flags
+		SDL_RWseek(profile, 0x198, 0);
 
-	SDL_ReadLE32(profile); //FLAG
+		for (Sint64 i = 0; i < 0x80; i++)
+			SDL_RWread(profile, &mapFlags[i], 1, 1);
 
-	for (Sint64 i = 0; i < 1000; i++)
-		SDL_RWread(profile, &tscFlags[i], 1, 1);
+		SDL_ReadLE32(profile); //FLAG
 
-	//Now load level
-	loadLevel(level);
-	endTsc();
+		for (Sint64 i = 0; i < 1000; i++)
+			SDL_RWread(profile, &tscFlags[i], 1, 1);
+
+		//Now load level
+		loadLevel(level);
+		runScriptEvent(0);
+		fadeCounter = 0xFFFFFFF;
+		fadedOut = false;
+	}
+	else
+	{
+		initGame();
+	}
 }
 
 void saveProfile() {

@@ -12,4 +12,6 @@ enum gameStates
 
 void viewBounds();
 
+void initGame();
+
 int mainGameLoop();

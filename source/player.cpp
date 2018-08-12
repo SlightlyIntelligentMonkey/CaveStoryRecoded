@@ -29,7 +29,7 @@ void player::setPos(int setX, int setY) {
 
 	xm = 0;
 	ym = 0;
-	cond &= ~player_removed;
+	cond &= ~player_interact;
 }
 
 void player::setDir(int setDirect) {
@@ -70,7 +70,9 @@ void player::setDir(int setDirect) {
 void player::damage(int damage) {
 	if (!shock)
 	{
-		cond &= ~player_removed;
+		playSound(16);
+
+		cond &= ~player_interact;
 		shock = 0x80;
 
 		if (!unit)

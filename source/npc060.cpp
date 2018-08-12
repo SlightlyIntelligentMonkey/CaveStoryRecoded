@@ -685,7 +685,7 @@ void npcAct073(npc *NPC) //Water drop
 	NPC->y += NPC->ym;
 	
 	//Set frameRect
-	NPC->rect = { 72 + (NPC->ani_no << 1),16,74 + (NPC->ani_no << 1),18 };
+	NPC->rect = { 72 + (NPC->ani_no << 1), 16, 74 + (NPC->ani_no << 1), 18 };
 
 	if (NPC->direct == 2) //Blood
 	{
@@ -695,13 +695,7 @@ void npcAct073(npc *NPC) //Water drop
 
 	if (++NPC->act_wait > 10)
 	{
-		if (NPC->flag & leftWall)
-			NPC->cond = 0;
-		if (NPC->flag & rightWall)
-			NPC->cond = 0;
-		if (NPC->flag & ground)
-			NPC->cond = 0;
-		if (NPC->flag & water)
+		if (NPC->flag & (leftWall | rightWall | ground | water))
 			NPC->cond = 0;
 	}
 
@@ -805,7 +799,7 @@ void npcAct074(npc *NPC) //Jack
 		NPC->rect = rcLeft[NPC->ani_no];
 }
 
-void npcAct076(npc *NPC)
+void npcAct076(npc *NPC) //Flower
 {
 	NPC->rect.left = 16 * NPC->code_event; // Rects depend on the event number... Weird
 	NPC->rect.top = 0;

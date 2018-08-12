@@ -105,6 +105,19 @@ void debugLevels()
 	return;
 }
 
+void initGame()
+{
+	gameFlags = 3;
+	memset(tscFlags, 0, sizeof(tscFlags));
+	currentPlayer.init();
+	currentPlayer.setPos(10 << 13, 8 << 13);
+	loadLevel(13);
+	runScriptEvent(200);
+	tscDisplayFlags = 0;
+	fadedOut = true;
+	fadeCounter = 0;
+}
+
 int gameUpdatePlay()
 {
 	int swPlay = 1;
@@ -143,17 +156,16 @@ int gameUpdatePlay()
 		debugLevels();
 
 		//Update stuff
-		if (gameFlags & 1)
+		if (swPlay & 1 && gameFlags & 1)
 		{
-			updateNPC();
-
 			if (gameFlags & 2)
 				currentPlayer.update(true);
 			else
 				currentPlayer.update(false);
 
-			updateCarets();
+			updateNPC();
 
+			updateCarets();
 			handleView();
 		}
 
@@ -169,6 +181,8 @@ int gameUpdatePlay()
 
 		if (gameFlags & 2)
 			drawHud(false);
+
+		drawFade();
 
 		if (swPlay & 1)
 		{
@@ -245,24 +259,14 @@ int gameUpdateMenu()
 		{
 			playSound(18);
 
-			if (select == 0 || !fileExists("Profile.dat"))
+			if (select == 0)
 			{
-				gameFlags = 3;
-				memset(tscFlags, 0, sizeof(tscFlags));
-				loadLevel(13);
-				currentPlayer.init();
-				currentPlayer.setPos(10 << 13, 8 << 13);
-				runScriptEvent(200);
-
-				//sound::playOrg(8);
+				initGame();
 				break;
 			}
 			else
 			{
-				gameFlags = 3;
 				loadProfile();
-				fadeCounter = 0xFFFFFFF;
-				fadedOut = false;
 				break;
 			}
 		}
@@ -373,6 +377,7 @@ int gameUpdateIntro()
 		//Draw carets
 		drawCarets();
 
+		drawFade();
 		updateTsc();
 		drawTSC();
 

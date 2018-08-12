@@ -222,6 +222,8 @@ void loadLevel(int levelIndex) {
 	//Fix viewport
 	viewport.x = currentPlayer.x - (screenWidth << 8);
 	viewport.y = currentPlayer.y - (screenHeight << 8);
+	viewport.lookX = &currentPlayer.tgt_x;
+	viewport.lookY = &currentPlayer.tgt_y;
 	viewport.quake = 0;
 	viewport.quake2 = 0;
   

@@ -13,8 +13,6 @@ static char *tsc = 0;
 int tscMode = 0;
 int tscPrevMode = 0;
 
-int fadeDirection = 0;
-
 int tscPos = -1;
 unsigned int tscCounter = 0;
 int tscWait = 0;
@@ -164,6 +162,8 @@ void endTsc()
 	faceNo = 0;
 	gitNo = 0;
 	tscMode = END;
+	fadedOut = false;
+	fadeCounter = 0xFFFFFFF;
 }
 
 //renders a line of text
@@ -282,22 +282,11 @@ void drawTSC()
 	RECT rcGit = { 0, 0, 32, 16 };
 	SDL_Rect rcClip = { 0, 0, 0, 0 };
 
-	if (fadedOut == true)
+	if (mapNameDisplayTimer++ < 160)
 	{
-		SDL_SetRenderDrawColor(renderer, 0, 0, 32, 255);
-		SDL_RenderClear(renderer);
+		renderTextLine((screenWidth >> 1) - ((strlen(stageTable[currentLevel].name) * charWidth) >> 1),
+			80, stageTable[currentLevel].name);
 	}
-
-	if (fadeCounter == 0xFFFFFFF) { tscDisplayFlags &= ~(FAI | FAO); }
-	if (tscDisplayFlags & FAI)
-	{
-		fadeIn(fadeDirection);
-	}
-	if (tscDisplayFlags & FAO)
-	{
-		fadeOut(fadeDirection);
-	}
-
 	if (tscMode != 0 && tscDisplayFlags & TSCVIS)
 	{
 
@@ -320,7 +309,7 @@ void drawTSC()
 			if (faceNo)
 			{
 				textOffset = 56;
-				rcClip = { msgBoxX + 12, msgBoxY + 11, 48, 45 };
+				rcClip = { msgBoxX + 14, msgBoxY + 11, 48, 45 };
 
 				rcFace.left = 48 * (faceNo % 6);
 				rcFace.top = 48 * (faceNo / 6);
@@ -409,12 +398,6 @@ void drawTSC()
 					(screenHeight >> 1) + 34);
 			}
 		}
-	}
-	
-	if (mapNameDisplayTimer++ < 160)
-	{
-		renderTextLine((screenWidth >> 1) - ((strlen(stageTable[currentLevel].name) * charWidth) >> 1),
-			80, stageTable[currentLevel].name);
 	}
 	return;
 }
@@ -736,7 +719,7 @@ int updateTsc() {
 			fadeCounter = 0;
 			fadeDirection = ascii2num(&tsc[tscPos + 4], 4);
 			tscCleanup(1);
-			break;
+			return 1;
 		case('<FAO'):
 			tscMode = FADE;
 			tscDisplayFlags |= FAO;
@@ -744,7 +727,7 @@ int updateTsc() {
 			fadeCounter = 0;
 			fadeDirection = ascii2num(&tsc[tscPos + 4], 4);
 			tscCleanup(1);
-			break;
+			return 1;
 		case('<FL+'):
 			setFlag(ascii2num(&tsc[tscPos + 4], 4));
 			tscCleanup(1);
@@ -806,6 +789,7 @@ int updateTsc() {
 			tscMode = END;
 			gameFlags = 3;
 			loadProfile();
+			fadedOut = false;
 			return 1;
 		case('<INP'):
 			tscCleanup(3);
@@ -910,7 +894,7 @@ int updateTsc() {
 			currentPlayer.cond &= ~player_interact;
 			currentPlayer.ym = -0x200;
 
-			switch(ascii2num(&tsc[tscPos + 4], 4))
+			switch (ascii2num(&tsc[tscPos + 4], 4))
 			{
 			case 0:
 				currentPlayer.direct = 0;
@@ -941,7 +925,7 @@ int updateTsc() {
 				}
 				break;
 			}
-			
+
 			tscCleanup(1);
 			break;
 		case('<MYD'):
@@ -1039,8 +1023,7 @@ int updateTsc() {
 			currentPlayer.setPos(TILE2COORD(ascii2num(&tsc[tscPos + 14], 4)),
 				TILE2COORD(ascii2num(&tsc[tscPos + 19], 4)));
 			loadLevel(ascii2num(&tsc[tscPos + 4], 4));
-			currentPlayer.cond &= ~player_interact;
-			jumpScriptEvent(num);
+			runScriptEvent(num);
 			return 1;
 		case('<TUR'):
 			tscCleanup(0);
