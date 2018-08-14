@@ -816,7 +816,7 @@ void npcAct078(npc *NPC) //Pot
 		NPC->rect = { 160, 48, 176, 64 };
 }
 
-void npcAct079(npc *NPC)
+void npcAct079(npc *NPC) // Mahin
 {
 	RECT rcLeft[3] = { { 0, 0, 16, 16 },{ 16, 0, 32, 16 },{ 32, 0, 48, 16 } };
 	RECT rcRight[3] = { { 0, 16, 16, 32 },{ 16, 16, 32, 32 },{ 32, 16, 48, 32 } };

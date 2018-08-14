@@ -22,7 +22,7 @@ void npcAct046(npc *NPC) //H/V trigger
 	NPC->rect = { 0, 0, 16, 16 };
 }
 
-void npcAct052(npc *NPC)
+void npcAct052(npc *NPC) // Blue robots
 {
 	NPC->rect = { 240, 96, 256, 112 };
 }

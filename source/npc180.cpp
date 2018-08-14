@@ -1,6 +1,6 @@
 #include "npc180.h"
 
-void npcAct195(npc *NPC)
+void npcAct195(npc *NPC) // Grate mouth
 {
 	NPC->rect = { 112, 64, 128, 80 };
 }

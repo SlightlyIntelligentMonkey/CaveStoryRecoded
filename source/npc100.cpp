@@ -348,12 +348,12 @@ void npcAct117(npc *NPC)
 	NPC->y += NPC->ym;
 }
 
-void npcAct116(npc *NPC)
+void npcAct116(npc *NPC) // Red flowers petals
 {
 	NPC->rect = { 272, 184, 320, 200 };
 }
 
-void npcAct119(npc *NPC)
+void npcAct119(npc *NPC) // Table & Chair
 {
 	NPC->rect = { 248, 184, 272, 200 };
 }

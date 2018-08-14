@@ -1,6 +1,6 @@
 #include "npc120.h"
 
-void npcAct137(npc *NPC)
+void npcAct137(npc *NPC) // Large doorway frame
 {
 	NPC->rect = { 96, 136, 128, 188 };
 }

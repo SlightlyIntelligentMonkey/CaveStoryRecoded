@@ -236,12 +236,12 @@ void npcAct084(npc *NPC) //Basu 1 projectile
 	}
 }
 
-void npcAct090(npc *NPC)
+void npcAct090(npc *NPC) // Background
 {
 	NPC->rect = { 280, 80, 296, 104 };
 }
 
-void npcAct091(npc *NPC)
+void npcAct091(npc *NPC) // Cage 
 {
 	if (!NPC->act_no)
 	{

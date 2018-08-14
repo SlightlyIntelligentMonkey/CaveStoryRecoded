@@ -53,7 +53,7 @@ void npcAct023(npc *NPC) //Teleporter lights
 	NPC->rect = { 264, 16 + (NPC->ani_no * 4), 288, 20 + (NPC->ani_no * 4) };
 }
 
-void npcAct030(npc *NPC)
+void npcAct030(npc *NPC) // Hermit Gunsmith
 {
 	RECT rcNPC[3] = { { 48, 0, 64, 16 },{ 48, 16, 64, 32 },{ 0, 32, 16, 48 } };
 	

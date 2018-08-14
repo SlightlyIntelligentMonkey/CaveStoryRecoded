@@ -26,3 +26,8 @@ void npcAct211(npc *NPC) //Spikes
 
 	NPC->rect = { setRect->left, setRect->top, setRect->right, setRect->bottom };
 }
+
+void npcAct216(npc *NPC) // Debug cat
+{
+	NPC->rect = { 256, 192, 272, 216 };
+}
