@@ -21,21 +21,24 @@ bool exitGame = false;
 
 // Some global functions
 
-static void doQuit() {
+static void doQuit() 
+{
 	//sound::quit();
 	IMG_Quit();
 	SDL_Quit();
 	freeSounds();
 }
 
-void doError() {
+void doError() 
+{
 	SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Critical Error", SDL_GetError(), NULL);
 	SDL_ClearError();
 	doQuit();
 	exit(EXIT_FAILURE);
 }
 
-void doCustomError(const char *msg) {
+void doCustomError(const char *msg) 
+{
 	SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Critical Error", msg, NULL);
 	doQuit();
 	exit(EXIT_FAILURE);
@@ -43,30 +46,8 @@ void doCustomError(const char *msg) {
 
 SDL_Texture* sprites[0x28];
 
-int init() {
-	//Initiate SDL and window stuff
-	if (SDL_Init(SDL_INIT_TIMER | SDL_INIT_AUDIO | SDL_INIT_VIDEO) < 0)
-		doCustomError("Couldn't initiate SDL");
-
-	//Initiate SDL_image
-	if (!(IMG_Init(IMG_INIT_PNG) & IMG_INIT_PNG))
-		doCustomError("Couldn't initiate SDL Image");
-	
-	// TBD : Load config data, initialise keybinds and screen resolution based on it
-	// TBD : Check for s_reverse, mute and fps files ?
-	// TBD : Init joypad
-
-	initTsc();
-
-	ini_audio();
-	loadSounds();
-	
-	createWindow(240 * 16 / 9, 240, 2, true);
-
-	//Load assets
-	loadNpcTable();
-	loadStageTable();
-
+static void loadInitialImages()
+{
 	loadImage("data/Title.png", &sprites[0x00]);
 	loadImage("data/Pixel.png", &sprites[0x01]);
 
@@ -95,6 +76,38 @@ int init() {
 
 	loadImage("data/Font.png", &sprites[0x26]);
 	loadImage("data/Missing.png", &sprites[0x27]); //Used for missing npcs
+}
+
+static void initSDL()
+{
+	//Initiate SDL and window stuff
+	if (SDL_Init(SDL_INIT_TIMER | SDL_INIT_AUDIO | SDL_INIT_VIDEO) < 0)
+		doCustomError("Couldn't initiate SDL");
+
+	//Initiate SDL_image
+	if (!(IMG_Init(IMG_INIT_PNG) & IMG_INIT_PNG))
+		doCustomError("Couldn't initiate SDL Image");
+}
+
+static void doInit()
+{
+	initSDL();
+
+	// TBD : Load config data, initialise keybinds and screen resolution based on it
+	// TBD : Check for s_reverse, mute and fps files ?
+	// TBD : Init joypad
+
+	initTsc();
+
+	ini_audio();
+	loadSounds();
+
+	createWindow(240 * 16 / 9, 240, 2, true);
+
+	//Load assets
+	loadNpcTable();
+	loadStageTable();
+	loadInitialImages();
 
 	//Start game
 	//init flags
@@ -108,12 +121,10 @@ int init() {
 	//sound::playOrg(8);
 
 	loadProfile();
-
-	return 0;
 }
 
 int main(int argc, char **argv) {
-	init();
+	doInit();
 
 	mainGameLoop();
 
