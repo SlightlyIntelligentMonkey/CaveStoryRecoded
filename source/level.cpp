@@ -23,31 +23,28 @@ void loadStageTable()
 	SDL_RWops *tblStream = SDL_RWFromFile("data/stage.tbl", "rb");
 
 	if (tblStream == nullptr)
-		doError();
+		doCustomError("Could not open data/stage.tbl");
 
 	size_t stages = (size_t)SDL_RWsize(tblStream) / 200;
 
 	stageTable = static_cast<STAGE_TABLE*>(malloc(stages * 200));
+	if (stageTable == nullptr)
+		doCustomError("Could not allocate memory for stage table");
 
-	if (tblStream)
+	for (size_t i = 0; i < stages; i++)
 	{
-		for (size_t i = 0; i < stages; i++)
-		{
-			tblStream->read(tblStream, stageTable[i].tileset, 0x20, 1);
-			tblStream->read(tblStream, stageTable[i].filename, 0x20, 1);
-			stageTable[i].backgroundScroll = SDL_ReadLE32(tblStream);
-			tblStream->read(tblStream, stageTable[i].background, 0x20, 1);
-			tblStream->read(tblStream, stageTable[i].npc1, 0x20, 1);
-			tblStream->read(tblStream, stageTable[i].npc2, 0x20, 1);
-			tblStream->read(tblStream, &stageTable[i].boss, 1, 1);
-			tblStream->read(tblStream, stageTable[i].name, 0x23, 1);
+		tblStream->read(tblStream, stageTable[i].tileset, 0x20, 1);
+		tblStream->read(tblStream, stageTable[i].filename, 0x20, 1);
+		stageTable[i].backgroundScroll = SDL_ReadLE32(tblStream);
+		tblStream->read(tblStream, stageTable[i].background, 0x20, 1);
+		tblStream->read(tblStream, stageTable[i].npc1, 0x20, 1);
+		tblStream->read(tblStream, stageTable[i].npc2, 0x20, 1);
+		tblStream->read(tblStream, &stageTable[i].boss, 1, 1);
+		tblStream->read(tblStream, stageTable[i].name, 0x23, 1);
 
-			if (!strcmp((const char *)stageTable[i].name, "u"))
-				strcpy(stageTable[i].name, "Studio Pixel presents");
-		}
+		if (!strcmp((const char *)stageTable[i].name, "u"))
+			strcpy(stageTable[i].name, "Studio Pixel presents");
 	}
-	else
-		doError();
 }
 
 BYTE getTileAttribute(int x, int y) {
