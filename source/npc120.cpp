@@ -1,5 +1,10 @@
 #include "npc120.h"
 
+void npcAct137(npc *NPC)
+{
+	NPC->rect = { 96, 136, 128, 188 };
+}
+
 void npcAct139(npc *NPC) //Doctor with the crown
 {
 	RECT rcLeft[3];
