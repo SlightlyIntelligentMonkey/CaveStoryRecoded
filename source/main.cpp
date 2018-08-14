@@ -78,7 +78,7 @@ static void loadInitialImages()
 	loadImage("data/Missing.png", &sprites[0x27]); //Used for missing npcs
 }
 
-static void initSDL()
+static void doInit()
 {
 	//Initiate SDL and window stuff
 	if (SDL_Init(SDL_INIT_TIMER | SDL_INIT_AUDIO | SDL_INIT_VIDEO) < 0)
@@ -87,11 +87,6 @@ static void initSDL()
 	//Initiate SDL_image
 	if (!(IMG_Init(IMG_INIT_PNG) & IMG_INIT_PNG))
 		doCustomError("Couldn't initiate SDL Image");
-}
-
-static void doInit()
-{
-	initSDL();
 
 	// TBD : Load config data, initialise keybinds and screen resolution based on it
 	// TBD : Check for s_reverse, mute and fps files ?
