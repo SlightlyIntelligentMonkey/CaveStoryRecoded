@@ -65,7 +65,7 @@ void npcAct030(npc *NPC) // Hermit Gunsmith
 			NPC->ani_no = 0;
 			NPC->ani_wait = 0;
 		}
-		else if (NPC->act_no == 1)
+		else if (NPC->act_no != 1)
 		{
 			if (NPC->act_no == 2 && ++NPC->act_wait)
 			{
