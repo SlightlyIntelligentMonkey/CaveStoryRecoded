@@ -106,8 +106,12 @@ void debugLevels()
 
 void initGame()
 {
+	//Set game flags
 	gameFlags = 3;
+
+	//Clear flags
 	memset(tscFlags, 0, sizeof(tscFlags));
+	memset(mapFlags, 0, sizeof(mapFlags));
 	currentPlayer.init();
 	currentPlayer.setPos(10 << 13, 8 << 13);
 	loadLevel(13);
