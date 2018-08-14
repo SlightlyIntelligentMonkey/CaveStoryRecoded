@@ -89,7 +89,7 @@ enum equipItems {
 	equip_nikumaruCounter = 0x100,
 };
 
-enum Directions
+enum Direction
 {
 	dirLeft,
 	dirUp,
