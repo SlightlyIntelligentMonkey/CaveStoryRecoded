@@ -236,6 +236,22 @@ void npcAct084(npc *NPC) //Basu 1 projectile
 	}
 }
 
+void npcAct090(npc *NPC)
+{
+	NPC->rect = { 280, 80, 296, 104 };
+}
+
+void npcAct091(npc *NPC)
+{
+	if (!NPC->act_no)
+	{
+		++NPC->act_no;
+		NPC->y += 0x2000;
+	}
+
+	NPC->rect = { 96, 88, 128, 112 };
+}
+
 void npcAct096(npc *NPC) //Fan left
 {	
 	int action = NPC->act_no;

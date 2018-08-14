@@ -53,6 +53,52 @@ void npcAct023(npc *NPC) //Teleporter lights
 	NPC->rect = { 264, 16 + (NPC->ani_no * 4), 288, 20 + (NPC->ani_no * 4) };
 }
 
+void npcAct030(npc *NPC)
+{
+	RECT rcNPC[3] = { { 48, 0, 64, 16 },{ 48, 16, 64, 32 },{ 0, 32, 16, 48 } };
+	
+	if (!NPC->direct)	// Wherever he's awoken depends on his direction, it would seem
+	{
+		if (NPC->act_no == 0)
+		{
+			NPC->act_no = 1;
+			NPC->ani_no = 0;
+			NPC->ani_wait = 0;
+		}
+		else if (NPC->act_no == 1)
+		{
+			if (NPC->act_no == 2 && ++NPC->act_wait)
+			{
+				NPC->act_no = 1;
+				NPC->ani_no = 0;
+			}
+			goto doRects;
+		}
+		if (random(0, 120) == 10)
+		{
+			NPC->act_no = 2;
+			NPC->act_wait = 0;
+			NPC->ani_no = 1;
+		}
+	}
+	else
+	{
+		if (!NPC->act_no)
+		{
+			NPC->act_no = 1;
+			NPC->y += 0x2000;
+			NPC->ani_no = 2;
+		}
+		if (++NPC->act_wait > 100)
+		{
+			NPC->act_wait = 0;
+			createCaret(NPC->x, NPC->y - 1024, effectZzZ, 0);
+		}
+	}
+doRects:
+	NPC->rect = rcNPC[NPC->ani_no];
+}
+
 void npcAct032(npc *NPC) //Life Capsule
 {
 	RECT *setRect;

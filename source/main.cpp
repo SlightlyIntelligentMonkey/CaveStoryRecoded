@@ -23,8 +23,8 @@ bool exitGame = false;
 
 static void doQuit() {
 	//sound::quit();
-	SDL_Quit();
 	IMG_Quit();
+	SDL_Quit();
 	freeSounds();
 }
 

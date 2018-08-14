@@ -802,7 +802,7 @@ void npcAct074(npc *NPC) //Jack
 
 void npcAct076(npc *NPC) //Flower
 {
-	NPC->rect.left = 16 * NPC->code_event; // Rects depend on the event number... Weird
+	NPC->rect.left = 16 * NPC->code_event; // Rects depend on the event number
 	NPC->rect.top = 0;
 	NPC->rect.right = NPC->rect.left + 16;
 	NPC->rect.bottom = 16;
@@ -814,4 +814,51 @@ void npcAct078(npc *NPC) //Pot
 		NPC->rect = { 176, 48, 192, 64 };
 	else
 		NPC->rect = { 160, 48, 176, 64 };
+}
+
+void npcAct079(npc *NPC)
+{
+	RECT rcLeft[3] = { { 0, 0, 16, 16 },{ 16, 0, 32, 16 },{ 32, 0, 48, 16 } };
+	RECT rcRight[3] = { { 0, 16, 16, 32 },{ 16, 16, 32, 32 },{ 32, 16, 48, 32 } };
+
+	if (!NPC->act_no)
+	{
+		NPC->act_no = 1;
+		NPC->ani_no = 2;
+		NPC->ani_wait = 0;
+	}
+	else if (NPC->act_no == 2)
+	{
+		NPC->ani_no = 0;
+		if (random(0, 120) == 10)
+		{
+			NPC->act_no = 3;
+			NPC->act_wait = 0;
+			NPC->ani_no = 1;
+		}
+		if (NPC->x - 0x4000 < currentPlayer.x
+			&& NPC->x + 0x4000 > currentPlayer.x
+			&& NPC->y - 0x4000 < currentPlayer.y
+			&& NPC->y + 0x2000 > currentPlayer.x)
+		{
+			if (NPC->x <= currentPlayer.x)
+				NPC->direct = dirRight;
+			else
+				NPC->direct = dirLeft;
+		}
+	}
+	else if (NPC->act_no == 3 && ++NPC->act_wait > 8)
+	{
+		NPC->act_no = 2;
+		NPC->ani_no = 0;
+	}
+	NPC->ym += 64;
+	if (NPC->ym > 1535)
+		NPC->ym = 1535;
+	NPC->y += NPC->ym;
+
+	if (NPC->direct == dirLeft)
+		NPC->rect = rcLeft[NPC->ani_no];
+	else
+		NPC->rect = rcRight[NPC->ani_no];
 }

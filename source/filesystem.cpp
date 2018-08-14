@@ -87,6 +87,8 @@ void loadProfile()
 			return;
 
 		uint64_t code = SDL_ReadLE64(profile); //Code
+		if (memcmp(&code, "Do041220", sizeof(code)) != 0)
+			doCustomError("Invalid profile (first 8 bytes aren't \"Do041120\"");
 
 		int level = SDL_ReadLE32(profile); //level
 		SDL_ReadLE32(profile); //song

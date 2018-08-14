@@ -22,6 +22,11 @@ void npcAct046(npc *NPC) //H/V trigger
 	NPC->rect = { 0, 0, 16, 16 };
 }
 
+void npcAct052(npc *NPC)
+{
+	NPC->rect = { 240, 96, 256, 112 };
+}
+
 void npcAct058(npc *NPC) //Basu 1
 {
 	int action = NPC->act_no;
