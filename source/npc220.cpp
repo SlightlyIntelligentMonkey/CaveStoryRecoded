@@ -1,5 +1,9 @@
 #include "npc220.h"
 
+void npcAct227(npc *NPC) // Bucket
+{
+	NPC->rect = { 208, 32, 224, 48 };
+}
 void npcAct231(npc *NPC) //Momorin's rocket
 {
 	RECT rc[2];
