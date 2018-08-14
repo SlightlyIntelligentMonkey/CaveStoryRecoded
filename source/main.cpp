@@ -61,7 +61,7 @@ int init() {
 	ini_audio();
 	loadSounds();
 	
-	createWindow(240 * 16 / 9, 240, 2, true);
+	createWindow(320, 240, 2, true);
 
 	//Load assets
 	loadNpcTable();

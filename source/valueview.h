@@ -14,9 +14,14 @@ public: //Variables
 	
 public: //Functions
 	void init(int *px, int *py, int value);
+	void add(int value);
 
 	void update();
 	void draw();
 };
+
+void createValueView(int *px, int *py, int value);
+void updateValueView();
+void drawValueView();
 
 extern std::vector<valueview> valueviews;
