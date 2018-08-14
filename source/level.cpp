@@ -2,6 +2,8 @@
 
 int currentLevel;
 
+MAPNAME mapName;
+
 //Loaded level stuff
 int levelWidth;
 int levelHeight;
@@ -80,7 +82,18 @@ bool changeTile(int x, int y, int tile)
 void loadLevel(int levelIndex) {
 	currentLevel = levelIndex;
 
-	backgroundScroll = stageTable[levelIndex].backgroundScroll;
+	//Clear old carets
+	carets.clear();
+	carets.shrink_to_fit();
+
+	//Clear old valueviews
+	valueviews.clear();
+	valueviews.shrink_to_fit();
+
+	//Set up map name
+	mapName.flag = 0;
+	mapName.wait = 0;
+	strcpy(mapName.name, stageTable[levelIndex].name);
 
 	//Load pxm
 	char pxmPath[256];
@@ -132,10 +145,6 @@ void loadLevel(int levelIndex) {
 
 	//DONE WITH PXA
 	free(pxa);
-
-	//Clear old carets
-	carets.clear();
-	carets.shrink_to_fit();
 
 	//Load pxe
 	char pxePath[256];
@@ -191,6 +200,7 @@ void loadLevel(int levelIndex) {
 	char bgImagePath[256];
 	snprintf(bgImagePath, 256, "data/%s.png", stageTable[levelIndex].background);
 
+	backgroundScroll = stageTable[levelIndex].backgroundScroll;
 	loadImage(bgImagePath, &sprites[0x1C]);
 
 	//Load npc sheets

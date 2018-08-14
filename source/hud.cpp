@@ -1,4 +1,30 @@
 #include "hud.h"
+#include "level.h"
+
+void drawMapName(bool bMini)
+{
+	int len = strlen(mapName.name);
+
+	int x = screenWidth / 2 - len * 3;
+	int y = 80;
+
+	if (bMini)
+	{
+		SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
+		drawRect(0, 7, screenWidth, 17);
+		drawString(x, 10, mapName.name);
+	}
+	else if (mapName.flag)
+	{
+		SDL_SetTextureColorMod(sprites[0x26], 17, 0, 34);
+		drawString(x, y + 1, mapName.name);
+		SDL_SetTextureColorMod(sprites[0x26], 255, 255, 255);
+		drawString(x, y, mapName.name);
+
+		if (++mapName.wait > 160)
+			mapName.flag = 0;
+	}
+}
 
 void drawPlayerHealth(bool hide)
 {

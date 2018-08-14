@@ -14,6 +14,15 @@ struct STAGE_TABLE
 	char name[0x23];
 };
 
+struct MAPNAME
+{
+	int flag;
+	int wait;
+	char name[32];
+};
+
+extern MAPNAME mapName;
+
 extern STAGE_TABLE *stageTable;
 
 extern int levelWidth;

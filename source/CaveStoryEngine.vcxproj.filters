@@ -159,6 +159,9 @@
     <ClCompile Include="npc240.cpp">
       <Filter>Source Files\classes\npc\act</Filter>
     </ClCompile>
+    <ClCompile Include="fade.cpp">
+      <Filter>Source Files\modules</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="render.h">
@@ -274,6 +277,9 @@
     </ClInclude>
     <ClInclude Include="npc240.h">
       <Filter>Source Files\classes\npc\act</Filter>
+    </ClInclude>
+    <ClInclude Include="fade.h">
+      <Filter>Source Files\modules</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

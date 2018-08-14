@@ -12,6 +12,9 @@ int prevScale = 0;
 
 int windowFlags = 0;
 
+int charWidth = 6;
+int charHeight = 12;
+
 //Create window
 int createWindow(int width, int height, int scale, bool fullscreen) {
 	int createWidth = width * scale;
@@ -154,6 +157,44 @@ void drawNumber(int value, int x, int y, bool bZero)
 
 		offset++;
 		pos /= 10;
+	}
+}
+
+bool isMultibyte(uint8_t c)
+{
+	if (c > 0x80u && c <= 0x9Fu)
+		return true;
+	if (c <= 0xDFu || c > 0xEFu)
+		return false;
+	return true;
+}
+
+void drawString(int x, int y, char *str)
+{
+	RECT rcChar;
+
+	for (int i = 0; ; i++)
+	{
+		if (str[i])
+		{
+			int charValue;
+
+			if (isMultibyte(str[i]))
+				charValue = str[i] * 0x100 + str[i += 1];
+			else
+				charValue = str[i];
+
+			rcChar.left = (((charValue - 0x20) % 32) * 12);
+			rcChar.top = (((charValue - 0x20) >> 5) * 24);
+			rcChar.right = rcChar.left + 12;
+			rcChar.bottom = rcChar.top + 24;
+
+			drawTextureSize(sprites[0x26], &rcChar, x + (i * 6), y, charWidth, charHeight);
+		}
+		else
+		{
+			break;
+		}
 	}
 }
 

@@ -2,6 +2,7 @@
 #include "level.h"
 #include "hud.h"
 #include "script.h"
+#include "fade.h"
 
 int gameMode = 1;
 
@@ -111,6 +112,10 @@ void initGame()
 	currentPlayer.setPos(10 << 13, 8 << 13);
 	loadLevel(13);
 	startTscEvent(200);
+
+	//Set up fade
+	initFade();
+	fade.bMask = true;
 }
 
 //Escape menu
@@ -293,6 +298,7 @@ int stageSelect(int *runEvent)
 		currentPlayer.draw();
 		drawLevel(true);
 		drawCarets();
+		drawValueView();
 
 		if (gameFlags & 2)
 			drawHud(false);
@@ -373,14 +379,11 @@ int gameUpdatePlay()
 				currentPlayer.update(true);
 			else
 				currentPlayer.update(false);
-
 			updateNPC();
-
 			playerHitMap();
 			playerHitNpcs();
-
 			updateCarets();
-
+			updateValueView();
 			if (gameFlags & 2)
 				currentPlayer.animate(true);
 			else
@@ -388,6 +391,8 @@ int gameUpdatePlay()
 
 			handleView();
 		}
+
+		updateFade();
 
 		// -- DRAW -- //
 		SDL_SetRenderDrawColor(renderer, 0, 0, 32, 255);
@@ -398,9 +403,8 @@ int gameUpdatePlay()
 		currentPlayer.draw();
 		drawLevel(true);
 		drawCarets();
-
-		if (gameFlags & 2)
-			drawHud(false);
+		drawValueView();
+		drawFade();
 
 		//Do TSC stuff
 		if (swPlay & 1)
@@ -412,6 +416,11 @@ int gameUpdatePlay()
 			if (tscResult == 2)
 				return 1;
 		}
+
+		drawMapName(false);
+
+		if (gameFlags & 2)
+			drawHud(false);
 
 		drawTsc();
 
@@ -531,6 +540,7 @@ int gameUpdateMenu()
 	frame = SDL_GetTicks();
 	while (SDL_GetTicks() < frame + 1000)
 	{
+		getKeys(&events);
 		SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
 		SDL_RenderClear(renderer);
 		SDL_RenderPresent(renderer);
@@ -544,6 +554,10 @@ int gameUpdateIntro()
 	uint32_t frame = 0;
 	loadLevel(72);
 	startTscEvent(100);
+
+	//Set up fade
+	initFade();
+	fade.bMask = true;
 
 	while (frame < 500)
 	{
@@ -587,25 +601,25 @@ int gameUpdateIntro()
 
 		handleView();
 
+		updateFade();
+
 		// -- DRAW -- //
 		SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
 		SDL_RenderClear(renderer);
 
-		//Draw background (and background tiles)
 		drawLevel(false);
-
-		//Draw stuff
 		drawNPC();
-
-		//Draw foreground tiles
 		drawLevel(true);
-
-		//Draw carets
 		drawCarets();
+		drawValueView();
+
+		drawFade();
 
 		//Do TSC stuff
 		updateTsc();
 		drawTsc();
+
+		drawMapName(false);
 
 		SDL_RenderPresent(renderer);
 	}
@@ -614,6 +628,7 @@ int gameUpdateIntro()
 	frame = SDL_GetTicks();
 	while (SDL_GetTicks() < frame + 500)
 	{
+		getKeys(&events);
 		SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
 		SDL_RenderClear(renderer);
 		SDL_RenderPresent(renderer);

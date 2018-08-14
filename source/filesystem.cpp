@@ -1,4 +1,5 @@
 #include "filesystem.h"
+#include "fade.h"
 
 //Read function stuff
 uint16_t readLEshort(BYTE *data, unsigned int offset) {
@@ -130,6 +131,7 @@ void loadProfile()
 		//Now load level
 		loadLevel(level);
 		startTscEvent(0);
+		initFade();
 
 		//Close RW
 		SDL_RWclose(profile);

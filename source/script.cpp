@@ -1,11 +1,9 @@
 #include "script.h"
+#include "fade.h"
 
 //Variables
 TSC tsc;
 char tscText[0x100];
-
-int charWidth = 6;
-int charHeight = 12;
 
 //Mode enum
 enum TSC_mode
@@ -303,8 +301,11 @@ int updateTsc()
 		return tscCheck();
 
 	case FADE:
-		tsc.mode = 1;
-		tsc.wait_beam = 0;
+		if (fade.mode == 0)
+		{
+			tsc.mode = 1;
+			tsc.wait_beam = 0;
+		}
 		return tscCheck();
 
 	case YNJ:
@@ -594,11 +595,21 @@ int updateTsc()
 				tscCleanup(1);
 				break;
 			case('<FAI'):
+				fade.mode = 1;
+				fade.dir = getTSCNumber(tsc.p_read + 4);
+				fade.count = 0;
+				tsc.mode = FADE;
 				tscCleanup(1);
-				return 1;
+				bExit = 1;
+				break;
 			case('<FAO'):
+				fade.mode = 2;
+				fade.dir = getTSCNumber(tsc.p_read + 4);
+				fade.count = 0;
+				tsc.mode = FADE;
 				tscCleanup(1);
-				return 1;
+				bExit = 1;
+				break;
 			case('<FL+'):
 				setFlag(getTSCNumber(tsc.p_read + 4));
 				tscCleanup(1);
@@ -700,6 +711,8 @@ int updateTsc()
 				tscCleanup(0);
 				break;
 			case('<MNA'):
+				mapName.wait = 0;
+				mapName.flag = 1;
 				tscCleanup(0);
 				break;
 			case('<MNP'):
@@ -944,9 +957,7 @@ void drawTsc()
 	RECT rcItemBox5;
 
 	RECT rcItem;
-
 	RECT rcFace;
-	RECT rcChar;
 
 	RECT rcYesNo;
 	RECT rcSelection;
@@ -979,9 +990,9 @@ void drawTsc()
 			(tsc.rcText.bottom - tsc.rcText.top) * screenScale
 		};
 
+		//Draw message box and its contents
 		if (tsc.flags & 2)
 		{
-			//Draw message box
 			rcFrame1 = { 0, 0, 244, 8 };
 			rcFrame2 = { 0, 8, 244, 16 };
 			rcFrame3 = { 0, 16, 244, 24 };
@@ -1013,22 +1024,7 @@ void drawTsc()
 
 		for (int i = 0; i < 4; i++)
 		{
-			for (int v = 0; ; v++)
-			{
-				if (tscText[i * 0x40 + v])
-				{
-					rcChar.left = (((tscText[i * 0x40 + v] - 0x20) % 32) * 12);
-					rcChar.top = (((tscText[i * 0x40 + v] - 0x20) >> 5) * 24);
-					rcChar.right = rcChar.left + 12;
-					rcChar.bottom = rcChar.top + 24;
-
-					drawTextureSize(sprites[0x26], &rcChar, tsc.rcText.left + text_offset + (v * 6), tsc.rcText.top + tsc.ypos_line[i] + tsc.offsetY, charWidth, charHeight);
-				}
-				else
-				{
-					break;
-				}
-			}
+			drawString(tsc.rcText.left + text_offset, tsc.rcText.top + tsc.ypos_line[i] + tsc.offsetY, tscText + (i * 0x40));
 		}
 
 		//End cliprect

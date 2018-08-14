@@ -83,6 +83,8 @@ void player::damage(int damage) {
 		if (equip & equip_whimsicalStar && star > 0)
 			--star;
 
+		createValueView(&x, &y, -damage);
+
 		if (life <= 0)
 		{
 			playSound(17);

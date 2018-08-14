@@ -542,6 +542,7 @@ extern int gameFlags;
 #include "npc.h"
 #include "bullet.h"
 #include "caret.h"
+#include "valueview.h"
 
 //States
 #include "game.h"
