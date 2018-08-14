@@ -350,9 +350,12 @@ int playerJudgeCurrentDown(RECT *rcHit, player *me, int tx, int ty)
 }
 
 //Main function
-void playerHitMap(RECT *rcHit)
+void playerHitMap()
 {
 	player *me = &currentPlayer;
+	RECT *rcHit = &me->hit;
+
+	me->flag = 0;
 
 	int fromX = (me->x - rcHit->left + 0x1000) >> 13;
 	int fromY = (me->y - rcHit->top + 0x1000) >> 13;
@@ -705,10 +708,10 @@ int playerHitNpcNonSolid(RECT *rcHit, player *me, npc *NPC)
 	return 0;
 }
 
-void playerHitNpcs(RECT *rcHit)
+void playerHitNpcs()
 {
-
 	player *me = &currentPlayer;
+	RECT *rcHit = &me->hit;
 
 	if ((me->cond & player_visible) && !(me->cond & player_removed))
 	{
@@ -755,7 +758,7 @@ void playerHitNpcs(RECT *rcHit)
 				}
 
 				if (!(gameFlags & 4) && hit && npcs[i].bits & npc_eventtouch)
-					runScriptEvent(npcs[i].code_event);
+					startTscEvent(npcs[i].code_event);
 
 				if (gameFlags & 2 && !(npcs[i].bits & npc_interact))
 				{
@@ -776,7 +779,7 @@ void playerHitNpcs(RECT *rcHit)
 
 				if (!(gameFlags & 4) && hit && me->cond & player_interact && npcs[i].bits & npc_interact)
 				{
-					runScriptEvent(npcs[i].code_event);
+					startTscEvent(npcs[i].code_event);
 					me->xm = 0;
 					me->ques = false;
 				}

@@ -3,15 +3,22 @@
 
 enum gameStates
 {
-	QUIT = -1,
-	INTRO = 0,
-	MENU = 1,
-	PLAY = 2,
-	ESCAPE = 3
+	INTRO = 1,
+	MENU = 2,
+	PLAY = 3,
 };
 
+struct PERMIT_STAGE
+{
+	int index;
+	int event;
+};
+
+//Game variables
+extern PERMIT_STAGE permitStage[8];
+
+//Functions
 void viewBounds();
-
 void initGame();
-
+int stageSelect(int *runEvent);
 int mainGameLoop();

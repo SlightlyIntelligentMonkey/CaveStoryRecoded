@@ -56,6 +56,8 @@ int init() {
 	// TBD : Check for s_reverse, mute and fps files ?
 	// TBD : Init joypad
 
+	initTsc();
+
 	ini_audio();
 	loadSounds();
 	
@@ -91,9 +93,8 @@ int init() {
 	loadImage("data/TextBox.png", &sprites[0x1A]);
 	loadImage("data/Face.png", &sprites[0x1B]);
 
+	loadImage("data/Font.png", &sprites[0x26]);
 	loadImage("data/Missing.png", &sprites[0x27]); //Used for missing npcs
-
-	loadImage("data/Font.png", &font);
 
 	//Start game
 	//init flags

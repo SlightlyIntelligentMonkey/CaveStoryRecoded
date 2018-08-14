@@ -1,5 +1,4 @@
 #include "filesystem.h"
-#include "fade.h"
 
 //Read function stuff
 uint16_t readLEshort(BYTE *data, unsigned int offset) {
@@ -28,6 +27,7 @@ bool fileExists(const char *name)
 {
 	struct stat buffer;
 	return (stat(name, &buffer) == 0);
+	return true;
 }
 
 int loadFile(const char *name, BYTE **data) {
@@ -59,8 +59,8 @@ int loadFile(const char *name, BYTE **data) {
 
 int writeFile(char *name, void *data, int amount)
 {
-	FILE *file = fopen(name, "wb");
-	if (file == nullptr) 
+	FILE *file;
+	if ((file = fopen(name, "wb")) == NULL)
 		return -1;
 
 	if (fwrite(data, 1, amount, file) == 0) 
@@ -68,6 +68,7 @@ int writeFile(char *name, void *data, int amount)
 		fclose(file);
 		return -1;
 	}
+
 	fclose(file);
 	return 0;
 }
@@ -108,22 +109,28 @@ void loadProfile()
 		currentPlayer.equip = SDL_ReadLE32(profile); //equipped items
 		currentPlayer.unit = SDL_ReadLE32(profile); //physics
 
-		//Flags
-		SDL_RWseek(profile, 0x198, 0);
+		SDL_RWseek(profile, 0x158, 0);
+		
+		for (size_t i = 0; i < 8; i++)
+		{
+			permitStage[i].index = SDL_ReadLE32(profile);
+			permitStage[i].event = SDL_ReadLE32(profile);
+		}
 
-		for (Sint64 i = 0; i < 0x80; i++)
+		for (size_t i = 0; i < 0x80; i++)
 			SDL_RWread(profile, &mapFlags[i], 1, 1);
 
 		SDL_ReadLE32(profile); //FLAG
 
-		for (Sint64 i = 0; i < 1000; i++)
+		for (size_t i = 0; i < 1000; i++)
 			SDL_RWread(profile, &tscFlags[i], 1, 1);
 
 		//Now load level
 		loadLevel(level);
-		runScriptEvent(0);
-		fadeCounter = 0xFFFFFFF;
-		fadedOut = false;
+		startTscEvent(0);
+
+		//Close RW
+		SDL_RWclose(profile);
 	}
 	else
 	{
@@ -150,6 +157,12 @@ void saveProfile() {
 	
 	writeLElong(profile, currentPlayer.equip, 0x2C); //Equipped items
 	writeLElong(profile, currentPlayer.unit, 0x30); //Current physics
+
+	for (size_t i = 0; i < 8; i++)
+	{
+		writeLElong(profile, permitStage[i].index, 0x158 + i * 8);
+		writeLElong(profile, permitStage[i].event, 0x15C + i * 8);
+	}
 
 	memcpy(profile + 0x198, mapFlags, 0x80);
 	memcpy(profile + 0x218, "FLAG", 4);

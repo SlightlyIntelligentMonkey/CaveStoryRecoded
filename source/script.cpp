@@ -1,1074 +1,1105 @@
-﻿#include "script.h"
-#include "npc.h"
-#include "filesystem.h"
-#include "weapons.h"
-#include "player.h"
-#include "fade.h"
+#include "script.h"
 
-// -- TSC Code --
-// This is a string, not a fixed buffer.
-static char *tsc = 0;
+//Variables
+TSC tsc;
+char tscText[0x100];
 
-// -- TSC State --
-int tscMode = 0;
-int tscPrevMode = 0;
+int charWidth = 6;
+int charHeight = 12;
 
-int tscPos = -1;
-unsigned int tscCounter = 0;
-int tscWait = 0;
-int tscDisplayFlags = 0;
-
-int tscUpdateFlags = 0;
-
-// -- command variables --
-unsigned int waitAmount = 0;
-int yesnoSelect = 0;
-unsigned int faceNo = 0;
-RECT rcView;
-
-int mapNameDisplayTimer = 0;
-
-int textOffset = 0;
-
-char msgText[256];
-int msgBoxX = 0;
-int msgBoxY = 0;
-
-// -- display variables --
-int tscNumber = 0;
-int faceX = 0;
-int gitNo = 0;
-int ynjBoxYOffset = 0;
-
-
-RECT rcFrame1 = { 0, 0, 244, 8 };
-RECT rcFrame2 = { 0, 8, 244, 16 };
-RECT rcFrame3 = { 0, 16, 244, 24 };
-RECT rect_yesno = { 152, 48, 244, 80 };
-RECT rect_cur = { 112, 88, 128, 104 };
-RECT rcItemBox1 = { 0, 0, 72, 16 };
-RECT rcItemBox2 = { 0, 8, 72, 24 };
-RECT rcItemBox3 = { 240, 0, 244, 8 };
-RECT rcItemBox4 = { 240, 8, 244, 16 };
-RECT rcItemBox5 = { 240, 16, 244, 24 };
-RECT rcFace = { 0, 0, 48, 48 };
-RECT gRect_line = { 0, 0, 216, 16 };
-SDL_Rect rcSYmbol = { 64, 48, 8, 8 };
-
-// -- font stuff --
-SDL_Texture *font;
-const int charWidth = 6;
-const int charHeight = 12;
-const int charSeparation = 0;
-//const int 
-
-// Decrypt into tsc buffer
-void tscDecrypt(int start, BYTE * code, int size) {
-	int headHalf = size >> 1;
-	int headCipher = code[headHalf];
-
-	for (int i = 0; i < size; i++) {
-		int ret = code[i];
-
-		if (i != headHalf)
-			ret -= headCipher;
-
-		tsc[start + i] = (char)ret;
-	}
-}
-
-void loadTsc(const char * path) {
-	tscPos = -1;
-	tscWait = 0;
-	tscUpdateFlags = 0;
-	tscCounter = 0;
-
-	// Load head tsc
-	BYTE *headTsc = nullptr;
-	int tscHeadSize = loadFile("data/Head.tsc", &headTsc);
-	if (tscHeadSize < 0) {
-		doCustomError("TSC: Failed to load data/Head.tsc");
-		return;
-	}
-
-	// Load stage tsc
-	BYTE *stageTsc = nullptr;
-	int tscSize = loadFile(path, &stageTsc);
-	if (tscSize < 0) {
-		free(headTsc);
-		char msg[256];
-		snprintf(msg, 256, "TSC: %s failed to load.", path);
-		doCustomError(msg);
-		return;
-	}
-
-	if (tsc)
-		free(tsc);
-
-	tsc = (char *)malloc(tscSize + tscHeadSize + 1);
-	tscDecrypt(0, headTsc, tscHeadSize);
-	tscDecrypt(tscHeadSize, stageTsc, tscSize);
-	tsc[tscSize + tscHeadSize] = 0;
-
-	free(headTsc);
-	free(stageTsc);
-}
-
-int getEventPos(int event_num)
+//Mode enum
+enum TSC_mode
 {
-	int position = 4;
-	char *location;
-	char eventChar[6] = "#0000";
+	END = 0,
+	PARSE = 1,
+	NOD = 2,
+	SCROLL = 3,
+	WAI = 4,
+	FADE = 5,
+	YNJ = 6,
+	WAS = 7
+};
 
-	if (event_num > 9999) { event_num = 9999; }
-
-	while (event_num > 0)
-	{
-		eventChar[position] = (char)((event_num % 10) + 0x30);
-		position--;
-		event_num /= 10;
-	}
-
-	location = strstr(tsc, eventChar);
-
-	if (location == NULL)
-		doCustomError("Event wasn't found.");
-
-	return (location - tsc) + 7;
+//Init function
+bool initTsc()
+{
+	tsc.mode = 0;
+	gameFlags &= ~4;
+	memset(tscText, 0, 0x100u);
+	tsc.data = (uint8_t*)malloc(0x5000u);
+	return tsc.data != 0;
 }
 
-void runScriptEvent(int event_num) {
+//Loading functions
+void decryptTsc(uint8_t *data, int size)
+{
+	int half = size / 2;
+	int key = data[half];
 
-	tscPos = getEventPos(event_num);
-	tscMode = PARSE;
-	faceNo = 0;
-	tscDisplayFlags = 0;
+	if (!key)
+		key = 7;
+
+	for (int i = 0; i < size; ++i)
+	{
+		if (i != half)
+			data[i] -= key;
+	}
+}
+
+void loadStageTsc(char *name) {
+	//Load Head.tsc file
+	SDL_RWops *headRW = SDL_RWFromFile("data/Head.tsc", "rb");
+	size_t headSize = (size_t)SDL_RWsize(headRW);
+	if (!headRW)
+		doError();
+
+	//Put the data into memory
+	headRW->read(headRW, tsc.data, 1, headSize);
+	decryptTsc(tsc.data, headSize);
+	tsc.data[headSize] = 0;
+
+	headRW->close(headRW);
+
+	//Load stage's tsc file
+	SDL_RWops *bodyRW = SDL_RWFromFile(name, "rb");
+	size_t bodySize = (size_t)SDL_RWsize(bodyRW);
+	if (!bodyRW)
+		doError();
+
+	//Put the data into memory
+	bodyRW->read(bodyRW, tsc.data + headSize, 1, bodySize);
+	decryptTsc(tsc.data + headSize, bodySize);
+	tsc.data[headSize + bodySize] = 0;
+
+	bodyRW->close(bodyRW);
+
+	//Finish off by setting some stuff in the tsc struct
+	tsc.size = headSize + bodySize;
+	strcpy(tsc.path, name);
+}
+
+void loadTsc2(char *name) {
+	//Load tsc file
+	SDL_RWops *bodyRW = SDL_RWFromFile(name, "rb");
+	tsc.size = (int)SDL_RWsize(bodyRW);
+	if (!bodyRW)
+		doError();
+
+	//Put the data into memory
+	bodyRW->read(bodyRW, tsc.data, 1, tsc.size);
+	decryptTsc(tsc.data, tsc.size);
+	tsc.data[tsc.size] = 0;
+
+	bodyRW->close(bodyRW);
+
+	//Finish off by setting some stuff in the tsc struct
+	strcpy(tsc.path, name);
+}
+
+//Get number function
+int getTSCNumber(int a)
+{
+	return			((char)tsc.data[a + 3] - 0x30) +
+			10 *	((char)tsc.data[a + 2] - 0x30) +
+			100 *	((char)tsc.data[a + 1] - 0x30) +
+			1000 *	((char)tsc.data[a] - 0x30);
+}
+
+//TSC run event functions
+int startTscEvent(int no)
+{
+	tsc.mode = 1;
 	gameFlags |= 5;
+	tsc.line = 0;
+	tsc.p_write = 0;
+	tsc.wait = 4;
+	tsc.flags = 0;
+	tsc.wait_beam = 0;
+	tsc.face = 0;
+	tsc.item = 0;
+	tsc.offsetY = 0;
+	currentPlayer.shock = 0;
+
+	tsc.rcText = { 52, 184, 268, 234 };
+
+	//Clear text
+	for (int i = 0; i < 4; ++i)
+	{
+		tsc.ypos_line[i] = 16 * i;
+		memset(tscText + (i * 0x40), 0, 0x40);
+	}
+
+	//Get event id
+	int event_no;
+	for (tsc.p_read = 0; ; ++tsc.p_read)
+	{
+		if (!tsc.data[tsc.p_read])
+			return 0;
+		if (tsc.data[tsc.p_read] != 35)
+			continue;
+
+		event_no = getTSCNumber(++tsc.p_read);
+		if (no == event_no)
+			break;
+		if (no < event_no)
+			return 0;
+	}
+
+	while (tsc.data[tsc.p_read] != 10)
+		++tsc.p_read;
+	++tsc.p_read;
+	return 1;
 }
 
-void jumpScriptEvent(int event_num)
+int jumpTscEvent(int no)
 {
-	tscPos = getEventPos(event_num);
-	tscMode = PARSE;
-	tscDisplayFlags = 0;
+	tsc.mode = 1;
 	gameFlags |= 4;
-}
+	tsc.line = 0;
+	tsc.p_write = 0;
+	tsc.wait = 4;
+	tsc.wait_beam = 0;
 
-void endTsc()
-{
-	memset(msgText, 0, sizeof(msgText));
-	gameFlags |= 3;
-	tscUpdateFlags = 0;
-	faceNo = 0;
-	gitNo = 0;
-	tscMode = END;
-	fadedOut = false;
-	fadeCounter = 0xFFFFFFF;
-}
-
-//renders a line of text
-void renderTextLine(int x, int y, char *str)
-{
-	SDL_Rect rcChar = { 0, 0, charWidth, charHeight };
-	SDL_Rect dest = { 0, y, charWidth, charHeight };
-
-	for (size_t c = 0; c < strlen(str); c++)
+	//Clear text
+	for (int i = 0; i < 4; ++i)
 	{
-		rcChar.x = ((str[c] - 0x20) % 32) * charWidth;
-		rcChar.y = ((str[c] - 0x20) >> 5) * charHeight;
-		dest.x = x + (c * (charWidth + charSeparation));
-
-		//Draw shadow
-		SDL_SetTextureColorMod(font, 0, 0, 32);
-		dest.x++;
-		dest.y++;
-		SDL_RenderCopy(renderer, font, &rcChar, &dest);
-
-		//Draw front
-		SDL_SetTextureColorMod(font, 255, 255, 255);
-		dest.x--;
-		dest.y--;
-		SDL_RenderCopy(renderer, font, &rcChar, &dest);
+		tsc.ypos_line[i] = 16 * i;
+		memset(tscText + (i * 0x40), 0, 0x40);
 	}
-	return;
+
+	//Get event id
+	int event_no;
+	for (tsc.p_read = 0; ; ++tsc.p_read)
+	{
+		if (!tsc.data[tsc.p_read])
+			return 0;
+		if (tsc.data[tsc.p_read] != 35)
+			continue;
+
+		event_no = getTSCNumber(++tsc.p_read);
+		if (no == event_no)
+			break;
+		if (no < event_no)
+			return 0;
+	}
+
+	while (tsc.data[tsc.p_read] != 10)
+		++tsc.p_read;
+	++tsc.p_read;
+	return 1;
 }
 
-void updateMessageBox()
+void stopTsc()
 {
-	if (tscUpdateFlags & 0x30)
+	tsc.mode = 0;
+	gameFlags &= ~4;
+	gameFlags |= 3u;
+	tsc.flags = 0;
+}
+
+//Check new line
+void checkNewLine()
+{
+	if (tsc.ypos_line[tsc.line % 4] == 48)
 	{
-		while (tsc[tscPos] != '<')
-		{
-			strncat(msgText, &tsc[tscPos], 1);
-			tscPos++;
-		}
-	}
-	else if (tscCounter++ % 4 == 0 || isKeyDown(keyJump) || isKeyDown(keyShoot))
-	{
-		strncat(msgText, &tsc[tscPos], 1);
-		tscPos++;
-		playSound(2);
+		tsc.mode = 3;
+		gameFlags |= 4u;
+		memset(tscText + (tsc.line % 4 << 6), 0, 0x40);
 	}
 }
 
-int scrollOffset = 0;
-void drawMessageBox(int x, int y, char* str)
+void clearTextLine()
 {
-	SDL_Rect rcChar = { 0, 0, charWidth, charHeight };
-	SDL_Rect dest = { 0, 0, charWidth, charHeight };
-	SDL_Rect msgClip = { x + 8, y + 8, 228, 48 };
-	int lineY = 0;
-	int charX = 0;
-	char buf[256] = { 0 };
+	tsc.line = 0;
+	tsc.p_write = 0;
+	tsc.offsetY = 0;
 
-	if (!(tscDisplayFlags & invisMSG))
+	for (int i = 0; i < 4; ++i)
 	{
-		drawTexture(sprites[TEX_TEXTBOX], &rcFrame1, x, y);
-		drawTexture(sprites[TEX_TEXTBOX], &rcFrame2, x, y + 8);
-		drawTexture(sprites[TEX_TEXTBOX], &rcFrame2, x, y + 16);
-		drawTexture(sprites[TEX_TEXTBOX], &rcFrame2, x, y + 24);
-		drawTexture(sprites[TEX_TEXTBOX], &rcFrame2, x, y + 32);
-		drawTexture(sprites[TEX_TEXTBOX], &rcFrame2, x, y + 40);
-		drawTexture(sprites[TEX_TEXTBOX], &rcFrame2, x, y + 48);
-		drawTexture(sprites[TEX_TEXTBOX], &rcFrame3, x, y + 56);
+		tsc.ypos_line[i] = 16 * i;
+		memset(tscText + (i * 40), 0, 0x40u);
 	}
-
-	SDL_RenderSetClipRect(renderer, &msgClip);
-	for (size_t c = 0; c < strlen(str); c++)
-	{
-		//ignores non-displayable characters
-		if ((str[c] < 0x7F && str[c] > 0x1F) || str[c] == '\n')
-		{
-			if (str[c] == '\n')
-			{
-				charX = -1;
-				lineY++;
-				if (lineY >= 3)
-				{
-					scrollOffset += 4;
-				}
-
-				if (scrollOffset > ((charHeight * 4) / 3) + 1)
-				{
-					scrollOffset = 0;
-					lineY--;
-					for (size_t c = 0; c < strlen(str); c++)
-					{
-						if (str[c] == '\n')
-						{
-							strcpy(buf, &str[c + 1]);
-							strcpy(str, buf);
-							break;
-						}
-					}
-				}
-			}
-			rcChar.x = (((str[c] - 0x20) % 32)*charWidth);
-			rcChar.y = (((str[c] - 0x20) >> 5)*charHeight);
-			dest.x = 8 + x + (charX * (charWidth + charSeparation)) + charWidth + textOffset;
-			dest.y = 8 + y + ((lineY * charHeight * 4) / 3) + 1 - scrollOffset;
-
-			SDL_RenderCopy(renderer, font, &rcChar, &dest);
-			charX++;
-		}
-	}
-
-	SDL_RenderSetClipRect(renderer, NULL);
-	return;
 }
 
-void drawTSC()
+//TSC Update
+int tscCheck()
 {
-	RECT rcGit = { 0, 0, 32, 16 };
-	SDL_Rect rcClip = { 0, 0, 0, 0 };
-
-	if (mapNameDisplayTimer++ < 160)
-	{
-		renderTextLine((screenWidth >> 1) - ((strlen(stageTable[currentLevel].name) * charWidth) >> 1),
-			80, stageTable[currentLevel].name);
-	}
-	if (tscMode != 0 && tscDisplayFlags & TSCVIS)
-	{
-
-		if (tscDisplayFlags & 0x20)
-		{
-			rcView.top = 32;
-			rcView.bottom = 80;
-		}
-		else
-		{
-			rcView.top = 184;
-			rcView.bottom = 232;
-		}
-
-		if (tscDisplayFlags & MSGbox)
-		{
-			drawMessageBox(msgBoxX, msgBoxY, msgText);
-
-			//displaying face
-			if (faceNo)
-			{
-				textOffset = 56;
-				rcClip = { msgBoxX + 14, msgBoxY + 11, 48, 45 };
-
-				rcFace.left = 48 * (faceNo % 6);
-				rcFace.top = 48 * (faceNo / 6);
-				rcFace.right = rcFace.left + 48;
-				rcFace.bottom = rcFace.top + 48;
-
-				//Move
-				faceX += 8;
-				if (faceX >= 14)
-					faceX = 14;
-
-				SDL_RenderSetClipRect(renderer, &rcClip);
-				drawTexture(sprites[TEX_FACE], &rcFace, msgBoxX + faceX, msgBoxY + 8);
-				SDL_RenderSetClipRect(renderer, NULL);
-			}
-			else
-				textOffset = 0;
-		}
-
-		//renders cursor during text when text scrolling scrolling is paused
-		if (tscNumber++ % 20 > 12 && tscMode == NOD && !(tscUpdateFlags & 0x30))
-		{
-			int num = 0;
-			int some_num = 0;
-
-			for (size_t i = 0; i < strlen(msgText); i++)
-			{
-				if (msgText[i] == '\n')
-				{
-					num++;
-					some_num = i + 1;
-				}
-			}
-
-			SDL_SetRenderDrawColor(renderer, 255, 255, 254, 255);
-			drawRect(
-				msgBoxX + 8 + charWidth + (strlen(msgText) * (charWidth + charSeparation)) - (some_num * (charWidth + charSeparation)) + textOffset,
-				msgBoxY + 8 + ((num * charHeight * 4) / 3) + 1,
-				charWidth, charHeight);
-		}
-
-		if (gitNo != 0)
-		{
-			drawTexture(sprites[TEX_TEXTBOX], &rcItemBox1, (screenWidth >> 1) - 40, (screenHeight >> 1) + 8);
-			drawTexture(sprites[TEX_TEXTBOX], &rcItemBox2, (screenWidth >> 1) - 40, (screenHeight >> 1) + 24);
-			drawTexture(sprites[TEX_TEXTBOX], &rcItemBox3, (screenWidth >> 1) + 32, (screenHeight >> 1) + 8);
-			drawTexture(sprites[TEX_TEXTBOX], &rcItemBox4, (screenWidth >> 1) + 32, (screenHeight >> 1) + 16);
-			drawTexture(sprites[TEX_TEXTBOX], &rcItemBox4, (screenWidth >> 1) + 32, (screenHeight >> 1) + 24);
-			drawTexture(sprites[TEX_TEXTBOX], &rcItemBox5, (screenWidth >> 1) + 32, (screenHeight >> 1) + 32);
-			if (gitNo > 1000)
-			{
-				rcGit.left = ((gitNo - 1000) % 8) * 32;
-				rcGit.top = ((gitNo - 1000) / 8) * 16;
-				rcGit.right = rcGit.left + 32;
-				rcGit.bottom = rcGit.top + 16;
-				drawTexture(sprites[TEX_ITEMIMAGE], &rcGit, (screenWidth / 2) - 17, 136);
-			}
-			else
-			{
-				rcGit.left = gitNo * 16;
-				rcGit.top = 0;
-				rcGit.right = rcGit.left + 16;
-				rcGit.bottom = 16;
-				drawTexture(sprites[TEX_ARMSIMAGE], &rcGit, (screenWidth / 2) - 10, 136);
-			}
-		}
-
-
-		//renders the yes no box thing
-		if (tscMode == YNJ)
-		{
-			if (ynjBoxYOffset >= 4)
-			{
-				ynjBoxYOffset = 4;
-			}
-			else { ynjBoxYOffset++; }
-			rcClip = { (screenWidth >> 1) + 56, ((screenHeight >> 1) + 22), 84, 32 };
-			SDL_RenderSetClipRect(renderer, &rcClip);
-			drawTexture(sprites[TEX_TEXTBOX], &rect_yesno, (screenWidth >> 1) + 56,
-				((screenHeight >> 1) + 54) - (ynjBoxYOffset << 3));
-			SDL_RenderSetClipRect(renderer, NULL);
-			if (ynjBoxYOffset >= 4)
-			{
-				drawTexture(sprites[TEX_TEXTBOX], &rect_cur,
-					41 * yesnoSelect + ((screenWidth >> 1) + 51),
-					(screenHeight >> 1) + 34);
-			}
-		}
-	}
-	return;
-}
-
-void tscCheck()
-{
-	if (tscCounter)
+	if (tsc.mode)
 		gameFlags |= 4;
 	else
-		gameFlags &= ~0x4;
-	return;
+		gameFlags &= ~4;
+
+	return 1;
 }
 
-//reads the next 4 characters and returns a number
-int ascii2num(char *pStr, const int num)
-{
-	int result = 0;
-	for (int i = 0; i < num; i++)
-	{
-		result += (pStr[i] - 0x30) * (int)(std::pow(10, (num - i) - 1));
-	}
-
-	return result;
-}
-
-//realigns the tsc position
 void tscCleanup(int numargs)
 {
-	tscPos += 4 + (numargs * 4);
+	tsc.p_read += 4 + (numargs * 4);
+
 	if (numargs > 1)
-		tscPos += (numargs - 1);
-	return;
+		tsc.p_read += (numargs - 1);
 }
 
-
-int updateTsc() {
-
-	char str[72];
+int updateTsc()
+{
 	bool bExit = false;
-	int num = 0;
+	char str[72];
+	char c[3];
 
-	msgBoxX = (screenWidth >> 1) - 122;
+	int xt;
+	int yt;
 
-	tscDisplayFlags |= TSCVIS;
-	switch (tscMode)
+	switch (tsc.mode)
 	{
 	case END:
-		tscCounter = 0;
 		tscCheck();
 		return 1;
-	case PARSE:
-		++tscCounter;
-		tscCounter = 0;
-		bExit = 0;
-		break;
-	case NOD:
-		if (isKeyPressed(keyJump) || isKeyPressed(keyShoot))
-			tscMode = tscPrevMode;
-		tscCheck();
-		return 1;
-	case MSG:
-		if (tsc[tscPos] == '<') { break; }
-		updateMessageBox();
-		tscCheck();
-		return 1;
-	case WAI:
-		if (waitAmount != 9999)
-		{
-			if (tscCounter != 9999)
-				tscCounter++;
 
-			if (tscCounter >= waitAmount)
+	case PARSE:
+		++tsc.wait;
+
+		if (!(gameFlags & 2) && (isKeyDown(keyShoot) || isKeyDown(keyJump)))
+			tsc.wait += 4;
+		if (tsc.wait < 4)
+			return tscCheck();
+
+		tsc.wait = 0;
+		bExit = false;
+		break;
+
+	case NOD:
+		if (isKeyPressed(keyShoot) || isKeyPressed(keyJump))
+			tsc.mode = 1;
+
+		return tscCheck();
+
+	case SCROLL:
+		for (int i = 0; i < 4; ++i)
+		{
+			tsc.ypos_line[i] -= 4;
+
+			if (!tsc.ypos_line[i]) //Check if done scrolling
+				tsc.mode = 1;
+
+			if (tsc.ypos_line[i] == -16) //Check if scrolled off
+				tsc.ypos_line[i] = 48;
+		}
+
+		return tscCheck();
+
+	case WAI:
+		if (tsc.wait_next != 9999) //These checks are for <WAI9999 to fully freeze the script
+		{
+			if (tsc.wait != 9999)
+				++tsc.wait;
+
+			if (tsc.wait >= tsc.wait_next)
 			{
-				tscMode = tscPrevMode;
-				tscCounter = 0;
+				tsc.mode = 1;
+				tsc.wait_beam = 0;
 			}
 		}
 
-		tscCheck();
-		return 1;
+		return tscCheck();
+
 	case FADE:
-		tscCounter++;
-		tscCheck();
-		return 1;
+		tsc.mode = 1;
+		tsc.wait_beam = 0;
+		return tscCheck();
+
 	case YNJ:
-		if (tscCounter > 15)
+		if (tsc.wait >= 16)
 		{
 			if (isKeyPressed(keyJump))
 			{
 				playSound(18);
-				if (yesnoSelect == 1)
-					jumpScriptEvent(ascii2num(&tsc[tscPos], 4));
+
+				if (tsc.select == 1)
+				{
+					jumpTscEvent(tsc.next_event);
+				}
 				else
 				{
-					tscMode = tscPrevMode;
-					tscPos += 4;
-					//tscNumber = 0;
+					tsc.mode = 1;
+					tsc.wait_beam = 0;
 				}
 			}
 			else if (isKeyPressed(keyLeft))
 			{
-				yesnoSelect = 0;
+				tsc.select = 0;
 				playSound(1);
 			}
 			else if (isKeyPressed(keyRight))
 			{
-				yesnoSelect = 1;
+				tsc.select = 1;
 				playSound(1);
 			}
 		}
 		else
 		{
-			++tscCounter;
+			++tsc.wait;
 		}
-		tscCheck();
-		return 1;
+
+		return tscCheck();
+
 	case WAS:
 		if (currentPlayer.flag & ground)
-			tscMode = PARSE;
-
-		tscCheck();
-		return 1;
-	}
-
-	if (bExit == 1)
-	{
-		tscCheck();
-		return 1;
-	}
-
-	while (true)
-	{
-		while (tsc[tscPos] == '\n' || tsc[tscPos] == '\r')
 		{
-			strncat(msgText, &tsc[tscPos], 1);
-			tscPos++;
+			tsc.mode = 1;
+			tsc.wait_beam = 0;
 		}
 
-		if (tsc[tscPos] != '<') { return 1; }
+		return tscCheck();
 
-		//std::string debstr = &tsc[tscPos];
-		//SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "TSC command", debstr.substr(0, 4).c_str(), NULL);
+	default:
+		break;
+	}
 
-		switch (tsc[tscPos + 3] + (tsc[tscPos + 2] << 8) + (tsc[tscPos + 1] << 16) + (tsc[tscPos] << 24))
+	while (true) //Parsing
+	{
+		if (bExit == 1)
+			return tscCheck();
+
+		if (tsc.data[tsc.p_read] != '<')
 		{
-		case('<AE+'):
-			tscCleanup(0);
-			break;
-		case('<AM+'):
-			WEAPON weapon;
-			memset(&weapon, 0, sizeof(WEAPON));
-			weapon.id = ascii2num(&tsc[tscPos + 4], 4);
-			weapon.maxAmmo = ascii2num(&tsc[tscPos + 9], 4);
-			//weapons.push_back(weapon);
-			tscCleanup(2);
-			break;
-		case('<AM-'):
-			//weapons.erase(weapons.begin() + (ascii2num(&tsc[tscPos + 4], 4) - 1));
-			tscCleanup(1);
-			break;
-		case('<AMJ'):
-			//for (int w = 0; w < weapons.size(); w++)
-			//{
-			//	if (weapons[w].id == ascii2num(&tsc[tscPos + 4], 4))
-			//	{
-			//		jumpScriptEvent(ascii2num(&tsc[tscPos + 9], 4));
-			//	}
-			//}
-			tscCleanup(2);
-			break;
-		case('<ANP'):
-			for (size_t i = 0; i < npcs.size(); i++)
+			if (tsc.data[tsc.p_read] == 13) //Check for break line
 			{
-				if ((npcs[i].cond & npccond_alive) && npcs[i].code_event == ascii2num(&tsc[tscPos + 4], 4))
+				tsc.p_read += 2;
+				tsc.p_write = 0;
+
+				if (tsc.flags & 1)
 				{
-					npcs[i].act_no = ascii2num(&tsc[tscPos + 9], 4);
-					if (ascii2num(&tsc[tscPos + 14], 4) != 5)
+					++tsc.line;
+					checkNewLine();
+				}
+			}
+			else if (tsc.flags & 0x10) //CAT/SAT/TUR I believe.
+			{
+				int x;
+				for (x = tsc.p_read; ; ++x)
+				{
+					bool quit = tsc.data[x] == '<' || tsc.data[x] == 13 ? false : true;
+
+					if (!quit)
+						break;
+					if ((tsc.data[x] & 0x80) != 0)
+						++x;
+				}
+
+				int copy = x - tsc.p_read;
+				memcpy(str, &tsc.data[tsc.p_read], copy);
+				str[copy] = 0;
+
+				sprintf(tscText + (tsc.line % 4 << 6), str);
+
+				tsc.p_write = x;
+				tsc.p_read += copy;
+
+				if (tsc.p_write > 34)
+					checkNewLine();
+
+				bExit = 1;
+			}
+			else
+			{
+				c[0] = tsc.data[tsc.p_read];
+				if (c[0] >= 0)
+				{
+					c[1] = 0;
+				}
+				else
+				{
+					c[1] = tsc.data[tsc.p_read + 1];
+					c[2] = 0;
+				}
+
+				strcat(tscText + (tsc.line % 4 << 6), c);
+				playSound(2);
+				tsc.wait_beam = 0;
+
+				if (c[0] >= 0)
+				{
+					++tsc.p_read;
+					++tsc.p_write;
+				}
+				else
+				{
+					tsc.p_read += 2;
+					tsc.p_write += 2;
+				}
+
+				if (tsc.p_write > 34)
+				{
+					checkNewLine();
+					tsc.p_write = 0;
+					++tsc.line;
+					checkNewLine();
+				}
+
+				bExit = 1;
+			}
+		}
+		else
+		{
+			switch (tsc.data[tsc.p_read + 3] + (tsc.data[tsc.p_read + 2] << 8) + (tsc.data[tsc.p_read + 1] << 16) + (tsc.data[tsc.p_read] << 24))
+			{
+			case('<AE+'):
+				tscCleanup(0);
+				break;
+			case('<AM+'):
+				tscCleanup(2);
+				break;
+			case('<AM-'):
+				tscCleanup(1);
+				break;
+			case('<AMJ'):
+				tscCleanup(2);
+				break;
+			case('<ANP'):
+				for (size_t i = 0; i < npcs.size(); i++)
+				{
+					if ((npcs[i].cond & npccond_alive) && npcs[i].code_event == getTSCNumber(tsc.p_read + 4))
 					{
-						if (ascii2num(&tsc[tscPos + 14], 4) == 4)
+						npcs[i].act_no = getTSCNumber(tsc.p_read + 9);
+
+						if (getTSCNumber(tsc.p_read + 4) != 5)
+						{
+							if (getTSCNumber(tsc.p_read + 4) == 4)
+							{
+								if (npcs[i].x >= currentPlayer.x)
+									npcs[i].direct = 0;
+								else
+									npcs[i].direct = 2;
+							}
+							else
+							{
+								npcs[i].direct = getTSCNumber(tsc.p_read + 14);
+							}
+						}
+					}
+				}
+				tscCleanup(3);
+				break;
+			case('<BOA'):
+				tscCleanup(1);
+				break;
+			case('<BSL'):
+				tscCleanup(1);
+				break;
+			case('<CAT'):
+				tsc.flags |= 0x40u;
+				tscCleanup(0);
+				break;
+			case('<CIL'):
+				tscCleanup(0);
+				break;
+			case('<CLO'):
+				tsc.flags &= ~0x33;
+				tscCleanup(0);
+				break;
+			case('<CLR'):
+				clearTextLine();
+				tscCleanup(0);
+				break;
+			case('<CMP'):
+				changeTile(getTSCNumber(tsc.p_read + 4), getTSCNumber(tsc.p_read + 9),
+					getTSCNumber(tsc.p_read + 14));
+				tscCleanup(3);
+				break;
+			case('<CMU'):
+				tscCleanup(1);
+				break;
+			case('<CNP'):
+				changeNpc(getTSCNumber(tsc.p_read + 4),
+					getTSCNumber(tsc.p_read + 9),
+					getTSCNumber(tsc.p_read + 14));
+				tscCleanup(3);
+				break;
+			case('<CPS'):
+				tscCleanup(0);
+				break;
+			case('<CRE'):
+				tscCleanup(0);
+				break;
+			case('<CSS'):
+				tscCleanup(0);
+				break;
+			case('<DNA'):
+				for (size_t i = 0; i < npcs.size(); i++)
+				{
+					if (npcs[i].cond & npccond_alive)
+					{
+						if (npcs[i].code_char == getTSCNumber(tsc.p_read + 4))
+						{
+							npcs[i].cond = 0;
+							setFlag(npcs[i].code_flag);
+						}
+					}
+				}
+				tscCleanup(1);
+				break;
+			case('<DNP'):
+				for (size_t i = 0; i < npcs.size(); i++)
+				{
+					if (npcs[i].cond & npccond_alive)
+					{
+						if (npcs[i].code_event == getTSCNumber(tsc.p_read + 4))
+						{
+							npcs[i].cond = 0;
+							setFlag(npcs[i].code_flag);
+						}
+					}
+				}
+				tscCleanup(1);
+				break;
+			case('<ECJ'):
+				for (size_t n = 0; n < npcs.size(); n++)
+				{
+					if (npcs[n].cond & npccond_alive)
+					{
+						if (npcs[n].code_char == getTSCNumber(tsc.p_read + 4))
+						{
+							jumpTscEvent(getTSCNumber(tsc.p_read + 9));
+							break;
+						}
+					}
+				}
+				break;
+			case('<END'):
+				tsc.mode = 0;
+				currentPlayer.cond &= ~player_interact;
+				gameFlags |= 3u;
+				tsc.face = 0;
+				bExit = 1;
+				break;
+			case('<EQ+'):
+				currentPlayer.equip |= getTSCNumber(tsc.p_read + 4);
+				tscCleanup(1);
+				break;
+			case('<EQ-'):
+				currentPlayer.equip &= ~getTSCNumber(tsc.p_read + 4);
+				tscCleanup(1);
+				break;
+			case('<ESC'):
+				return 2;
+			case('<EVE'):
+				jumpTscEvent(getTSCNumber(tsc.p_read + 4));
+				break;
+			case('<FAC'):
+				if (tsc.face != getTSCNumber(tsc.p_read + 4))
+				{
+					tsc.face_x = -48;
+					tsc.face = getTSCNumber(tsc.p_read + 4);
+				}
+				tscCleanup(1);
+				break;
+			case('<FAI'):
+				tscCleanup(1);
+				return 1;
+			case('<FAO'):
+				tscCleanup(1);
+				return 1;
+			case('<FL+'):
+				setFlag(getTSCNumber(tsc.p_read + 4));
+				tscCleanup(1);
+				break;
+			case('<FL-'):
+				clearFlag(getTSCNumber(tsc.p_read + 4));
+				tscCleanup(1);
+				break;
+			case('<FLA'):
+				tscCleanup(0);
+				break;
+			case('<FLJ'):
+				if (getFlag(getTSCNumber(tsc.p_read + 4)))
+					jumpTscEvent(getTSCNumber(tsc.p_read + 9));
+				else
+					tscCleanup(2);
+				break;
+			case('<FMU'):
+				tscCleanup(0);
+				break;
+			case('<FOB'):
+				tscCleanup(2);
+				break;
+			case('<FOM'):
+				viewport.lookX = &currentPlayer.x;
+				viewport.lookY = &currentPlayer.y;
+				viewport.speed = getTSCNumber(tsc.p_read + 4);
+				tscCleanup(1);
+				break;
+			case('<FON'):
+				for (size_t n = 0; n < npcs.size(); n++)
+				{
+					if (npcs[n].cond & npccond_alive)
+					{
+						if (npcs[n].code_event == getTSCNumber(tsc.p_read + 4))
+						{
+							viewport.lookX = &npcs[n].x;
+							viewport.lookY = &npcs[n].y;
+							viewport.speed = getTSCNumber(tsc.p_read + 9);
+							break;
+						}
+					}
+				}
+				tscCleanup(2);
+				break;
+			case('<FRE'):
+				gameFlags |= 3;
+				tscCleanup(0);
+				break;
+			case('<GIT'):
+				tsc.item = getTSCNumber(tsc.p_read + 4);
+				tsc.item_y = 128;
+				tscCleanup(1);
+				break;
+			case('<HMC'):
+				currentPlayer.cond &= ~player_visible;
+				tscCleanup(0);
+				break;
+			case('<INI'):
+				initGame();
+				return 1;
+			case('<INP'):
+				tscCleanup(3);
+				break;
+			case('<IT+'):
+				tscCleanup(1);
+				break;
+			case('<IT-'):
+				tscCleanup(1);
+				break;
+			case('<ITJ'):
+				tscCleanup(2);
+				break;
+			case('<KEY'):
+				gameFlags |= 1;
+				gameFlags &= ~2;
+				currentPlayer.up = false;
+				tscCleanup(0);
+				break;
+			case('<LDP'):
+				loadProfile();
+				break;
+			case('<LI+'):
+				currentPlayer.life += getTSCNumber(tsc.p_read + 4);
+				if (currentPlayer.life > currentPlayer.max_life)
+					currentPlayer.life = currentPlayer.max_life;
+				tscCleanup(1);
+				break;
+			case('<ML+'):
+				currentPlayer.max_life += getTSCNumber(tsc.p_read + 4);
+				currentPlayer.life += getTSCNumber(tsc.p_read + 4);
+				tscCleanup(1);
+				break;
+			case('<MLP'):
+				tscCleanup(0);
+				break;
+			case('<MM0'):
+				currentPlayer.xm = 0;
+				tscCleanup(0);
+				break;
+			case('<MNA'):
+				tscCleanup(0);
+				break;
+			case('<MNP'):
+				tscCleanup(4);
+				break;
+			case('<MOV'):
+				currentPlayer.setPos(getTSCNumber(tsc.p_read + 4) << 13, getTSCNumber(tsc.p_read + 4) << 13);
+				tscCleanup(2);
+				break;
+			case('<MPJ'):
+				if (getMapFlag(currentLevel) == true)
+					jumpTscEvent(getTSCNumber(tsc.p_read + 4));
+				else
+					tscCleanup(1);
+				break;
+			case('<MP+'):
+				setMapFlag(getTSCNumber(tsc.p_read + 4));
+				tscCleanup(1);
+				break;
+			case('<MS2'):
+				tscCleanup(0);
+				break;
+			case('<MS3'):
+				tscCleanup(0);
+				break;
+			case('<MSG'):
+				clearTextLine();
+				tsc.flags |= 3u;
+				tsc.flags &= ~0x30;
+				if (tsc.flags & 0x40)
+					tsc.flags |= 0x10u;
+				tscCleanup(0);
+				bExit = 1;
+				break;
+			case('<MYB'):
+				currentPlayer.cond &= ~player_interact;
+				currentPlayer.ym = -0x200;
+
+				switch (getTSCNumber(tsc.p_read + 4))
+				{
+				case 0:
+					currentPlayer.direct = 0;
+					currentPlayer.xm = 0x200;
+					break;
+
+				case 2:
+					currentPlayer.direct = 2;
+					currentPlayer.xm = -0x200;
+					break;
+
+				default:
+					for (size_t i = 0; i < npcs.size(); i++)
+					{
+						if (npcs[i].cond & npccond_alive && npcs[i].code_event == getTSCNumber(tsc.p_read + 4))
 						{
 							if (npcs[i].x >= currentPlayer.x)
-								npcs[i].direct = 0;
+							{
+								currentPlayer.direct = 2;
+								currentPlayer.xm = -0x200;
+							}
 							else
-								npcs[i].direct = 2;
+							{
+								currentPlayer.direct = 0;
+								currentPlayer.xm = 0x200;
+							}
 						}
-						else
-						{
-							npcs[i].direct = ascii2num(&tsc[tscPos + 14], 4);
-						}
 					}
+					break;
 				}
-			}
-			tscCleanup(3);
-			break;
-		case('<BOA'):
-			tscCleanup(1);
-			break;
-		case('<BSL'):
-			tscCleanup(1);
-			break;
-		case('<CAT'):
-			tscUpdateFlags |= 0x20;
-			tscCleanup(0);
-			break;
-		case('<CIL'):
-			tscCleanup(0);
-			break;
-		case('<CLO'):
-			memset(msgText, 0, sizeof(msgText));
-			tscDisplayFlags &= ~MSGbox;
-			tscMode = PARSE;
-			tscCleanup(0);
-			break;
-		case('<CLR'):
-			memset(msgText, 0, sizeof(msgText));
-			tscCleanup(0);
-			break;
-		case('<CMP'):
-			changeTile(ascii2num(&tsc[tscPos + 4], 4), ascii2num(&tsc[tscPos + 9], 4),
-				ascii2num(&tsc[tscPos + 14], 4));
 
-			tscCleanup(3);
-			break;
-		case('<CMU'):
-			tscCleanup(1);
-			break;
-		case('<CNP'):
-			changeNpc(ascii2num(&tsc[tscPos + 4], 4),
-				ascii2num(&tsc[tscPos + 9], 4),
-				ascii2num(&tsc[tscPos + 14], 4));
-			tscCleanup(3);
-			break;
-		case('<CPS'):
-			tscCleanup(0);
-			break;
-		case('<CRE'):
-			tscCleanup(0);
-			break;
-		case('<CSS'):
-			tscCleanup(0);
-			break;
-		case('<DNA'):
-			for (size_t i = 0; i < npcs.size(); i++)
-			{
-				if (npcs[i].cond & npccond_alive)
-				{
-					if (npcs[i].code_char == ascii2num(&tsc[tscPos + 4], 4))
-					{
-						npcs[i].cond = 0;
-						setFlag(npcs[i].code_flag);
-					}
-				}
-			}
-
-			tscCleanup(1);
-			break;
-		case('<DNP'):
-			for (size_t i = 0; i < npcs.size(); i++)
-			{
-				if (npcs[i].cond & npccond_alive)
-				{
-					if (npcs[i].code_event == ascii2num(&tsc[tscPos + 4], 4))
-					{
-						npcs[i].cond = 0;
-						setFlag(npcs[i].code_flag);
-					}
-				}
-			}
-			tscCleanup(1);
-			break;
-		case('<ECJ'):
-			for (size_t n = 0; n < npcs.size(); n++)
-			{
-				if (npcs[n].cond & npccond_alive)
-				{
-					if (npcs[n].code_char == ascii2num(&tsc[tscPos + 4], 4))
-					{
-						jumpScriptEvent(ascii2num(&tsc[tscPos + 9], 4));
-						break;
-					}
-				}
-			}
-			break;
-		case('<END'):
-			memset(msgText, 0, sizeof(msgText));
-			gameFlags |= 3;
-			tscUpdateFlags = 0;
-			tscDisplayFlags = 0;
-			faceNo = 0;
-			gitNo = 0;
-			currentPlayer.cond &= ~player_interact;
-			tscMode = END;
-			return 1;
-		case('<EQ+'):
-			currentPlayer.equip &= ascii2num(&tsc[tscPos + 4], 4);
-			tscCleanup(1);
-			break;
-		case('<EQ-'):
-			currentPlayer.equip &= ~ascii2num(&tsc[tscPos + 4], 4);
-			tscCleanup(1);
-			break;
-		case('<ESC'):
-			return 2;
-		case('<EVE'):
-			jumpScriptEvent(ascii2num(&tsc[tscPos + 4], 4));
-			memset(msgText, 0, sizeof(msgText));
-			faceNo = 0;
-			gitNo = 0;
-			break;
-		case('<FAC'):
-			faceX = -40;
-			faceNo = ascii2num(&tsc[tscPos + 4], 4);
-			tscCleanup(1);
-			break;
-		case('<FAI'):
-			tscMode = FADE;
-			tscDisplayFlags |= FAI;
-			tscDisplayFlags &= ~FAO;
-			fadeCounter = 0;
-			fadeDirection = ascii2num(&tsc[tscPos + 4], 4);
-			tscCleanup(1);
-			return 1;
-		case('<FAO'):
-			tscMode = FADE;
-			tscDisplayFlags |= FAO;
-			tscDisplayFlags &= ~FAI;
-			fadeCounter = 0;
-			fadeDirection = ascii2num(&tsc[tscPos + 4], 4);
-			tscCleanup(1);
-			return 1;
-		case('<FL+'):
-			setFlag(ascii2num(&tsc[tscPos + 4], 4));
-			tscCleanup(1);
-			break;
-		case('<FL-'):
-			clearFlag(ascii2num(&tsc[tscPos + 4], 4));
-			tscCleanup(1);
-			break;
-		case('<FLA'):
-			tscCleanup(0);
-			break;
-		case('<FLJ'):
-			if (getFlag(ascii2num(&tsc[tscPos + 4], 4)))
-				jumpScriptEvent(ascii2num(&tsc[tscPos + 9], 4));
-			else
-				tscCleanup(2);
-			break;
-		case('<FMU'):
-			tscCleanup(0);
-			break;
-		case('<FOB'):
-			tscCleanup(2);
-			break;
-		case('<FOM'):
-			viewport.lookX = &currentPlayer.x;
-			viewport.lookY = &currentPlayer.y;
-			viewport.speed = ascii2num(&tsc[tscPos + 4], 4);
-			tscCleanup(1);
-			break;
-		case('<FON'):
-			for (size_t n = 0; n < npcs.size(); n++)
-			{
-				if (npcs[n].cond & npccond_alive)
-				{
-					if (npcs[n].code_event == ascii2num(&tsc[tscPos + 4], 4))
-					{
-						viewport.lookX = &npcs[n].x;
-						viewport.lookY = &npcs[n].y;
-						viewport.speed = ascii2num(&tsc[tscPos + 9], 4);
-						break;
-					}
-				}
-			}
-			tscCleanup(2);
-			break;
-		case('<FRE'):
-			gameFlags |= 3;
-			tscCleanup(0);
-			break;
-		case('<GIT'):
-			gitNo = ascii2num(&tsc[tscPos + 4], 4);
-			tscCleanup(1);
-			break;
-		case('<HMC'):
-			currentPlayer.cond &= ~player_visible;
-			tscCleanup(0);
-			break;
-		case('<INI'):
-			tscMode = END;
-			gameFlags = 3;
-			loadProfile();
-			fadedOut = false;
-			return 1;
-		case('<INP'):
-			tscCleanup(3);
-			break;
-		case('<IT+'):
-
-			tscCleanup(1);
-			break;
-		case('<IT-'):
-			tscCleanup(1);
-			break;
-		case('<ITJ'):
-			tscCleanup(2);
-			break;
-		case('<KEY'):
-			gameFlags |= 1;
-			gameFlags &= ~2;
-			currentPlayer.up = false;
-			tscCleanup(0);
-			break;
-		case('<LDP'):
-			gameFlags = 3;
-			tscMode = END;
-			loadProfile();
-			tscCleanup(0);
-			return 1;
-		case('<LI+'):
-			currentPlayer.life += ascii2num(&tsc[tscPos + 4], 4);
-			if (currentPlayer.life > currentPlayer.max_life) { currentPlayer.life = currentPlayer.max_life; }
-			tscCleanup(1);
-			break;
-		case('<ML+'):
-			currentPlayer.max_life += ascii2num(&tsc[tscPos + 4], 4);
-			currentPlayer.life += ascii2num(&tsc[tscPos + 4], 4);
-			tscCleanup(1);
-			break;
-		case('<MLP'):
-			tscCleanup(0);
-			break;
-		case('<MM0'):
-			currentPlayer.xm = 0;
-			tscCleanup(0);
-			break;
-		case('<MNA'):
-			mapNameDisplayTimer = 0;
-			tscCleanup(0);
-			break;
-		case('<MNP'):
-			tscCleanup(4);
-			break;
-		case('<MOV'):
-			currentPlayer.setPos(TILE2COORD(ascii2num(&tsc[tscPos + 4], 4)),
-				TILE2COORD(ascii2num(&tsc[tscPos + 9], 4)));
-			tscCleanup(2);
-			break;
-		case('<MPJ'):
-			if (getMapFlag(currentLevel) == true)
-				jumpScriptEvent(ascii2num(&tsc[tscPos + 4], 4));
-			else
 				tscCleanup(1);
-			break;
-		case('<MP+'):
-			setMapFlag(ascii2num(&tsc[tscPos + 4], 4));
-			tscCleanup(1);
-			break;
-		case('<MS2'):
-			scrollOffset = 0;
-			tscMode = MSG;
-			tscDisplayFlags |= (invisMSG | MSGbox);
-			msgBoxX = (screenWidth >> 1) - 122;
-			msgBoxY = 24;
-			tscCounter = 4;
-			tscUpdateFlags &= ~0x10;
-			memset(msgText, 0, sizeof(msgText));
-			tscCleanup(0);
-			break;
-		case('<MS3'):
-			scrollOffset = 0;
-			tscMode = MSG;
-			tscDisplayFlags &= ~invisMSG;
-			tscDisplayFlags |= MSGbox;
-			msgBoxX = (screenWidth >> 1) - 122;
-			msgBoxY = 24;
-			tscCounter = 4;
-			tscUpdateFlags &= ~0x10;
-			memset(msgText, 0, sizeof(msgText));
-			tscCleanup(0);
-			break;
-		case('<MSG'):
-			scrollOffset = 0;
-			tscMode = MSG;
-			tscDisplayFlags &= ~invisMSG;
-			tscDisplayFlags |= MSGbox;
-			msgBoxX = (screenWidth >> 1) - 122;
-			msgBoxY = (screenHeight - 2) - 64;
-			tscCounter = 4;
-			tscUpdateFlags &= ~0x10;
-			memset(msgText, 0, sizeof(msgText));
-			tscCleanup(0);
-			break;
-		case('<MYB'):
-			currentPlayer.cond &= ~player_interact;
-			currentPlayer.ym = -0x200;
-
-			switch (ascii2num(&tsc[tscPos + 4], 4))
-			{
-			case 0:
-				currentPlayer.direct = 0;
-				currentPlayer.xm = 0x200;
 				break;
-
-			case 2:
-				currentPlayer.direct = 2;
-				currentPlayer.xm = -0x200;
+			case('<MYD'):
+				currentPlayer.setDir(getTSCNumber(tsc.p_read + 4));
+				tscCleanup(1);
 				break;
+			case('<NCJ'):
+				tscCleanup(2);
+				break;
+			case('<NOD'):
+				tsc.mode = NOD;
+				tscCleanup(0);
+				return 1;
+			case('<NUM'):
+				tscCleanup(1);
+				break;
+			case('<PRI'):
+				gameFlags &= ~3;
+				tscCleanup(0);
+				break;
+			case('<PS+'):
+				for (xt = 0; xt < 8 && permitStage[xt].index != getTSCNumber(tsc.p_read + 4) && permitStage[xt].index; ++xt);
+				if (xt == 8)
+					break;
 
+				permitStage[xt].index = getTSCNumber(tsc.p_read + 4);
+				permitStage[xt].event = getTSCNumber(tsc.p_read + 9);
+				tscCleanup(2);
+				break;
+			case('<QUA'):
+				viewport.quake = getTSCNumber(tsc.p_read + 4);
+				tscCleanup(1);
+				break;
+			case('<RMU'):
+				tscCleanup(0);
+				break;
+			case('<SAT'):
+				tsc.flags |= 0x40u;
+				tscCleanup(0);
+				break;
+			case('<SIL'):
+				tscCleanup(1);
+				break;
+			case('<SK+'):
+				setSkipFlag(getTSCNumber(tsc.p_read + 4));
+				tscCleanup(1);
+				break;
+			case('<SK-'):
+				clearSkipFlag(getTSCNumber(tsc.p_read + 4));
+				tscCleanup(1);
+				break;
+			case('<SKJ'):
+				if (getSkipFlag(getTSCNumber(tsc.p_read + 4)) == true)
+					jumpTscEvent(getTSCNumber(tsc.p_read + 9));
+				else
+					tscCleanup(2);
+				break;
+			case('<SLP'):
+				bExit = 1;
+				yt = stageSelect(&xt);
+				if (!yt)
+					return 0;
+				if (yt == 2)
+					return 2;
+				jumpTscEvent(xt);
+				gameFlags &= ~3;
+				break;
+			case('<SMC'):
+				currentPlayer.cond |= player_visible;
+				tscCleanup(0);
+				break;
+			case('<SMP'):
+				tscCleanup(2);
+				break;
+			case('<SNP'):
+				createNpc(
+					getTSCNumber(tsc.p_read + 4),
+					getTSCNumber(tsc.p_read + 9) << 13,
+					getTSCNumber(tsc.p_read + 14) << 13,
+					0,
+					0,
+					getTSCNumber(tsc.p_read + 19),
+					NULL);
+				tscCleanup(4);
+				break;
+			case('<SOU'):
+				playSound(getTSCNumber(tsc.p_read + 4));
+				tscCleanup(1);
+				break;
+			case('<SPS'):
+				tscCleanup(0);
+				break;
+			case('<SSS'):
+				tscCleanup(1);
+				break;
+			case('<STC'):
+				tscCleanup(0);
+				break;
+			case('<SVP'):
+				saveProfile();
+				tscCleanup(0);
+				break;
+			case('<TAM'):
+				tscCleanup(3);
+				break;
+			case('<TRA'):
+				xt = getTSCNumber(tsc.p_read + 9);
+				currentPlayer.setPos(
+					getTSCNumber(tsc.p_read + 14) << 13,
+					getTSCNumber(tsc.p_read + 19) << 13);
+				loadLevel(getTSCNumber(tsc.p_read + 4));
+				startTscEvent(xt);
+				return 1;
+			case('<TUR'):
+				tscCleanup(0);
+				tsc.flags |= 0x10;
+				break;
+			case('<UNI'):
+				currentPlayer.unit = getTSCNumber(tsc.p_read + 4);
+				tscCleanup(1);
+				break;
+			case('<UNJ'):
+				tscCleanup(2);
+				break;
+			case('<WAI'):
+				tsc.mode = WAI;
+				tsc.wait = 0;
+				tsc.wait_next = getTSCNumber(tsc.p_read + 4);
+				tscCleanup(1);
+				bExit = 1;
+				break;
+			case('<WAS'):
+				tsc.mode = WAS;
+				tscCleanup(0);
+				bExit = 1;
+				break;
+			case('<XX1'):
+				tscCleanup(1);
+				break;
+			case('<YNJ'):
+				tsc.next_event = getTSCNumber(tsc.p_read + 4);
+				tsc.mode = YNJ;
+				playSound(5);
+				tsc.wait = 0;
+				tsc.select = 0;
+				tscCleanup(1);
+				bExit = 1;
+				break;
+			case('<ZAM'):
+				tscCleanup(0);
+				break;
 			default:
-				for (int i = 0; i < npcs.size(); i++)
-				{
-					if (npcs[i].cond & npccond_alive && npcs[i].code_event == ascii2num(&tsc[tscPos + 4], 4))
-					{
-						if (npcs[i].x >= currentPlayer.x)
-						{
-							currentPlayer.direct = 2;
-							currentPlayer.xm = -0x200;
-						}
-						else
-						{
-							currentPlayer.direct = 0;
-							currentPlayer.xm = 0x200;
-						}
-					}
-				}
+				doCustomError("oops invalid tsc command fuck you");
 				break;
 			}
-
-			tscCleanup(1);
-			break;
-		case('<MYD'):
-			currentPlayer.setDir(ascii2num(&tsc[tscPos + 4], 4));
-			tscCleanup(1);
-			break;
-		case('<NCJ'):
-			tscCleanup(2);
-			break;
-		case('<NOD'):
-			tscCleanup(0);
-			tscPrevMode = tscMode;
-			tscMode = NOD;
-			return 1;
-		case('<NUM'):
-			tscCleanup(1);
-			break;
-		case('<PRI'):
-			gameFlags &= ~3;
-			tscCleanup(0);
-			break;
-		case('<PS+'):
-			tscCleanup(2);
-			break;
-		case('<QUA'):
-			tscCleanup(1);
-			break;
-		case('<RMU'):
-			tscCleanup(0);
-			break;
-		case('<SAT'):
-			tscUpdateFlags |= 0x20;
-			tscCleanup(0);
-			break;
-		case('<SIL'):
-			tscCleanup(1);
-			break;
-		case('<SK+'):
-			setSkipFlag(ascii2num(&tsc[tscPos + 4], 4));
-			tscCleanup(1);
-			break;
-		case('<SK-'):
-			clearSkipFlag(ascii2num(&tsc[tscPos + 4], 4));
-			tscCleanup(1);
-			break;
-		case('<SKJ'):
-			if (getSkipFlag(ascii2num(&tsc[tscPos + 4], 4)) == true)
-				jumpScriptEvent(ascii2num(&tsc[tscPos + 9], 4));
-			else
-				tscCleanup(2);
-			break;
-		case('<SLP'):
-			tscCleanup(0);
-			break;
-		case('<SMC'):
-			currentPlayer.cond |= player_visible;
-			tscCleanup(0);
-			break;
-		case('<SMP'):
-			tscCleanup(2);
-			break;
-		case('<SNP'):
-			createNpc(
-				ascii2num(&tsc[tscPos + 4], 4),
-				TILE2COORD(ascii2num(&tsc[tscPos + 9], 4)),
-				TILE2COORD(ascii2num(&tsc[tscPos + 14], 4)),
-				0,
-				0,
-				ascii2num(&tsc[tscPos + 19], 4),
-				NULL);
-			tscCleanup(4);
-			break;
-		case('<SOU'):
-			playSound(ascii2num(&tsc[tscPos + 4], 4));
-			tscCleanup(1);
-			break;
-		case('<SPS'):
-			tscCleanup(0);
-			break;
-		case('<SSS'):
-			tscCleanup(1);
-			break;
-		case('<STC'):
-			tscCleanup(0);
-			break;
-		case('<SVP'):
-			saveProfile();
-			tscCleanup(0);
-			break;
-		case('<TAM'):
-			tscCleanup(3);
-			break;
-		case('<TRA'):
-			num = ascii2num(&tsc[tscPos + 9], 4);
-			currentPlayer.setPos(TILE2COORD(ascii2num(&tsc[tscPos + 14], 4)),
-				TILE2COORD(ascii2num(&tsc[tscPos + 19], 4)));
-			loadLevel(ascii2num(&tsc[tscPos + 4], 4));
-			runScriptEvent(num);
-			return 1;
-		case('<TUR'):
-			tscCleanup(0);
-			tscUpdateFlags |= 0x10;
-			break;
-		case('<UNI'):
-			currentPlayer.unit = ascii2num(&tsc[tscPos + 4], 4);
-			tscCleanup(1);
-			break;
-		case('<UNJ'):
-			tscCleanup(2);
-			break;
-		case('<WAI'):
-			tscPrevMode = tscMode;
-			tscMode = WAI;
-			tscCounter = 0;
-			waitAmount = ascii2num(&tsc[tscPos + 4], 4);
-			tscCleanup(1);
-			return 1;
-		case('<WAS'):
-			tscMode = WAS;
-			tscCleanup(0);
-			return 1;
-		case('<XX1'):
-			tscCleanup(1);
-			break;
-		case('<YNJ'):
-			tscPrevMode = tscMode;
-			tscMode = YNJ;
-			yesnoSelect = 0;
-			ynjBoxYOffset = 0;
-			playSound(5);
-			tscCleanup(0);
-			break;
-		case('<ZAM'):
-			tscCleanup(0);
-			break;
-		default:
-			memset(str, 0x00, sizeof(str));
-			strncpy(str, &tsc[tscPos], 4);
-			strcat(str, " is not a valid tsc command.");
-			doCustomError(str);
-			break;
 		}
 	}
+}
 
-	return 1;
+void drawTsc()
+{
+	SDL_Rect clipRect;
+
+	RECT rcFrame1;
+	RECT rcFrame2;
+	RECT rcFrame3;
+
+	RECT rcItemBox1;
+	RECT rcItemBox2;
+	RECT rcItemBox3;
+	RECT rcItemBox4;
+	RECT rcItemBox5;
+
+	RECT rcItem;
+
+	RECT rcFace;
+	RECT rcChar;
+
+	RECT rcYesNo;
+	RECT rcSelection;
+
+	int i;
+
+	int text_offset;
+
+	if (tsc.mode && tsc.flags & 1)
+	{
+		//Set cliprect
+		tsc.rcText.left = (screenWidth / 2) - 108;
+		tsc.rcText.right = (screenWidth / 2) + 108;
+
+		if (tsc.flags & 0x20)
+		{
+			tsc.rcText.top = 32;
+			tsc.rcText.bottom = 80;
+		}
+		else
+		{
+			tsc.rcText.top = 184;
+			tsc.rcText.bottom = 232;
+		}
+
+		clipRect = {
+			tsc.rcText.left * screenScale,
+			tsc.rcText.top * screenScale,
+			(tsc.rcText.right - tsc.rcText.left) * screenScale,
+			(tsc.rcText.bottom - tsc.rcText.top) * screenScale
+		};
+
+		if (tsc.flags & 2)
+		{
+			//Draw message box
+			rcFrame1 = { 0, 0, 244, 8 };
+			rcFrame2 = { 0, 8, 244, 16 };
+			rcFrame3 = { 0, 16, 244, 24 };
+			
+			drawTexture(sprites[TEX_TEXTBOX], &rcFrame1, tsc.rcText.left - 14, tsc.rcText.top - 10);
+			for (i = 1; i <= 6; ++i)
+				drawTexture(sprites[TEX_TEXTBOX], &rcFrame2, tsc.rcText.left - 14, 8 * i + tsc.rcText.top - 10);
+			drawTexture(sprites[TEX_TEXTBOX], &rcFrame3, tsc.rcText.left - 14, 8 * i + tsc.rcText.top - 10);
+		}
+
+		SDL_RenderSetClipRect(renderer, &clipRect);
+		
+		//Draw face
+		if ((tsc.face_x += 8) > 0)
+			tsc.face_x = 0;
+
+		rcFace.left = 48 * (tsc.face % 6);
+		rcFace.top = 48 * (tsc.face / 6);
+		rcFace.right = rcFace.left + 48;
+		rcFace.bottom = rcFace.top + 48;
+
+		drawTexture(sprites[TEX_FACE], &rcFace, tsc.rcText.left + tsc.face_x, tsc.rcText.top - 3);
+
+		//Draw text
+		if (tsc.face)
+			text_offset = 56;
+		else
+			text_offset = 0;
+
+		for (int i = 0; i < 4; i++)
+		{
+			for (int v = 0; ; v++)
+			{
+				if (tscText[i * 0x40 + v])
+				{
+					rcChar.left = (((tscText[i * 0x40 + v] - 0x20) % 32) * 12);
+					rcChar.top = (((tscText[i * 0x40 + v] - 0x20) >> 5) * 24);
+					rcChar.right = rcChar.left + 12;
+					rcChar.bottom = rcChar.top + 24;
+
+					drawTextureSize(sprites[0x26], &rcChar, tsc.rcText.left + text_offset + (v * 6), tsc.rcText.top + tsc.ypos_line[i] + tsc.offsetY, charWidth, charHeight);
+				}
+				else
+				{
+					break;
+				}
+			}
+		}
+
+		//End cliprect
+		SDL_RenderSetClipRect(renderer, NULL);
+
+		//NOD cursor / beam?
+		bool flash = tsc.wait_beam++ % 20 > 12;
+		
+		if (flash && tsc.mode == NOD)
+		{
+			SDL_SetRenderDrawColor(renderer, 255, 255, 254, 255);
+			drawRect(tsc.rcText.left + text_offset + (tsc.p_write * 6),
+					tsc.rcText.top + tsc.ypos_line[tsc.line % 4] + tsc.offsetY,
+					5,
+					11);
+		}
+
+		//GIT
+		rcItemBox1 = { 0, 0, 72, 16 };
+		rcItemBox2 = { 0, 8, 72, 24 };
+		rcItemBox3 = { 240, 0, 244, 8 };
+		rcItemBox4 = { 240, 8, 244, 16 };
+		rcItemBox5 = { 240, 16, 244, 24 };
+
+		if (tsc.item)
+		{
+			drawTexture(sprites[TEX_TEXTBOX], &rcItemBox1, (screenWidth / 2) - 40, 128);
+			drawTexture(sprites[TEX_TEXTBOX], &rcItemBox2, (screenWidth / 2) - 40, 144);
+			drawTexture(sprites[TEX_TEXTBOX], &rcItemBox3, (screenWidth / 2) + 32, 128);
+			drawTexture(sprites[TEX_TEXTBOX], &rcItemBox4, (screenWidth / 2) + 32, 136);
+			drawTexture(sprites[TEX_TEXTBOX], &rcItemBox4, (screenWidth / 2) + 32, 144);
+			drawTexture(sprites[TEX_TEXTBOX], &rcItemBox5, (screenWidth / 2) + 32, 152);
+
+			if (tsc.item_y < 0x88)
+				++tsc.item_y;
+
+			if (tsc.item >= 1000)
+			{
+				rcItem.left = 32 * ((tsc.item - 1000) % 8);
+				rcItem.right = 32 * ((tsc.item - 1000) % 8) + 32;
+				rcItem.top = 16 * ((tsc.item - 1000) / 8);
+				rcItem.bottom = 16 * ((tsc.item - 1000) / 8) + 16;
+
+				drawTexture(sprites[TEX_ITEMIMAGE], &rcItem, (screenWidth / 2) - 20, tsc.item_y);
+			}
+			else
+			{
+				rcItem.left = 16 * (tsc.item % 16);
+				rcItem.right = 16 * (tsc.item % 16) + 16;
+				rcItem.top = 16 * (tsc.item / 16);
+				rcItem.bottom = 16 * (tsc.item / 16) + 16;
+
+				drawTexture(sprites[TEX_ARMSIMAGE], &rcItem, (screenWidth / 2) - 12, tsc.item_y);
+			}
+		}
+
+		//Yes/No selection
+		rcYesNo = { 152, 48, 244, 80 };
+		rcSelection = { 112, 88, 128, 104 };
+		
+		if (tsc.mode == YNJ)
+		{
+			if (tsc.wait > 1)
+				i = 144;
+			else
+				i = 4 * (38 - tsc.wait);
+
+			drawTexture(sprites[TEX_TEXTBOX], &rcYesNo, tsc.rcText.left + 164, i);
+
+			if (tsc.wait == 16)
+				drawTexture(sprites[TEX_TEXTBOX], &rcSelection, 41 * tsc.select + tsc.rcText.left + 159, 154);
+		}
+	}
 }

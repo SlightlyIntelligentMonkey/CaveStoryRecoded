@@ -4,10 +4,11 @@ SDL_Rect drawRectangle = { 0 };
 
 int screenWidth = 0;
 int screenHeight = 0;
+int screenScale = 0;
+
 int prevWidth = 0;
 int prevHeight = 0;
-
-int screenScale = 0;
+int prevScale = 0;
 
 int windowFlags = 0;
 
@@ -33,7 +34,7 @@ int createWindow(int width, int height, int scale, bool fullscreen) {
 	if (!renderer)
 		renderer = SDL_CreateRenderer(window, -1, 0);
 
-	SDL_RenderSetLogicalSize(renderer, screenWidth, screenHeight);
+	//SDL_RenderSetLogicalSize(renderer, screenWidth, screenHeight);
 
 	return 0;
 }
@@ -55,22 +56,26 @@ void switchScreenMode()
 
 		prevWidth = screenWidth;
 		prevHeight = screenHeight;
+		prevScale = screenScale;
 
 		screenWidth = (dm.w * 240) / dm.h;
 		screenHeight = 240;
+		screenScale = dm.h / 240;
 	}
 	else
 	{
 		screenWidth = prevWidth;
 		screenHeight = prevHeight;
+		screenScale = prevScale;
 	}
+
+	SDL_RenderSetLogicalSize(renderer, screenWidth * screenScale, screenHeight * screenScale);
 
 	//Ensure that the view is shifted properly
 	viewport.x += (lastWidth - screenWidth) * 0x100;
 	viewport.y += (lastHeight - screenHeight) * 0x100;
 
 	SDL_SetWindowSize(window, screenWidth * screenScale, screenHeight * screenScale);
-	SDL_RenderSetLogicalSize(renderer, screenWidth, screenHeight);
 	SDL_SetWindowFullscreen(window, windowFlags);
 	return;
 }
@@ -92,11 +97,24 @@ void loadImage(const char *file, SDL_Texture **tex) {
 void drawTexture(SDL_Texture *texture, RECT *rect, int x, int y) {
 	ImageRect = { rect->left, rect->top, rect->right - rect->left, rect->bottom - rect->top };
 
-	DrawRect.x = x;
-	DrawRect.y = y;
+	DrawRect.x = x * screenScale;
+	DrawRect.y = y * screenScale;
+	DrawRect.w = ImageRect.w * screenScale;
+	DrawRect.h = ImageRect.h * screenScale;
 
-	DrawRect.w = ImageRect.w;
-	DrawRect.h = ImageRect.h;
+	if (SDL_RenderCopy(renderer, texture, &ImageRect, &DrawRect) != 0)
+		doError();
+
+	return;
+}
+
+void drawTextureSize(SDL_Texture *texture, RECT *rect, int x, int y, int w, int h) {
+	ImageRect = { rect->left, rect->top, rect->right - rect->left, rect->bottom - rect->top };
+
+	DrawRect.x = x * screenScale;
+	DrawRect.y = y * screenScale;
+	DrawRect.w = w * screenScale;
+	DrawRect.h = h * screenScale;
 
 	if (SDL_RenderCopy(renderer, texture, &ImageRect, &DrawRect) != 0)
 		doError();
@@ -141,10 +159,10 @@ void drawNumber(int value, int x, int y, bool bZero)
 
 void drawRect(int x, int y, int w, int h)
 {
-	drawRectangle.x = x;
-	drawRectangle.y = y;
-	drawRectangle.w = w;
-	drawRectangle.h = h;
+	drawRectangle.x = x * screenScale;
+	drawRectangle.y = y * screenScale;
+	drawRectangle.w = w * screenScale;
+	drawRectangle.h = h * screenScale;
 
 	SDL_RenderFillRect(renderer, &drawRectangle);
 }

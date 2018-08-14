@@ -201,7 +201,7 @@ void npcAct004(npc *NPC) //Smoke
 		}
 		else
 		{
-			NPC->rect = rcUp[NPC->ani_no]; //Really broken
+			NPC->rect = rcUp[NPC->ani_no];
 		}
 	}
 	else
@@ -230,11 +230,13 @@ void npcAct005(npc *NPC) //Egg Corridor critter
 			NPC->flag &= ~ground;
 			NPC->ym = -0x5FF;
 
-			//Jump in direct facing
+			//Jump in direction facing
 			if (NPC->direct)
 				NPC->xm = 0x100;
 			else
 				NPC->xm = -0x100;
+
+			playSound(30);
 		}
 
 		break;

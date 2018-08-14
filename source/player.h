@@ -74,8 +74,6 @@ class player {
 
 		void animate(bool bKey);
 
-		void collide();
-
 		void update(bool bKey);
 		void draw();
 };

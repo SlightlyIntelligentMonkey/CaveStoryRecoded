@@ -2,10 +2,8 @@
 #include "level.h"
 #include "hud.h"
 #include "script.h"
-#include "fade.h"
 
-int gameMode = 0;
-int prevGameMode = 0;
+int gameMode = 1;
 
 VIEW viewport;
 
@@ -112,12 +110,221 @@ void initGame()
 	currentPlayer.init();
 	currentPlayer.setPos(10 << 13, 8 << 13);
 	loadLevel(13);
-	runScriptEvent(200);
-	tscDisplayFlags = 0;
-	fadedOut = true;
-	fadeCounter = 0;
+	startTscEvent(200);
 }
 
+//Escape menu
+RECT rcEscape = { 0, 128, 208, 144 };
+int escapeMenu()
+{
+	while (true)
+	{
+		//Framerate limiter
+		Uint32 timeNow = SDL_GetTicks();
+		Uint32 timeNext = framerateTicks + framerate;
+
+		if (timeNow >= timeNext) {
+			framerateTicks = SDL_GetTicks();
+		}
+		else
+		{
+			SDL_Delay(timeNext - timeNow);
+			continue;
+		}
+
+		//Handle events
+		getKeys(&events);
+		if (events.type == SDL_QUIT || exitGame) { return 0; }
+
+		if (isKeyPressed(SDL_SCANCODE_ESCAPE)) { return 0; }
+		if (isKeyPressed(SDL_SCANCODE_F1)) { return 1; }
+		if (isKeyPressed(SDL_SCANCODE_F2)) { return 2; }
+
+		if (isKeyDown(SDL_SCANCODE_LALT) && isKeyPressed(SDL_SCANCODE_RETURN) ||
+			isKeyPressed(SDL_SCANCODE_LALT) && isKeyDown(SDL_SCANCODE_RETURN))
+		{
+			switchScreenMode();
+		}
+
+		SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
+		SDL_RenderClear(renderer);
+
+		drawTexture(sprites[0x1A], &rcEscape,
+			(screenWidth >> 1) - 104,
+			(screenHeight >> 1) - 8);
+
+		SDL_RenderPresent(renderer);
+	}
+
+	return 0;
+}
+
+//Teleporter Menu
+PERMIT_STAGE permitStage[8];
+int selectedStage;
+int stageSelectTitleY;
+int stageSelectFlash;
+
+void moveStageSelectCursor()
+{
+	int stageNo; // [esp+18h] [ebp-10h]
+
+	for (stageNo = 0; permitStage[stageNo].index != 0; ++stageNo);
+
+	if (stageNo)
+	{
+		//Left and right move
+		if (isKeyPressed(keyLeft))
+			--selectedStage;
+		if (isKeyPressed(keyRight))
+			++selectedStage;
+
+		//Wrap around
+		if (selectedStage < 0)
+			selectedStage = stageNo - 1;
+		if (selectedStage >= stageNo)
+			selectedStage = 0;
+
+		//Run event and play sound
+		if (isKeyPressed(keyLeft) || isKeyPressed(keyRight))
+			startTscEvent(permitStage[selectedStage].index + 1000);
+		if (isKeyPressed(keyLeft) || isKeyPressed(keyRight))
+			playSound(1);
+	}
+}
+
+void drawStageSelect()
+{
+	RECT rcCur[2];
+	RECT rcTitle1;
+	RECT rcStage;
+
+	int stageNo;
+	int stageX;
+
+	rcCur[0] = { 80, 88, 112, 104 };
+	rcCur[1] = { 80, 104, 112, 120 };
+	rcTitle1 = { 80, 64, 144, 72 };
+
+	if (stageSelectTitleY > 46)
+		--stageSelectTitleY;
+
+	drawTexture(sprites[TEX_TEXTBOX], &rcTitle1, (screenWidth / 2) - 32, stageSelectTitleY);
+	for (stageNo = 0; permitStage[stageNo].index != 0; stageNo++);
+
+	++stageSelectFlash;
+
+	if (stageNo)
+	{
+		stageX = (-40 * stageNo + screenWidth) / 2;
+
+		//Draw everything now
+		drawTexture(sprites[TEX_TEXTBOX], &rcCur[(stageSelectFlash >> 1) & 1], stageX + 40 * selectedStage, 64);
+		for (int i = 0; i < 7 && permitStage[i].index; ++i)
+		{
+			rcStage.left = 32 * (permitStage[i].index % 8);
+			rcStage.right = rcStage.left + 32;
+			rcStage.top = 16 * (permitStage[i].index / 8);
+			rcStage.bottom = rcStage.top + 16;
+
+			drawTexture(sprites[0xE], &rcStage, stageX + 40 * i, 64);
+		}
+	}
+}
+
+int stageSelect(int *runEvent)
+{
+	//Keep track of old one
+	char oldScript[260];
+	strcpy(oldScript, tsc.path);
+
+	//Init some stuff
+	selectedStage = 0;
+	stageSelectTitleY = 54;
+
+	//Load stage select tsc
+	loadTsc2((char*)"data/StageSelect.tsc");
+	startTscEvent(permitStage[selectedStage].index + 1000);
+
+	while (true)
+	{
+		//Framerate limiter
+		Uint32 timeNow = SDL_GetTicks();
+		Uint32 timeNext = framerateTicks + framerate;
+
+		if (timeNow >= timeNext) {
+			framerateTicks = SDL_GetTicks();
+		}
+		else
+		{
+			SDL_Delay(timeNext - timeNow);
+			continue;
+		}
+
+		//Handle events
+		getKeys(&events);
+		if (events.type == SDL_QUIT || exitGame) { return 0; }
+
+		if (isKeyDown(SDL_SCANCODE_ESCAPE))
+		{
+			int escape = escapeMenu();
+
+			if (!escape)
+				return 0;
+			if (escape == 2)
+				return 1;
+		}
+
+		//Update menu
+		moveStageSelectCursor();
+
+		int tscResult = updateTsc();
+		if (!tscResult)
+			return 0;
+		if (tscResult == 2)
+			return 2;
+
+		//Draw background
+		SDL_SetRenderDrawColor(renderer, 0, 0, 32, 255);
+		SDL_RenderClear(renderer);
+
+		drawLevel(false);
+		drawNPC();
+		currentPlayer.draw();
+		drawLevel(true);
+		drawCarets();
+
+		if (gameFlags & 2)
+			drawHud(false);
+
+		//Draw menu
+		drawStageSelect();
+		drawTsc();
+
+		//Select
+		if (isKeyPressed(keyJump))
+		{
+			stopTsc();
+			loadStageTsc(oldScript);
+			*runEvent = permitStage[selectedStage].event;
+			return 1;
+		}
+
+		//Cancel
+		if (isKeyPressed(keyShoot))
+		{
+			stopTsc();
+			loadStageTsc(oldScript);
+			*runEvent = 0;
+			return 1;
+		}
+
+		//Present
+		SDL_RenderPresent(renderer);
+	}
+}
+
+//Main States
 int gameUpdatePlay()
 {
 	int swPlay = 1;
@@ -142,12 +349,16 @@ int gameUpdatePlay()
 		getKeys(&events);
 
 		if (events.type == SDL_QUIT || exitGame)
-			return QUIT;
+			return 0;
 
 		if (isKeyDown(SDL_SCANCODE_ESCAPE))
 		{
-			prevGameMode = PLAY;
-			return ESCAPE;
+			int escape = escapeMenu();
+
+			if (!escape)
+				return 0;
+			if (escape == 2)
+				return 1;
 		}
 
 		if (isKeyDown(SDL_SCANCODE_LALT) && isKeyPressed(SDL_SCANCODE_RETURN) || isKeyPressed(SDL_SCANCODE_LALT) && isKeyDown(SDL_SCANCODE_RETURN))
@@ -165,7 +376,16 @@ int gameUpdatePlay()
 
 			updateNPC();
 
+			playerHitMap();
+			playerHitNpcs();
+
 			updateCarets();
+
+			if (gameFlags & 2)
+				currentPlayer.animate(true);
+			else
+				currentPlayer.animate(false);
+
 			handleView();
 		}
 
@@ -182,24 +402,23 @@ int gameUpdatePlay()
 		if (gameFlags & 2)
 			drawHud(false);
 
-		drawFade();
-
+		//Do TSC stuff
 		if (swPlay & 1)
 		{
 			tscResult = updateTsc();
 
 			if (!tscResult)
-				return QUIT;
+				return 0;
 			if (tscResult == 2)
-				return MENU;
+				return 1;
 		}
 
-		drawTSC();
+		drawTsc();
 
 		SDL_RenderPresent(renderer);
 	}
 
-	return QUIT;
+	return 0;
 }
 
 int gameUpdateMenu()
@@ -244,12 +463,16 @@ int gameUpdateMenu()
 		getKeys(&events);
 
 		if (events.type == SDL_QUIT || exitGame)
-			return QUIT;
+			return 0;
 
 		if (isKeyDown(SDL_SCANCODE_ESCAPE))
 		{
-			prevGameMode = MENU;
-			return ESCAPE;
+			int escape = escapeMenu();
+
+			if (!escape)
+				return 0;
+			if (escape == 2)
+				return 1;
 		}
 
 		if (isKeyDown(SDL_SCANCODE_LALT) && isKeyPressed(SDL_SCANCODE_RETURN) || isKeyPressed(SDL_SCANCODE_LALT) && isKeyDown(SDL_SCANCODE_RETURN))
@@ -319,12 +542,9 @@ int gameUpdateMenu()
 int gameUpdateIntro()
 {
 	uint32_t frame = 0;
-	fadedOut = true;
-
-	viewport.x = 0;
-	viewport.y = 0;
 	loadLevel(72);
-	runScriptEvent(100);
+	startTscEvent(100);
+
 	while (frame < 500)
 	{
 		//Framerate limiter
@@ -344,15 +564,21 @@ int gameUpdateIntro()
 		//Handle events
 		getKeys(&events);
 
-		if (events.type == SDL_QUIT || exitGame) { return QUIT; }
+		if (events.type == SDL_QUIT || exitGame)
+			return 0;
 
-		if (isKeyDown(SDL_SCANCODE_ESCAPE)) { prevGameMode = INTRO; return ESCAPE; }
-
-		if (isKeyDown(SDL_SCANCODE_LALT) && isKeyPressed(SDL_SCANCODE_RETURN) ||
-			isKeyPressed(SDL_SCANCODE_LALT) && isKeyDown(SDL_SCANCODE_RETURN))
+		if (isKeyDown(SDL_SCANCODE_ESCAPE))
 		{
-			switchScreenMode();
+			int escape = escapeMenu();
+
+			if (!escape)
+				return 0;
+			if (escape == 2)
+				return 1;
 		}
+
+		if (isKeyDown(SDL_SCANCODE_LALT) && isKeyPressed(SDL_SCANCODE_RETURN) || isKeyPressed(SDL_SCANCODE_LALT) && isKeyDown(SDL_SCANCODE_RETURN))
+			switchScreenMode();
 
 		if (isKeyPressed(keyJump) | isKeyDown(keyShoot)) { break; }
 
@@ -377,9 +603,9 @@ int gameUpdateIntro()
 		//Draw carets
 		drawCarets();
 
-		drawFade();
+		//Do TSC stuff
 		updateTsc();
-		drawTSC();
+		drawTsc();
 
 		SDL_RenderPresent(renderer);
 	}
@@ -392,55 +618,12 @@ int gameUpdateIntro()
 		SDL_RenderClear(renderer);
 		SDL_RenderPresent(renderer);
 	}
-	return MENU;
-}
 
-RECT rcEscape = { 0, 128, 208, 144 };
-int gameUpdateEscape()
-{
-	while (true)
-	{
-		//Framerate limiter
-		Uint32 timeNow = SDL_GetTicks();
-		Uint32 timeNext = framerateTicks + framerate;
-
-		if (timeNow >= timeNext) {
-			framerateTicks = SDL_GetTicks();
-		}
-		else
-		{
-			SDL_Delay(timeNext - timeNow);
-			continue;
-		}
-
-		//Handle events
-		getKeys(&events);
-		if (events.type == SDL_QUIT || exitGame) { return QUIT; }
-
-		if (isKeyPressed(SDL_SCANCODE_ESCAPE)) { return QUIT; }
-		if (isKeyPressed(SDL_SCANCODE_F1)) { return prevGameMode; }
-		if (isKeyPressed(SDL_SCANCODE_F2)) { return INTRO; }
-
-		if (isKeyDown(SDL_SCANCODE_LALT) && isKeyPressed(SDL_SCANCODE_RETURN) ||
-			isKeyPressed(SDL_SCANCODE_LALT) && isKeyDown(SDL_SCANCODE_RETURN))
-		{
-			switchScreenMode();
-		}
-
-		SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
-		SDL_RenderClear(renderer);
-
-		drawTexture(sprites[0x1A], &rcEscape,
-			(screenWidth >> 1) - 104,
-			(screenHeight >> 1) - 8);
-
-		SDL_RenderPresent(renderer);
-	}
 	return MENU;
 }
 
 int mainGameLoop() {
-	while (gameMode > -1) {
+	while (gameMode) {
 		//////UPDATE//////
 		switch (gameMode)
 		{
@@ -453,11 +636,8 @@ int mainGameLoop() {
 		case(PLAY):
 			gameMode = gameUpdatePlay();
 			break;
-		case(ESCAPE):
-			gameMode = gameUpdateEscape();
-			break;
 		}
 	}
 
-	return QUIT;
+	return 0;
 }

@@ -90,16 +90,9 @@ void player::damage(int damage) {
 
 			createSmoke(x, y, 5120, 64);
 			createCaret(x, y, 12, 0);
-			runScriptEvent(40);
+			startTscEvent(40);
 		}
 	}
-}
-
-void player::collide() {
-	flag = 0;
-
-	playerHitMap(&hit);
-	playerHitNpcs(&hit);
 }
 
 void player::actNormal(bool bKey) {
@@ -775,11 +768,11 @@ void player::update(bool bKey) {
 						{
 							if (getFlag(4000))
 							{
-								runScriptEvent(1100);
+								startTscEvent(1100);
 							}
 							else
 							{
-								runScriptEvent(41);
+								startTscEvent(41);
 
 								if (direct)
 									createCaret(x, y, 8, 2);
@@ -806,10 +799,6 @@ void player::update(bool bKey) {
 		}
 
 		cond &= ~player_noFriction;
-
-		collide();
-
-		animate(bKey);
 	}
 }
 

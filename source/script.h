@@ -1,43 +1,40 @@
 #pragma once
 #include "common.h"
 
-extern std::vector<char> scriptEvents;
-extern SDL_Texture *font;
-
-enum modes
-{
-	END = 0,
-	PARSE = 1,
-	NOD = 2,
-	MSG = 3,
-	WAI = 4,
-	FADE = 5,
-	YNJ = 6,
-	WAS = 7
+struct TSC {
+	char path[260];
+	int size;
+	uint8_t *data;
+	char mode;
+	char flags;
+	int p_read;
+	int p_write;
+	int line;
+	int ypos_line[4];
+	int wait;
+	int wait_next;
+	int next_event;
+	char select;
+	int face;
+	int face_x;
+	int item;
+	int item_y;
+	RECT rcText;
+	int offsetY;
+	uint8_t wait_beam;
 };
 
-extern int mapNameDisplayTimer;
+extern TSC tsc;
 
-extern int tscMode;
+//Functions
+bool initTsc();
 
-enum displayFlags
-{
-	TSCINVIS = 0,
-	TSCVIS = 0b0001,
-	MSGbox = 0b0010,
-	FAI = 0b0100,
-	FAO = 0b1000,
-	invisMSG = 0x10
-};
+void loadStageTsc(char *name);
+void loadTsc2(char *name);
 
-extern int tscDisplayFlags;
-
-void loadTsc(const char * path);
-
-void runScriptEvent(int event_num);
-void endTsc();
+int startTscEvent(int no);
+int jumpTscEvent(int no);
+void stopTsc();
 
 int updateTsc();
-void updateMessageBox();
-
-void drawTSC();
+void drawTsc();

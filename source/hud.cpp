@@ -6,7 +6,7 @@ void drawPlayerHealth(bool hide)
 	RECT rcLife = { 0, 24, 232, 32 };
 	RECT rcCase = { 0, 40, 232, 48 };
 
-	if (!hide)
+	if (!(hide || ((currentPlayer.shock >> 1) & 1)))
 	{
 		if (currentPlayer.lifeBr <= currentPlayer.life)
 		{

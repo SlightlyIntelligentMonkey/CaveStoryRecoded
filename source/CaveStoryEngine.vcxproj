@@ -157,7 +157,6 @@
   <ItemGroup>
     <ClCompile Include="bullet.cpp" />
     <ClCompile Include="caret.cpp" />
-    <ClCompile Include="fade.cpp" />
     <ClCompile Include="game.cpp" />
     <ClCompile Include="hud.cpp" />
     <ClCompile Include="npc080.cpp" />
@@ -195,12 +194,12 @@
     <ClCompile Include="render.cpp" />
     <ClCompile Include="script.cpp" />
     <ClCompile Include="sound.cpp" />
+    <ClCompile Include="valueview.cpp" />
     <ClCompile Include="weapons.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="bullet.h" />
     <ClInclude Include="caret.h" />
-    <ClInclude Include="fade.h" />
     <ClInclude Include="flags.h" />
     <ClInclude Include="game.h" />
     <ClInclude Include="npc080.h" />
@@ -213,6 +212,8 @@
     <ClInclude Include="npc300.h" />
     <ClInclude Include="org.h" />
     <ClInclude Include="polarStar.h" />
+    <ClInclude Include="script.h" />
+    <ClInclude Include="valueview.h" />
     <ClInclude Include="weapons.h" />
     <ClInclude Include="hud.h" />
     <ClInclude Include="npc340.h" />
@@ -233,7 +234,6 @@
     <ClInclude Include="playerCollision.h" />
     <ClInclude Include="render.h" />
     <ClInclude Include="resource.h" />
-    <ClInclude Include="script.h" />
     <ClInclude Include="sound.h" />
   </ItemGroup>
   <ItemGroup>

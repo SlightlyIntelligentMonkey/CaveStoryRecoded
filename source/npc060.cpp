@@ -439,6 +439,7 @@ void npcAct064(npc *NPC) //First Cave critter
 				NPC->xm = 0x100;
 			else
 				NPC->xm = -0x100;
+
 			playSound(30);
 		}
 

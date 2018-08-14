@@ -1,6 +1,6 @@
 //{{NO_DEPENDENCIES}}
 // Microsoft Visual C++ generated include file.
-// Used by CaveStoryRemake.rc
+// Used by CaveStoryEngine.rc
 //
 #define ID_BUTTON2                      40003
 

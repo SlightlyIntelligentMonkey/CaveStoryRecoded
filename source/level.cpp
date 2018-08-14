@@ -85,9 +85,6 @@ void loadLevel(int levelIndex) {
 
 	backgroundScroll = stageTable[levelIndex].backgroundScroll;
 
-	//NOTE: map name shit is cleared when a new level is loaded
-	mapNameDisplayTimer = 0xFF;
-
 	//Load pxm
 	char pxmPath[256];
 	snprintf(pxmPath, 256, "data/Stage/%s.pxm", stageTable[levelIndex].filename);
@@ -216,7 +213,7 @@ void loadLevel(int levelIndex) {
 	char tscPath[256];
 	snprintf(tscPath, 256, "data/Stage/%s.tsc", stageTable[levelIndex].filename);
 
-	loadTsc(tscPath);
+	loadStageTsc(tscPath);
 
 
 	//Fix viewport
