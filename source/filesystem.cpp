@@ -143,6 +143,9 @@ void loadProfile()
 void saveProfile() {
 	BYTE *profile = (BYTE*)malloc(0x604);
 
+	if (profile == nullptr)
+		doCustomError("Could not allocate memory for profile");
+
 	//Set data
 	memset(profile, 0, 0x604);
 	memcpy(profile, profileCode, 0x08);
