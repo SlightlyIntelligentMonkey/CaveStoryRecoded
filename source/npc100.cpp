@@ -347,3 +347,13 @@ void npcAct117(npc *NPC)
 	NPC->x += NPC->xm;
 	NPC->y += NPC->ym;
 }
+
+void npcAct116(npc *NPC)
+{
+	NPC->rect = { 272, 184, 320, 200 };
+}
+
+void npcAct119(npc *NPC)
+{
+	NPC->rect = { 248, 184, 272, 200 };
+}
