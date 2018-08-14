@@ -23,7 +23,7 @@ void loadStageTable()
 	SDL_RWops *tblStream = SDL_RWFromFile("data/stage.tbl", "rb");
 
 	if (tblStream == nullptr)
-		doCustomError("Could not open data/stage.tbl");
+		doError();
 
 	size_t stages = (size_t)SDL_RWsize(tblStream) / 200;
 
