@@ -17,7 +17,7 @@ uint8_t getAtan(int x, int y)
 }
 
 //these are good functions
-int random(uint32_t mi, uint32_t ma) {
+int random(int32_t mi, int32_t ma) {
 	return rand() % (ma - mi + 1) + mi;
 }
 

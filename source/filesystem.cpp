@@ -88,6 +88,8 @@ void loadProfile()
 			return;
 
 		uint64_t code = SDL_ReadLE64(profile); //Code
+		if (memcmp(&code, "Do041220", sizeof(code)) != 0)
+			doCustomError("Invalid profile (first 8 bytes aren't \"Do041120\"");
 
 		int level = SDL_ReadLE32(profile); //level
 		SDL_ReadLE32(profile); //song
@@ -142,6 +144,9 @@ void loadProfile()
 
 void saveProfile() {
 	BYTE *profile = (BYTE*)malloc(0x604);
+
+	if (profile == nullptr)
+		doCustomError("Could not allocate memory for profile");
 
 	//Set data
 	memset(profile, 0, 0x604);

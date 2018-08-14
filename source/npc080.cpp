@@ -236,6 +236,22 @@ void npcAct084(npc *NPC) //Basu 1 projectile
 	}
 }
 
+void npcAct090(npc *NPC) // Background
+{
+	NPC->rect = { 280, 80, 296, 104 };
+}
+
+void npcAct091(npc *NPC) // Cage 
+{
+	if (!NPC->act_no)
+	{
+		++NPC->act_no;
+		NPC->y += 0x2000;
+	}
+
+	NPC->rect = { 96, 88, 128, 112 };
+}
+
 void npcAct096(npc *NPC) //Fan left
 {	
 	int action = NPC->act_no;
@@ -274,7 +290,7 @@ void npcAct096(npc *NPC) //Fan left
 		if (NPC->direct == 2)
 			NPC->act_no = 2;
 		else
-			NPC->ani_no = 1;
+			NPC->ani_no = 1; // Overriden by the next statement. Pixel's fault
 	npc096end:
 		NPC->ani_no = 0;
 		break;
@@ -317,10 +333,10 @@ void npcAct097(npc *NPC) //Fan up
 
 		break;
 	case 0:
-		if (NPC->direct == 2)
+		if (NPC->direct == dirRight)
 			NPC->act_no = 2;
 		else
-			NPC->ani_no = 1;
+			NPC->ani_no = 1; // Overriden by the next statement. Pixel's fault
 	npc096end:
 		NPC->ani_no = 0;
 		break;

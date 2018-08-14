@@ -594,7 +594,7 @@ int gameUpdateIntro()
 		if (isKeyDown(SDL_SCANCODE_LALT) && isKeyPressed(SDL_SCANCODE_RETURN) || isKeyPressed(SDL_SCANCODE_LALT) && isKeyDown(SDL_SCANCODE_RETURN))
 			switchScreenMode();
 
-		if (isKeyPressed(keyJump) | isKeyDown(keyShoot)) { break; }
+		if (isKeyPressed(keyJump) || isKeyDown(keyShoot)) { break; }
 
 		updateNPC();
 		updateCarets();
@@ -638,7 +638,7 @@ int gameUpdateIntro()
 }
 
 int mainGameLoop() {
-	while (gameMode) {
+	while (gameMode != 0) {
 		//////UPDATE//////
 		switch (gameMode)
 		{
@@ -650,6 +650,9 @@ int mainGameLoop() {
 			break;
 		case(PLAY):
 			gameMode = gameUpdatePlay();
+			break;
+		default:
+			doCustomError("Invalid gameMode");
 			break;
 		}
 	}

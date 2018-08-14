@@ -1,5 +1,10 @@
 #include "npc180.h"
 
+void npcAct195(npc *NPC) // Grate mouth
+{
+	NPC->rect = { 112, 64, 128, 80 };
+}
+
 void npcAct199(npc *NPC) //Current / fan effect
 {
 	if (!NPC->act_no)

@@ -1,5 +1,9 @@
 #include "npc220.h"
 
+void npcAct227(npc *NPC) // Bucket
+{
+	NPC->rect = { 208, 32, 224, 48 };
+}
 void npcAct231(npc *NPC) //Momorin's rocket
 {
 	RECT rc[2];
@@ -21,7 +25,7 @@ void npcAct231(npc *NPC) //Momorin's rocket
 	case 10:
 		NPC->act_no = 11;
 		NPC->act_wait = 0;
-
+		// fallthrough
 	case 11:
 		++NPC->act_wait;
 		NPC->ym += 8;
@@ -46,7 +50,7 @@ void npcAct231(npc *NPC) //Momorin's rocket
 			createNpc(4, NPC->x + (random(-16, 16) << 9), NPC->y + (random(-8, 8) << 9), 0, 0, 0, nullptr);
 			playSound(12);
 		}
-		
+		// fallthrough
 	case 13:
 		NPC->ym -= 8;
 

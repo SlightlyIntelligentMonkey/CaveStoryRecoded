@@ -60,9 +60,9 @@ void loadStageTsc(char *name) {
 
 	//Load stage's tsc file
 	SDL_RWops *bodyRW = SDL_RWFromFile(name, "rb");
-	size_t bodySize = (size_t)SDL_RWsize(bodyRW);
 	if (!bodyRW)
 		doError();
+	size_t bodySize = (size_t)SDL_RWsize(bodyRW);
 
 	//Put the data into memory
 	bodyRW->read(bodyRW, tsc.data + headSize, 1, bodySize);
@@ -79,9 +79,9 @@ void loadStageTsc(char *name) {
 void loadTsc2(char *name) {
 	//Load tsc file
 	SDL_RWops *bodyRW = SDL_RWFromFile(name, "rb");
-	tsc.size = (int)SDL_RWsize(bodyRW);
 	if (!bodyRW)
 		doError();
+	tsc.size = (int)SDL_RWsize(bodyRW);
 
 	//Put the data into memory
 	bodyRW->read(bodyRW, tsc.data, 1, tsc.size);

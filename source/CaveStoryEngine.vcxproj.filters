@@ -156,6 +156,9 @@
     <ClCompile Include="valueview.cpp">
       <Filter>Source Files\classes\value view</Filter>
     </ClCompile>
+    <ClCompile Include="npc240.cpp">
+      <Filter>Source Files\classes\npc\act</Filter>
+    </ClCompile>
     <ClCompile Include="fade.cpp">
       <Filter>Source Files\modules</Filter>
     </ClCompile>
@@ -271,6 +274,9 @@
     </ClInclude>
     <ClInclude Include="valueview.h">
       <Filter>Source Files\classes\value view</Filter>
+    </ClInclude>
+    <ClInclude Include="npc240.h">
+      <Filter>Source Files\classes\npc\act</Filter>
     </ClInclude>
     <ClInclude Include="fade.h">
       <Filter>Source Files\modules</Filter>

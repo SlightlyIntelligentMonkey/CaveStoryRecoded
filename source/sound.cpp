@@ -72,7 +72,7 @@ void loadSound(char *path, SDL_AudioSpec *spec, int **buf, Uint32 *length)
 {
 	int view = 0;
 	BYTE *pBuf = nullptr;
-	SDL_AudioSpec *lSpec = nullptr;
+	SDL_AudioSpec *lSpec;
 	lSpec = SDL_LoadWAV(path, spec, &pBuf, length);
 	if (pBuf == NULL) { doError(); }
 	int *fakeBuf = (int*)malloc(*length * 4);

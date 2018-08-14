@@ -1,9 +1,20 @@
 #include "npc000.h"
 
+#include <string>
+using std::string;
+using std::to_string;
+
+static constexpr bool errorOnNPCNotImplemented = false;
+
 void npcActNone(npc *NPC)
 {
 	NPC->surf = 0x27;
 	NPC->rect = { 0, 0, NPC->view.left >> 8, NPC->view.top >> 8 };
+	if (errorOnNPCNotImplemented)
+	{
+		string msg = "NPC " + to_string(NPC->code_char) + " is not implementated yet";
+		SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_INFORMATION, "Missing NPC", msg.c_str(), NULL);
+	}
 }
 
 void npcAct000(npc *NPC) //Null
