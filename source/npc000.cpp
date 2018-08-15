@@ -148,6 +148,13 @@ void npcAct002(npc *NPC) //Behemoth
 		NPC->rect = rcLeft[NPC->ani_no];
 }
 
+void npcAct003(npc *NPC)
+{
+	if (++NPC->count1 > 100)
+		NPC->cond = 0;
+	NPC->rect = { 0 };
+}
+
 void npcAct004(npc *NPC) //Smoke
 {
 	RECT rcLeft[8];

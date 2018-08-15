@@ -1,5 +1,14 @@
 #include "npc100.h"
 
+void npcAct106(npc *NPC) // Speech balloon 'Hey' high
+{
+	if (NPC->act_no == 0)
+	{
+		createNpc(NPC_BalloonHeyLow, NPC->x, NPC->y - 0x1000, 0, 0, dirLeft, nullptr);
+		NPC->act_no = 1;
+	}
+}
+
 void npcAct111(npc *NPC) //Quote teleport out
 {
 	RECT rcLeft[2];
