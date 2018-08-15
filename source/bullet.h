@@ -63,6 +63,6 @@ public:
 	void update();
 };
 
-typedef void(*bulletAct)(bullet *);
+using bulletAct = void(*)(bullet *);
 
 extern std::vector<bullet> bullets;

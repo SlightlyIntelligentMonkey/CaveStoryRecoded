@@ -37,7 +37,7 @@ public:
 	void draw();
 };
 
-typedef void(*caretAct)(caret *);
+using caretAct = void (*)(caret *);
 extern caretAct caretActs[];
 
 extern std::vector<caret> carets;

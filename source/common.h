@@ -516,8 +516,6 @@ extern SDL_Event events;
 extern int framerate;
 extern unsigned int framerateTicks;
 
-extern VIEW viewport;
-
 extern int mode;
 
 extern bool exitGame;

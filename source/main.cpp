@@ -29,14 +29,14 @@ static void doQuit() {
 }
 
 void doError() {
-	SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Critical Error", SDL_GetError(), NULL);
+	SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Critical Error", SDL_GetError(), nullptr);
 	SDL_ClearError();
 	doQuit();
 	exit(EXIT_FAILURE);
 }
 
 void doCustomError(const char *msg) {
-	SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Critical Error", msg, NULL);
+	SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Critical Error", msg, nullptr);
 	doQuit();
 	exit(EXIT_FAILURE);
 }
