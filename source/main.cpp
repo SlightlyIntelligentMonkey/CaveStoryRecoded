@@ -53,7 +53,6 @@ int init() {
 		doCustomError("Couldn't initiate SDL Image");
 	
 	// TBD : Load config data, initialise keybinds and screen resolution based on it
-	// TBD : Check for s_reverse, mute and fps files ?
 	// TBD : Init joypad
 
 	initTsc();

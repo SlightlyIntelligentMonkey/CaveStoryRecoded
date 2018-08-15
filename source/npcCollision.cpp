@@ -194,9 +194,7 @@ void npcJudgeWater(RECT *rcHit, npc *NPC, int tx, int ty)
 void npcHitMap(int NPCid)
 {
 	npc *NPC = &npcs[NPCid];
-
 	NPC->flag = 0; //clear
-
 	RECT *rcHit = &NPC->hit;
 	
 	int fromX = (NPC->x - rcHit->right + 0x1000) >> 13;
