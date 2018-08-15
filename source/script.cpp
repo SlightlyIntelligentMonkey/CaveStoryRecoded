@@ -42,7 +42,7 @@ void decryptTsc(uint8_t *data, size_t size)
 	if (!key)
 		key = 7;
 
-	for (int i = 0; i < size; ++i)
+	for (size_t i = 0; i < size; ++i)
 	{
 		if (i != half)
 			data[i] -= key;
@@ -54,7 +54,7 @@ void loadStageTsc(const char *name) {
 	SDL_RWops *headRW = SDL_RWFromFile("data/Head.tsc", "rb");
 	if (headRW == nullptr)
 		doError();
-	size_t headSize = SDL_RWsize(headRW);
+	size_t headSize = (size_t)SDL_RWsize(headRW);
 
 	//Put the data into memory
 	headRW->read(headRW, tsc.data, 1, headSize);
@@ -67,7 +67,7 @@ void loadStageTsc(const char *name) {
 	SDL_RWops *bodyRW = SDL_RWFromFile(name, "rb");
 	if (!bodyRW)
 		doError();
-	size_t bodySize = SDL_RWsize(bodyRW);
+	size_t bodySize = (size_t)SDL_RWsize(bodyRW);
 
 	//Put the data into memory
 	bodyRW->read(bodyRW, tsc.data + headSize, 1, bodySize);
@@ -768,8 +768,8 @@ int updateTsc()
 				{
 					if ((npcs[i].cond & npccond_alive) && npcs[i].code_event == getTSCNumber(tsc.p_read + 4))
 					{
-						npcs[i].x = getTSCNumber(tsc.p_read + 9);
-						npcs[i].y = getTSCNumber(tsc.p_read + 14);
+						npcs[i].x = getTSCNumber(tsc.p_read + 9) << 13;
+						npcs[i].y = getTSCNumber(tsc.p_read + 14) << 13;
 
 						if (getTSCNumber(tsc.p_read + 19) != 5)
 						{

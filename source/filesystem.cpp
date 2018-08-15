@@ -129,7 +129,7 @@ void loadProfile()
 			permitStage[i].event = SDL_ReadLE32(profile);
 		}
 
-		for (size_t i = 0; i < 0x100; i++)
+		for (size_t i = 0; i < 0x80; i++)
 			SDL_RWread(profile, &mapFlags[i], 1, 1);
 
 		SDL_ReadLE32(profile); //FLAG
