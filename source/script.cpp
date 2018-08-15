@@ -292,7 +292,7 @@ int updateTsc()
 
 	case SCROLL:
 		//Go through every line
-		for (auto yPosLineIterator : tsc.ypos_line)
+		for (auto& yPosLineIterator : tsc.ypos_line)
 		{
 			yPosLineIterator -= 4;
 			if (!yPosLineIterator) //Check if done scrolling
