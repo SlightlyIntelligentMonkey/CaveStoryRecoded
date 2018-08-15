@@ -28,7 +28,6 @@ bool fileExists(const char *name)
 {
 	struct stat buffer;
 	return (stat(name, &buffer) == 0);
-	return true;
 }
 
 int loadFile(const char *name, BYTE **data) {
