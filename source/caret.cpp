@@ -100,8 +100,6 @@ void caretAct001(caret *CARET) //Pulsing Disc Particles
 		CARET->rect = rcRight[CARET->ani_no];
 	else
 		CARET->rect = rcLeft[CARET->ani_no];
-	
-	return;
 }
 
 void caretAct002(caret *CARET) //Rising Disc / Exploding Diamond

@@ -113,13 +113,13 @@ void loadProfile()
 
 		SDL_RWseek(profile, 0x158, 0);
 		
-		for (size_t i = 0; i < 8; i++)
+		for (size_t i = 0; i < sizeof(permitStage) / sizeof(permitStage[0]); i++)
 		{
 			permitStage[i].index = SDL_ReadLE32(profile);
 			permitStage[i].event = SDL_ReadLE32(profile);
 		}
 
-		for (size_t i = 0; i < 0x80; i++)
+		for (size_t i = 0; i < sizeof(mapFlags) / sizeof(mapFlags[0])  ; i++)
 			SDL_RWread(profile, &mapFlags[i], 1, 1);
 
 		SDL_ReadLE32(profile); //FLAG
