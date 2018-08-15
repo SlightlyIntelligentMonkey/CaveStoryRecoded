@@ -1034,8 +1034,6 @@ void drawTsc()
 
 	if (tsc.mode && tsc.flags & 1)
 	{
-		int text_offset;
-
 		//Set cliprect
 		tsc.rcText.left = (screenWidth / 2) - 108;
 		tsc.rcText.right = (screenWidth / 2) + 108;
