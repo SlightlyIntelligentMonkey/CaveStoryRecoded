@@ -29,13 +29,17 @@ enum TextureNums
 	TEX_BACKGROUND = 28,
 };
 
+//Functions for handling the window
 int createWindow(int width, int height, int scale, bool fullscreen);
 void switchScreenMode();
 
+//Load texture function
 void loadImage(const char *file, SDL_Texture **tex);
 
+//Drawing functions
+void setCliprect(RECT *rect);
 void drawTexture(SDL_Texture *texture, RECT *rect, int x, int y);
 void drawTextureSize(SDL_Texture *texture, RECT *rect, int x, int y, int w, int h);
 void drawNumber(int value, int x, int y, bool bZero);
-void drawString(int x, int y, char *str);
+void drawString(int x, int y, char *str, uint8_t *flag);
 void drawRect(int x, int y, int w, int h);

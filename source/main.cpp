@@ -57,9 +57,12 @@ int init() {
 	// TBD : Init joypad
 
 	initTsc();
+	initFlags();
 
 	ini_audio();
 	loadSounds();
+
+	currentPlayer.init();
 	
 	createWindow(320, 240, 2, true);
 
@@ -94,20 +97,7 @@ int init() {
 	loadImage("data/Face.png", &sprites[0x1B]);
 
 	loadImage("data/Font.png", &sprites[0x26]);
-	loadImage("data/Missing.png", &sprites[0x27]); //Used for missing npcs
-
-	//Start game
-	//init flags
-	initFlags();
-
-	//Load level
-	loadLevel(13);
-	currentPlayer.init();
-	currentPlayer.setPos(10 << 13, 8 << 13);
-
-	//sound::playOrg(8);
-
-	loadProfile();
+	loadImage("data/Missing.png", &sprites[0x27]);
 
 	return 0;
 }

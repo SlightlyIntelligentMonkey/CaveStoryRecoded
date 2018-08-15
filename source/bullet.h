@@ -1,6 +1,14 @@
 #pragma once
 #include "common.h"
-#include "weapons.h"
+
+enum bulletFlags
+{
+	bullet_ignoreSolid = 0x4,
+	bullet_goThroughWalls = 0x8,
+	bullet_breakBlocks = 0x20,
+	bullet_pierceBlocks = 0x40,
+	bullet_alive = 0x80,
+};
 
 struct BULLETSTATS
 {
@@ -61,8 +69,12 @@ public:
 	void init(int setCode, int setX, int setY, int setDir);
 
 	void update();
+	void draw();
 };
 
-typedef void(*bulletAct)(bullet *);
+void createBullet(int setCode, int setX, int setY, int setDir);
+void updateBullets();
+void drawBullets();
 
+typedef void(*bulletAct)(bullet *);
 extern std::vector<bullet> bullets;

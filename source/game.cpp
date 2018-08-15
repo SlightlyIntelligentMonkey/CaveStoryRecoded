@@ -1,4 +1,5 @@
 #include "game.h"
+#include "weapons.h"
 #include "level.h"
 #include "hud.h"
 #include "script.h"
@@ -7,6 +8,28 @@
 int gameMode = 1;
 
 VIEW viewport;
+
+//Init game function
+void initGame()
+{
+	//Clear flags
+	memset(tscFlags, 0, sizeof(tscFlags));
+	memset(mapFlags, 0, sizeof(mapFlags));
+
+	//Clear other stuff
+	initWeapons();
+	memset(permitStage, 0, sizeof(permitStage));
+
+	//Set up fade
+	initFade();
+	fade.bMask = true;
+
+	//Load stage
+	currentPlayer.init();
+	currentPlayer.setPos(10 << 13, 8 << 13);
+	loadLevel(13);
+	startTscEvent(200);
+}
 
 void viewBounds()
 {
@@ -102,24 +125,6 @@ void debugLevels()
 		//sound::playOrg(38);
 	}
 	return;
-}
-
-void initGame()
-{
-	//Set game flags
-	gameFlags = 3;
-
-	//Clear flags
-	memset(tscFlags, 0, sizeof(tscFlags));
-	memset(mapFlags, 0, sizeof(mapFlags));
-	currentPlayer.init();
-	currentPlayer.setPos(10 << 13, 8 << 13);
-	loadLevel(13);
-	startTscEvent(200);
-
-	//Set up fade
-	initFade();
-	fade.bMask = true;
 }
 
 //Escape menu
@@ -386,6 +391,9 @@ int gameUpdatePlay()
 			updateNPC();
 			playerHitMap();
 			playerHitNpcs();
+			if (gameFlags & 2)
+				actWeapon();
+			updateBullets();
 			updateCarets();
 			updateValueView();
 			if (gameFlags & 2)
@@ -404,11 +412,21 @@ int gameUpdatePlay()
 
 		drawLevel(false);
 		drawNPC();
+		drawBullets();
 		currentPlayer.draw();
 		drawLevel(true);
 		drawCarets();
 		drawValueView();
 		drawFade();
+
+		//Rotate weapons
+		if (gameFlags & 2)
+		{
+			if (isKeyPressed(keyRotRight))
+				rotateWeaponRight();
+			else if (isKeyPressed(keyRotLeft))
+				rotateWeaponLeft();
+		}
 
 		//Do TSC stuff
 		if (swPlay & 1)

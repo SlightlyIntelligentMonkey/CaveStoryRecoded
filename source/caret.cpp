@@ -171,6 +171,14 @@ void caretAct002(caret *CARET) //Rising Disc / Exploding Diamond
 
 void caretAct003(caret *CARET) //Star
 {
+	//Framerects
+	RECT rect[4];
+
+	rect[0] = { 0, 48, 16, 64 };
+	rect[1] = { 16, 48, 32, 64 };
+	rect[2] = { 32, 48, 48, 64 };
+	rect[3] = { 48, 48, 64, 64 };
+
 	//Animate
 	if (CARET->ani_wait++ > 2)
 	{
@@ -180,7 +188,7 @@ void caretAct003(caret *CARET) //Star
 			CARET->cond = 0;
 	}
 	
-	CARET->rect = { (CARET->ani_no << 4), 48, 16 + (CARET->ani_no << 4), 64 };
+	CARET->rect = rect[CARET->ani_no];
 }
 
 void caretAct004(caret *CARET) //Fireball impact?

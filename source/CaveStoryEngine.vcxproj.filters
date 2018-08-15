@@ -25,9 +25,6 @@
     <Filter Include="Source Files\classes\player">
       <UniqueIdentifier>{9f59141a-ca26-4191-a411-a781c776450f}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\classes\weapon">
-      <UniqueIdentifier>{1c05a025-f740-4e51-9dfc-042f8e8411cd}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Source Files\classes\npc">
       <UniqueIdentifier>{dd025e45-f001-4d20-b7b6-f19fd265abff}</UniqueIdentifier>
     </Filter>
@@ -37,22 +34,28 @@
     <Filter Include="Source Files\states">
       <UniqueIdentifier>{a4b019f6-de34-4577-9b8b-64cf1ee3b5ac}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\classes\weapon\act">
-      <UniqueIdentifier>{754df458-b380-47d1-a7ca-725b1365a1b9}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Source Files\classes\caret">
       <UniqueIdentifier>{c4140a78-85b3-4b3d-be75-d6bda949fe8a}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source Files\classes\value view">
       <UniqueIdentifier>{368172ad-77b6-4756-983f-ea3543166e69}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\modules\drawing">
+      <UniqueIdentifier>{f67e1619-7260-48d0-85ab-0e7d7bde77b4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\classes\weapons">
+      <UniqueIdentifier>{1c05a025-f740-4e51-9dfc-042f8e8411cd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\classes\weapons\shoot">
+      <UniqueIdentifier>{1e9da9f7-fb23-4ccb-9cf9-44b4263996e9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\classes\weapons\bullets">
+      <UniqueIdentifier>{754df458-b380-47d1-a7ca-725b1365a1b9}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
       <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="render.cpp">
-      <Filter>Source Files\modules</Filter>
     </ClCompile>
     <ClCompile Include="level.cpp">
       <Filter>Source Files\modules</Filter>
@@ -78,17 +81,14 @@
     <ClCompile Include="sound.cpp">
       <Filter>Source Files\modules\sound</Filter>
     </ClCompile>
-    <ClCompile Include="hud.cpp">
-      <Filter>Source Files\modules</Filter>
-    </ClCompile>
     <ClCompile Include="player.cpp">
       <Filter>Source Files\classes\player</Filter>
     </ClCompile>
     <ClCompile Include="weapons.cpp">
-      <Filter>Source Files\classes\weapon</Filter>
+      <Filter>Source Files\classes\weapons</Filter>
     </ClCompile>
     <ClCompile Include="bullet.cpp">
-      <Filter>Source Files\classes\weapon</Filter>
+      <Filter>Source Files\classes\weapons</Filter>
     </ClCompile>
     <ClCompile Include="npc.cpp">
       <Filter>Source Files\classes\npc</Filter>
@@ -118,7 +118,7 @@
       <Filter>Source Files\states</Filter>
     </ClCompile>
     <ClCompile Include="polarStar.cpp">
-      <Filter>Source Files\classes\weapon\act</Filter>
+      <Filter>Source Files\classes\weapons\bullets</Filter>
     </ClCompile>
     <ClCompile Include="npc080.cpp">
       <Filter>Source Files\classes\npc\act</Filter>
@@ -159,14 +159,20 @@
     <ClCompile Include="npc240.cpp">
       <Filter>Source Files\classes\npc\act</Filter>
     </ClCompile>
+    <ClCompile Include="render.cpp">
+      <Filter>Source Files\modules\drawing</Filter>
+    </ClCompile>
+    <ClCompile Include="hud.cpp">
+      <Filter>Source Files\modules\drawing</Filter>
+    </ClCompile>
     <ClCompile Include="fade.cpp">
-      <Filter>Source Files\modules</Filter>
+      <Filter>Source Files\modules\drawing</Filter>
+    </ClCompile>
+    <ClCompile Include="polarStarShoot.cpp">
+      <Filter>Source Files\classes\weapons\shoot</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="render.h">
-      <Filter>Source Files\modules</Filter>
-    </ClInclude>
     <ClInclude Include="level.h">
       <Filter>Source Files\modules</Filter>
     </ClInclude>
@@ -191,17 +197,11 @@
     <ClInclude Include="sound.h">
       <Filter>Source Files\modules\sound</Filter>
     </ClInclude>
-    <ClInclude Include="hud.h">
-      <Filter>Source Files\modules</Filter>
-    </ClInclude>
     <ClInclude Include="player.h">
       <Filter>Source Files\classes\player</Filter>
     </ClInclude>
-    <ClInclude Include="weapons.h">
-      <Filter>Source Files\classes\weapon</Filter>
-    </ClInclude>
     <ClInclude Include="bullet.h">
-      <Filter>Source Files\classes\weapon</Filter>
+      <Filter>Source Files\classes\weapons</Filter>
     </ClInclude>
     <ClInclude Include="npc.h">
       <Filter>Source Files\classes\npc</Filter>
@@ -234,7 +234,7 @@
       <Filter>Source Files\states</Filter>
     </ClInclude>
     <ClInclude Include="polarStar.h">
-      <Filter>Source Files\classes\weapon\act</Filter>
+      <Filter>Source Files\classes\weapons\bullets</Filter>
     </ClInclude>
     <ClInclude Include="npc080.h">
       <Filter>Source Files\classes\npc\act</Filter>
@@ -278,8 +278,20 @@
     <ClInclude Include="npc240.h">
       <Filter>Source Files\classes\npc\act</Filter>
     </ClInclude>
+    <ClInclude Include="render.h">
+      <Filter>Source Files\modules\drawing</Filter>
+    </ClInclude>
+    <ClInclude Include="hud.h">
+      <Filter>Source Files\modules\drawing</Filter>
+    </ClInclude>
     <ClInclude Include="fade.h">
-      <Filter>Source Files\modules</Filter>
+      <Filter>Source Files\modules\drawing</Filter>
+    </ClInclude>
+    <ClInclude Include="shootFunctions.h">
+      <Filter>Source Files\classes\weapons\shoot</Filter>
+    </ClInclude>
+    <ClInclude Include="weapons.h">
+      <Filter>Source Files\classes\weapons</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

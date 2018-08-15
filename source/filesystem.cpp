@@ -1,5 +1,6 @@
 #include "filesystem.h"
 #include "fade.h"
+#include "weapons.h"
 
 //Read function stuff
 uint16_t readLEshort(BYTE *data, unsigned int offset) {
@@ -106,11 +107,22 @@ void loadProfile()
 
 		SDL_ReadLE16(profile); // a?
 
-		SDL_ReadLE32(profile); //current weapon
+		selectedWeapon = SDL_ReadLE32(profile); //current weapon
 		SDL_ReadLE32(profile); //current item
 
 		currentPlayer.equip = SDL_ReadLE32(profile); //equipped items
 		currentPlayer.unit = SDL_ReadLE32(profile); //physics
+
+		SDL_ReadLE32(profile); //counter
+
+		for (size_t i = 0; i < 8; i++)
+		{
+			weapons[i].code = SDL_ReadLE32(profile);
+			weapons[i].level = SDL_ReadLE32(profile);
+			weapons[i].exp = SDL_ReadLE32(profile);
+			weapons[i].max_num = SDL_ReadLE32(profile);
+			weapons[i].num = SDL_ReadLE32(profile);
+		}
 
 		SDL_RWseek(profile, 0x158, 0);
 		

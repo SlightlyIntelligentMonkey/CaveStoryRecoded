@@ -1,9 +1,11 @@
 #include "script.h"
 #include "fade.h"
+#include "weapons.h"
 
 //Variables
 TSC tsc;
 char tscText[0x100];
+uint8_t *tscTextFlag = (uint8_t*)malloc(0x100);
 
 //Mode enum
 enum TSC_mode
@@ -23,7 +25,10 @@ bool initTsc()
 {
 	tsc.mode = 0;
 	gameFlags &= ~4;
-	memset(tscText, 0, 0x100u);
+
+	memset(tscText, 0, 0x100);
+	memset(tscTextFlag, 0, 0x100);
+
 	tsc.data = (uint8_t*)malloc(0x5000u);
 	return tsc.data != 0;
 }
@@ -125,6 +130,7 @@ int startTscEvent(int no)
 	{
 		tsc.ypos_line[i] = 16 * i;
 		memset(tscText + (i * 0x40), 0, 0x40);
+		memset(tscTextFlag + (i * 0x40), 0, 0x40);
 	}
 
 	//Get event id
@@ -162,7 +168,9 @@ int jumpTscEvent(int no)
 	for (int i = 0; i < 4; ++i)
 	{
 		tsc.ypos_line[i] = 16 * i;
+
 		memset(tscText + (i * 0x40), 0, 0x40);
+		memset(tscTextFlag + (i * 0x40), 0, 0x40);
 	}
 
 	//Get event id
@@ -203,25 +211,31 @@ void checkNewLine()
 		tsc.mode = 3;
 		gameFlags |= 4u;
 		memset(tscText + (tsc.line % 4 << 6), 0, 0x40);
+		memset(tscTextFlag + (tsc.line % 4 << 6), 0, 0x40);
 	}
 }
 
 void clearTextLine()
 {
+	//Reset current writing position
 	tsc.line = 0;
 	tsc.p_write = 0;
 	tsc.offsetY = 0;
 
+	//Go through each line and clear it
 	for (int i = 0; i < 4; ++i)
 	{
 		tsc.ypos_line[i] = 16 * i;
+
 		memset(tscText + (i * 40), 0, 0x40u);
+		memset(tscTextFlag + (i * 40), 0, 0x40u);
 	}
 }
 
 //TSC Update
 int tscCheck()
 {
+	//End tsc if in END state, continue if not
 	if (tsc.mode)
 		gameFlags |= 4;
 	else
@@ -230,7 +244,7 @@ int tscCheck()
 	return 1;
 }
 
-void tscCleanup(int numargs)
+void tscCleanup(int numargs) //Function to shift the current read position after a command
 {
 	tsc.p_read += 4 + (numargs * 4);
 
@@ -250,34 +264,40 @@ int updateTsc()
 	switch (tsc.mode)
 	{
 	case END:
-		tscCheck();
-		return 1;
+		return tscCheck();
 
 	case PARSE:
+		//Add to timer
 		++tsc.wait;
 
+		//If jump or shoot are held, add 4, effectively ending the timer early
 		if (!(gameFlags & 2) && (isKeyDown(keyShoot) || isKeyDown(keyJump)))
 			tsc.wait += 4;
+
+		//If timer value is less than 4, stop for this frame.
 		if (tsc.wait < 4)
 			return tscCheck();
 
+		//Reset timer and continue into parsing
 		tsc.wait = 0;
 		bExit = false;
 		break;
 
 	case NOD:
+		//If jump or shoot button pressed, continue script
 		if (isKeyPressed(keyShoot) || isKeyPressed(keyJump))
-			tsc.mode = 1;
+			tsc.mode = PARSE;
 
 		return tscCheck();
 
 	case SCROLL:
+		//Go through every line
 		for (int i = 0; i < 4; ++i)
 		{
 			tsc.ypos_line[i] -= 4;
 
 			if (!tsc.ypos_line[i]) //Check if done scrolling
-				tsc.mode = 1;
+				tsc.mode = PARSE; //Continue like normal
 
 			if (tsc.ypos_line[i] == -16) //Check if scrolled off
 				tsc.ypos_line[i] = 48;
@@ -286,14 +306,15 @@ int updateTsc()
 		return tscCheck();
 
 	case WAI:
-		if (tsc.wait_next != 9999) //These checks are for <WAI9999 to fully freeze the script
+		//These two checks are for <WAI9999 to fully freeze the script
+		if (tsc.wait_next != 9999)
 		{
 			if (tsc.wait != 9999)
 				++tsc.wait;
 
-			if (tsc.wait >= tsc.wait_next)
+			if (tsc.wait >= tsc.wait_next) //If waited enough frames, continue
 			{
-				tsc.mode = 1;
+				tsc.mode = PARSE;
 				tsc.wait_beam = 0;
 			}
 		}
@@ -301,52 +322,57 @@ int updateTsc()
 		return tscCheck();
 
 	case FADE:
-		if (fade.mode == 0)
+		if (fade.mode == 0) //Wait until fade has ended
 		{
-			tsc.mode = 1;
+			//Continue script
+			tsc.mode = PARSE;
 			tsc.wait_beam = 0;
 		}
 		return tscCheck();
 
 	case YNJ:
-		if (tsc.wait >= 16)
+		if (tsc.wait >= 16) //Do nothing for 16 frames
 		{
-			if (isKeyPressed(keyJump))
+			if (isKeyPressed(keyJump)) //Select button pressed
 			{
+				//Play selection sound
 				playSound(18);
 
-				if (tsc.select == 1)
+				if (tsc.select) //No selected
 				{
-					jumpTscEvent(tsc.next_event);
+					jumpTscEvent(tsc.next_event); //Jump to specified event
 				}
-				else
+				else //Yes selected
 				{
-					tsc.mode = 1;
+					//Continue like normal
+					tsc.mode = PARSE;
 					tsc.wait_beam = 0;
 				}
 			}
-			else if (isKeyPressed(keyLeft))
+			else if (isKeyPressed(keyLeft)) //Left pressed
 			{
-				tsc.select = 0;
+				tsc.select = 0; //Select yes and play sound
 				playSound(1);
 			}
-			else if (isKeyPressed(keyRight))
+			else if (isKeyPressed(keyRight)) //Right pressed
 			{
-				tsc.select = 1;
+				tsc.select = 1; //Select no and play sound
 				playSound(1);
 			}
 		}
 		else
 		{
-			++tsc.wait;
+			++tsc.wait; //Add to wait counter
 		}
 
 		return tscCheck();
 
 	case WAS:
+		//Wait until on the ground
 		if (currentPlayer.flag & ground)
 		{
-			tsc.mode = 1;
+			//Go into parse mode
+			tsc.mode = PARSE;
 			tsc.wait_beam = 0;
 		}
 
@@ -365,17 +391,20 @@ int updateTsc()
 		{
 			if (tsc.data[tsc.p_read] == 13) //Check for break line
 			{
+				//Shift read and write positions accordingly
 				tsc.p_read += 2;
 				tsc.p_write = 0;
 
+				//Only move if message box visible?
 				if (tsc.flags & 1)
 				{
 					++tsc.line;
 					checkNewLine();
 				}
 			}
-			else if (tsc.flags & 0x10) //CAT/SAT/TUR I believe.
+			else if (tsc.flags & 0x10) //CAT / SAT / TUR
 			{
+				//Go through until reaching a command indicator or break line
 				int x;
 				for (x = tsc.p_read; ; ++x)
 				{
@@ -387,15 +416,20 @@ int updateTsc()
 						++x;
 				}
 
+				//Get data to copy from tsc data
 				int copy = x - tsc.p_read;
 				memcpy(str, &tsc.data[tsc.p_read], copy);
 				str[copy] = 0;
 
-				sprintf(tscText + (tsc.line % 4 << 6), str);
+				//Copy data onto the text buffer
+				strcpy(tscText + (tsc.line * 0x40), str);
+				memset(tscTextFlag + (tsc.line * 0x40), 1, copy); //This sets the flag that makes drawn text thinner.
 
-				tsc.p_write = x;
+				//Shift read and write positions
+				tsc.p_write = x; //Pixel uses an absolute value rather than a relative value
 				tsc.p_read += copy;
 
+				//Check for new lines
 				if (tsc.p_write > 34)
 					checkNewLine();
 
@@ -403,7 +437,9 @@ int updateTsc()
 			}
 			else
 			{
+				//Code for multibyte things?
 				c[0] = tsc.data[tsc.p_read];
+
 				if (c[0] >= 0)
 				{
 					c[1] = 0;
@@ -414,10 +450,15 @@ int updateTsc()
 					c[2] = 0;
 				}
 
+				//Copy onto the text buffer
 				strcat(tscText + (tsc.line % 4 << 6), c);
+				tscTextFlag[(tsc.line % 4 << 6) + tsc.p_write] = 0; //Make text display at normal width
+
+				//Play sound and reset cursor blinking timer.
 				playSound(2);
 				tsc.wait_beam = 0;
 
+				//Shift read and write positions
 				if (c[0] >= 0)
 				{
 					++tsc.p_read;
@@ -429,6 +470,7 @@ int updateTsc()
 					tsc.p_write += 2;
 				}
 
+				//Check for new lines
 				if (tsc.p_write > 34)
 				{
 					checkNewLine();
@@ -442,19 +484,26 @@ int updateTsc()
 		}
 		else
 		{
+			//Parse and run TSC commands
 			switch (tsc.data[tsc.p_read + 3] + (tsc.data[tsc.p_read + 2] << 8) + (tsc.data[tsc.p_read + 1] << 16) + (tsc.data[tsc.p_read] << 24))
 			{
 			case('<AE+'):
+				maxWeaponAmmo();
 				tscCleanup(0);
 				break;
 			case('<AM+'):
+				giveWeapon(getTSCNumber(tsc.p_read + 4), getTSCNumber(tsc.p_read + 9));
 				tscCleanup(2);
 				break;
 			case('<AM-'):
+				removeWeapon(getTSCNumber(tsc.p_read + 4));
 				tscCleanup(1);
 				break;
 			case('<AMJ'):
-				tscCleanup(2);
+				if (checkWeapon(getTSCNumber(tsc.p_read + 4)))
+					jumpTscEvent(getTSCNumber(tsc.p_read + 9));
+				else
+					tscCleanup(2);
 				break;
 			case('<ANP'):
 				for (size_t i = 0; i < npcs.size(); i++)
@@ -463,9 +512,9 @@ int updateTsc()
 					{
 						npcs[i].act_no = getTSCNumber(tsc.p_read + 9);
 
-						if (getTSCNumber(tsc.p_read + 4) != 5)
+						if (getTSCNumber(tsc.p_read + 14) != 5)
 						{
-							if (getTSCNumber(tsc.p_read + 4) == 4)
+							if (getTSCNumber(tsc.p_read + 14) == 4)
 							{
 								if (npcs[i].x >= currentPlayer.x)
 									npcs[i].direct = 0;
@@ -716,10 +765,33 @@ int updateTsc()
 				tscCleanup(0);
 				break;
 			case('<MNP'):
+				for (size_t i = 0; i < npcs.size(); i++)
+				{
+					if ((npcs[i].cond & npccond_alive) && npcs[i].code_event == getTSCNumber(tsc.p_read + 4))
+					{
+						npcs[i].x = getTSCNumber(tsc.p_read + 9);
+						npcs[i].y = getTSCNumber(tsc.p_read + 14);
+
+						if (getTSCNumber(tsc.p_read + 19) != 5)
+						{
+							if (getTSCNumber(tsc.p_read + 19) == 4)
+							{
+								if (npcs[i].x >= currentPlayer.x)
+									npcs[i].direct = 0;
+								else
+									npcs[i].direct = 2;
+							}
+							else
+							{
+								npcs[i].direct = getTSCNumber(tsc.p_read + 19);
+							}
+						}
+					}
+				}
 				tscCleanup(4);
 				break;
 			case('<MOV'):
-				currentPlayer.setPos(getTSCNumber(tsc.p_read + 4) << 13, getTSCNumber(tsc.p_read + 4) << 13);
+				currentPlayer.setPos(getTSCNumber(tsc.p_read + 4) << 13, getTSCNumber(tsc.p_read + 9) << 13);
 				tscCleanup(2);
 				break;
 			case('<MPJ'):
@@ -932,6 +1004,7 @@ int updateTsc()
 				bExit = 1;
 				break;
 			case('<ZAM'):
+				clearWeaponExperience();
 				tscCleanup(0);
 				break;
 			default:
@@ -944,8 +1017,6 @@ int updateTsc()
 
 void drawTsc()
 {
-	SDL_Rect clipRect;
-
 	RECT rcFrame1;
 	RECT rcFrame2;
 	RECT rcFrame3;
@@ -961,10 +1032,6 @@ void drawTsc()
 
 	RECT rcYesNo;
 	RECT rcSelection;
-
-	int i;
-
-	int text_offset;
 
 	if (tsc.mode && tsc.flags & 1)
 	{
@@ -983,14 +1050,8 @@ void drawTsc()
 			tsc.rcText.bottom = 232;
 		}
 
-		clipRect = {
-			tsc.rcText.left * screenScale,
-			tsc.rcText.top * screenScale,
-			(tsc.rcText.right - tsc.rcText.left) * screenScale,
-			(tsc.rcText.bottom - tsc.rcText.top) * screenScale
-		};
-
-		//Draw message box and its contents
+		//Draw message box background (if not MS2)
+		int strip;
 		if (tsc.flags & 2)
 		{
 			rcFrame1 = { 0, 0, 244, 8 };
@@ -998,17 +1059,18 @@ void drawTsc()
 			rcFrame3 = { 0, 16, 244, 24 };
 			
 			drawTexture(sprites[TEX_TEXTBOX], &rcFrame1, tsc.rcText.left - 14, tsc.rcText.top - 10);
-			for (i = 1; i <= 6; ++i)
-				drawTexture(sprites[TEX_TEXTBOX], &rcFrame2, tsc.rcText.left - 14, 8 * i + tsc.rcText.top - 10);
-			drawTexture(sprites[TEX_TEXTBOX], &rcFrame3, tsc.rcText.left - 14, 8 * i + tsc.rcText.top - 10);
+			for (strip = 1; strip <= 6; ++strip)
+				drawTexture(sprites[TEX_TEXTBOX], &rcFrame2, tsc.rcText.left - 14, 8 * strip + tsc.rcText.top - 10);
+			drawTexture(sprites[TEX_TEXTBOX], &rcFrame3, tsc.rcText.left - 14, 8 * strip + tsc.rcText.top - 10);
 		}
 
-		SDL_RenderSetClipRect(renderer, &clipRect);
+		setCliprect(&tsc.rcText);
 		
-		//Draw face
+		//Move face into position
 		if ((tsc.face_x += 8) > 0)
 			tsc.face_x = 0;
 
+		//Set face's framerect
 		rcFace.left = 48 * (tsc.face % 6);
 		rcFace.top = 48 * (tsc.face / 6);
 		rcFace.right = rcFace.left + 48;
@@ -1017,18 +1079,20 @@ void drawTsc()
 		drawTexture(sprites[TEX_FACE], &rcFace, tsc.rcText.left + tsc.face_x, tsc.rcText.top - 3);
 
 		//Draw text
+		int text_offset;
 		if (tsc.face)
 			text_offset = 56;
 		else
 			text_offset = 0;
 
+		//Go through each and every line and draw it
 		for (int i = 0; i < 4; i++)
 		{
-			drawString(tsc.rcText.left + text_offset, tsc.rcText.top + tsc.ypos_line[i] + tsc.offsetY, tscText + (i * 0x40));
+			drawString(tsc.rcText.left + text_offset, tsc.rcText.top + tsc.ypos_line[i] + tsc.offsetY, tscText + (i * 0x40), tscTextFlag + i * 0x40);
 		}
 
 		//End cliprect
-		SDL_RenderSetClipRect(renderer, NULL);
+		setCliprect(nullptr);
 
 		//NOD cursor / beam?
 		bool flash = tsc.wait_beam++ % 20 > 12;
@@ -1042,15 +1106,16 @@ void drawTsc()
 					11);
 		}
 
-		//GIT
+		//Define GIT rect
 		rcItemBox1 = { 0, 0, 72, 16 };
 		rcItemBox2 = { 0, 8, 72, 24 };
 		rcItemBox3 = { 240, 0, 244, 8 };
 		rcItemBox4 = { 240, 8, 244, 16 };
 		rcItemBox5 = { 240, 16, 244, 24 };
 
-		if (tsc.item)
+		if (tsc.item) //Display item not 0
 		{
+			//Draw GIT background
 			drawTexture(sprites[TEX_TEXTBOX], &rcItemBox1, (screenWidth / 2) - 40, 128);
 			drawTexture(sprites[TEX_TEXTBOX], &rcItemBox2, (screenWidth / 2) - 40, 144);
 			drawTexture(sprites[TEX_TEXTBOX], &rcItemBox3, (screenWidth / 2) + 32, 128);
@@ -1058,10 +1123,11 @@ void drawTsc()
 			drawTexture(sprites[TEX_TEXTBOX], &rcItemBox4, (screenWidth / 2) + 32, 144);
 			drawTexture(sprites[TEX_TEXTBOX], &rcItemBox5, (screenWidth / 2) + 32, 152);
 
+			//Move the item image into position
 			if (tsc.item_y < 0x88)
 				++tsc.item_y;
 
-			if (tsc.item >= 1000)
+			if (tsc.item >= 1000) //Draw items if 1000 or greater
 			{
 				rcItem.left = 32 * ((tsc.item - 1000) % 8);
 				rcItem.right = 32 * ((tsc.item - 1000) % 8) + 32;
@@ -1070,7 +1136,7 @@ void drawTsc()
 
 				drawTexture(sprites[TEX_ITEMIMAGE], &rcItem, (screenWidth / 2) - 20, tsc.item_y);
 			}
-			else
+			else //Otherwise, draw weapon
 			{
 				rcItem.left = 16 * (tsc.item % 16);
 				rcItem.right = 16 * (tsc.item % 16) + 16;
@@ -1087,12 +1153,13 @@ void drawTsc()
 		
 		if (tsc.mode == YNJ)
 		{
+			int y;
 			if (tsc.wait > 1)
-				i = 144;
+				y = 144;
 			else
-				i = 4 * (38 - tsc.wait);
+				y = 4 * (38 - tsc.wait);
 
-			drawTexture(sprites[TEX_TEXTBOX], &rcYesNo, tsc.rcText.left + 164, i);
+			drawTexture(sprites[TEX_TEXTBOX], &rcYesNo, tsc.rcText.left + 164, y);
 
 			if (tsc.wait == 16)
 				drawTexture(sprites[TEX_TEXTBOX], &rcSelection, 41 * tsc.select + tsc.rcText.left + 159, 154);

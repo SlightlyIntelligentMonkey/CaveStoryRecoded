@@ -1,5 +1,6 @@
 #include "hud.h"
 #include "level.h"
+#include "weapons.h"
 
 void drawMapName(bool bMini)
 {
@@ -12,27 +13,145 @@ void drawMapName(bool bMini)
 	{
 		SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
 		drawRect(0, 7, screenWidth, 17);
-		drawString(x, 10, mapName.name);
+		drawString(x, 10, mapName.name, nullptr);
 	}
 	else if (mapName.flag)
 	{
 		SDL_SetTextureColorMod(sprites[0x26], 17, 0, 34);
-		drawString(x, y + 1, mapName.name);
+		drawString(x, y + 1, mapName.name, nullptr);
 		SDL_SetTextureColorMod(sprites[0x26], 255, 255, 255);
-		drawString(x, y, mapName.name);
+		drawString(x, y, mapName.name, nullptr);
 
 		if (++mapName.wait > 160)
 			mapName.flag = 0;
 	}
 }
 
-void drawPlayerHealth(bool hide)
+//Weapon stats
+int addFlash = 0;
+
+void drawWeaponStats()
+{
+	//Define rects
+	RECT rcExpFlash;
+	RECT rcExpMax;
+	RECT rcExpVal;
+	RECT rcExpBox;
+	RECT rcNone = { 80, 48, 96, 56 };
+	RECT rcLv = { 80, 80, 96, 88 };
+	RECT rcPer = { 72, 48, 80, 56 };
+
+	//Shift weapons back into correct position
+	if (weaponShiftX > 16)
+		weaponShiftX -= 2;
+	if (weaponShiftX < 16)
+		weaponShiftX += 2;
+
+	//Draw amount of ammo
+	if (weapons[selectedWeapon].max_num)
+	{
+		drawNumber(weapons[selectedWeapon].num, weaponShiftX + 32, 16, false);
+		drawNumber(weapons[selectedWeapon].max_num, weaponShiftX + 32, 24, false);
+	}
+	else
+	{
+		drawTexture(sprites[TEX_TEXTBOX], &rcNone, weaponShiftX + 48, 16);
+		drawTexture(sprites[TEX_TEXTBOX], &rcNone, weaponShiftX + 48, 24);
+	}
+
+	//Draw experience
+	if (!((currentPlayer.shock >> 1) & 1))
+	{
+		//Draw level
+		drawTexture(sprites[TEX_TEXTBOX], &rcPer, weaponShiftX + 32, 24);
+		drawTexture(sprites[TEX_TEXTBOX], &rcLv, weaponShiftX, 32);
+		drawNumber(weapons[selectedWeapon].level, weaponShiftX - 8, 32, 0);
+
+		//Set framerects
+		rcExpBox = { 0, 72, 40, 80 };
+		rcExpVal = { 0, 80, 0, 88 };
+		rcExpMax = { 40, 72, 80, 80 };
+		rcExpFlash = { 40, 80, 80, 88 };
+		
+		//Set up some variables
+		int lv = weapons[selectedWeapon].level - 1;
+		int arms_code = weapons[selectedWeapon].code;
+		int exp_now = weapons[selectedWeapon].exp;
+		int exp_next = weaponLevels[arms_code].exp[lv];
+
+		//Draw the bar
+		drawTexture(sprites[TEX_TEXTBOX], &rcExpBox, weaponShiftX + 24, 32);
+
+		if (lv != 2 || weapons[selectedWeapon].exp != weaponLevels[arms_code].exp[2]) //If not at max level
+		{
+			//Scale bar
+			if (exp_next)
+				rcExpVal.right += 40 * exp_now / exp_next;
+			else
+				rcExpVal.right = 0;
+
+			drawTexture(sprites[TEX_TEXTBOX], &rcExpVal, weaponShiftX + 24, 32);
+		}
+		else
+		{
+			drawTexture(sprites[TEX_TEXTBOX], &rcExpMax, weaponShiftX + 24, 32);
+		}
+
+		//Draw the flashing
+		if (weaponExpFlash)
+		{
+			if ((addFlash++ >> 1) & 1)
+				drawTexture(sprites[TEX_TEXTBOX], &rcExpFlash, weaponShiftX + 24, 32);
+		}
+	}
+}
+
+//Draw weapons
+void drawHudWeapons()
+{
+	RECT rect = { 0, 0, 0, 16 };
+
+	int weaponNo;
+	for (weaponNo = 0; weapons[weaponNo].code != 0; ++weaponNo);
+
+	if (weaponNo)
+	{
+		for (int a = 0; a < weaponNo; ++a)
+		{
+			//Get position to draw at
+			int x = 16 * (a - selectedWeapon) + weaponShiftX;
+
+			if (x >= 8)
+			{
+				if (x >= 24)
+					x += 48;
+			}
+			else
+			{
+				x += 16 * (weaponNo + 3);
+			}
+
+			if (8 * (2 * (weaponNo + 3) + 1) <= x)
+				x += 16 * (-3 - weaponNo);
+			if (x <= 71 && x > 23)
+				x -= 48;
+
+			//Set rect and draw
+			rect.left = 16 * weapons[a].code;
+			rect.right = rect.left + 16;
+			drawTexture(sprites[TEX_ARMSIMAGE], &rect, x, 16);
+		}
+	}
+}
+
+//Health
+void drawPlayerHealth()
 {
 	RECT rcBr = { 0, 32, 232, 40 };
 	RECT rcLife = { 0, 24, 232, 32 };
 	RECT rcCase = { 0, 40, 232, 48 };
 
-	if (!(hide || ((currentPlayer.shock >> 1) & 1)))
+	if (!((currentPlayer.shock >> 1) & 1))
 	{
 		if (currentPlayer.lifeBr <= currentPlayer.life)
 		{
@@ -58,6 +177,7 @@ void drawPlayerHealth(bool hide)
 	}
 }
 
+//Air left
 void drawPlayerAir()
 {
 	RECT rcAir[2];
@@ -81,6 +201,8 @@ void drawPlayerAir()
 
 void drawHud(bool hide)
 {
-	drawPlayerHealth(hide);
+	drawWeaponStats();
+	drawPlayerHealth();
 	drawPlayerAir();
+	drawHudWeapons();
 }
