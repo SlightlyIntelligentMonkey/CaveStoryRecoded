@@ -52,6 +52,9 @@
     <Filter Include="Source Files\classes\weapons\bullets">
       <UniqueIdentifier>{754df458-b380-47d1-a7ca-725b1365a1b9}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\modules\collision">
+      <UniqueIdentifier>{60184d26-58a8-46b5-a929-e52d1fe5c897}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -67,12 +70,6 @@
       <Filter>Source Files\modules</Filter>
     </ClCompile>
     <ClCompile Include="flags.cpp">
-      <Filter>Source Files\modules</Filter>
-    </ClCompile>
-    <ClCompile Include="npcCollision.cpp">
-      <Filter>Source Files\modules</Filter>
-    </ClCompile>
-    <ClCompile Include="playerCollision.cpp">
       <Filter>Source Files\modules</Filter>
     </ClCompile>
     <ClCompile Include="sound.cpp">
@@ -170,6 +167,14 @@
     </ClCompile>
     <ClCompile Include="mathUtils.cpp">
       <Filter>Source Files\modules</Filter>
+    <ClCompile Include="npcCollision.cpp">
+      <Filter>Source Files\modules\collision</Filter>
+    </ClCompile>
+    <ClCompile Include="playerCollision.cpp">
+      <Filter>Source Files\modules\collision</Filter>
+    </ClCompile>
+    <ClCompile Include="bulletCollision.cpp">
+      <Filter>Source Files\modules\collision</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -184,12 +189,6 @@
     </ClInclude>
     <ClInclude Include="resource.h">
       <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="npcCollision.h">
-      <Filter>Source Files\modules</Filter>
-    </ClInclude>
-    <ClInclude Include="playerCollision.h">
-      <Filter>Source Files\modules</Filter>
     </ClInclude>
     <ClInclude Include="sound.h">
       <Filter>Source Files\modules\sound</Filter>
@@ -292,6 +291,14 @@
     </ClInclude>
     <ClInclude Include="mathUtils.h">
       <Filter>Source Files\modules</Filter>
+    <ClInclude Include="playerCollision.h">
+      <Filter>Source Files\modules\collision</Filter>
+    </ClInclude>
+    <ClInclude Include="npcCollision.h">
+      <Filter>Source Files\modules\collision</Filter>
+    </ClInclude>
+    <ClInclude Include="bulletCollision.h">
+      <Filter>Source Files\modules\collision</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

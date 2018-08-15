@@ -169,6 +169,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="bullet.cpp" />
+    <ClCompile Include="bulletCollision.cpp" />
     <ClCompile Include="caret.cpp" />
     <ClCompile Include="fade.cpp" />
     <ClCompile Include="game.cpp" />
@@ -215,6 +216,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="bullet.h" />
+    <ClInclude Include="bulletCollision.h" />
     <ClInclude Include="caret.h" />
     <ClInclude Include="fade.h" />
     <ClInclude Include="flags.h" />
