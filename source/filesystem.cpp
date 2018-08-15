@@ -2,21 +2,21 @@
 #include "fade.h"
 
 //Read function stuff
-uint16_t readLEshort(BYTE *data, unsigned int offset) {
+uint16_t readLEshort(BYTE *data, size_t offset) {
 	return ((data[offset + 1] << 8) + data[offset]);
 }
 
-uint32_t readLElong(BYTE *data, unsigned int offset) {
+uint32_t readLElong(BYTE *data, size_t offset) {
 	return ((data[offset + 3] << 24) + (data[offset + 2] << 16) + (data[offset + 1] << 8) + data[offset]);
 }
 
 //Write stuff
-void writeLEshort(BYTE *data, uint16_t input, unsigned int offset) {
+void writeLEshort(BYTE *data, uint16_t input, size_t offset) {
 	data[offset] = (BYTE)input;
 	data[offset + 1] = (BYTE)(input >> 8);
 }
 
-void writeLElong(BYTE *data, uint32_t input, unsigned int offset) {
+void writeLElong(BYTE *data, uint32_t input, size_t offset) {
 	data[offset] = (BYTE)input;
 	data[offset + 1] = (BYTE)(input >> 8);
 	data[offset + 2] = (BYTE)(input >> 16);
@@ -32,7 +32,7 @@ bool fileExists(const char *name)
 }
 
 int loadFile(const char *name, BYTE **data) {
-	int filesize = 0;
+	size_t filesize = 0;
 
 	//Open file
 	FILE *file = fopen(name, "rb");
@@ -58,7 +58,7 @@ int loadFile(const char *name, BYTE **data) {
 	return filesize;
 }
 
-int writeFile(char *name, void *data, int amount)
+int writeFile(char *name, void *data, size_t amount)
 {
 	FILE *file;
 	if ((file = fopen(name, "wb")) == NULL)

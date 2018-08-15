@@ -82,20 +82,20 @@ void loadSound(char *path, SDL_AudioSpec *spec, int **buf, Uint32 *length)
 	int *realBuf = (int*)calloc(dist, *length * 4 * 2);
 
 	//converting to 32 signed int format from unsigned 8 bit
-	for (int b = 0; b < *length; b++)
+	for (size_t b = 0; b < *length; b++)
 	{
 		fakeBuf[b] = (0x7FFFFFFF / 0xFF) * (pBuf[b] - ((0xFF / 2) + 1));
 	}
 
 	//channels++
-	for (int i = 0; i < *length; i++)
+	for (size_t i = 0; i < *length; i++)
 	{
 		fakeFakeBuf[i << 1] = fakeBuf[i];
 		fakeFakeBuf[(i << 1) + 1] = fakeBuf[i];
 	}
 
 	//interpolation
-	for (int i = 0; i < *length << 1; i++)
+	for (size_t i = 0; i < *length << 1; i++)
 	{
 		realBuf[i << 1] = fakeFakeBuf[i];
 		realBuf[(i << 1) + 1] = fakeFakeBuf[i];

@@ -29,7 +29,7 @@ void updateCarets()
 	if (carets.size())
 	{
 		//Update
-		for (unsigned int i = 0; i < carets.size(); i++)
+		for (size_t i = 0; i < carets.size(); i++)
 			carets[i].update();
 
 		//Remove dead carets
@@ -47,7 +47,7 @@ void drawCarets()
 {
 	if (carets.size())
 	{
-		for (unsigned int i = 0; i < carets.size(); i++)
+		for (size_t i = 0; i < carets.size(); i++)
 			carets[i].draw();
 	}
 }
