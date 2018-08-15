@@ -209,7 +209,6 @@ void drawStageSelect()
 	RECT rcStage;
 
 	int stageNo;
-	int stageX;
 
 	rcCur[0] = { 80, 88, 112, 104 };
 	rcCur[1] = { 80, 104, 112, 120 };
@@ -225,7 +224,7 @@ void drawStageSelect()
 
 	if (stageNo)
 	{
-		stageX = (-40 * stageNo + screenWidth) / 2;
+		int stageX = (-40 * stageNo + screenWidth) / 2;
 
 		//Draw everything now
 		drawTexture(sprites[TEX_TEXTBOX], &rcCur[(stageSelectFlash >> 1) & 1], stageX + 40 * selectedStage, 64);

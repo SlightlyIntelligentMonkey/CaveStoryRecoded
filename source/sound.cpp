@@ -18,7 +18,6 @@ SDL_AudioSpec want;
 void mixAudioSFX(int *dst, Uint32 len, SOUND_EFFECT *sound, Uint8 lVolume, Uint8 rVolume) // TBD : Handle lVolume and rVolume parameters
 {
 	unsigned int currentPos = 0;
-	constexpr int temp = 0;
 	//using 32 float point on native system 
 	while (sound->pos + currentPos < sound->length && (currentPos << 2) < len)
 	{
@@ -70,11 +69,10 @@ void ini_audio()
 //we have to do it ourselves
 void loadSound(const char *path, SDL_AudioSpec *spec, int **buf, Uint32 *length)
 {
-	constexpr int view = 0;
 	BYTE *pBuf = nullptr;
-	SDL_AudioSpec *lSpec;
 
-	lSpec = SDL_LoadWAV(path, spec, &pBuf, length);
+	SDL_LoadWAV(path, spec, &pBuf, length);
+	
 	if (pBuf == NULL)
 		doError();
 
@@ -166,7 +164,7 @@ void freeSounds()
 
 void playSound(int sound_no)
 {
-	if (sound_no > _countof(sounds)) { return; }
+	if (sound_no > _countof(sounds) - 1) { return; }
 	if (sounds[sound_no].buf == NULL) { return; }
 	sounds[sound_no].pos = 0;
 
