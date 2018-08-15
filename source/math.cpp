@@ -3,17 +3,17 @@
 //Not the original code, because it's better
 int getSin(uint8_t deg)
 {
-	return (int)(sin(deg * (M_PI / 0x80)) * 512.0);
+	return static_cast<int>(sin(deg * (M_PI / 0x80)) * 512.0);
 }
 
 int getCos(uint8_t deg)
 {
-	return (int)(cos(deg * (M_PI / 0x80)) * 512.0);
+	return static_cast<int>(cos(deg * (M_PI / 0x80)) * 512.0);
 }
 
 uint8_t getAtan(int x, int y)
 {
-	return (uint8_t)(atan2(-y, -x) * 0x80 / M_PI);
+	return static_cast<uint8_t>(atan2(-y, -x) * 0x80 / M_PI);
 }
 
 //these are good functions

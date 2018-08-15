@@ -27,7 +27,7 @@ void loadStageTable()
 	if (tblStream == nullptr)
 		doError();
 
-	const size_t stages = (size_t)SDL_RWsize(tblStream) / 200;
+	const size_t stages = static_cast<size_t>(SDL_RWsize(tblStream) / 200);
 
 	stageTable = static_cast<STAGE_TABLE*>(malloc(stages * 200));
 	if (stageTable == nullptr)
@@ -113,8 +113,7 @@ void loadLevel(int levelIndex) {
 	levelWidth = readLEshort(pxm, 4);
 	levelHeight = readLEshort(pxm, 6);
 
-	if (levelMap)
-		delete[] levelMap;
+	delete[] levelMap;
 
 	levelMap = new BYTE[pxmSize - 8];
 	memcpy(levelMap, pxm + 8, pxmSize - 8);
@@ -137,8 +136,7 @@ void loadLevel(int levelIndex) {
 		doCustomError(errorMsg);
 	}
 
-	if (levelTileAttributes)
-		delete[] levelTileAttributes;
+	delete[] levelTileAttributes;
 
 	levelTileAttributes = new BYTE[pxaSize];
 	memcpy(levelTileAttributes, pxa, pxaSize);
@@ -242,7 +240,7 @@ void drawLevel(bool foreground)
 		int skyOff;
 
 		int w, h;
-		SDL_QueryTexture(sprites[0x1C], NULL, NULL, &w, &h);
+		SDL_QueryTexture(sprites[0x1C], nullptr, nullptr, &w, &h);
 
 		rect = { 0, 0, w, h };
 
