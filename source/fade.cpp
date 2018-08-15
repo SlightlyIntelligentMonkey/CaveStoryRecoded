@@ -67,6 +67,10 @@ void drawFade()
 					yt = h - (frames - fade.count);
 					frame = y - yt;
 					break;
+
+				case 4:
+					frame = fadeFrames - (fade.count - abs(x - (screenWidth >> 5)) - abs(y - (screenHeight >> 5)));
+					break;
 				}
 
 				if (frame > 0)
@@ -107,6 +111,10 @@ void drawFade()
 				case 3:
 					yt = fade.count;
 					frame = yt - y;
+					break;
+
+				case 4:
+					frame = fadeFrames - ((frames - fade.count) - abs(x - (screenWidth >> 5)) - abs(y - (screenHeight >> 5)));
 					break;
 				}
 
