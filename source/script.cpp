@@ -34,7 +34,7 @@ bool initTsc()
 }
 
 //Loading functions
-void decryptTsc(uint8_t *data, int size)
+void decryptTsc(uint8_t *data, size_t size)
 {
 	const int half = size / 2;
 	uint8_t key = data[half];
@@ -54,7 +54,7 @@ void loadStageTsc(const char *name) {
 	SDL_RWops *headRW = SDL_RWFromFile("data/Head.tsc", "rb");
 	if (headRW == nullptr)
 		doError();
-	auto headSize = static_cast<size_t>(SDL_RWsize(headRW));
+	size_t headSize = SDL_RWsize(headRW);
 
 	//Put the data into memory
 	headRW->read(headRW, tsc.data, 1, headSize);
@@ -67,7 +67,7 @@ void loadStageTsc(const char *name) {
 	SDL_RWops *bodyRW = SDL_RWFromFile(name, "rb");
 	if (!bodyRW)
 		doError();
-	auto bodySize = static_cast<size_t>(SDL_RWsize(bodyRW));
+	size_t bodySize = SDL_RWsize(bodyRW);
 
 	//Put the data into memory
 	bodyRW->read(bodyRW, tsc.data + headSize, 1, bodySize);
@@ -77,7 +77,7 @@ void loadStageTsc(const char *name) {
 	bodyRW->close(bodyRW);
 
 	//Finish off by setting some stuff in the tsc struct
-	tsc.size = headSize + bodySize;
+	tsc.size = (int)(headSize + bodySize);
 	strcpy(tsc.path, name);
 }
 

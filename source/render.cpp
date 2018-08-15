@@ -207,19 +207,7 @@ void drawString(int x, int y, const char *str, uint8_t *flag)
 				sep = 5;
 
 			//Set framerect to what it's supposed to be
-			if (isMultibyte(str[i]))
-			{
-				int firstByte = str[i];
-				int secondByte = str[i += 1];
-
-				size_t character = (size_t)(firstByte + (secondByte << 8));
-
-				rcChar.left = ((character - 0x81FF) % 32) * charWidth;
-				rcChar.top = ((character - 0x81FF) >> 5) * charHeight + 120;
-				rcChar.right = rcChar.left + charWidth;
-				rcChar.bottom = rcChar.top + charHeight;
-			}
-			else
+			if (!isMultibyte(str[i]))
 			{
 				rcChar.left = ((str[i] % 32) * charWidth);
 				rcChar.top = ((str[i] >> 5) * charHeight);
