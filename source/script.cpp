@@ -292,14 +292,14 @@ int updateTsc()
 
 	case SCROLL:
 		//Go through every line
-		for (auto yPosLineIterator : tsc.ypos_line)
+		for (int i = 0; i < 4; ++i)
 		{
-			yPosLineIterator -= 4;
-			if (!yPosLineIterator) //Check if done scrolling
+			tsc.ypos_line[i] -= 4;
+			if (!tsc.ypos_line[i]) //Check if done scrolling
 				tsc.mode = PARSE; //Continue like normal
 
-			if (yPosLineIterator == -16) //Check if scrolled off
-				yPosLineIterator = 48;
+			if (tsc.ypos_line[i] == -16) //Check if scrolled off
+				tsc.ypos_line[i] = 48;
 		}
 
 		return tscCheck();
