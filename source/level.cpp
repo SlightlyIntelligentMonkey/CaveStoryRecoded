@@ -27,7 +27,7 @@ void loadStageTable()
 	if (tblStream == nullptr)
 		doError();
 
-	const size_t stages = static_cast<size_t>(SDL_RWsize(tblStream) / 200);
+	const auto stages = static_cast<size_t>(SDL_RWsize(tblStream) / 200);
 
 	stageTable = static_cast<STAGE_TABLE*>(malloc(stages * 200));
 	if (stageTable == nullptr)
@@ -167,10 +167,10 @@ void loadLevel(int levelIndex) {
 	for (int i = 0; i < npcAmount; i++) {
 		const int offset = (i * 12) + 8;
 
-		if (readLEshort(pxe, offset + 10) & npc_appearset && getFlag(readLEshort(pxe, offset + 4)) == false)
+		if (readLEshort(pxe, offset + 10) & npc_appearset && !(getFlag(readLEshort(pxe, offset + 4))))
 			continue;
 
-		if (readLEshort(pxe, offset + 10) & npc_hideset && getFlag(readLEshort(pxe, offset + 4)) == true)
+		if (readLEshort(pxe, offset + 10) & npc_hideset && getFlag(readLEshort(pxe, offset + 4)))
 			continue;
 
 		npc newNPC;
@@ -355,7 +355,7 @@ void drawLevel(bool foreground)
 			if (tile) {
 				const int attribute = levelTileAttributes[tile];
 
-				if ((attribute < 0x20 && foreground == false) || (attribute >= 0x40 && foreground == true))
+				if ((attribute < 0x20 && !foreground) || (attribute >= 0x40 && foreground))
 				{
 					const int drawX = i % levelWidth;
 					const int drawY = i / levelWidth;

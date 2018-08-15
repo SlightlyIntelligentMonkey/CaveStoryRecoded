@@ -47,7 +47,7 @@ void ini_audio()
 	want.format = AUDIO_S32SYS;
 	want.samples = 1024;
 	want.callback = audio_callback;
-	want.userdata = 0;
+	want.userdata = nullptr;
 
 	soundDev = SDL_OpenAudioDevice(
 		nullptr,
