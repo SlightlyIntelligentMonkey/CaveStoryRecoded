@@ -1,4 +1,5 @@
 #include "player.h"
+#include "weapons.h"
 
 player currentPlayer;
 
@@ -811,15 +812,49 @@ void player::draw() {
 	
 	if ((cond & player_visible) != 0 && !(cond & player_removed))
 	{
-		if (!((shock >> 1) & 1))
+		//Set held weapon's framerect
+		int weaponOffsetY = 0;
+
+		weaponRect.left = 24 * (weapons[selectedWeapon].code % 13);
+		weaponRect.right = weaponRect.left + 24;
+		weaponRect.top = 96 * (weapons[selectedWeapon].code / 13);
+		weaponRect.bottom = weaponRect.top + 16;
+
+		if (direct == 2)
 		{
-			//Draw quote
-			drawTexture(sprites[0x10], &rect, ((x - view.left) / 0x200) - (viewport.x / 0x200), ((y - view.top) / 0x200) - (viewport.y / 0x200));
+			weaponRect.top += 16;
+			weaponRect.bottom += 16;
+		}
+
+		if (up)
+		{
+			weaponOffsetY = -4;
+			weaponRect.top += 32;
+			weaponRect.bottom += 32;
+		}
+		else if (down)
+		{
+			weaponOffsetY = 4;
+			weaponRect.top += 64;
+			weaponRect.bottom += 64;
+		}
+
+		//Shift up when Quote does
+		if (ani_no == 1 || ani_no == 3 || ani_no == 6 || ani_no == 8)
+			++weaponRect.top;
+
+		int weaponOffsetX = (direct != 0 ? 0 : 8); //Make the weapon shift to the left if facing left
+		drawTexture(sprites[TEX_ARMS], &weaponRect, (x - view.left) / 0x200 - viewport.x / 0x200 - weaponOffsetX, (y - view.top) / 0x200 - viewport.y / 0x200 + weaponOffsetY);
+
+		if (!((shock >> 1) & 1)) //Invulnerability BLinking
+		{
+			//Draw Quote
+			drawTexture(sprites[TEX_MYCHAR], &rect, (x - view.left) / 0x200 - viewport.x / 0x200, (y - view.top) / 0x200 - viewport.y / 0x200);
 			
 			//Draw bubble
 			bubble++;
 			if (equip & equip_airTank && flag & water)
-				drawTexture(sprites[0x13], &rcBubble[(bubble >> 1) & 1], (x / 0x200) - 12 - (viewport.x / 0x200), (y / 0x200) - 12 - (viewport.y / 0x200));
+				drawTexture(sprites[TEX_CARET], &rcBubble[(bubble >> 1) & 1], x / 0x200 - 12 - viewport.x / 0x200, y / 0x200 - 12 - viewport.y / 0x200);
 		}
 	}
 }

@@ -206,6 +206,7 @@
     </ClCompile>
     <ClCompile Include="playerCollision.cpp" />
     <ClCompile Include="polarStar.cpp" />
+    <ClCompile Include="polarStarShoot.cpp" />
     <ClCompile Include="render.cpp" />
     <ClCompile Include="script.cpp" />
     <ClCompile Include="sound.cpp" />
@@ -230,6 +231,7 @@
     <ClInclude Include="org.h" />
     <ClInclude Include="polarStar.h" />
     <ClInclude Include="script.h" />
+    <ClInclude Include="shootFunctions.h" />
     <ClInclude Include="valueview.h" />
     <ClInclude Include="weapons.h" />
     <ClInclude Include="hud.h" />

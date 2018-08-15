@@ -1,28 +1,42 @@
 #pragma once
 #include "common.h"
 
-//Weapon stuff
 struct WEAPONEXP
 {
 	int exp[3];
 };
 
+extern WEAPONEXP weaponLevels[14];
+
 struct WEAPON
 {
-	int id;
-
+	int code;
 	int level;
 	int exp;
-
-	int ammo;
-	int maxAmmo;
+	int max_num;
+	int num;
 };
 
-//Bullet things
-enum bulletFlags {
-	bullet_ignoreSolid = 0x4,
-	bullet_goThroughWalls = 0x8,
-	bullet_breakBlocks = 0x20,
-	bullet_pierceBlocks = 0x40,
-	bullet_alive = 0x80,
-};
+typedef void(*weaponShoot)(int);
+
+extern WEAPON weapons[8];
+extern RECT weaponRect;
+extern int selectedWeapon;
+extern int weaponShiftX;
+extern int weaponExpFlash;
+
+void initWeapons();
+
+void actWeapon();
+int useWeaponAmmo(int num);
+int weaponBullets(int arms_code);
+
+int giveWeapon(int code, int max_num);
+int removeWeapon(int code);
+int tradeWeapons(int code1, int code2, int max_num);
+void clearWeaponExperience();
+void maxWeaponAmmo();
+bool checkWeapon(int code);
+
+int rotateWeaponRight();
+int rotateWeaponLeft();

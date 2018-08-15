@@ -1,4 +1,5 @@
 #include "bullet.h"
+#include "weapons.h"
 
 std::vector<bullet> bullets(0);
 
@@ -91,8 +92,58 @@ BULLETSTATS bulletTable[] =
 	{ 1, 1, 1, 36, 1, 1, 1, 1, { 1, 1, 1, 1 } }
 };
 
-//Act functions
-#include "polarStar.h"
+//Bullet functions
+void createBullet(int setCode, int setX, int setY, int setDir)
+{
+	bullet *repBullet = nullptr;
+
+	if (bullets.size())
+	{
+		for (size_t i = 0; i < bullets.size(); ++i)
+		{
+			if (!(bullets[i].cond & 0x80))
+			{
+				repBullet = &bullets[i];
+				break;
+			}
+		}
+	}
+
+	if (repBullet != nullptr)
+		repBullet->init(setCode, setX, setY, setDir);
+	else
+	{
+		bullet newBullet;
+		newBullet.init(setCode, setX, setY, setDir);
+		bullets.push_back(newBullet);
+	}
+}
+
+void updateBullets()
+{
+	if (bullets.size())
+	{
+		for (size_t i = 0; i < bullets.size(); i++)
+		{
+			if (bullets[i].cond & 0x80)
+			{
+				bullets[i].update();
+			}
+		}
+	}
+}
+
+void drawBullets()
+{
+	if (bullets.size())
+	{
+		for (size_t i = 0; i < bullets.size(); i++)
+		{
+			if (bullets[i].cond & 0x80)
+				bullets[i].draw();
+		}
+	}
+}
 
 //CLASS
 void bullet::init(int setCode, int setX, int setY, uint8_t setDir)
@@ -124,12 +175,93 @@ void bullet::init(int setCode, int setX, int setY, uint8_t setDir)
 	view.bottom = bulletTable[setCode].view.bottom << 9;
 }
 
-//Bullet act functions
+//Act functions
+#include "polarStar.h"
+
 bulletAct bulletActs[] = {
+	static_cast<bulletAct>(nullptr),
+	static_cast<bulletAct>(nullptr),
+	static_cast<bulletAct>(nullptr),
+	static_cast<bulletAct>(nullptr),
+	&actBulletPolarStar1,
+	&actBulletPolarStar2,
+	&actBulletPolarStar3,
+	static_cast<bulletAct>(nullptr),
+	static_cast<bulletAct>(nullptr),
+	static_cast<bulletAct>(nullptr),
+	static_cast<bulletAct>(nullptr),
+	static_cast<bulletAct>(nullptr),
+	static_cast<bulletAct>(nullptr),
+	static_cast<bulletAct>(nullptr),
+	static_cast<bulletAct>(nullptr),
+	static_cast<bulletAct>(nullptr),
+	static_cast<bulletAct>(nullptr),
+	static_cast<bulletAct>(nullptr),
+	static_cast<bulletAct>(nullptr),
+	static_cast<bulletAct>(nullptr),
+	static_cast<bulletAct>(nullptr),
+	static_cast<bulletAct>(nullptr),
+	static_cast<bulletAct>(nullptr),
+	static_cast<bulletAct>(nullptr),
+	static_cast<bulletAct>(nullptr),
+	static_cast<bulletAct>(nullptr),
+	static_cast<bulletAct>(nullptr),
+	static_cast<bulletAct>(nullptr),
+	static_cast<bulletAct>(nullptr),
+	static_cast<bulletAct>(nullptr),
+	static_cast<bulletAct>(nullptr),
+	static_cast<bulletAct>(nullptr),
+	static_cast<bulletAct>(nullptr),
+	static_cast<bulletAct>(nullptr),
+	static_cast<bulletAct>(nullptr),
+	static_cast<bulletAct>(nullptr),
+	static_cast<bulletAct>(nullptr),
+	static_cast<bulletAct>(nullptr),
+	static_cast<bulletAct>(nullptr),
+	static_cast<bulletAct>(nullptr),
+	static_cast<bulletAct>(nullptr),
+	static_cast<bulletAct>(nullptr),
+	static_cast<bulletAct>(nullptr),
+	static_cast<bulletAct>(nullptr),
+	static_cast<bulletAct>(nullptr),
 	static_cast<bulletAct>(nullptr),
 };
 
+//Update and draw
 void bullet::update()
 {
-	bulletActs[code_bullet](this);
+	if (bulletActs[code_bullet] != nullptr)
+		bulletActs[code_bullet](this);
+}
+
+void bullet::draw()
+{
+	int drawX;
+	int drawY;
+
+	switch (direct)
+	{
+	case 0:
+		drawX = x - view.left;
+		drawY = y - view.top;
+		break;
+	case 1:
+		drawX = x - view.top;
+		drawY = y - view.left;
+		break;
+	case 2:
+		drawX = x - view.right;
+		drawY = y - view.top;
+		break;
+	case 3:
+		drawX = x - view.top;
+		drawY = y - view.right;
+		break;
+	default:
+		drawX = x;
+		drawY = y;
+		break;
+	}
+
+	drawTexture(sprites[TEX_BULLET], &rect, drawX / 0x200 - viewport.x / 0x200, drawY / 0x200 - viewport.y / 0x200);
 }

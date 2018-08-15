@@ -86,6 +86,10 @@ void loadLevel(int levelIndex) {
 	carets.clear();
 	carets.shrink_to_fit();
 
+	//Clear old bullets
+	bullets.clear();
+	bullets.shrink_to_fit();
+
 	//Clear old valueviews
 	valueviews.clear();
 	valueviews.shrink_to_fit();
