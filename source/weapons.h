@@ -17,7 +17,7 @@ struct WEAPON
 	int num;
 };
 
-typedef void(*weaponShoot)(int);
+using weaponShoot = void(*)(int);
 
 extern WEAPON weapons[8];
 extern RECT weaponRect;
