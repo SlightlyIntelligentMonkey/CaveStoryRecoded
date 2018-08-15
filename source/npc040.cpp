@@ -29,7 +29,7 @@ void npcAct052(npc *NPC) // Blue robots
 
 void npcAct058(npc *NPC) //Basu 1
 {
-	int action = NPC->act_no;
+	const int action = NPC->act_no;
 	
 	if (!action)
 	{
@@ -135,8 +135,8 @@ void npcAct058(npc *NPC) //Basu 1
 						uint8_t deg = getAtan(NPC->x - currentPlayer.x, NPC->y - currentPlayer.y);
 						deg += random(-6, 6);
 
-						int fireXm = 2 * getCos(deg);
-						int fireYm = 2 * getSin(deg);
+						const int fireXm = 2 * getCos(deg);
+						const int fireYm = 2 * getSin(deg);
 
 						createNpc(84, NPC->x, NPC->y, fireXm, fireYm, 0, nullptr);
 						playSound(39);

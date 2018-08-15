@@ -1,6 +1,6 @@
 #include "npcCollision.h"
 
-void putLittleStar(RECT *rcHit, player *me)
+void putLittleStar(const RECT *rcHit, player *me)
 {
 	if (!(me->cond & player_removed) && me->ym < -0x200)
 	{
@@ -171,7 +171,7 @@ int playerJudgeTriangleD(RECT *rcHit, player *me, int tx, int ty)
 }
 
 //Floor slopes
-int playerJudgeTriangleE(RECT *rcHit, player *me, int tx, int ty)
+int playerJudgeTriangleE(const RECT *rcHit, player *me, int tx, int ty)
 {
 	if (me->x > (2 * tx - 1) << 12
 		&& me->x < (2 * tx + 1) << 12
@@ -192,7 +192,7 @@ int playerJudgeTriangleE(RECT *rcHit, player *me, int tx, int ty)
 	return slopeE;
 }
 
-int playerJudgeTriangleF(RECT *rcHit, player *me, int tx, int ty)
+int playerJudgeTriangleF(const RECT *rcHit, player *me, int tx, int ty)
 {
 	if (me->x < (2 * tx + 1) << 12
 		&& me->x >(2 * tx - 1) << 12
@@ -213,7 +213,7 @@ int playerJudgeTriangleF(RECT *rcHit, player *me, int tx, int ty)
 	return slopeF;
 }
 
-int playerJudgeTriangleG(RECT *rcHit, player *me, int tx, int ty)
+int playerJudgeTriangleG(const RECT *rcHit, player *me, int tx, int ty)
 {
 	if (me->x > (2 * tx - 1) << 12
 		&& me->x < (2 * tx + 1) << 12
@@ -234,7 +234,7 @@ int playerJudgeTriangleG(RECT *rcHit, player *me, int tx, int ty)
 	return slopeG;
 }
 
-int playerJudgeTriangleH(RECT *rcHit, player *me, int tx, int ty)
+int playerJudgeTriangleH(const RECT *rcHit, player *me, int tx, int ty)
 {
 	if (me->x > (2 * tx - 1) << 12
 		&& me->x < (2 * tx + 1) << 12
@@ -255,7 +255,7 @@ int playerJudgeTriangleH(RECT *rcHit, player *me, int tx, int ty)
 	return slopeH;
 }
 
-int playerJudgeWater(RECT *rcHit, player *me, int tx, int ty)
+int playerJudgeWater(const RECT *rcHit, player *me, int tx, int ty)
 {
 	int hit = 0;
 
@@ -270,7 +270,7 @@ int playerJudgeWater(RECT *rcHit, player *me, int tx, int ty)
 	return hit;
 }
 
-int playerJudgeSpike(RECT *rcHit, player *me, int tx, int ty)
+int playerJudgeSpike(const RECT *rcHit, player *me, int tx, int ty)
 {
 	if (me->x - 0x800 < (4 * tx + 1) << 11
 		&& me->x + 0x800 > (4 * tx - 1) << 11
@@ -283,7 +283,7 @@ int playerJudgeSpike(RECT *rcHit, player *me, int tx, int ty)
 	return 0;
 }
 
-int playerJudgeWaterSpike(RECT *rcHit, player *me, int tx, int ty)
+int playerJudgeWaterSpike(const RECT *rcHit, player *me, int tx, int ty)
 {
 	if (me->x - 0x800 < (4 * tx + 1) << 11
 		&& me->x + 0x800 > (4 * tx - 1) << 11
@@ -297,7 +297,7 @@ int playerJudgeWaterSpike(RECT *rcHit, player *me, int tx, int ty)
 }
 
 //Current
-int playerJudgeCurrentLeft(RECT *rcHit, player *me, int tx, int ty)
+int playerJudgeCurrentLeft(const RECT *rcHit, player *me, int tx, int ty)
 {
 	if (me->x - rcHit->left < (4 * (2 * tx + 1) - 1) << 10
 		&& me->x + rcHit->right > (4 * (2 * tx - 1) + 1) << 10
@@ -310,7 +310,7 @@ int playerJudgeCurrentLeft(RECT *rcHit, player *me, int tx, int ty)
 	return 0;
 }
 
-int playerJudgeCurrentUp(RECT *rcHit, player *me, int tx, int ty)
+int playerJudgeCurrentUp(const RECT *rcHit, player *me, int tx, int ty)
 {
 	if (me->x - rcHit->left < (4 * (2 * tx + 1) - 1) << 10
 		&& me->x + rcHit->right >(4 * (2 * tx - 1) + 1) << 10
@@ -323,7 +323,7 @@ int playerJudgeCurrentUp(RECT *rcHit, player *me, int tx, int ty)
 	return 0;
 }
 
-int playerJudgeCurrentRight(RECT *rcHit, player *me, int tx, int ty)
+int playerJudgeCurrentRight(const RECT *rcHit, player *me, int tx, int ty)
 {
 	if (me->x - rcHit->left < (4 * (2 * tx + 1) - 1) << 10
 		&& me->x + rcHit->right >(4 * (2 * tx - 1) + 1) << 10
@@ -336,7 +336,7 @@ int playerJudgeCurrentRight(RECT *rcHit, player *me, int tx, int ty)
 	return 0;
 }
 
-int playerJudgeCurrentDown(RECT *rcHit, player *me, int tx, int ty)
+int playerJudgeCurrentDown(const RECT *rcHit, player *me, int tx, int ty)
 {
 	if (me->x - rcHit->left < (4 * (2 * tx + 1) - 1) << 10
 		&& me->x + rcHit->right >(4 * (2 * tx - 1) + 1) << 10
@@ -357,10 +357,10 @@ void playerHitMap()
 
 	me->flag = 0;
 
-	int fromX = (me->x - rcHit->left + 0x1000) >> 13;
-	int fromY = (me->y - rcHit->top + 0x1000) >> 13;
-	int toX = (me->x + rcHit->right + 0x1000) >> 13;
-	int toY = (me->y + rcHit->bottom + 0x1000) >> 13;
+	const int fromX = (me->x - rcHit->left + 0x1000) >> 13;
+	const int fromY = (me->y - rcHit->top + 0x1000) >> 13;
+	const int toX = (me->x + rcHit->right + 0x1000) >> 13;
+	const int toY = (me->y + rcHit->bottom + 0x1000) >> 13;
 
 	for (int currentX = fromX; currentX <= toX; currentX++)
 	{
@@ -516,7 +516,7 @@ void playerHitMap()
 }
 
 //Npc hit functions
-int playerHitNpcSoftSolid(RECT *rcHit, player *me, npc *NPC)
+int playerHitNpcSoftSolid(const RECT *rcHit, player *me, npc *NPC)
 {
 	int hit = 0;
 
@@ -577,7 +577,7 @@ int playerHitNpcSoftSolid(RECT *rcHit, player *me, npc *NPC)
 	return hit;
 }
 
-int playerHitNpcHardSolid(RECT *rcHit, player *me, npc *NPC)
+int playerHitNpcHardSolid(const RECT *rcHit, player *me, npc *NPC)
 {
 	long double xDiff = 0.0;
 	long double yDiff = 0.0;
@@ -684,7 +684,7 @@ int playerHitNpcHardSolid(RECT *rcHit, player *me, npc *NPC)
 	return hit;
 }
 
-int playerHitNpcNonSolid(RECT *rcHit, player *me, npc *NPC)
+int playerHitNpcNonSolid(const RECT *rcHit, player *me, npc *NPC)
 {
 	if (NPC->direct)
 	{

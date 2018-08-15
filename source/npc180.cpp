@@ -12,7 +12,7 @@ void npcAct199(npc *NPC) //Current / fan effect
 		NPC->act_no = 1;
 		NPC->ani_no = random(0, 2);
 
-		int direction = NPC->direct;
+		const int direction = NPC->direct;
 
 		if (direction == 1)
 		{

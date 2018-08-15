@@ -2,11 +2,11 @@
 #include "fade.h"
 
 //Read function stuff
-uint16_t readLEshort(BYTE *data, size_t offset) {
+uint16_t readLEshort(const BYTE * data, size_t offset) {
 	return ((data[offset + 1] << 8) + data[offset]);
 }
 
-uint32_t readLElong(BYTE *data, size_t offset) {
+uint32_t readLElong(const BYTE * data, size_t offset) {
 	return ((data[offset + 3] << 24) + (data[offset + 2] << 16) + (data[offset + 1] << 8) + data[offset]);
 }
 
@@ -58,7 +58,7 @@ int loadFile(const char *name, BYTE **data) {
 	return filesize;
 }
 
-int writeFile(char *name, void *data, size_t amount)
+int writeFile(const char *name, void *data, size_t amount)
 {
 	FILE *file;
 	if ((file = fopen(name, "wb")) == NULL)
@@ -87,11 +87,11 @@ void loadProfile()
 		if (profile == nullptr)
 			return;
 
-		uint64_t code = SDL_ReadLE64(profile); //Code
+		const uint64_t code = SDL_ReadLE64(profile); //Code
 		if (memcmp(&code, "Do041220", sizeof(code)) != 0)
 			doCustomError("Invalid profile (first 8 bytes aren't \"Do041120\"");
 
-		int level = SDL_ReadLE32(profile); //level
+		const int level = SDL_ReadLE32(profile); //level
 		SDL_ReadLE32(profile); //song
 
 		currentPlayer.init();

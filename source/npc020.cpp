@@ -55,7 +55,7 @@ void npcAct023(npc *NPC) //Teleporter lights
 
 void npcAct030(npc *NPC) // Hermit Gunsmith
 {
-	RECT rcNPC[3] = { { 48, 0, 64, 16 },{ 48, 16, 64, 32 },{ 0, 32, 16, 48 } };
+	constexpr RECT rcNPC[3] = { { 48, 0, 64, 16 },{ 48, 16, 64, 32 },{ 0, 32, 16, 48 } };
 	
 	if (!NPC->direct)	// Wherever he's awoken depends on his direction, it would seem
 	{

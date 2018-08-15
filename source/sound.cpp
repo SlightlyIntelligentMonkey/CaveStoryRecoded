@@ -18,7 +18,7 @@ SDL_AudioSpec want;
 void mixAudioSFX(int *dst, Uint32 len, SOUND_EFFECT *sound, Uint8 lVolume, Uint8 rVolume)
 {
 	unsigned int currentPos = 0;
-	int temp = 0;
+	constexpr int temp = 0;
 	//using 32 float point on native system 
 	while (sound->pos + currentPos < sound->length && (currentPos << 2) < len)
 	{
@@ -68,18 +68,30 @@ void ini_audio()
 
 //since sdl doesn't actually get the loaded wav in the specified format,
 //we have to do it ourselves
-void loadSound(char *path, SDL_AudioSpec *spec, int **buf, Uint32 *length)
+void loadSound(const char *path, SDL_AudioSpec *spec, int **buf, Uint32 *length)
 {
-	int view = 0;
+	constexpr int view = 0;
 	BYTE *pBuf = nullptr;
 	SDL_AudioSpec *lSpec;
+
 	lSpec = SDL_LoadWAV(path, spec, &pBuf, length);
-	if (pBuf == NULL) { doError(); }
+	if (pBuf == NULL)
+		doError();
+
 	int *fakeBuf = (int*)malloc(*length * 4);
+	if (fakeBuf == nullptr)
+		doCustomError("Could not allocate memory for fakeBuf");
+
 	//number of data points to interolate
 	int dist = 2;
+
 	int *fakeFakeBuf = (int *)malloc(*length * 4 * 2);
+	if (fakeFakeBuf == nullptr)
+		doCustomError("Could not allocate memory for fakeFakeBuf");
+
 	int *realBuf = (int*)calloc(dist, *length * 4 * 2);
+	if (realBuf == nullptr)
+		doCustomError("Could not allocate memory for realBuf");
 
 	//converting to 32 signed int format from unsigned 8 bit
 	for (size_t b = 0; b < *length; b++)

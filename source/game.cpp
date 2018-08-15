@@ -129,8 +129,8 @@ int escapeMenu()
 	while (true)
 	{
 		//Framerate limiter
-		Uint32 timeNow = SDL_GetTicks();
-		Uint32 timeNext = framerateTicks + framerate;
+		const Uint32 timeNow = SDL_GetTicks();
+		const Uint32 timeNext = framerateTicks + framerate;
 
 		if (timeNow >= timeNext) {
 			framerateTicks = SDL_GetTicks();
@@ -258,8 +258,8 @@ int stageSelect(int *runEvent)
 	while (true)
 	{
 		//Framerate limiter
-		Uint32 timeNow = SDL_GetTicks();
-		Uint32 timeNext = framerateTicks + framerate;
+		const Uint32 timeNow = SDL_GetTicks();
+		const Uint32 timeNext = framerateTicks + framerate;
 
 		if (timeNow >= timeNext) {
 			framerateTicks = SDL_GetTicks();
@@ -276,7 +276,7 @@ int stageSelect(int *runEvent)
 
 		if (isKeyDown(SDL_SCANCODE_ESCAPE))
 		{
-			int escape = escapeMenu();
+			const int escape = escapeMenu();
 
 			if (!escape)
 				return 0;
@@ -287,7 +287,7 @@ int stageSelect(int *runEvent)
 		//Update menu
 		moveStageSelectCursor();
 
-		int tscResult = updateTsc();
+		const int tscResult = updateTsc();
 		if (!tscResult)
 			return 0;
 		if (tscResult == 2)
@@ -342,8 +342,8 @@ int gameUpdatePlay()
 	while (true)
 	{
 		//Framerate limiter
-		Uint32 timeNow = SDL_GetTicks();
-		Uint32 timeNext = framerateTicks + framerate;
+		const Uint32 timeNow = SDL_GetTicks();
+		const Uint32 timeNext = framerateTicks + framerate;
 
 		if (timeNow >= timeNext) {
 			framerateTicks = SDL_GetTicks();
@@ -362,7 +362,7 @@ int gameUpdatePlay()
 
 		if (isKeyDown(SDL_SCANCODE_ESCAPE))
 		{
-			int escape = escapeMenu();
+			const int escape = escapeMenu();
 
 			if (!escape)
 				return 0;
@@ -435,7 +435,7 @@ int gameUpdateMenu()
 	int select = 0;
 	int anime = 0;
 
-	int version[4] = { 1, 0, 0, 6 };
+	const int version[4] = { 1, 0, 0, 6 };
 
 	RECT rcVersion = { 152, 80, 208, 88 };
 	RECT rcPeriod = { 152, 88, 208, 96 };
@@ -446,7 +446,7 @@ int gameUpdateMenu()
 	RECT rcPixel = { 0, 0, 160, 16 };
 
 	uint32_t frame = 0;
-	BYTE frameOrder[] = { 0, 1, 0, 2 };
+	const BYTE frameOrder[] = { 0, 1, 0, 2 };
 
 	if (fileExists("Profile.dat"))
 		select = 1;
@@ -456,8 +456,8 @@ int gameUpdateMenu()
 	while (true)
 	{
 		//Framerate limiter
-		Uint32 timeNow = SDL_GetTicks();
-		Uint32 timeNext = framerateTicks + framerate;
+		const Uint32 timeNow = SDL_GetTicks();
+		const Uint32 timeNext = framerateTicks + framerate;
 
 		if (timeNow >= timeNext) {
 			framerateTicks = SDL_GetTicks();
@@ -476,7 +476,7 @@ int gameUpdateMenu()
 
 		if (isKeyDown(SDL_SCANCODE_ESCAPE))
 		{
-			int escape = escapeMenu();
+			const int escape = escapeMenu();
 
 			if (!escape)
 				return 0;
@@ -562,8 +562,8 @@ int gameUpdateIntro()
 	while (frame < 500)
 	{
 		//Framerate limiter
-		Uint32 timeNow = SDL_GetTicks();
-		Uint32 timeNext = framerateTicks + framerate;
+		const Uint32 timeNow = SDL_GetTicks();
+		const Uint32 timeNext = framerateTicks + framerate;
 
 		if (timeNow >= timeNext) {
 			framerateTicks = SDL_GetTicks();
@@ -583,7 +583,7 @@ int gameUpdateIntro()
 
 		if (isKeyDown(SDL_SCANCODE_ESCAPE))
 		{
-			int escape = escapeMenu();
+			const int escape = escapeMenu();
 
 			if (!escape)
 				return 0;

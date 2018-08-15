@@ -17,8 +17,8 @@ int charHeight = 12;
 
 //Create window
 int createWindow(int width, int height, int scale, bool fullscreen) {
-	int createWidth = width * scale;
-	int createHeight = height * scale;
+	const int createWidth = width * scale;
+	const int createHeight = height * scale;
 
 	screenWidth = width;
 	screenHeight = height;
@@ -47,8 +47,8 @@ void switchScreenMode()
 	windowFlags ^= SDL_WINDOW_FULLSCREEN_DESKTOP;
 
 	//Unlike prevWidth and Height, this is used for fixing the view when going between fullscreen and windowed mode
-	int lastWidth = screenWidth;
-	int lastHeight = screenHeight;
+	const int lastWidth = screenWidth;
+	const int lastHeight = screenHeight;
 
 	if (windowFlags & SDL_WINDOW_FULLSCREEN_DESKTOP)
 	{
@@ -97,7 +97,7 @@ void loadImage(const char *file, SDL_Texture **tex) {
 		doError();
 }
 
-void drawTexture(SDL_Texture *texture, RECT *rect, int x, int y) {
+void drawTexture(SDL_Texture *texture, const RECT *rect, int x, int y) {
 	ImageRect = { rect->left, rect->top, rect->right - rect->left, rect->bottom - rect->top };
 
 	DrawRect.x = x * screenScale;
@@ -111,7 +111,7 @@ void drawTexture(SDL_Texture *texture, RECT *rect, int x, int y) {
 	return;
 }
 
-void drawTextureSize(SDL_Texture *texture, RECT *rect, int x, int y, int w, int h) {
+void drawTextureSize(SDL_Texture *texture, const RECT *rect, int x, int y, int w, int h) {
 	ImageRect = { rect->left, rect->top, rect->right - rect->left, rect->bottom - rect->top };
 
 	DrawRect.x = x * screenScale;
@@ -169,7 +169,7 @@ bool isMultibyte(uint8_t c)
 	return true;
 }
 
-void drawString(int x, int y, char *str)
+void drawString(int x, int y, const char *str)
 {
 	RECT rcChar;
 

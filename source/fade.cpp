@@ -31,9 +31,9 @@ void drawFade()
 	int yt;
 	int frame = 0;
 
-	int w = screenWidth / 16 + 1;
-	int h = screenHeight / 16 + 1;
-	int frames = (std::max(screenWidth, screenHeight) / 16 + fadeFrames);
+	const int w = screenWidth / 16 + 1;
+	const int h = screenHeight / 16 + 1;
+	const int frames = (std::max(screenWidth, screenHeight) / 16 + fadeFrames);
 
 	if (fade.bMask)
 	{
@@ -78,8 +78,8 @@ void drawFade()
 					rect.left = std::min(frame, fadeFrames - 1) * 16;
 					rect.right = rect.left + 16;
 
-					int fixX = (w * 16) - screenWidth;
-					int fixY = (h * 16) - screenHeight;
+					const int fixX = (w * 16) - screenWidth;
+					const int fixY = (h * 16) - screenHeight;
 					drawTexture(sprites[TEX_FADE], &rect, x * 16 - fixX, y * 16 - fixY);
 				}
 			}
@@ -123,8 +123,8 @@ void drawFade()
 					rect.left = std::min(frame, fadeFrames - 1) * 16;
 					rect.right = rect.left + 16;
 
-					int fixX = (w * 16) - screenWidth;
-					int fixY = (h * 16) - screenHeight;
+					const int fixX = (w * 16) - screenWidth;
+					const int fixY = (h * 16) - screenHeight;
 					drawTexture(sprites[TEX_FADE], &rect, x * 16 - fixX, y * 16 - fixY);
 				}
 			}

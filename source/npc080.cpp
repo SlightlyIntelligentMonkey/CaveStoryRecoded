@@ -254,7 +254,7 @@ void npcAct091(npc *NPC) // Cage
 
 void npcAct096(npc *NPC) //Fan left
 {	
-	int action = NPC->act_no;
+	const int action = NPC->act_no;
 
 	switch (action)
 	{
@@ -301,7 +301,7 @@ void npcAct096(npc *NPC) //Fan left
 
 void npcAct097(npc *NPC) //Fan up
 {
-	int action = NPC->act_no;
+	const int action = NPC->act_no;
 
 	switch (action)
 	{

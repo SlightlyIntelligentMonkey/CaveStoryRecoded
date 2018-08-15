@@ -31,7 +31,7 @@ bool initTsc()
 //Loading functions
 void decryptTsc(uint8_t *data, int size)
 {
-	int half = size / 2;
+	const int half = size / 2;
 	int key = data[half];
 
 	if (!key)
@@ -44,7 +44,7 @@ void decryptTsc(uint8_t *data, int size)
 	}
 }
 
-void loadStageTsc(char *name) {
+void loadStageTsc(const char *name) {
 	//Load Head.tsc file
 	SDL_RWops *headRW = SDL_RWFromFile("data/Head.tsc", "rb");
 	if (headRW == nullptr)
@@ -76,7 +76,7 @@ void loadStageTsc(char *name) {
 	strcpy(tsc.path, name);
 }
 
-void loadTsc2(char *name) {
+void loadTsc2(const char *name) {
 	//Load tsc file
 	SDL_RWops *bodyRW = SDL_RWFromFile(name, "rb");
 	if (!bodyRW)
@@ -379,7 +379,7 @@ int updateTsc()
 				int x;
 				for (x = tsc.p_read; ; ++x)
 				{
-					bool quit = tsc.data[x] == '<' || tsc.data[x] == 13 ? false : true;
+					const bool quit = tsc.data[x] == '<' || tsc.data[x] == 13 ? false : true;
 
 					if (!quit)
 						break;
@@ -1031,7 +1031,7 @@ void drawTsc()
 		SDL_RenderSetClipRect(renderer, NULL);
 
 		//NOD cursor / beam?
-		bool flash = tsc.wait_beam++ % 20 > 12;
+		const bool flash = tsc.wait_beam++ % 20 > 12;
 		
 		if (flash && tsc.mode == NOD)
 		{
