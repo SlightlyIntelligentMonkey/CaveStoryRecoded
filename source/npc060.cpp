@@ -2,7 +2,7 @@
 
 void npcAct060(npc *NPC) //Toroko
 {
-	int frameMap[11] = { 0, 1, 2, 1, 3, 4, 5, 4, 6, 7, 8 };
+	constexpr int frameMap[11] = { 0, 1, 2, 1, 3, 4, 5, 4, 6, 7, 8 };
 
 	switch(NPC->act_no)
 	{
@@ -414,7 +414,7 @@ void npcAct061(npc *NPC) //King
 
 void npcAct064(npc *NPC) //First Cave critter
 {
-	int action = NPC->act_no;
+	const int action = NPC->act_no;
 
 	switch (action)
 	{
@@ -523,7 +523,7 @@ void npcAct064(npc *NPC) //First Cave critter
 
 void npcAct065(npc *NPC) //First Cave Bat
 {
-	int action = NPC->act_no;
+	const int action = NPC->act_no;
 
 	switch (action)
 	{
@@ -818,8 +818,8 @@ void npcAct078(npc *NPC) //Pot
 
 void npcAct079(npc *NPC) // Mahin
 {
-	RECT rcLeft[3] = { { 0, 0, 16, 16 },{ 16, 0, 32, 16 },{ 32, 0, 48, 16 } };
-	RECT rcRight[3] = { { 0, 16, 16, 32 },{ 16, 16, 32, 32 },{ 32, 16, 48, 32 } };
+	constexpr RECT rcLeft[3] = { { 0, 0, 16, 16 },{ 16, 0, 32, 16 },{ 32, 0, 48, 16 } };
+	constexpr RECT rcRight[3] = { { 0, 16, 16, 32 },{ 16, 16, 32, 32 },{ 32, 16, 48, 32 } };
 
 	if (!NPC->act_no)
 	{

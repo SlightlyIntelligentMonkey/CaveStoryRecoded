@@ -1,5 +1,16 @@
 #include "npc180.h"
 
+void npcAct194(npc *NPC) // Blue Robot, destroyed
+{
+	if (NPC->act_no == 0)
+	{
+		NPC->act_no = 1;
+		NPC->y += 0x800;
+	}
+
+	NPC->rect = { 192, 120, 224, 128 };
+}
+
 void npcAct195(npc *NPC) // Grate mouth
 {
 	NPC->rect = { 112, 64, 128, 80 };
@@ -12,7 +23,7 @@ void npcAct199(npc *NPC) //Current / fan effect
 		NPC->act_no = 1;
 		NPC->ani_no = random(0, 2);
 
-		int direction = NPC->direct;
+		const int direction = NPC->direct;
 
 		if (direction == 1)
 		{

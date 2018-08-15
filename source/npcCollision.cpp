@@ -1,6 +1,6 @@
 #include "npcCollision.h"
 
-void npcJudgeBlock(RECT *rcHit, npc *NPC, int tx, int ty)
+void npcJudgeBlock(const RECT *rcHit, npc *NPC, int tx, int ty)
 {
 	if (NPC->y - rcHit->top < ((2 * ty + 1) << 12) - 0x600
 		&& NPC->y + rcHit->bottom > ((2 * ty - 1) << 12) + 0x600
@@ -46,7 +46,7 @@ void npcJudgeBlock(RECT *rcHit, npc *NPC, int tx, int ty)
 }
 
 //Ceiling slopes
-void npcJudgeTriangleA(RECT *rcHit, npc *NPC, int tx, int ty)
+void npcJudgeTriangleA(const RECT *rcHit, npc *NPC, int tx, int ty)
 {
 	if (NPC->x > (2 * tx - 1) << 12
 		&& NPC->x < (2 * tx + 1) << 12
@@ -62,7 +62,7 @@ void npcJudgeTriangleA(RECT *rcHit, npc *NPC, int tx, int ty)
 	}
 }
 
-void npcJudgeTriangleB(RECT *rcHit, npc *NPC, int tx, int ty)
+void npcJudgeTriangleB(const RECT *rcHit, npc *NPC, int tx, int ty)
 {
 	if (NPC->x > (2 * tx - 1) << 12
 		&& NPC->x < (2 * tx + 1) << 12
@@ -78,7 +78,7 @@ void npcJudgeTriangleB(RECT *rcHit, npc *NPC, int tx, int ty)
 	}
 }
 
-void npcJudgeTriangleC(RECT *rcHit, npc *NPC, int tx, int ty)
+void npcJudgeTriangleC(const RECT *rcHit, npc *NPC, int tx, int ty)
 {
 	if (NPC->x > (2 * tx - 1) << 12
 		&& NPC->x < (2 * tx + 1) << 12
@@ -94,7 +94,7 @@ void npcJudgeTriangleC(RECT *rcHit, npc *NPC, int tx, int ty)
 	}
 }
 
-void npcJudgeTriangleD(RECT *rcHit, npc *NPC, int tx, int ty)
+void npcJudgeTriangleD(const RECT *rcHit, npc *NPC, int tx, int ty)
 {
 	if (NPC->x > (2 * tx - 1) << 12
 		&& NPC->x < (2 * tx + 1) << 12
@@ -111,7 +111,7 @@ void npcJudgeTriangleD(RECT *rcHit, npc *NPC, int tx, int ty)
 }
 
 //Floor slopes
-void npcJudgeTriangleE(RECT *rcHit, npc *NPC, int tx, int ty)
+void npcJudgeTriangleE(const RECT *rcHit, npc *NPC, int tx, int ty)
 {
 	NPC->flag |= slopeE;
 
@@ -129,7 +129,7 @@ void npcJudgeTriangleE(RECT *rcHit, npc *NPC, int tx, int ty)
 	}
 }
 
-void npcJudgeTriangleF(RECT *rcHit, npc *NPC, int tx, int ty)
+void npcJudgeTriangleF(const RECT *rcHit, npc *NPC, int tx, int ty)
 {
 	NPC->flag |= slopeF;
 
@@ -144,7 +144,7 @@ void npcJudgeTriangleF(RECT *rcHit, npc *NPC, int tx, int ty)
 	}
 }
 
-void npcJudgeTriangleG(RECT *rcHit, npc *NPC, int tx, int ty)
+void npcJudgeTriangleG(const RECT *rcHit, npc *NPC, int tx, int ty)
 {
 	NPC->flag |= slopeG;
 
@@ -162,7 +162,7 @@ void npcJudgeTriangleG(RECT *rcHit, npc *NPC, int tx, int ty)
 	}
 }
 
-void npcJudgeTriangleH(RECT *rcHit, npc *NPC, int tx, int ty)
+void npcJudgeTriangleH(const RECT *rcHit, npc *NPC, int tx, int ty)
 {
 	NPC->flag |= slopeH;
 
@@ -180,7 +180,7 @@ void npcJudgeTriangleH(RECT *rcHit, npc *NPC, int tx, int ty)
 	}
 }
 
-void npcJudgeWater(RECT *rcHit, npc *NPC, int tx, int ty)
+void npcJudgeWater(const RECT *rcHit, npc *NPC, int tx, int ty)
 {
 	if (NPC->x - rcHit->right < (4 * (2 * tx + 1) - 1) << 10
 		&& NPC->x + rcHit->right > (4 * (2 * tx - 1) + 1) << 10
@@ -197,11 +197,11 @@ void npcHitMap(int NPCid)
 	NPC->flag = 0; //clear
 	RECT *rcHit = &NPC->hit;
 	
-	int fromX = (NPC->x - rcHit->right + 0x1000) >> 13;
-	int fromY = (NPC->y - rcHit->top + 0x1000) >> 13;
+	const int fromX = (NPC->x - rcHit->right + 0x1000) >> 13;
+	const int fromY = (NPC->y - rcHit->top + 0x1000) >> 13;
 
-	int toX = (NPC->x + rcHit->right + 0x1000) >> 13;
-	int toY = (NPC->y + rcHit->bottom + 0x1000) >> 13;
+	const int toX = (NPC->x + rcHit->right + 0x1000) >> 13;
+	const int toY = (NPC->y + rcHit->bottom + 0x1000) >> 13;
 	
 	if (!(NPC->bits & npc_ignoresolid))
 	{

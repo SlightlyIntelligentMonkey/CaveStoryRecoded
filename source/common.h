@@ -9,13 +9,15 @@
 #define DWORD uint32_t
 #define UINT uint32_t
 
-typedef struct {
- LONG left, top, right, bottom;
-} RECT;
+struct RECT
+{
+	LONG left, top, right, bottom;
+};
 
-typedef struct {
- LONG x, y;
-} POINT;
+struct POINT
+{
+	LONG x, y;
+};
 
 #include <string>
 #include <iostream>
@@ -516,8 +518,6 @@ extern SDL_Event events;
 extern int framerate;
 extern unsigned int framerateTicks;
 
-extern VIEW viewport;
-
 extern int mode;
 
 extern bool exitGame;
@@ -529,7 +529,7 @@ extern int gameFlags;
 [[noreturn]] void doCustomError(const char *msg);
 
 //Modules
-#include "math.h"
+#include "mathUtils.h"
 #include "filesystem.h"
 #include "render.h"
 #include "flags.h"

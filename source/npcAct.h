@@ -1,5 +1,5 @@
 #pragma once
 #include "common.h"
 
-typedef void(*npcAct)(npc *);
+using npcAct = void(*)(npc *);
 extern npcAct npcActs[];

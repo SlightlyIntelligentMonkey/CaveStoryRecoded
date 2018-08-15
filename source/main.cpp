@@ -21,29 +21,33 @@ bool exitGame = false;
 
 // Some global functions
 
-static void doQuit() {
+static void doQuit() 
+{
 	//sound::quit();
 	SDL_Quit();
 	IMG_Quit();
 	freeSounds();
 }
 
-void doError() {
-	SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Critical Error", SDL_GetError(), NULL);
+void doError() 
+{
+	SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Critical Error", SDL_GetError(), nullptr);
 	SDL_ClearError();
 	doQuit();
 	exit(EXIT_FAILURE);
 }
 
-void doCustomError(const char *msg) {
-	SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Critical Error", msg, NULL);
+void doCustomError(const char *msg) 
+{
+	SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Critical Error", msg, nullptr);
 	doQuit();
 	exit(EXIT_FAILURE);
 }
 
 SDL_Texture* sprites[0x28];
 
-int init() {
+int init() 
+{
 	//Initiate SDL and window stuff
 	if (SDL_Init(SDL_INIT_TIMER | SDL_INIT_AUDIO | SDL_INIT_VIDEO) < 0)
 		doCustomError("Couldn't initiate SDL");
@@ -101,7 +105,8 @@ int init() {
 	return 0;
 }
 
-int main(int argc, char **argv) {
+int main(int argc, char **argv) // TDB : Do something with command-line parameters
+{
 	init();
 
 	mainGameLoop();

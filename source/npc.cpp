@@ -6,12 +6,12 @@ std::vector<npc> npcs(0);
 //NPC Functions
 void createSmoke(int x, int y, int w, int num)
 {
-	int wa = w / 0x200;
+	const int wa = w / 0x200;
 
 	for (int i = 0; i < num; i++)
 	{
-		int offsetX = random(-wa, wa) << 9;
-		int offsetY = random(-wa, wa) << 9;
+		const int offsetX = random(-wa, wa) << 9;
+		const int offsetY = random(-wa, wa) << 9;
 
 		createNpc(4, x + offsetX, offsetY + y, 0, 0, 0, nullptr);
 	}
@@ -51,7 +51,7 @@ void changeNpc(int code_event, int code_char, int dir)
 		{
 			if (npcs[i].code_event == code_event)
 			{
-				int code_flag = npcs[i].code_flag;
+				const int code_flag = npcs[i].code_flag;
 				int bits = npcs[i].bits;
 
 				bits &= 0x7F00; //Only bits that seem to determine interactability and other stuff
@@ -118,9 +118,9 @@ void loadNpcTable()
 	if (tblStream == nullptr)
 		doError();
 
-	int tblSize = (int)SDL_RWsize(tblStream);
+	const auto tblSize = static_cast<size_t>(SDL_RWsize(tblStream));
 
-	int npcs = tblSize / 0x18;
+	const int npcs = tblSize / 0x18;
 	npcTable = static_cast<NPC_TABLE *>(malloc(0x18 * npcs));
 
 	if (npcTable == nullptr)

@@ -66,7 +66,7 @@ public:
 	RECT view;
 
 public:
-	void init(int setCode, int setX, int setY, int setDir);
+	void init(int setCode, int setX, int setY, uint8_t setDir);
 
 	void update();
 	void draw();
@@ -76,5 +76,5 @@ void createBullet(int setCode, int setX, int setY, int setDir);
 void updateBullets();
 void drawBullets();
 
-typedef void(*bulletAct)(bullet *);
+using bulletAct = void(*)(bullet *);
 extern std::vector<bullet> bullets;

@@ -27,7 +27,7 @@ void loadStageTable()
 	if (tblStream == nullptr)
 		doError();
 
-	size_t stages = (size_t)SDL_RWsize(tblStream) / 200;
+	const auto stages = static_cast<size_t>(SDL_RWsize(tblStream) / 200);
 
 	stageTable = static_cast<STAGE_TABLE*>(malloc(stages * 200));
 	if (stageTable == nullptr)
@@ -66,7 +66,7 @@ void shiftTile(int x, int y)
 	--levelMap[x + y * levelWidth];
 }
 
-bool changeTile(int x, int y, int tile)
+bool changeTile(int x, int y, uint8_t tile)
 {
 	if (levelMap[y * levelWidth + x] == tile)
 		return false;
@@ -104,7 +104,7 @@ void loadLevel(int levelIndex) {
 	snprintf(pxmPath, 256, "data/Stage/%s.pxm", stageTable[levelIndex].filename);
 
 	BYTE *pxm = nullptr;
-	int pxmSize = loadFile(pxmPath, &pxm);
+	const int pxmSize = loadFile(pxmPath, &pxm);
 
 	if (pxmSize < 0)
 	{
@@ -117,8 +117,7 @@ void loadLevel(int levelIndex) {
 	levelWidth = readLEshort(pxm, 4);
 	levelHeight = readLEshort(pxm, 6);
 
-	if (levelMap)
-		delete levelMap;
+	delete[] levelMap;
 
 	levelMap = new BYTE[pxmSize - 8];
 	memcpy(levelMap, pxm + 8, pxmSize - 8);
@@ -131,7 +130,7 @@ void loadLevel(int levelIndex) {
 	snprintf(pxaPath, 256, "data/Stage/%s.pxa", stageTable[levelIndex].tileset);
 
 	BYTE *pxa = nullptr;
-	int pxaSize = loadFile(pxaPath, &pxa);
+	const int pxaSize = loadFile(pxaPath, &pxa);
 
 	if (pxaSize < 0)
 	{
@@ -141,8 +140,7 @@ void loadLevel(int levelIndex) {
 		doCustomError(errorMsg);
 	}
 
-	if (levelTileAttributes)
-		delete levelTileAttributes;
+	delete[] levelTileAttributes;
 
 	levelTileAttributes = new BYTE[pxaSize];
 	memcpy(levelTileAttributes, pxa, pxaSize);
@@ -168,15 +166,15 @@ void loadLevel(int levelIndex) {
 	npcs.shrink_to_fit();
 
 	//Load npcs
-	int npcAmount = readLElong(pxe, 4);
+	const int npcAmount = readLElong(pxe, 4);
 
 	for (int i = 0; i < npcAmount; i++) {
-		int offset = (i * 12) + 8;
+		const int offset = (i * 12) + 8;
 
-		if (readLEshort(pxe, offset + 10) & npc_appearset && getFlag(readLEshort(pxe, offset + 4)) == false)
+		if (readLEshort(pxe, offset + 10) & npc_appearset && !(getFlag(readLEshort(pxe, offset + 4))))
 			continue;
 
-		if (readLEshort(pxe, offset + 10) & npc_hideset && getFlag(readLEshort(pxe, offset + 4)) == true)
+		if (readLEshort(pxe, offset + 10) & npc_hideset && getFlag(readLEshort(pxe, offset + 4)))
 			continue;
 
 		npc newNPC;
@@ -246,7 +244,7 @@ void drawLevel(bool foreground)
 		int skyOff;
 
 		int w, h;
-		SDL_QueryTexture(sprites[0x1C], NULL, NULL, &w, &h);
+		SDL_QueryTexture(sprites[0x1C], nullptr, nullptr, &w, &h);
 
 		rect = { 0, 0, w, h };
 
@@ -347,24 +345,24 @@ void drawLevel(bool foreground)
 	//Render tiles
 	RECT tileRect;
 
-	int xFrom = clamp((viewport.x + 0x1000) >> 13, 0, levelWidth);
-	int xTo = clamp((((viewport.x + 0x1000) + (screenWidth << 9)) >> 13) + 1, 0, levelWidth); //add 1 because edge wouldn't appear
+	const int xFrom = clamp((viewport.x + 0x1000) >> 13, 0, levelWidth);
+	const int xTo = clamp((((viewport.x + 0x1000) + (screenWidth << 9)) >> 13) + 1, 0, levelWidth); //add 1 because edge wouldn't appear
 
-	int yFrom = clamp((viewport.y + 0x1000) >> 13, 0, levelHeight);
-	int yTo = clamp((((viewport.y + 0x1000) + (screenHeight << 9)) >> 13) + 1, 0, levelHeight); //add 1 because edge wouldn't appear
+	const int yFrom = clamp((viewport.y + 0x1000) >> 13, 0, levelHeight);
+	const int yTo = clamp((((viewport.y + 0x1000) + (screenHeight << 9)) >> 13) + 1, 0, levelHeight); //add 1 because edge wouldn't appear
 
 	for (int x = xFrom; x < xTo; x++) {
 		for (int y = yFrom; y < yTo; y++) {
-			int i = x + y * levelWidth;
+			const int i = x + y * levelWidth;
 
-			int tile = levelMap[i];
+			const int tile = levelMap[i];
 			if (tile) {
-				int attribute = levelTileAttributes[tile];
+				const int attribute = levelTileAttributes[tile];
 
-				if ((attribute < 0x20 && foreground == false) || (attribute >= 0x40 && foreground == true))
+				if ((attribute < 0x20 && !foreground) || (attribute >= 0x40 && foreground))
 				{
-					int drawX = i % levelWidth;
-					int drawY = i / levelWidth;
+					const int drawX = i % levelWidth;
+					const int drawY = i / levelWidth;
 
 					if (attribute < 0x80)
 					{
@@ -428,15 +426,15 @@ void drawLevel(bool foreground)
 		SDL_SetRenderDrawColor(renderer, 0, 0, 32, 255);
 
 		//Left and right
-		int leftBorder = -(viewport.x / 0x200);
-		int rightBorder = ((viewport.x / 0x200) + screenWidth) - ((levelWidth - 1) << 4);
+		const int leftBorder = -(viewport.x / 0x200);
+		const int rightBorder = ((viewport.x / 0x200) + screenWidth) - ((levelWidth - 1) << 4);
 
 		drawRect(0, 0, leftBorder, screenHeight);
 		drawRect(screenWidth - rightBorder, 0, rightBorder, screenHeight);
 
 		//Top and bottom
-		int topBorder = -(viewport.y / 0x200);
-		int bottomBorder = ((viewport.y / 0x200) + screenHeight) - ((levelHeight - 1) << 4);
+		const int topBorder = -(viewport.y / 0x200);
+		const int bottomBorder = ((viewport.y / 0x200) + screenHeight) - ((levelHeight - 1) << 4);
 		
 		drawRect(0, 0, screenWidth, topBorder);
 		drawRect(0, screenHeight - bottomBorder, screenWidth, bottomBorder);

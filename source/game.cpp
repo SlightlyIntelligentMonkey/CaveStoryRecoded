@@ -124,7 +124,6 @@ void debugLevels()
 
 		//sound::playOrg(38);
 	}
-	return;
 }
 
 //Escape menu
@@ -134,8 +133,8 @@ int escapeMenu()
 	while (true)
 	{
 		//Framerate limiter
-		Uint32 timeNow = SDL_GetTicks();
-		Uint32 timeNext = framerateTicks + framerate;
+		const Uint32 timeNow = SDL_GetTicks();
+		const Uint32 timeNext = framerateTicks + framerate;
 
 		if (timeNow >= timeNext) {
 			framerateTicks = SDL_GetTicks();
@@ -214,7 +213,6 @@ void drawStageSelect()
 	RECT rcStage;
 
 	int stageNo;
-	int stageX;
 
 	rcCur[0] = { 80, 88, 112, 104 };
 	rcCur[1] = { 80, 104, 112, 120 };
@@ -230,7 +228,7 @@ void drawStageSelect()
 
 	if (stageNo)
 	{
-		stageX = (-40 * stageNo + screenWidth) / 2;
+		int stageX = (-40 * stageNo + screenWidth) / 2;
 
 		//Draw everything now
 		drawTexture(sprites[TEX_TEXTBOX], &rcCur[(stageSelectFlash >> 1) & 1], stageX + 40 * selectedStage, 64);
@@ -257,14 +255,14 @@ int stageSelect(int *runEvent)
 	stageSelectTitleY = 54;
 
 	//Load stage select tsc
-	loadTsc2((char*)"data/StageSelect.tsc");
+	loadTsc2("data/StageSelect.tsc");
 	startTscEvent(permitStage[selectedStage].index + 1000);
 
 	while (true)
 	{
 		//Framerate limiter
-		Uint32 timeNow = SDL_GetTicks();
-		Uint32 timeNext = framerateTicks + framerate;
+		const Uint32 timeNow = SDL_GetTicks();
+		const Uint32 timeNext = framerateTicks + framerate;
 
 		if (timeNow >= timeNext) {
 			framerateTicks = SDL_GetTicks();
@@ -281,7 +279,7 @@ int stageSelect(int *runEvent)
 
 		if (isKeyDown(SDL_SCANCODE_ESCAPE))
 		{
-			int escape = escapeMenu();
+			const int escape = escapeMenu();
 
 			if (!escape)
 				return 0;
@@ -292,7 +290,7 @@ int stageSelect(int *runEvent)
 		//Update menu
 		moveStageSelectCursor();
 
-		int tscResult = updateTsc();
+		const int tscResult = updateTsc();
 		if (!tscResult)
 			return 0;
 		if (tscResult == 2)
@@ -342,14 +340,13 @@ int stageSelect(int *runEvent)
 //Main States
 int gameUpdatePlay()
 {
-	int swPlay = 1;
 	int tscResult = 0;
 	
 	while (true)
 	{
 		//Framerate limiter
-		Uint32 timeNow = SDL_GetTicks();
-		Uint32 timeNext = framerateTicks + framerate;
+		const Uint32 timeNow = SDL_GetTicks();
+		const Uint32 timeNext = framerateTicks + framerate;
 
 		if (timeNow >= timeNext) {
 			framerateTicks = SDL_GetTicks();
@@ -368,7 +365,7 @@ int gameUpdatePlay()
 
 		if (isKeyDown(SDL_SCANCODE_ESCAPE))
 		{
-			int escape = escapeMenu();
+			const int escape = escapeMenu();
 
 			if (!escape)
 				return 0;
@@ -382,7 +379,7 @@ int gameUpdatePlay()
 		debugLevels();
 
 		//Update stuff
-		if (swPlay & 1 && gameFlags & 1)
+		if (gameFlags & 1)
 		{
 			if (gameFlags & 2)
 				currentPlayer.update(true);
@@ -429,15 +426,12 @@ int gameUpdatePlay()
 		}
 
 		//Do TSC stuff
-		if (swPlay & 1)
-		{
-			tscResult = updateTsc();
+		tscResult = updateTsc();
 
-			if (!tscResult)
-				return 0;
-			if (tscResult == 2)
-				return 1;
-		}
+		if (!tscResult)
+			return 0;
+		if (tscResult == 2)
+			return 1;
 
 		drawMapName(false);
 
@@ -457,7 +451,7 @@ int gameUpdateMenu()
 	int select = 0;
 	int anime = 0;
 
-	int version[4] = { 1, 0, 0, 6 };
+	const int version[4] = { 1, 0, 0, 6 };
 
 	RECT rcVersion = { 152, 80, 208, 88 };
 	RECT rcPeriod = { 152, 88, 208, 96 };
@@ -468,7 +462,7 @@ int gameUpdateMenu()
 	RECT rcPixel = { 0, 0, 160, 16 };
 
 	uint32_t frame = 0;
-	BYTE frameOrder[] = { 0, 1, 0, 2 };
+	const BYTE frameOrder[] = { 0, 1, 0, 2 };
 
 	if (fileExists("Profile.dat"))
 		select = 1;
@@ -478,8 +472,8 @@ int gameUpdateMenu()
 	while (true)
 	{
 		//Framerate limiter
-		Uint32 timeNow = SDL_GetTicks();
-		Uint32 timeNext = framerateTicks + framerate;
+		const Uint32 timeNow = SDL_GetTicks();
+		const Uint32 timeNext = framerateTicks + framerate;
 
 		if (timeNow >= timeNext) {
 			framerateTicks = SDL_GetTicks();
@@ -498,7 +492,7 @@ int gameUpdateMenu()
 
 		if (isKeyDown(SDL_SCANCODE_ESCAPE))
 		{
-			int escape = escapeMenu();
+			const int escape = escapeMenu();
 
 			if (!escape)
 				return 0;
@@ -518,11 +512,8 @@ int gameUpdateMenu()
 				initGame();
 				break;
 			}
-			else
-			{
-				loadProfile();
-				break;
-			}
+			loadProfile();
+			break;
 		}
 
 		if (isKeyPressed(keyUp) || isKeyPressed(keyDown))
@@ -584,8 +575,8 @@ int gameUpdateIntro()
 	while (frame < 500)
 	{
 		//Framerate limiter
-		Uint32 timeNow = SDL_GetTicks();
-		Uint32 timeNext = framerateTicks + framerate;
+		const Uint32 timeNow = SDL_GetTicks();
+		const Uint32 timeNext = framerateTicks + framerate;
 
 		if (timeNow >= timeNext) {
 			framerateTicks = SDL_GetTicks();
@@ -605,7 +596,7 @@ int gameUpdateIntro()
 
 		if (isKeyDown(SDL_SCANCODE_ESCAPE))
 		{
-			int escape = escapeMenu();
+			const int escape = escapeMenu();
 
 			if (!escape)
 				return 0;

@@ -3,25 +3,25 @@
 #include "weapons.h"
 
 //Read function stuff
-uint16_t readLEshort(BYTE *data, unsigned int offset) {
+uint16_t readLEshort(const BYTE * data, size_t offset) {
 	return ((data[offset + 1] << 8) + data[offset]);
 }
 
-uint32_t readLElong(BYTE *data, unsigned int offset) {
+uint32_t readLElong(const BYTE * data, size_t offset) {
 	return ((data[offset + 3] << 24) + (data[offset + 2] << 16) + (data[offset + 1] << 8) + data[offset]);
 }
 
 //Write stuff
-void writeLEshort(BYTE *data, uint16_t input, unsigned int offset) {
-	data[offset] = (BYTE)input;
-	data[offset + 1] = (BYTE)(input >> 8);
+void writeLEshort(BYTE *data, uint16_t input, size_t offset) {
+	data[offset] = static_cast<BYTE>(input);
+	data[offset + 1] = static_cast<BYTE>(input >> 8);
 }
 
-void writeLElong(BYTE *data, uint32_t input, unsigned int offset) {
-	data[offset] = (BYTE)input;
-	data[offset + 1] = (BYTE)(input >> 8);
-	data[offset + 2] = (BYTE)(input >> 16);
-	data[offset + 3] = (BYTE)(input >> 24);
+void writeLElong(BYTE *data, uint32_t input, size_t offset) {
+	data[offset] = static_cast<BYTE>(input);
+	data[offset + 1] = static_cast<BYTE>(input >> 8);
+	data[offset + 2] = static_cast<BYTE>(input >> 16);
+	data[offset + 3] = static_cast<BYTE>(input >> 24);
 }
 
 //Loading and writing functions
@@ -29,11 +29,10 @@ bool fileExists(const char *name)
 {
 	struct stat buffer;
 	return (stat(name, &buffer) == 0);
-	return true;
 }
 
 int loadFile(const char *name, BYTE **data) {
-	int filesize = 0;
+	size_t filesize = 0;
 
 	//Open file
 	FILE *file = fopen(name, "rb");
@@ -46,7 +45,7 @@ int loadFile(const char *name, BYTE **data) {
 	fseek(file, 0, 0);
 
 	//Load data
-	*data = (BYTE*)malloc(filesize);
+	*data = static_cast<BYTE *>(malloc(filesize));
 	if (fread(*data, 1, filesize, file) == 0) 
 	{
 		fclose(file);
@@ -59,7 +58,7 @@ int loadFile(const char *name, BYTE **data) {
 	return filesize;
 }
 
-int writeFile(char *name, void *data, int amount)
+int writeFile(const char *name, void *data, size_t amount)
 {
 	FILE *file;
 	if ((file = fopen(name, "wb")) == NULL)
@@ -88,11 +87,11 @@ void loadProfile()
 		if (profile == nullptr)
 			return;
 
-		uint64_t code = SDL_ReadLE64(profile); //Code
+		const uint64_t code = SDL_ReadLE64(profile); //Code
 		if (memcmp(&code, "Do041220", sizeof(code)) != 0)
 			doCustomError("Invalid profile (first 8 bytes aren't \"Do041120\"");
 
-		int level = SDL_ReadLE32(profile); //level
+		const int level = SDL_ReadLE32(profile); //level
 		SDL_ReadLE32(profile); //song
 
 		currentPlayer.init();
@@ -125,20 +124,20 @@ void loadProfile()
 		}
 
 		SDL_RWseek(profile, 0x158, 0);
-		
-		for (size_t i = 0; i < 8; i++)
+
+		for (auto permitStageIterator : permitStage)
 		{
-			permitStage[i].index = SDL_ReadLE32(profile);
-			permitStage[i].event = SDL_ReadLE32(profile);
+			permitStageIterator.index = SDL_ReadLE32(profile);
+			permitStageIterator.event = SDL_ReadLE32(profile);
 		}
 
-		for (size_t i = 0; i < 0x80; i++)
-			SDL_RWread(profile, &mapFlags[i], 1, 1);
+		for (auto mapFlagsIterator : mapFlags)
+			SDL_RWread(profile, &mapFlagsIterator, 1, 1);
 
 		SDL_ReadLE32(profile); //FLAG
 
-		for (size_t i = 0; i < 1000; i++)
-			SDL_RWread(profile, &tscFlags[i], 1, 1);
+		for (auto tscFlagsIterator : tscFlags)
+			SDL_RWread(profile, &tscFlagsIterator, 1, 1);
 
 		//Now load level
 		loadLevel(level);
@@ -155,7 +154,7 @@ void loadProfile()
 }
 
 void saveProfile() {
-	BYTE *profile = (BYTE*)malloc(0x604);
+	auto profile = static_cast<BYTE *>(malloc(0x604));
 
 	if (profile == nullptr)
 		doCustomError("Could not allocate memory for profile");
@@ -188,7 +187,7 @@ void saveProfile() {
 	memcpy(profile + 0x21C, tscFlags, 1000);
 
 	//Save to file
-	writeFile((char*)profileName, profile, 0x604);
+	writeFile(profileName, profile, 0x604);
 
 	//End
 	free(profile);

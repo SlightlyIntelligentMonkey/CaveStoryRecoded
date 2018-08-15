@@ -32,7 +32,7 @@ void npcAct000(npc *NPC) //Null
 
 void npcAct002(npc *NPC) //Behemoth
 {
-	int act_no = NPC->act_no;
+	const int act_no = NPC->act_no;
 
 	RECT rcLeft[7];
 	RECT rcRight[7];
@@ -148,6 +148,13 @@ void npcAct002(npc *NPC) //Behemoth
 		NPC->rect = rcLeft[NPC->ani_no];
 }
 
+void npcAct003(npc *NPC) // Null, spawned upon NPC death, disappears
+{
+	if (++NPC->count1 > 100)
+		NPC->cond = 0;
+	NPC->rect = { 0 };
+}
+
 void npcAct004(npc *NPC) //Smoke
 {
 	RECT rcLeft[8];
@@ -183,12 +190,12 @@ void npcAct004(npc *NPC) //Smoke
 	{
 		if (!NPC->direct || NPC->direct == 1)
 		{
-			BYTE deg = random(0, 255);
+			const BYTE deg = random(0, 255);
 
-			int degCos = getCos(deg);
+			const int degCos = getCos(deg);
 			NPC->xm = degCos * random(0x200, 0x5FF) / 0x200;
 
-			int degSin = getSin(deg);
+			const int degSin = getSin(deg);
 			NPC->ym = degSin * random(0x200, 0x5FF) / 0x200;
 		}
 
@@ -221,7 +228,7 @@ void npcAct004(npc *NPC) //Smoke
 
 void npcAct005(npc *NPC) //Egg Corridor critter
 {
-	int act_no = NPC->act_no;
+	const int act_no = NPC->act_no;
 
 	switch (act_no)
 	{
@@ -330,7 +337,7 @@ void npcAct005(npc *NPC) //Egg Corridor critter
 
 void npcAct006(npc *NPC) //Beetle
 {
-	int act_no = NPC->act_no;
+	const int act_no = NPC->act_no;
 
 	switch (act_no) {
 	case 0: //Init
@@ -446,7 +453,7 @@ void npcAct007(npc *NPC) //Basil
 	rcRight[1] = { 288, 80, 320, 96 };
 	rcRight[2] = { 288, 96, 320, 112 };
 
-	int act_no = NPC->act_no;
+	const int act_no = NPC->act_no;
 	switch (act_no)
 	{
 	case 1:
@@ -547,7 +554,7 @@ void npcAct008(npc *NPC) //Follow beetle (egg corridor)
 	rcRight[0] = { 80, 96, 96, 112 };
 	rcRight[1] = { 96, 96, 112, 112 };
 
-	int act_no = NPC->act_no;
+	const int act_no = NPC->act_no;
 	if (act_no)
 	{
 		if (act_no == 1)
@@ -1055,7 +1062,7 @@ void npcAct012(npc *NPC) //Balrog cutscene
 		break;
 	}
 
-	int createSmoke = NPC->tgt_x && !random(0, 10);
+	const int createSmoke = NPC->tgt_x && !random(0, 10);
 	if (createSmoke)
 		createNpc(4, NPC->x + (random(-12, 12) << 9), NPC->y + (random(-12, 12) << 9), random(-0x155, 0x155), random(-0x600, 0), 0, nullptr);
 
@@ -1080,7 +1087,7 @@ void npcAct012(npc *NPC) //Balrog cutscene
 
 void npcAct015(npc *NPC) //Closed chest
 {
-	int act_no = NPC->act_no;
+	const int act_no = NPC->act_no;
 
 	switch (act_no) {
 	case 0:
@@ -1268,7 +1275,7 @@ void npcAct017(npc *NPC) //Health refill
 
 void npcAct018(npc *NPC) //Door
 {
-	int act_no = NPC->act_no;
+	const int act_no = NPC->act_no;
 	if (act_no)
 	{
 		if (act_no == 1)

@@ -63,9 +63,6 @@
     <ClCompile Include="level.cpp">
       <Filter>Source Files\modules</Filter>
     </ClCompile>
-    <ClCompile Include="math.cpp">
-      <Filter>Source Files\modules</Filter>
-    </ClCompile>
     <ClCompile Include="filesystem.cpp">
       <Filter>Source Files\modules</Filter>
     </ClCompile>
@@ -168,6 +165,8 @@
     <ClCompile Include="polarStarShoot.cpp">
       <Filter>Source Files\classes\weapons\shoot</Filter>
     </ClCompile>
+    <ClCompile Include="mathUtils.cpp">
+      <Filter>Source Files\modules</Filter>
     <ClCompile Include="npcCollision.cpp">
       <Filter>Source Files\modules\collision</Filter>
     </ClCompile>
@@ -180,9 +179,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="level.h">
-      <Filter>Source Files\modules</Filter>
-    </ClInclude>
-    <ClInclude Include="math.h">
       <Filter>Source Files\modules</Filter>
     </ClInclude>
     <ClInclude Include="filesystem.h">
@@ -293,6 +289,8 @@
     <ClInclude Include="weapons.h">
       <Filter>Source Files\classes\weapons</Filter>
     </ClInclude>
+    <ClInclude Include="mathUtils.h">
+      <Filter>Source Files\modules</Filter>
     <ClInclude Include="playerCollision.h">
       <Filter>Source Files\modules\collision</Filter>
     </ClInclude>

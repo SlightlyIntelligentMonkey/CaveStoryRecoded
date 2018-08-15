@@ -4,10 +4,10 @@
 
 void drawMapName(bool bMini)
 {
-	int len = strlen(mapName.name);
+	const int len = strlen(mapName.name);
 
-	int x = screenWidth / 2 - len * 3;
-	int y = 80;
+	const int x = screenWidth / 2 - len * 3;
+	const int y = 80;
 
 	if (bMini)
 	{
@@ -184,8 +184,8 @@ void drawPlayerAir()
 	rcAir[0] = { 112, 72, 144, 80 };
 	rcAir[1] = { 112, 80, 144, 88 };
 
-	int x = (screenWidth / 2) - 40;
-	int y = (screenHeight / 2) - 16;
+	const int x = (screenWidth / 2) - 40;
+	const int y = (screenHeight / 2) - 16;
 
 	if (!(currentPlayer.equip & equip_airTank) && currentPlayer.air_get)
 	{
@@ -196,7 +196,6 @@ void drawPlayerAir()
 		//Draw the "AIR" thing
 		drawTexture(sprites[0x1A], &rcAir[(currentPlayer.air % 30 <= 10)], x, y);
 	}
-	return;
 }
 
 void drawHud(bool hide)

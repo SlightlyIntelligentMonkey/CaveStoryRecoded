@@ -67,7 +67,7 @@ class player {
 		void setPos(int setX, int setY);
 		void setDir(int setDirect);
 
-		void damage(int damage);
+		void damage(int16_t damage);
 
 		void actNormal(bool bKey);
 		void actStream(bool bKey);

@@ -18,9 +18,10 @@ int charHeight = 24;
 int charScale = 2;
 
 //Create window
-int createWindow(int width, int height, int scale, bool fullscreen) {
-	int createWidth = width * scale;
-	int createHeight = height * scale;
+int createWindow(int width, int height, int scale, bool fullscreen) // TBD : Handle fullscreen parameter
+{
+	const int createWidth = width * scale;
+	const int createHeight = height * scale;
 
 	screenWidth = width;
 	screenHeight = height;
@@ -47,8 +48,8 @@ void switchScreenMode()
 	windowFlags ^= SDL_WINDOW_FULLSCREEN_DESKTOP;
 
 	//Unlike prevWidth and Height, this is used for fixing the view when going between fullscreen and windowed mode
-	int lastWidth = screenWidth;
-	int lastHeight = screenHeight;
+	const int lastWidth = screenWidth;
+	const int lastHeight = screenHeight;
 
 	if (windowFlags & SDL_WINDOW_FULLSCREEN_DESKTOP)
 	{
@@ -82,17 +83,16 @@ void switchScreenMode()
 	//Set window properties
 	SDL_SetWindowSize(window, screenWidth * screenScale, screenHeight * screenScale);
 	SDL_SetWindowFullscreen(window, windowFlags);
-	return;
 }
 
 //Texture and drawing stuff
 void loadImage(const char *file, SDL_Texture **tex) {
 	//Destroy previously existing texture and load new one
-	if (*tex != NULL) { SDL_DestroyTexture(*tex); }
+	if (*tex != nullptr) { SDL_DestroyTexture(*tex); }
 	*tex = IMG_LoadTexture(renderer, file);
 
 	//Error if anything failed
-	if (*tex == NULL)
+	if (*tex == nullptr)
 		doError();
 
 	//Set to transparent, error if failed
@@ -114,7 +114,7 @@ void setCliprect(RECT *rect)
 	SDL_RenderSetClipRect(renderer, nullptr);
 }
 
-void drawTexture(SDL_Texture *texture, RECT *rect, int x, int y) {
+void drawTexture(SDL_Texture *texture, const RECT *rect, int x, int y) {
 	//Set framerect
 	ImageRect = { rect->left, rect->top, rect->right - rect->left, rect->bottom - rect->top };
 
@@ -129,7 +129,7 @@ void drawTexture(SDL_Texture *texture, RECT *rect, int x, int y) {
 		doError();
 }
 
-void drawTextureSize(SDL_Texture *texture, RECT *rect, int x, int y, int w, int h) {
+void drawTextureSize(SDL_Texture *texture, const RECT *rect, int x, int y, int w, int h) {
 	//Set framerect
 	ImageRect = { rect->left, rect->top, rect->right - rect->left, rect->bottom - rect->top };
 
@@ -192,7 +192,7 @@ bool isMultibyte(uint8_t c) //Shift-JIS
 	return true;
 }
 
-void drawString(int x, int y, char *str, uint8_t *flag)
+void drawString(int x, int y, const char *str, uint8_t *flag)
 {
 	RECT rcChar;
 	

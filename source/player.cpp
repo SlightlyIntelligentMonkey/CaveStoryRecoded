@@ -68,7 +68,7 @@ void player::setDir(int setDirect) {
 	}
 }
 
-void player::damage(int damage) {
+void player::damage(int16_t damage) {
 	if (!shock)
 	{
 		playSound(16);
@@ -151,7 +151,7 @@ void player::actNormal(bool bKey) {
 
 			if (bKey)
 			{
-				bool notDown = (isKeyDown(keyShoot) || isKeyDown(keyJump) || isKeyDown(keyUp) || isKeyDown(keyLeft) || isKeyDown(keyRight) || isKeyDown(keyMap) || isKeyDown(keyMenu) || isKeyDown(keyRotLeft) || isKeyDown(keyRotRight));
+				const bool notDown = (isKeyDown(keyShoot) || isKeyDown(keyJump) || isKeyDown(keyUp) || isKeyDown(keyLeft) || isKeyDown(keyRight) || isKeyDown(keyMap) || isKeyDown(keyMenu) || isKeyDown(keyRotLeft) || isKeyDown(keyRotRight));
 				
 				if (notDown || cond & player_interact || gameFlags & 4) //Moving and interaction
 				{

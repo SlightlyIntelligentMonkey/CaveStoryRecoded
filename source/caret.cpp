@@ -29,7 +29,7 @@ void updateCarets()
 	if (carets.size())
 	{
 		//Update
-		for (unsigned int i = 0; i < carets.size(); i++)
+		for (size_t i = 0; i < carets.size(); i++)
 			carets[i].update();
 
 		//Remove dead carets
@@ -47,7 +47,7 @@ void drawCarets()
 {
 	if (carets.size())
 	{
-		for (unsigned int i = 0; i < carets.size(); i++)
+		for (size_t i = 0; i < carets.size(); i++)
 			carets[i].draw();
 	}
 }
@@ -100,8 +100,6 @@ void caretAct001(caret *CARET) //Pulsing Disc Particles
 		CARET->rect = rcRight[CARET->ani_no];
 	else
 		CARET->rect = rcLeft[CARET->ani_no];
-	
-	return;
 }
 
 void caretAct002(caret *CARET) //Rising Disc / Exploding Diamond
@@ -355,7 +353,7 @@ void caretAct011(caret *CARET) //Damage effect
 	{
 		CARET->act_no = 1;
 
-		int deg = random(0, 255);
+		const int deg = random(0, 255);
 
 		CARET->xm = 2 * getCos(deg);
 		CARET->ym = 2 * getSin(deg);
