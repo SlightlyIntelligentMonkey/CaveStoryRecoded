@@ -167,6 +167,7 @@
     </ClCompile>
     <ClCompile Include="mathUtils.cpp">
       <Filter>Source Files\modules</Filter>
+    </ClCompile>
     <ClCompile Include="npcCollision.cpp">
       <Filter>Source Files\modules\collision</Filter>
     </ClCompile>
