@@ -113,19 +113,19 @@ void loadProfile()
 
 		SDL_RWseek(profile, 0x158, 0);
 
-		for (size_t i = 0; i < sizeof(permitStage) / sizeof(permitStage[0]); i++)
+		for (auto permitStageIterator : permitStage)
 		{
-			permitStage[i].index = SDL_ReadLE32(profile);
-			permitStage[i].event = SDL_ReadLE32(profile);
+			permitStageIterator.index = SDL_ReadLE32(profile);
+			permitStageIterator.event = SDL_ReadLE32(profile);
 		}
 
-		for (size_t i = 0; i < sizeof(mapFlags) / sizeof(mapFlags[0]); i++)
-			SDL_RWread(profile, &mapFlags[i], 1, 1);
+		for (auto mapFlagsIterator : mapFlags)
+			SDL_RWread(profile, &mapFlagsIterator, 1, 1);
 
 		SDL_ReadLE32(profile); //FLAG
 
-		for (size_t i = 0; i < sizeof(tscFlags) / sizeof(tscFlags[0]); i++)
-			SDL_RWread(profile, &tscFlags[i], 1, 1);
+		for (auto tscFlagsIterator : tscFlags)
+			SDL_RWread(profile, &tscFlagsIterator, 1, 1);
 
 		//Now load level
 		loadLevel(level);

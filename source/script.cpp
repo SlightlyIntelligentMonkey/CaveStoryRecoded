@@ -272,15 +272,15 @@ int updateTsc()
 		return tscCheck();
 
 	case SCROLL:
-		for (int i = 0; i < sizeof(tsc.ypos_line) / sizeof(tsc.ypos_line[0]); ++i)
+		for (auto yPosLineIterator : tsc.ypos_line)
 		{
-			tsc.ypos_line[i] -= 4;
+			yPosLineIterator -= 4;
 
-			if (!tsc.ypos_line[i]) //Check if done scrolling
+			if (!yPosLineIterator) //Check if done scrolling
 				tsc.mode = 1;
 
-			if (tsc.ypos_line[i] == -16) //Check if scrolled off
-				tsc.ypos_line[i] = 48;
+			if (yPosLineIterator == -16) //Check if scrolled off
+				yPosLineIterator = 48;
 		}
 
 		return tscCheck();
