@@ -292,6 +292,7 @@
     </ClInclude>
     <ClInclude Include="mathUtils.h">
       <Filter>Source Files\modules</Filter>
+	</ClInclude>
     <ClInclude Include="playerCollision.h">
       <Filter>Source Files\modules\collision</Filter>
     </ClInclude>
