@@ -215,7 +215,7 @@ npcAct npcActs[] =
 	&npcActNone,
 	&npcActNone,
 	&npcActNone,
-	&npcActNone,
+	&npcAct194,
 	&npcAct195,
 	&npcActNone,
 	&npcActNone,

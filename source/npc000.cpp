@@ -148,7 +148,7 @@ void npcAct002(npc *NPC) //Behemoth
 		NPC->rect = rcLeft[NPC->ani_no];
 }
 
-void npcAct003(npc *NPC)
+void npcAct003(npc *NPC) // Null, spawned upon NPC death, disappears
 {
 	if (++NPC->count1 > 100)
 		NPC->cond = 0;

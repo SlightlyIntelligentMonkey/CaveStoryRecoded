@@ -53,7 +53,7 @@ void npcAct023(npc *NPC) //Teleporter lights
 	NPC->rect = { 264, 16 + (NPC->ani_no * 4), 288, 20 + (NPC->ani_no * 4) };
 }
 
-void npcAct027(npc *NPC)
+void npcAct027(npc *NPC) // Death Spikes
 {
 	NPC->rect = { 96, 64, 128, 88 };
 }
