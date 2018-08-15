@@ -1,4 +1,4 @@
-#include "math.h"
+#include "mathUtils.h"
 
 //Not the original code, because it's better
 int getSin(uint8_t deg)

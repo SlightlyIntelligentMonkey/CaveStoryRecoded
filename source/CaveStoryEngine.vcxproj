@@ -189,7 +189,7 @@
     <ClCompile Include="input.cpp" />
     <ClCompile Include="level.cpp" />
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="math.cpp" />
+    <ClCompile Include="mathUtils.cpp" />
     <ClCompile Include="npc.cpp" />
     <ClCompile Include="npc000.cpp" />
     <ClCompile Include="npc020.cpp" />
@@ -239,7 +239,7 @@
     <ClInclude Include="filesystem.h" />
     <ClInclude Include="input.h" />
     <ClInclude Include="level.h" />
-    <ClInclude Include="math.h" />
+    <ClInclude Include="mathUtils.h" />
     <ClInclude Include="npc.h" />
     <ClInclude Include="npc000.h" />
     <ClInclude Include="npc020.h" />

@@ -529,7 +529,7 @@ extern int gameFlags;
 [[noreturn]] void doCustomError(const char *msg);
 
 //Modules
-#include "math.h"
+#include "mathUtils.h"
 #include "filesystem.h"
 #include "render.h"
 #include "flags.h"
