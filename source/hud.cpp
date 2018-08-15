@@ -76,7 +76,6 @@ void drawPlayerAir()
 		//Draw the "AIR" thing
 		drawTexture(sprites[0x1A], &rcAir[(currentPlayer.air % 30 <= 10)], x, y);
 	}
-	return;
 }
 
 void drawHud(bool hide)

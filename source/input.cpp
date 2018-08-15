@@ -21,23 +21,14 @@ void getKeys(SDL_Event *event)
 	SDL_PollEvent(event);
 	memcpy(&key_prev, key, key_array_size);
 	memcpy(&key, SDL_GetKeyboardState(&key_array_size), SDL_NUM_SCANCODES);
-	return;
 }
 
 bool isKeyDown(int keynum)
 {
-	if (key[keynum] == 1)
-	{
-		return true;
-	}
-	return false;
+	return (key[keynum] == 1);
 }
 
 bool isKeyPressed(int keynum)
 {
-	if (key_prev[keynum] == 0 && key[keynum] == 1)
-	{
-		return true;
-	}
-	return false;
+	return (key_prev[keynum] == 0 && key[keynum] == 1);
 }

@@ -101,7 +101,6 @@ void debugLevels()
 
 		//sound::playOrg(38);
 	}
-	return;
 }
 
 void initGame()
@@ -251,7 +250,7 @@ int stageSelect(int *runEvent)
 	stageSelectTitleY = 54;
 
 	//Load stage select tsc
-	loadTsc2((char*)"data/StageSelect.tsc");
+	loadTsc2("data/StageSelect.tsc");
 	startTscEvent(permitStage[selectedStage].index + 1000);
 
 	while (true)
