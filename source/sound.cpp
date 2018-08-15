@@ -15,7 +15,7 @@ SDL_AudioSpec soundSpec;
 SDL_AudioSpec want;
 
 //use int pointers for easy use
-void mixAudioSFX(int *dst, Uint32 len, SOUND_EFFECT *sound, Uint8 lVolume, Uint8 rVolume)
+void mixAudioSFX(int *dst, Uint32 len, SOUND_EFFECT *sound, Uint8 lVolume, Uint8 rVolume) // TBD : Handle lVolume and rVolume parameters
 {
 	unsigned int currentPos = 0;
 	constexpr int temp = 0;
@@ -29,7 +29,7 @@ void mixAudioSFX(int *dst, Uint32 len, SOUND_EFFECT *sound, Uint8 lVolume, Uint8
 	return;
 }
 
-void audio_callback(void *userdata, Uint8 *stream, int len)
+void audio_callback(void *userdata, Uint8 *stream, int len) // TBD : Handle userdata parameter
 {
 	memset(stream, 0, len);
 

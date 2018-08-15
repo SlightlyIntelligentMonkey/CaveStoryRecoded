@@ -42,7 +42,7 @@ BYTE getTileAttribute(int x, int y);
 
 void deleteTile(int x, int y);
 void shiftTile(int x, int y);
-bool changeTile(int x, int y, int tile);
+bool changeTile(int x, int y, uint8_t tile);
 
 void loadStageTable();
 

@@ -66,7 +66,7 @@ void shiftTile(int x, int y)
 	--levelMap[x + y * levelWidth];
 }
 
-bool changeTile(int x, int y, int tile)
+bool changeTile(int x, int y, uint8_t tile)
 {
 	if (levelMap[y * levelWidth + x] == tile)
 		return false;

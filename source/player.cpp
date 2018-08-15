@@ -67,7 +67,7 @@ void player::setDir(int setDirect) {
 	}
 }
 
-void player::damage(int damage) {
+void player::damage(int16_t damage) {
 	if (!shock)
 	{
 		playSound(16);

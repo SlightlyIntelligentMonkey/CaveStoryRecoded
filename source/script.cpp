@@ -32,7 +32,7 @@ bool initTsc()
 void decryptTsc(uint8_t *data, int size)
 {
 	const int half = size / 2;
-	int key = data[half];
+	uint8_t key = data[half];
 
 	if (!key)
 		key = 7;
@@ -962,8 +962,6 @@ void drawTsc()
 	RECT rcYesNo;
 	RECT rcSelection;
 
-	int i;
-
 	int text_offset;
 
 	if (tsc.mode && tsc.flags & 1)
@@ -998,6 +996,7 @@ void drawTsc()
 			rcFrame3 = { 0, 16, 244, 24 };
 			
 			drawTexture(sprites[TEX_TEXTBOX], &rcFrame1, tsc.rcText.left - 14, tsc.rcText.top - 10);
+			int i;
 			for (i = 1; i <= 6; ++i)
 				drawTexture(sprites[TEX_TEXTBOX], &rcFrame2, tsc.rcText.left - 14, 8 * i + tsc.rcText.top - 10);
 			drawTexture(sprites[TEX_TEXTBOX], &rcFrame3, tsc.rcText.left - 14, 8 * i + tsc.rcText.top - 10);
@@ -1087,6 +1086,7 @@ void drawTsc()
 		
 		if (tsc.mode == YNJ)
 		{
+			int i;
 			if (tsc.wait > 1)
 				i = 144;
 			else

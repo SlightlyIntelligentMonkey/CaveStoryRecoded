@@ -16,7 +16,8 @@ int charWidth = 6;
 int charHeight = 12;
 
 //Create window
-int createWindow(int width, int height, int scale, bool fullscreen) {
+int createWindow(int width, int height, int scale, bool fullscreen) // TBD : Handle fullscreen parameter
+{
 	const int createWidth = width * scale;
 	const int createHeight = height * scale;
 

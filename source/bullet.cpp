@@ -95,7 +95,7 @@ BULLETSTATS bulletTable[] =
 #include "polarStar.h"
 
 //CLASS
-void bullet::init(int setCode, int setX, int setY, int setDir)
+void bullet::init(int setCode, int setX, int setY, uint8_t setDir)
 {
 	memset(this, 0, sizeof(*this));
 
