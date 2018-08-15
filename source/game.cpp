@@ -494,11 +494,8 @@ int gameUpdateMenu()
 				initGame();
 				break;
 			}
-			else
-			{
-				loadProfile();
-				break;
-			}
+			loadProfile();
+			break;
 		}
 
 		if (isKeyPressed(keyUp) || isKeyPressed(keyDown))
