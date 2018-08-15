@@ -9,13 +9,15 @@
 #define DWORD uint32_t
 #define UINT uint32_t
 
-typedef struct {
- LONG left, top, right, bottom;
-} RECT;
+struct RECT
+{
+	LONG left, top, right, bottom;
+};
 
-typedef struct {
- LONG x, y;
-} POINT;
+struct POINT
+{
+	LONG x, y;
+};
 
 #include <string>
 #include <iostream>
