@@ -337,7 +337,6 @@ int stageSelect(int *runEvent)
 //Main States
 int gameUpdatePlay()
 {
-	int swPlay = 1;
 	int tscResult = 0;
 	
 	while (true)
@@ -377,7 +376,7 @@ int gameUpdatePlay()
 		debugLevels();
 
 		//Update stuff
-		if (swPlay & 1 && gameFlags & 1)
+		if (gameFlags & 1)
 		{
 			if (gameFlags & 2)
 				currentPlayer.update(true);
@@ -411,15 +410,12 @@ int gameUpdatePlay()
 		drawFade();
 
 		//Do TSC stuff
-		if (swPlay & 1)
-		{
-			tscResult = updateTsc();
+		tscResult = updateTsc();
 
-			if (!tscResult)
-				return 0;
-			if (tscResult == 2)
-				return 1;
-		}
+		if (!tscResult)
+			return 0;
+		if (tscResult == 2)
+			return 1;
 
 		drawMapName(false);
 

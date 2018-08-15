@@ -47,9 +47,9 @@ void decryptTsc(uint8_t *data, int size)
 void loadStageTsc(char *name) {
 	//Load Head.tsc file
 	SDL_RWops *headRW = SDL_RWFromFile("data/Head.tsc", "rb");
-	size_t headSize = (size_t)SDL_RWsize(headRW);
-	if (!headRW)
+	if (headRW == nullptr)
 		doError();
+	size_t headSize = (size_t)SDL_RWsize(headRW);
 
 	//Put the data into memory
 	headRW->read(headRW, tsc.data, 1, headSize);
