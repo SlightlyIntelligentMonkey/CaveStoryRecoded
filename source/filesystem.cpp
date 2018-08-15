@@ -12,15 +12,15 @@ uint32_t readLElong(const BYTE * data, size_t offset) {
 
 //Write stuff
 void writeLEshort(BYTE *data, uint16_t input, size_t offset) {
-	data[offset] = (BYTE)input;
-	data[offset + 1] = (BYTE)(input >> 8);
+	data[offset] = static_cast<BYTE>(input);
+	data[offset + 1] = static_cast<BYTE>(input >> 8);
 }
 
 void writeLElong(BYTE *data, uint32_t input, size_t offset) {
-	data[offset] = (BYTE)input;
-	data[offset + 1] = (BYTE)(input >> 8);
-	data[offset + 2] = (BYTE)(input >> 16);
-	data[offset + 3] = (BYTE)(input >> 24);
+	data[offset] = static_cast<BYTE>(input);
+	data[offset + 1] = static_cast<BYTE>(input >> 8);
+	data[offset + 2] = static_cast<BYTE>(input >> 16);
+	data[offset + 3] = static_cast<BYTE>(input >> 24);
 }
 
 //Loading and writing functions
@@ -44,7 +44,7 @@ int loadFile(const char *name, BYTE **data) {
 	fseek(file, 0, 0);
 
 	//Load data
-	*data = (BYTE*)malloc(filesize);
+	*data = static_cast<BYTE *>(malloc(filesize));
 	if (fread(*data, 1, filesize, file) == 0) 
 	{
 		fclose(file);
@@ -112,19 +112,19 @@ void loadProfile()
 		currentPlayer.unit = SDL_ReadLE32(profile); //physics
 
 		SDL_RWseek(profile, 0x158, 0);
-		
+
 		for (size_t i = 0; i < sizeof(permitStage) / sizeof(permitStage[0]); i++)
 		{
 			permitStage[i].index = SDL_ReadLE32(profile);
 			permitStage[i].event = SDL_ReadLE32(profile);
 		}
 
-		for (size_t i = 0; i < sizeof(mapFlags) / sizeof(mapFlags[0])  ; i++)
+		for (size_t i = 0; i < sizeof(mapFlags) / sizeof(mapFlags[0]); i++)
 			SDL_RWread(profile, &mapFlags[i], 1, 1);
 
 		SDL_ReadLE32(profile); //FLAG
 
-		for (size_t i = 0; i < 1000; i++)
+		for (size_t i = 0; i < sizeof(tscFlags) / sizeof(tscFlags[0]); i++)
 			SDL_RWread(profile, &tscFlags[i], 1, 1);
 
 		//Now load level
@@ -142,7 +142,7 @@ void loadProfile()
 }
 
 void saveProfile() {
-	BYTE *profile = (BYTE*)malloc(0x604);
+	auto profile = static_cast<BYTE *>(malloc(0x604));
 
 	if (profile == nullptr)
 		doCustomError("Could not allocate memory for profile");
@@ -175,7 +175,7 @@ void saveProfile() {
 	memcpy(profile + 0x21C, tscFlags, 1000);
 
 	//Save to file
-	writeFile((char*)profileName, profile, 0x604);
+	writeFile(profileName, profile, 0x604);
 
 	//End
 	free(profile);

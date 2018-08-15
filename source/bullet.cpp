@@ -126,7 +126,7 @@ void bullet::init(int setCode, int setX, int setY, uint8_t setDir)
 
 //Bullet act functions
 bulletAct bulletActs[] = {
-	const_cast<bulletAct>(nullptr),
+	static_cast<bulletAct>(nullptr),
 };
 
 void bullet::update()
