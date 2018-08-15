@@ -125,19 +125,19 @@ void loadProfile()
 
 		SDL_RWseek(profile, 0x158, 0);
 
-		for (auto permitStageIterator : permitStage)
+		for (size_t i = 0; i < 8; i++)
 		{
-			permitStageIterator.index = SDL_ReadLE32(profile);
-			permitStageIterator.event = SDL_ReadLE32(profile);
+			permitStage[i].index = SDL_ReadLE32(profile);
+			permitStage[i].event = SDL_ReadLE32(profile);
 		}
 
-		for (auto mapFlagsIterator : mapFlags)
-			SDL_RWread(profile, &mapFlagsIterator, 1, 1);
+		for (size_t i = 0; i < 0x100; i++)
+			SDL_RWread(profile, &mapFlags[i], 1, 1);
 
 		SDL_ReadLE32(profile); //FLAG
 
-		for (auto tscFlagsIterator : tscFlags)
-			SDL_RWread(profile, &tscFlagsIterator, 1, 1);
+		for (size_t i = 0; i < 1000; i++)
+			SDL_RWread(profile, &tscFlags[i], 1, 1);
 
 		//Now load level
 		loadLevel(level);
@@ -175,6 +175,15 @@ void saveProfile() {
 	
 	writeLElong(profile, currentPlayer.equip, 0x2C); //Equipped items
 	writeLElong(profile, currentPlayer.unit, 0x30); //Current physics
+
+	for (size_t i = 0; i < 8; i++)
+	{
+		writeLElong(profile, weapons[i].code, 0x38 + i * 0x10);
+		writeLElong(profile, weapons[i].level, 0x3C + i * 0x10);
+		writeLElong(profile, weapons[i].exp, 0x40 + i * 0x10);
+		writeLElong(profile, weapons[i].max_num, 0x44 + i * 0x10);
+		writeLElong(profile, weapons[i].num, 0x48 + i * 0x10);
+	}
 
 	for (size_t i = 0; i < 8; i++)
 	{
