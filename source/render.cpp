@@ -81,17 +81,16 @@ void switchScreenMode()
 
 	SDL_SetWindowSize(window, screenWidth * screenScale, screenHeight * screenScale);
 	SDL_SetWindowFullscreen(window, windowFlags);
-	return;
 }
 
 //Texture and drawing stuff
 void loadImage(const char *file, SDL_Texture **tex) {
 	//Destroy previously existing texture and load new one
-	if (*tex != NULL) { SDL_DestroyTexture(*tex); }
+	if (*tex != nullptr) { SDL_DestroyTexture(*tex); }
 	*tex = IMG_LoadTexture(renderer, file);
 
 	//Crash if anything failed
-	if (*tex == NULL)
+	if (*tex == nullptr)
 		doError();
 
 	if (SDL_SetTextureBlendMode(*tex, SDL_BLENDMODE_BLEND) != 0)
@@ -108,8 +107,6 @@ void drawTexture(SDL_Texture *texture, const RECT *rect, int x, int y) {
 
 	if (SDL_RenderCopy(renderer, texture, &ImageRect, &DrawRect) != 0)
 		doError();
-
-	return;
 }
 
 void drawTextureSize(SDL_Texture *texture, const RECT *rect, int x, int y, int w, int h) {
@@ -122,8 +119,6 @@ void drawTextureSize(SDL_Texture *texture, const RECT *rect, int x, int y, int w
 
 	if (SDL_RenderCopy(renderer, texture, &ImageRect, &DrawRect) != 0)
 		doError();
-
-	return;
 }
 
 

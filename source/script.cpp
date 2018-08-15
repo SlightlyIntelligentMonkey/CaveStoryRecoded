@@ -24,7 +24,7 @@ bool initTsc()
 	tsc.mode = 0;
 	gameFlags &= ~4;
 	memset(tscText, 0, 0x100u);
-	tsc.data = (uint8_t*)malloc(0x5000u);
+	tsc.data = static_cast<uint8_t*>(malloc(0x5000u));
 	return tsc.data != 0;
 }
 
