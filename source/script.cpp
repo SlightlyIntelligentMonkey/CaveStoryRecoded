@@ -25,7 +25,7 @@ bool initTsc()
 	gameFlags &= ~4;
 	memset(tscText, 0, 0x100u);
 	tsc.data = static_cast<uint8_t*>(malloc(0x5000u));
-	return tsc.data != 0;
+	return tsc.data != nullptr;
 }
 
 //Loading functions
@@ -49,7 +49,7 @@ void loadStageTsc(const char *name) {
 	SDL_RWops *headRW = SDL_RWFromFile("data/Head.tsc", "rb");
 	if (headRW == nullptr)
 		doError();
-	size_t headSize = (size_t)SDL_RWsize(headRW);
+	auto headSize = static_cast<size_t>(SDL_RWsize(headRW));
 
 	//Put the data into memory
 	headRW->read(headRW, tsc.data, 1, headSize);
@@ -62,7 +62,7 @@ void loadStageTsc(const char *name) {
 	SDL_RWops *bodyRW = SDL_RWFromFile(name, "rb");
 	if (!bodyRW)
 		doError();
-	size_t bodySize = (size_t)SDL_RWsize(bodyRW);
+	auto bodySize = static_cast<size_t>(SDL_RWsize(bodyRW));
 
 	//Put the data into memory
 	bodyRW->read(bodyRW, tsc.data + headSize, 1, bodySize);
@@ -81,7 +81,7 @@ void loadTsc2(const char *name) {
 	SDL_RWops *bodyRW = SDL_RWFromFile(name, "rb");
 	if (!bodyRW)
 		doError();
-	tsc.size = (int)SDL_RWsize(bodyRW);
+	tsc.size = static_cast<decltype(tsc.size)>(SDL_RWsize(bodyRW));
 
 	//Put the data into memory
 	bodyRW->read(bodyRW, tsc.data, 1, tsc.size);
@@ -97,10 +97,10 @@ void loadTsc2(const char *name) {
 //Get number function
 int getTSCNumber(int a)
 {
-	return			((char)tsc.data[a + 3] - 0x30) +
-			10 *	((char)tsc.data[a + 2] - 0x30) +
-			100 *	((char)tsc.data[a + 1] - 0x30) +
-			1000 *	((char)tsc.data[a] - 0x30);
+	return			(static_cast<char>(tsc.data[a + 3]) - 0x30) +
+			10 *	(static_cast<char>(tsc.data[a + 2]) - 0x30) +
+			100 *	(static_cast<char>(tsc.data[a + 1]) - 0x30) +
+			1000 *	(static_cast<char>(tsc.data[a]) - 0x30);
 }
 
 //TSC run event functions
@@ -272,7 +272,7 @@ int updateTsc()
 		return tscCheck();
 
 	case SCROLL:
-		for (int i = 0; i < 4; ++i)
+		for (int i = 0; i < sizeof(tsc.ypos_line) / sizeof(tsc.ypos_line[0]); ++i)
 		{
 			tsc.ypos_line[i] -= 4;
 
@@ -379,7 +379,7 @@ int updateTsc()
 				int x;
 				for (x = tsc.p_read; ; ++x)
 				{
-					const bool quit = tsc.data[x] == '<' || tsc.data[x] == 13 ? false : true;
+					const bool quit = !(tsc.data[x] == '<' || tsc.data[x] == 13);
 
 					if (!quit)
 						break;
@@ -399,7 +399,7 @@ int updateTsc()
 				if (tsc.p_write > 34)
 					checkNewLine();
 
-				bExit = 1;
+				bExit = true;
 			}
 			else
 			{
@@ -437,7 +437,7 @@ int updateTsc()
 					checkNewLine();
 				}
 
-				bExit = 1;
+				bExit = true;
 			}
 		}
 		else
@@ -571,7 +571,7 @@ int updateTsc()
 				currentPlayer.cond &= ~player_interact;
 				gameFlags |= 3u;
 				tsc.face = 0;
-				bExit = 1;
+				bExit = true;
 				break;
 			case('<EQ+'):
 				currentPlayer.equip |= getTSCNumber(tsc.p_read + 4);
@@ -600,7 +600,7 @@ int updateTsc()
 				fade.count = 0;
 				tsc.mode = FADE;
 				tscCleanup(1);
-				bExit = 1;
+				bExit = true;
 				break;
 			case('<FAO'):
 				fade.mode = 2;
@@ -608,7 +608,7 @@ int updateTsc()
 				fade.count = 0;
 				tsc.mode = FADE;
 				tscCleanup(1);
-				bExit = 1;
+				bExit = true;
 				break;
 			case('<FL+'):
 				setFlag(getTSCNumber(tsc.p_read + 4));
@@ -723,7 +723,7 @@ int updateTsc()
 				tscCleanup(2);
 				break;
 			case('<MPJ'):
-				if (getMapFlag(currentLevel) == true)
+				if (getMapFlag(currentLevel))
 					jumpTscEvent(getTSCNumber(tsc.p_read + 4));
 				else
 					tscCleanup(1);
@@ -745,7 +745,7 @@ int updateTsc()
 				if (tsc.flags & 0x40)
 					tsc.flags |= 0x10u;
 				tscCleanup(0);
-				bExit = 1;
+				bExit = true;
 				break;
 			case('<MYB'):
 				currentPlayer.cond &= ~player_interact;
@@ -835,13 +835,13 @@ int updateTsc()
 				tscCleanup(1);
 				break;
 			case('<SKJ'):
-				if (getSkipFlag(getTSCNumber(tsc.p_read + 4)) == true)
+				if (getSkipFlag(getTSCNumber(tsc.p_read + 4)))
 					jumpTscEvent(getTSCNumber(tsc.p_read + 9));
 				else
 					tscCleanup(2);
 				break;
 			case('<SLP'):
-				bExit = 1;
+				bExit = true;
 				yt = stageSelect(&xt);
 				if (!yt)
 					return 0;
@@ -865,7 +865,7 @@ int updateTsc()
 					0,
 					0,
 					getTSCNumber(tsc.p_read + 19),
-					NULL);
+					nullptr);
 				tscCleanup(4);
 				break;
 			case('<SOU'):
@@ -912,12 +912,12 @@ int updateTsc()
 				tsc.wait = 0;
 				tsc.wait_next = getTSCNumber(tsc.p_read + 4);
 				tscCleanup(1);
-				bExit = 1;
+				bExit = true;
 				break;
 			case('<WAS'):
 				tsc.mode = WAS;
 				tscCleanup(0);
-				bExit = 1;
+				bExit = true;
 				break;
 			case('<XX1'):
 				tscCleanup(1);
@@ -929,7 +929,7 @@ int updateTsc()
 				tsc.wait = 0;
 				tsc.select = 0;
 				tscCleanup(1);
-				bExit = 1;
+				bExit = true;
 				break;
 			case('<ZAM'):
 				tscCleanup(0);
@@ -1027,7 +1027,7 @@ void drawTsc()
 		}
 
 		//End cliprect
-		SDL_RenderSetClipRect(renderer, NULL);
+		SDL_RenderSetClipRect(renderer, nullptr);
 
 		//NOD cursor / beam?
 		const bool flash = tsc.wait_beam++ % 20 > 12;
