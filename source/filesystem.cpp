@@ -32,8 +32,6 @@ bool fileExists(const char *name)
 }
 
 int loadFile(const char *name, BYTE **data) {
-	size_t filesize = 0;
-
 	//Open file
 	FILE *file = fopen(name, "rb");
 	if (file == nullptr)
@@ -41,11 +39,11 @@ int loadFile(const char *name, BYTE **data) {
 
 	//Get filesize
 	fseek(file, 0, SEEK_END);
-	filesize = ftell(file);
+	int filesize = ftell(file);
 	fseek(file, 0, 0);
 
 	//Load data
-	*data = static_cast<BYTE *>(malloc(filesize));
+	*data = (BYTE *)(malloc(filesize));
 	if (fread(*data, 1, filesize, file) == 0) 
 	{
 		fclose(file);
@@ -131,7 +129,7 @@ void loadProfile()
 			permitStage[i].event = SDL_ReadLE32(profile);
 		}
 
-		for (size_t i = 0; i < 0x100; i++)
+		for (size_t i = 0; i < 0x80; i++)
 			SDL_RWread(profile, &mapFlags[i], 1, 1);
 
 		SDL_ReadLE32(profile); //FLAG
@@ -173,16 +171,18 @@ void saveProfile() {
 	writeLEshort(profile, currentPlayer.star, 0x1E); //Whimsical star
 	writeLEshort(profile, currentPlayer.life, 0x20); //Player health
 	
+	writeLElong(profile, selectedWeapon, 0x24); //Selected weapon
+
 	writeLElong(profile, currentPlayer.equip, 0x2C); //Equipped items
 	writeLElong(profile, currentPlayer.unit, 0x30); //Current physics
 
 	for (size_t i = 0; i < 8; i++)
 	{
-		writeLElong(profile, weapons[i].code, 0x38 + i * 0x10);
-		writeLElong(profile, weapons[i].level, 0x3C + i * 0x10);
-		writeLElong(profile, weapons[i].exp, 0x40 + i * 0x10);
-		writeLElong(profile, weapons[i].max_num, 0x44 + i * 0x10);
-		writeLElong(profile, weapons[i].num, 0x48 + i * 0x10);
+		writeLElong(profile, weapons[i].code, 0x38 + i * 0x14);
+		writeLElong(profile, weapons[i].level, 0x3C + i * 0x14);
+		writeLElong(profile, weapons[i].exp, 0x40 + i * 0x14);
+		writeLElong(profile, weapons[i].max_num, 0x44 + i * 0x14);
+		writeLElong(profile, weapons[i].num, 0x48 + i * 0x14);
 	}
 
 	for (size_t i = 0; i < 8; i++)

@@ -191,7 +191,7 @@ void npcJudgeWater(const RECT *rcHit, npc *NPC, int tx, int ty)
 	}
 }
 
-void npcHitMap(int NPCid)
+void npcHitMap(size_t NPCid)
 {
 	npc *NPC = &npcs[NPCid];
 	NPC->flag = 0; //clear

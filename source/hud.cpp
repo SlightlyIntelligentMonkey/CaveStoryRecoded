@@ -4,7 +4,7 @@
 
 void drawMapName(bool bMini)
 {
-	const int len = strlen(mapName.name);
+	const int len = (int)strlen(mapName.name);
 
 	const int x = screenWidth / 2 - len * 3;
 	const int y = 80;

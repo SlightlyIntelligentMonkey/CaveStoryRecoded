@@ -3,4 +3,4 @@
 #include "npc.h"
 #include "level.h"
 
-void npcHitMap(int NPCid);
+void npcHitMap(size_t NPCid);

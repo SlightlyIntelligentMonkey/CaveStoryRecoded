@@ -84,6 +84,28 @@ void player::damage(int16_t damage) {
 		if (equip & equip_whimsicalStar && star > 0)
 			--star;
 
+		//Lose experience
+		if (equip & equip_turboCharge)
+			weapons[selectedWeapon].exp -= damage;
+		else
+			weapons[selectedWeapon].exp -= damage * 2;
+
+		//Level down
+		while (weapons[selectedWeapon].exp < 0)
+		{
+			if (weapons[selectedWeapon].level <= 1)
+				weapons[selectedWeapon].exp = 0;
+			else
+			{
+				weapons[selectedWeapon].exp += weaponLevels[weapons[selectedWeapon].code].exp[--weapons[selectedWeapon].level - 1];
+
+				//Level down caret
+				if (life > 0 && weapons[selectedWeapon].code != 13)
+					createCaret(x, y, 10, 2);
+			}
+		}
+
+		//Show damage taken
 		createValueView(&x, &y, -damage);
 
 		if (life <= 0)
