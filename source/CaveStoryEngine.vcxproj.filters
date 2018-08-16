@@ -177,6 +177,9 @@
     <ClCompile Include="bulletCollision.cpp">
       <Filter>Source Files\modules\collision</Filter>
     </ClCompile>
+    <ClCompile Include="spur.cpp">
+      <Filter>Source Files\classes\weapons\bullets</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="level.h">
@@ -301,6 +304,9 @@
     </ClInclude>
     <ClInclude Include="bulletCollision.h">
       <Filter>Source Files\modules\collision</Filter>
+    </ClInclude>
+    <ClInclude Include="spur.h">
+      <Filter>Source Files\classes\weapons\bullets</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
