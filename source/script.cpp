@@ -1050,7 +1050,6 @@ void drawTsc()
 		}
 
 		//Draw message box background (if not MS2)
-		int strip;
 		if (tsc.flags & 2)
 		{
 			rcFrame1 = { 0, 0, 244, 8 };
@@ -1058,6 +1057,8 @@ void drawTsc()
 			rcFrame3 = { 0, 16, 244, 24 };
 			
 			drawTexture(sprites[TEX_TEXTBOX], &rcFrame1, tsc.rcText.left - 14, tsc.rcText.top - 10);
+			
+			int strip;
 			for (strip = 1; strip <= 6; ++strip)
 				drawTexture(sprites[TEX_TEXTBOX], &rcFrame2, tsc.rcText.left - 14, 8 * strip + tsc.rcText.top - 10);
 			drawTexture(sprites[TEX_TEXTBOX], &rcFrame3, tsc.rcText.left - 14, 8 * strip + tsc.rcText.top - 10);
