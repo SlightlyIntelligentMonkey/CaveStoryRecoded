@@ -224,7 +224,7 @@ bulletAct bulletActs[] = {
 	static_cast<bulletAct>(nullptr),
 	static_cast<bulletAct>(nullptr),
 	static_cast<bulletAct>(nullptr),	// Nemesis-related
-	static_cast<bulletAct>(nullptr),	// Spur Lvl 2
+	&actBulletSpurLevel2,	// Spur Lvl 2
 	&actBulletSpurLevel3,	// Spur Lvl 3
 };
 
