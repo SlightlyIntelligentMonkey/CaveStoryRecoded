@@ -3,20 +3,20 @@
 
 //Shoot functions
 weaponShoot shootFunctions[] = {
-	(weaponShoot)nullptr,
-	(weaponShoot)nullptr,
+	static_cast<weaponShoot>(nullptr),
+	static_cast<weaponShoot>(nullptr),
 	&shootPolarStar,
-	(weaponShoot)nullptr,
-	(weaponShoot)nullptr,
-	(weaponShoot)nullptr,
-	(weaponShoot)nullptr,
-	(weaponShoot)nullptr,
-	(weaponShoot)nullptr,
-	(weaponShoot)nullptr,
-	(weaponShoot)nullptr,
-	(weaponShoot)nullptr,
-	(weaponShoot)nullptr,
-	(weaponShoot)nullptr,
+	static_cast<weaponShoot>(nullptr),
+	static_cast<weaponShoot>(nullptr),
+	static_cast<weaponShoot>(nullptr),
+	static_cast<weaponShoot>(nullptr),
+	static_cast<weaponShoot>(nullptr),
+	static_cast<weaponShoot>(nullptr),
+	static_cast<weaponShoot>(nullptr),
+	static_cast<weaponShoot>(nullptr),
+	static_cast<weaponShoot>(nullptr),
+	static_cast<weaponShoot>(nullptr),
+	static_cast<weaponShoot>(nullptr),
 };
 
 //Weapon Levels
