@@ -65,7 +65,7 @@ void drawWeaponStats()
 		//Draw level
 		drawTexture(sprites[TEX_TEXTBOX], &rcPer, weaponShiftX + 32, 24);
 		drawTexture(sprites[TEX_TEXTBOX], &rcLv, weaponShiftX, 32);
-		drawNumber(weapons[selectedWeapon].level, weaponShiftX - 8, 32, 0);
+		drawNumber(weapons[selectedWeapon].level, weaponShiftX - 8, 32, false);
 
 		//Set framerects
 		rcExpBox = { 0, 72, 40, 80 };

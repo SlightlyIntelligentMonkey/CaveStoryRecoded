@@ -43,7 +43,7 @@ int loadFile(const char *name, BYTE **data) {
 	fseek(file, 0, 0);
 
 	//Load data
-	*data = (BYTE *)(malloc(filesize));
+	*data = static_cast<BYTE *>(malloc(filesize));
 	if (fread(*data, 1, filesize, file) == 0) 
 	{
 		fclose(file);

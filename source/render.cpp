@@ -192,7 +192,7 @@ bool isMultibyte(uint8_t c) //Shift-JIS
 	return true;
 }
 
-void drawString(int x, int y, const char *str, uint8_t *flag)
+void drawString(int x, int y, const char *str, const uint8_t *flag)
 {
 	RECT rcChar;
 	
