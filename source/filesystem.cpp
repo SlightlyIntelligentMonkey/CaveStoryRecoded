@@ -191,7 +191,7 @@ void saveProfile() {
 		writeLElong(profile, permitStage[i].event, 0x15C + i * 8);
 	}
 
-	memcpy(profile + 0x198, mapFlags, 0x80);
+	memcpy(profile + 0x198, mapFlags, 0x80); // Consider cleaning up those magic numbers
 	memcpy(profile + 0x218, "FLAG", 4);
 	memcpy(profile + 0x21C, tscFlags, 1000);
 

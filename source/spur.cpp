@@ -1,18 +1,18 @@
 #include "spur.h"
 
-void actBulletSpurLevel2(bullet *bullet)
+void actBulletSpurLevel2(bullet *bul)
 {
-	if (++bullet->count1 <= bullet->life_count)
+	if (++bul->count1 <= bul->life_count)
 	{
-		bullet->damage = 10000;
-		bullet->enemyXL = 0xC8000;
-		bullet->enemyYL = 0xC8000;
+		bul->damage = 10000;
+		bul->enemyXL = 0xC8000;
+		bul->enemyYL = 0xC8000;
 	}
 	else
-		bullet->cond = 0;
+		bul->cond = 0;
 }
-void actBulletSpurLevel3(bullet *bullet)
+void actBulletSpurLevel3(bullet *bul)
 {
-	if (++bullet->count1 > bullet->life_count)
-		bullet->cond = 0;
+	if (++bul->count1 > bul->life_count)
+		bul->cond = 0;
 }
