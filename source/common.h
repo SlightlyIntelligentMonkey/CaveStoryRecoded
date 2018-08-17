@@ -27,6 +27,17 @@ struct POINT
 
 #include <vector>
 
+//Debug flags
+extern int debugFlags;
+
+enum debugFlagsEnum
+{
+	showSlots = 0x01,
+	showNPCId = 0x02,
+	showBULId = 0x04,
+	showCARId = 0x08,
+};
+
 //Enums
 enum Collisions
 {

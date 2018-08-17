@@ -957,6 +957,7 @@ int updateTsc()
 				tscCleanup(0);
 				break;
 			case('<TAM'):
+				tradeWeapons(getTSCNumber(tsc.p_read + 4), getTSCNumber(tsc.p_read + 9), getTSCNumber(tsc.p_read + 14));
 				tscCleanup(3);
 				break;
 			case('<TRA'):

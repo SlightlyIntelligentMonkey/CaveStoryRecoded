@@ -348,6 +348,16 @@ void caretAct010(caret *CARET) //Level up and level down
 
 void caretAct011(caret *CARET) //Damage effect
 {
+	RECT rect[7];
+
+	rect[0] = { 0x38, 0x08, 0x40, 0x10 };
+	rect[1] = { 0x40, 0x08, 0x48, 0x10 };
+	rect[2] = { 0x48, 0x08, 0x50, 0x10 };
+	rect[3] = { 0x50, 0x08, 0x58, 0x10 };
+	rect[4] = { 0x58, 0x08, 0x60, 0x10 };
+	rect[5] = { 0x60, 0x08, 0x68, 0x10 };
+	rect[6] = { 0x68, 0x08, 0x70, 0x10 };
+
 	//Move
 	if (!CARET->act_no)
 	{
@@ -371,7 +381,7 @@ void caretAct011(caret *CARET) //Damage effect
 			CARET->cond = 0;
 	}
 
-	CARET->rect = { 64 + (CARET->ani_no << 3), 8, 72 + (CARET->ani_no << 3), 16 };
+	CARET->rect = rect[CARET->ani_no];
 }
 
 void caretAct012(caret *CARET) //White "explosion" disc
@@ -485,7 +495,7 @@ caretAct caretActs[] = {
 	&caretAct003,
 	&caretAct004,
 	&caretAct005,
-	&caretAct000, //unused
+	&caretAct004, //unused
 	&caretAct007,
 	&caretAct008,
 	&caretAct009,
@@ -525,6 +535,22 @@ void caret::update()
 void caret::draw()
 {
 	drawTexture(sprites[0x13], &rect, (x - view_left) / 0x200 - viewport.x / 0x200, (y - view_top) / 0x200 - viewport.y / 0x200);
+
+	if (debugFlags & showCARId)
+	{
+		size_t index = 0;
+
+		for (size_t i = 0; i < carets.size(); i++)
+		{
+			if (&carets[i] == this)
+			{
+				index = i;
+				break;
+			}
+		}
+
+		drawString((x - view_left) / 0x200 - viewport.x / 0x200, (y - view_top) / 0x200 - viewport.y / 0x200 - 16, std::to_string(index).c_str(), nullptr);
+	}
 }
 
 //Create code

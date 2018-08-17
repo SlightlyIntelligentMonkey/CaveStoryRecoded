@@ -30,6 +30,158 @@ void npcAct000(npc *NPC) //Null
 	NPC->rect = { 0, 0, 16, 16 };
 }
 
+void npcAct001(npc *NPC) //Experience
+{
+	if (backgroundScroll != 5 && backgroundScroll != 6)
+	{
+		//Set initial velocity
+		if (!NPC->act_no)
+		{
+			NPC->act_no = 1;
+			NPC->ani_no = random(0, 4);
+			NPC->xm = random(-0x200, 0x200);
+			NPC->ym = random(-0x400, 0);
+
+			if (random(0, 1) != 0)
+				NPC->direct = 0;
+			else
+				NPC->direct = 2;
+		}
+
+		//Gravity
+		if (NPC->flag & water)
+			NPC->ym += 0x15;
+		else
+			NPC->ym += 0x2A;
+		
+		//Bounce off of walls
+		if (NPC->flag & leftWall && NPC->xm < 0)
+			NPC->xm = -NPC->xm;
+		if (NPC->flag & rightWall && NPC->xm > 0)
+			NPC->xm = -NPC->xm;
+		if (NPC->flag & ceiling && NPC->ym < 0)
+			NPC->ym = -NPC->ym;
+
+		//Bounce off floor
+		if (NPC->flag & ground)
+		{
+			playSound(45); //This line is redundant.
+			NPC->ym = -0x280;
+			NPC->xm = 2 * NPC->xm / 3;
+		}
+
+		//Clip out of floors???
+		if (NPC->flag & (leftWall | rightWall | ground))
+		{
+			playSound(45);
+			if (++NPC->count2 > 2)
+				NPC->y -= 0x200;
+		}
+		else
+		{
+			NPC->count2 = 0;
+		}
+
+		//Limit speed
+		if (NPC->xm < -0x5FF)
+			NPC->xm = -0x5FF;
+		if (NPC->xm > 0x5FF)
+			NPC->xm = 0x5FF;
+		if (NPC->ym < -0x5FF)
+			NPC->ym = -0x5FF;
+		if (NPC->ym > 0x5FF)
+			NPC->ym = 0x5FF;
+	}
+	else
+	{
+		//Set initial velocity
+		if (!NPC->act_no)
+		{
+			NPC->act_no = 1;
+			NPC->ym = random(-0x80, 0x80);
+			NPC->xm = random(0x7F, 0x100);
+		}
+
+		//Fly to the left
+		NPC->xm -= 8;
+		if (NPC->x <= 0x9FFF)
+			NPC->cond = 0;
+
+		//Limit speed (except applied to x position instead?)
+		if (NPC->x < -0x600)
+			NPC->x = -0x600;
+
+		//Bounce off of walls
+		if (NPC->flag & leftWall)
+			NPC->xm = 0x200;
+		if (NPC->flag & ceiling)
+			NPC->ym = 0x40;
+		if (NPC->flag & ground)
+			NPC->ym = -0x40;
+	}
+
+	//Move
+	NPC->x += NPC->xm;
+	NPC->y += NPC->ym;
+
+	//Framerects
+	RECT rect[6];
+
+	rect[0] = { 0x00, 0x10, 0x10, 0x20 };
+	rect[1] = { 0x10, 0x10, 0x20, 0x20 };
+	rect[2] = { 0x20, 0x10, 0x30, 0x20 };
+	rect[3] = { 0x30, 0x10, 0x40, 0x20 };
+	rect[4] = { 0x40, 0x10, 0x50, 0x20 };
+	rect[5] = { 0x50, 0x10, 0x60, 0x20 };
+
+	//Animate
+	++NPC->ani_wait;
+	if (NPC->direct)
+	{
+		if (NPC->ani_wait > 2)
+		{
+			NPC->ani_wait = 0;
+			if (--NPC->ani_no < 0)
+				NPC->ani_no = 5;
+		}
+	}
+	else if (NPC->ani_wait > 2)
+	{
+		NPC->ani_wait = 0;
+		if (++NPC->ani_no > 5)
+			NPC->ani_no = 0;
+	}
+
+	NPC->rect = rect[NPC->ani_no];
+
+	//Change size
+	if (NPC->act_no)
+	{
+		if (NPC->exp == 5)
+		{
+			NPC->rect.top += 0x10;
+			NPC->rect.bottom += 0x10;
+		}
+		else if (NPC->exp == 20)
+		{
+			NPC->rect.top += 0x20;
+			NPC->rect.bottom += 0x20;
+		}
+
+		NPC->act_no = 1;
+	}
+
+	//Disappear after 500 frames and blink near the end
+	if (++NPC->count1 > 500 && NPC->ani_no == 5 && NPC->ani_wait == 2)
+		NPC->cond = 0;
+
+	if (NPC->count1 > 400)
+	{
+		if (NPC->count1 / 2 & 1)
+			NPC->rect = { 0, 0, 0, 0 };
+	}
+}
+
 void npcAct002(npc *NPC) //Behemoth
 {
 	const int act_no = NPC->act_no;
@@ -152,7 +304,7 @@ void npcAct003(npc *NPC) // Null, spawned upon NPC death, disappears
 {
 	if (++NPC->count1 > 100)
 		NPC->cond = 0;
-	NPC->rect = { 0 };
+	NPC->rect = { 0, 0, 0, 0 };
 }
 
 void npcAct004(npc *NPC) //Smoke

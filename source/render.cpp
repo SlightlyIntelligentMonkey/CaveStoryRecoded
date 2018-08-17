@@ -207,7 +207,18 @@ void drawString(int x, int y, const char *str, const uint8_t *flag)
 				sep = 5;
 
 			//Set framerect to what it's supposed to be
-			if (!isMultibyte(str[i]))
+			int drawIndex = i;
+
+			if (isMultibyte(str[i]))
+			{
+				int localChar = 0x81 + str[i + 1] + ((str[i] - 0x81) * 0x100);
+				rcChar.left = ((localChar % 32) * charWidth);
+				rcChar.top = ((localChar >> 5) * charHeight);
+				rcChar.right = rcChar.left + charWidth;
+				rcChar.bottom = rcChar.top + charHeight;
+				i++;
+			}
+			else
 			{
 				rcChar.left = ((str[i] % 32) * charWidth);
 				rcChar.top = ((str[i] >> 5) * charHeight);
@@ -216,7 +227,7 @@ void drawString(int x, int y, const char *str, const uint8_t *flag)
 			}
 
 			//Draw to the screen
-			drawTextureSize(sprites[0x26], &rcChar, x + (i * sep), y, charWidth / charScale, charHeight / charScale);
+			drawTextureSize(sprites[0x26], &rcChar, x + (drawIndex * sep), y, charWidth / charScale, charHeight / charScale);
 		}
 		else
 			break;
