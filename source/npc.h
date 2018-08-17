@@ -113,3 +113,6 @@ void updateNPC();
 void drawNPC();
 
 extern std::vector<npc> npcs;
+
+extern int superXPos;
+extern int superYPos;

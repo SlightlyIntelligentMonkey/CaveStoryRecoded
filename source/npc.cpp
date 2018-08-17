@@ -3,6 +3,9 @@
 
 std::vector<npc> npcs(0);
 
+int superXPos = 0;	// Used by undead core related NPCs ?
+int superYPos = 0;
+
 //NPC Functions
 void createSmoke(int x, int y, int w, int num)
 {

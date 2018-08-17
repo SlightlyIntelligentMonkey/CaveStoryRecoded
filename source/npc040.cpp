@@ -1,5 +1,283 @@
 #include "npc040.h"
 
+void npcAct042(npc *NPC) // Sue
+{
+	RECT rcLeft[13];
+	RECT rcRight[13];
+
+	rcLeft[0] = { 0, 0, 16, 16 };
+	rcLeft[1] = { 16, 0, 32, 16 };
+	rcLeft[2] = { 32, 0, 48, 16 };
+	rcLeft[3] = { 0, 0, 16, 16 };
+	rcLeft[4] = { 48, 0, 64, 16 };
+	rcLeft[5] = { 0, 0, 16, 16 };
+	rcLeft[6] = { 0, 80, 16, 80 };
+	rcLeft[7] = { 80, 32, 96 , 48 };
+	rcLeft[8] = { 96, 32, 112, 48 };
+	rcLeft[9] = { 128, 32, 144, 48 };
+	rcLeft[10] = { 0, 0, 16, 16 };
+	rcLeft[11] = { 112, 32, 128, 48 };
+	rcLeft[12] = { 160, 32, 176, 48 };
+
+	rcRight[0] = { 0, 16, 16, 32 };
+	rcRight[1] = { 16, 16, 32, 32 };
+	rcRight[2] = { 32, 16, 48, 32 };
+	rcRight[3] = { 0, 16, 16, 32 };
+	rcRight[4] = { 48, 16, 64, 32 };
+	rcRight[5] = { 0, 16, 16, 32 };
+	rcRight[6] = { 64, 16, 80, 32 };
+	rcRight[7] = { 80, 48, 96, 64 };
+	rcRight[8] = { 96, 48, 112, 64 };
+	rcRight[9] = { 128, 48, 144, 64 };
+	rcRight[10] = { 0, 16, 16, 32 };
+	rcRight[11] = { 112, 48, 128, 64 };
+	rcRight[12] = { 160, 48, 176, 64 };
+
+
+	
+	
+	enum
+	{
+		standAndBlink = 0,
+		walk = 3,
+		punchedByIgor = 6,
+		superPunchedByIgor = 8,
+		collapsed = 10,
+		punchAir = 11,
+		carriedByIgor = 13,
+		undeadCoreIntro = 15,
+		undeadCoreIntroLookUp = 17,
+		undeadCoreIntroRunToQuote = 20,
+		postUndeadCoreRun = 30,
+		jumpOffIsland = 40,
+	};
+
+	switch (NPC->act_no)
+	{
+	case standAndBlink:
+		NPC->act_no = 1;
+		NPC->ani_no = 0;
+		NPC->ani_wait = 0;
+		NPC->xm = 0;
+		// Fallthrough
+	case 1:
+		if (random(0, 120) == 10)
+		{
+			NPC->act_no = 2;
+			NPC->act_wait = 0;
+			NPC->ani_no = 1;
+		}
+		break;
+
+	case 2:
+		if (++NPC->act_wait > 8)
+		{
+			NPC->act_no = 1;
+			NPC->ani_no = 0;
+		}
+		break;
+
+	case walk:
+		NPC->act_no = 4;
+		NPC->ani_no = 2;
+		NPC->ani_wait = 0;
+		// Fallthrough
+	case 4:
+		if (++NPC->ani_wait > 4)
+		{
+			NPC->ani_wait = 0;
+			++NPC->ani_no;
+		}
+		if (NPC->ani_no > 5)
+			NPC->ani_no = 2;
+		if (NPC->direct != dirLeft)
+			NPC->xm = 0x200;
+		else
+			NPC->xm = -0x200;
+		break;
+
+	case 5:
+		NPC->ani_no = punchedByIgor;
+		NPC->xm = 0;
+		break;
+
+	case punchedByIgor: // Flinches for 10 frames then goes back to blinking
+		playSound(SFX_EnemySqueal);
+		NPC->act_wait = 0;
+		NPC->act_no = 7;
+		NPC->ani_no = 7;
+		// Fallthrough
+	case 7:
+		if (++NPC->act_wait > 10)
+			NPC->act_no = standAndBlink;
+		break;
+
+	case superPunchedByIgor: // Flies through the air backwards and crashes
+		playSound(SFX_EnemySqueal);
+		NPC->act_wait = 0;
+		NPC->act_no = 9;
+		NPC->ym = -0x200;
+		if (NPC->direct != dirLeft)
+			NPC->xm = -0x400;
+		else
+			NPC->xm = 0x400;
+		// Fallthrough
+	case 9:
+		if (++NPC->act_wait > 3 && NPC->flag & ground)
+		{
+			NPC->act_no = collapsed;
+			if (NPC->direct != dirLeft)
+				NPC->direct = dirLeft;
+			else
+				NPC->direct = dirRight;
+		}
+		break;
+
+	case collapsed:
+		NPC->xm = 0;
+		NPC->ani_no = 0;
+		break;
+
+	case punchAir:
+		NPC->act_no = 12;
+		NPC->act_wait = 0;
+		NPC->ani_no = 0;
+		NPC->ani_wait = 0;
+		NPC->xm = 0;
+		// Fallthrough
+	case 12:
+		if (++NPC->ani_wait > 8)
+		{
+			NPC->ani_wait = 0;
+			++NPC->ani_no;
+		}
+
+		if (NPC->ani_no > 10)
+			NPC->ani_no = 9;
+		break;
+	case carriedByIgor:
+		NPC->ani_no = 11;
+		NPC->xm = 0;
+		NPC->ym = 0;
+		NPC->act_no = 14;
+		size_t i;
+		for (i = 0; i < npcs.size() && npcs[i].code_event != 501; ++i)	// Search for Igor ?
+			;
+		if (i == npcs.size())
+		{
+			NPC->act_no = standAndBlink;
+			break;
+		}
+		else
+			NPC->pNpc = &npcs[i];
+		// Fallthrough
+	case 14:
+		if (NPC->pNpc->direct != dirLeft)
+			NPC->direct = dirLeft;
+		else
+			NPC->direct = dirRight;
+
+		if (NPC->pNpc->direct != dirLeft)
+			NPC->x = NPC->pNpc->x + 0xC00;
+		else
+			NPC->x = NPC->pNpc->x - 0XC00;
+		NPC->y = NPC->pNpc->size + 0x800;
+		if (NPC->pNpc->ani_no == 2 || NPC->pNpc->ani_no == 4)
+			NPC->y = 0x200;
+		break;
+
+	case undeadCoreIntro:
+		NPC->act_no = 16;
+		createNpc(NPC_RedCrystal, NPC->x + 0x10000, NPC->y, 0, 0, dirLeft, NULL);
+		createNpc(NPC_RedCrystal, NPC->x + 0x10000, NPC->y, 0, 0, dirRight, NULL);
+		NPC->xm = 0;
+		NPC->ani_no = 0;
+		// Fallthrough
+	case 16:
+		superXPos = NPC->x - 0x3000;
+		superYPos = NPC->y - 0x1000;
+		break;
+
+	case undeadCoreIntroLookUp:
+		NPC->xm = 0;
+		NPC->ani_no = 12;
+		superXPos = NPC->x;
+		superYPos = NPC->y - 0x1000;
+		break;
+
+	case undeadCoreIntroRunToQuote:
+		NPC->act_no = 21;
+		NPC->ani_no = 2;
+		NPC->ani_wait = 0;
+		// Fallthrough
+	case 21:
+		if (++NPC->ani_wait > 2)
+		{
+			NPC->ani_wait = 0;
+			++NPC->ani_no;
+		}
+		if (NPC->ani_no > 5)
+			NPC->ani_no = 2;
+
+		if (NPC->direct != dirLeft)
+			NPC->xm = 0x400;
+		else
+			NPC->xm = -0x400;
+		if (NPC->x < currentPlayer.x - 0x1000)
+		{
+			NPC->direct = dirRight;
+			NPC->act_no = standAndBlink;
+		}
+		break;
+
+	case postUndeadCoreRun:
+		NPC->act_no = 31;
+		NPC->ani_no = 2;
+		NPC->ani_wait = 0;
+		// Fallthrough
+	case 31:
+		if (++NPC->ani_wait > 2)
+		{
+			NPC->ani_wait = 0;
+			++NPC->ani_no;
+		}
+		if (NPC->ani_no > 5)
+			NPC->ani_no = 2;
+
+		if (NPC->direct != dirLeft)
+			NPC->xm = 0x400;
+		else
+			NPC->xm = -0x400;
+		break;
+	case jumpOffIsland:
+		NPC->act_no = 41;
+		NPC->ani_no = 9;
+		NPC->ym = -0x400;
+		break;
+	default:
+		break;
+	}
+	
+	if (NPC->act_no != carriedByIgor + 1)
+	{
+		NPC->ym += 0x40;
+		if (NPC->xm > 0x400)
+			NPC->xm = 0x400;
+		if (NPC->xm < -0x400)
+			NPC->xm = -0x400;
+		if (NPC->ym > 0x5FF)
+			NPC->ym = 0x5FF;
+
+		NPC->x += NPC->xm;
+		NPC->y += NPC->ym;
+	}
+
+	if (NPC->direct == dirLeft)
+		NPC->rect = rcLeft[NPC->ani_no];
+	else
+		NPC->rect = rcRight[NPC->ani_no];
+}
+
 void npcAct046(npc *NPC) //H/V trigger
 {
 	NPC->bits |= npc_eventtouch;

@@ -1085,6 +1085,22 @@ void npcAct012(npc *NPC) //Balrog cutscene
 	}
 }
 
+void npcAct013(npc *NPC) // Forcefield
+{
+	constexpr RECT rcNPC[4] = { {128, 0, 144, 16 }, {144, 0, 160, 16 }, {160, 0, 176, 16}, {176, 0, 192, 16 } };
+
+	if (++NPC->ani_wait > 0)
+	{
+		NPC->ani_wait = 0;
+		++NPC->ani_no;
+	}
+
+	if (NPC->ani_no > 3)
+		NPC->ani_no = 0;
+
+	NPC->rect = rcNPC[NPC->ani_no];
+}
+
 void npcAct015(npc *NPC) //Closed chest
 {
 	const int act_no = NPC->act_no;
