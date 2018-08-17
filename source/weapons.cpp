@@ -166,6 +166,57 @@ bool checkWeapon(int code)
 	return false;
 }
 
+void giveWeaponExperience(int x)
+{
+	int lv = weapons[selectedWeapon].level - 1; // [esp+18h] [ebp-10h]
+	int arms_code = weapons[selectedWeapon].code; // [esp+1Ch] [ebp-Ch]
+	weapons[selectedWeapon].exp += x;
+
+	if (lv == 2)
+	{
+		if (weapons[selectedWeapon].exp >= weaponLevels[arms_code].exp[2])
+		{
+			weapons[selectedWeapon].exp = weaponLevels[arms_code].exp[2];
+
+			//Give a whimsical star
+			if (currentPlayer.equip & equip_whimsicalStar)
+			{
+				if (currentPlayer.star < 3)
+					currentPlayer.star++;
+			}
+		}
+	}
+	else
+	{
+		while (lv <= 1)
+		{
+			if (weapons[selectedWeapon].exp >= weaponLevels[arms_code].exp[lv])
+			{
+				++weapons[selectedWeapon].level;
+				weapons[selectedWeapon].exp = 0;
+
+				if (weapons[selectedWeapon].code != 13)
+				{
+					playSound(27);
+					createCaret(currentPlayer.x, currentPlayer.y, 10, 0);
+				}
+			}
+
+			++lv;
+		}
+	}
+
+	if (weapons[selectedWeapon].code == 13)
+	{
+		currentPlayer.exp_wait = 10;
+	}
+	else
+	{
+		currentPlayer.exp_count += x;
+		currentPlayer.exp_wait = 30;
+	}
+}
+
 //Rotate weapon functions
 int rotateWeaponRight()
 {

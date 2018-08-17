@@ -768,8 +768,18 @@ void player::update(bool bKey) {
 
 	if (cond & player_visible)
 	{
+		if (exp_wait)
+			--exp_wait;
+
 		if (shock)
+		{
 			--shock;
+		}
+		else if (exp_count)
+		{
+			createValueView(&x, &y, exp_count);
+			exp_count = 0;
+		}
 		
 		if (!unit)
 		{

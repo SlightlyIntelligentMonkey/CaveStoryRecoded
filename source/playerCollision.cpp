@@ -1,4 +1,5 @@
 #include "npcCollision.h"
+#include "weapons.h"
 
 void putLittleStar(const RECT *rcHit, player *me)
 {
@@ -740,7 +741,7 @@ void playerHitNpcs()
 				if (hit && npcs[i].code_char == 1)
 				{
 					playSound(14);
-					//AddExpMyChar(gNPC[i].exp);
+					giveWeaponExperience(npcs[i].exp);
 					npcs[i].cond = 0;
 				}
 				if (hit && npcs[i].code_char == 86)
@@ -753,7 +754,9 @@ void playerHitNpcs()
 				if (hit && npcs[i].code_char == 87)
 				{
 					playSound(20);
-					//AddLifeMyChar(gNPC[i].exp);
+					me->life += npcs[i].exp;
+					if (me->life > me->max_life)
+						me->life = me->max_life;
 					npcs[i].cond = 0;
 				}
 

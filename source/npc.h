@@ -112,4 +112,6 @@ void changeNpc(int code_event, int code_char, int dir);
 void updateNPC();
 void drawNPC();
 
+void killNpc(npc *NPC, bool bVanish);
+
 extern std::vector<npc> npcs;
