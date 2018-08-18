@@ -1,6 +1,6 @@
 #include "npc020.h"
 
-void npcAct020(npc *NPC)
+void npcAct020(npc *NPC) // Computer
 {
 	constexpr RECT rcLeft = { 288, 16, 320, 40 };
 	constexpr RECT rcRight[3] = { {288, 40, 320, 64}, {288, 40, 320, 64}, {288, 64, 320, 88} };

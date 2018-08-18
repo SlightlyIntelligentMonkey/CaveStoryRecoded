@@ -412,7 +412,7 @@ void npcAct061(npc *NPC) //King
 		NPC->rect = rcLeft[NPC->ani_no];
 }
 
-void npcAct062(npc *NPC)
+void npcAct062(npc *NPC) // Kazuma, facing away
 {
 	constexpr RECT rcNPC[3] = { {272, 192, 288, 216}, {288, 192, 304, 216}, {304, 192, 320, 216} };
 
