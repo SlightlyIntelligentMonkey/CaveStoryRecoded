@@ -208,7 +208,7 @@ void npcAct083(npc *NPC) // Igor, standing
 	rcLeft[3] = { 0, 0, 40, 40 };
 	rcLeft[4] = { 120, 0, 160, 40 };
 	rcLeft[5] = { 0, 0, 40, 40 };
-	rcLeft[6] = { 160, 0, 0, 200 };
+	rcLeft[6] = { 160, 0, 200, 40 };
 	rcLeft[7] = { 200, 0, 240, 40 };
 
 	rcRight[0] = { 0, 40, 40, 80 };
