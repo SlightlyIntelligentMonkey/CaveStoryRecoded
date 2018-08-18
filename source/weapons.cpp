@@ -21,7 +21,7 @@ weaponShoot shootFunctions[] = {
 	static_cast<weaponShoot>(nullptr),
 	static_cast<weaponShoot>(nullptr),
 	static_cast<weaponShoot>(nullptr),
-	static_cast<weaponShoot>(nullptr),
+	shootSpur,
 };
 
 //Weapon Levels
@@ -80,6 +80,12 @@ int useWeaponAmmo(int num)
 	if (weapons[selectedWeapon].num < 0)
 		weapons[selectedWeapon].num = 0;
 	return 1;
+}
+
+bool weaponMaxExp()
+{
+	return weapons[selectedWeapon].level == 3
+		&& weapons[selectedWeapon].exp >= weaponLevels[weapons[selectedWeapon].code].exp[2];
 }
 
 int weaponBullets(int arms_code)
