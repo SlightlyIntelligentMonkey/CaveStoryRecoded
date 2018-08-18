@@ -189,6 +189,9 @@
     <ClCompile Include="fireballShoot.cpp">
       <Filter>Source Files\classes\weapons\shoot</Filter>
     </ClCompile>
+    <ClCompile Include="spurShoot.cpp">
+      <Filter>Source Files\classes\weapons\shoot</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="level.h">

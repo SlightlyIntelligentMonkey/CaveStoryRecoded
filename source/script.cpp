@@ -453,6 +453,10 @@ int updateTsc()
 				strcat(tscText + (tsc.line % 4 << 6), c);
 				tscTextFlag[(tsc.line % 4 << 6) + tsc.p_write] = 0; //Make text display at normal width
 
+				//Make equal signs draw as the circle thing
+				if (c[0] == '=')
+					tscTextFlag[(tsc.line % 4 << 6) + tsc.p_write] |= 2;
+
 				//Play sound and reset cursor blinking timer.
 				playSound(2);
 				tsc.wait_beam = 0;

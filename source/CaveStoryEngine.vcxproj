@@ -214,6 +214,7 @@
     <ClCompile Include="sound.cpp" />
     <ClCompile Include="spur.cpp" />
     <ClCompile Include="fireball.cpp" />
+    <ClCompile Include="spurShoot.cpp" />
     <ClCompile Include="valueview.cpp" />
     <ClCompile Include="weapons.cpp" />
   </ItemGroup>

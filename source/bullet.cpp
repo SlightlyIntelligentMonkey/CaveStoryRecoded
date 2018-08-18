@@ -190,48 +190,48 @@ bulletAct bulletActs[] = {
 	static_cast<bulletAct>(nullptr),	// Snake
 	static_cast<bulletAct>(nullptr),
 	static_cast<bulletAct>(nullptr),
-	&actBulletPolarStar1,
+	&actBulletPolarStar1,				// Polar Star
 	&actBulletPolarStar2,
 	&actBulletPolarStar3,
-	&actBulletFireball1,
+	&actBulletFireball1,				// Fireball
 	&actBulletFireball2,
 	&actBulletFireball3,
-	static_cast<bulletAct>(nullptr),	// Machine Gun
-	static_cast<bulletAct>(nullptr),
-	static_cast<bulletAct>(nullptr),
-	static_cast<bulletAct>(nullptr),	// Missile Launcher
-	static_cast<bulletAct>(nullptr),
-	static_cast<bulletAct>(nullptr),
-	static_cast<bulletAct>(nullptr),	// Missile Explosion
-	static_cast<bulletAct>(nullptr),
-	static_cast<bulletAct>(nullptr),
-	static_cast<bulletAct>(nullptr),	// Bubbler
-	static_cast<bulletAct>(nullptr),
-	static_cast<bulletAct>(nullptr),
-	static_cast<bulletAct>(nullptr),	// Bubbler Spurs
-	static_cast<bulletAct>(nullptr),	// Blade Slash
-	static_cast<bulletAct>(nullptr),	// Unused
-	static_cast<bulletAct>(nullptr),	// Blade
-	static_cast<bulletAct>(nullptr),
-	static_cast<bulletAct>(nullptr),
-	static_cast<bulletAct>(nullptr),	// Super Missile Launcher
 	static_cast<bulletAct>(nullptr),
 	static_cast<bulletAct>(nullptr),
 	static_cast<bulletAct>(nullptr),
 	static_cast<bulletAct>(nullptr),
 	static_cast<bulletAct>(nullptr),
-	static_cast<bulletAct>(nullptr),	// Nemesis
 	static_cast<bulletAct>(nullptr),
 	static_cast<bulletAct>(nullptr),
-	static_cast<bulletAct>(nullptr),	// Chargeless Spur
 	static_cast<bulletAct>(nullptr),
 	static_cast<bulletAct>(nullptr),
-	static_cast<bulletAct>(nullptr),	// Non-moving Spur
 	static_cast<bulletAct>(nullptr),
 	static_cast<bulletAct>(nullptr),
-	static_cast<bulletAct>(nullptr),	// Nemesis-related
-	&actBulletSpurLevel2,	// Spur Lvl 2
-	&actBulletSpurLevel3,	// Spur Lvl 3
+	static_cast<bulletAct>(nullptr),
+	static_cast<bulletAct>(nullptr),
+	static_cast<bulletAct>(nullptr),
+	static_cast<bulletAct>(nullptr),
+	static_cast<bulletAct>(nullptr),
+	static_cast<bulletAct>(nullptr),
+	static_cast<bulletAct>(nullptr),
+	static_cast<bulletAct>(nullptr),
+	static_cast<bulletAct>(nullptr),
+	static_cast<bulletAct>(nullptr),
+	static_cast<bulletAct>(nullptr),
+	static_cast<bulletAct>(nullptr),
+	static_cast<bulletAct>(nullptr),
+	static_cast<bulletAct>(nullptr),
+	static_cast<bulletAct>(nullptr),
+	static_cast<bulletAct>(nullptr),
+	static_cast<bulletAct>(nullptr),
+	static_cast<bulletAct>(nullptr),
+	static_cast<bulletAct>(nullptr),
+	static_cast<bulletAct>(nullptr),
+	static_cast<bulletAct>(nullptr),
+	static_cast<bulletAct>(nullptr),
+	static_cast<bulletAct>(nullptr),
+	static_cast<bulletAct>(nullptr),
+	static_cast<bulletAct>(nullptr),
 };
 
 //Update and draw
