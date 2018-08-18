@@ -72,7 +72,7 @@ void npcAct111(npc *NPC) //Quote teleport out
 	NPC->ym += 0x40;
 	NPC->y += NPC->ym;
 
-	if (NPC->direct)
+	if (NPC->direct != dirLeft)
 		NPC->rect = rcRight[NPC->ani_no];
 	else
 		NPC->rect = rcLeft[NPC->ani_no];
@@ -145,7 +145,7 @@ void npcAct112(npc *NPC) //Quote teleport in
 	NPC->ym += 64;
 	NPC->y += NPC->ym;
 
-	if (NPC->direct)
+	if (NPC->direct != dirLeft)
 		NPC->rect = rcRight[NPC->ani_no];
 	else
 		NPC->rect = rcLeft[NPC->ani_no];
@@ -196,12 +196,12 @@ void npcAct117(npc *NPC)
 	{
 	case 0: //Stand
 		//Look towards player if direction is 4
-		if (NPC->direct == 4)
+		if (NPC->direct == dirCenter)
 		{
 			if (NPC->x <= currentPlayer.x)
-				NPC->direct = 2;
+				NPC->direct = dirRight;
 			else
-				NPC->direct = 0;
+				NPC->direct = dirLeft;
 		}
 		
 		NPC->act_no = 1;
@@ -233,7 +233,7 @@ void npcAct117(npc *NPC)
 		NPC->ym += 0x40;
 
 		//Walk in facing direction
-		if (NPC->direct)
+		if (NPC->direct != dirLeft)
 			NPC->xm = 0x200;
 		else
 			NPC->xm = -0x200;
@@ -257,9 +257,9 @@ void npcAct117(npc *NPC)
 
 		//Face towards player
 		if (NPC->x <= currentPlayer.x)
-			NPC->direct = 2;
+			NPC->direct = dirRight;
 		else
-			NPC->direct = 0;
+			NPC->direct = dirLeft;
 		
 	case 11:
 		//Animate
@@ -273,7 +273,7 @@ void npcAct117(npc *NPC)
 			NPC->ani_no = 1;
 
 		//Move forward
-		if (NPC->direct)
+		if (NPC->direct != dirLeft)
 			NPC->x += 512;
 		else
 			NPC->x -= 512;
@@ -303,7 +303,7 @@ void npcAct117(npc *NPC)
 		NPC->ani_no = 7;
 
 		//Move opposite to facing direction
-		if (NPC->direct)
+		if (NPC->direct != dirLeft)
 			NPC->xm = -0x200;
 		else
 			NPC->xm = 0x200;
@@ -330,7 +330,7 @@ void npcAct117(npc *NPC)
 		NPC->ani_wait = 0;
 
 	case 71:
-		if (NPC->direct)
+		if (NPC->direct != dirLeft)
 			NPC->x -= 0x100;
 		else
 			NPC->x += 0x100;

@@ -5,10 +5,10 @@ void bulletVanish(bullet *bul)
 	if (bul->code_bullet != 37 && bul->code_bullet != 38 && bul->code_bullet != 39)
 		playSound(SFX_ShotHitWall);
 	else
-		createCaret(bul->x, bul->y, 2, 1);
+		createCaret(bul->x, bul->y, effect_RisingDisc, 1);
 
 	bul->cond = 0;
-	createCaret(bul->x, bul->y, 2, 2);
+	createCaret(bul->x, bul->y, effect_RisingDisc, 2);
 }
 
 int bulletJudgeBlock(int x, int y, bullet *bul) //For judging breakable blocks
@@ -32,11 +32,11 @@ int bulletJudgeBlock(int x, int y, bullet *bul) //For judging breakable blocks
 			bul->cond = 0;
 
 		//Do effects when breaking block
-		createCaret(bul->x, bul->y, 2, 0);
+		createCaret(bul->x, bul->y, effect_RisingDisc, 0);
 		playSound(SFX_DestroyBreakableBlock);
 
 		for (int i = 0; i < 4; ++i)
-			createNpc(4, x << 13, y << 13, random(-512, 512), random(-512, 512), 0, nullptr);
+			createNpc(NPC_Smoke, x << 13, y << 13, random(-512, 512), random(-512, 512), 0, nullptr);
 
 		//Shift tile -1
 		shiftTile(x, y);
@@ -452,9 +452,9 @@ void bulletHitNpcs()
 								//Shock if not already shocked for 2 frames
 								if (npcs[n].shock < 14)
 								{
-									createCaret((bul->x + npcs[n].x) / 2, (bul->y + npcs[n].y) / 2, 11, 0);
-									createCaret((bul->x + npcs[n].x) / 2, (bul->y + npcs[n].y) / 2, 11, 0);
-									createCaret((bul->x + npcs[n].x) / 2, (bul->y + npcs[n].y) / 2, 11, 0);
+									createCaret((bul->x + npcs[n].x) / 2, (bul->y + npcs[n].y) / 2, effect_RedDamageRings, 0);
+									createCaret((bul->x + npcs[n].x) / 2, (bul->y + npcs[n].y) / 2, effect_RedDamageRings, 0);
+									createCaret((bul->x + npcs[n].x) / 2, (bul->y + npcs[n].y) / 2, effect_RedDamageRings, 0);
 
 									playSound(npcs[n].hit_voice);
 									npcs[n].shock = 16;
@@ -489,7 +489,7 @@ void bulletHitNpcs()
 							&& !(bul->bbits & 0x10))
 						{
 							//Break if hitting a non-shootable NPC
-							createCaret((bul->x + npcs[n].x) / 2, (bul->y + npcs[n].y) / 2, 2, 2);
+							createCaret((bul->x + npcs[n].x) / 2, (bul->y + npcs[n].y) / 2, effect_RisingDisc, 2);
 							playSound(SFX_ShotHitInvulnerableEntity);
 							bul->life = 0;
 							continue;

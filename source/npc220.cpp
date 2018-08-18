@@ -59,7 +59,7 @@ void npcAct231(npc *NPC) //Momorin's rocket
 
 		for (int i = 0; i < 10; ++i)
 		{
-			createNpc(4, NPC->x + (random(-16, 16) << 9), NPC->y + (random(-8, 8) << 9), 0, 0, 0, nullptr);
+			createNpc(NPC_Smoke, NPC->x + (random(-16, 16) << 9), NPC->y + (random(-8, 8) << 9), 0, 0, 0, nullptr);
 			playSound(SFX_DestroyBreakableBlock);
 		}
 		// fallthrough
@@ -67,10 +67,10 @@ void npcAct231(npc *NPC) //Momorin's rocket
 		NPC->ym -= 8;
 
 		if (!(++NPC->act_wait & 1))
-			createCaret(NPC->x - 0x1400, NPC->y + 0x1000, 7, 3);
+			createCaret(NPC->x - 0x1400, NPC->y + 0x1000, effect_BoosterSmoke, 3);
 
 		if (NPC->act_wait % 2 == 1)
-			createCaret(NPC->x + 0x1400, NPC->y + 0x1000, 7, 3);
+			createCaret(NPC->x + 0x1400, NPC->y + 0x1000, effect_BoosterSmoke, 3);
 
 		if (NPC->act_wait % 4 == 1)
 			playSound(SFX_FireballBounce);
@@ -84,7 +84,7 @@ void npcAct231(npc *NPC) //Momorin's rocket
 
 			for (int i = 0; i < 6; ++i)
 			{
-				createNpc(4, NPC->x + (random(-16, 16) << 9), NPC->y + (random(-8, 8) << 9), 0, 0, 0, nullptr);
+				createNpc(NPC_Smoke, NPC->x + (random(-16, 16) << 9), NPC->y + (random(-8, 8) << 9), 0, 0, 0, nullptr);
 				playSound(SFX_DestroyBreakableBlock);
 			}
 		}
@@ -97,10 +97,10 @@ void npcAct231(npc *NPC) //Momorin's rocket
 		if (NPC->ym < 0)
 		{
 			if (!(NPC->act_wait & 7))
-				createCaret(NPC->x - 0x1400, NPC->y + 0x1000, 7, 3);
+				createCaret(NPC->x - 0x1400, NPC->y + 0x1000, effect_BoosterSmoke, 3);
 
 			if (NPC->act_wait % 8 == 4)
-				createCaret(NPC->x + 0x1400, NPC->y + 0x1000, 7, 3);
+				createCaret(NPC->x + 0x1400, NPC->y + 0x1000, effect_BoosterSmoke, 3);
 
 			if (NPC->act_wait % 16 == 1)
 				playSound(SFX_FireballBounce);
@@ -148,14 +148,14 @@ void npcAct238(npc *NPC) //Killer press
 	switch (NPC->act_no)
 	{
 	case 1:
-		if (!NPC->direct && currentPlayer.x < NPC->x && currentPlayer.x > NPC->x - 0x18000 && currentPlayer.y > NPC->y - 0x800 && currentPlayer.y < NPC->y + 0x1000)
+		if (NPC->direct == dirLeft && currentPlayer.x < NPC->x && currentPlayer.x > NPC->x - 0x18000 && currentPlayer.y > NPC->y - 0x800 && currentPlayer.y < NPC->y + 0x1000)
 		{
 			NPC->act_no = 10;
 			NPC->act_wait = 0;
 			NPC->ani_no = 2;
 		}
 
-		if (NPC->direct == 2 && currentPlayer.x > NPC->x && currentPlayer.x < NPC->x + 0x18000 && currentPlayer.y > NPC->y - 0x800 && currentPlayer.y < NPC->y + 0x1000)
+		if (NPC->direct == dirRight && currentPlayer.x > NPC->x && currentPlayer.x < NPC->x + 0x18000 && currentPlayer.y > NPC->y - 0x800 && currentPlayer.y < NPC->y + 0x1000)
 		{
 			NPC->act_no = 10;
 			NPC->act_wait = 0;
@@ -167,7 +167,7 @@ void npcAct238(npc *NPC) //Killer press
 	case 10:
 		NPC->damage = 127;
 
-		if (NPC->direct)
+		if (NPC->direct != dirLeft)
 			NPC->x += 0xC00;
 		else
 			NPC->x -= 0xC00;
@@ -179,7 +179,7 @@ void npcAct238(npc *NPC) //Killer press
 
 			for (int i = 0; i < 4; ++i)
 			{
-				createNpc(4, NPC->x + (random(-16, 16) << 9), NPC->y + (random(-8, 8) << 9), 0, 0, 0, nullptr);
+				createNpc(NPC_Smoke, NPC->x + (random(-16, 16) << 9), NPC->y + (random(-8, 8) << 9), 0, 0, 0, nullptr);
 				playSound(SFX_DestroyBreakableBlock);
 			}
 		}
@@ -207,7 +207,7 @@ void npcAct238(npc *NPC) //Killer press
 			NPC->ani_no = 0;
 		}
 
-		if (NPC->direct)
+		if (NPC->direct != dirLeft)
 			NPC->x -= 0x800;
 		else
 			NPC->x += 0x800;
@@ -218,9 +218,9 @@ void npcAct238(npc *NPC) //Killer press
 		break;
 	}
 
-	if (NPC->direct || currentPlayer.x >= NPC->x)
+	if (NPC->direct != dirLeft || currentPlayer.x >= NPC->x)
 	{
-		if (NPC->direct != 2 || currentPlayer.x <= NPC->x)
+		if (NPC->direct != dirRight || currentPlayer.x <= NPC->x)
 			NPC->hit.right = 0x1000;
 		else
 			NPC->hit.right = 0x2000;

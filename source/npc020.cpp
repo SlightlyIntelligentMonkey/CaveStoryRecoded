@@ -6,7 +6,7 @@ void npcAct021(npc *NPC) //Open chest
 	{
 		NPC->act_no = 1;
 
-		if (NPC->direct == 2)
+		if (NPC->direct == dirRight)
 			NPC->y += 0x2000;
 	}
 
@@ -62,7 +62,7 @@ void npcAct030(npc *NPC) // Hermit Gunsmith
 {
 	constexpr RECT rcNPC[3] = { { 48, 0, 64, 16 },{ 48, 16, 64, 32 },{ 0, 32, 16, 48 } };
 	
-	if (!NPC->direct)	// Wherever he's awoken depends on his direction, it would seem
+	if (NPC->direct == dirLeft)	// Wherever he's awoken depends on his direction, it would seem
 	{
 		if (NPC->act_no == 0)
 		{
@@ -97,7 +97,7 @@ void npcAct030(npc *NPC) // Hermit Gunsmith
 		if (++NPC->act_wait > 100)
 		{
 			NPC->act_wait = 0;
-			createCaret(NPC->x, NPC->y - 1024, effectZzZ, 0);
+			createCaret(NPC->x, NPC->y - 1024, effect_ZzZ, 0);
 		}
 	}
 doRects:
@@ -165,7 +165,7 @@ void npcAct039(npc *NPC) //Save Sign
 	rect[1].right = 256;
 	rect[1].bottom = 80;
 
-	if (NPC->direct)
+	if (NPC->direct != dirLeft)
 		NPC->ani_no = 1;
 	else
 		NPC->ani_no = 0;

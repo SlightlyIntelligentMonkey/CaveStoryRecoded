@@ -283,7 +283,7 @@ void npcAct046(npc *NPC) //H/V trigger
 {
 	NPC->bits |= npc_eventtouch;
 
-	if (NPC->direct)
+	if (NPC->direct != dirLeft)
 	{
 		if (NPC->y >= currentPlayer.y)
 			NPC->y -= 0x5FF;
@@ -337,7 +337,7 @@ void npcAct058(npc *NPC) //Basu 1
 
 			NPC->damage = 6;
 
-			if (NPC->direct)
+			if (NPC->direct != dirLeft)
 			{
 				NPC->x = currentPlayer.x - 0x20000;
 				NPC->xm = 767;
@@ -356,12 +356,12 @@ void npcAct058(npc *NPC) //Basu 1
 			//Face towards player
 			if (NPC->x <= currentPlayer.x)
 			{
-				NPC->direct = 2;
+				NPC->direct = dirRight;
 				NPC->xm += 16;
 			}
 			else
 			{
-				NPC->direct = 0;
+				NPC->direct = dirLeft;
 				NPC->xm -= 16;
 			}
 			
@@ -417,7 +417,7 @@ void npcAct058(npc *NPC) //Basu 1
 						const int fireXm = 2 * getCos(deg);
 						const int fireYm = 2 * getSin(deg);
 
-						createNpc(84, NPC->x, NPC->y, fireXm, fireYm, 0, nullptr);
+						createNpc(NPC_ProjectileBasu1, NPC->x, NPC->y, fireXm, fireYm, 0, nullptr);
 						playSound(SFX_EnemyShootProjectile);
 					}
 
@@ -442,7 +442,7 @@ void npcAct058(npc *NPC) //Basu 1
 			if (NPC->act_wait > 120 && NPC->act_wait / 2 % 2 == 1 && NPC->ani_no == 1)
 				NPC->ani_no = 2;
 
-			if (NPC->direct)
+			if (NPC->direct != dirLeft)
 				NPC->rect = { 192 + (NPC->ani_no * 24), 24, 216 + (NPC->ani_no * 24), 48 };
 			else
 				NPC->rect = { 192 + (NPC->ani_no * 24), 0, 216 + (NPC->ani_no * 24), 24 };

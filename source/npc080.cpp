@@ -58,7 +58,7 @@ void npcAct082(npc *NPC) //Misery standing
 		if (++NPC->act_wait == 30)
 		{
 			playSound(SFX_Bubble);
-			createNpc(66, NPC->x, NPC->y - 0x2000, 0, 0, 0, NPC);
+			createNpc(NPC_ProjectileMiseryBubble, NPC->x, NPC->y - 0x2000, 0, 0, 0, NPC);
 		}
 
 		if (NPC->act_wait == 50)
@@ -139,7 +139,7 @@ void npcAct082(npc *NPC) //Misery standing
 
 		if (something <= 0x14 && (1 << something) & 0x100401)
 		{
-			createNpc(11, NPC->x + 0x1000, NPC->y - 0x100, 0x600, random(-0x200, 0), 0, nullptr);
+			createNpc(NPC_ProjectileBalrogEnergyBallInvincible, NPC->x + 0x1000, NPC->y - 0x100, 0x600, random(-0x200, 0), 0, nullptr);
 			playSound(SFX_FireballShoot);
 		}
 
@@ -191,7 +191,7 @@ void npcAct082(npc *NPC) //Misery standing
 		}
 	}
 
-	if (NPC->direct)
+	if (NPC->direct != dirLeft)
 		NPC->rect = rcRight[NPC->ani_no];
 	else
 		NPC->rect = rcLeft[NPC->ani_no];
@@ -323,7 +323,7 @@ void npcAct084(npc *NPC) //Basu 1 projectile
 	//Remove if hit anything
 	if (NPC->flag & 0xFF)
 	{
-		createCaret(NPC->x, NPC->y, 2, 0);
+		createCaret(NPC->x, NPC->y, effect_RisingDisc, 0);
 		NPC->cond = 0;
 	}
 
@@ -345,7 +345,7 @@ void npcAct084(npc *NPC) //Basu 1 projectile
 	
 	if (++NPC->count1 > 300)
 	{
-		createCaret(NPC->x, NPC->y, 2, 0);
+		createCaret(NPC->x, NPC->y, effect_RisingDisc, 0);
 		NPC->cond = 0;
 	}
 }
@@ -391,7 +391,7 @@ void npcAct096(npc *NPC) //Fan left
 		//Current effect
 		if (currentPlayer.x > NPC->x - 0x28000 && currentPlayer.x < NPC->x + 0x28000 && currentPlayer.y > NPC->y - 0x28000 && currentPlayer.y < NPC->y + 0x28000 && random(0, 5) == 1)
 		{
-			createNpc(199, NPC->x + (random(-8, 8) << 9), NPC->y, 0, 0, 0, nullptr);
+			createNpc(NPC_UnderwaterCurrent, NPC->x + (random(-8, 8) << 9), NPC->y, 0, 0, 0, nullptr);
 		}
 
 		//Blow quote
@@ -403,7 +403,7 @@ void npcAct096(npc *NPC) //Fan left
 
 		break;
 	case 0:
-		if (NPC->direct == 2)
+		if (NPC->direct == dirRight)
 			NPC->act_no = 2;
 		else
 			NPC->ani_no = 1; // Overriden by the next statement. Pixel's fault
@@ -439,7 +439,7 @@ void npcAct097(npc *NPC) //Fan up
 		//Current effect
 		if (currentPlayer.x > NPC->x - 0x28000 && currentPlayer.x < NPC->x + 0x28000 && currentPlayer.y > NPC->y - 0x28000 && currentPlayer.y < NPC->y + 0x28000 && random(0, 5) == 1)
 		{
-			createNpc(199, NPC->x + (random(-8, 8) << 9), NPC->y, 0, 0, 1, nullptr);
+			createNpc(NPC_UnderwaterCurrent, NPC->x + (random(-8, 8) << 9), NPC->y, 0, 0, 1, nullptr);
 		}
 
 		//Blow quote
@@ -486,7 +486,7 @@ void npcAct098(npc *NPC) //Fan right
 		//Current effect
 		if (currentPlayer.x > NPC->x - 0x28000 && currentPlayer.x < NPC->x + 0x28000 && currentPlayer.y > NPC->y - 0x28000 && currentPlayer.y < NPC->y + 0x28000 && random(0, 5) == 1)
 		{
-			createNpc(199, NPC->x + (random(-8, 8) << 9), NPC->y, 0, 0, 2, nullptr);
+			createNpc(NPC_UnderwaterCurrent, NPC->x + (random(-8, 8) << 9), NPC->y, 0, 0, 2, nullptr);
 		}
 
 		//Blow quote
@@ -498,7 +498,7 @@ void npcAct098(npc *NPC) //Fan right
 
 		break;
 	case 0:
-		if (NPC->direct == 2)
+		if (NPC->direct == dirRight)
 			NPC->act_no = 2;
 		else
 			NPC->ani_no = 1; // Overriden by the next statement. Pixel's fault

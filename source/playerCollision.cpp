@@ -6,8 +6,8 @@ void putLittleStar(const RECT *rcHit, player *me)
 	if (!(me->cond & player_removed) && me->ym < -0x200)
 	{
 		playSound(SFX_QuoteBumpHead);
-		createCaret(me->x, me->y - rcHit->top, 13, 0);
-		createCaret(me->x, me->y - rcHit->top, 13, 0);
+		createCaret(me->x, me->y - rcHit->top, effect_HeadbumpSparks, 0);
+		createCaret(me->x, me->y - rcHit->top, effect_HeadbumpSparks, 0);
 	}
 }
 
@@ -687,7 +687,7 @@ int playerHitNpcHardSolid(const RECT *rcHit, player *me, npc *NPC)
 
 int playerHitNpcNonSolid(const RECT *rcHit, player *me, npc *NPC)
 {
-	if (NPC->direct)
+	if (NPC->direct != dirLeft)
 	{
 		if (me->x + 0x400 > NPC->x - NPC->hit.right
 			&& me->x - 0x400 < NPC->x + NPC->hit.left
@@ -790,6 +790,6 @@ void playerHitNpcs()
 		}
 
 		if (me->ques)
-			createCaret(me->x, me->y, 9, 0);
+			createCaret(me->x, me->y, effect_ExclamationMark, 0);
 	}
 }

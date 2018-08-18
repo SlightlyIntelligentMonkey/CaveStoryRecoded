@@ -74,7 +74,7 @@ bool changeTile(int x, int y, uint8_t tile)
 	levelMap[x + y * levelWidth] = tile;
 
 	for (int i = 0; i < 3; ++i)
-		createNpc(4, x << 13, y << 13, 0, 0, 0, nullptr);
+		createNpc(NPC_Smoke, x << 13, y << 13, 0, 0, 0, nullptr);
 
 	return true;
 }
@@ -185,7 +185,7 @@ void loadLevel(int levelIndex) {
 		newNPC.bits |= readLEshort(pxe, offset + 10);
 
 		if (readLEshort(pxe, offset + 10) & npc_altdir)
-			newNPC.direct = 2;
+			newNPC.direct = dirRight;
 
 		npcs.push_back(newNPC);
 	}

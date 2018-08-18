@@ -1,6 +1,11 @@
 #include "weapons.h"
 #include "shootFunctions.h"
 
+#include <string>
+
+using std::string;
+using std::to_string;
+
 //Shoot functions
 weaponShoot shootFunctions[] = {
 	static_cast<weaponShoot>(nullptr),
@@ -55,6 +60,11 @@ void actWeapon()
 {
 	if (shootFunctions[weapons[selectedWeapon].code] != nullptr)
 		shootFunctions[weapons[selectedWeapon].code](weapons[selectedWeapon].level);
+	else if (errorOnNotImplemented)
+	{
+		string msg = "Weapon " + to_string(weapons[selectedWeapon].code) + " is not implemented.";
+		SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_WARNING, "Missing Weapon", msg.c_str(), NULL);
+	}
 }
 
 int useWeaponAmmo(int num)
@@ -198,7 +208,7 @@ void giveWeaponExperience(int x)
 				if (weapons[selectedWeapon].code != 13)
 				{
 					playSound(SFX_LevelUp);
-					createCaret(currentPlayer.x, currentPlayer.y, 10, 0);
+					createCaret(currentPlayer.x, currentPlayer.y, effect_LevelUpOrDown, 0);
 				}
 			}
 

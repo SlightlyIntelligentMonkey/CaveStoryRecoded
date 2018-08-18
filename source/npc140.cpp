@@ -10,22 +10,22 @@ void npcAct145(npc *NPC) //King's blade
 		//Some orientation stuff
 		if (NPC->pNpc->count2)
 		{
-			if (NPC->pNpc->direct)
-				NPC->direct = 0;
+			if (NPC->pNpc->direct != dirLeft)
+				NPC->direct = dirLeft;
 			else
-				NPC->direct = 2;
+				NPC->direct = dirRight;
 		}
-		else if (NPC->pNpc->direct)
+		else if (NPC->pNpc->direct != dirLeft)
 		{
-			NPC->direct = 2;
+			NPC->direct = dirRight;
 		}
 		else
 		{
-			NPC->direct = 0;
+			NPC->direct = dirLeft;
 		}
 
 		//Set position
-		if (NPC->direct)
+		if (NPC->direct != dirLeft)
 			NPC->x = NPC->pNpc->x + 0x1400;
 		else
 			NPC->x = NPC->pNpc->x - 0x1400;
@@ -33,7 +33,7 @@ void npcAct145(npc *NPC) //King's blade
 	}
 
 	//Set framerect
-	if (NPC->direct)
+	if (NPC->direct != dirLeft)
 		NPC->rect = rcRight;
 	else
 		NPC->rect = rcLeft;

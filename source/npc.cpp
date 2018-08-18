@@ -17,7 +17,7 @@ void createSmoke(int x, int y, int w, int num)
 		const int offsetX = random(-wa, wa) << 9;
 		const int offsetY = random(-wa, wa) << 9;
 
-		createNpc(4, x + offsetX, offsetY + y, 0, 0, 0, nullptr);
+		createNpc(NPC_Smoke, x + offsetX, offsetY + y, 0, 0, 0, nullptr);
 	}
 }
 
@@ -90,9 +90,9 @@ void changeNpc(int code_event, int code_char, int dir)
 					if (dir == 4)
 					{
 						if (npcs[i].x >= currentPlayer.x)
-							npcs[i].direct = 0;
+							npcs[i].direct = dirLeft;
 						else
-							npcs[i].direct = 2;
+							npcs[i].direct = dirRight;
 					}
 					else
 					{
@@ -381,7 +381,7 @@ void npc::draw()
 
 		int side = view.left;
 
-		if (direct)
+		if (direct != dirLeft)
 			side = view.right;
 
 		drawTexture(sprites[surf], &rect, (x - side) / 0x200 - viewport.x / 0x200 + xOffset, (y - view.top) / 0x200 - viewport.y / 0x200);

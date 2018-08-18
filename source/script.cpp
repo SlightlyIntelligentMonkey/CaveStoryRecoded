@@ -516,9 +516,9 @@ int updateTsc()
 							if (getTSCNumber(tsc.p_read + 14) == 4)
 							{
 								if (npcs[i].x >= currentPlayer.x)
-									npcs[i].direct = 0;
+									npcs[i].direct = dirLeft;
 								else
-									npcs[i].direct = 2;
+									npcs[i].direct = dirRight;
 							}
 							else
 							{
@@ -776,9 +776,9 @@ int updateTsc()
 							if (getTSCNumber(tsc.p_read + 19) == 4)
 							{
 								if (npcs[i].x >= currentPlayer.x)
-									npcs[i].direct = 0;
+									npcs[i].direct = dirLeft;
 								else
-									npcs[i].direct = 2;
+									npcs[i].direct = dirRight;
 							}
 							else
 							{
@@ -825,12 +825,12 @@ int updateTsc()
 				switch (getTSCNumber(tsc.p_read + 4))
 				{
 				case 0:
-					currentPlayer.direct = 0;
+					currentPlayer.direct = dirLeft;
 					currentPlayer.xm = 0x200;
 					break;
 
 				case 2:
-					currentPlayer.direct = 2;
+					currentPlayer.direct = dirRight;
 					currentPlayer.xm = -0x200;
 					break;
 
@@ -841,12 +841,12 @@ int updateTsc()
 						{
 							if (npcs[i].x >= currentPlayer.x)
 							{
-								currentPlayer.direct = 2;
+								currentPlayer.direct = dirRight;
 								currentPlayer.xm = -0x200;
 							}
 							else
 							{
-								currentPlayer.direct = 0;
+								currentPlayer.direct = dirLeft;
 								currentPlayer.xm = 0x200;
 							}
 						}
@@ -929,6 +929,7 @@ int updateTsc()
 				tscCleanup(2);
 				break;
 			case('<SNP'):
+				
 				createNpc(
 					getTSCNumber(tsc.p_read + 4),
 					getTSCNumber(tsc.p_read + 9) << 13,

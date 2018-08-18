@@ -6,7 +6,7 @@ player currentPlayer;
 void player::init() {
 	memset(this, 0, sizeof(*this));
 	cond = player_visible;
-	direct = 2;
+	direct = dirRight;
 	view = { 0x1000, 0x1000, 0x1000, 0x1000 };
 	hit = { 0xA00, 0x1000, 0xA00, 0x1000 };
 
@@ -57,9 +57,9 @@ void player::setDir(int setDirect) {
 		if (npcs[i].code_event == setDirect)
 		{
 			if (x <= npcs[i].x)
-				direct = 2;
+				direct = dirRight;
 			else
-				direct = 0;
+				direct = dirLeft;
 
 			xm = 0;
 			animate(false);
@@ -101,7 +101,7 @@ void player::damage(int16_t damage) {
 
 				//Level down caret
 				if (life > 0 && weapons[selectedWeapon].code != 13)
-					createCaret(x, y, 10, 2);
+					createCaret(x, y, effect_LevelUpOrDown, 2);
 			}
 		}
 
@@ -114,7 +114,7 @@ void player::damage(int16_t damage) {
 			cond = 0;
 
 			createSmoke(x, y, 5120, 64);
-			createCaret(x, y, 12, 0);
+			createCaret(x, y, effect_BigExplosion, 0);
 			startTscEvent(40);
 		}
 	}
@@ -185,9 +185,9 @@ void player::actNormal(bool bKey) {
 
 					//Face held direction
 					if (isKeyDown(keyLeft))
-						direct = 0;
+						direct = dirLeft;
 					if (isKeyDown(keyRight))
-						direct = 2;
+						direct = dirRight;
 				}
 				else if (isKeyPressed(keyDown))
 				{
@@ -277,9 +277,9 @@ void player::actNormal(bool bKey) {
 
 				//Face held direction
 				if (isKeyDown(keyLeft))
-					direct = 0;
+					direct = dirLeft;
 				if (isKeyDown(keyRight))
-					direct = 2;
+					direct = dirRight;
 			}
 
 			//Ending boost (2.0)
@@ -343,17 +343,17 @@ void player::actNormal(bool bKey) {
 					ym = -0x100;
 
 				//Move in facing direction
-				if (!direct)
+				if (direct == dirLeft)
 					xm -= 0x20;
-				if (direct == 2)
+				if (direct == dirRight)
 					xm += 32;
 
 				if (isKeyPressed(keyJump) || boost_cnt % 3 == 1)
 				{
-					if (!direct)
-						createCaret(x + 0x400, y + 0x400, 7, 2);
-					if (direct == 2)
-						createCaret(x - 0x400, y + 0x400, 7, 0);
+					if (direct == dirLeft)
+						createCaret(x + 0x400, y + 0x400, effect_BoosterSmoke, 2);
+					if (direct == dirRight)
+						createCaret(x - 0x400, y + 0x400, effect_BoosterSmoke, 0);
 
 					playSound(SFX_Booster);
 				}
@@ -365,13 +365,13 @@ void player::actNormal(bool bKey) {
 
 				if (isKeyPressed(keyJump) || boost_cnt % 3 == 1)
 				{
-					createCaret(x, y + 0xC00, 7, 3);
+					createCaret(x, y + 0xC00, effect_BoosterSmoke, 3);
 					playSound(SFX_Booster);
 				}
 			}
 			else if (boost_sw == 3 && (isKeyPressed(keyJump) || boost_cnt % 3 == 1))
 			{
-				createCaret(x, y - 0xC00, 7, 1);
+				createCaret(x, y - 0xC00, effect_BoosterSmoke, 1);
 				playSound(SFX_Booster);
 			}
 		}
@@ -385,7 +385,7 @@ void player::actNormal(bool bKey) {
 
 			if (!(boost_cnt % 3))
 			{
-				createCaret(x, hit.bottom / 2 + y, 7, 3);
+				createCaret(x, hit.bottom / 2 + y, effect_BoosterSmoke, 3);
 				playSound(SFX_Booster);
 			}
 
@@ -459,7 +459,7 @@ void player::actNormal(bool bKey) {
 				{
 					for (int i = 0; i < 8; ++i)
 					{
-						createNpc(73, x + (random(-8, 8) << 9), y, xm + random(-512, 512), random(-0x200, 0x80), dir, nullptr);
+						createNpc(NPC_Waterdrop, x + (random(-8, 8) << 9), y, xm + random(-512, 512), random(-0x200, 0x80), dir, nullptr);
 					}
 
 					playSound(SFX_WaterSplash);
@@ -469,7 +469,7 @@ void player::actNormal(bool bKey) {
 			{
 				for (int i = 0; i < 8; ++i)
 				{
-					createNpc(73, x + (random(-8, 8) << 9), y, xm + random(-512, 512), random(-0x200, 0x80) - ym / 2, dir, nullptr);
+					createNpc(NPC_Waterdrop, x + (random(-8, 8) << 9), y, xm + random(-512, 512), random(-0x200, 0x80) - ym / 2, dir, nullptr);
 				}
 
 				playSound(SFX_WaterSplash);
@@ -486,7 +486,7 @@ void player::actNormal(bool bKey) {
 			damage(10);
 
 		//Camera
-		if (direct)
+		if (direct != dirLeft)
 		{
 			//Move to the right
 			index_x += 0x200;
@@ -608,9 +608,9 @@ void player::actStream(bool bKey)
 
 	//Bump effect (this code doesn't work because pixel forgot about how ym is set to 0)
 	if (ym < -0x200 && flag & ceiling)
-		createCaret(x, y - hit.top, 13, 5);
+		createCaret(x, y - hit.top, effect_HeadbumpSparks, 5);
 	if (ym > 0x200 && flag & ground)
-		createCaret(x, y + hit.bottom, 13, 5);
+		createCaret(x, y + hit.bottom, effect_HeadbumpSparks, 5);
 
 	//Limit speed
 	if (xm > 0x400)
@@ -752,7 +752,7 @@ void player::animate(bool bKey)
 			ani_no = 1;
 	}
 
-	if (direct)
+	if (direct != dirLeft)
 		rect = rcRight[ani_no];
 	else
 		rect = rcLeft[ani_no];
@@ -809,10 +809,10 @@ void player::update(bool bKey) {
 							{
 								startTscEvent(41);
 
-								if (direct)
-									createCaret(x, y, 8, 2);
+								if (direct != dirLeft)
+									createCaret(x, y, effect_DrownedQuote, 2);
 								else
-									createCaret(x, y, 8, 0);
+									createCaret(x, y, effect_DrownedQuote, 0);
 
 								cond &= ~player_visible;
 							}
@@ -852,7 +852,7 @@ void player::draw() {
 		weaponRect.top = 96 * (weapons[selectedWeapon].code / 13);
 		weaponRect.bottom = weaponRect.top + 16;
 
-		if (direct == 2)
+		if (direct == dirRight)
 		{
 			weaponRect.top += 16;
 			weaponRect.bottom += 16;
@@ -875,7 +875,7 @@ void player::draw() {
 		if (ani_no == 1 || ani_no == 3 || ani_no == 6 || ani_no == 8)
 			++weaponRect.top;
 
-		int weaponOffsetX = (direct != 0 ? 0 : 8); //Make the weapon shift to the left if facing left
+		int weaponOffsetX = (direct != dirLeft ? 0 : 8); //Make the weapon shift to the left if facing left
 		drawTexture(sprites[TEX_ARMS], &weaponRect, (x - view.left) / 0x200 - viewport.x / 0x200 - weaponOffsetX, (y - view.top) / 0x200 - viewport.y / 0x200 + weaponOffsetY);
 
 		if (!((shock >> 1) & 1)) //Invulnerability BLinking
