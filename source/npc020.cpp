@@ -1,5 +1,25 @@
 #include "npc020.h"
 
+void npcAct020(npc *NPC)
+{
+	constexpr RECT rcLeft = { 288, 16, 320, 40 };
+	constexpr RECT rcRight[3] = { {288, 40, 320, 64}, {288, 40, 320, 64}, {288, 64, 320, 88} };
+
+	// Animate from animation No 0 to 2 with a 3-frame delay
+	if (++NPC->ani_wait > 3)
+	{
+		NPC->ani_wait = 0;
+		++NPC->ani_no;
+	}
+	if (NPC->ani_no > 2)
+		NPC->ani_no = 0;
+
+	if (NPC->direct == dirLeft)
+		NPC->rect = rcLeft;
+	else
+		NPC->rect = rcRight[NPC->ani_no];
+}
+
 void npcAct021(npc *NPC) //Open chest
 {
 	if (!NPC->act_no)

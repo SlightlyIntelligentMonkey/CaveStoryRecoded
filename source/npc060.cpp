@@ -412,6 +412,73 @@ void npcAct061(npc *NPC) //King
 		NPC->rect = rcLeft[NPC->ani_no];
 }
 
+void npcAct062(npc *NPC)
+{
+	constexpr RECT rcNPC[3] = { {272, 192, 288, 216}, {288, 192, 304, 216}, {304, 192, 320, 216} };
+
+	enum
+	{
+		initial = 0,
+		typing = 1,
+		slouch = 2,
+		upright = 3,
+	};
+
+	switch (NPC->act_no)
+	{
+	case initial:
+		NPC->x -= 0x800;
+		NPC->y = 0x2000;
+		NPC->act_no = typing;
+		NPC->ani_no = 0;
+		NPC->ani_wait = 0;
+		// Fallthrough
+	case typing:
+		if (++NPC->ani_wait > 2)
+		{
+			NPC->ani_wait = 0;
+			++NPC->ani_no;
+		}
+		if (NPC->ani_no > 1)
+			NPC->ani_no = 0;
+
+		if (random(0, 80) == 1)
+		{
+			NPC->act_no = slouch;
+			NPC->act_wait = 0;
+			NPC->ani_no = 2;
+		}
+		if (random(0, 120) == 10)
+		{
+			NPC->act_no = upright;
+			NPC->act_wait = 0;
+			NPC->ani_no = 2;
+		}
+		break;
+
+	case slouch:
+		if (++NPC->act_wait > 40)
+		{
+			NPC->act_no = upright;
+			NPC->act_wait = 0;
+			NPC->ani_no = 2;
+		}
+		break;
+
+	case upright:
+		if (++NPC->act_wait > 80)
+		{
+			NPC->act_no = typing;
+			NPC->ani_no = 0;
+		}
+		break;
+	default:
+		break;
+	}
+
+	NPC->rect = rcNPC[NPC->ani_no];
+}
+
 void npcAct064(npc *NPC) //First Cave critter
 {
 	const int action = NPC->act_no;
