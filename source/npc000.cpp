@@ -65,7 +65,7 @@ void npcAct001(npc *NPC) //Experience
 		//Bounce off floor
 		if (NPC->flag & ground)
 		{
-			playSound(45); //This line is redundant.
+			playSound(SFX_EXPBounce); //This line is redundant.
 			NPC->ym = -0x280;
 			NPC->xm = 2 * NPC->xm / 3;
 		}
@@ -73,7 +73,7 @@ void npcAct001(npc *NPC) //Experience
 		//Clip out of floors???
 		if (NPC->flag & (leftWall | rightWall | ground))
 		{
-			playSound(45);
+			playSound(SFX_EXPBounce);
 			if (++NPC->count2 > 2)
 				NPC->y -= 0x200;
 		}
@@ -406,7 +406,7 @@ void npcAct005(npc *NPC) //Egg Corridor critter
 			else
 				NPC->xm = -0x100;
 
-			playSound(30);
+			playSound(SFX_CritterHop);
 		}
 
 		break;
@@ -843,7 +843,7 @@ void npcAct009(npc *NPC) //Balrog drop in
 			NPC->act_no = 2;
 			NPC->ani_no = 1;
 			NPC->act_wait = 0;
-			playSound(26);
+			playSound(SFX_LargeObjectHitGround);
 			viewport.quake = 30;
 		}
 
@@ -1014,7 +1014,7 @@ void npcAct012(npc *NPC) //Balrog cutscene
 		if (NPC->y < 0)
 		{
 			NPC->code_char = 0;
-			playSound(26);
+			playSound(SFX_LargeObjectHitGround);
 			viewport.quake = 30;
 		}
 		break;
@@ -1036,7 +1036,7 @@ void npcAct012(npc *NPC) //Balrog cutscene
 		for (int i = 0; i < 4; ++i)
 			createNpc(4, NPC->x + (random(-12, 12) << 9), NPC->y + (random(-12, 12) << 9), random(-0x155, 0x155), random(-0x600, 0), 0, nullptr);
 
-		playSound(72);
+		playSound(SFX_Explosion);
 		
 	case 21:
 		NPC->tgt_x = 1;
@@ -1131,7 +1131,7 @@ void npcAct012(npc *NPC) //Balrog cutscene
 			NPC->ani_wait = 0;
 
 			if (++NPC->ani_no == 10 || NPC->ani_no == 11)
-				playSound(23);
+				playSound(SFX_QuoteHitGround);
 		}
 
 		if (NPC->ani_no > 12)
@@ -1146,7 +1146,7 @@ void npcAct012(npc *NPC) //Balrog cutscene
 	case 70: //"Uh oh! Vanish"
 		NPC->act_no = 71;
 		NPC->act_wait = 64;
-		playSound(29);
+		playSound(SFX_Teleport);
 		NPC->ani_no = 13;
 		
 	case 71:
@@ -1198,7 +1198,7 @@ void npcAct012(npc *NPC) //Balrog cutscene
 		{
 			changeTile(x - 1, y, 0);
 			changeTile(x + 1, y, 0);
-			playSound(44);
+			playSound(SFX_MissileImpact);
 			viewport.quake2 = 10;
 		}
 

@@ -3,7 +3,7 @@
 void bulletVanish(bullet *bul)
 {
 	if (bul->code_bullet != 37 && bul->code_bullet != 38 && bul->code_bullet != 39)
-		playSound(28);
+		playSound(SFX_ShotHitWall);
 	else
 		createCaret(bul->x, bul->y, 2, 1);
 
@@ -33,7 +33,7 @@ int bulletJudgeBlock(int x, int y, bullet *bul) //For judging breakable blocks
 
 		//Do effects when breaking block
 		createCaret(bul->x, bul->y, 2, 0);
-		playSound(12);
+		playSound(SFX_DestroyBreakableBlock);
 
 		for (int i = 0; i < 4; ++i)
 			createNpc(4, x << 13, y << 13, random(-512, 512), random(-512, 512), 0, nullptr);
@@ -490,7 +490,7 @@ void bulletHitNpcs()
 						{
 							//Break if hitting a non-shootable NPC
 							createCaret((bul->x + npcs[n].x) / 2, (bul->y + npcs[n].y) / 2, 2, 2);
-							playSound(31);
+							playSound(SFX_ShotHitInvulnerableEntity);
 							bul->life = 0;
 							continue;
 						}

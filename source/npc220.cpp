@@ -60,7 +60,7 @@ void npcAct231(npc *NPC) //Momorin's rocket
 		for (int i = 0; i < 10; ++i)
 		{
 			createNpc(4, NPC->x + (random(-16, 16) << 9), NPC->y + (random(-8, 8) << 9), 0, 0, 0, nullptr);
-			playSound(12);
+			playSound(SFX_DestroyBreakableBlock);
 		}
 		// fallthrough
 	case 13:
@@ -73,7 +73,7 @@ void npcAct231(npc *NPC) //Momorin's rocket
 			createCaret(NPC->x + 0x1400, NPC->y + 0x1000, 7, 3);
 
 		if (NPC->act_wait % 4 == 1)
-			playSound(34);
+			playSound(SFX_FireballBounce);
 
 		if (NPC->flag & ceiling || currentPlayer.flag & ceiling || NPC->act_wait > 450)
 		{
@@ -85,7 +85,7 @@ void npcAct231(npc *NPC) //Momorin's rocket
 			for (int i = 0; i < 6; ++i)
 			{
 				createNpc(4, NPC->x + (random(-16, 16) << 9), NPC->y + (random(-8, 8) << 9), 0, 0, 0, nullptr);
-				playSound(12);
+				playSound(SFX_DestroyBreakableBlock);
 			}
 		}
 		break;
@@ -103,7 +103,7 @@ void npcAct231(npc *NPC) //Momorin's rocket
 				createCaret(NPC->x + 0x1400, NPC->y + 0x1000, 7, 3);
 
 			if (NPC->act_wait % 16 == 1)
-				playSound(34);
+				playSound(SFX_FireballBounce);
 		}
 
 		if (NPC->flag & ground)
@@ -180,7 +180,7 @@ void npcAct238(npc *NPC) //Killer press
 			for (int i = 0; i < 4; ++i)
 			{
 				createNpc(4, NPC->x + (random(-16, 16) << 9), NPC->y + (random(-8, 8) << 9), 0, 0, 0, nullptr);
-				playSound(12);
+				playSound(SFX_DestroyBreakableBlock);
 			}
 		}
 		break;

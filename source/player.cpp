@@ -71,7 +71,7 @@ void player::setDir(int setDirect) {
 void player::damage(int16_t damage) {
 	if (!shock)
 	{
-		playSound(16);
+		playSound(SFX_QuoteHurt);
 
 		cond &= ~player_interact;
 		shock = 0x80;
@@ -110,7 +110,7 @@ void player::damage(int16_t damage) {
 
 		if (life <= 0)
 		{
-			playSound(17);
+			playSound(SFX_QuoteDie);
 			cond = 0;
 
 			createSmoke(x, y, 5120, 64);
@@ -311,7 +311,7 @@ void player::actNormal(bool bKey) {
 				&& !(flag & windUp))
 			{
 				ym = -jump;
-				playSound(15);
+				playSound(SFX_QuoteJump);
 			}
 		}
 
@@ -355,7 +355,7 @@ void player::actNormal(bool bKey) {
 					if (direct == 2)
 						createCaret(x - 0x400, y + 0x400, 7, 0);
 
-					playSound(113);
+					playSound(SFX_Booster);
 				}
 			}
 			else if (boost_sw == 2)
@@ -366,13 +366,13 @@ void player::actNormal(bool bKey) {
 				if (isKeyPressed(keyJump) || boost_cnt % 3 == 1)
 				{
 					createCaret(x, y + 0xC00, 7, 3);
-					playSound(113);
+					playSound(SFX_Booster);
 				}
 			}
 			else if (boost_sw == 3 && (isKeyPressed(keyJump) || boost_cnt % 3 == 1))
 			{
 				createCaret(x, y - 0xC00, 7, 1);
-				playSound(113);
+				playSound(SFX_Booster);
 			}
 		}
 		else if (flag & windUp) //Gravity when in wind
@@ -386,7 +386,7 @@ void player::actNormal(bool bKey) {
 			if (!(boost_cnt % 3))
 			{
 				createCaret(x, hit.bottom / 2 + y, 7, 3);
-				playSound(113);
+				playSound(SFX_Booster);
 			}
 
 			if (flag & ceiling) //Bounce of ceilings
@@ -462,7 +462,7 @@ void player::actNormal(bool bKey) {
 						createNpc(73, x + (random(-8, 8) << 9), y, xm + random(-512, 512), random(-0x200, 0x80), dir, nullptr);
 					}
 
-					playSound(56);
+					playSound(SFX_WaterSplash);
 				}
 			}
 			else
@@ -472,7 +472,7 @@ void player::actNormal(bool bKey) {
 					createNpc(73, x + (random(-8, 8) << 9), y, xm + random(-512, 512), random(-0x200, 0x80) - ym / 2, dir, nullptr);
 				}
 
-				playSound(56);
+				playSound(SFX_WaterSplash);
 			}
 
 			sprash = 1;
@@ -704,7 +704,7 @@ void player::animate(bool bKey)
 					ani_wait = 0;
 
 					if (++ani_no == 7 || ani_no == 9)
-						playSound(24);
+						playSound(SFX_QuoteWalk);
 				}
 
 				if (ani_no > 9 || ani_no <= 5)
@@ -719,7 +719,7 @@ void player::animate(bool bKey)
 					ani_wait = 0;
 
 					if (++ani_no == 2 || ani_no == 4)
-						playSound(24);
+						playSound(SFX_QuoteWalk);
 				}
 
 				if (ani_no > 4 || ani_no <= 0)
@@ -728,7 +728,7 @@ void player::animate(bool bKey)
 			else if (bKey && isKeyDown(keyUp)) //Look up
 			{
 				if (cond & player_walk)
-					playSound(24);
+					playSound(SFX_QuoteWalk);
 
 				cond &= ~player_walk;
 				ani_no = 5;
@@ -736,7 +736,7 @@ void player::animate(bool bKey)
 			else //Idle
 			{
 				if (cond & player_walk)
-					playSound(24);
+					playSound(SFX_QuoteWalk);
 
 				cond &= ~player_walk;
 				ani_no = 0;

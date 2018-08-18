@@ -32,7 +32,7 @@ void shootFireball(int level)
 		{
 			selectedWeapon = 0;
 			weaponShiftX = 32;
-			playSound(4);
+			playSound(SFX_SwitchWeapon);
 		}
 		else
 		{
@@ -68,7 +68,7 @@ void shootFireball(int level)
 			createBullet(bul_no, currentPlayer.x + shootX, currentPlayer.y + shootY, shootDirect);
 			createCaret(currentPlayer.x + caretX, currentPlayer.y + shootY, 3, 0);
 
-			playSound(34);
+			playSound(SFX_FireballBounce);
 		}
 	}
 }

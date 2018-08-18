@@ -197,7 +197,7 @@ void giveWeaponExperience(int x)
 
 				if (weapons[selectedWeapon].code != 13)
 				{
-					playSound(27);
+					playSound(SFX_LevelUp);
 					createCaret(currentPlayer.x, currentPlayer.y, 10, 0);
 				}
 			}
@@ -237,7 +237,7 @@ int rotateWeaponRight()
 
 	//Do effects
 	weaponShiftX = 32;
-	playSound(4);
+	playSound(SFX_SwitchWeapon);
 
 	return weapons[weaponNo].code;
 }
@@ -261,7 +261,7 @@ int rotateWeaponLeft()
 
 	//Do effects
 	weaponShiftX = 0;
-	playSound(4);
+	playSound(SFX_SwitchWeapon);
 
 	return weapons[weaponNo].code;
 }

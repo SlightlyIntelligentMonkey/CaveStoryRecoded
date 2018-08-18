@@ -5,7 +5,7 @@ void putLittleStar(const RECT *rcHit, player *me)
 {
 	if (!(me->cond & player_removed) && me->ym < -0x200)
 	{
-		playSound(3);
+		playSound(SFX_QuoteBumpHead);
 		createCaret(me->x, me->y - rcHit->top, 13, 0);
 		createCaret(me->x, me->y - rcHit->top, 13, 0);
 	}
@@ -71,7 +71,7 @@ int playerJudgeBlock(RECT *rcHit, player *me, int tx, int ty)
 		me->y = ((2 * ty - 1) << 12) - rcHit->bottom;
 
 		if (me->ym > 0x400)
-			playSound(23);
+			playSound(SFX_QuoteHitGround);
 
 		if (me->ym > 0)
 			me->ym = 0;
@@ -182,7 +182,7 @@ int playerJudgeTriangleE(const RECT *rcHit, player *me, int tx, int ty)
 		me->y = (ty << 13) + (-0x2000 * tx + me->x) / 2 - 0x800 - rcHit->bottom;
 
 		if (me->ym > 0x400)
-			playSound(23);
+			playSound(SFX_QuoteHitGround);
 
 		if (me->ym > 0)
 			me->ym = 0;
@@ -203,7 +203,7 @@ int playerJudgeTriangleF(const RECT *rcHit, player *me, int tx, int ty)
 		me->y = (ty << 13) + (-0x2000 * tx + me->x) / 2 + 0x800 - rcHit->bottom;
 
 		if (me->ym > 0x400)
-			playSound(23);
+			playSound(SFX_QuoteHitGround);
 
 		if (me->ym > 0)
 			me->ym = 0;
@@ -224,7 +224,7 @@ int playerJudgeTriangleG(const RECT *rcHit, player *me, int tx, int ty)
 		me->y = (ty << 13) - (-0x2000 * tx + me->x) / 2 + 0x800 - rcHit->bottom;
 
 		if (me->ym > 0x400)
-			playSound(23);
+			playSound(SFX_QuoteHitGround);
 
 		if (me->ym > 0)
 			me->ym = 0;
@@ -245,7 +245,7 @@ int playerJudgeTriangleH(const RECT *rcHit, player *me, int tx, int ty)
 		me->y = (ty << 13) - (-0x2000 * tx + me->x) / 2 - 0x800 - rcHit->bottom;
 
 		if (me->ym > 0x400)
-			playSound(23);
+			playSound(SFX_QuoteHitGround);
 
 		if (me->ym > 0)
 			me->ym = 0;
@@ -657,7 +657,7 @@ int playerHitNpcHardSolid(const RECT *rcHit, player *me, npc *NPC)
 		if (me->y + rcHit->bottom > NPC->y - NPC->hit.top && me->y + rcHit->bottom < NPC->y + 0x600)
 		{
 			if (me->ym - NPC->ym > 1024)
-				playSound(23);
+				playSound(SFX_QuoteHitGround);
 
 			if (me->unit == 1)
 			{
@@ -740,20 +740,20 @@ void playerHitNpcs()
 
 				if (hit && npcs[i].code_char == 1)
 				{
-					playSound(14);
+					playSound(SFX_GetEXP);
 					giveWeaponExperience(npcs[i].exp);
 					npcs[i].cond = 0;
 				}
 				if (hit && npcs[i].code_char == 86)
 				{
-					playSound(42);
+					playSound(SFX_QuoteMissileGet);
 					//AddBulletMyChar(gNPC[i].code_event, gNPC[i].exp);
 					npcs[i].cond = 0;
 				}
 
 				if (hit && npcs[i].code_char == 87)
 				{
-					playSound(20);
+					playSound(SFX_QuoteHeal);
 					me->life += npcs[i].exp;
 					if (me->life > me->max_life)
 						me->life = me->max_life;

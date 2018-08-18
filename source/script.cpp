@@ -335,7 +335,7 @@ int updateTsc()
 			if (isKeyPressed(keyJump)) //Select button pressed
 			{
 				//Play selection sound
-				playSound(18);
+				playSound(SFX_YNConfirm);
 
 				if (tsc.select) //No selected
 				{
@@ -351,12 +351,12 @@ int updateTsc()
 			else if (isKeyPressed(keyLeft)) //Left pressed
 			{
 				tsc.select = 0; //Select yes and play sound
-				playSound(1);
+				playSound(SFX_YNChangeChoice);
 			}
 			else if (isKeyPressed(keyRight)) //Right pressed
 			{
 				tsc.select = 1; //Select no and play sound
-				playSound(1);
+				playSound(SFX_YNChangeChoice);
 			}
 		}
 		else
@@ -454,7 +454,7 @@ int updateTsc()
 				tscTextFlag[(tsc.line % 4 << 6) + tsc.p_write] = 0; //Make text display at normal width
 
 				//Play sound and reset cursor blinking timer.
-				playSound(2);
+				playSound(SFX_MessageTyping);
 				tsc.wait_beam = 0;
 
 				//Shift read and write positions
@@ -997,7 +997,7 @@ int updateTsc()
 			case('<YNJ'):
 				tsc.next_event = getTSCNumber(tsc.p_read + 4);
 				tsc.mode = YNJ;
-				playSound(5);
+				playSound(SFX_YNPrompt);
 				tsc.wait = 0;
 				tsc.select = 0;
 				tscCleanup(1);

@@ -22,7 +22,7 @@ void actBulletFireball1(bullet *bul)
 		{
 			bul->cond = 0;
 			createCaret(bul->x, bul->y, 2, 0);
-			playSound(28);
+			playSound(SFX_ShotHitWall);
 		}
 		else
 		{
@@ -49,7 +49,7 @@ void actBulletFireball1(bullet *bul)
 
 				//Play bouncing sound
 				if (bul->flag & (leftWall | rightWall | ground))
-					playSound(34);
+					playSound(SFX_FireballBounce);
 			}
 			else
 			{
@@ -158,7 +158,7 @@ void actBulletFireball2(bullet *bul)
 		{
 			bul->cond = 0;
 			createCaret(bul->x, bul->y, 2, 0);
-			playSound(28);
+			playSound(SFX_ShotHitWall);
 		}
 		else
 		{
@@ -185,7 +185,7 @@ void actBulletFireball2(bullet *bul)
 
 				//Play bouncing sound
 				if (bul->flag & (leftWall | rightWall | ground))
-					playSound(34);
+					playSound(SFX_FireballBounce);
 			}
 			else
 			{
@@ -296,7 +296,7 @@ void actBulletFireball3(bullet *bul)
 		{
 			bul->cond = 0;
 			createCaret(bul->x, bul->y, 2, 0);
-			playSound(28);
+			playSound(SFX_ShotHitWall);
 		}
 		else
 		{
@@ -323,7 +323,7 @@ void actBulletFireball3(bullet *bul)
 
 				//Play bouncing sound
 				if (bul->flag & (leftWall | rightWall | ground))
-					playSound(34);
+					playSound(SFX_FireballBounce);
 			}
 			else
 			{

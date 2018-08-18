@@ -6,7 +6,7 @@ void shootPolarStar(int level)
 	{
 		if (useWeaponAmmo(1) ^ 1)
 		{
-			playSound(37);
+			playSound(SFX_NoAmmo);
 		}
 		else
 		{
@@ -44,9 +44,9 @@ void shootPolarStar(int level)
 
 			//Play sound
 			if (level == 3)
-				playSound(49);
+				playSound(SFX_PolarStarShootLevel3);
 			else
-				playSound(32);
+				playSound(SFX_PolarStarShootLevel12);
 		}
 	}
 }

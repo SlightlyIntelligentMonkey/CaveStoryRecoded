@@ -2,7 +2,7 @@
 #include "common.h"
 
 void npcAct082(npc *NPC);
-
+void npcAct083(npc *NPC);
 void npcAct084(npc *NPC);
 
 void npcAct090(npc *NPC);

@@ -11,7 +11,7 @@ void npcAct042(npc *NPC) // Sue
 	rcLeft[3] = { 0, 0, 16, 16 };
 	rcLeft[4] = { 48, 0, 64, 16 };
 	rcLeft[5] = { 0, 0, 16, 16 };
-	rcLeft[6] = { 0, 80, 16, 80 };
+	rcLeft[6] = { 64, 0, 80, 16 };
 	rcLeft[7] = { 80, 32, 96 , 48 };
 	rcLeft[8] = { 96, 32, 112, 48 };
 	rcLeft[9] = { 128, 32, 144, 48 };
@@ -36,7 +36,7 @@ void npcAct042(npc *NPC) // Sue
 
 	
 	
-	enum
+	enum // Sue's states
 	{
 		standAndBlink = 0,
 		walk = 3,
@@ -116,6 +116,7 @@ void npcAct042(npc *NPC) // Sue
 		playSound(SFX_EnemySqueal);
 		NPC->act_wait = 0;
 		NPC->act_no = 9;
+		NPC->ani_no = 7;
 		NPC->ym = -0x200;
 		if (NPC->direct != dirLeft)
 			NPC->xm = -0x400;
@@ -135,13 +136,13 @@ void npcAct042(npc *NPC) // Sue
 
 	case collapsed:
 		NPC->xm = 0;
-		NPC->ani_no = 0;
+		NPC->ani_no = 8;
 		break;
 
 	case punchAir:
 		NPC->act_no = 12;
 		NPC->act_wait = 0;
-		NPC->ani_no = 0;
+		NPC->ani_no = 9;
 		NPC->ani_wait = 0;
 		NPC->xm = 0;
 		// Fallthrough
@@ -181,9 +182,9 @@ void npcAct042(npc *NPC) // Sue
 			NPC->x = NPC->pNpc->x + 0xC00;
 		else
 			NPC->x = NPC->pNpc->x - 0XC00;
-		NPC->y = NPC->pNpc->size + 0x800;
+		NPC->y = NPC->pNpc->y + 0x800;
 		if (NPC->pNpc->ani_no == 2 || NPC->pNpc->ani_no == 4)
-			NPC->y = 0x200;
+			NPC->y -= 0x200;
 		break;
 
 	case undeadCoreIntro:
@@ -417,7 +418,7 @@ void npcAct058(npc *NPC) //Basu 1
 						const int fireYm = 2 * getSin(deg);
 
 						createNpc(84, NPC->x, NPC->y, fireXm, fireYm, 0, nullptr);
-						playSound(39);
+						playSound(SFX_EnemyShootProjectile);
 					}
 
 					if (NPC->count2 > 8)

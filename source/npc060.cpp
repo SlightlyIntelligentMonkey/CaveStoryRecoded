@@ -122,7 +122,7 @@ void npcAct060(npc *NPC) //Toroko
 		NPC->act_no = 11;
 		NPC->ani_no = 9;
 		NPC->ym = -0x400;
-		playSound(50);
+		playSound(SFX_EnemySqueal);
 
 		if (NPC->direct)
 			NPC->xm = 0x100;
@@ -331,7 +331,7 @@ void npcAct061(npc *NPC) //King
 			NPC->ym = -0x400;
 			NPC->xm = 0x200;
 
-			playSound(71);
+			playSound(SFX_QuoteSmashIntoGround);
 
 			createSmoke(NPC->x, NPC->y, 2048, 4);
 		}
@@ -341,7 +341,7 @@ void npcAct061(npc *NPC) //King
 		NPC->act_no = 42;
 		NPC->act_wait = 0;
 		NPC->ani_no = 8;
-		playSound(29);
+		playSound(SFX_Teleport);
 
 	case 42:
 		//Flash away
@@ -440,7 +440,7 @@ void npcAct064(npc *NPC) //First Cave critter
 			else
 				NPC->xm = -0x100;
 
-			playSound(30);
+			playSound(SFX_CritterHop);
 		}
 
 		break;
@@ -631,7 +631,7 @@ void npcAct066(npc *NPC) //Bubble (to catch Toroko in the shack)
 			NPC->act_no = 2;
 			NPC->ani_no = 2;
 			npcs[NPC->count1].cond = 0;
-			playSound(21);
+			playSound(SFX_Bubble);
 		}
 
 		break;

@@ -61,7 +61,7 @@ void npcAct146(npc *NPC) //Lightning
 		if (++NPC->act_wait > 10)
 		{
 			NPC->act_no = 2;
-			playSound(101);
+			playSound(SFX_Lightning);
 		}
 		break;
 

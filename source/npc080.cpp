@@ -57,7 +57,7 @@ void npcAct082(npc *NPC) //Misery standing
 	case 16:
 		if (++NPC->act_wait == 30)
 		{
-			playSound(21);
+			playSound(SFX_Bubble);
 			createNpc(66, NPC->x, NPC->y - 0x2000, 0, 0, 0, NPC);
 		}
 
@@ -90,7 +90,7 @@ void npcAct082(npc *NPC) //Misery standing
 
 		if (++NPC->act_wait == 30)
 		{
-			playSound(101);
+			playSound(SFX_Lightning);
 			//SetFlash(0, 0, 2);
 			NPC->act_no = 27;
 			NPC->ani_no = 7;
@@ -140,7 +140,7 @@ void npcAct082(npc *NPC) //Misery standing
 		if (something <= 0x14 && (1 << something) & 0x100401)
 		{
 			createNpc(11, NPC->x + 0x1000, NPC->y - 0x100, 0x600, random(-0x200, 0), 0, nullptr);
-			playSound(33);
+			playSound(SFX_FireballShoot);
 		}
 
 		if (NPC->act_wait > 50)
@@ -195,6 +195,120 @@ void npcAct082(npc *NPC) //Misery standing
 		NPC->rect = rcRight[NPC->ani_no];
 	else
 		NPC->rect = rcLeft[NPC->ani_no];
+}
+
+void npcAct083(npc *NPC) // Igor, standing
+{
+	RECT rcLeft[8];
+	RECT rcRight[8];
+
+	rcLeft[0] = { 0, 0, 40, 40 };
+	rcLeft[1] = { 40, 0, 80, 40 };
+	rcLeft[2] = { 80, 0, 120, 40 };
+	rcLeft[3] = { 0, 0, 40, 40 };
+	rcLeft[4] = { 120, 0, 160, 40 };
+	rcLeft[5] = { 0, 0, 40, 40 };
+	rcLeft[6] = { 160, 0, 0, 200 };
+	rcLeft[7] = { 200, 0, 240, 40 };
+
+	rcRight[0] = { 0, 40, 40, 80 };
+	rcRight[1] = { 40, 40, 80, 80 };
+	rcRight[2] = { 80, 40, 120, 80 };
+	rcRight[3] = { 0, 40, 40, 80 };
+	rcRight[4] = { 120, 40, 160, 80 };
+	rcRight[5] = { 0, 40, 40, 80 };
+	rcRight[6] = { 160, 40, 200, 80 };
+	rcRight[7] = { 200, 40, 240, 80 };
+
+	enum // Igor's states
+	{
+		standingPanting = 0,
+		walking = 2,
+		punch = 4,
+	};
+
+	switch (NPC->act_no)
+	{
+	case standingPanting:
+		NPC->xm = 0;
+		NPC->act_no = 1;
+		NPC->ani_no = 0;
+		NPC->ani_wait = 0;
+		// Fallthrough
+	case 1:
+		// Animate from animation no 0 to 1 with a 5 frame delay
+		if (++NPC->ani_wait > 5)
+		{
+			NPC->ani_wait = 0;
+			++NPC->ani_no;
+		}
+		if (NPC->ani_no > 1)
+			NPC->ani_no = 0;
+		break;
+
+	case walking:
+		NPC->act_no = 3;
+		NPC->ani_no = 2;
+		NPC->ani_wait = 0;
+		// Fallthrough
+	case 3:
+		// Animate from animation no 2 to 5 with a 3 frame delay
+		if (++NPC->ani_wait > 3)
+		{
+			NPC->ani_wait = 0;
+			++NPC->ani_no;
+		}
+		if (NPC->ani_no > 5)
+			NPC->ani_no = 0;
+
+		if (NPC->direct != dirLeft)
+			NPC->xm = 0x200;
+		else
+			NPC->xm = -0x200;
+		break;
+
+	case punch:
+		NPC->xm = 0;
+		NPC->act_no = 5;
+		NPC->act_wait = 0;
+		NPC->ani_no = 6;
+		// Fallthrough
+	case 5:
+		if (++NPC->act_wait > 10)
+		{
+			NPC->act_wait = 0;
+			NPC->act_no = 6;
+			NPC->ani_no = 7;
+			playSound(SFX_EnemySmokePoof);
+		}
+		break;
+
+	case 6:
+		if (++NPC->act_wait > 8)
+		{
+			NPC->act_no = standingPanting;
+			NPC->ani_no = 0;
+		}
+		break;
+		
+	case 7:
+		NPC->act_no = 1;
+		break;
+
+	default:
+		break;
+	}
+
+	NPC->ym += 0x40;
+	if (NPC->ym > 0x5FF)
+		NPC->ym = 0x5FF;
+	NPC->x += NPC->xm;
+	NPC->y += NPC->ym;
+
+	if (NPC->direct == dirLeft)
+		NPC->rect = rcLeft[NPC->ani_no];
+	else
+		NPC->rect = rcRight[NPC->ani_no];
 }
 
 void npcAct084(npc *NPC) //Basu 1 projectile
