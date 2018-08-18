@@ -228,7 +228,7 @@ void drawStageSelect()
 
 	if (stageNo)
 	{
-		int stageX = (-40 * stageNo + screenWidth) / 2;
+		const int stageX = (-40 * stageNo + screenWidth) / 2;
 
 		//Draw everything now
 		drawTexture(sprites[TEX_TEXTBOX], &rcCur[(stageSelectFlash >> 1) & 1], stageX + 40 * selectedStage, 64);

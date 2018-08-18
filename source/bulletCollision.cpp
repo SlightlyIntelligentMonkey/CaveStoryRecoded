@@ -328,8 +328,8 @@ void bulletHitMap()
 		if (bul->cond & 0x80)
 		{
 			//Get offset positions for tile checking
-			int x = bul->x >> 13;
-			int y = bul->y >> 13;
+			const int x = bul->x >> 13;
+			const int y = bul->y >> 13;
 
 			offx[0] = 0;
 			offx[1] = 1;

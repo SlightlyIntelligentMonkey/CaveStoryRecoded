@@ -24,6 +24,8 @@ void shootFireball(int level)
 			return;
 		bul_no = bullet_FireballLevel3;
 		break;
+	default:
+		doCustomError("Invalid level");
 	}
 
 	if (isKeyPressed(keyShoot))

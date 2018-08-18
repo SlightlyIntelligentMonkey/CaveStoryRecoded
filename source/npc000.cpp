@@ -11,7 +11,7 @@ void npcActNone(npc *NPC)
 	if (errorOnNotImplemented)
 	{
 		string msg = "NPC " + to_string(NPC->code_char) + " is not implementated yet.";
-		SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_WARNING, "Missing NPC", msg.c_str(), NULL);
+		SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_WARNING, "Missing NPC", msg.c_str(), nullptr);
 	}
 }
 

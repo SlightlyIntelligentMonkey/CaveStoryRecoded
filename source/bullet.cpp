@@ -249,7 +249,7 @@ void bullet::update()
 		else if (errorOnNotImplemented)
 		{
 			string msg = "Bullet " + to_string(this->code_bullet) + " is not implemented yet.";
-			SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_WARNING, "Missing Bullet", msg.c_str(), NULL);
+			SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_WARNING, "Missing Bullet", msg.c_str(), nullptr);
 		}
 	}
 	else

@@ -101,7 +101,7 @@ void loadImage(const char *file, SDL_Texture **tex) {
 }
 
 //Drawing functions
-void setCliprect(RECT *rect)
+void setCliprect(const RECT *rect)
 {
 	//All of this code should be pretty self explanatory
 	if (rect != nullptr)
@@ -207,11 +207,11 @@ void drawString(int x, int y, const char *str, const uint8_t *flag)
 				sep = 5;
 
 			//Set framerect to what it's supposed to be
-			int drawIndex = i;
+			const int drawIndex = i;
 
 			if (isMultibyte(str[i]))
 			{
-				int localChar = 0x81 + str[i + 1] + ((str[i] - 0x81) * 0x100);
+				const int localChar = 0x81 + str[i + 1] + ((str[i] - 0x81) * 0x100);
 				rcChar.left = ((localChar % 32) * charWidth);
 				rcChar.top = ((localChar >> 5) * charHeight);
 				rcChar.right = rcChar.left + charWidth;

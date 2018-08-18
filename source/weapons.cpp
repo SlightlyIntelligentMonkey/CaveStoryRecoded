@@ -63,7 +63,7 @@ void actWeapon()
 	else if (errorOnNotImplemented)
 	{
 		string msg = "Weapon " + to_string(weapons[selectedWeapon].code) + " is not implemented.";
-		SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_WARNING, "Missing Weapon", msg.c_str(), NULL);
+		SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_WARNING, "Missing Weapon", msg.c_str(), nullptr);
 	}
 }
 
@@ -179,7 +179,7 @@ bool checkWeapon(int code)
 void giveWeaponExperience(int x)
 {
 	int lv = weapons[selectedWeapon].level - 1; // [esp+18h] [ebp-10h]
-	int arms_code = weapons[selectedWeapon].code; // [esp+1Ch] [ebp-Ch]
+	const int arms_code = weapons[selectedWeapon].code; // [esp+1Ch] [ebp-Ch]
 	weapons[selectedWeapon].exp += x;
 
 	if (lv == 2)

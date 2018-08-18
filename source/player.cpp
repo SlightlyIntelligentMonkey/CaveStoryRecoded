@@ -875,7 +875,7 @@ void player::draw() {
 		if (ani_no == 1 || ani_no == 3 || ani_no == 6 || ani_no == 8)
 			++weaponRect.top;
 
-		int weaponOffsetX = (direct != dirLeft ? 0 : 8); //Make the weapon shift to the left if facing left
+		const int weaponOffsetX = (direct != dirLeft ? 0 : 8); //Make the weapon shift to the left if facing left
 		drawTexture(sprites[TEX_ARMS], &weaponRect, (x - view.left) / 0x200 - viewport.x / 0x200 - weaponOffsetX, (y - view.top) / 0x200 - viewport.y / 0x200 + weaponOffsetY);
 
 		if (!((shock >> 1) & 1)) //Invulnerability BLinking
