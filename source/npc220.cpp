@@ -178,7 +178,10 @@ void npcAct238(npc *NPC) //Killer press
 			NPC->act_wait = 0;
 
 			for (int i = 0; i < 4; ++i)
+			{
 				createNpc(4, NPC->x + (random(-16, 16) << 9), NPC->y + (random(-8, 8) << 9), 0, 0, 0, nullptr);
+				playSound(12);
+			}
 		}
 		break;
 

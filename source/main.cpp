@@ -1,5 +1,8 @@
 #include "common.h"
 
+//Debug flags
+int debugFlags = 0;
+
 //Rendering and view related variables
 SDL_Window *window;
 SDL_Renderer *renderer;

@@ -9,9 +9,11 @@ void createValueView(int *px, int *py, int value)
 
 	if (valueviews.size())
 	{
-		for (size_t i = 0; i < valueviews.size(); ++i)
+		for (size_t i = 0;
+			i < valueviews.size();
+			++i)
 		{
-			if (!(valueviews[i].flag) || valueviews[i].px == px)
+			if (!(!valueviews[i].flag || valueviews[i].px != px || (valueviews[i].value >= 0 || value >= 0) && (valueviews[i].value <= 0 || value <= 0)))
 			{
 				repVV = &valueviews[i];
 				break;
@@ -68,6 +70,7 @@ void valueview::init(int *px, int *py, int value)
 
 void valueview::add(int value)
 {
+	this->count = 0x20;
 	this->value += value;
 }
 
@@ -75,8 +78,6 @@ void valueview::update()
 {
 	if (++count < 32)
 		offset_y -= 0x100;
-	//if (count > 72)
-	//	++rect.top;
 	if (count > 80)
 		flag = 0;
 }

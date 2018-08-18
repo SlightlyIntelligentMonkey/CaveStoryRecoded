@@ -49,11 +49,14 @@
     <Filter Include="Source Files\classes\weapons\shoot">
       <UniqueIdentifier>{1e9da9f7-fb23-4ccb-9cf9-44b4263996e9}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\classes\weapons\bullets">
-      <UniqueIdentifier>{754df458-b380-47d1-a7ca-725b1365a1b9}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Source Files\modules\collision">
       <UniqueIdentifier>{60184d26-58a8-46b5-a929-e52d1fe5c897}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\classes\bullet">
+      <UniqueIdentifier>{b846e75c-6357-4a5b-ae14-c31015067097}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\classes\bullet\act">
+      <UniqueIdentifier>{754df458-b380-47d1-a7ca-725b1365a1b9}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -79,9 +82,6 @@
       <Filter>Source Files\classes\player</Filter>
     </ClCompile>
     <ClCompile Include="weapons.cpp">
-      <Filter>Source Files\classes\weapons</Filter>
-    </ClCompile>
-    <ClCompile Include="bullet.cpp">
       <Filter>Source Files\classes\weapons</Filter>
     </ClCompile>
     <ClCompile Include="npc.cpp">
@@ -112,7 +112,7 @@
       <Filter>Source Files\states</Filter>
     </ClCompile>
     <ClCompile Include="polarStar.cpp">
-      <Filter>Source Files\classes\weapons\bullets</Filter>
+      <Filter>Source Files\classes\bullet\act</Filter>
     </ClCompile>
     <ClCompile Include="npc080.cpp">
       <Filter>Source Files\classes\npc\act</Filter>
@@ -178,7 +178,10 @@
       <Filter>Source Files\modules\collision</Filter>
     </ClCompile>
     <ClCompile Include="spur.cpp">
-      <Filter>Source Files\classes\weapons\bullets</Filter>
+      <Filter>Source Files\classes\bullet\act</Filter>
+    </ClCompile>
+    <ClCompile Include="bullet.cpp">
+      <Filter>Source Files\classes\bullet</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -199,9 +202,6 @@
     </ClInclude>
     <ClInclude Include="player.h">
       <Filter>Source Files\classes\player</Filter>
-    </ClInclude>
-    <ClInclude Include="bullet.h">
-      <Filter>Source Files\classes\weapons</Filter>
     </ClInclude>
     <ClInclude Include="npc.h">
       <Filter>Source Files\classes\npc</Filter>
@@ -234,7 +234,7 @@
       <Filter>Source Files\states</Filter>
     </ClInclude>
     <ClInclude Include="polarStar.h">
-      <Filter>Source Files\classes\weapons\bullets</Filter>
+      <Filter>Source Files\classes\bullet\act</Filter>
     </ClInclude>
     <ClInclude Include="npc080.h">
       <Filter>Source Files\classes\npc\act</Filter>
@@ -306,7 +306,10 @@
       <Filter>Source Files\modules\collision</Filter>
     </ClInclude>
     <ClInclude Include="spur.h">
-      <Filter>Source Files\classes\weapons\bullets</Filter>
+      <Filter>Source Files\classes\bullet\act</Filter>
+    </ClInclude>
+    <ClInclude Include="bullet.h">
+      <Filter>Source Files\classes\bullet</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

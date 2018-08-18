@@ -1,5 +1,6 @@
 #include "npc.h"
 #include "npcAct.h"
+#include "weapons.h"
 
 std::vector<npc> npcs(0);
 
@@ -22,26 +23,46 @@ void createSmoke(int x, int y, int w, int num)
 
 void createNpc(int setCode, int setX, int setY, int setXm, int setYm, int setDir, npc *parentNpc)
 {
-	npc *repNpc = nullptr;
-
-	if (npcs.size())
+	size_t n;
+	for (n = 0; ; ++n)
 	{
-		for (size_t i = 0; i < npcs.size(); ++i)
-		{
-			if (!(npcs[i].cond & npccond_alive))
-			{
-				repNpc = &npcs[i];
-				break;
-			}
-		}
+		if (!(n < npcs.size() && npcs[n].cond))
+			break;
 	}
 
-	if (repNpc != nullptr)
-		repNpc->init(setCode, setX, setY, setXm, setYm, setDir, parentNpc);
+	if (n != npcs.size())
+	{
+		npcs[n].init(setCode, setX, setY, setXm, setYm, setDir, parentNpc);
+	}
 	else
 	{
 		npc newNpc;
 		newNpc.init(setCode, setX, setY, setXm, setYm, setDir, parentNpc);
+		npcs.push_back(newNpc);
+	}
+}
+
+void createNpcExp(int setCode, int setX, int setY, int setXm, int setYm, int setDir, npc *parentNpc, int setEvent, int exp)
+{
+	size_t n;
+	for (n = 0; ; ++n)
+	{
+		if (!(n < npcs.size() && npcs[n].cond))
+			break;
+	}
+
+	if (n != npcs.size())
+	{
+		npcs[n].init(setCode, setX, setY, setXm, setYm, setDir, parentNpc);
+		npcs[n].code_event = setEvent;
+		npcs[n].exp = exp;
+	}
+	else
+	{
+		npc newNpc;
+		newNpc.init(setCode, setX, setY, setXm, setYm, setDir, parentNpc);
+		newNpc.code_event = setEvent;
+		newNpc.exp = exp;
 		npcs.push_back(newNpc);
 	}
 }
@@ -109,6 +130,145 @@ void drawNPC()
 				npcs[i].draw();
 		}
 	}
+}
+
+//Npc death things
+void dropExperience(int x, int y, int exp)
+{
+	for (; exp > 0 ;)
+	{
+		int sub_exp;
+
+		if (exp <= 19)
+		{
+			if (exp <= 4)
+			{
+				if (exp > 0)
+				{
+					--exp;
+					sub_exp = 1;
+				}
+			}
+			else
+			{
+				exp -= 5;
+				sub_exp = 5;
+			}
+		}
+		else
+		{
+			exp -= 20;
+			sub_exp = 20;
+		}
+
+		createNpcExp(1, x, y, 0, 0, 0, nullptr, 0, sub_exp);
+	}
+}
+
+int dropMissiles(int x, int y, int val)
+{
+	int tamakazu_ari[10];
+	int t = 0;
+	memset(tamakazu_ari, 0, 0x28u);
+
+	int n;
+	for (n = 0; n <= 7; ++n)
+	{
+		if (weapons[n].code == 5)
+			tamakazu_ari[t++] = 0;
+		else if (weapons[n].code == 10)
+			tamakazu_ari[t++] = 1;
+		else
+			tamakazu_ari[t] = 0;
+	}
+
+	if (!t)
+		return 0;
+
+	n = random(1, 10 * t);
+	int bullet_no = tamakazu_ari[n % t];
+
+	createNpcExp(86, x, y, 0, 0, 0, nullptr, bullet_no, val);
+
+	return 1;
+}
+
+void killNpc(npc *NPC, bool bVanish)
+{
+	int x = NPC->x;
+	int y = NPC->y;
+	int flag = NPC->code_flag;
+	int voice = NPC->destroy_voice;
+	int size = NPC->size;
+	int explodeWidth = NPC->view.right;
+	int exp = NPC->exp;
+
+	//Destroy npc
+	if (!(NPC->bits & npc_showdamage))
+	{
+		NPC->cond = 0;
+	}
+	else
+	{
+		if (NPC->damage_view)
+			createValueView(&NPC->x, &NPC->y, NPC->damage_view);
+
+		if (bVanish)
+		{
+			NPC->init(3, NPC->x, NPC->y, 0, 0, 0, nullptr);
+		}
+	}
+
+	//Play sound
+	playSound(voice);
+
+	//Create explosion smoke
+	switch (size)
+	{
+	case 1:
+		createSmoke(x, y, explodeWidth, 3);
+		break;
+	case 2:
+		createSmoke(x, y, explodeWidth, 7);
+		break;
+	case 3:
+		createSmoke(x, y, explodeWidth, 12);
+		break;
+	}
+
+	//Drop experience, health, and missiles
+	if (exp)
+	{
+		int drop = random(1, 5);
+		int missileDrop = 0;
+
+		if (drop == 1) //Health drop
+		{
+			if (NPC->exp <= 6)
+				createNpcExp(1, x, y, 0, 0, 0, nullptr, 0, 2);
+			else
+				createNpcExp(1, x, y, 0, 0, 0, nullptr, 0, 6);
+		}
+		else
+		{
+			if (drop != 2) //Drop experience
+			{
+				dropExperience(x, y, exp);
+			}
+			else //Drop missile, if doesn't drop, drop experience instead.
+			{
+				if (NPC->exp <= 6)
+					missileDrop = dropMissiles(x, y, 1);
+				else
+					missileDrop = dropMissiles(x, y, 3);
+
+				if (!missileDrop)
+					dropExperience(x, y, exp);
+			}
+		}
+	}
+
+	setFlag(flag);
 }
 
 //NPC Table
@@ -193,27 +353,50 @@ void npc::update()
 {
 	npcActs[code_char](this);
 
-	if (shock) { --shock; }
+	if (shock > 0)
+		--shock;
 }
 
 void npc::draw()
 {
 	if (cond & npccond_alive)
 	{
+		int xOffset = 0;
+
+		if (shock)
+		{
+			xOffset = 2 * ((shock >> 1) & 1) - 1;
+		}
+		else
+		{
+			if ((bits & npc_showdamage) != 0 && damage_view)
+			{
+				createValueView(&x, &y, damage_view);
+				damage_view = 0;
+			}
+		}
+
 		int side = view.left;
 
 		if (direct)
 			side = view.right;
 
-		drawTexture(sprites[surf], &rect, (x - side) / 0x200 - viewport.x / 0x200, (y - view.top) / 0x200 - viewport.y / 0x200);
+		drawTexture(sprites[surf], &rect, (x - side) / 0x200 - viewport.x / 0x200 + xOffset, (y - view.top) / 0x200 - viewport.y / 0x200);
 
-		/*if (bits & npc_interact)
-			SDL_SetRenderDrawColor(renderer, 255, 255, 0, 255);
-		else if (damage > 0)
-			SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255);
-		else
-			SDL_SetRenderDrawColor(renderer, 0, 100, 255, 255);
+		if (debugFlags & showNPCId)
+		{
+			size_t index = 0;
 
-		drawRect(((x - hit.left) / 0x200) - (viewport.x / 0x200), ((y - hit.top) / 0x200) - (viewport.y / 0x200), (hit.left + hit.right) / 0x200, (hit.top + hit.bottom) / 0x200);*/
+			for (size_t i = 0; i < npcs.size(); i++)
+			{
+				if (&npcs[i] == this)
+				{
+					index = i;
+					break;
+				}
+			}
+
+			drawString((x - side) / 0x200 - viewport.x / 0x200 + xOffset, (y - view.top) / 0x200 - viewport.y / 0x200 - 16, std::to_string(index).c_str(), nullptr);
+		}
 	}
 }
