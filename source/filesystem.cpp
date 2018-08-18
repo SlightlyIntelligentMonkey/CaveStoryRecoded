@@ -152,13 +152,12 @@ void loadProfile()
 }
 
 void saveProfile() {
-	auto profile = new BYTE[0x604];
+	BYTE profile[0x604] = { 0 };
 
 	if (profile == nullptr)
 		doCustomError("Could not allocate memory for profile");
 
 	//Set data
-	memset(profile, 0, 0x604);
 	memcpy(profile, profileCode, 0x08);
 
 	writeLElong(profile, currentLevel, 0x08); //Level

@@ -239,8 +239,6 @@ bulletAct bulletActs[] = {
 	&actBulletSpurLevel3,	// Spur Lvl 3
 };
 
-static constexpr bool errorOnBulletNonImplemented = true;
-
 //Update and draw
 void bullet::update()
 {
@@ -248,7 +246,7 @@ void bullet::update()
 	{
 		if (bulletActs[code_bullet] != nullptr)
 			bulletActs[code_bullet](this);
-		else if (errorOnBulletNonImplemented)
+		else if (errorOnNotImplemented)
 		{
 			string msg = "Bullet " + to_string(this->code_bullet) + " is not implemented yet.";
 			SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_WARNING, "Missing Bullet", msg.c_str(), NULL);
