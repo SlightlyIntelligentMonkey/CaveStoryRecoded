@@ -428,7 +428,7 @@ void npcAct062(npc *NPC) // Kazuma, facing away
 	{
 	case initial:
 		NPC->x -= 0x800;
-		NPC->y = 0x2000;
+		NPC->y += 0x2000;
 		NPC->act_no = typing;
 		NPC->ani_no = 0;
 		NPC->ani_wait = 0;
