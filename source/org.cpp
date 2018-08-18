@@ -1,6 +1,6 @@
 #include "org.h"
 
-ORG *song = (ORG*)malloc(sizeof(ORG));
+auto song = static_cast<ORG*>(malloc(sizeof(ORG)));
 
 void loadOrg(const char *name)
 {

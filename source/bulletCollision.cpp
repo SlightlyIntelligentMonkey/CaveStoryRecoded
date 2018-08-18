@@ -45,7 +45,7 @@ int bulletJudgeBlock(int x, int y, bullet *bul) //For judging breakable blocks
 	return hit;
 }
 
-int bulletJudgeBlock2(int x, int y, uint8_t *atrb, bullet *bul) //For judging actual solid blocks
+int bulletJudgeBlock2(int x, int y, const uint8_t *atrb, bullet *bul) //For judging actual solid blocks
 {
 	int block[4];
 	int workX;

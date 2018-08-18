@@ -169,8 +169,7 @@ void npcAct042(npc *NPC) // Sue
 			NPC->act_no = standAndBlink;
 			break;
 		}
-		else
-			NPC->pNpc = &npcs[i];
+		NPC->pNpc = &npcs[i];
 		// Fallthrough
 	case 14:
 		if (NPC->pNpc->direct != dirLeft)
@@ -189,8 +188,8 @@ void npcAct042(npc *NPC) // Sue
 
 	case undeadCoreIntro:
 		NPC->act_no = 16;
-		createNpc(NPC_RedCrystal, NPC->x + 0x10000, NPC->y, 0, 0, dirLeft, NULL);
-		createNpc(NPC_RedCrystal, NPC->x + 0x10000, NPC->y, 0, 0, dirRight, NULL);
+		createNpc(NPC_RedCrystal, NPC->x + 0x10000, NPC->y, 0, 0, dirLeft, nullptr);
+		createNpc(NPC_RedCrystal, NPC->x + 0x10000, NPC->y, 0, 0, dirRight, nullptr);
 		NPC->xm = 0;
 		NPC->ani_no = 0;
 		// Fallthrough
