@@ -44,6 +44,9 @@ void updateValueView()
 			if (valueviews[i].flag)
 				valueviews[i].update();
 		}
+
+		while (valueviews.size() && !(valueviews[valueviews.size() - 1].flag))
+			valueviews.erase(valueviews.begin() + valueviews.size() - 1);
 	}
 }
 

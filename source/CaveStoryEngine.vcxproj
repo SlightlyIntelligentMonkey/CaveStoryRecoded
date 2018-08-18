@@ -172,6 +172,7 @@
     <ClCompile Include="bulletCollision.cpp" />
     <ClCompile Include="caret.cpp" />
     <ClCompile Include="fade.cpp" />
+    <ClCompile Include="fireballShoot.cpp" />
     <ClCompile Include="game.cpp" />
     <ClCompile Include="hud.cpp" />
     <ClCompile Include="npc080.cpp" />
@@ -211,6 +212,7 @@
     <ClCompile Include="render.cpp" />
     <ClCompile Include="script.cpp" />
     <ClCompile Include="sound.cpp" />
+    <ClCompile Include="fireball.cpp" />
     <ClCompile Include="valueview.cpp" />
     <ClCompile Include="weapons.cpp" />
   </ItemGroup>
@@ -219,6 +221,7 @@
     <ClInclude Include="bulletCollision.h" />
     <ClInclude Include="caret.h" />
     <ClInclude Include="fade.h" />
+    <ClInclude Include="fireball.h" />
     <ClInclude Include="flags.h" />
     <ClInclude Include="game.h" />
     <ClInclude Include="npc080.h" />

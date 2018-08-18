@@ -129,6 +129,9 @@ void updateBullets()
 			if (bullets[i].cond & 0x80)
 				bullets[i].update();
 		}
+
+		while (bullets.size() && !(bullets[bullets.size() - 1].cond & 0x80))
+			bullets.erase(bullets.begin() + bullets.size() - 1);
 		
 		bulletHitMap();
 		bulletHitNpcs();
@@ -179,6 +182,7 @@ void bullet::init(int setCode, int setX, int setY, uint8_t setDir)
 
 //Act functions
 #include "polarStar.h"
+#include "fireball.h"
 
 bulletAct bulletActs[] = {
 	static_cast<bulletAct>(nullptr),
@@ -188,9 +192,9 @@ bulletAct bulletActs[] = {
 	&actBulletPolarStar1,
 	&actBulletPolarStar2,
 	&actBulletPolarStar3,
-	static_cast<bulletAct>(nullptr),
-	static_cast<bulletAct>(nullptr),
-	static_cast<bulletAct>(nullptr),
+	&actBulletFireball1,
+	&actBulletFireball2,
+	&actBulletFireball3,
 	static_cast<bulletAct>(nullptr),
 	static_cast<bulletAct>(nullptr),
 	static_cast<bulletAct>(nullptr),

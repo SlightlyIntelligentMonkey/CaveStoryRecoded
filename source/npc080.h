@@ -10,3 +10,4 @@ void npcAct091(npc *NPC);
 
 void npcAct096(npc *NPC);
 void npcAct097(npc *NPC);
+void npcAct098(npc *NPC);

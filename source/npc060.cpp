@@ -602,7 +602,7 @@ void npcAct066(npc *NPC) //Bubble (to catch Toroko in the shack)
 			{
 				NPC->tgt_x = npcs[i].x;
 				NPC->tgt_y = npcs[i].y;
-				NPC->tgt_npc = &npcs[i];
+				NPC->count1 = i;
 				deg = getAtan(NPC->x - NPC->tgt_x, NPC->y - NPC->tgt_y);
 				NPC->xm = 2 * getCos(deg);
 				NPC->ym = 2 * getSin(deg);
@@ -630,10 +630,7 @@ void npcAct066(npc *NPC) //Bubble (to catch Toroko in the shack)
 		{
 			NPC->act_no = 2;
 			NPC->ani_no = 2;
-
-			if (NPC->tgt_npc)
-				NPC->tgt_npc->cond = 0;
-
+			npcs[NPC->count1].cond = 0;
 			playSound(21);
 		}
 

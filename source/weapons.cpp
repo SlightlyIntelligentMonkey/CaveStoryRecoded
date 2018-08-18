@@ -6,7 +6,7 @@ weaponShoot shootFunctions[] = {
 	(weaponShoot)nullptr,
 	(weaponShoot)nullptr,
 	&shootPolarStar,
-	(weaponShoot)nullptr,
+	&shootFireball,
 	(weaponShoot)nullptr,
 	(weaponShoot)nullptr,
 	(weaponShoot)nullptr,
