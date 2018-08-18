@@ -152,7 +152,7 @@ void loadProfile()
 }
 
 void saveProfile() {
-	auto profile = static_cast<BYTE *>(malloc(0x604));
+	auto profile = new BYTE[0x604];
 
 	if (profile == nullptr)
 		doCustomError("Could not allocate memory for profile");
@@ -199,5 +199,5 @@ void saveProfile() {
 	writeFile(profileName, profile, 0x604);
 
 	//End
-	free(profile);
+	delete[] profile;
 }
