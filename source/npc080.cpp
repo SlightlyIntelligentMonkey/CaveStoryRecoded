@@ -350,6 +350,61 @@ void npcAct084(npc *NPC) //Basu 1 projectile
 	}
 }
 
+void npcAct087(npc *NPC)
+{
+	constexpr RECT rcEXP2[2] = { {32, 80, 48, 96}, { 48, 80, 64, 96 } };
+	constexpr RECT rcEXP6[2] = { {64, 80, 80, 96}, { 80, 80, 96, 96 } };
+	constexpr RECT rcCount1Above547 = { 16, 0, 32, 16 };
+	
+	if (NPC->direct == dirLeft)
+	{
+		if(++NPC->ani_wait > 2)
+		{
+			NPC->ani_wait = 0;
+			++NPC->ani_no;
+		}
+		if (NPC->ani_no > 1)
+			NPC->ani_no = 0;
+	}
+
+	if (false) // if (currentBackground.mode == 5 || currentBackground.mode == 6)
+	{
+		if (NPC->act_no == 0)
+		{
+			NPC->act_no = 1;
+			NPC->ym = random(-0x20, 0x20);
+			NPC->xm = random(0x7F, 0x100);
+		}
+		NPC->xm -= 8;
+		if (NPC->x < 0xA000)
+			NPC->cond = 0;
+		if (NPC->x < -0x600)
+			NPC->x = -0x600;
+		if (NPC->flag & npc_solidsoft)
+			NPC->xm = 0x100;
+		if (NPC->flag & npc_ignore44)
+			NPC->ym = 0x40;
+		if (NPC->flag & npc_ignoresolid)
+			NPC->ym = -0x40;
+		NPC->x += NPC->xm;
+		NPC->y += NPC->ym;
+	}
+	
+	if (NPC->exp == 2)
+		NPC->rect = rcEXP2[NPC->ani_no];
+	else if (NPC->exp == 6)
+		NPC->rect = rcEXP6[NPC->ani_no];
+
+	if (NPC->direct == dirLeft)
+		++NPC->count1;
+	if (NPC->count1 > 550)
+		NPC->cond = 0;
+	if (NPC->count1 > 500 && NPC->count1 / 2 % 2)
+		NPC->rect.right = 0;
+	if (NPC->count1 > 547)
+		NPC->rect = rcCount1Above547;
+}
+
 void npcAct090(npc *NPC) // Background
 {
 	NPC->rect = { 280, 80, 296, 104 };
