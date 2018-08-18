@@ -281,10 +281,10 @@ void loadNpcTable()
 	if (tblStream == nullptr)
 		doError();
 
-	const int tblSize = (int)SDL_RWsize(tblStream);
+	const auto tblSize = static_cast<int>(SDL_RWsize(tblStream));
 
 	const int npcs = tblSize / 0x18;
-	npcTable = (NPC_TABLE *)(malloc(0x18 * npcs));
+	npcTable = static_cast<NPC_TABLE *>(malloc(0x18 * npcs));
 
 	if (npcTable == nullptr)
 		doCustomError("Could not allocate memory for NPC table");

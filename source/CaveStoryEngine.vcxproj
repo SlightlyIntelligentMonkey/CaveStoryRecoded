@@ -212,6 +212,7 @@
     <ClCompile Include="render.cpp" />
     <ClCompile Include="script.cpp" />
     <ClCompile Include="sound.cpp" />
+    <ClCompile Include="spur.cpp" />
     <ClCompile Include="fireball.cpp" />
     <ClCompile Include="valueview.cpp" />
     <ClCompile Include="weapons.cpp" />
@@ -237,6 +238,7 @@
     <ClInclude Include="polarStar.h" />
     <ClInclude Include="script.h" />
     <ClInclude Include="shootFunctions.h" />
+    <ClInclude Include="spur.h" />
     <ClInclude Include="valueview.h" />
     <ClInclude Include="weapons.h" />
     <ClInclude Include="hud.h" />

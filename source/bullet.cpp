@@ -183,10 +183,11 @@ void bullet::init(int setCode, int setX, int setY, uint8_t setDir)
 //Act functions
 #include "polarStar.h"
 #include "fireball.h"
+#include "spur.h"
 
 bulletAct bulletActs[] = {
-	static_cast<bulletAct>(nullptr),
-	static_cast<bulletAct>(nullptr),
+	static_cast<bulletAct>(nullptr),	// There isn't a 0th bullet
+	static_cast<bulletAct>(nullptr),	// Snake
 	static_cast<bulletAct>(nullptr),
 	static_cast<bulletAct>(nullptr),
 	&actBulletPolarStar1,
@@ -195,42 +196,42 @@ bulletAct bulletActs[] = {
 	&actBulletFireball1,
 	&actBulletFireball2,
 	&actBulletFireball3,
+	static_cast<bulletAct>(nullptr),	// Machine Gun
+	static_cast<bulletAct>(nullptr),
+	static_cast<bulletAct>(nullptr),
+	static_cast<bulletAct>(nullptr),	// Missile Launcher
+	static_cast<bulletAct>(nullptr),
+	static_cast<bulletAct>(nullptr),
+	static_cast<bulletAct>(nullptr),	// Missile Explosion
+	static_cast<bulletAct>(nullptr),
+	static_cast<bulletAct>(nullptr),
+	static_cast<bulletAct>(nullptr),	// Bubbler
+	static_cast<bulletAct>(nullptr),
+	static_cast<bulletAct>(nullptr),
+	static_cast<bulletAct>(nullptr),	// Bubbler Spurs
+	static_cast<bulletAct>(nullptr),	// Blade Slash
+	static_cast<bulletAct>(nullptr),	// Unused
+	static_cast<bulletAct>(nullptr),	// Blade
+	static_cast<bulletAct>(nullptr),
+	static_cast<bulletAct>(nullptr),
+	static_cast<bulletAct>(nullptr),	// Super Missile Launcher
 	static_cast<bulletAct>(nullptr),
 	static_cast<bulletAct>(nullptr),
 	static_cast<bulletAct>(nullptr),
 	static_cast<bulletAct>(nullptr),
 	static_cast<bulletAct>(nullptr),
+	static_cast<bulletAct>(nullptr),	// Nemesis
 	static_cast<bulletAct>(nullptr),
 	static_cast<bulletAct>(nullptr),
+	static_cast<bulletAct>(nullptr),	// Chargeless Spur
 	static_cast<bulletAct>(nullptr),
 	static_cast<bulletAct>(nullptr),
+	static_cast<bulletAct>(nullptr),	// Non-moving Spur
 	static_cast<bulletAct>(nullptr),
 	static_cast<bulletAct>(nullptr),
-	static_cast<bulletAct>(nullptr),
-	static_cast<bulletAct>(nullptr),
-	static_cast<bulletAct>(nullptr),
-	static_cast<bulletAct>(nullptr),
-	static_cast<bulletAct>(nullptr),
-	static_cast<bulletAct>(nullptr),
-	static_cast<bulletAct>(nullptr),
-	static_cast<bulletAct>(nullptr),
-	static_cast<bulletAct>(nullptr),
-	static_cast<bulletAct>(nullptr),
-	static_cast<bulletAct>(nullptr),
-	static_cast<bulletAct>(nullptr),
-	static_cast<bulletAct>(nullptr),
-	static_cast<bulletAct>(nullptr),
-	static_cast<bulletAct>(nullptr),
-	static_cast<bulletAct>(nullptr),
-	static_cast<bulletAct>(nullptr),
-	static_cast<bulletAct>(nullptr),
-	static_cast<bulletAct>(nullptr),
-	static_cast<bulletAct>(nullptr),
-	static_cast<bulletAct>(nullptr),
-	static_cast<bulletAct>(nullptr),
-	static_cast<bulletAct>(nullptr),
-	static_cast<bulletAct>(nullptr),
-	static_cast<bulletAct>(nullptr),
+	static_cast<bulletAct>(nullptr),	// Nemesis-related
+	&actBulletSpurLevel2,	// Spur Lvl 2
+	&actBulletSpurLevel3,	// Spur Lvl 3
 };
 
 //Update and draw

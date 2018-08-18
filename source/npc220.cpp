@@ -1,5 +1,16 @@
 #include "npc220.h"
 
+void npcAct222(npc *NPC) // Prison bars
+{
+	if (!NPC->act_no)
+	{
+		++NPC->act_no;
+		NPC->y -= 0x1000;
+	}
+
+	NPC->rect = { 96, 168, 112, 200 };
+}
+
 void npcAct227(npc *NPC) // Bucket
 {
 	NPC->rect = { 208, 32, 224, 48 };

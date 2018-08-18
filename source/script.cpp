@@ -5,7 +5,7 @@
 //Variables
 TSC tsc;
 char tscText[0x100];
-uint8_t *tscTextFlag = (uint8_t*)malloc(0x100);
+uint8_t *tscTextFlag = static_cast<uint8_t*>(malloc(0x100));
 
 //Mode enum
 enum TSC_mode
@@ -54,7 +54,7 @@ void loadStageTsc(const char *name) {
 	SDL_RWops *headRW = SDL_RWFromFile("data/Head.tsc", "rb");
 	if (headRW == nullptr)
 		doError();
-	size_t headSize = (size_t)SDL_RWsize(headRW);
+	auto headSize = static_cast<size_t>(SDL_RWsize(headRW));
 
 	//Put the data into memory
 	headRW->read(headRW, tsc.data, 1, headSize);
@@ -67,7 +67,7 @@ void loadStageTsc(const char *name) {
 	SDL_RWops *bodyRW = SDL_RWFromFile(name, "rb");
 	if (!bodyRW)
 		doError();
-	size_t bodySize = (size_t)SDL_RWsize(bodyRW);
+	auto bodySize = static_cast<size_t>(SDL_RWsize(bodyRW));
 
 	//Put the data into memory
 	bodyRW->read(bodyRW, tsc.data + headSize, 1, bodySize);
@@ -77,7 +77,7 @@ void loadStageTsc(const char *name) {
 	bodyRW->close(bodyRW);
 
 	//Finish off by setting some stuff in the tsc struct
-	tsc.size = (int)(headSize + bodySize);
+	tsc.size = static_cast<int>(headSize + bodySize);
 	strcpy(tsc.path, name);
 }
 
@@ -1051,7 +1051,6 @@ void drawTsc()
 		}
 
 		//Draw message box background (if not MS2)
-		int strip;
 		if (tsc.flags & 2)
 		{
 			rcFrame1 = { 0, 0, 244, 8 };
@@ -1059,6 +1058,8 @@ void drawTsc()
 			rcFrame3 = { 0, 16, 244, 24 };
 			
 			drawTexture(sprites[TEX_TEXTBOX], &rcFrame1, tsc.rcText.left - 14, tsc.rcText.top - 10);
+			
+			int strip;
 			for (strip = 1; strip <= 6; ++strip)
 				drawTexture(sprites[TEX_TEXTBOX], &rcFrame2, tsc.rcText.left - 14, 8 * strip + tsc.rcText.top - 10);
 			drawTexture(sprites[TEX_TEXTBOX], &rcFrame3, tsc.rcText.left - 14, 8 * strip + tsc.rcText.top - 10);
