@@ -15,19 +15,19 @@ void actBulletPolarStar1(bullet *bul)
 			
 			switch (bul->direct)
 			{
-			case 0:
+			case dirLeft:
 				bul->enemyYL = 0x400;
 				bul->xm = -0x1000;
 				break;
-			case 1:
+			case dirUp:
 				bul->enemyXL = 0x400;
 				bul->ym = -0x1000;
 				break;
-			case 2:
+			case dirRight:
 				bul->enemyYL = 0x400;
 				bul->xm = 0x1000;
 				break;
-			case 3:
+			case dirDown:
 				bul->enemyXL = 0x400;
 				bul->ym = 0x1000;
 				break;
@@ -36,7 +36,7 @@ void actBulletPolarStar1(bullet *bul)
 			}
 		}
 
-		if (bul->direct != 1 && bul->direct != 3)
+		if (bul->direct != dirUp && bul->direct != dirDown)
 			bul->rect = { 128, 32, 144, 48 };
 		else
 			bul->rect = { 144, 32, 160, 48 };
@@ -44,7 +44,7 @@ void actBulletPolarStar1(bullet *bul)
 	else
 	{
 		bul->cond = 0;
-		createCaret(bul->x, bul->y, 3, 0);
+		createCaret(bul->x, bul->y, effect_Star, 0);
 	}
 }
 
@@ -63,19 +63,19 @@ void actBulletPolarStar2(bullet *bul)
 
 			switch (bul->direct)
 			{
-			case 0:
+			case dirLeft:
 				bul->enemyYL = 0x800;
 				bul->xm = -0x1000;
 				break;
-			case 1:
+			case dirUp:
 				bul->enemyXL = 0x800;
 				bul->ym = -0x1000;
 				break;
-			case 2:
+			case dirRight:
 				bul->enemyYL = 0x800;
 				bul->xm = 0x1000;
 				break;
-			case 3:
+			case dirDown:
 				bul->enemyXL = 0x800;
 				bul->ym = 0x1000;
 				break;
@@ -84,7 +84,7 @@ void actBulletPolarStar2(bullet *bul)
 			}
 		}
 
-		if (bul->direct != 1 && bul->direct != 3)
+		if (bul->direct != dirUp && bul->direct != dirDown)
 			bul->rect = { 160, 32, 176, 48 };
 		else
 			bul->rect = { 176, 32, 192, 48 };
@@ -92,7 +92,7 @@ void actBulletPolarStar2(bullet *bul)
 	else
 	{
 		bul->cond = 0;
-		createCaret(bul->x, bul->y, 3, 0);
+		createCaret(bul->x, bul->y, effect_Star, 0);
 	}
 }
 
@@ -111,16 +111,16 @@ void actBulletPolarStar3(bullet *bul)
 
 			switch (bul->direct)
 			{
-			case 0:
+			case dirLeft:
 				bul->xm = -0x1000;
 				break;
-			case 1:
+			case dirUp:
 				bul->ym = -0x1000;
 				break;
-			case 2:
+			case dirRight:
 				bul->xm = 0x1000;
 				break;
-			case 3:
+			case dirDown:
 				bul->ym = 0x1000;
 				break;
 			default:
@@ -128,7 +128,7 @@ void actBulletPolarStar3(bullet *bul)
 			}
 		}
 
-		if (bul->direct != 1 && bul->direct != 3)
+		if (bul->direct != dirUp && bul->direct != dirDown)
 			bul->rect = { 128, 48, 144, 64 };
 		else
 			bul->rect = { 144, 48, 160, 64 };
@@ -136,6 +136,6 @@ void actBulletPolarStar3(bullet *bul)
 	else
 	{
 		bul->cond = 0;
-		createCaret(bul->x, bul->y, 3, 0);
+		createCaret(bul->x, bul->y, effect_Star, 0);
 	}
 }

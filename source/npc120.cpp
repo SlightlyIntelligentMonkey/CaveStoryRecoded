@@ -122,7 +122,7 @@ void npcAct139(npc *NPC) //Doctor with the crown
 		NPC->xm = 0;
 		NPC->ym = 0;
 		NPC->act_wait = 2 * (NPC->rect.bottom - NPC->rect.top);
-		playSound(29);
+		playSound(SFX_Teleport);
 
 	case 31:
 		--NPC->act_wait;
@@ -138,7 +138,7 @@ void npcAct139(npc *NPC) //Doctor with the crown
 		NPC->act_wait = 0;
 		NPC->xm = 0;
 		NPC->ym = 0;
-		playSound(29);
+		playSound(SFX_Teleport);
 
 	case 41:
 		NPC->ani_no = 2;
@@ -155,7 +155,7 @@ void npcAct139(npc *NPC) //Doctor with the crown
 	NPC->x += NPC->xm;
 	NPC->y += NPC->ym;
 
-	if (NPC->direct)
+	if (NPC->direct != dirLeft)
 		NPC->rect = rcRight[NPC->ani_no];
 	else
 		NPC->rect = rcLeft[NPC->ani_no];

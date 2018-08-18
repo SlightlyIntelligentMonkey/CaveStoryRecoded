@@ -113,3 +113,6 @@ void drawNPC();
 void killNpc(npc *NPC, bool bVanish);
 
 extern std::vector<npc> npcs;
+
+extern int superXPos;
+extern int superYPos;

@@ -10,7 +10,7 @@ void npcAct300(npc *NPC) //Demon crown
 
 	if (++NPC->ani_wait % 8 == 1)
 	{
-		createCaret(NPC->x + (random(-8, 8) << 9), NPC->y + 4096, 13, 1);
+		createCaret(NPC->x + (random(-8, 8) << 9), NPC->y + 4096, effect_HeadbumpSparks, 1);
 	}
 
 	NPC->rect = { 192, 80, 208, 96 };
@@ -35,7 +35,7 @@ void npcAct302(npc *NPC) //Camera Helper NPC
 		{
 			NPC->act_no = 101;
 
-			if (NPC->direct)
+			if (NPC->direct != dirLeft)
 			{
 				int n;
 
@@ -75,16 +75,16 @@ void npcAct302(npc *NPC) //Camera Helper NPC
 		return;
 	}
 	
-	if (NPC->direct == 1)
+	if (NPC->direct == dirUp)
 		NPC->y -= 0x400;
-	else if (NPC->direct > 1)
+	else if (NPC->direct > dirUp)
 	{
-		if (NPC->direct == 2)
+		if (NPC->direct == dirRight)
 			NPC->x += 0x400;
-		else if (NPC->direct == 3)
+		else if (NPC->direct == dirDown)
 			NPC->y += 0x400;
 	}
-	else if (!NPC->direct)
+	else if (NPC->direct == dirLeft)
 		NPC->x -= 1024;
 	
 	currentPlayer.x = NPC->x;

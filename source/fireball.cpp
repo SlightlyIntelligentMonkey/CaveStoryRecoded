@@ -13,16 +13,16 @@ void actBulletFireball1(bullet *bul)
 			bBreak = true;
 
 		//Changing direction on walls
-		if (!bul->direct && bul->flag & 1)
-			bul->direct = 2;
-		if (bul->direct == 2 && bul->flag & 4)
-			bul->direct = 0;
+		if (bul->direct == dirLeft && bul->flag & 1)
+			bul->direct = dirRight;
+		if (bul->direct == dirRight && bul->flag & 4)
+			bul->direct = dirLeft;
 
 		if (bBreak)
 		{
 			bul->cond = 0;
-			createCaret(bul->x, bul->y, 2, 0);
-			playSound(28);
+			createCaret(bul->x, bul->y, effect_RisingDisc, 0);
+			playSound(SFX_ShotHitWall);
 		}
 		else
 		{
@@ -49,7 +49,7 @@ void actBulletFireball1(bullet *bul)
 
 				//Play bouncing sound
 				if (bul->flag & (leftWall | rightWall | ground))
-					playSound(34);
+					playSound(SFX_FireballBounce);
 			}
 			else
 			{
@@ -58,22 +58,22 @@ void actBulletFireball1(bullet *bul)
 				//Shoot in direction player is facing
 				switch (bul->direct)
 				{
-				case 0:
+				case dirLeft:
 					bul->xm = -1024;
 					break;
 
-				case 1:
+				case dirUp:
 					//Move at same speed as player
 					bul->xm = currentPlayer.xm;
 
 					//Move in facing direction
 					if (currentPlayer.xm >= 0)
-						bul->direct = 2;
+						bul->direct = dirRight;
 					else
-						bul->direct = 0;
+						bul->direct = dirLeft;
 
 					//Shoot with increased velocity in facing direction
-					if (currentPlayer.direct)
+					if (currentPlayer.direct != dirLeft)
 						bul->xm += 128;
 					else
 						bul->xm -= 128;
@@ -81,18 +81,18 @@ void actBulletFireball1(bullet *bul)
 					bul->ym = -0x5FF;
 					break;
 
-				case 2:
+				case dirRight:
 					bul->xm = 1024;
 					break;
 
-				case 3:
+				case dirDown:
 					bul->xm = currentPlayer.xm;
 
 					//Move in current moving direction
 					if (currentPlayer.xm >= 0)
-						bul->direct = 2;
+						bul->direct = dirRight;
 					else
-						bul->direct = 0;
+						bul->direct = dirLeft;
 
 					bul->ym = 0x5FF;
 					break;
@@ -123,7 +123,7 @@ void actBulletFireball1(bullet *bul)
 			if (++bul->ani_no > 3)
 				bul->ani_no = 0;
 
-			if (bul->direct)
+			if (bul->direct != dirLeft)
 				bul->rect = rect_right1[bul->ani_no];
 			else
 				bul->rect = rect_left1[bul->ani_no];
@@ -132,7 +132,7 @@ void actBulletFireball1(bullet *bul)
 	else
 	{
 		bul->cond = 0;
-		createCaret(bul->x, bul->y, 3, 0);
+		createCaret(bul->x, bul->y, effect_Star, 0);
 	}
 }
 
@@ -149,16 +149,16 @@ void actBulletFireball2(bullet *bul)
 			bBreak = true;
 
 		//Changing direction on walls
-		if (!bul->direct && bul->flag & 1)
-			bul->direct = 2;
-		if (bul->direct == 2 && bul->flag & 4)
-			bul->direct = 0;
+		if (bul->direct == dirLeft && bul->flag & 1)
+			bul->direct = dirRight;
+		if (bul->direct == dirRight && bul->flag & 4)
+			bul->direct = dirLeft;
 
 		if (bBreak)
 		{
 			bul->cond = 0;
-			createCaret(bul->x, bul->y, 2, 0);
-			playSound(28);
+			createCaret(bul->x, bul->y, effect_RisingDisc, 0);
+			playSound(SFX_ShotHitWall);
 		}
 		else
 		{
@@ -185,7 +185,7 @@ void actBulletFireball2(bullet *bul)
 
 				//Play bouncing sound
 				if (bul->flag & (leftWall | rightWall | ground))
-					playSound(34);
+					playSound(SFX_FireballBounce);
 			}
 			else
 			{
@@ -194,22 +194,22 @@ void actBulletFireball2(bullet *bul)
 				//Shoot in direction player is facing
 				switch (bul->direct)
 				{
-				case 0:
+				case dirLeft:
 					bul->xm = -1024;
 					break;
 
-				case 1:
+				case dirUp:
 					//Move at same speed as player
 					bul->xm = currentPlayer.xm;
 
 					//Move in facing direction
 					if (currentPlayer.xm >= 0)
-						bul->direct = 2;
+						bul->direct = dirRight;
 					else
-						bul->direct = 0;
+						bul->direct = dirLeft;
 
 					//Shoot with increased velocity in facing direction
-					if (currentPlayer.direct)
+					if (currentPlayer.direct != dirLeft)
 						bul->xm += 128;
 					else
 						bul->xm -= 128;
@@ -217,18 +217,18 @@ void actBulletFireball2(bullet *bul)
 					bul->ym = -0x5FF;
 					break;
 
-				case 2:
+				case dirRight:
 					bul->xm = 1024;
 					break;
 
-				case 3:
+				case dirDown:
 					bul->xm = currentPlayer.xm;
 
 					//Move in current moving direction
 					if (currentPlayer.xm >= 0)
-						bul->direct = 2;
+						bul->direct = dirRight;
 					else
-						bul->direct = 0;
+						bul->direct = dirLeft;
 
 					bul->ym = 0x5FF;
 					break;
@@ -259,18 +259,18 @@ void actBulletFireball2(bullet *bul)
 			if (++bul->ani_no > 2)
 				bul->ani_no = 0;
 
-			if (bul->direct)
+			if (bul->direct != dirLeft)
 				bul->rect = rect_right2[bul->ani_no];
 			else
 				bul->rect = rect_left2[bul->ani_no];
 
-			createNpc(129, bul->x, bul->y, 0, -512, bul->ani_no, nullptr);
+			createNpc(NPC_ProjectileFireballSnakeTrail, bul->x, bul->y, 0, -512, bul->ani_no, nullptr);
 		}
 	}
 	else
 	{
 		bul->cond = 0;
-		createCaret(bul->x, bul->y, 3, 0);
+		createCaret(bul->x, bul->y, effect_Star, 0);
 	}
 }
 
@@ -287,16 +287,16 @@ void actBulletFireball3(bullet *bul)
 			bBreak = true;
 
 		//Changing direction on walls
-		if (!bul->direct && bul->flag & 1)
-			bul->direct = 2;
-		if (bul->direct == 2 && bul->flag & 4)
-			bul->direct = 0;
+		if (bul->direct == dirLeft && bul->flag & 1)
+			bul->direct = dirRight;
+		if (bul->direct == dirRight && bul->flag & 4)
+			bul->direct = dirLeft;
 
 		if (bBreak)
 		{
 			bul->cond = 0;
-			createCaret(bul->x, bul->y, 2, 0);
-			playSound(28);
+			createCaret(bul->x, bul->y, effect_RisingDisc, 0);
+			playSound(SFX_ShotHitWall);
 		}
 		else
 		{
@@ -323,7 +323,7 @@ void actBulletFireball3(bullet *bul)
 
 				//Play bouncing sound
 				if (bul->flag & (leftWall | rightWall | ground))
-					playSound(34);
+					playSound(SFX_FireballBounce);
 			}
 			else
 			{
@@ -332,22 +332,22 @@ void actBulletFireball3(bullet *bul)
 				//Shoot in direction player is facing
 				switch (bul->direct)
 				{
-				case 0:
+				case dirLeft:
 					bul->xm = -1024;
 					break;
 
-				case 1:
+				case dirUp:
 					//Move at same speed as player
 					bul->xm = currentPlayer.xm;
 
 					//Move in facing direction
 					if (currentPlayer.xm >= 0)
-						bul->direct = 2;
+						bul->direct = dirRight;
 					else
-						bul->direct = 0;
+						bul->direct = dirLeft;
 
 					//Shoot with increased velocity in facing direction
-					if (currentPlayer.direct)
+					if (currentPlayer.direct != dirLeft)
 						bul->xm += 128;
 					else
 						bul->xm -= 128;
@@ -355,18 +355,18 @@ void actBulletFireball3(bullet *bul)
 					bul->ym = -0x5FF;
 					break;
 
-				case 2:
+				case dirRight:
 					bul->xm = 1024;
 					break;
 
-				case 3:
+				case dirDown:
 					bul->xm = currentPlayer.xm;
 
 					//Move in current moving direction
 					if (currentPlayer.xm >= 0)
-						bul->direct = 2;
+						bul->direct = dirRight;
 					else
-						bul->direct = 0;
+						bul->direct = dirLeft;
 
 					bul->ym = 0x5FF;
 					break;
@@ -397,17 +397,17 @@ void actBulletFireball3(bullet *bul)
 			if (++bul->ani_no > 2)
 				bul->ani_no = 0;
 
-			if (bul->direct)
+			if (bul->direct != dirLeft)
 				bul->rect = rect_right2[bul->ani_no];
 			else
 				bul->rect = rect_left2[bul->ani_no];
 
-			createNpc(129, bul->x, bul->y, 0, -512, bul->ani_no + 3, nullptr);
+			createNpc(NPC_ProjectileFireballSnakeTrail, bul->x, bul->y, 0, -512, bul->ani_no + 3, nullptr);
 		}
 	}
 	else
 	{
 		bul->cond = 0;
-		createCaret(bul->x, bul->y, 3, 0);
+		createCaret(bul->x, bul->y, effect_Star, 0);
 	}
 }

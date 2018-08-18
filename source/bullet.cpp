@@ -2,6 +2,11 @@
 #include "weapons.h"
 #include "bulletCollision.h"
 
+#include <string>
+
+using std::string;
+using std::to_string;
+
 std::vector<bullet> bullets(0);
 
 BULLETSTATS bulletTable[] =
@@ -241,6 +246,11 @@ void bullet::update()
 	{
 		if (bulletActs[code_bullet] != nullptr)
 			bulletActs[code_bullet](this);
+		else if (errorOnNotImplemented)
+		{
+			string msg = "Bullet " + to_string(this->code_bullet) + " is not implemented yet.";
+			SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_WARNING, "Missing Bullet", msg.c_str(), nullptr);
+		}
 	}
 	else
 	{
@@ -255,19 +265,19 @@ void bullet::draw()
 
 	switch (direct)
 	{
-	case 0:
+	case dirLeft:
 		drawX = x - view.left;
 		drawY = y - view.top;
 		break;
-	case 1:
+	case dirUp:
 		drawX = x - view.top;
 		drawY = y - view.left;
 		break;
-	case 2:
+	case dirRight:
 		drawX = x - view.right;
 		drawY = y - view.top;
 		break;
-	case 3:
+	case dirDown:
 		drawX = x - view.top;
 		drawY = y - view.right;
 		break;

@@ -72,19 +72,19 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);$(SolutionDir)SDL2_image-2.0.3\include;$(SolutionDir)SDL2-2.0.8\include</IncludePath>
-    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRuleSet>CS_RuleSet.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);$(SolutionDir)SDL2_image-2.0.3\include;$(SolutionDir)SDL2-2.0.8\include</IncludePath>
-    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRuleSet>CS_RuleSet.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);$(SolutionDir)SDL2_image-2.0.3\include;$(SolutionDir)SDL2-2.0.8\include</IncludePath>
-    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRuleSet>CS_RuleSet.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);$(SolutionDir)SDL2_image-2.0.3\include;$(SolutionDir)SDL2-2.0.8\include</IncludePath>
-    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRuleSet>CS_RuleSet.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -101,6 +101,8 @@
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <LanguageStandard>stdcpplatest</LanguageStandard>
       <EnableModules>true</EnableModules>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <PrecompiledHeaderFile>common.h</PrecompiledHeaderFile>
     </ClCompile>
     <Link>
       <AdditionalDependencies>kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;$(SolutionDir)SDL2-2.0.8\lib\SDL2.lib;$(SolutionDir)SDL2-2.0.8\lib\SDL2main.lib;$(SolutionDir)SDL2_image-2.0.3\lib\SDL2_image.lib;%(AdditionalDependencies);</AdditionalDependencies>
@@ -113,9 +115,14 @@
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <Optimization>MaxSpeed</Optimization>
-      <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
+      <Optimization>Disabled</Optimization>
+      <FavorSizeOrSpeed>Neither</FavorSizeOrSpeed>
       <UndefinePreprocessorDefinitions>_DEBUG</UndefinePreprocessorDefinitions>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <InlineFunctionExpansion>Disabled</InlineFunctionExpansion>
+      <OmitFramePointers>false</OmitFramePointers>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <PrecompiledHeaderFile>common.h</PrecompiledHeaderFile>
     </ClCompile>
     <Link>
       <AdditionalDependencies>kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;$(SolutionDir)SDL2-2.0.8\lib\SDL2.lib;$(SolutionDir)SDL2-2.0.8\lib\SDL2main.lib;$(SolutionDir)SDL2_image-2.0.3\lib\SDL2_image.lib;%(AdditionalDependencies);</AdditionalDependencies>
@@ -140,6 +147,9 @@
       <EnableFiberSafeOptimizations>true</EnableFiberSafeOptimizations>
       <LanguageStandard>stdcpplatest</LanguageStandard>
       <EnableModules>true</EnableModules>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <PrecompiledHeaderFile>common.h</PrecompiledHeaderFile>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
@@ -159,6 +169,12 @@
       <Optimization>MaxSpeed</Optimization>
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
       <UndefinePreprocessorDefinitions>_DEBUG</UndefinePreprocessorDefinitions>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
+      <OmitFramePointers>true</OmitFramePointers>
+      <EnableFiberSafeOptimizations>true</EnableFiberSafeOptimizations>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <PrecompiledHeaderFile>common.h</PrecompiledHeaderFile>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
@@ -265,6 +281,9 @@
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="CaveStoryEngine.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="CS_RuleSet.ruleset" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

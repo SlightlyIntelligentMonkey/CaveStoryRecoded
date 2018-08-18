@@ -1,5 +1,58 @@
 #include "mathUtils.h"
 
+#include <random>
+#include <chrono>
+#include <cstddef>
+#include <thread>
+
+using std::mt19937;
+using std::enable_if;
+using std::seed_seq;
+using std::uniform_int_distribution;
+using std::random_device;
+
+template<class T = mt19937, size_t N = T::state_size>
+auto seededRandomEngine() -> typename enable_if<!!N, T>::type
+{
+	random_device rd;
+	if (rd.entropy() != 0)
+	{
+		seed_seq seeds
+		{
+			rd(),
+			rd(),
+			rd(),
+			rd(),
+			rd(),
+			rd(),
+			rd(),
+			rd(),
+		};
+		T seededEngine(seeds);
+		return seededEngine;
+	}
+	srand(uint32_t(std::chrono::high_resolution_clock::now().time_since_epoch().count()));
+	seed_seq seeds
+	{
+		int(std::chrono::high_resolution_clock::now().time_since_epoch().count()),
+		int(std::chrono::high_resolution_clock::now().time_since_epoch().count() >> 32),
+		rand(),
+		rand(),
+		rand(),
+		rand(),
+		rand(),
+		rand(),
+	};
+	T seededEngine(seeds);
+	return seededEngine;
+}
+
+thread_local mt19937 engine(seededRandomEngine());
+
+// Distribution goes from 0 to TYPE_MAX by default
+
+uniform_int_distribution<int32_t> distrInt;
+
 //Not the original code, because it's better
 int getSin(uint8_t deg)
 {
@@ -18,7 +71,7 @@ uint8_t getAtan(int x, int y)
 
 //these are good functions
 int random(int32_t mi, int32_t ma) {
-	return rand() % (ma - mi + 1) + mi;
+	return (mi + (distrInt(engine) % (ma - mi + 1)));
 }
 
 int sign(int x) {
@@ -31,3 +84,4 @@ int sign(int x) {
 int clamp(int x, int mi, int ma) {
 	return std::max(std::min(ma, x), mi);
 }
+

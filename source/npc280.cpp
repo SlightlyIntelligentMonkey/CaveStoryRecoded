@@ -119,7 +119,7 @@ void npcAct299(npc *NPC) //Balrog / Misery in bubble (intro)
 	if (!NPC->act_no)
 	{
 		NPC->act_no = 1;
-		if (NPC->direct)
+		if (NPC->direct != dirLeft)
 		{
 			NPC->ani_no = 0;
 			NPC->act_wait = 0;

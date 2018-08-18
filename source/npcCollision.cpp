@@ -195,7 +195,7 @@ void npcHitMap(size_t NPCid)
 {
 	npc *NPC = &npcs[NPCid];
 	NPC->flag = 0; //clear
-	RECT *rcHit = &NPC->hit;
+	const RECT *rcHit = &NPC->hit;
 	
 	const int fromX = (NPC->x - rcHit->right + 0x1000) >> 13;
 	const int fromY = (NPC->y - rcHit->top + 0x1000) >> 13;

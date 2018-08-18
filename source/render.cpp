@@ -101,7 +101,7 @@ void loadImage(const char *file, SDL_Texture **tex) {
 }
 
 //Drawing functions
-void setCliprect(RECT *rect)
+void setCliprect(const RECT *rect)
 {
 	//All of this code should be pretty self explanatory
 	if (rect != nullptr)
@@ -205,7 +205,6 @@ void drawString(int x, int y, const char *str, const uint8_t *flag)
 
 			if (flag != nullptr && flag[i] & 1)
 				sep = 5;
-
 			//Circle thing
 			if (flag != nullptr && flag[i] & 2)
 			{
@@ -215,7 +214,7 @@ void drawString(int x, int y, const char *str, const uint8_t *flag)
 			else
 			{
 				//Set framerect to what it's supposed to be
-				int drawIndex = i;
+				const int drawIndex = i;
 
 				if (isMultibyte(str[i]))
 				{

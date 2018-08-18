@@ -96,7 +96,7 @@ void caretAct001(caret *CARET) //Pulsing Disc Particles
 	}
 
 	//Set framerect
-	if (CARET->direct)
+	if (CARET->direct != dirLeft)
 		CARET->rect = rcRight[CARET->ani_no];
 	else
 		CARET->rect = rcLeft[CARET->ani_no];
@@ -126,7 +126,7 @@ void caretAct002(caret *CARET) //Rising Disc / Exploding Diamond
 	//Act
 	switch (CARET->direct)
 	{
-	case 0:
+	case dirLeft:
 		CARET->ym -= 16;
 		CARET->y += CARET->ym;
 
@@ -143,7 +143,7 @@ void caretAct002(caret *CARET) //Rising Disc / Exploding Diamond
 		CARET->rect = rcLeft[CARET->ani_no];
 		break;
 
-	case 1:
+	case dirUp:
 		//Animate ??
 		CARET->rect = rcUp[++CARET->ani_wait / 2 % 3];
 
@@ -151,7 +151,7 @@ void caretAct002(caret *CARET) //Rising Disc / Exploding Diamond
 			CARET->cond = 0;
 		break;
 
-	case 2:
+	case dirRight:
 		//Animate
 		if (++CARET->ani_wait > 2)
 		{
@@ -264,19 +264,19 @@ void caretAct007(caret *CARET) //Booster particles
 	//Move
 	switch (CARET->direct)
 	{
-	case 0:
+	case dirLeft:
 		CARET->x -= 0x400;
 		break;
 
-	case 1:
+	case dirUp:
 		CARET->y -= 0x400;
 		break;
 
-	case 2:
+	case dirRight:
 		CARET->x += 0x400;
 		break;
 
-	case 3:
+	case dirDown:
 		CARET->y += 0x400;
 		break;
 	}
@@ -284,7 +284,7 @@ void caretAct007(caret *CARET) //Booster particles
 
 void caretAct008(caret *CARET) //Drowned Quote
 {
-	if (CARET->direct)
+	if (CARET->direct != dirLeft)
 		CARET->rect = { 32, 80, 48, 96 };
 	else
 		CARET->rect = { 16, 80, 32, 96 };
@@ -300,7 +300,7 @@ void caretAct009(caret *CARET) //Question mark (when down is pressed)
 	if (CARET->ani_wait >= 32)
 		CARET->cond = 0;
 
-	if (CARET->direct)
+	if (CARET->direct != dirLeft)
 		CARET->rect = { 48, 64, 64, 80 };
 	else
 		CARET->rect = { 0, 80, 16, 96 };
@@ -319,7 +319,7 @@ void caretAct010(caret *CARET) //Level up and level down
 
 	CARET->ani_wait++;
 
-	if (CARET->direct)
+	if (CARET->direct != dirLeft)
 	{
 		if (CARET->ani_wait < 20) 
 			CARET->y -= 0x200;
@@ -336,7 +336,7 @@ void caretAct010(caret *CARET) //Level up and level down
 			CARET->cond = 0;
 	}
 
-	if (CARET->direct)
+	if (CARET->direct != dirLeft)
 	{
 		CARET->rect = rcRight[CARET->ani_wait / 2 % 2];
 	}
@@ -413,9 +413,9 @@ void caretAct013(caret *CARET) //Headbump sparks
 	{
 		CARET->act_no = 1;
 		
-		if (CARET->direct)
+		if (CARET->direct != dirLeft)
 		{
-			if (CARET->direct == 1)
+			if (CARET->direct == dirUp)
 				CARET->ym = -0x200 * random(1, 3);
 		}
 		else
@@ -425,7 +425,7 @@ void caretAct013(caret *CARET) //Headbump sparks
 		}
 	}
 
-	if (!CARET->direct)
+	if (CARET->direct == dirLeft)
 	{
 		CARET->xm = 4 * CARET->xm / 5;
 		CARET->ym = 4 * CARET->ym / 5;

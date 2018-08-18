@@ -4,6 +4,9 @@
 
 std::vector<npc> npcs(0);
 
+int superXPos = 0;	// Used by undead core related NPCs ?
+int superYPos = 0;
+
 //NPC Functions
 void createSmoke(int x, int y, int w, int num)
 {
@@ -14,7 +17,7 @@ void createSmoke(int x, int y, int w, int num)
 		const int offsetX = random(-wa, wa) << 9;
 		const int offsetY = random(-wa, wa) << 9;
 
-		createNpc(4, x + offsetX, offsetY + y, 0, 0, 0, nullptr);
+		createNpc(NPC_Smoke, x + offsetX, offsetY + y, 0, 0, 0, nullptr);
 	}
 }
 
@@ -87,9 +90,9 @@ void changeNpc(int code_event, int code_char, int dir)
 					if (dir == 4)
 					{
 						if (npcs[i].x >= currentPlayer.x)
-							npcs[i].direct = 0;
+							npcs[i].direct = dirLeft;
 						else
-							npcs[i].direct = 2;
+							npcs[i].direct = dirRight;
 					}
 					else
 					{
@@ -186,7 +189,7 @@ int dropMissiles(int x, int y, int val)
 		return 0;
 
 	n = random(1, 10 * t);
-	int bullet_no = tamakazu_ari[n % t];
+	const int bullet_no = tamakazu_ari[n % t];
 
 	createNpcExp(86, x, y, 0, 0, 0, nullptr, bullet_no, val);
 
@@ -195,13 +198,13 @@ int dropMissiles(int x, int y, int val)
 
 void killNpc(npc *NPC, bool bVanish)
 {
-	int x = NPC->x;
-	int y = NPC->y;
-	int flag = NPC->code_flag;
-	int voice = NPC->destroy_voice;
-	int size = NPC->size;
-	int explodeWidth = NPC->view.right;
-	int exp = NPC->exp;
+	const int x = NPC->x;
+	const int y = NPC->y;
+	const int flag = NPC->code_flag;
+	const int voice = NPC->destroy_voice;
+	const int size = NPC->size;
+	const int explodeWidth = NPC->view.right;
+	const int exp = NPC->exp;
 
 	//Destroy npc
 	if (!(NPC->bits & npc_showdamage))
@@ -239,7 +242,7 @@ void killNpc(npc *NPC, bool bVanish)
 	//Drop experience, health, and missiles
 	if (exp)
 	{
-		int drop = random(1, 5);
+		const int drop = random(1, 5);
 		int missileDrop = 0;
 
 		if (drop == 1) //Health drop
@@ -283,33 +286,33 @@ void loadNpcTable()
 
 	const auto tblSize = static_cast<int>(SDL_RWsize(tblStream));
 
-	const int npcs = tblSize / 0x18;
-	npcTable = static_cast<NPC_TABLE *>(malloc(0x18 * npcs));
+	const int npcCount = tblSize / 0x18;
+	npcTable = static_cast<NPC_TABLE *>(malloc(0x18 * npcCount));
 
 	if (npcTable == nullptr)
 		doCustomError("Could not allocate memory for NPC table");
 	
 	int i;
 
-	for (i = 0; i < npcs; ++i) //bits
+	for (i = 0; i < npcCount; ++i) //bits
 		npcTable[i].bits = SDL_ReadLE16(tblStream);
-	for (i = 0; i < npcs; ++i) //life
+	for (i = 0; i < npcCount; ++i) //life
 		npcTable[i].life = SDL_ReadLE16(tblStream);
-	for (i = 0; i < npcs; ++i) //surf
+	for (i = 0; i < npcCount; ++i) //surf
 		tblStream->read(tblStream, &npcTable[i].surf, 1, 1);
-	for (i = 0; i < npcs; ++i) //destroy_voice
+	for (i = 0; i < npcCount; ++i) //destroy_voice
 		tblStream->read(tblStream, &npcTable[i].destroy_voice, 1, 1);
-	for (i = 0; i < npcs; ++i) //hit_voice
+	for (i = 0; i < npcCount; ++i) //hit_voice
 		tblStream->read(tblStream, &npcTable[i].hit_voice, 1, 1);
-	for (i = 0; i < npcs; ++i) //size
+	for (i = 0; i < npcCount; ++i) //size
 		tblStream->read(tblStream, &npcTable[i].size, 1, 1);
-	for (i = 0; i < npcs; ++i) //exp
+	for (i = 0; i < npcCount; ++i) //exp
 		npcTable[i].exp = SDL_ReadLE32(tblStream);
-	for (i = 0; i < npcs; ++i) //damage
+	for (i = 0; i < npcCount; ++i) //damage
 		npcTable[i].damage = SDL_ReadLE32(tblStream);
-	for (i = 0; i < npcs; ++i) //hit
+	for (i = 0; i < npcCount; ++i) //hit
 		tblStream->read(tblStream, &npcTable[i].hit, 4, 1);
-	for (i = 0; i < npcs; ++i) //view
+	for (i = 0; i < npcCount; ++i) //view
 		tblStream->read(tblStream, &npcTable[i].view, 4, 1);
 }
 
@@ -378,7 +381,7 @@ void npc::draw()
 
 		int side = view.left;
 
-		if (direct)
+		if (direct != dirLeft)
 			side = view.right;
 
 		drawTexture(sprites[surf], &rect, (x - side) / 0x200 - viewport.x / 0x200 + xOffset, (y - view.top) / 0x200 - viewport.y / 0x200);

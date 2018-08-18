@@ -1,6 +1,11 @@
 #include "weapons.h"
 #include "shootFunctions.h"
 
+#include <string>
+
+using std::string;
+using std::to_string;
+
 //Shoot functions
 weaponShoot shootFunctions[] = {
 	static_cast<weaponShoot>(nullptr),
@@ -55,6 +60,11 @@ void actWeapon()
 {
 	if (shootFunctions[weapons[selectedWeapon].code] != nullptr)
 		shootFunctions[weapons[selectedWeapon].code](weapons[selectedWeapon].level);
+	else if (errorOnNotImplemented && weapons[selectedWeapon].code != 0)
+	{
+		string msg = "Weapon " + to_string(weapons[selectedWeapon].code) + " is not implemented.";
+		SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_WARNING, "Missing Weapon", msg.c_str(), nullptr);
+	}
 }
 
 int useWeaponAmmo(int num)
@@ -174,8 +184,8 @@ bool checkWeapon(int code)
 
 void giveWeaponExperience(int x)
 {
-	int lv = weapons[selectedWeapon].level - 1;
-	int arms_code = weapons[selectedWeapon].code;
+	int lv = weapons[selectedWeapon].level - 1; // [esp+18h] [ebp-10h]
+	const int arms_code = weapons[selectedWeapon].code; // [esp+1Ch] [ebp-Ch]
 	weapons[selectedWeapon].exp += x;
 
 	if (lv == 2)
@@ -203,8 +213,8 @@ void giveWeaponExperience(int x)
 
 				if (weapons[selectedWeapon].code != 13)
 				{
-					playSound(27);
-					createCaret(currentPlayer.x, currentPlayer.y, 10, 0);
+					playSound(SFX_LevelUp);
+					createCaret(currentPlayer.x, currentPlayer.y, effect_LevelUpOrDown, 0);
 				}
 			}
 
@@ -243,7 +253,7 @@ int rotateWeaponRight()
 
 	//Do effects
 	weaponShiftX = 32;
-	playSound(4);
+	playSound(SFX_SwitchWeapon);
 
 	return weapons[weaponNo].code;
 }
@@ -267,7 +277,7 @@ int rotateWeaponLeft()
 
 	//Do effects
 	weaponShiftX = 0;
-	playSound(4);
+	playSound(SFX_SwitchWeapon);
 
 	return weapons[weaponNo].code;
 }

@@ -117,7 +117,7 @@ void valueview::draw()
 	
 	//Draw + or -
 	int x = *px / 0x200 - width / 2 - viewport.x / 0x200;
-	int y = *py / 0x200 + offset_y / 0x200 - 4 - viewport.y / 0x200;
+	const int y = *py / 0x200 + offset_y / 0x200 - 4 - viewport.y / 0x200;
 
 	if (value >= 0)
 		drawTexture(sprites[TEX_TEXTBOX], &rcPlus, x, y);
