@@ -48,8 +48,6 @@ class npc
 		int tgt_x;
 		int tgt_y;
 
-		npc *tgt_npc;
-
 		//npc things
 		int code_char;
 		int code_flag;

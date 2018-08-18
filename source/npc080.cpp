@@ -259,7 +259,9 @@ void npcAct096(npc *NPC) //Fan left
 	switch (action)
 	{
 	case 1:
-		goto npc096end;
+		NPC->ani_no = 0;
+		break;
+
 	case 2:
 		//Animate
 		if (++NPC->ani_wait > 0)
@@ -281,7 +283,7 @@ void npcAct096(npc *NPC) //Fan left
 		//Blow quote
 		if (currentPlayer.y < NPC->y + 0x1000 && currentPlayer.y > NPC->y - 0x1000 && currentPlayer.x < NPC->x && currentPlayer.x > NPC->x - 0xC000)
 		{
-			currentPlayer.flag |= windLeft;
+			currentPlayer.xm -= 0x88;
 			currentPlayer.cond |= player_noFriction;
 		}
 
@@ -291,7 +293,6 @@ void npcAct096(npc *NPC) //Fan left
 			NPC->act_no = 2;
 		else
 			NPC->ani_no = 1; // Overriden by the next statement. Pixel's fault
-	npc096end:
 		NPC->ani_no = 0;
 		break;
 	}
@@ -306,7 +307,9 @@ void npcAct097(npc *NPC) //Fan up
 	switch (action)
 	{
 	case 1:
-		goto npc096end;
+		NPC->ani_no = 0;
+		break;
+
 	case 2:
 		//Animate
 		if (++NPC->ani_wait > 0)
@@ -337,10 +340,57 @@ void npcAct097(npc *NPC) //Fan up
 			NPC->act_no = 2;
 		else
 			NPC->ani_no = 1; // Overriden by the next statement. Pixel's fault
-	npc096end:
 		NPC->ani_no = 0;
 		break;
 	}
 
 	NPC->rect = { 272 + (NPC->ani_no << 4), 136, 288 + (NPC->ani_no << 4), 152 };
+}
+
+void npcAct098(npc *NPC) //Fan right
+{
+	const int action = NPC->act_no;
+
+	switch (action)
+	{
+	case 1:
+		NPC->ani_no = 0;
+		break;
+
+	case 2:
+		//Animate
+		if (++NPC->ani_wait > 0)
+		{
+			NPC->ani_wait = 0;
+			++NPC->ani_no;
+		}
+
+		//Animate
+		if (NPC->ani_no > 2)
+			NPC->ani_no = 0;
+
+		//Current effect
+		if (currentPlayer.x > NPC->x - 0x28000 && currentPlayer.x < NPC->x + 0x28000 && currentPlayer.y > NPC->y - 0x28000 && currentPlayer.y < NPC->y + 0x28000 && random(0, 5) == 1)
+		{
+			createNpc(199, NPC->x + (random(-8, 8) << 9), NPC->y, 0, 0, 2, nullptr);
+		}
+
+		//Blow quote
+		if (currentPlayer.y < NPC->y + 0x1000 && currentPlayer.y > NPC->y - 0x1000 && currentPlayer.x > NPC->x && currentPlayer.x < NPC->x + 0xC000)
+		{
+			currentPlayer.xm += 0x88;
+			currentPlayer.cond |= player_noFriction;
+		}
+
+		break;
+	case 0:
+		if (NPC->direct == 2)
+			NPC->act_no = 2;
+		else
+			NPC->ani_no = 1; // Overriden by the next statement. Pixel's fault
+		NPC->ani_no = 0;
+		break;
+	}
+
+	NPC->rect = { 272 + (NPC->ani_no << 4), 152, 288 + (NPC->ani_no << 4), 168 };
 }
