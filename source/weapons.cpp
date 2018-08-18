@@ -6,7 +6,7 @@ weaponShoot shootFunctions[] = {
 	static_cast<weaponShoot>(nullptr),
 	static_cast<weaponShoot>(nullptr),
 	&shootPolarStar,
-	static_cast<weaponShoot>(nullptr),
+	&shootFireball,
 	static_cast<weaponShoot>(nullptr),
 	static_cast<weaponShoot>(nullptr),
 	static_cast<weaponShoot>(nullptr),

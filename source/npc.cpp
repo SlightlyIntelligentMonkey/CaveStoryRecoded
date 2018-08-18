@@ -115,6 +115,9 @@ void updateNPC()
 				npcHitMap(i);
 			}
 		}
+
+		while (npcs.size() && !(npcs[npcs.size() - 1].cond & npccond_alive))
+			npcs.erase(npcs.begin() + npcs.size() - 1);
 	}
 }
 
@@ -242,9 +245,9 @@ void killNpc(npc *NPC, bool bVanish)
 		if (drop == 1) //Health drop
 		{
 			if (NPC->exp <= 6)
-				createNpcExp(1, x, y, 0, 0, 0, nullptr, 0, 2);
+				createNpcExp(87, x, y, 0, 0, 0, nullptr, 0, 2);
 			else
-				createNpcExp(1, x, y, 0, 0, 0, nullptr, 0, 6);
+				createNpcExp(87, x, y, 0, 0, 0, nullptr, 0, 6);
 		}
 		else
 		{

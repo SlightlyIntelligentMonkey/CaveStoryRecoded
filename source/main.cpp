@@ -1,7 +1,7 @@
 #include "common.h"
 
 //Debug flags
-int debugFlags = 0;
+int debugFlags = showSlots;
 
 //Rendering and view related variables
 SDL_Window *window;
