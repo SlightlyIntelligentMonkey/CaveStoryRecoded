@@ -3,7 +3,9 @@
 #include <vector>
 #include "render.h"
 
-std::vector<valueview> valueviews(0);
+using std::vector;
+
+vector<valueview> valueviews(0);
 
 //Functions
 void createValueView(int *px, int *py, int value)

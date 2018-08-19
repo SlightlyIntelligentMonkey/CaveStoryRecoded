@@ -10,6 +10,10 @@
 #include "game.h"
 #include "mathUtils.h"
 
+#include <string>
+
+using std::string;
+
 int currentLevel;
 
 MAPNAME mapName;
@@ -110,18 +114,15 @@ void loadLevel(int levelIndex) {
 	strcpy(mapName.name, stageTable[levelIndex].name);
 
 	//Load pxm
-	char pxmPath[256];
-	snprintf(pxmPath, 256, "data/Stage/%s.pxm", stageTable[levelIndex].filename);
+	const string pxmPath = string("data/Stage/") + stageTable[levelIndex].filename + ".pxm";
 
 	uint8_t *pxm = nullptr;
-	const int pxmSize = loadFile(pxmPath, &pxm);
+	const int pxmSize = loadFile(pxmPath.c_str(), &pxm);
 
 	if (pxmSize < 0)
 	{
-		char errorMsg[256];
-		snprintf(errorMsg, 256, "Couldn't read %s", pxmPath);
-
-		doCustomError(errorMsg);
+		const string errorMessage = "Couldn't read " + pxmPath;
+		doCustomError(errorMessage.c_str());
 	}
 	
 	levelWidth = readLEshort(pxm, 4);
@@ -136,18 +137,15 @@ void loadLevel(int levelIndex) {
 	free(pxm);
 
 	//Load pxa
-	char pxaPath[256];
-	snprintf(pxaPath, 256, "data/Stage/%s.pxa", stageTable[levelIndex].tileset);
+	const string pxaPath = string("data/Stage/") + stageTable[levelIndex].tileset + ".pxa";
 
 	uint8_t *pxa = nullptr;
-	const int pxaSize = loadFile(pxaPath, &pxa);
+	const int pxaSize = loadFile(pxaPath.c_str(), &pxa);
 
 	if (pxaSize < 0)
 	{
-		char errorMsg[256];
-		snprintf(errorMsg, 256, "Couldn't read %s", pxaPath);
-
-		doCustomError(errorMsg);
+		const string errorMessage = "Couldn't read " + pxaPath;
+		doCustomError(errorMessage.c_str());
 	}
 
 	delete[] levelTileAttributes;
@@ -159,16 +157,13 @@ void loadLevel(int levelIndex) {
 	free(pxa);
 
 	//Load pxe
-	char pxePath[256];
-	snprintf(pxePath, 256, "data/Stage/%s.pxe", stageTable[levelIndex].filename);
+	const string pxePath = string("data/Stage/") + stageTable[levelIndex].filename + ".pxe";
 
 	uint8_t *pxe = nullptr;
-	if (loadFile(pxePath, &pxe) < 0)
+	if (loadFile(pxePath.c_str(), &pxe) < 0)
 	{
-		char errorMsg[256];
-		snprintf(errorMsg, 256, "Couldn't read %s", pxePath);
-
-		doCustomError(errorMsg);
+		const string errorMessage = "Couldn't read " + pxePath;
+		doCustomError(errorMessage.c_str());
 	}
 
 	//Clear old npcs
@@ -203,36 +198,31 @@ void loadLevel(int levelIndex) {
 	free(pxe);
 
 	//Load tileset
-	char tileImagePath[256];
-	snprintf(tileImagePath, 256, "data/Stage/Prt%s.png", stageTable[levelIndex].tileset);
+	const string tileImagePath = string("data/Stage/Prt") + stageTable[levelIndex].tileset + ".png";
 
-	loadImage(tileImagePath, &sprites[0x02]);
+	loadImage(tileImagePath.c_str(), &sprites[0x02]);
 
 	//Load background
-	char bgImagePath[256];
-	snprintf(bgImagePath, 256, "data/%s.png", stageTable[levelIndex].background);
+	const string backgroundImagePath = string("data/") + stageTable[levelIndex].background + ".png";
 
 	backgroundScroll = stageTable[levelIndex].backgroundScroll;
-	loadImage(bgImagePath, &sprites[0x1C]);
+	loadImage(backgroundImagePath.c_str(), &sprites[0x1C]);
 
 	//Load npc sheets
 	//Load sheet 1
-	char npcSheet1Path[256];
-	snprintf(npcSheet1Path, 256, "data/Npc/Npc%s.png", stageTable[levelIndex].npc1);
+	const string npcSheet1Path = string("data/Npc/Npc") + stageTable[levelIndex].npc1 + ".png";
 
-	loadImage(npcSheet1Path, &sprites[0x15]);
+	loadImage(npcSheet1Path.c_str(), &sprites[0x15]);
 
 	//Load sheet 2
-	char npcSheet2Path[256];
-	snprintf(npcSheet2Path, 256, "data/Npc/Npc%s.png", stageTable[levelIndex].npc2);
+	const string npcSheet2Path = string("data/Npc/Npc") + stageTable[levelIndex].npc2 + ".png";
 
-	loadImage(npcSheet2Path, &sprites[0x16]);
+	loadImage(npcSheet2Path.c_str(), &sprites[0x16]);
 
 	//Load tsc script
-	char tscPath[256];
-	snprintf(tscPath, 256, "data/Stage/%s.tsc", stageTable[levelIndex].filename);
+	const string tscPath = string("data/Stage/") + stageTable[levelIndex].filename + ".tsc";
 
-	loadStageTsc(tscPath);
+	loadStageTsc(tscPath.c_str());
 
 
 	//Fix viewport

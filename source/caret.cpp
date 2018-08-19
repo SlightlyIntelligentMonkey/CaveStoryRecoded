@@ -5,10 +5,12 @@
 #include "render.h"
 
 #include <string>
+#include <vector>
 
 using std::to_string;
+using std::vector;
 
-std::vector<caret> carets(0);
+vector<caret> carets(0);
 
 CARETSTAT caretStats[] = {
 	{ 0x0,		0x0 },

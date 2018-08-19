@@ -7,8 +7,9 @@
 
 using std::string;
 using std::to_string;
+using std::vector;
 
-std::vector<bullet> bullets(0);
+vector<bullet> bullets(0);
 
 BULLETSTATS bulletTable[] =
 {

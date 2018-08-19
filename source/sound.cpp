@@ -1,7 +1,10 @@
 #include "sound.h"
 
+#include <string>
 #include <SDL.h>
 #include "filesystem.h"
+
+using std::string;
 
 struct SOUND_EFFECT
 {
@@ -121,18 +124,17 @@ const char* hexStr[16] = { "0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "A"
 
 void loadSounds()
 {
-	char path[64];
 
 	for (int i = 0; i < 10; i++)
 	{
 		for (int v = 0; v < 16; v++)
 		{
 			int s = i * 16 + v;
-			sprintf(path, "data/Sound/%s%s.wav", hexStr[i], hexStr[v]);
+			const string path = string("data/Sound/") + hexStr[i] + hexStr[v] + ".wav";
 
-			if (fileExists(path))
+			if (fileExists(path.c_str()))
 			{
-				loadSound(path, &soundSpec, &sounds[s].buf, &sounds[s].length);
+				loadSound(path.c_str(), &soundSpec, &sounds[s].buf, &sounds[s].length);
 				sounds[s].pos = sounds[s].length;
 			}
 			else
