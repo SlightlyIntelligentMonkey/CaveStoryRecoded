@@ -1,4 +1,11 @@
 #include "bulletCollision.h"
+#include "bullet.h"
+#include "sound.h"
+#include "caret.h"
+#include "level.h"
+#include "mathUtils.h"
+#include "player.h"
+#include "script.h"
 
 void bulletVanish(bullet *bul)
 {

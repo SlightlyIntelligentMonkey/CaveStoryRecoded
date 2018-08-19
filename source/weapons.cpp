@@ -2,6 +2,10 @@
 #include "shootFunctions.h"
 
 #include <string>
+#include "player.h"
+#include "sound.h"
+#include "caret.h"
+#include "bullet.h"
 
 using std::string;
 using std::to_string;

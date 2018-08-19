@@ -1,6 +1,15 @@
 #include "script.h"
 #include "fade.h"
 #include "weapons.h"
+#include "render.h"
+#include "sound.h"
+#include "flags.h"
+#include "npc.h"
+#include "filesystem.h"
+#include "fade.h"
+#include "game.h"
+#include "player.h"
+#include "input.h"
 
 //Variables
 TSC tsc;
@@ -36,7 +45,7 @@ bool initTsc()
 //Loading functions
 void decryptTsc(uint8_t *data, size_t size)
 {
-	const int half = size / 2;
+	const size_t half = size / 2;
 	uint8_t key = data[half];
 
 	if (!key)

@@ -4,6 +4,16 @@
 #include "hud.h"
 #include "script.h"
 #include "fade.h"
+#include "input.h"
+#include "filesystem.h"
+#include "caret.h"
+#include "valueview.h"
+#include "render.h"
+#include "sound.h"
+#include "player.h"
+#include "bullet.h"
+#include "mathUtils.h"
+#include "flags.h"
 
 int gameMode = 1;
 
@@ -153,8 +163,8 @@ int escapeMenu()
 		if (isKeyPressed(SDL_SCANCODE_F1)) { return 1; }
 		if (isKeyPressed(SDL_SCANCODE_F2)) { return 2; }
 
-		if (isKeyDown(SDL_SCANCODE_LALT) && isKeyPressed(SDL_SCANCODE_RETURN) ||
-			isKeyPressed(SDL_SCANCODE_LALT) && isKeyDown(SDL_SCANCODE_RETURN))
+		if ((isKeyDown(SDL_SCANCODE_LALT) && isKeyPressed(SDL_SCANCODE_RETURN)) ||
+			(isKeyPressed(SDL_SCANCODE_LALT) && isKeyDown(SDL_SCANCODE_RETURN)))
 		{
 			switchScreenMode();
 		}
@@ -373,7 +383,7 @@ int gameUpdatePlay()
 				return 1;
 		}
 
-		if (isKeyDown(SDL_SCANCODE_LALT) && isKeyPressed(SDL_SCANCODE_RETURN) || isKeyPressed(SDL_SCANCODE_LALT) && isKeyDown(SDL_SCANCODE_RETURN))
+		if ((isKeyDown(SDL_SCANCODE_LALT) && isKeyPressed(SDL_SCANCODE_RETURN)) || (isKeyPressed(SDL_SCANCODE_LALT) && isKeyDown(SDL_SCANCODE_RETURN)))
 			switchScreenMode();
 
 		debugLevels();
@@ -462,7 +472,7 @@ int gameUpdateMenu()
 	RECT rcPixel = { 0, 0, 160, 16 };
 
 	uint32_t frame = 0;
-	const BYTE frameOrder[] = { 0, 1, 0, 2 };
+	const uint8_t frameOrder[] = { 0, 1, 0, 2 };
 
 	if (fileExists("Profile.dat"))
 		select = 1;
@@ -500,7 +510,7 @@ int gameUpdateMenu()
 				return 1;
 		}
 
-		if (isKeyDown(SDL_SCANCODE_LALT) && isKeyPressed(SDL_SCANCODE_RETURN) || isKeyPressed(SDL_SCANCODE_LALT) && isKeyDown(SDL_SCANCODE_RETURN))
+		if ((isKeyDown(SDL_SCANCODE_LALT) && isKeyPressed(SDL_SCANCODE_RETURN)) || (isKeyPressed(SDL_SCANCODE_LALT) && isKeyDown(SDL_SCANCODE_RETURN)))
 			switchScreenMode();
 
 		if (isKeyPressed(keyJump))
@@ -604,7 +614,7 @@ int gameUpdateIntro()
 				return 1;
 		}
 
-		if (isKeyDown(SDL_SCANCODE_LALT) && isKeyPressed(SDL_SCANCODE_RETURN) || isKeyPressed(SDL_SCANCODE_LALT) && isKeyDown(SDL_SCANCODE_RETURN))
+		if ((isKeyDown(SDL_SCANCODE_LALT) && isKeyPressed(SDL_SCANCODE_RETURN)) || (isKeyPressed(SDL_SCANCODE_LALT) && isKeyDown(SDL_SCANCODE_RETURN)))
 			switchScreenMode();
 
 		if (isKeyPressed(keyJump) || isKeyDown(keyShoot)) { break; }

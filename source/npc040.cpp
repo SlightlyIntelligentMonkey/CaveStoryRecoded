@@ -1,5 +1,9 @@
 #include "npc040.h"
 
+#include "player.h"
+#include "sound.h"
+#include "mathUtils.h"
+
 void npcAct042(npc *NPC) // Sue
 {
 	RECT rcLeft[13];
@@ -474,7 +478,7 @@ void npcAct059(npc *NPC) //Eye door
 	{
 	case 0:
 		NPC->act_no = 1;
-
+		// Fallthrough
 	case 2:
 		if (++NPC->ani_wait > 2)
 		{

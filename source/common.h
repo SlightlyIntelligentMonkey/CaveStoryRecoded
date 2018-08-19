@@ -1,31 +1,18 @@
 #pragma once
-//This includes everything that everything needs.
-#include <SDL.h>
-#include <SDL_image.h>
 
-#define LONG int32_t
-#define BYTE uint8_t
-#define WORD uint16_t
-#define DWORD uint32_t
-#define UINT uint32_t
+#include <SDL.h>
+
+#include <cstdint>
 
 struct RECT
 {
-	LONG left, top, right, bottom;
+	int32_t left, top, right, bottom;
 };
 
 struct POINT
 {
-	LONG x, y;
+	int32_t x, y;
 };
-
-#include <string>
-#include <iostream>
-#include <algorithm>
-#include <fstream>
-#include <iostream>
-
-#include <vector>
 
 //Debug flags
 extern int debugFlags;
@@ -720,7 +707,7 @@ struct VIEW {
 };
 
 //Macro
-#define TILE2COORD(x) x << 13
+#define TILE2COORD(x) ((x) << 13)
 
 //Drawing related variables
 extern SDL_Window *window;
@@ -752,23 +739,3 @@ static constexpr bool errorOnNotImplemented = true;
 //Functions
 [[noreturn]] void doError();
 [[noreturn]] void doCustomError(const char *msg);
-
-//Modules
-#include "mathUtils.h"
-#include "filesystem.h"
-#include "render.h"
-#include "flags.h"
-#include "script.h"
-#include "input.h"
-#include "sound.h"
-
-//Classes
-#include "player.h"
-#include "npc.h"
-#include "bullet.h"
-#include "caret.h"
-#include "valueview.h"
-
-//States
-#include "game.h"
-

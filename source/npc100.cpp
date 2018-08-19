@@ -1,5 +1,8 @@
 #include "npc100.h"
 
+#include "player.h"
+#include "sound.h"
+
 void npcAct106(npc *NPC) // Speech balloon 'Hey' high
 {
 	if (NPC->act_no == 0)
@@ -207,7 +210,7 @@ void npcAct117(npc *NPC)
 		NPC->act_no = 1;
 		NPC->ani_no = 0;
 		NPC->ani_wait = 0;
-		
+		// Fallthrough
 	case 1:
 		NPC->xm = 0;
 		NPC->ym += 0x40;
@@ -217,7 +220,7 @@ void npcAct117(npc *NPC)
 		NPC->act_no = 4;
 		NPC->ani_no = 1;
 		NPC->ani_wait = 0;
-
+		// Fallthrough
 	case 4:
 		//Animate
 		if (++NPC->ani_wait > 4)
@@ -260,7 +263,7 @@ void npcAct117(npc *NPC)
 			NPC->direct = dirRight;
 		else
 			NPC->direct = dirLeft;
-		
+		// Fallthrough
 	case 11:
 		//Animate
 		if (++NPC->ani_wait > 4)
@@ -298,7 +301,7 @@ void npcAct117(npc *NPC)
 		NPC->act_no = 31;
 		NPC->act_wait = 0;
 		NPC->ym = -1024;
-		
+		// Fallthrough
 	case 31:
 		NPC->ani_no = 7;
 
@@ -328,7 +331,7 @@ void npcAct117(npc *NPC)
 		NPC->act_wait = 0;
 		NPC->ani_no = 1;
 		NPC->ani_wait = 0;
-
+		// Fallthrough
 	case 71:
 		if (NPC->direct != dirLeft)
 			NPC->x -= 0x100;

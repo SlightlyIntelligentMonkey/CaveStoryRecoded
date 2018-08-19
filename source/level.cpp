@@ -1,4 +1,14 @@
 #include "level.h"
+#include "render.h"
+#include "player.h"
+#include "filesystem.h"
+#include "flags.h"
+#include "valueview.h"
+#include "bullet.h"
+#include "caret.h"
+#include "script.h"
+#include "game.h"
+#include "mathUtils.h"
 
 int currentLevel;
 
@@ -8,10 +18,10 @@ MAPNAME mapName;
 int levelWidth;
 int levelHeight;
 
-BYTE *levelMap = nullptr;
-BYTE *levelTileAttributes = nullptr;
+uint8_t *levelMap = nullptr;
+uint8_t *levelTileAttributes = nullptr;
 
-BYTE backgroundScroll;
+uint8_t backgroundScroll;
 
 //Effect things
 int backgroundEffect = 0;
@@ -49,7 +59,7 @@ void loadStageTable()
 	}
 }
 
-BYTE getTileAttribute(int x, int y) {
+uint8_t getTileAttribute(int x, int y) {
 	if (x >= 0 && x < levelWidth && y >= 0 && y < levelHeight)
 		return levelTileAttributes[levelMap[(x + y * levelWidth)]];
 
@@ -103,7 +113,7 @@ void loadLevel(int levelIndex) {
 	char pxmPath[256];
 	snprintf(pxmPath, 256, "data/Stage/%s.pxm", stageTable[levelIndex].filename);
 
-	BYTE *pxm = nullptr;
+	uint8_t *pxm = nullptr;
 	const int pxmSize = loadFile(pxmPath, &pxm);
 
 	if (pxmSize < 0)
@@ -119,7 +129,7 @@ void loadLevel(int levelIndex) {
 
 	delete[] levelMap;
 
-	levelMap = new BYTE[pxmSize - 8];
+	levelMap = new uint8_t[pxmSize - 8];
 	memcpy(levelMap, pxm + 8, pxmSize - 8);
 
 	//DONE WITH PXM
@@ -129,7 +139,7 @@ void loadLevel(int levelIndex) {
 	char pxaPath[256];
 	snprintf(pxaPath, 256, "data/Stage/%s.pxa", stageTable[levelIndex].tileset);
 
-	BYTE *pxa = nullptr;
+	uint8_t *pxa = nullptr;
 	const int pxaSize = loadFile(pxaPath, &pxa);
 
 	if (pxaSize < 0)
@@ -142,7 +152,7 @@ void loadLevel(int levelIndex) {
 
 	delete[] levelTileAttributes;
 
-	levelTileAttributes = new BYTE[pxaSize];
+	levelTileAttributes = new uint8_t[pxaSize];
 	memcpy(levelTileAttributes, pxa, pxaSize);
 
 	//DONE WITH PXA
@@ -152,7 +162,7 @@ void loadLevel(int levelIndex) {
 	char pxePath[256];
 	snprintf(pxePath, 256, "data/Stage/%s.pxe", stageTable[levelIndex].filename);
 
-	BYTE *pxe = nullptr;
+	uint8_t *pxe = nullptr;
 	if (loadFile(pxePath, &pxe) < 0)
 	{
 		char errorMsg[256];

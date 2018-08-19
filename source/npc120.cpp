@@ -1,5 +1,7 @@
 #include "npc120.h"
 
+#include "sound.h"
+
 void npcAct129(npc *NPC) //Fireball Level 1/2 trail
 {
 	RECT rect[18];
@@ -61,7 +63,7 @@ void npcAct139(npc *NPC) //Doctor with the crown
 		NPC->xm = 0;
 		NPC->ym = 0;
 		NPC->y -= 0x1000;
-
+		// Fallthrough
 	case 1:
 		if (NPC->flag & ground)
 			NPC->ani_no = 0;
@@ -76,7 +78,7 @@ void npcAct139(npc *NPC) //Doctor with the crown
 		NPC->ani_no = 1;
 		NPC->ani_wait = 0;
 		NPC->count1 = 0;
-
+		// Fallthrough
 	case 11:
 		if (++NPC->ani_wait > 6)
 		{
@@ -103,7 +105,7 @@ void npcAct139(npc *NPC) //Doctor with the crown
 		NPC->act_wait = 0;
 		NPC->ani_no = 2;
 		NPC->tgt_y = NPC->y - 0x4000;
-
+		// Fallthrough
 	case 21:
 		if (NPC->y >= NPC->tgt_y)
 			NPC->ym -= 0x20;
@@ -123,7 +125,7 @@ void npcAct139(npc *NPC) //Doctor with the crown
 		NPC->ym = 0;
 		NPC->act_wait = 2 * (NPC->rect.bottom - NPC->rect.top);
 		playSound(SFX_Teleport);
-
+		// Fallthrough
 	case 31:
 		--NPC->act_wait;
 		NPC->ani_no = 0;
@@ -139,7 +141,7 @@ void npcAct139(npc *NPC) //Doctor with the crown
 		NPC->xm = 0;
 		NPC->ym = 0;
 		playSound(SFX_Teleport);
-
+		// Fallthrough
 	case 41:
 		NPC->ani_no = 2;
 

@@ -1,5 +1,9 @@
 #include "npc300.h"
 
+#include "player.h"
+#include "mathUtils.h"
+#include "caret.h"
+
 void npcAct300(npc *NPC) //Demon crown
 {
 	if (!NPC->act_no)

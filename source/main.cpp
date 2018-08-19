@@ -1,5 +1,13 @@
 #include "common.h"
 
+#include <SDL_image.h>
+#include "sound.h"
+#include "script.h"
+#include "flags.h"
+#include "player.h"
+#include "render.h"
+#include "game.h"
+
 //Debug flags
 int debugFlags = showSlots;
 

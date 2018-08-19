@@ -3,6 +3,8 @@
 #include "npcCollision.h"
 #include "level.h"
 
+#include <vector>
+
 struct NPC_RECT
 {
 	Uint8 front;
@@ -32,7 +34,7 @@ class npc
 	//Variables
 	public:
 		//state things
-		BYTE cond;
+		uint8_t cond;
 		int flag;
 
 		//position

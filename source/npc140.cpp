@@ -1,5 +1,7 @@
 #include "npc140.h"
 
+#include "sound.h"
+
 void npcAct145(npc *NPC) //King's blade
 {
 	RECT rcLeft = { 96, 32, 112, 48 };
@@ -56,7 +58,7 @@ void npcAct146(npc *NPC) //Lightning
 
 		//if (NPC->direct == 2)
 		//	SetFlash(0, 0, 2);
-
+		// Fallthrough
 	case 1:
 		if (++NPC->act_wait > 10)
 		{

@@ -1,5 +1,10 @@
 #include "npcCollision.h"
 #include "weapons.h"
+#include "caret.h"
+#include "script.h"
+#include "sound.h"
+#include "player.h"
+#include "input.h"
 
 void putLittleStar(const RECT *rcHit, const player *me)
 {

@@ -1,5 +1,6 @@
-COMPILE_C := $(CC) -m32 -O3 -flto -c -Wall -Wextra -Wno-multichar -Wno-unused-parameter -std=c++1z -I/mingw32/include/SDL2/ 
-COMPILE_CPP := $(CXX) -m32 -O3 -flto -c -Wall -Wextra -Wno-multichar -Wno-unused-parameter -std=c++1z -I/mingw32/include/SDL2/ 
+WARNINGS := -pedantic -Wall -Wextra -Wcast-align -Wcast-qual -Wctor-dtor-privacy -Wdisabled-optimization -Wformat=2 -Winit-self -Wlogical-op -Wmissing-include-dirs -Wnoexcept -Wold-style-cast -Woverloaded-virtual -Wshadow -Wsign-promo -Wstrict-null-sentinel -Wundef -Werror -Wunused -Wno-multichar -Wno-unused-parameter
+COMPILE_C := $(CC) -m32 -O3 -flto -c $(WARNINGS) -std=c++1z -I/mingw32/include/SDL2/ 
+COMPILE_CPP := $(CXX) -m32 -O3 -flto -c $(WARNINGS) -std=c++1z -I/mingw32/include/SDL2/ 
 # Replace mingw32 with usr for actual Unix build
 LINK_CPP := $(CXX) -m32 -O3 -flto -static -static-libstdc++ -static-libgcc -s
 LINK_C := $(CC) -m32 -O3 -flto -static -static-libstdc++ -static-libgcc -s

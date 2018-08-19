@@ -1,5 +1,11 @@
 #include "shootFunctions.h"
 
+#include "input.h"
+#include "sound.h"
+#include "caret.h"
+#include "bullet.h"
+#include "player.h"
+
 int spurCharge = 0;
 bool bMax = false;
 

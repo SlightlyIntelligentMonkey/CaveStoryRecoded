@@ -1,6 +1,10 @@
 #include "hud.h"
 #include "level.h"
 #include "weapons.h"
+#include "render.h"
+#include "player.h"
+#include "caret.h"
+#include "bullet.h"
 
 #include <string>
 

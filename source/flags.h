@@ -1,9 +1,9 @@
 #pragma once
 #include "common.h"
 
-extern BYTE tscFlags[1000]; //game flags
-extern BYTE skipFlags[64]; //skip flags
-extern BYTE mapFlags[128]; //Map flags
+extern uint8_t tscFlags[1000]; //game flags
+extern uint8_t skipFlags[64]; //skip flags
+extern uint8_t mapFlags[128]; //Map flags
 
 void initFlags();
 

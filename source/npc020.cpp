@@ -1,5 +1,8 @@
 #include "npc020.h"
 
+#include "mathUtils.h"
+#include "caret.h"
+
 void npcAct020(npc *NPC) // Computer
 {
 	constexpr RECT rcLeft = { 288, 16, 320, 40 };

@@ -35,7 +35,7 @@ void npcAct298(npc *NPC) //Doctor without crown (intro)
 		NPC->ani_no = 0;
 		NPC->ani_wait = 0;
 		NPC->count1 = 0;
-
+		// Fallthrough
 	case 11:
 		if (++NPC->ani_wait > 6)
 		{
@@ -59,7 +59,7 @@ void npcAct298(npc *NPC) //Doctor without crown (intro)
 		NPC->act_no = 21;
 		NPC->ani_no = 2;
 		NPC->ani_wait = 0;
-		
+		// Fallthrough
 	case 21:
 		if (++NPC->ani_wait > 10)
 		{
@@ -82,7 +82,7 @@ void npcAct298(npc *NPC) //Doctor without crown (intro)
 		NPC->ani_no = 6;
 		NPC->ani_wait = 0;
 		NPC->count1 = 0;
-		
+		// Fallthrough
 	case 41:
 		if (++NPC->ani_wait > 6)
 		{

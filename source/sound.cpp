@@ -1,5 +1,7 @@
 #include "sound.h"
+
 #include <SDL.h>
+#include "filesystem.h"
 
 struct SOUND_EFFECT
 {
@@ -31,7 +33,7 @@ void audio_callback(void *userdata, Uint8 *stream, int len) // TBD : Handle user
 {
 	memset(stream, 0, len);
 
-	for (int sfx = 0; sfx < _countof(sounds); sfx++)
+	for (size_t sfx = 0; sfx < _countof(sounds); sfx++)
 	{
 		if (sounds[sfx].pos < sounds[sfx].length)
 		{
@@ -64,7 +66,7 @@ void ini_audio()
 //we have to do it ourselves
 void loadSound(const char *path, SDL_AudioSpec *spec, int **buf, Uint32 *length)
 {
-	BYTE *pBuf = nullptr;
+	uint8_t *pBuf = nullptr;
 
 	SDL_LoadWAV(path, spec, &pBuf, length);
 	
@@ -145,7 +147,7 @@ void loadSounds()
 
 void freeSounds()
 {
-	for (int s = 0; s < _countof(sounds); s++)
+	for (size_t s = 0; s < _countof(sounds); s++)
 	{
 		free(sounds[s].buf);
 	}
@@ -153,7 +155,7 @@ void freeSounds()
 
 void playSound(int sound_no)
 {
-	if (sound_no > _countof(sounds) - 1) { return; }
+	if (sound_no > (int)_countof(sounds) - 1) { return; }
 	if (sounds[sound_no].buf == nullptr) { return; }
 	sounds[sound_no].pos = 0;
 }

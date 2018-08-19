@@ -1,33 +1,37 @@
 #include "filesystem.h"
 #include "fade.h"
 #include "weapons.h"
+#include "player.h"
+#include "game.h"
+#include "flags.h"
+#include "script.h"
 
 #include <sys/stat.h>
 
 //Read function stuff
-uint16_t readLEshort(const BYTE * data, size_t offset)
+uint16_t readLEshort(const uint8_t * data, size_t offset)
 {
 	return ((data[offset + 1] << 8) + data[offset]);
 }
 
-uint32_t readLElong(const BYTE * data, size_t offset)
+uint32_t readLElong(const uint8_t * data, size_t offset)
 {
 	return ((data[offset + 3] << 24) + (data[offset + 2] << 16) + (data[offset + 1] << 8) + data[offset]);
 }
 
 //Write stuff
-void writeLEshort(BYTE *data, uint16_t input, size_t offset)
+void writeLEshort(uint8_t *data, uint16_t input, size_t offset)
 {
-	data[offset] = static_cast<BYTE>(input);
-	data[offset + 1] = static_cast<BYTE>(input >> 8);
+	data[offset] = static_cast<uint8_t>(input);
+	data[offset + 1] = static_cast<uint8_t>(input >> 8);
 }
 
-void writeLElong(BYTE *data, uint32_t input, size_t offset)
+void writeLElong(uint8_t *data, uint32_t input, size_t offset)
 {
-	data[offset] = static_cast<BYTE>(input);
-	data[offset + 1] = static_cast<BYTE>(input >> 8);
-	data[offset + 2] = static_cast<BYTE>(input >> 16);
-	data[offset + 3] = static_cast<BYTE>(input >> 24);
+	data[offset] = static_cast<uint8_t>(input);
+	data[offset + 1] = static_cast<uint8_t>(input >> 8);
+	data[offset + 2] = static_cast<uint8_t>(input >> 16);
+	data[offset + 3] = static_cast<uint8_t>(input >> 24);
 }
 
 //Loading and writing functions
@@ -37,7 +41,7 @@ bool fileExists(const char *name)
 	return (stat(name, &buffer) == 0);
 }
 
-int loadFile(const char *name, BYTE **data)
+int loadFile(const char *name, uint8_t **data)
 {
 	//Open file
 	FILE *file = fopen(name, "rb");
@@ -50,7 +54,7 @@ int loadFile(const char *name, BYTE **data)
 	fseek(file, 0, 0);
 
 	//Load data
-	*data = static_cast<BYTE *>(malloc(filesize));
+	*data = static_cast<uint8_t *>(malloc(filesize));
 	if (fread(*data, 1, filesize, file) == 0) 
 	{
 		fclose(file);
@@ -159,7 +163,7 @@ void loadProfile()
 }
 
 void saveProfile() {
-	BYTE profile[0x604] = { 0 };
+	uint8_t profile[0x604] = { 0 };
 
 	if (profile == nullptr)
 		doCustomError("Could not allocate memory for profile");

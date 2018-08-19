@@ -1,6 +1,14 @@
 #include "npc.h"
 #include "npcAct.h"
 #include "weapons.h"
+#include "mathUtils.h"
+#include "player.h"
+#include "valueview.h"
+#include "render.h"
+#include "sound.h"
+#include "flags.h"
+
+#include <string>
 
 std::vector<npc> npcs(0);
 

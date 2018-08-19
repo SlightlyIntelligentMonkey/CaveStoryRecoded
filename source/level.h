@@ -30,15 +30,15 @@ extern int levelHeight;
 
 extern int currentLevel;
 
-extern BYTE *levelMap;
-extern BYTE *levelTileAttributes;
+extern uint8_t *levelMap;
+extern uint8_t *levelTileAttributes;
 
 extern SDL_Texture *levelTileset;
 
-extern BYTE backgroundScroll;
+extern uint8_t backgroundScroll;
 extern SDL_Texture *levelBackground;
 
-BYTE getTileAttribute(int x, int y);
+uint8_t getTileAttribute(int x, int y);
 
 void deleteTile(int x, int y);
 void shiftTile(int x, int y);

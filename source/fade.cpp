@@ -1,5 +1,7 @@
 #include "fade.h"
 
+#include "render.h"
+
 FADE_STATE fade;
 
 const int fadeFrames = 16;

@@ -1,5 +1,10 @@
 #include "npc220.h"
 
+#include "player.h"
+#include "sound.h"
+#include "mathUtils.h"
+#include "caret.h"
+
 void npcAct222(npc *NPC) // Prison bars
 {
 	if (!NPC->act_no)

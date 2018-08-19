@@ -1,6 +1,8 @@
 #pragma once
 #include "common.h"
 
+#include <vector>
+
 enum bulletFlags
 {
 	bullet_ignoreSolid = 0x4,
