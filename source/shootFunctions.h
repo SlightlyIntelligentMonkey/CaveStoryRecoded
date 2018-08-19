@@ -3,3 +3,6 @@
 #include "weapons.h"
 
 void shootPolarStar(int level);
+void shootFireball(int level);
+
+void shootSpur(int level);

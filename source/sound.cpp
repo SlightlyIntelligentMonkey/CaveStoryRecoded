@@ -35,7 +35,7 @@ void audio_callback(void *userdata, Uint8 *stream, int len) // TBD : Handle user
 	{
 		if (sounds[sfx].pos < sounds[sfx].length)
 		{
-			mixAudioSFX((int*)stream, len, &sounds[sfx], 100, 100);
+			mixAudioSFX(reinterpret_cast<int *>(stream), len, &sounds[sfx], 100, 100);
 		}
 	}
 }

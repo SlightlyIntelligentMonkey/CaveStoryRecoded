@@ -335,7 +335,7 @@ int updateTsc()
 			if (isKeyPressed(keyJump)) //Select button pressed
 			{
 				//Play selection sound
-				playSound(18);
+				playSound(SFX_YNConfirm);
 
 				if (tsc.select) //No selected
 				{
@@ -351,12 +351,12 @@ int updateTsc()
 			else if (isKeyPressed(keyLeft)) //Left pressed
 			{
 				tsc.select = 0; //Select yes and play sound
-				playSound(1);
+				playSound(SFX_YNChangeChoice);
 			}
 			else if (isKeyPressed(keyRight)) //Right pressed
 			{
 				tsc.select = 1; //Select no and play sound
-				playSound(1);
+				playSound(SFX_YNChangeChoice);
 			}
 		}
 		else
@@ -453,8 +453,12 @@ int updateTsc()
 				strcat(tscText + (tsc.line % 4 << 6), c);
 				tscTextFlag[(tsc.line % 4 << 6) + tsc.p_write] = 0; //Make text display at normal width
 
+				//Make equal signs draw as the circle thing
+				if (c[0] == '=')
+					tscTextFlag[(tsc.line % 4 << 6) + tsc.p_write] |= 2;
+
 				//Play sound and reset cursor blinking timer.
-				playSound(2);
+				playSound(SFX_MessageTyping);
 				tsc.wait_beam = 0;
 
 				//Shift read and write positions
@@ -516,9 +520,9 @@ int updateTsc()
 							if (getTSCNumber(tsc.p_read + 14) == 4)
 							{
 								if (npcs[i].x >= currentPlayer.x)
-									npcs[i].direct = 0;
+									npcs[i].direct = dirLeft;
 								else
-									npcs[i].direct = 2;
+									npcs[i].direct = dirRight;
 							}
 							else
 							{
@@ -776,9 +780,9 @@ int updateTsc()
 							if (getTSCNumber(tsc.p_read + 19) == 4)
 							{
 								if (npcs[i].x >= currentPlayer.x)
-									npcs[i].direct = 0;
+									npcs[i].direct = dirLeft;
 								else
-									npcs[i].direct = 2;
+									npcs[i].direct = dirRight;
 							}
 							else
 							{
@@ -825,12 +829,12 @@ int updateTsc()
 				switch (getTSCNumber(tsc.p_read + 4))
 				{
 				case 0:
-					currentPlayer.direct = 0;
+					currentPlayer.direct = dirLeft;
 					currentPlayer.xm = 0x200;
 					break;
 
 				case 2:
-					currentPlayer.direct = 2;
+					currentPlayer.direct = dirRight;
 					currentPlayer.xm = -0x200;
 					break;
 
@@ -841,12 +845,12 @@ int updateTsc()
 						{
 							if (npcs[i].x >= currentPlayer.x)
 							{
-								currentPlayer.direct = 2;
+								currentPlayer.direct = dirRight;
 								currentPlayer.xm = -0x200;
 							}
 							else
 							{
-								currentPlayer.direct = 0;
+								currentPlayer.direct = dirLeft;
 								currentPlayer.xm = 0x200;
 							}
 						}
@@ -929,6 +933,7 @@ int updateTsc()
 				tscCleanup(2);
 				break;
 			case('<SNP'):
+				
 				createNpc(
 					getTSCNumber(tsc.p_read + 4),
 					getTSCNumber(tsc.p_read + 9) << 13,
@@ -997,7 +1002,7 @@ int updateTsc()
 			case('<YNJ'):
 				tsc.next_event = getTSCNumber(tsc.p_read + 4);
 				tsc.mode = YNJ;
-				playSound(5);
+				playSound(SFX_YNPrompt);
 				tsc.wait = 0;
 				tsc.select = 0;
 				tscCleanup(1);

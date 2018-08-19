@@ -101,7 +101,7 @@ void loadImage(const char *file, SDL_Texture **tex) {
 }
 
 //Drawing functions
-void setCliprect(RECT *rect)
+void setCliprect(const RECT *rect)
 {
 	//All of this code should be pretty self explanatory
 	if (rect != nullptr)
@@ -203,31 +203,39 @@ void drawString(int x, int y, const char *str, const uint8_t *flag)
 			//Get separation value from flag array
 			int sep = 6;
 
-			if (flag != nullptr && flag[i])
+			if (flag != nullptr && flag[i] & 1)
 				sep = 5;
-
-			//Set framerect to what it's supposed to be
-			int drawIndex = i;
-
-			if (isMultibyte(str[i]))
+			//Circle thing
+			if (flag != nullptr && flag[i] & 2)
 			{
-				int localChar = 0x81 + str[i + 1] + ((str[i] - 0x81) * 0x100);
-				rcChar.left = ((localChar % 32) * charWidth);
-				rcChar.top = ((localChar >> 5) * charHeight);
-				rcChar.right = rcChar.left + charWidth;
-				rcChar.bottom = rcChar.top + charHeight;
-				i++;
+				rcChar = { 64, 48, 72, 56 };
+				drawTexture(sprites[TEX_TEXTBOX], &rcChar, x + (i * sep), y + 2);
 			}
 			else
 			{
-				rcChar.left = ((str[i] % 32) * charWidth);
-				rcChar.top = ((str[i] >> 5) * charHeight);
-				rcChar.right = rcChar.left + charWidth;
-				rcChar.bottom = rcChar.top + charHeight;
-			}
+				//Set framerect to what it's supposed to be
+				const int drawIndex = i;
 
-			//Draw to the screen
-			drawTextureSize(sprites[0x26], &rcChar, x + (drawIndex * sep), y, charWidth / charScale, charHeight / charScale);
+				if (isMultibyte(str[i]))
+				{
+					int localChar = 0x81 + str[i + 1] + ((str[i] - 0x81) * 0x100);
+					rcChar.left = ((localChar % 32) * charWidth);
+					rcChar.top = ((localChar >> 5) * charHeight);
+					rcChar.right = rcChar.left + charWidth;
+					rcChar.bottom = rcChar.top + charHeight;
+					i++;
+				}
+				else
+				{
+					rcChar.left = ((str[i] % 32) * charWidth);
+					rcChar.top = ((str[i] >> 5) * charHeight);
+					rcChar.right = rcChar.left + charWidth;
+					rcChar.bottom = rcChar.top + charHeight;
+				}
+
+				//Draw to the screen
+				drawTextureSize(sprites[0x26], &rcChar, x + (drawIndex * sep), y, charWidth / charScale, charHeight / charScale);
+			}
 		}
 		else
 			break;

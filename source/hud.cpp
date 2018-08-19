@@ -2,9 +2,14 @@
 #include "level.h"
 #include "weapons.h"
 
+#include <string>
+
+using std::string;
+using std::to_string;
+
 void drawMapName(bool bMini)
 {
-	const int len = (int)strlen(mapName.name);
+	const auto len = strlen(mapName.name);
 
 	const int x = screenWidth / 2 - len * 3;
 	const int y = 80;
@@ -74,10 +79,10 @@ void drawWeaponStats()
 		rcExpFlash = { 40, 80, 80, 88 };
 		
 		//Set up some variables
-		int lv = weapons[selectedWeapon].level - 1;
-		int arms_code = weapons[selectedWeapon].code;
-		int exp_now = weapons[selectedWeapon].exp;
-		int exp_next = weaponLevels[arms_code].exp[lv];
+		const int lv = weapons[selectedWeapon].level - 1;
+		const int arms_code = weapons[selectedWeapon].code;
+		const int exp_now = weapons[selectedWeapon].exp;
+		const int exp_next = weaponLevels[arms_code].exp[lv];
 
 		//Draw the bar
 		drawTexture(sprites[TEX_TEXTBOX], &rcExpBox, weaponShiftX + 24, 32);
@@ -198,7 +203,7 @@ void drawPlayerAir()
 	}
 }
 
-void drawHud(bool hide)
+void drawHud(bool hide) // TBD : Handle hide parameter
 {
 	drawWeaponStats();
 	drawPlayerHealth();
@@ -207,14 +212,11 @@ void drawHud(bool hide)
 
 	if (debugFlags & showSlots)
 	{
-		char debStr1[0x80];
-		sprintf(debStr1, "There are %s npc slots.", std::to_string(npcs.size()).c_str());
-		char debStr2[0x80];
-		sprintf(debStr2, "There are %s bullet slots.", std::to_string(bullets.size()).c_str());
-		char debStr3[0x80];
-		sprintf(debStr3, "There are %s caret slots.", std::to_string(carets.size()).c_str());
-		drawString(8, screenHeight - 12, debStr1, nullptr);
-		drawString(8, screenHeight - 24, debStr2, nullptr);
-		drawString(8, screenHeight - 36, debStr3, nullptr);
+		string debugStr1 = "There are " + to_string(npcs.size()) + " npc slots.";
+		string debugStr2 = "There are " + to_string(bullets.size()) + " bullet slots.";
+		string debugStr3 = "There are " + to_string(carets.size()) + " caret slots.";
+		drawString(8, screenHeight - 12, debugStr1.c_str(), nullptr);
+		drawString(8, screenHeight - 24, debugStr2.c_str(), nullptr);
+		drawString(8, screenHeight - 36, debugStr3.c_str(), nullptr);
 	}
 }

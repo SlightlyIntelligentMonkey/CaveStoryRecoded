@@ -3,21 +3,25 @@
 #include "weapons.h"
 
 //Read function stuff
-uint16_t readLEshort(const BYTE * data, size_t offset) {
+uint16_t readLEshort(const BYTE * data, size_t offset)
+{
 	return ((data[offset + 1] << 8) + data[offset]);
 }
 
-uint32_t readLElong(const BYTE * data, size_t offset) {
+uint32_t readLElong(const BYTE * data, size_t offset)
+{
 	return ((data[offset + 3] << 24) + (data[offset + 2] << 16) + (data[offset + 1] << 8) + data[offset]);
 }
 
 //Write stuff
-void writeLEshort(BYTE *data, uint16_t input, size_t offset) {
+void writeLEshort(BYTE *data, uint16_t input, size_t offset)
+{
 	data[offset] = static_cast<BYTE>(input);
 	data[offset + 1] = static_cast<BYTE>(input >> 8);
 }
 
-void writeLElong(BYTE *data, uint32_t input, size_t offset) {
+void writeLElong(BYTE *data, uint32_t input, size_t offset)
+{
 	data[offset] = static_cast<BYTE>(input);
 	data[offset + 1] = static_cast<BYTE>(input >> 8);
 	data[offset + 2] = static_cast<BYTE>(input >> 16);
@@ -31,7 +35,8 @@ bool fileExists(const char *name)
 	return (stat(name, &buffer) == 0);
 }
 
-int loadFile(const char *name, BYTE **data) {
+int loadFile(const char *name, BYTE **data)
+{
 	//Open file
 	FILE *file = fopen(name, "rb");
 	if (file == nullptr)
@@ -39,7 +44,7 @@ int loadFile(const char *name, BYTE **data) {
 
 	//Get filesize
 	fseek(file, 0, SEEK_END);
-	int filesize = ftell(file);
+	const size_t filesize = ftell(file);
 	fseek(file, 0, 0);
 
 	//Load data
@@ -59,7 +64,7 @@ int loadFile(const char *name, BYTE **data) {
 int writeFile(const char *name, void *data, size_t amount)
 {
 	FILE *file;
-	if ((file = fopen(name, "wb")) == NULL)
+	if ((file = fopen(name, "wb")) == nullptr)
 		return -1;
 
 	if (fwrite(data, 1, amount, file) == 0) 
@@ -152,13 +157,12 @@ void loadProfile()
 }
 
 void saveProfile() {
-	auto profile = static_cast<BYTE *>(malloc(0x604));
+	BYTE profile[0x604] = { 0 };
 
 	if (profile == nullptr)
 		doCustomError("Could not allocate memory for profile");
 
 	//Set data
-	memset(profile, 0, 0x604);
 	memcpy(profile, profileCode, 0x08);
 
 	writeLElong(profile, currentLevel, 0x08); //Level
@@ -197,7 +201,4 @@ void saveProfile() {
 
 	//Save to file
 	writeFile(profileName, profile, 0x604);
-
-	//End
-	free(profile);
 }

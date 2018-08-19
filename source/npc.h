@@ -48,8 +48,6 @@ class npc
 		int tgt_x;
 		int tgt_y;
 
-		npc *tgt_npc;
-
 		//npc things
 		int code_char;
 		int code_flag;
@@ -111,7 +109,6 @@ void changeNpc(int code_event, int code_char, int dir);
 
 void updateNPC();
 void drawNPC();
-
 void killNpc(npc *NPC, bool bVanish);
 
 extern std::vector<npc> npcs;

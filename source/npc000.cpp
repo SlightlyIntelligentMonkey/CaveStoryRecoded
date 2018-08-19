@@ -4,16 +4,14 @@
 using std::string;
 using std::to_string;
 
-static constexpr bool errorOnNPCNotImplemented = false;
-
 void npcActNone(npc *NPC)
 {
 	NPC->surf = 0x27;
 	NPC->rect = { 0, 0, NPC->view.left >> 8, NPC->view.top >> 8 };
-	if (errorOnNPCNotImplemented)
+	if (errorOnNotImplemented)
 	{
-		string msg = "NPC " + to_string(NPC->code_char) + " is not implementated yet";
-		SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_INFORMATION, "Missing NPC", msg.c_str(), NULL);
+		string msg = "NPC " + to_string(NPC->code_char) + " is not implementated yet.";
+		SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_WARNING, "Missing NPC", msg.c_str(), nullptr);
 	}
 }
 
@@ -23,7 +21,7 @@ void npcAct000(npc *NPC) //Null
 	{
 		NPC->act_no = 1;
 
-		if (NPC->direct == 2)
+		if (NPC->direct == dirRight)
 			NPC->y += 0x2000;
 	}
 
@@ -43,9 +41,9 @@ void npcAct001(npc *NPC) //Experience
 			NPC->ym = random(-0x400, 0);
 
 			if (random(0, 1) != 0)
-				NPC->direct = 0;
+				NPC->direct = dirLeft;
 			else
-				NPC->direct = 2;
+				NPC->direct = dirRight;
 		}
 
 		//Gravity
@@ -65,7 +63,7 @@ void npcAct001(npc *NPC) //Experience
 		//Bounce off floor
 		if (NPC->flag & ground)
 		{
-			playSound(45); //This line is redundant.
+			playSound(SFX_EXPBounce); //This line is redundant.
 			NPC->ym = -0x280;
 			NPC->xm = 2 * NPC->xm / 3;
 		}
@@ -73,7 +71,7 @@ void npcAct001(npc *NPC) //Experience
 		//Clip out of floors???
 		if (NPC->flag & (leftWall | rightWall | ground))
 		{
-			playSound(45);
+			playSound(SFX_EXPBounce);
 			if (++NPC->count2 > 2)
 				NPC->y -= 0x200;
 		}
@@ -136,7 +134,7 @@ void npcAct001(npc *NPC) //Experience
 
 	//Animate
 	++NPC->ani_wait;
-	if (NPC->direct)
+	if (NPC->direct != dirLeft)
 	{
 		if (NPC->ani_wait > 2)
 		{
@@ -208,16 +206,16 @@ void npcAct002(npc *NPC) //Behemoth
 
 	if (NPC->flag & leftWall)
 	{
-		NPC->direct = 2;
+		NPC->direct = dirRight;
 	}
 	else if (NPC->flag & rightWall)
 	{
-		NPC->direct = 0;
+		NPC->direct = dirLeft;
 	}
 
 	switch (act_no) {
 	case 0: //Normal act
-		if (NPC->direct)
+		if (NPC->direct != dirLeft)
 			NPC->xm = 0x100;
 		else
 			NPC->xm = -0x100;
@@ -263,7 +261,7 @@ void npcAct002(npc *NPC) //Behemoth
 		break;
 
 	case 2: //Charge
-		if (NPC->direct)
+		if (NPC->direct != dirLeft)
 			NPC->xm = 0x400;
 		else
 			NPC->xm = -0x400;
@@ -294,7 +292,7 @@ void npcAct002(npc *NPC) //Behemoth
 	NPC->x += NPC->xm;
 	NPC->y += NPC->ym;
 
-	if (NPC->direct)
+	if (NPC->direct != dirLeft)
 		NPC->rect = rcRight[NPC->ani_no];
 	else
 		NPC->rect = rcLeft[NPC->ani_no];
@@ -340,7 +338,7 @@ void npcAct004(npc *NPC) //Smoke
 	}
 	else
 	{
-		if (!NPC->direct || NPC->direct == 1)
+		if (NPC->direct == dirLeft || NPC->direct == dirUp)
 		{
 			const BYTE deg = random(0, 255);
 
@@ -365,7 +363,7 @@ void npcAct004(npc *NPC) //Smoke
 
 	if (NPC->ani_no <= 7)
 	{
-		if (NPC->direct != 1)
+		if (NPC->direct != dirUp)
 		{
 			NPC->rect = rcLeft[NPC->ani_no];
 		}
@@ -401,12 +399,12 @@ void npcAct005(npc *NPC) //Egg Corridor critter
 			NPC->ym = -0x5FF;
 
 			//Jump in direction facing
-			if (NPC->direct)
+			if (NPC->direct != dirLeft)
 				NPC->xm = 0x100;
 			else
 				NPC->xm = -0x100;
 
-			playSound(30);
+			playSound(SFX_CritterHop);
 		}
 
 		break;
@@ -427,9 +425,9 @@ void npcAct005(npc *NPC) //Egg Corridor critter
 	{
 		//Face towards player
 		if (NPC->x <= currentPlayer.x)
-			NPC->direct = 2;
+			NPC->direct = dirRight;
 		else
-			NPC->direct = 0;
+			NPC->direct = dirLeft;
 
 		//TargetX being used as timer (10/10 pixel code)
 		if (NPC->tgt_x < 100)
@@ -481,7 +479,7 @@ void npcAct005(npc *NPC) //Egg Corridor critter
 	NPC->y += NPC->ym;
 
 	//Change framerect
-	if (NPC->direct)
+	if (NPC->direct != dirLeft)
 		NPC->rect = { (NPC->ani_no << 4), 64, ((NPC->ani_no + 1) << 4), 80 };
 	else
 		NPC->rect = { (NPC->ani_no << 4), 48, ((NPC->ani_no + 1) << 4), 64 };
@@ -493,7 +491,7 @@ void npcAct006(npc *NPC) //Beetle
 
 	switch (act_no) {
 	case 0: //Init
-		if (NPC->direct)
+		if (NPC->direct != dirLeft)
 			NPC->act_no = 3;
 		else
 			NPC->act_no = 1;
@@ -529,7 +527,7 @@ void npcAct006(npc *NPC) //Beetle
 			NPC->act_wait = 0;
 			NPC->ani_no = 0;
 			NPC->xm = 0;
-			NPC->direct = 2;
+			NPC->direct = dirRight;
 		}
 
 		break;
@@ -538,7 +536,7 @@ void npcAct006(npc *NPC) //Beetle
 		//Wait 60 frames and then fly in facing direct
 		if (++NPC->act_wait > 60)
 		{
-			if (NPC->direct)
+			if (NPC->direct != dirLeft)
 				NPC->act_no = 3;
 			else
 				NPC->act_no = 1;
@@ -578,14 +576,14 @@ void npcAct006(npc *NPC) //Beetle
 			NPC->act_wait = 0;
 			NPC->ani_no = 0;
 			NPC->xm = 0;
-			NPC->direct = 0;
+			NPC->direct = dirLeft;
 		}
 
 		break;
 	}
 
 	//Set framerect
-	if (NPC->direct)
+	if (NPC->direct != dirLeft)
 		NPC->rect = { (NPC->ani_no << 4), 96, (NPC->ani_no << 4) + 16, 112 };
 	else
 		NPC->rect = { (NPC->ani_no << 4), 80, (NPC->ani_no << 4) + 16, 96 };
@@ -647,7 +645,7 @@ void npcAct007(npc *NPC) //Basil
 		NPC->x = currentPlayer.x;
 
 		//Move in facing direct
-		if (NPC->direct)
+		if (NPC->direct != dirLeft)
 			NPC->act_no = 2;
 		else
 			NPC->act_no = 1;
@@ -657,9 +655,9 @@ void npcAct007(npc *NPC) //Basil
 
 	//Face in moving direct
 	if (NPC->xm >= 0)
-		NPC->direct = 2;
+		NPC->direct = dirRight;
 	else
-		NPC->direct = 0;
+		NPC->direct = dirLeft;
 
 	//Limit speed
 	if (NPC->xm > 0x5FF)
@@ -682,7 +680,7 @@ void npcAct007(npc *NPC) //Basil
 		NPC->ani_no = 0;
 
 	//Set framerect
-	if (NPC->direct)
+	if (NPC->direct != dirLeft)
 	{
 		setRect = &rcRight[NPC->ani_no];
 	}
@@ -713,12 +711,12 @@ void npcAct008(npc *NPC) //Follow beetle (egg corridor)
 		{
 			if (NPC->x <= currentPlayer.x)
 			{
-				NPC->direct = 2;
+				NPC->direct = dirRight;
 				NPC->xm += 0x10;
 			}
 			else
 			{
-				NPC->direct = 0;
+				NPC->direct = dirLeft;
 				NPC->xm -= 0x10;
 			}
 
@@ -768,7 +766,7 @@ void npcAct008(npc *NPC) //Follow beetle (egg corridor)
 		NPC->act_no = 1;
 		NPC->damage = 2;
 
-		if (NPC->direct)
+		if (NPC->direct != dirLeft)
 		{
 			NPC->x = currentPlayer.x - 0x20000;
 			NPC->xm = 767;
@@ -789,7 +787,7 @@ void npcAct008(npc *NPC) //Follow beetle (egg corridor)
 	if (NPC->ani_no > 1)
 		NPC->ani_no = 0;
 
-	if (NPC->direct)
+	if (NPC->direct != dirLeft)
 	{
 		setRect = &rcRight[NPC->ani_no];
 	}
@@ -837,13 +835,13 @@ void npcAct009(npc *NPC) //Balrog drop in
 		{
 			//Create smoke
 			for (int i = 0; i < 4; ++i)
-				createNpc(4, NPC->x + (random(-12, 12) << 9), NPC->y + (random(-12, 12) << 9), random(-0x155, 0x155), random(-0x600, 0), 0, nullptr);
+				createNpc(NPC_Smoke, NPC->x + (random(-12, 12) << 9), NPC->y + (random(-12, 12) << 9), random(-0x155, 0x155), random(-0x600, 0), 0, nullptr);
 
 			//Go into landed state
 			NPC->act_no = 2;
 			NPC->ani_no = 1;
 			NPC->act_wait = 0;
-			playSound(26);
+			playSound(SFX_LargeObjectHitGround);
 			viewport.quake = 30;
 		}
 
@@ -873,7 +871,7 @@ void npcAct009(npc *NPC) //Balrog drop in
 	NPC->y += NPC->ym;
 
 	//Set framerect
-	if (NPC->direct)
+	if (NPC->direct != dirLeft)
 		NPC->rect = rcRight[NPC->ani_no];
 	else
 		NPC->rect = rcLeft[NPC->ani_no];
@@ -890,7 +888,7 @@ void npcAct011(npc *NPC) //Bubble
 	if (NPC->flag & 0xFF)
 	{
 		NPC->cond = 0;
-		createCaret(NPC->x, NPC->y, 2, 0);
+		createCaret(NPC->x, NPC->y, effect_RisingDisc, 0);
 	}
 
 	NPC->x += NPC->xm;
@@ -908,7 +906,7 @@ void npcAct011(npc *NPC) //Bubble
 
 	if (++NPC->count1 > 150)
 	{
-		createCaret(NPC->x, NPC->y, 2, 0);
+		createCaret(NPC->x, NPC->y, effect_RisingDisc, 0);
 		NPC->cond = 0;
 	}
 }
@@ -954,12 +952,12 @@ void npcAct012(npc *NPC) //Balrog cutscene
 	switch (NPC->act_no)
 	{
 	case 0: //Stand and blink
-		if (NPC->direct == 4)
+		if (NPC->direct == dirCenter)
 		{
 			if (NPC->x <= currentPlayer.x)
-				NPC->direct = 2;
+				NPC->direct = dirRight;
 			else
-				NPC->direct = 0;
+				NPC->direct = dirLeft;
 		}
 
 		NPC->act_no = 1;
@@ -983,12 +981,12 @@ void npcAct012(npc *NPC) //Balrog cutscene
 		break;
 
 	case 10: //Jump up
-		if (NPC->direct == 4)
+		if (NPC->direct == dirCenter)
 		{
 			if (NPC->x <= currentPlayer.x)
-				NPC->direct = 2;
+				NPC->direct = dirRight;
 			else
-				NPC->direct = 0;
+				NPC->direct = dirLeft;
 		}
 
 		NPC->act_no = 11;
@@ -1014,18 +1012,18 @@ void npcAct012(npc *NPC) //Balrog cutscene
 		if (NPC->y < 0)
 		{
 			NPC->code_char = 0;
-			playSound(26);
+			playSound(SFX_LargeObjectHitGround);
 			viewport.quake = 30;
 		}
 		break;
 
 	case 20: //Defeated?
-		if (NPC->direct == 4)
+		if (NPC->direct == dirCenter)
 		{
 			if (NPC->x <= currentPlayer.x)
-				NPC->direct = 2;
+				NPC->direct = dirRight;
 			else
-				NPC->direct = 0;
+				NPC->direct = dirLeft;
 		}
 
 		NPC->act_no = 21;
@@ -1034,9 +1032,9 @@ void npcAct012(npc *NPC) //Balrog cutscene
 		NPC->count1 = 0;
 
 		for (int i = 0; i < 4; ++i)
-			createNpc(4, NPC->x + (random(-12, 12) << 9), NPC->y + (random(-12, 12) << 9), random(-0x155, 0x155), random(-0x600, 0), 0, nullptr);
+			createNpc(NPC_Smoke, NPC->x + (random(-12, 12) << 9), NPC->y + (random(-12, 12) << 9), random(-0x155, 0x155), random(-0x600, 0), 0, nullptr);
 
-		playSound(72);
+		playSound(SFX_Explosion);
 		
 	case 21:
 		NPC->tgt_x = 1;
@@ -1074,12 +1072,12 @@ void npcAct012(npc *NPC) //Balrog cutscene
 		break;
 
 	case 40: //"Super panic"
-		if (NPC->direct == 4)
+		if (NPC->direct == dirCenter)
 		{
 			if (NPC->x <= currentPlayer.x)
-				NPC->direct = 2;
+				NPC->direct = dirRight;
 			else
-				NPC->direct = 0;
+				NPC->direct = dirLeft;
 		}
 
 		NPC->act_no = 41;
@@ -1095,12 +1093,12 @@ void npcAct012(npc *NPC) //Balrog cutscene
 		break;
 
 	case 42: //"Uh oh! Image blinks"
-		if (NPC->direct == 4)
+		if (NPC->direct == dirCenter)
 		{
 			if (NPC->x <= currentPlayer.x)
-				NPC->direct = 2;
+				NPC->direct = dirRight;
 			else
-				NPC->direct = 0;
+				NPC->direct = dirLeft;
 		}
 		
 		NPC->act_no = 43;
@@ -1131,13 +1129,13 @@ void npcAct012(npc *NPC) //Balrog cutscene
 			NPC->ani_wait = 0;
 
 			if (++NPC->ani_no == 10 || NPC->ani_no == 11)
-				playSound(23);
+				playSound(SFX_QuoteHitGround);
 		}
 
 		if (NPC->ani_no > 12)
 			NPC->ani_no = 9;
 
-		if (NPC->direct)
+		if (NPC->direct != dirLeft)
 			NPC->xm = 0x200;
 		else
 			NPC->xm = -0x200;
@@ -1146,7 +1144,7 @@ void npcAct012(npc *NPC) //Balrog cutscene
 	case 70: //"Uh oh! Vanish"
 		NPC->act_no = 71;
 		NPC->act_wait = 64;
-		playSound(29);
+		playSound(SFX_Teleport);
 		NPC->ani_no = 13;
 		
 	case 71:
@@ -1185,8 +1183,8 @@ void npcAct012(npc *NPC) //Balrog cutscene
 
 			//DeleteNpCharCode(150, 0);
 			//DeleteNpCharCode(117, 0);
-			createNpc(355, 0, 0, 0, 0, 0, NPC);
-			createNpc(355, 0, 0, 0, 0, 1, NPC);
+			createNpc(NPC_BalrogCrashingThroughWall, 0, 0, 0, 0, 0, NPC);
+			createNpc(NPC_BalrogCrashingThroughWall, 0, 0, 0, 0, 1, NPC);
 		}
 		break;
 
@@ -1198,7 +1196,7 @@ void npcAct012(npc *NPC) //Balrog cutscene
 		{
 			changeTile(x - 1, y, 0);
 			changeTile(x + 1, y, 0);
-			playSound(44);
+			playSound(SFX_MissileImpact);
 			viewport.quake2 = 10;
 		}
 
@@ -1216,7 +1214,7 @@ void npcAct012(npc *NPC) //Balrog cutscene
 
 	const int createSmoke = NPC->tgt_x && !random(0, 10);
 	if (createSmoke)
-		createNpc(4, NPC->x + (random(-12, 12) << 9), NPC->y + (random(-12, 12) << 9), random(-0x155, 0x155), random(-0x600, 0), 0, nullptr);
+		createNpc(NPC_Smoke, NPC->x + (random(-12, 12) << 9), NPC->y + (random(-12, 12) << 9), random(-0x155, 0x155), random(-0x600, 0), 0, nullptr);
 
 	if (NPC->ym > 0x5FF)
 		NPC->ym = 0x5FF;
@@ -1224,7 +1222,7 @@ void npcAct012(npc *NPC) //Balrog cutscene
 	NPC->x += NPC->xm;
 	NPC->y += NPC->ym;
 
-	if (NPC->direct)
+	if (NPC->direct != dirLeft)
 		NPC->rect = rcRight[NPC->ani_no];
 	else
 		NPC->rect = rcLeft[NPC->ani_no];
@@ -1264,12 +1262,12 @@ void npcAct015(npc *NPC) //Closed chest
 		NPC->bits |= npc_interact;
 
 		//Spawn with smoke and stuff
-		if (NPC->direct == 2)
+		if (NPC->direct == dirRight)
 		{
 			NPC->ym = -0x200;
 
 			for (int i = 0; i < 4; ++i)
-				createNpc(4, NPC->x + (random(-12, 12) << 9), NPC->y + (random(-12, 12) << 9), random(-0x155, 0x155), random(-0x600, 0), 0, nullptr);
+				createNpc(NPC_Smoke, NPC->x + (random(-12, 12) << 9), NPC->y + (random(-12, 12) << 9), random(-0x155, 0x155), random(-0x600, 0), 0, nullptr);
 		}
 
 		if (random(0, 30) == 0)
@@ -1326,12 +1324,13 @@ void npcAct016(npc *NPC) //Save point
 		NPC->bits |= npc_interact;
 
 		//Spawn with smoke and stuff
-		if (NPC->direct) {
+		if (NPC->direct != dirLeft) 
+		{
 			NPC->ym = -0x200;
 			NPC->bits &= ~npc_interact;
 
 			for (int i = 0; i < 4; ++i)
-				createNpc(4, NPC->x + (random(-12, 12) << 9), NPC->y + (random(-12, 12) << 9), random(-0x155, 0x155), random(-0x600, 0), 0, nullptr);
+				createNpc(NPC_Smoke, NPC->x + (random(-12, 12) << 9), NPC->y + (random(-12, 12) << 9), random(-0x155, 0x155), random(-0x600, 0), 0, nullptr);
 		}
 	}
 
@@ -1369,11 +1368,12 @@ void npcAct017(npc *NPC) //Health refill
 		NPC->act_no = 1;
 
 		//Spawn with smoke and stuff
-		if (NPC->direct) {
+		if (NPC->direct != dirLeft)
+		{
 			NPC->ym = -0x200;
 
 			for (int i = 0; i < 4; ++i)
-				createNpc(4, NPC->x + (random(-12, 12) << 9), NPC->y + (random(-12, 12) << 9), random(-0x155, 0x155), random(-0x600, 0), 0, nullptr);
+				createNpc(NPC_Smoke, NPC->x + (random(-12, 12) << 9), NPC->y + (random(-12, 12) << 9), random(-0x155, 0x155), random(-0x600, 0), 0, nullptr);
 		}
 
 	case 1:
@@ -1452,7 +1452,7 @@ void npcAct018(npc *NPC) //Door
 			NPC->rect = { 224, 16, 240, 40 };
 		}
 	}
-	else if (NPC->direct)
+	else if (NPC->direct != dirLeft)
 	{
 		NPC->rect = { 192, 112, 208, 136 };
 	}

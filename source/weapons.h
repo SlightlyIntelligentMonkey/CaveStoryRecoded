@@ -28,7 +28,9 @@ extern int weaponExpFlash;
 void initWeapons();
 
 void actWeapon();
+
 int useWeaponAmmo(int num);
+bool weaponMaxExp();
 int weaponBullets(int arms_code);
 
 int giveWeapon(int code, int max_num);

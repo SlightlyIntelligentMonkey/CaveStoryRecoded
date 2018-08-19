@@ -25,9 +25,9 @@ void npcAct060(npc *NPC) //Toroko
 		if (NPC->x - 0x2000 < currentPlayer.x && NPC->x + 0x2000 > currentPlayer.x && NPC->y - 0x2000 < currentPlayer.y && NPC->y + 0x2000 > currentPlayer.y)
 		{
 			if (NPC->x <= currentPlayer.x)
-				NPC->direct = 2;
+				NPC->direct = dirRight;
 			else
-				NPC->direct = 0;
+				NPC->direct = dirLeft;
 		}
 
 		break;
@@ -60,17 +60,17 @@ void npcAct060(npc *NPC) //Toroko
 		//Turn when hit wall
 		if (NPC->flag & leftWall)
 		{
-			NPC->direct = 2;
+			NPC->direct = dirRight;
 			NPC->xm = 0x200; //Nullified by below code
 		}
 		if (NPC->flag & rightWall)
 		{
-			NPC->direct = 0;
+			NPC->direct = dirLeft;
 			NPC->xm = -0x200; //Nullified by below code
 		}
 
 		//Run in facing direction
-		if (NPC->direct)
+		if (NPC->direct != dirLeft)
 			NPC->xm = 0x400;
 		else
 			NPC->xm = -0x400;
@@ -96,7 +96,7 @@ void npcAct060(npc *NPC) //Toroko
 			NPC->ani_no = 1;
 
 		//Run in facing direction
-		if (NPC->direct)
+		if (NPC->direct != dirLeft)
 			NPC->xm = 0x100;
 		else
 			NPC->xm = -0x100;
@@ -122,9 +122,9 @@ void npcAct060(npc *NPC) //Toroko
 		NPC->act_no = 11;
 		NPC->ani_no = 9;
 		NPC->ym = -0x400;
-		playSound(50);
+		playSound(SFX_EnemySqueal);
 
-		if (NPC->direct)
+		if (NPC->direct != dirLeft)
 			NPC->xm = 0x100;
 		else
 			NPC->xm = -0x100;
@@ -167,7 +167,7 @@ void npcAct060(npc *NPC) //Toroko
 	//Framerect
 	int yOff = 64;
 
-	if (NPC->direct)
+	if (NPC->direct != dirLeft)
 		yOff += 16;
 
 	NPC->rect = { frameMap[NPC->ani_no] << 4, yOff, 16 + (frameMap[NPC->ani_no] << 4), yOff + 16};
@@ -242,7 +242,7 @@ void npcAct061(npc *NPC) //King
 		NPC->ani_no = 2;
 
 		//Move in "facing" direction
-		if (NPC->direct)
+		if (NPC->direct != dirLeft)
 			NPC->xm = 512;
 		else
 			NPC->xm = -512;
@@ -268,7 +268,7 @@ void npcAct061(npc *NPC) //King
 			NPC->ani_no = 4;
 
 		//Walk forward
-		if (NPC->direct)
+		if (NPC->direct != dirLeft)
 			NPC->xm = 0x200;
 		else
 			NPC->xm = -0x200;
@@ -292,7 +292,7 @@ void npcAct061(npc *NPC) //King
 			NPC->ani_no = 4;
 
 		//Run forward
-		if (NPC->direct)
+		if (NPC->direct != dirLeft)
 			NPC->xm = 0x400;
 		else
 			NPC->xm = -0x400;
@@ -300,7 +300,7 @@ void npcAct061(npc *NPC) //King
 		break;
 
 	case 20: //Create blade
-		createNpc(145, 0, 0, 0, 0, 2, NPC);
+		createNpc(NPC_KingStruckByLightning, 0, 0, 0, 0, 2, NPC);
 		NPC->ani_no = 0;
 		NPC->act_no = 0;
 		break;
@@ -315,7 +315,7 @@ void npcAct061(npc *NPC) //King
 		NPC->ani_no = 2;
 
 		//Fly in current direction (knockback frame is backwards, though)
-		if (NPC->direct)
+		if (NPC->direct != dirLeft)
 			NPC->xm = 0x600;
 		else
 			NPC->xm = -0x600;
@@ -323,7 +323,7 @@ void npcAct061(npc *NPC) //King
 		if (NPC->flag & leftWall)
 		{
 			//Bounce from the wall
-			NPC->direct = 2;
+			NPC->direct = dirRight;
 			NPC->act_no = 7;
 			NPC->act_wait = 0;
 			NPC->ani_wait = 0;
@@ -331,7 +331,7 @@ void npcAct061(npc *NPC) //King
 			NPC->ym = -0x400;
 			NPC->xm = 0x200;
 
-			playSound(71);
+			playSound(SFX_QuoteSmashIntoGround);
 
 			createSmoke(NPC->x, NPC->y, 2048, 4);
 		}
@@ -341,7 +341,7 @@ void npcAct061(npc *NPC) //King
 		NPC->act_no = 42;
 		NPC->act_wait = 0;
 		NPC->ani_no = 8;
-		playSound(29);
+		playSound(SFX_Teleport);
 
 	case 42:
 		//Flash away
@@ -353,7 +353,7 @@ void npcAct061(npc *NPC) //King
 		{
 			//Create smoke
 			for (int i = 0; i <= 3; ++i)
-				createNpc(4, NPC->x + (random(-12, 12) << 9), NPC->y + (random(-12, 12) << 9), random(-0x155, 0x155), random(-0x600, 0), 0, nullptr);
+				createNpc(NPC_Smoke, NPC->x + (random(-12, 12) << 9), NPC->y + (random(-12, 12) << 9), random(-0x155, 0x155), random(-0x600, 0), 0, nullptr);
 
 			NPC->act_no = 50;
 			NPC->surf = 20;
@@ -406,10 +406,77 @@ void npcAct061(npc *NPC) //King
 	NPC->y += NPC->ym;
 
 	//Set framerect
-	if (NPC->direct)
+	if (NPC->direct != dirLeft)
 		NPC->rect = rcRight[NPC->ani_no];
 	else
 		NPC->rect = rcLeft[NPC->ani_no];
+}
+
+void npcAct062(npc *NPC) // Kazuma, facing away
+{
+	constexpr RECT rcNPC[3] = { {272, 192, 288, 216}, {288, 192, 304, 216}, {304, 192, 320, 216} };
+
+	enum
+	{
+		initial = 0,
+		typing = 1,
+		slouch = 2,
+		upright = 3,
+	};
+
+	switch (NPC->act_no)
+	{
+	case initial:
+		NPC->x -= 0x800;
+		NPC->y += 0x2000;
+		NPC->act_no = typing;
+		NPC->ani_no = 0;
+		NPC->ani_wait = 0;
+		// Fallthrough
+	case typing:
+		if (++NPC->ani_wait > 2)
+		{
+			NPC->ani_wait = 0;
+			++NPC->ani_no;
+		}
+		if (NPC->ani_no > 1)
+			NPC->ani_no = 0;
+
+		if (random(0, 80) == 1)
+		{
+			NPC->act_no = slouch;
+			NPC->act_wait = 0;
+			NPC->ani_no = 2;
+		}
+		if (random(0, 120) == 10)
+		{
+			NPC->act_no = upright;
+			NPC->act_wait = 0;
+			NPC->ani_no = 2;
+		}
+		break;
+
+	case slouch:
+		if (++NPC->act_wait > 40)
+		{
+			NPC->act_no = upright;
+			NPC->act_wait = 0;
+			NPC->ani_no = 2;
+		}
+		break;
+
+	case upright:
+		if (++NPC->act_wait > 80)
+		{
+			NPC->act_no = typing;
+			NPC->ani_no = 0;
+		}
+		break;
+	default:
+		break;
+	}
+
+	NPC->rect = rcNPC[NPC->ani_no];
 }
 
 void npcAct064(npc *NPC) //First Cave critter
@@ -435,12 +502,12 @@ void npcAct064(npc *NPC) //First Cave critter
 			NPC->ym = -0x5FF;
 
 			//Jump in direction facing
-			if (NPC->direct)
+			if (NPC->direct != dirLeft)
 				NPC->xm = 0x100;
 			else
 				NPC->xm = -0x100;
 
-			playSound(30);
+			playSound(SFX_CritterHop);
 		}
 
 		break;
@@ -461,9 +528,9 @@ void npcAct064(npc *NPC) //First Cave critter
 	{
 		//Face towards player
 		if (NPC->x <= currentPlayer.x)
-			NPC->direct = 2;
+			NPC->direct = dirRight;
 		else
-			NPC->direct = 0;
+			NPC->direct = dirLeft;
 
 		//TargetX being used as timer (10/10 pixel code)
 		if (NPC->tgt_x < 100)
@@ -515,7 +582,7 @@ void npcAct064(npc *NPC) //First Cave critter
 	NPC->y += NPC->ym;
 
 	//Change framerect
-	if (NPC->direct)
+	if (NPC->direct != dirLeft)
 		NPC->rect = { (NPC->ani_no << 4), 16, ((NPC->ani_no + 1) << 4), 32 };
 	else
 		NPC->rect = { (NPC->ani_no << 4), 0, ((NPC->ani_no + 1) << 4), 16 };
@@ -536,9 +603,9 @@ void npcAct065(npc *NPC) //First Cave Bat
 	case 2:
 		//Face towards player
 		if (currentPlayer.x >= NPC->x)
-			NPC->direct = 2;
+			NPC->direct = dirRight;
 		else
-			NPC->direct = 0;
+			NPC->direct = dirLeft;
 
 		//Fly up and down
 		if (NPC->tgt_y < NPC->y)
@@ -576,7 +643,7 @@ void npcAct065(npc *NPC) //First Cave Bat
 
 	NPC->ani_no %= 3;
 
-	if (NPC->direct)
+	if (NPC->direct != dirLeft)
 		NPC->rect = { 32 + (NPC->ani_no << 4), 48, 48 + (NPC->ani_no << 4), 64 };
 	else
 		NPC->rect = { 32 + (NPC->ani_no << 4), 32, 48 + (NPC->ani_no << 4), 48 };
@@ -602,7 +669,7 @@ void npcAct066(npc *NPC) //Bubble (to catch Toroko in the shack)
 			{
 				NPC->tgt_x = npcs[i].x;
 				NPC->tgt_y = npcs[i].y;
-				NPC->tgt_npc = &npcs[i];
+				NPC->count1 = i;
 				deg = getAtan(NPC->x - NPC->tgt_x, NPC->y - NPC->tgt_y);
 				NPC->xm = 2 * getCos(deg);
 				NPC->ym = 2 * getSin(deg);
@@ -630,11 +697,8 @@ void npcAct066(npc *NPC) //Bubble (to catch Toroko in the shack)
 		{
 			NPC->act_no = 2;
 			NPC->ani_no = 2;
-
-			if (NPC->tgt_npc)
-				NPC->tgt_npc->cond = 0;
-
-			playSound(21);
+			npcs[NPC->count1].cond = 0;
+			playSound(SFX_Bubble);
 		}
 
 		break;
@@ -688,7 +752,7 @@ void npcAct073(npc *NPC) //Water drop
 	//Set frameRect
 	NPC->rect = { 72 + (NPC->ani_no << 1), 16, 74 + (NPC->ani_no << 1), 18 };
 
-	if (NPC->direct == 2) //Blood
+	if (NPC->direct == dirRight) //Blood
 	{
 		NPC->rect.top += 2;
 		NPC->rect.bottom += 2;
@@ -768,7 +832,7 @@ void npcAct074(npc *NPC) //Jack
 			NPC->ani_no = 2;
 
 		//Move in facing direction
-		if (NPC->direct)
+		if (NPC->direct != dirLeft)
 			NPC->xm = 0x200;
 		else
 			NPC->xm = -0x200;
@@ -794,7 +858,7 @@ void npcAct074(npc *NPC) //Jack
 	NPC->y += NPC->ym;
 
 	//Set framerect
-	if (NPC->direct)
+	if (NPC->direct != dirLeft)
 		NPC->rect = rcRight[NPC->ani_no];
 	else
 		NPC->rect = rcLeft[NPC->ani_no];
@@ -810,7 +874,7 @@ void npcAct076(npc *NPC) //Flower
 
 void npcAct078(npc *NPC) //Pot
 {
-	if (NPC->direct)
+	if (NPC->direct != dirLeft)
 		NPC->rect = { 176, 48, 192, 64 };
 	else
 		NPC->rect = { 160, 48, 176, 64 };

@@ -183,6 +183,15 @@
     <ClCompile Include="bullet.cpp">
       <Filter>Source Files\classes\bullet</Filter>
     </ClCompile>
+    <ClCompile Include="fireball.cpp">
+      <Filter>Source Files\classes\bullet\act</Filter>
+    </ClCompile>
+    <ClCompile Include="fireballShoot.cpp">
+      <Filter>Source Files\classes\weapons\shoot</Filter>
+    </ClCompile>
+    <ClCompile Include="spurShoot.cpp">
+      <Filter>Source Files\classes\weapons\shoot</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="level.h">
@@ -311,10 +320,16 @@
     <ClInclude Include="bullet.h">
       <Filter>Source Files\classes\bullet</Filter>
     </ClInclude>
+    <ClInclude Include="fireball.h">
+      <Filter>Source Files\classes\bullet\act</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="CaveStoryEngine.rc">
       <Filter>Resource Files</Filter>
     </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="CS_RuleSet.ruleset" />
   </ItemGroup>
 </Project>

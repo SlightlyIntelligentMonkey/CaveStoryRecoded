@@ -202,7 +202,7 @@ void moveStageSelectCursor()
 		if (isKeyPressed(keyLeft) || isKeyPressed(keyRight))
 			startTscEvent(permitStage[selectedStage].index + 1000);
 		if (isKeyPressed(keyLeft) || isKeyPressed(keyRight))
-			playSound(1);
+			playSound(SFX_YNChangeChoice);
 	}
 }
 
@@ -228,7 +228,7 @@ void drawStageSelect()
 
 	if (stageNo)
 	{
-		int stageX = (-40 * stageNo + screenWidth) / 2;
+		const int stageX = (-40 * stageNo + screenWidth) / 2;
 
 		//Draw everything now
 		drawTexture(sprites[TEX_TEXTBOX], &rcCur[(stageSelectFlash >> 1) & 1], stageX + 40 * selectedStage, 64);
@@ -505,7 +505,7 @@ int gameUpdateMenu()
 
 		if (isKeyPressed(keyJump))
 		{
-			playSound(18);
+			playSound(SFX_YNConfirm);
 
 			if (select == 0)
 			{
@@ -518,7 +518,7 @@ int gameUpdateMenu()
 
 		if (isKeyPressed(keyUp) || isKeyPressed(keyDown))
 		{
-			playSound(1);
+			playSound(SFX_YNChangeChoice);
 			select ^= 1;
 		}
 

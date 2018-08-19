@@ -113,22 +113,22 @@ enum Direction
 
 enum EffectNames
 {
-	effectfountainDisk = 0x1,
-	effectRisingDisc = 0x2,
-	effectStar = 0x3,
-	effectFireballImpact = 0x4,
-	effectZzZ = 0x5,
-	effectBoosterSmoke = 0x7,
-	effectDrownedQuote = 0x8,
-	effectExclamationMark = 0x9,
-	effectLevelUpOrDown = 0xA,
-	effectRedDamageRings = 0xB,
-	effectBigExplosion = 0xC,
-	effectHeadbumpSparks = 0xD,
-	effectUnknownUnused = 0xE,
-	effectSmallExplosionDisc = 0xF,
-	effectNothing = 0x10,
-	effectPushJumpKey = 0x11,
+	effect_fountainDisk = 0x1,
+	effect_RisingDisc = 0x2,
+	effect_Star = 0x3,
+	effect_FireballImpact = 0x4,
+	effect_ZzZ = 0x5,
+	effect_BoosterSmoke = 0x7,
+	effect_DrownedQuote = 0x8,
+	effect_ExclamationMark = 0x9,
+	effect_LevelUpOrDown = 0xA,
+	effect_RedDamageRings = 0xB,
+	effect_BigExplosion = 0xC,
+	effect_HeadbumpSparks = 0xD,
+	effect_UnknownUnused = 0xE,
+	effect_SmallExplosionDisc = 0xF,
+	effect_Nothing = 0x10,
+	effect_PushJumpKey = 0x11,
 };
 
 enum NPCNames
@@ -278,7 +278,7 @@ enum NPCNames
 	NPC_EnemyFlowercub = 0x8E,
 	NPC_JenkaCollapsed = 0x8F,
 	NPC_TorokoTeleportsIn = 0x90,
-	NPC_KingStructByLightning = 0x91,
+	NPC_KingStruckByLightning = 0x91,
 	NPC_Lightning = 0x92,
 	NPC_EnemyCritterHover = 0x93,
 	NPC_ProjectileCritter = 0x94,
@@ -661,6 +661,52 @@ enum soundEffects
 	SFX_Silence75 = 0x9,
 };
 
+enum bulletNames
+{
+	bullet_SnakeLevel1 = 0x1,
+	bullet_SnakeLevel2 = 0x2,
+	bullet_SnakeLevel3 = 0x3,
+	bullet_PolarStarLevel1 = 0x4,
+	bullet_PolarStarLevel2 = 0x5,
+	bullet_PolarStarLevel3 = 0x6,
+	bullet_FireballLevel1 = 0x7,
+	bullet_FireballLevel2 = 0x8,
+	bullet_FireballLevel3 = 0x9,
+	bullet_MachineGunLevel1 = 0xA,
+	bullet_MachineGunLevel2 = 0xB,
+	bullet_MachineGunLevel3 = 0xC,
+	bullet_MissileLauncherLevel1 = 0xD,
+	bullet_MissileLauncherLevel2 = 0xE,
+	bullet_MissileLauncherLevel3 = 0xF,
+	bullet_MissileExplosionLevel1 = 0x10,
+	bullet_MissileExplosionLevel2 = 0x11,
+	bullet_MissileExplosionLevel3 = 0x12,
+	bullet_BubblerLevel1 = 0x13,
+	bullet_BubblerLevel2 = 0x14,
+	bullet_BubblerLevel3 = 0x15,
+	bullet_BubblerSpurs = 0x16,
+	bullet_BladeLevel1 = 0x19,
+	bullet_BladeLevel2 = 0x1A,
+	bullet_BladeLevel3 = 0x1B,
+	bullet_BladeSlash = 0x17,
+	bullet_Unused = 0x18,
+	bullet_SuperMissileLauncherLevel1 = 0x1C,
+	bullet_SuperMissileLauncherLevel2 = 0x1D,
+	bullet_SuperMissileLauncherLevel3 = 0x1E,
+	bullet_NemesisLevel1 = 0x22,
+	bullet_NemesisLevel2 = 0x23,
+	bullet_NemesisLevel3 = 0x24,
+	bullet_NemesisRelated = 0x2B,
+	bullet_ChargelessSpurLevel1 = 0x25,
+	bullet_ChargelessSpurLevel2 = 0x26,
+	bullet_ChargelessSpurLevel3 = 0x27,
+	bullet_NonMovingSpurLevel1 = 0x28,
+	bullet_NonMovingSpurLevel2 = 0x29,
+	bullet_NonMovingSpurLevel3 = 0x2A,
+	bullet_SpurLevel2 = 0x2C,
+	bullet_SpurLevel3 = 0x2D,
+};
+
 //Struct
 struct VIEW {
 	int x;
@@ -699,6 +745,9 @@ extern int mode;
 extern bool exitGame;
 
 extern int gameFlags;
+
+//Constants
+static constexpr bool errorOnNotImplemented = false;
 
 //Functions
 [[noreturn]] void doError();

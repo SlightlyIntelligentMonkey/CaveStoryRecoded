@@ -1,12 +1,32 @@
 #include "npc020.h"
 
+void npcAct020(npc *NPC) // Computer
+{
+	constexpr RECT rcLeft = { 288, 16, 320, 40 };
+	constexpr RECT rcRight[3] = { {288, 40, 320, 64}, {288, 40, 320, 64}, {288, 64, 320, 88} };
+
+	// Animate from animation No 0 to 2 with a 3-frame delay
+	if (++NPC->ani_wait > 3)
+	{
+		NPC->ani_wait = 0;
+		++NPC->ani_no;
+	}
+	if (NPC->ani_no > 2)
+		NPC->ani_no = 0;
+
+	if (NPC->direct == dirLeft)
+		NPC->rect = rcLeft;
+	else
+		NPC->rect = rcRight[NPC->ani_no];
+}
+
 void npcAct021(npc *NPC) //Open chest
 {
 	if (!NPC->act_no)
 	{
 		NPC->act_no = 1;
 
-		if (NPC->direct == 2)
+		if (NPC->direct == dirRight)
 			NPC->y += 0x2000;
 	}
 
@@ -62,7 +82,7 @@ void npcAct030(npc *NPC) // Hermit Gunsmith
 {
 	constexpr RECT rcNPC[3] = { { 48, 0, 64, 16 },{ 48, 16, 64, 32 },{ 0, 32, 16, 48 } };
 	
-	if (!NPC->direct)	// Wherever he's awoken depends on his direction, it would seem
+	if (NPC->direct == dirLeft)	// Wherever he's awoken depends on his direction, it would seem
 	{
 		if (NPC->act_no == 0)
 		{
@@ -97,7 +117,7 @@ void npcAct030(npc *NPC) // Hermit Gunsmith
 		if (++NPC->act_wait > 100)
 		{
 			NPC->act_wait = 0;
-			createCaret(NPC->x, NPC->y - 1024, effectZzZ, 0);
+			createCaret(NPC->x, NPC->y - 1024, effect_ZzZ, 0);
 		}
 	}
 doRects:
@@ -165,7 +185,7 @@ void npcAct039(npc *NPC) //Save Sign
 	rect[1].right = 256;
 	rect[1].bottom = 80;
 
-	if (NPC->direct)
+	if (NPC->direct != dirLeft)
 		NPC->ani_no = 1;
 	else
 		NPC->ani_no = 0;
