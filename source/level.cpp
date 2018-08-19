@@ -54,7 +54,7 @@ void loadStageTable()
 		tblStream->read(tblStream, &stageTable[i].boss, 1, 1);
 		tblStream->read(tblStream, stageTable[i].name, 0x23, 1);
 
-		if (!strcmp((const char *)stageTable[i].name, "u"))
+		if (!strcmp(stageTable[i].name, "u"))
 			strcpy(stageTable[i].name, "Studio Pixel presents");
 	}
 }
