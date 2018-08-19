@@ -2,6 +2,7 @@
 
 #include "sound.h"
 #include "player.h"
+#include "mathUtils.h"
 
 void npcAct145(npc *NPC) //King's blade
 {
@@ -91,7 +92,7 @@ void npcAct146(npc *NPC) //Lightning
 	NPC->rect = rect[NPC->ani_no];
 }
 
-void npcAct150(npc *NPC)
+void npcAct150(npc *NPC) // Quote
 {
     RECT rcLeft[9];
     RECT rcRight[9];
@@ -124,6 +125,7 @@ void npcAct150(npc *NPC)
 		teleportAway = 20,
 		walking = 50,
 		fallingUpsideDown = 60,
+		lookAway = 80,
         walkingInPlace = 100,
 	};
 
@@ -140,5 +142,138 @@ void npcAct150(npc *NPC)
             NPC->direct = dirLeft;
         }
         break;
+
+	case lookUp:
+		NPC->ani_no = 1;
+		break;
+
+	case getFlatenned:
+		NPC->act_no = 11;
+
+		for (size_t i = 0; i < 4; i++)
+			createNpc(NPC_Smoke, NPC->x, NPC->y, random(-0x155, 0x155), random(-0x600, 0), 0, nullptr);
+
+		playSound(SFX_QuoteSmashIntoGround);
+		// Fallthrough
+	case 11:
+		NPC->ani_no = 2;
+		break;
+
+	case teleportAway:
+		NPC->act_no = 21;
+		NPC->act_wait = 0x40;
+		playSound(SFX_Teleport);
+		// Fallthrough
+	case 21:
+		if (!--NPC->act_wait)
+			NPC->cond = 0;
+		break;
+
+	case walking:
+		NPC->act_no = 51;
+		NPC->ani_no = 3;
+		NPC->ani_wait = 0;
+		// Fallthrough
+	case 51:
+		if (++NPC->act_wait > 4)
+		{
+			NPC->act_wait = 0;
+			++NPC->ani_no;
+		}
+		if (NPC->ani_no > 6)
+			NPC->ani_no = 3;
+		
+		if (NPC->direct != dirLeft)
+			NPC->x += 0x200;
+		else
+			NPC->x -= 0x200;
+		break;
+
+	case fallingUpsideDown:
+		NPC->act_no = 61;
+		NPC->ani_no = 7;
+		NPC->tgt_x = NPC->x;
+		NPC->tgt_y = NPC->y;
+		// Fallthrough
+	case 61:
+		NPC->tgt_x += 0x100;
+		NPC->x = NPC->tgt_x + (random(-1, 1) << 9);
+		NPC->y = NPC->tgt_y + (random(-1, 1) << 9);
+		break;
+
+	case 70:
+		NPC->act_no = 71;
+		NPC->act_wait = 0;
+		NPC->ani_no = 3;
+		NPC->ani_wait = 0;
+		// Fallthrough
+	case 71:
+		if (NPC->direct != dirLeft)
+			NPC->x -= 0x100;
+		else
+			NPC->x += 0x100;
+
+		if (++NPC->ani_wait > 8)
+		{
+			NPC->ani_wait = 0;
+			++NPC->ani_no;
+		}
+		if (NPC->ani_no > 6)
+			NPC->ani_no = 3;
+		break;
+
+	case lookAway:
+		NPC->ani_no = 8;
+		break;
+
+	case 99:
+	case walkingInPlace:
+		NPC->act_no = 101;
+		NPC->ani_no = 3;
+		NPC->ani_wait = 0;
+		// Fallthrough
+	case 101:	// Fall a short distance THEN walk in place
+		NPC->ym += 0x40;
+		if (NPC->ym > 0x5FF)
+			NPC->ym = 0x5FF;
+
+		if (NPC->flag & ground)
+		{
+			NPC->ym = 0;
+			NPC->act_no = 102;
+		}
+		NPC->y += NPC->ym;
+		break;
+
+	case 102:
+		if (++NPC->act_wait > 8)
+		{
+			NPC->act_wait = 0;
+			++NPC->ani_no;
+		}
+		if (NPC->ani_no > 6)
+			NPC->ani_no = 3;
+		break;
+
+	default:
+		break;
+	}
+
+	if (NPC->direct != dirLeft)
+		NPC->rect = rcRight[NPC->ani_no];
+	else
+		NPC->rect = rcLeft[NPC->ani_no];
+
+	if (NPC->act_no == teleportAway + 1)
+	{
+		NPC->rect.bottom = NPC->rect.top + NPC->act_wait / 4;
+		if (NPC->act_wait / 2 % 2)
+			++NPC->rect.left;	// For the "Disappear from the right" effect
+	}
+
+	if (currentPlayer.equip & equip_mimigaMask)
+	{
+		NPC->rect.top += 32;
+		NPC->rect.bottom += 32;
 	}
 }
