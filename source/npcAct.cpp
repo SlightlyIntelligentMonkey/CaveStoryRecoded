@@ -19,7 +19,7 @@
 
 #include "npc340.h"
 
-npcAct npcActs[] =
+npcAct npcActs[361] =
 {
 	&npcAct000,
 	&npcAct001,

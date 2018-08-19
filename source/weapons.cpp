@@ -64,8 +64,12 @@ void actWeapon()
 {
 	if (shootFunctions[weapons[selectedWeapon].code] != nullptr)
 		shootFunctions[weapons[selectedWeapon].code](weapons[selectedWeapon].level);
-	else if (errorOnNotImplemented && weapons[selectedWeapon].code != 0)
+	else if (errorOnNotImplemented)
 	{
+		static bool wasNotifiedAbout[_countof(shootFunctions)] = { false };
+		if (wasNotifiedAbout[weapons[selectedWeapon].code])
+			return;
+		wasNotifiedAbout[weapons[selectedWeapon].code] = true;
 		string msg = "Weapon " + to_string(weapons[selectedWeapon].code) + " is not implemented.";
 		SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_WARNING, "Missing Weapon", msg.c_str(), nullptr);
 	}

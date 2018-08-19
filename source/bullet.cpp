@@ -4,10 +4,12 @@
 #include "render.h"
 
 #include <string>
+#include <cstring>
 
 using std::string;
 using std::to_string;
 using std::vector;
+using std::memset;
 
 vector<bullet> bullets(0);
 
@@ -250,7 +252,7 @@ void bullet::update()
 			bulletActs[code_bullet](this);
 		else if (errorOnNotImplemented)
 		{
-			static bool wasNotifiedAboutBullet[_countof(bulletActs)] = {false};
+			static bool wasNotifiedAboutBullet[_countof(bulletActs)] = { false };
 			if (wasNotifiedAboutBullet[this->code_bullet])
 				return;
 			wasNotifiedAboutBullet[this->code_bullet] = true;

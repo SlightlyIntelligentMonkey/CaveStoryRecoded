@@ -1,10 +1,12 @@
-WARNINGS := -pedantic -Wall -Wextra -Wabi -Waggregate-return -Wcast-align -Wcast-qual -Wconversion -Wctor-dtor-privacy -Wdisabled-optimization -Weffc++ -Wfloat-equal -Wformat=2 -Winit-self -Winline -Winvalid-pch -Wlogical-op -Wmissing-format-attribute -Wmissing-include-dirs -Wnoexcept -Wnormalized=nfc -Wold-style-cast -Woverloaded-virtual -Wpadded -Wsign-promo -Wstack-protector -Wstrict-aliasing=1 -Wstrict-null-sentinel -Wsuggest-attribute -Wswitch-enum -Wundef -Wunsafe-loop-optimizations -Wunused -Wno-multichar -Wno-unused-parameter
+WARNINGS := -pedantic -Wall -Wextra -Wabi -Waggregate-return -Wcast-align -Wcast-qual -Wctor-dtor-privacy -Wdisabled-optimization -Weffc++ -Wformat=2 -Wformat-nonliteral -Wformat-security -Wformat-y2k -Wimport -Winit-self -Winline -Winvalid-pch -Wlogical-op -Wlong-long -Wmissing-field-initializers -Wmissing-format-attribute -Wmissing-include-dirs -Wmissing-noreturn -Wnoexcept -Wnormalized=nfc -Wold-style-cast -Woverloaded-virtual -Wpointer-arith -Wsign-promo -Wstack-protector -Wstrict-aliasing=1 -Wstrict-null-sentinel -Wswitch-enum -Wundef -Wunreachable-code -Wunsafe-loop-optimizations -Wunused -Wuseless-cast -Wvariadic-macros -Wwrite-strings -Wzero-as-null-pointer-constant -Wno-multichar -Wno-unused-parameter
 
-COMPILE_C := $(CC) -m32 -O3 -flto -c $(WARNINGS) -std=c++1z -I/mingw32/include/SDL2/ 
-COMPILE_CPP := $(CXX) -m32 -O3 -flto -c $(WARNINGS) -std=c++1z -I/mingw32/include/SDL2/ 
+OPTIMISATIONS := -Ofast -flto -frename-registers -funroll-loops
+
+COMPILE_C := $(CC) -m32 $(OPTIMISATIONS) -c $(WARNINGS) -std=c++1z -I/mingw32/include/SDL2/ 
+COMPILE_CPP := $(CXX) -m32 $(OPTIMISATIONS) -c $(WARNINGS) -std=c++1z -I/mingw32/include/SDL2/ 
 # Replace mingw32 with usr for actual Unix build
-LINK_CPP := $(CXX) -m32 -O3 -flto -static -static-libstdc++ -static-libgcc -s
-LINK_C := $(CC) -m32 -O3 -flto -static -static-libstdc++ -static-libgcc -s
+LINK_CPP := $(CXX) -m32 $(OPTIMISATIONS) -static -static-libstdc++ -static-libgcc -s
+LINK_C := $(CC) -m32 $(OPTIMISATIONS) -static -static-libstdc++ -static-libgcc -s
 
 MAIN := bullet bulletCollision caret fade filesystem fireball fireballShoot flags game hud input level main mathUtils
 MAIN += npc npcAct npcCollision org player playerCollision polarStar polarStarShoot
