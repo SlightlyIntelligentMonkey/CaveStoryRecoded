@@ -21,6 +21,7 @@ enum debugFlagsEnum
 	showNPCId = 0x02,
 	showBULId = 0x04,
 	showCARId = 0x08,
+	notifyOnNotImplemented = 0x10,
 };
 
 //Enums
@@ -736,9 +737,6 @@ extern int mode;
 extern bool exitGame;
 
 extern int gameFlags;
-
-//Constants
-static constexpr bool errorOnNotImplemented = true;
 
 //Functions
 [[noreturn]] void doError();

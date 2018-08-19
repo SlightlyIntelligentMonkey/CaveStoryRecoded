@@ -264,7 +264,7 @@ void npcAct083(npc *NPC) // Igor, standing
 			++NPC->ani_no;
 		}
 		if (NPC->ani_no > 5)
-			NPC->ani_no = 0;
+			NPC->ani_no = 2;
 
 		if (NPC->direct != dirLeft)
 			NPC->xm = 0x200;
