@@ -1,9 +1,11 @@
 #include "org.h"
 
 #include <cstring>
+#include <cstdlib>
 #include <SDL_RWops.h>
 
 using std::memset;
+using std::malloc;
 
 auto song = static_cast<ORG*>(malloc(sizeof(ORG)));
 

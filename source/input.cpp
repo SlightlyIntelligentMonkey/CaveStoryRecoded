@@ -1,7 +1,10 @@
 #include "input.h"
 
+#include <cstring>
 #include <SDL_keyboard.h>
 #include <SDL_events.h>
+
+using std::memcpy;
 
 int keyLeft = SDL_SCANCODE_LEFT;
 int keyRight = SDL_SCANCODE_RIGHT;
