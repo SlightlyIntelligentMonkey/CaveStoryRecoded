@@ -1,38 +1,21 @@
-COMPILE_C := $(CC) -O3 -c -I/usr/include/SDL2
-COMPILE_CPP := $(CXX) -O3 -c -I/usr/include/SDL2
+COMPILE_C := $(CC) -m32 -O3 -c -I/mingw32/include/SDL2/ -Wno-multichar -mwindows
+COMPILE_CPP := $(CXX) -m32 -O3 -c -I/mingw32/include/SDL2/ -Wno-multichar -mwindows
+# Replace mingw32 with usr for actual Unix build
 LINK_CPP := $(CXX) -O3
 LINK_C := $(CC) -O3
 
-MAIN := filesystem flags input level main math
-MAIN += npc npcAct npcCollision player playerCollision
-MAIN += render script sound
+MAIN := bullet bulletCollision caret fade filesystem fireball flags game hud input level main mathUtils
+MAIN += npc npcAct npcCollision org player playerCollision polarStar polarStarShoot
+MAIN += render script sound spur spurShoot valueview weapons
 
-MAIN += npc000 npc020 npc040 npc060 npc200 npc340
+MAIN += npc000 npc020 npc040 npc060 npc080 npc100 npc120 npc140 npc180 npc200 npc220 npc240 npc280 npc300 npc340
 
 OBJS := $(addprefix obj/, $(addsuffix .o, $(MAIN)))
 
-# liborganya
-OBJS += obj/liborganya-file.o obj/liborganya-decoder.o
-
-# Compile liborganya's org2dat for convenience while testing modifications.
-all: bin/CaveStoryRemake bin/org2dat
+all: bin/CaveStoryRemake
 
 bin/CaveStoryRemake: $(OBJS)
-	$(LINK_CPP) -lSDL2 -lm $(OBJS) -o bin/CaveStoryRemake
-
-bin/org2dat: obj/liborganya-file.o obj/liborganya-decoder.o obj/liborganya-org2dat.o
-	$(LINK_C) -lm obj/liborganya-file.o obj/liborganya-decoder.o obj/liborganya-org2dat.o -o bin/org2dat
-
-# liborganya stuff.
-# Due to the modifications, this must have access to the SDL2 endianness includes.
-obj/liborganya-file.o: liborganya/file.c
-	$(COMPILE_C) liborganya/file.c -o obj/liborganya-file.o
-
-obj/liborganya-decoder.o: liborganya/decoder.c
-	$(COMPILE_C) liborganya/decoder.c -o obj/liborganya-decoder.o
-
-obj/liborganya-org2dat.o: liborganya/org2dat.c
-	$(COMPILE_C) liborganya/org2dat.c -o obj/liborganya-org2dat.o
+	$(LINK_CPP) -lmingw32 -lSDL2Main -lSDL2 -lSDL2_image -lm $(OBJS) -o bin/CaveStoryRemake
 
 # general compile
 

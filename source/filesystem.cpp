@@ -2,6 +2,8 @@
 #include "fade.h"
 #include "weapons.h"
 
+#include <sys/stat.h>
+
 //Read function stuff
 uint16_t readLEshort(const BYTE * data, size_t offset)
 {
