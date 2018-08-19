@@ -747,7 +747,7 @@ extern bool exitGame;
 extern int gameFlags;
 
 //Constants
-static constexpr bool errorOnNotImplemented = false;
+static constexpr bool errorOnNotImplemented = true;
 
 //Functions
 [[noreturn]] void doError();

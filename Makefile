@@ -1,10 +1,10 @@
-COMPILE_C := $(CC) -m32 -O3 -c -I/mingw32/include/SDL2/ -Wno-multichar -mwindows
-COMPILE_CPP := $(CXX) -m32 -O3 -c -I/mingw32/include/SDL2/ -Wno-multichar -mwindows
+COMPILE_C := $(CC) -m32 -O3 -flto -c -Wall -Wextra -Wno-multichar -Wno-unused-parameter -std=c++1z -I/mingw32/include/SDL2/ 
+COMPILE_CPP := $(CXX) -m32 -O3 -flto -c -Wall -Wextra -Wno-multichar -Wno-unused-parameter -std=c++1z -I/mingw32/include/SDL2/ 
 # Replace mingw32 with usr for actual Unix build
-LINK_CPP := $(CXX) -O3
-LINK_C := $(CC) -O3
+LINK_CPP := $(CXX) -m32 -O3 -flto -static -static-libstdc++ -static-libgcc -s
+LINK_C := $(CC) -m32 -O3 -flto -static -static-libstdc++ -static-libgcc -s
 
-MAIN := bullet bulletCollision caret fade filesystem fireball flags game hud input level main mathUtils
+MAIN := bullet bulletCollision caret fade filesystem fireball fireballShoot flags game hud input level main mathUtils
 MAIN += npc npcAct npcCollision org player playerCollision polarStar polarStarShoot
 MAIN += render script sound spur spurShoot valueview weapons
 
@@ -15,7 +15,8 @@ OBJS := $(addprefix obj/, $(addsuffix .o, $(MAIN)))
 all: bin/CaveStoryRemake
 
 bin/CaveStoryRemake: $(OBJS)
-	$(LINK_CPP) -lmingw32 -lSDL2Main -lSDL2 -lSDL2_image -lm $(OBJS) -o bin/CaveStoryRemake
+	$(LINK_CPP)  $(OBJS) -lmingw32 -lSDL2Main -lSDL2.dll -lSDL2_image.dll -o bin/CaveStoryRemake
+# Remove mingw32 for actual Unix build maybe ? Also prolly remove the ".dll"s at the end of SDL2.dll and SDL2_image.dll
 
 # general compile
 

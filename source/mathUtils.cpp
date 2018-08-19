@@ -4,6 +4,11 @@
 #include <chrono>
 #include <cstddef>
 #include <thread>
+#include <cmath>
+
+#ifndef M_PI
+#define M_PI 3.14159265358979323846
+#endif
 
 using std::mt19937;
 using std::enable_if;
