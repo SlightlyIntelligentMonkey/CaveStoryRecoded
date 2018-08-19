@@ -6,7 +6,7 @@ void npcAct145(npc *NPC) //King's blade
 {
 	RECT rcLeft = { 96, 32, 112, 48 };
 	RECT rcRight = { 112, 32, 128, 48 };
-
+	
 	if (!NPC->act_no)
 	{
 		//Some orientation stuff
@@ -88,56 +88,4 @@ void npcAct146(npc *NPC) //Lightning
 	}
 
 	NPC->rect = rect[NPC->ani_no];
-}
-
-void npcAct150(npc *NPC)
-{
-    RECT rcLeft[9];
-    RECT rcRight[9];
-
-    rcLeft[0] = { 0, 0, 16, 16 };
-    rcLeft[1] = { 48, 0, 64, 16 };
-    rcLeft[2] = { 144, 0, 160, 16 };
-    rcLeft[3] = { 16, 0, 32, 16 };
-    rcLeft[4] = { 0, 0, 16, 16 };
-    rcLeft[5] = { 32, 0, 48, 16 };
-    rcLeft[6] = { 0, 0, 16, 16 };
-    rcLeft[7] = { 160, 0, 176, 16 };
-    rcLeft[8] = { 112, 0, 128, 16 };
-
-    rcRight[0] = { 0, 16, 16, 32 };
-    rcRight[1] = { 48, 16, 64, 32 };
-    rcRight[2] = { 144, 16, 160, 32 };
-    rcRight[3] = { 16, 16, 32, 32 };
-    rcRight[4] = { 0, 16, 16, 32 };
-    rcRight[5] = { 32, 16, 48, 32 };
-    rcRight[6] = { 0, 16, 16, 32 };
-    rcRight[7] = { 160, 16, 176, 32 };
-    rcRight[8] = { 112, 16, 128, 32 };
-
-	enum
-	{
-		init = 0,
-		lookUp = 2,
-		getFlatenned = 10,
-		teleportAway = 20,
-		walking = 50,
-		fallingUpsideDown = 60,
-        walkingInPlace = 100,
-	};
-
-	switch(NPC->act_no)
-	{
-    case init:
-        NPC->act_no = 1;
-        NPC->ani_no = 0;
-
-        if (NPC->dir > 10) // Hermit Gunsmith related ?
-        {
-            NPC->x = currentPlayer.x;
-            NPC->y = currentPlayer.y;
-            NPC->dir = dirLeft;
-        }
-        break;
-	}
 }

@@ -5,17 +5,9 @@ Essentially 1:1 to the original game.
 
 (And not broken like NXEngine)
 
-## Build Instructions For Windows 
-
-The provided .sln file should work with Visual Studio 2017
-
-You can also use the .cbp file with CodeBlocks, but there might be linking problems
-
 ## Build Instructions For Unix-Likes
 
 `make`, combined with possibly some adjustments to the Makefile
-
-You can also use the .cbp file with CodeBlocks, but there might be linking problems
 
 ## License [MIT LICENSE]
 Copyright (c) 2018 Cucky / GreenDev

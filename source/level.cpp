@@ -11,11 +11,8 @@
 #include "mathUtils.h"
 
 #include <string>
-#include <cstring>
 #include <SDL_render.h>
 
-using std::strcmp;
-using std::strcpy;
 using std::string;
 
 int currentLevel;
@@ -128,7 +125,7 @@ void loadLevel(int levelIndex) {
 		const string errorMessage = "Couldn't read " + pxmPath;
 		doCustomError(errorMessage.c_str());
 	}
-
+	
 	levelWidth = readLEshort(pxm, 4);
 	levelHeight = readLEshort(pxm, 6);
 
@@ -236,7 +233,7 @@ void loadLevel(int levelIndex) {
 	viewport.lookY = &currentPlayer.tgt_y;
 	viewport.quake = 0;
 	viewport.quake2 = 0;
-
+  
 	viewBounds();
 }
 
@@ -298,7 +295,7 @@ void drawLevel(bool foreground)
 				rect = { 0, 0, w / 2, 88 };
 
 				skyOff = (((w / 2) - screenWidth) / 2);
-
+				
 				//Draw middle
 				drawTexture(sprites[0x1C], &rect, -skyOff, 0);
 
@@ -439,7 +436,7 @@ void drawLevel(bool foreground)
 		//Top and bottom
 		const int topBorder = -(viewport.y / 0x200);
 		const int bottomBorder = ((viewport.y / 0x200) + screenHeight) - ((levelHeight - 1) << 4);
-
+		
 		drawRect(0, 0, screenWidth, topBorder);
 		drawRect(0, screenHeight - bottomBorder, screenWidth, bottomBorder);
 	}
