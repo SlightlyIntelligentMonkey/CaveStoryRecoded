@@ -1,7 +1,10 @@
+#include "render.h"
 #include "common.h"
 
-SDL_Rect drawRectangle = { 0 };
-SDL_Rect cliprect = { 0 };
+#include <SDL_image.h>
+
+SDL_Rect drawRectangle = { 0, 0, 0, 0 };
+SDL_Rect cliprect = { 0, 0, 0, 0 };
 
 int screenWidth = 0;
 int screenHeight = 0;
@@ -32,7 +35,7 @@ int createWindow(int width, int height, int scale, bool fullscreen) // TBD : Han
 		window = SDL_CreateWindow("Cave Story Engine",
 			SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
 			createWidth, createHeight,
-			NULL);
+			0);
 	else
 		SDL_SetWindowSize(window, createWidth, createHeight);
 
@@ -170,7 +173,7 @@ void drawNumber(int value, int x, int y, bool bZero)
 			++count;
 		}
 
-		if (bZero && offset == 2 || count != 0 || offset == 3) //bZero just makes the second from the right character always draw
+		if ((bZero && offset == 2) || count != 0 || offset == 3) //bZero just makes the second from the right character always draw
 		{
 			//Set rect and draw
 			numbRect = { drawValue << 3, 56, (drawValue + 1) << 3, 64 };

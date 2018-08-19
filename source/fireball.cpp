@@ -1,4 +1,8 @@
 #include "fireball.h"
+#include "caret.h"
+#include "sound.h"
+#include "npc.h"
+#include "player.h"
 
 void actBulletFireball1(bullet *bul)
 {

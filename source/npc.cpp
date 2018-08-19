@@ -1,8 +1,23 @@
 #include "npc.h"
 #include "npcAct.h"
 #include "weapons.h"
+#include "mathUtils.h"
+#include "player.h"
+#include "valueview.h"
+#include "render.h"
+#include "sound.h"
+#include "flags.h"
 
-std::vector<npc> npcs(0);
+#include <string>
+#include <cstring>
+#include <SDL_RWops.h>
+
+using std::memset;
+using std::string;
+using std::to_string;
+using std::vector;
+
+vector<npc> npcs(0);
 
 int superXPos = 0;	// Used by undead core related NPCs ?
 int superYPos = 0;
@@ -399,7 +414,7 @@ void npc::draw()
 				}
 			}
 
-			drawString((x - side) / 0x200 - viewport.x / 0x200 + xOffset, (y - view.top) / 0x200 - viewport.y / 0x200 - 16, std::to_string(index).c_str(), nullptr);
+			drawString((x - side) / 0x200 - viewport.x / 0x200 + xOffset, (y - view.top) / 0x200 - viewport.y / 0x200 - 16, to_string(index).c_str(), nullptr);
 		}
 	}
 }

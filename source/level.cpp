@@ -1,4 +1,22 @@
 #include "level.h"
+#include "render.h"
+#include "player.h"
+#include "filesystem.h"
+#include "flags.h"
+#include "valueview.h"
+#include "bullet.h"
+#include "caret.h"
+#include "script.h"
+#include "game.h"
+#include "mathUtils.h"
+
+#include <string>
+#include <cstring>
+#include <SDL_render.h>
+
+using std::strcmp;
+using std::strcpy;
+using std::string;
 
 int currentLevel;
 
@@ -8,10 +26,10 @@ MAPNAME mapName;
 int levelWidth;
 int levelHeight;
 
-BYTE *levelMap = nullptr;
-BYTE *levelTileAttributes = nullptr;
+uint8_t *levelMap = nullptr;
+uint8_t *levelTileAttributes = nullptr;
 
-BYTE backgroundScroll;
+uint8_t backgroundScroll;
 
 //Effect things
 int backgroundEffect = 0;
@@ -44,12 +62,12 @@ void loadStageTable()
 		tblStream->read(tblStream, &stageTable[i].boss, 1, 1);
 		tblStream->read(tblStream, stageTable[i].name, 0x23, 1);
 
-		if (!strcmp((const char *)stageTable[i].name, "u"))
+		if (!strcmp(stageTable[i].name, "u"))
 			strcpy(stageTable[i].name, "Studio Pixel presents");
 	}
 }
 
-BYTE getTileAttribute(int x, int y) {
+uint8_t getTileAttribute(int x, int y) {
 	if (x >= 0 && x < levelWidth && y >= 0 && y < levelHeight)
 		return levelTileAttributes[levelMap[(x + y * levelWidth)]];
 
@@ -100,65 +118,56 @@ void loadLevel(int levelIndex) {
 	strcpy(mapName.name, stageTable[levelIndex].name);
 
 	//Load pxm
-	char pxmPath[256];
-	snprintf(pxmPath, 256, "data/Stage/%s.pxm", stageTable[levelIndex].filename);
+	const string pxmPath = string("data/Stage/") + stageTable[levelIndex].filename + ".pxm";
 
-	BYTE *pxm = nullptr;
-	const int pxmSize = loadFile(pxmPath, &pxm);
+	uint8_t *pxm = nullptr;
+	const int pxmSize = loadFile(pxmPath.c_str(), &pxm);
 
 	if (pxmSize < 0)
 	{
-		char errorMsg[256];
-		snprintf(errorMsg, 256, "Couldn't read %s", pxmPath);
-
-		doCustomError(errorMsg);
+		const string errorMessage = "Couldn't read " + pxmPath;
+		doCustomError(errorMessage.c_str());
 	}
-	
+
 	levelWidth = readLEshort(pxm, 4);
 	levelHeight = readLEshort(pxm, 6);
 
 	delete[] levelMap;
 
-	levelMap = new BYTE[pxmSize - 8];
+	levelMap = new uint8_t[pxmSize - 8];
 	memcpy(levelMap, pxm + 8, pxmSize - 8);
 
 	//DONE WITH PXM
 	free(pxm);
 
 	//Load pxa
-	char pxaPath[256];
-	snprintf(pxaPath, 256, "data/Stage/%s.pxa", stageTable[levelIndex].tileset);
+	const string pxaPath = string("data/Stage/") + stageTable[levelIndex].tileset + ".pxa";
 
-	BYTE *pxa = nullptr;
-	const int pxaSize = loadFile(pxaPath, &pxa);
+	uint8_t *pxa = nullptr;
+	const int pxaSize = loadFile(pxaPath.c_str(), &pxa);
 
 	if (pxaSize < 0)
 	{
-		char errorMsg[256];
-		snprintf(errorMsg, 256, "Couldn't read %s", pxaPath);
-
-		doCustomError(errorMsg);
+		const string errorMessage = "Couldn't read " + pxaPath;
+		doCustomError(errorMessage.c_str());
 	}
 
 	delete[] levelTileAttributes;
 
-	levelTileAttributes = new BYTE[pxaSize];
+	levelTileAttributes = new uint8_t[pxaSize];
 	memcpy(levelTileAttributes, pxa, pxaSize);
 
 	//DONE WITH PXA
 	free(pxa);
 
 	//Load pxe
-	char pxePath[256];
-	snprintf(pxePath, 256, "data/Stage/%s.pxe", stageTable[levelIndex].filename);
+	const string pxePath = string("data/Stage/") + stageTable[levelIndex].filename + ".pxe";
 
-	BYTE *pxe = nullptr;
-	if (loadFile(pxePath, &pxe) < 0)
+	uint8_t *pxe = nullptr;
+	if (loadFile(pxePath.c_str(), &pxe) < 0)
 	{
-		char errorMsg[256];
-		snprintf(errorMsg, 256, "Couldn't read %s", pxePath);
-
-		doCustomError(errorMsg);
+		const string errorMessage = "Couldn't read " + pxePath;
+		doCustomError(errorMessage.c_str());
 	}
 
 	//Clear old npcs
@@ -193,36 +202,31 @@ void loadLevel(int levelIndex) {
 	free(pxe);
 
 	//Load tileset
-	char tileImagePath[256];
-	snprintf(tileImagePath, 256, "data/Stage/Prt%s.png", stageTable[levelIndex].tileset);
+	const string tileImagePath = string("data/Stage/Prt") + stageTable[levelIndex].tileset + ".png";
 
-	loadImage(tileImagePath, &sprites[0x02]);
+	loadImage(tileImagePath.c_str(), &sprites[0x02]);
 
 	//Load background
-	char bgImagePath[256];
-	snprintf(bgImagePath, 256, "data/%s.png", stageTable[levelIndex].background);
+	const string backgroundImagePath = string("data/") + stageTable[levelIndex].background + ".png";
 
 	backgroundScroll = stageTable[levelIndex].backgroundScroll;
-	loadImage(bgImagePath, &sprites[0x1C]);
+	loadImage(backgroundImagePath.c_str(), &sprites[0x1C]);
 
 	//Load npc sheets
 	//Load sheet 1
-	char npcSheet1Path[256];
-	snprintf(npcSheet1Path, 256, "data/Npc/Npc%s.png", stageTable[levelIndex].npc1);
+	const string npcSheet1Path = string("data/Npc/Npc") + stageTable[levelIndex].npc1 + ".png";
 
-	loadImage(npcSheet1Path, &sprites[0x15]);
+	loadImage(npcSheet1Path.c_str(), &sprites[0x15]);
 
 	//Load sheet 2
-	char npcSheet2Path[256];
-	snprintf(npcSheet2Path, 256, "data/Npc/Npc%s.png", stageTable[levelIndex].npc2);
+	const string npcSheet2Path = string("data/Npc/Npc") + stageTable[levelIndex].npc2 + ".png";
 
-	loadImage(npcSheet2Path, &sprites[0x16]);
+	loadImage(npcSheet2Path.c_str(), &sprites[0x16]);
 
 	//Load tsc script
-	char tscPath[256];
-	snprintf(tscPath, 256, "data/Stage/%s.tsc", stageTable[levelIndex].filename);
+	const string tscPath = string("data/Stage/") + stageTable[levelIndex].filename + ".tsc";
 
-	loadStageTsc(tscPath);
+	loadStageTsc(tscPath.c_str());
 
 
 	//Fix viewport
@@ -232,7 +236,7 @@ void loadLevel(int levelIndex) {
 	viewport.lookY = &currentPlayer.tgt_y;
 	viewport.quake = 0;
 	viewport.quake2 = 0;
-  
+
 	viewBounds();
 }
 
@@ -294,7 +298,7 @@ void drawLevel(bool foreground)
 				rect = { 0, 0, w / 2, 88 };
 
 				skyOff = (((w / 2) - screenWidth) / 2);
-				
+
 				//Draw middle
 				drawTexture(sprites[0x1C], &rect, -skyOff, 0);
 
@@ -435,7 +439,7 @@ void drawLevel(bool foreground)
 		//Top and bottom
 		const int topBorder = -(viewport.y / 0x200);
 		const int bottomBorder = ((viewport.y / 0x200) + screenHeight) - ((levelHeight - 1) << 4);
-		
+
 		drawRect(0, 0, screenWidth, topBorder);
 		drawRect(0, screenHeight - bottomBorder, screenWidth, bottomBorder);
 	}

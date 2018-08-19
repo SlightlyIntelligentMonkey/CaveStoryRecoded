@@ -1,4 +1,9 @@
 #include "shootFunctions.h"
+#include "input.h"
+#include "sound.h"
+#include "bullet.h"
+#include "player.h"
+#include "caret.h"
 
 void shootFireball(int level)
 {

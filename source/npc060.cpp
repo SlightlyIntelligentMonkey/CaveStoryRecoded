@@ -1,5 +1,9 @@
 #include "npc060.h"
 
+#include "mathUtils.h"
+#include "player.h"
+#include "sound.h"
+
 void npcAct060(npc *NPC) //Toroko
 {
 	constexpr int frameMap[11] = { 0, 1, 2, 1, 3, 4, 5, 4, 6, 7, 8 };
@@ -11,7 +15,7 @@ void npcAct060(npc *NPC) //Toroko
 		NPC->ani_no = 0;
 		NPC->ani_wait = 0;
 		NPC->xm = 0;
-
+		// Fallthrough
 	case 1:
 		//Blink randomly
 		if (random(0, 120) == 10)
@@ -45,7 +49,7 @@ void npcAct060(npc *NPC) //Toroko
 		NPC->act_no = 4;
 		NPC->ani_no = 1;
 		NPC->ani_wait = 0;
-
+		// Fallthrough
 	case 4:
 		//Animate
 		if (++NPC->ani_wait > 2)
@@ -83,7 +87,7 @@ void npcAct060(npc *NPC) //Toroko
 		NPC->ani_no = 1;
 		NPC->ani_wait = 0;
 		NPC->ym = -0x400;
-
+		// Fallthrough
 	case 7: //In air
 		//Animate
 		if (++NPC->ani_wait > 2)
@@ -111,7 +115,7 @@ void npcAct060(npc *NPC) //Toroko
 		NPC->act_wait = 0;
 		NPC->act_no = 9;
 		NPC->ym = -0x200;
-
+		// Fallthrough
 	case 9:
 		if (++NPC->act_wait > 1 && NPC->flag & ground)
 			NPC->act_no = 0;
@@ -209,7 +213,7 @@ void npcAct061(npc *NPC) //King
 		NPC->ani_no = 0;
 		NPC->ani_wait = 0;
 		NPC->xm = 0;
-
+		// Fallthrough
 	case 1:
 		if (random(0, 120) == 10)
 		{
@@ -237,7 +241,7 @@ void npcAct061(npc *NPC) //King
 		NPC->act_wait = 0;
 		NPC->ani_wait = 0;
 		NPC->ym = -0x400;
-
+		// Fallthrough
 	case 7:
 		NPC->ani_no = 2;
 
@@ -255,7 +259,7 @@ void npcAct061(npc *NPC) //King
 		NPC->act_no = 9;
 		NPC->ani_no = 4;
 		NPC->ani_wait = 0;
-
+		// Fallthrough
 	case 9:
 		//Animate
 		if (++NPC->ani_wait > 4)
@@ -279,7 +283,7 @@ void npcAct061(npc *NPC) //King
 		NPC->act_no = 11;
 		NPC->ani_no = 4;
 		NPC->ani_wait = 0;
-
+		// Fallthrough
 	case 11:
 		//Animate
 		if (++NPC->ani_wait > 2)
@@ -310,7 +314,7 @@ void npcAct061(npc *NPC) //King
 		NPC->act_wait = 0;
 		NPC->ani_wait = 0;
 		NPC->ym = 0;
-
+		// Fallthrough
 	case 31:
 		NPC->ani_no = 2;
 
@@ -342,7 +346,7 @@ void npcAct061(npc *NPC) //King
 		NPC->act_wait = 0;
 		NPC->ani_no = 8;
 		playSound(SFX_Teleport);
-
+		// Fallthrough
 	case 42:
 		//Flash away
 		if (++NPC->ani_no > 9)
@@ -599,7 +603,7 @@ void npcAct065(npc *NPC) //First Cave Bat
 		NPC->tgt_y = NPC->y;
 		NPC->act_no = 1;
 		NPC->act_wait = random(0, 50);
-
+		// Fallthrough
 	case 2:
 		//Face towards player
 		if (currentPlayer.x >= NPC->x)
@@ -677,7 +681,7 @@ void npcAct066(npc *NPC) //Bubble (to catch Toroko in the shack)
 				break;
 			}
 		}
-
+		// Fallthrough
 	case 1:
 		//Animate
 		if (++NPC->ani_wait > 1)
@@ -794,7 +798,7 @@ void npcAct074(npc *NPC) //Jack
 		NPC->ani_no = 0;
 		NPC->ani_wait = 0;
 		NPC->xm = 0;
-		
+		// Fallthrough
 	case 1:
 		//Glasses flash randomly
 		if (random(0, 120) == 10)
@@ -819,7 +823,7 @@ void npcAct074(npc *NPC) //Jack
 		NPC->act_no = 9;
 		NPC->ani_no = 2;
 		NPC->ani_wait = 0;
-		
+		// Fallthrough
 	case 9:
 		//Animate
 		if (++NPC->ani_wait > 4)

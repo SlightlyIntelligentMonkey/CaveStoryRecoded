@@ -1,5 +1,10 @@
 #include "sound.h"
+
+#include <string>
 #include <SDL.h>
+#include "filesystem.h"
+
+using std::string;
 
 struct SOUND_EFFECT
 {
@@ -31,7 +36,7 @@ void audio_callback(void *userdata, Uint8 *stream, int len) // TBD : Handle user
 {
 	memset(stream, 0, len);
 
-	for (int sfx = 0; sfx < _countof(sounds); sfx++)
+	for (size_t sfx = 0; sfx < _countof(sounds); sfx++)
 	{
 		if (sounds[sfx].pos < sounds[sfx].length)
 		{
@@ -64,7 +69,7 @@ void ini_audio()
 //we have to do it ourselves
 void loadSound(const char *path, SDL_AudioSpec *spec, int **buf, Uint32 *length)
 {
-	BYTE *pBuf = nullptr;
+	uint8_t *pBuf = nullptr;
 
 	SDL_LoadWAV(path, spec, &pBuf, length);
 	
@@ -119,18 +124,17 @@ const char* hexStr[16] = { "0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "A"
 
 void loadSounds()
 {
-	char path[64];
 
 	for (int i = 0; i < 10; i++)
 	{
 		for (int v = 0; v < 16; v++)
 		{
 			int s = i * 16 + v;
-			sprintf(path, "data/Sound/%s%s.wav", hexStr[i], hexStr[v]);
+			const string path = string("data/Sound/") + hexStr[i] + hexStr[v] + ".wav";
 
-			if (fileExists(path))
+			if (fileExists(path.c_str()))
 			{
-				loadSound(path, &soundSpec, &sounds[s].buf, &sounds[s].length);
+				loadSound(path.c_str(), &soundSpec, &sounds[s].buf, &sounds[s].length);
 				sounds[s].pos = sounds[s].length;
 			}
 			else
@@ -145,7 +149,7 @@ void loadSounds()
 
 void freeSounds()
 {
-	for (int s = 0; s < _countof(sounds); s++)
+	for (size_t s = 0; s < _countof(sounds); s++)
 	{
 		free(sounds[s].buf);
 	}
@@ -153,7 +157,7 @@ void freeSounds()
 
 void playSound(int sound_no)
 {
-	if (sound_no > _countof(sounds) - 1) { return; }
+	if (sound_no > (int)_countof(sounds) - 1) { return; }
 	if (sounds[sound_no].buf == nullptr) { return; }
 	sounds[sound_no].pos = 0;
 }

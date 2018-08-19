@@ -1,6 +1,13 @@
 #include "npc000.h"
 
+#include "mathUtils.h"
+#include "player.h"
+#include "sound.h"
+#include "caret.h"
+#include "npcAct.h"
+
 #include <string>
+#include <SDL_messagebox.h>
 using std::string;
 using std::to_string;
 
@@ -8,8 +15,12 @@ void npcActNone(npc *NPC)
 {
 	NPC->surf = 0x27;
 	NPC->rect = { 0, 0, NPC->view.left >> 8, NPC->view.top >> 8 };
-	if (errorOnNotImplemented)
+	if (debugFlags | notifyOnNotImplemented)
 	{
+		static bool wasNotifiedAbout[_countof(npcActs)] = { 0 };
+		if (wasNotifiedAbout[NPC->code_char])
+			return;
+		wasNotifiedAbout[NPC->code_char] = true;
 		string msg = "NPC " + to_string(NPC->code_char) + " is not implementated yet.";
 		SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_WARNING, "Missing NPC", msg.c_str(), nullptr);
 	}
@@ -340,7 +351,7 @@ void npcAct004(npc *NPC) //Smoke
 	{
 		if (NPC->direct == dirLeft || NPC->direct == dirUp)
 		{
-			const BYTE deg = random(0, 255);
+			const uint8_t deg = random(0, 255);
 
 			const int degCos = getCos(deg);
 			NPC->xm = degCos * random(0x200, 0x5FF) / 0x200;
@@ -817,7 +828,7 @@ void npcAct009(npc *NPC) //Balrog drop in
 	case 0:
 		NPC->act_no = 1;
 		NPC->ani_no = 2;
-
+		// Fallthrough
 	case 1: //Falling
 		NPC->ym += 0x20;
 
@@ -962,7 +973,7 @@ void npcAct012(npc *NPC) //Balrog cutscene
 
 		NPC->act_no = 1;
 		NPC->ani_no = 0;
-		
+		// Fallthrough
 	case 1: //Stand
 		if (random(0, 100) == 0)
 		{
@@ -993,7 +1004,7 @@ void npcAct012(npc *NPC) //Balrog cutscene
 		NPC->ani_no = 2;
 		NPC->act_wait = 0;
 		NPC->tgt_x = 0;
-		
+		// Fallthrough
 	case 11: //About to jump
 		if (++NPC->act_wait > 30)
 		{
@@ -1035,7 +1046,7 @@ void npcAct012(npc *NPC) //Balrog cutscene
 			createNpc(NPC_Smoke, NPC->x + (random(-12, 12) << 9), NPC->y + (random(-12, 12) << 9), random(-0x155, 0x155), random(-0x600, 0), 0, nullptr);
 
 		playSound(SFX_Explosion);
-		
+		// Fallthrough
 	case 21:
 		NPC->tgt_x = 1;
 
@@ -1083,7 +1094,7 @@ void npcAct012(npc *NPC) //Balrog cutscene
 		NPC->act_no = 41;
 		NPC->act_wait = 0;
 		NPC->ani_no = 5;
-		
+		// Fallthrough
 	case 41:
 		if (++NPC->ani_wait / 2 & 1)
 			NPC->ani_no = 5;
@@ -1104,7 +1115,7 @@ void npcAct012(npc *NPC) //Balrog cutscene
 		NPC->act_no = 43;
 		NPC->act_wait = 0;
 		NPC->ani_no = 6;
-		
+		// Fallthrough
 	case 43:
 		if (++NPC->ani_wait / 2 & 1)
 			NPC->ani_no = 7;
@@ -1122,7 +1133,7 @@ void npcAct012(npc *NPC) //Balrog cutscene
 		NPC->act_no = 61;
 		NPC->ani_no = 9;
 		NPC->ani_wait = 0;
-		
+		// Fallthrough
 	case 0x3D:
 		if (++NPC->ani_wait > 3)
 		{
@@ -1146,7 +1157,7 @@ void npcAct012(npc *NPC) //Balrog cutscene
 		NPC->act_wait = 64;
 		playSound(SFX_Teleport);
 		NPC->ani_no = 13;
-		
+		// Fallthrough
 	case 71:
 		if (!--NPC->act_wait)
 			NPC->cond = 0;
@@ -1155,7 +1166,7 @@ void npcAct012(npc *NPC) //Balrog cutscene
 	case 80: //"Panic"
 		NPC->count1 = 0;
 		NPC->act_no = 81;
-		
+		// Fallthrough
 	case 81:
 		if (++NPC->count1 / 2 & 1)
 			NPC->x += 512;
@@ -1171,7 +1182,7 @@ void npcAct012(npc *NPC) //Balrog cutscene
 		NPC->act_no = 101;
 		NPC->act_wait = 0;
 		NPC->ani_no = 2;
-		
+		// Fallthrough
 	case 101: //Going to jump
 		if (++NPC->act_wait > 20)
 		{
@@ -1375,7 +1386,7 @@ void npcAct017(npc *NPC) //Health refill
 			for (int i = 0; i < 4; ++i)
 				createNpc(NPC_Smoke, NPC->x + (random(-12, 12) << 9), NPC->y + (random(-12, 12) << 9), random(-0x155, 0x155), random(-0x600, 0), 0, nullptr);
 		}
-
+		// Fallthrough
 	case 1:
 		rand = random(0, 30);
 

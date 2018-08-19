@@ -1,5 +1,7 @@
 #include "npc180.h"
 
+#include "mathUtils.h"
+
 void npcAct194(npc *NPC) // Blue Robot, destroyed
 {
 	if (NPC->act_no == 0)

@@ -3,12 +3,14 @@
 #include "npcCollision.h"
 #include "level.h"
 
+#include <vector>
+
 struct NPC_RECT
 {
-	Uint8 front;
-	Uint8 top;
-	Uint8 back;
-	Uint8 bottom;
+	uint8_t front;
+	uint8_t top;
+	uint8_t back;
+	uint8_t bottom;
 };
 
 struct NPC_TABLE
@@ -32,7 +34,7 @@ class npc
 	//Variables
 	public:
 		//state things
-		BYTE cond;
+		uint8_t cond;
 		int flag;
 
 		//position
@@ -109,7 +111,6 @@ void changeNpc(int code_event, int code_char, int dir);
 
 void updateNPC();
 void drawNPC();
-
 void killNpc(npc *NPC, bool bVanish);
 
 extern std::vector<npc> npcs;

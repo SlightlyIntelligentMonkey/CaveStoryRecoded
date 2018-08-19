@@ -1,9 +1,13 @@
 //FLAG FUNCTIONS
 #include "common.h"
 
-BYTE tscFlags[1000]; //game flags
-BYTE skipFlags[0x40]; //skip flags
-BYTE mapFlags[0x80]; //map flags
+#include <cstring>
+
+using std::memset;
+
+uint8_t tscFlags[1000]; //game flags
+uint8_t skipFlags[0x40]; //skip flags
+uint8_t mapFlags[0x80]; //map flags
 
 //Normal flags
 void initFlags()

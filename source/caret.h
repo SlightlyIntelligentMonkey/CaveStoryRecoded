@@ -1,6 +1,8 @@
 #pragma once
 #include "common.h"
 
+#include <vector>
+
 struct CARETSTAT
 {
 	int offsetX;

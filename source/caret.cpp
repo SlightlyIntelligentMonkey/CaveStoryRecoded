@@ -1,7 +1,18 @@
 #include "caret.h"
 //yeah i like carrots
 
-std::vector<caret> carets(0);
+#include "mathUtils.h"
+#include "render.h"
+
+#include <string>
+#include <vector>
+#include <cstring>
+
+using std::to_string;
+using std::vector;
+using std::memset;
+
+vector<caret> carets(0);
 
 CARETSTAT caretStats[] = {
 	{ 0x0,		0x0 },
@@ -549,7 +560,7 @@ void caret::draw()
 			}
 		}
 
-		drawString((x - view_left) / 0x200 - viewport.x / 0x200, (y - view_top) / 0x200 - viewport.y / 0x200 - 16, std::to_string(index).c_str(), nullptr);
+		drawString((x - view_left) / 0x200 - viewport.x / 0x200, (y - view_top) / 0x200 - viewport.y / 0x200 - 16, to_string(index).c_str(), nullptr);
 	}
 }
 

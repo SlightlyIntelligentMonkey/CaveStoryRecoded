@@ -1,5 +1,17 @@
 #include "player.h"
 #include "weapons.h"
+#include "render.h"
+#include "input.h"
+#include "caret.h"
+#include "flags.h"
+#include "script.h"
+#include "sound.h"
+#include "mathUtils.h"
+#include "valueview.h"
+
+#include <cstring>
+
+using std::memset;
 
 player currentPlayer;
 

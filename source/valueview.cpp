@@ -1,6 +1,15 @@
 #include "valueview.h"
 
-std::vector<valueview> valueviews(0);
+#include <vector>
+#include <cstring>
+#include <cmath>
+#include "render.h"
+
+using std::memset;
+using std::abs;
+using std::vector;
+
+vector<valueview> valueviews(0);
 
 //Functions
 void createValueView(int *px, int *py, int value)
@@ -13,7 +22,7 @@ void createValueView(int *px, int *py, int value)
 			i < valueviews.size();
 			++i)
 		{
-			if (!(!valueviews[i].flag || valueviews[i].px != px || (valueviews[i].value >= 0 || value >= 0) && (valueviews[i].value <= 0 || value <= 0)))
+			if (!(!valueviews[i].flag || valueviews[i].px != px || ((valueviews[i].value >= 0 || value >= 0) && (valueviews[i].value <= 0 || value <= 0))))
 			{
 				repVV = &valueviews[i];
 				break;

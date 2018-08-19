@@ -1,5 +1,10 @@
 #include "npc080.h"
 
+#include "player.h"
+#include "mathUtils.h"
+#include "caret.h"
+#include "sound.h"
+
 void npcAct082(npc *NPC) //Misery standing
 {
 	int something; //This is like, set to act_wait - 30 after act_wait is increased by 1? Then it does weird shit in an if statement???
@@ -31,7 +36,7 @@ void npcAct082(npc *NPC) //Misery standing
 	case 0: //Stand and blink
 		NPC->act_no = 1;
 		NPC->ani_no = 2;
-		
+		// Fallthrough
 	case 1:
 		if (random(0, 120) == 10)
 		{
@@ -53,7 +58,7 @@ void npcAct082(npc *NPC) //Misery standing
 		NPC->act_no = 16;
 		NPC->act_wait = 0;
 		NPC->ani_no = 4;
-		
+		// Fallthrough
 	case 16:
 		if (++NPC->act_wait == 30)
 		{
@@ -70,7 +75,7 @@ void npcAct082(npc *NPC) //Misery standing
 		NPC->ani_no = 0;
 		NPC->ym = 0;
 		NPC->bits |= npc_ignoresolid;
-		
+		// Fallthrough
 	case 21:
 		NPC->ym -= 0x20;
 
@@ -83,7 +88,7 @@ void npcAct082(npc *NPC) //Misery standing
 		NPC->act_wait = 0;
 		NPC->ani_no = 5;
 		NPC->ani_wait = 0;
-		
+		// Fallthrough
 	case 26:
 		if (++NPC->ani_no > 7)
 			NPC->ani_no = 5;
@@ -110,7 +115,7 @@ void npcAct082(npc *NPC) //Misery standing
 		NPC->act_no = 31;
 		NPC->ani_no = 3;
 		NPC->ani_wait = 0;
-		
+		// Fallthrough
 	case 31:
 		if (++NPC->ani_wait > 10)
 		{
@@ -131,7 +136,7 @@ void npcAct082(npc *NPC) //Misery standing
 	case 40: //Cast bubbles
 		NPC->act_no = 41;
 		NPC->act_wait = 0;
-		
+		// Fallthrough
 	case 41:
 		NPC->ani_no = 4;
 
@@ -259,7 +264,7 @@ void npcAct083(npc *NPC) // Igor, standing
 			++NPC->ani_no;
 		}
 		if (NPC->ani_no > 5)
-			NPC->ani_no = 0;
+			NPC->ani_no = 2;
 
 		if (NPC->direct != dirLeft)
 			NPC->xm = 0x200;

@@ -1,6 +1,8 @@
 #pragma once
 #include "common.h"
 
+#include <vector>
+
 class valueview
 {
 public: //Variables

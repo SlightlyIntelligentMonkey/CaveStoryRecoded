@@ -1,5 +1,13 @@
 #include "fade.h"
 
+#include <cstring>
+#include <algorithm>
+#include <SDL_render.h>
+#include "render.h"
+
+using std::memset;
+using std::max;
+
 FADE_STATE fade;
 
 const int fadeFrames = 16;
@@ -15,7 +23,7 @@ void updateFade()
 	{
 		fade.bMask = false;
 
-		if (++fade.count > (std::max(screenWidth, screenHeight) / 16 + fadeFrames))
+		if (++fade.count > (max(screenWidth, screenHeight) / 16 + fadeFrames))
 		{
 			fade.bMask = (fade.mode == 2);
 			fade.mode = 0;
@@ -33,7 +41,7 @@ void drawFade()
 
 	const int w = screenWidth / 16 + 1;
 	const int h = screenHeight / 16 + 1;
-	const int frames = (std::max(screenWidth, screenHeight) / 16 + fadeFrames);
+	const int frames = (max(screenWidth, screenHeight) / 16 + fadeFrames);
 
 	if (fade.bMask)
 	{

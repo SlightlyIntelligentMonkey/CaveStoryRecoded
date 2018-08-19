@@ -1,9 +1,16 @@
 #include "hud.h"
 #include "level.h"
 #include "weapons.h"
+#include "render.h"
+#include "player.h"
+#include "caret.h"
+#include "bullet.h"
 
 #include <string>
+#include <cstring>
+#include <SDL_render.h>
 
+using std::strlen;
 using std::string;
 using std::to_string;
 

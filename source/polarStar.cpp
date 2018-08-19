@@ -1,5 +1,7 @@
 #include "polarStar.h"
 
+#include "caret.h"
+
 void actBulletPolarStar1(bullet *bul)
 {
 	if (++bul->count1 <= bul->life_count)

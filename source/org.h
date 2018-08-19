@@ -3,39 +3,39 @@
 
 struct NOTE
 {
-	Uint32 pos;
-	Uint8 note;
-	Uint8 length;
-	Uint8 volume;
-	Uint8 pan;
+	uint32_t pos;
+	uint8_t note;
+	uint8_t length;
+	uint8_t volume;
+	uint8_t pan;
 };
 
 struct TRACK
 {
-	Uint16 freq;
-	Uint8 wave;
-	Uint8 pipi;
+	uint16_t freq;
+	uint8_t wave;
+	uint8_t pipi;
 
-	Uint16 amountNotes;
+	uint16_t amountNotes;
 	NOTE *note;
 	
-	Uint32 samples;
+	uint32_t samples;
 };
 
 struct ORG
 {
 	char header[6];
 
-	Uint16 tempo;
+	uint16_t tempo;
 
-	Uint8 stepPerBeat;
-	Uint8 beatPerMeasure;
+	uint8_t stepPerBeat;
+	uint8_t beatPerMeasure;
 
-	Uint32 loopStart;
-	Uint32 loopEnd;
+	uint32_t loopStart;
+	uint32_t loopEnd;
 
 	TRACK track[16];
 
-	Uint32 pos;
-	Uint32 samples;
+	uint32_t pos;
+	uint32_t samples;
 };

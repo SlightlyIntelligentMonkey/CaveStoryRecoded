@@ -1,38 +1,26 @@
-COMPILE_C := $(CC) -O3 -c -I/usr/include/SDL2
-COMPILE_CPP := $(CXX) -O3 -c -I/usr/include/SDL2
-LINK_CPP := $(CXX) -O3
-LINK_C := $(CC) -O3
+WARNINGS := -pedantic -Wall -Wextra -Wabi -Waggregate-return -Wcast-align -Wcast-qual -Wctor-dtor-privacy -Wdisabled-optimization -Weffc++ -Wformat=2 -Wformat-nonliteral -Wformat-security -Wformat-y2k -Wimport -Winit-self -Winline -Winvalid-pch -Wlogical-op -Wlong-long -Wmissing-field-initializers -Wmissing-format-attribute -Wmissing-include-dirs -Wmissing-noreturn -Wnoexcept -Wnormalized=nfc -Wold-style-cast -Woverloaded-virtual -Wpointer-arith -Wsign-promo -Wstack-protector -Wstrict-aliasing=1 -Wstrict-null-sentinel -Wswitch-enum -Wundef -Wunreachable-code -Wunsafe-loop-optimizations -Wunused -Wuseless-cast -Wvariadic-macros -Wwrite-strings -Wzero-as-null-pointer-constant -Wno-multichar -Wno-unused-parameter
 
-MAIN := filesystem flags input level main math
-MAIN += npc npcAct npcCollision player playerCollision
-MAIN += render script sound
+OPTIMISATIONS := -Ofast -flto -frename-registers -funroll-loops
 
-MAIN += npc000 npc020 npc040 npc060 npc200 npc340
+COMPILE_C := $(CC) -m32 $(OPTIMISATIONS) -c $(WARNINGS) -std=c++1z -I/mingw32/include/SDL2/ -mwindows
+COMPILE_CPP := $(CXX) -m32 $(OPTIMISATIONS) -c $(WARNINGS) -std=c++1z -I/mingw32/include/SDL2/ -mwindows
+# Replace mingw32 with usr and remove -mwindows for actual Unix build
+LINK_CPP := $(CXX) -m32 $(OPTIMISATIONS) -static -static-libstdc++ -static-libgcc -s
+LINK_C := $(CC) -m32 $(OPTIMISATIONS) -static -static-libstdc++ -static-libgcc -s
+
+MAIN := bullet bulletCollision caret fade filesystem fireball fireballShoot flags game hud input level main mathUtils
+MAIN += npc npcAct npcCollision org player playerCollision polarStar polarStarShoot
+MAIN += render script sound spur spurShoot valueview weapons
+
+MAIN += npc000 npc020 npc040 npc060 npc080 npc100 npc120 npc140 npc180 npc200 npc220 npc240 npc280 npc300 npc340
 
 OBJS := $(addprefix obj/, $(addsuffix .o, $(MAIN)))
 
-# liborganya
-OBJS += obj/liborganya-file.o obj/liborganya-decoder.o
-
-# Compile liborganya's org2dat for convenience while testing modifications.
-all: bin/CaveStoryRemake bin/org2dat
+all: bin/CaveStoryRemake
 
 bin/CaveStoryRemake: $(OBJS)
-	$(LINK_CPP) -lSDL2 -lm $(OBJS) -o bin/CaveStoryRemake
-
-bin/org2dat: obj/liborganya-file.o obj/liborganya-decoder.o obj/liborganya-org2dat.o
-	$(LINK_C) -lm obj/liborganya-file.o obj/liborganya-decoder.o obj/liborganya-org2dat.o -o bin/org2dat
-
-# liborganya stuff.
-# Due to the modifications, this must have access to the SDL2 endianness includes.
-obj/liborganya-file.o: liborganya/file.c
-	$(COMPILE_C) liborganya/file.c -o obj/liborganya-file.o
-
-obj/liborganya-decoder.o: liborganya/decoder.c
-	$(COMPILE_C) liborganya/decoder.c -o obj/liborganya-decoder.o
-
-obj/liborganya-org2dat.o: liborganya/org2dat.c
-	$(COMPILE_C) liborganya/org2dat.c -o obj/liborganya-org2dat.o
+	$(LINK_CPP)  $(OBJS) -lmingw32 -lSDL2Main -lSDL2.dll -lSDL2_image.dll -o bin/CaveStoryRemake
+# Remove mingw32 for actual Unix build maybe ? Also prolly remove the ".dll"s at the end of SDL2.dll and SDL2_image.dll
 
 # general compile
 
