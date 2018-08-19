@@ -98,7 +98,7 @@ void drawWeaponStats()
 		}
 
 		//Draw the flashing
-		if (weaponExpFlash)
+		if (currentPlayer.exp_wait)
 		{
 			if ((addFlash++ >> 1) & 1)
 				drawTexture(sprites[TEX_TEXTBOX], &rcExpFlash, weaponShiftX + 24, 32);
@@ -204,4 +204,17 @@ void drawHud(bool hide)
 	drawPlayerHealth();
 	drawPlayerAir();
 	drawHudWeapons();
+
+	if (debugFlags & showSlots)
+	{
+		char debStr1[0x80];
+		sprintf(debStr1, "There are %s npc slots.", std::to_string(npcs.size()).c_str());
+		char debStr2[0x80];
+		sprintf(debStr2, "There are %s bullet slots.", std::to_string(bullets.size()).c_str());
+		char debStr3[0x80];
+		sprintf(debStr3, "There are %s caret slots.", std::to_string(carets.size()).c_str());
+		drawString(8, screenHeight - 12, debStr1, nullptr);
+		drawString(8, screenHeight - 24, debStr2, nullptr);
+		drawString(8, screenHeight - 36, debStr3, nullptr);
+	}
 }

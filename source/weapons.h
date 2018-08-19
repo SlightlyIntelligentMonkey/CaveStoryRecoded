@@ -38,5 +38,7 @@ void clearWeaponExperience();
 void maxWeaponAmmo();
 bool checkWeapon(int code);
 
+void giveWeaponExperience(int x);
+
 int rotateWeaponRight();
 int rotateWeaponLeft();

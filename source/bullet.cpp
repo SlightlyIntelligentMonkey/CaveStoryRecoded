@@ -1,5 +1,6 @@
 #include "bullet.h"
 #include "weapons.h"
+#include "bulletCollision.h"
 
 std::vector<bullet> bullets(0);
 
@@ -126,10 +127,11 @@ void updateBullets()
 		for (size_t i = 0; i < bullets.size(); i++)
 		{
 			if (bullets[i].cond & 0x80)
-			{
 				bullets[i].update();
-			}
 		}
+		
+		bulletHitMap();
+		bulletHitNpcs();
 	}
 }
 
@@ -231,8 +233,15 @@ bulletAct bulletActs[] = {
 //Update and draw
 void bullet::update()
 {
-	if (bulletActs[code_bullet] != nullptr)
-		bulletActs[code_bullet](this);
+	if (life > 0)
+	{
+		if (bulletActs[code_bullet] != nullptr)
+			bulletActs[code_bullet](this);
+	}
+	else
+	{
+		cond = 0;
+	}
 }
 
 void bullet::draw()
@@ -265,4 +274,20 @@ void bullet::draw()
 	}
 
 	drawTexture(sprites[TEX_BULLET], &rect, drawX / 0x200 - viewport.x / 0x200, drawY / 0x200 - viewport.y / 0x200);
+
+	if (debugFlags & showBULId)
+	{
+		size_t index = 0;
+
+		for (size_t i = 0; i < bullets.size(); i++)
+		{
+			if (&bullets[i] == this)
+			{
+				index = i;
+				break;
+			}
+		}
+
+		drawString(drawX / 0x200 - viewport.x / 0x200, drawY / 0x200 - viewport.y / 0x200 - 16, std::to_string(index).c_str(), nullptr);
+	}
 }
