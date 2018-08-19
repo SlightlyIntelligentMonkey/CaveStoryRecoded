@@ -1,4 +1,5 @@
-WARNINGS := -pedantic -Wall -Wextra -Wcast-align -Wcast-qual -Wctor-dtor-privacy -Wdisabled-optimization -Wformat=2 -Winit-self -Wlogical-op -Wmissing-include-dirs -Wnoexcept -Wold-style-cast -Woverloaded-virtual -Wshadow -Wsign-promo -Wstrict-null-sentinel -Wundef -Werror -Wunused -Wno-multichar -Wno-unused-parameter
+WARNINGS := -pedantic -Wall -Wextra -Wabi -Waggregate-return -Wcast-align -Wcast-qual -Wconversion -Wctor-dtor-privacy -Wdisabled-optimization -Weffc++ -Wfloat-equal -Wformat=2 -Winit-self -Winline -Winvalid-pch -Wlogical-op -Wmissing-format-attribute -Wmissing-include-dirs -Wnoexcept -Wnormalized=nfc -Wold-style-cast -Woverloaded-virtual -Wpadded -Wsign-promo -Wstack-protector -Wstrict-aliasing=1 -Wstrict-null-sentinel -Wsuggest-attribute -Wswitch-enum -Wundef -Wunsafe-loop-optimizations -Wunused -Wno-multichar -Wno-unused-parameter
+
 COMPILE_C := $(CC) -m32 -O3 -flto -c $(WARNINGS) -std=c++1z -I/mingw32/include/SDL2/ 
 COMPILE_CPP := $(CXX) -m32 -O3 -flto -c $(WARNINGS) -std=c++1z -I/mingw32/include/SDL2/ 
 # Replace mingw32 with usr for actual Unix build
