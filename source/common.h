@@ -1,7 +1,5 @@
 #pragma once
 
-#include <SDL.h>
-
 #include <cstdint>
 
 struct RECT
@@ -708,6 +706,12 @@ struct VIEW {
 
 //Macro
 #define TILE2COORD(x) ((x) << 13)
+
+struct SDL_Window;
+struct SDL_Renderer;
+struct SDL_Rect;
+struct SDL_Texture;
+union SDL_Event;
 
 //Drawing related variables
 extern SDL_Window *window;

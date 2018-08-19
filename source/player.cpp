@@ -9,6 +9,10 @@
 #include "mathUtils.h"
 #include "valueview.h"
 
+#include <cstring>
+
+using std::memset;
+
 player currentPlayer;
 
 void player::init() {

@@ -3,6 +3,7 @@
 #include "bulletCollision.h"
 #include "render.h"
 
+#include <SDL_messagebox.h>
 #include <string>
 #include <cstring>
 

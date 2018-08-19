@@ -1,5 +1,8 @@
 #include "input.h"
 
+#include <SDL_keyboard.h>
+#include <SDL_events.h>
+
 int keyLeft = SDL_SCANCODE_LEFT;
 int keyRight = SDL_SCANCODE_RIGHT;
 int keyUp = SDL_SCANCODE_UP;

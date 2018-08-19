@@ -7,6 +7,7 @@
 #include "npcAct.h"
 
 #include <string>
+#include <SDL_messagebox.h>
 using std::string;
 using std::to_string;
 

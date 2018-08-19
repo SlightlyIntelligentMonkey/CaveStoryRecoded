@@ -11,6 +11,7 @@
 #include "mathUtils.h"
 
 #include <string>
+#include <SDL_render.h>
 
 using std::string;
 

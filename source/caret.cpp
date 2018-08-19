@@ -6,9 +6,11 @@
 
 #include <string>
 #include <vector>
+#include <cstring>
 
 using std::to_string;
 using std::vector;
+using std::memset;
 
 vector<caret> carets(0);
 

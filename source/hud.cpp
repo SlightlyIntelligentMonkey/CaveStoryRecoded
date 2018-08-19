@@ -7,7 +7,10 @@
 #include "bullet.h"
 
 #include <string>
+#include <cstring>
+#include <SDL_render.h>
 
+using std::strlen;
 using std::string;
 using std::to_string;
 

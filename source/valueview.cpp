@@ -1,8 +1,12 @@
 #include "valueview.h"
 
 #include <vector>
+#include <cstring>
+#include <cmath>
 #include "render.h"
 
+using std::memset;
+using std::abs;
 using std::vector;
 
 vector<valueview> valueviews(0);

@@ -15,6 +15,14 @@
 #include "mathUtils.h"
 #include "flags.h"
 
+#include <cstring>
+#include <SDL_scancode.h>
+#include <SDL_timer.h>
+#include <SDL_render.h>
+#include <SDL_events.h>
+
+using std::memset;
+
 int gameMode = 1;
 
 VIEW viewport;
@@ -355,8 +363,8 @@ int gameUpdatePlay()
 	while (true)
 	{
 		//Framerate limiter
-		const Uint32 timeNow = SDL_GetTicks();
-		const Uint32 timeNext = framerateTicks + framerate;
+		const uint32_t timeNow = SDL_GetTicks();
+		const uint32_t timeNext = framerateTicks + framerate;
 
 		if (timeNow >= timeNext) {
 			framerateTicks = SDL_GetTicks();

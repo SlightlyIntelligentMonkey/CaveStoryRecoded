@@ -7,10 +7,10 @@
 
 struct NPC_RECT
 {
-	Uint8 front;
-	Uint8 top;
-	Uint8 back;
-	Uint8 bottom;
+	uint8_t front;
+	uint8_t top;
+	uint8_t back;
+	uint8_t bottom;
 };
 
 struct NPC_TABLE

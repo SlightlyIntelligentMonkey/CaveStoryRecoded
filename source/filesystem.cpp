@@ -6,7 +6,18 @@
 #include "flags.h"
 #include "script.h"
 
+#include <cstdio>
+#include <cstdlib>
 #include <sys/stat.h>
+#include <SDL_RWops.h>
+
+using std::FILE;
+using std::fopen;
+using std::fseek;
+using std::ftell;
+using std::malloc;
+using std::fread;
+using std::fclose;
 
 //Read function stuff
 uint16_t readLEshort(const uint8_t * data, size_t offset)

@@ -11,6 +11,17 @@
 #include "player.h"
 #include "input.h"
 
+#include <cstring>
+#include <cstdlib>
+#include <SDL_RWops.h>
+#include <SDL_render.h>
+
+using std::malloc;
+using std::memset;
+using std::strcpy;
+using std::strcat;
+
+
 //Variables
 TSC tsc;
 char tscText[0x100];

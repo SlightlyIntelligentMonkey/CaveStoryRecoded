@@ -9,7 +9,10 @@
 #include "flags.h"
 
 #include <string>
+#include <cstring>
+#include <SDL_RWops.h>
 
+using std::memset;
 using std::string;
 using std::to_string;
 using std::vector;

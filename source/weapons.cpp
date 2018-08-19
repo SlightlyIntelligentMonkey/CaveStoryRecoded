@@ -2,11 +2,14 @@
 #include "shootFunctions.h"
 
 #include <string>
+#include <cstring>
+#include <SDL_messagebox.h>
 #include "player.h"
 #include "sound.h"
 #include "caret.h"
 #include "bullet.h"
 
+using std::memset;
 using std::string;
 using std::to_string;
 
