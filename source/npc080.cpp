@@ -372,7 +372,7 @@ void npcAct087(npc *NPC)
 			NPC->ani_no = 0;
 	}
 
-	if (false) // if (currentBackground.mode == 5 || currentBackground.mode == 6)
+	if (backgroundScroll == 5 || backgroundScroll == 6)
 	{
 		if (NPC->act_no == 0)
 		{

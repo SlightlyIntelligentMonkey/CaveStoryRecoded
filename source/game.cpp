@@ -562,7 +562,7 @@ int gameUpdateMenu()
 		drawTexture(sprites[0x01], &rcPixel, (screenWidth >> 1) - 80, 192);
 
 		//Draw the character cursor
-		RECT rcChar = { 0 + (frameOrder[((anime / 10) % 4)] << 4), 16, 16 + (frameOrder[((anime / 10) % 4)] << 4), 32 };
+		RECT rcChar = { 0 + (frameOrder[(anime / 10) % 4] << 4), 16, 16 + (frameOrder[((anime / 10) % 4)] << 4), 32 };
 		drawTexture(sprites[0x10], &rcChar, (screenWidth >> 1) - 44, 127 + (20 * select));
 
 		SDL_RenderPresent(renderer);
