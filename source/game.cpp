@@ -144,9 +144,7 @@ void debugLevels()
 	}
 }
 
-//Escape menu
-RECT rcEscape = { 0, 128, 208, 144 };
-int escapeMenu()
+void delimitFramerate()
 {
 	while (true)
 	{
@@ -154,18 +152,29 @@ int escapeMenu()
 		const Uint32 timeNow = SDL_GetTicks();
 		const Uint32 timeNext = framerateTicks + framerate;
 
-		if (timeNow >= timeNext) {
+		if (timeNow >= timeNext)
 			framerateTicks = SDL_GetTicks();
-		}
 		else
 		{
 			SDL_Delay(timeNext - timeNow);
 			continue;
 		}
+		return;
+	}
+}
+
+//Escape menu
+RECT rcEscape = { 0, 128, 208, 144 };
+int escapeMenu()
+{
+	while (true)
+	{
+		delimitFramerate();
 
 		//Handle events
 		getKeys(&events);
-		if (events.type == SDL_QUIT || exitGame) { return 0; }
+		if (events.type == SDL_QUIT || exitGame) 
+			return 0;
 
 		if (isKeyPressed(SDL_SCANCODE_ESCAPE)) { return 0; }
 		if (isKeyPressed(SDL_SCANCODE_F1)) { return 1; }
@@ -278,22 +287,12 @@ int stageSelect(int *runEvent)
 
 	while (true)
 	{
-		//Framerate limiter
-		const Uint32 timeNow = SDL_GetTicks();
-		const Uint32 timeNext = framerateTicks + framerate;
-
-		if (timeNow >= timeNext) {
-			framerateTicks = SDL_GetTicks();
-		}
-		else
-		{
-			SDL_Delay(timeNext - timeNow);
-			continue;
-		}
+		delimitFramerate();
 
 		//Handle events
 		getKeys(&events);
-		if (events.type == SDL_QUIT || exitGame) { return 0; }
+		if (events.type == SDL_QUIT || exitGame)
+			return 0;
 
 		if (isKeyDown(SDL_SCANCODE_ESCAPE))
 		{
@@ -562,7 +561,7 @@ int gameUpdateMenu()
 		drawTexture(sprites[0x01], &rcPixel, (screenWidth >> 1) - 80, 192);
 
 		//Draw the character cursor
-		RECT rcChar = { 0 + (frameOrder[(anime / 10) % 4] << 4), 16, 16 + (frameOrder[((anime / 10) % 4)] << 4), 32 };
+		RECT rcChar = { 0 + (frameOrder[(anime / 10) % 4] << 4), 16, 16 + (frameOrder[(anime / 10) % 4] << 4), 32 };
 		drawTexture(sprites[0x10], &rcChar, (screenWidth >> 1) - 44, 127 + (20 * select));
 
 		SDL_RenderPresent(renderer);

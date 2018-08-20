@@ -15,7 +15,7 @@ void npcActNone(npc *NPC)
 {
 	NPC->surf = 0x27;
 	NPC->rect = { 0, 0, NPC->view.left >> 8, NPC->view.top >> 8 };
-	if (debugFlags | notifyOnNotImplemented)
+	if (debugFlags & notifyOnNotImplemented)
 	{
 		static bool wasNotifiedAbout[_countof(npcActs)] = { 0 };
 		if (wasNotifiedAbout[NPC->code_char])
@@ -184,10 +184,9 @@ void npcAct001(npc *NPC) //Experience
 	if (++NPC->count1 > 500 && NPC->ani_no == 5 && NPC->ani_wait == 2)
 		NPC->cond = 0;
 
-	if (NPC->count1 > 400)
+	if (NPC->count1 > 400 && (NPC->count1 / 2 & 1))
 	{
-		if (NPC->count1 / 2 & 1)
-			NPC->rect = { 0, 0, 0, 0 };
+		NPC->rect = { 0, 0, 0, 0 };
 	}
 }
 
@@ -1190,10 +1189,8 @@ void npcAct012(npc *NPC) //Balrog cutscene
 			NPC->act_wait = 0;
 			NPC->ani_no = 3;
 			NPC->ym = -2048;
-			NPC->bits |= 8u;
+			NPC->bits |= 8U;
 
-			//DeleteNpCharCode(150, 0);
-			//DeleteNpCharCode(117, 0);
 			createNpc(NPC_BalrogCrashingThroughWall, 0, 0, 0, 0, 0, NPC);
 			createNpc(NPC_BalrogCrashingThroughWall, 0, 0, 0, 0, 1, NPC);
 		}

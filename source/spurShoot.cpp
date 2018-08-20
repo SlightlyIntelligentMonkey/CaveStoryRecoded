@@ -85,10 +85,12 @@ void shootSpur(int level)
 		else
 			bul_no = 38;
 		break;
+	default:
+		doCustomError("level argument of shootSpur was invalid");
 	}
 
 	//Shoot bullet
-	bool cantShoot = weaponBullets(13) > 0 || weaponBullets(14) > 0;
+	const bool cantShoot = weaponBullets(13) > 0 || weaponBullets(14) > 0;
 
 	if (!cantShoot && (isKeyPressed(keyShoot) || bShot))
 	{

@@ -221,7 +221,7 @@ void drawString(int x, int y, const char *str, const uint8_t *flag)
 
 				if (isMultibyte(str[i]))
 				{
-					int localChar = 0x81 + str[i + 1] + ((str[i] - 0x81) * 0x100);
+					const int localChar = 0x81 + str[i + 1] + ((str[i] - 0x81) * 0x100);
 					rcChar.left = ((localChar % 32) * charWidth);
 					rcChar.top = ((localChar >> 5) * charHeight);
 					rcChar.right = rcChar.left + charWidth;

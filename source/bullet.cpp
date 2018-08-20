@@ -251,7 +251,7 @@ void bullet::update()
 	{
 		if (bulletActs[code_bullet] != nullptr)
 			bulletActs[code_bullet](this);
-		else if (debugFlags | notifyOnNotImplemented)
+		else if (debugFlags & notifyOnNotImplemented)
 		{
 			static bool wasNotifiedAboutBullet[_countof(bulletActs)] = { false };
 			if (wasNotifiedAboutBullet[this->code_bullet])

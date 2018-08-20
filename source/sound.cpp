@@ -157,7 +157,7 @@ void freeSounds()
 
 void playSound(int sound_no)
 {
-	if (sound_no > (int)_countof(sounds) - 1) { return; }
+	if (sound_no > static_cast<int>(_countof(sounds)) - 1) { return; }
 	if (sounds[sound_no].buf == nullptr) { return; }
 	sounds[sound_no].pos = 0;
 }

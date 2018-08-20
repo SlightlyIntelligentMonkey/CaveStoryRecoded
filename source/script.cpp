@@ -128,6 +128,17 @@ int getTSCNumber(int a)
 			1000 *	(static_cast<char>(tsc.data[a]) - 0x30);
 }
 
+void tscClearText()
+{
+	for (int i = 0; i < 4; ++i)
+	{
+		tsc.ypos_line[i] = 16 * i;
+		
+		memset(tscText + (i * 0x40), 0, 0x40);
+		memset(tscTextFlag + (i * 0x40), 0, 0x40);
+	}
+}
+
 //TSC run event functions
 int startTscEvent(int no)
 {
@@ -145,14 +156,6 @@ int startTscEvent(int no)
 
 	tsc.rcText = { 52, 184, 268, 234 };
 
-	//Clear text
-	for (int i = 0; i < 4; ++i)
-	{
-		tsc.ypos_line[i] = 16 * i;
-		memset(tscText + (i * 0x40), 0, 0x40);
-		memset(tscTextFlag + (i * 0x40), 0, 0x40);
-	}
-
 	//Get event id
 	int event_no;
 	for (tsc.p_read = 0; ; ++tsc.p_read)
@@ -169,7 +172,7 @@ int startTscEvent(int no)
 			return 0;
 	}
 
-	while (tsc.data[tsc.p_read] != 10)
+	while (tsc.data[tsc.p_read] != '\n')
 		++tsc.p_read;
 	++tsc.p_read;
 	return 1;
@@ -184,14 +187,7 @@ int jumpTscEvent(int no)
 	tsc.wait = 4;
 	tsc.wait_beam = 0;
 
-	//Clear text
-	for (int i = 0; i < 4; ++i)
-	{
-		tsc.ypos_line[i] = 16 * i;
-
-		memset(tscText + (i * 0x40), 0, 0x40);
-		memset(tscTextFlag + (i * 0x40), 0, 0x40);
-	}
+	tscClearText();
 
 	//Get event id
 	int event_no;
@@ -209,7 +205,7 @@ int jumpTscEvent(int no)
 			return 0;
 	}
 
-	while (tsc.data[tsc.p_read] != 10)
+	while (tsc.data[tsc.p_read] != '\n')
 		++tsc.p_read;
 	++tsc.p_read;
 	return 1;

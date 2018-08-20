@@ -67,7 +67,7 @@ void actWeapon()
 {
 	if (shootFunctions[weapons[selectedWeapon].code] != nullptr)
 		shootFunctions[weapons[selectedWeapon].code](weapons[selectedWeapon].level);
-	else if (debugFlags | notifyOnNotImplemented)
+	else if (debugFlags & notifyOnNotImplemented)
 	{
 		static bool wasNotifiedAbout[_countof(shootFunctions)] = { false };
 		if (wasNotifiedAbout[weapons[selectedWeapon].code])

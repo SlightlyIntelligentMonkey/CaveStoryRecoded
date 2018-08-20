@@ -36,11 +36,11 @@ auto seededRandomEngine() -> typename enable_if<!!N, T>::type
 		T seededEngine(seeds);
 		return seededEngine;
 	}
-	srand(uint32_t(std::chrono::high_resolution_clock::now().time_since_epoch().count()));
+	srand(static_cast<unsigned int>(std::chrono::high_resolution_clock::now().time_since_epoch().count()));
 	seed_seq seeds
 	{
-		int(std::chrono::high_resolution_clock::now().time_since_epoch().count()),
-		int(std::chrono::high_resolution_clock::now().time_since_epoch().count() >> 32),
+		static_cast<int>(std::chrono::high_resolution_clock::now().time_since_epoch().count()),
+		static_cast<int>(std::chrono::high_resolution_clock::now().time_since_epoch().count() >> 32),
 		rand(),
 		rand(),
 		rand(),
