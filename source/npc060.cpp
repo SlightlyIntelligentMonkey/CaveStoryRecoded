@@ -741,6 +741,64 @@ void npcAct066(npc *NPC) //Bubble (to catch Toroko in the shack)
 	NPC->rect = rect[NPC->ani_no];
 }
 
+void npcAct070(npc * NPC) // Sparkling Item
+{
+	constexpr RECT rcNPC[4] = { {96, 48, 112, 64}, {112, 48, 128, 64}, {128, 48, 144, 64}, {144, 48, 160, 64} };
+
+	if (++NPC->ani_wait > 3)
+	{
+		NPC->ani_wait = 0;
+		++NPC->ani_no;
+	}
+	if (NPC->ani_no > 3)
+		NPC->ani_no = 0;
+
+	NPC->rect = rcNPC[NPC->ani_no];
+}
+
+void npcAct071(npc * NPC)
+{
+	if (!NPC->act_no)
+	{
+		NPC->act_no = 1;
+		NPC->tgt_x = NPC->x;
+		NPC->tgt_y = NPC->y;
+		NPC->ym = 0x80;
+	}
+	else if (NPC->act_no == 1)
+	{
+		if (NPC->tgt_y < NPC->y)
+			NPC->ym -= 8;
+		if (NPC->tgt_y > NPC->y)
+			NPC->ym += 8;
+		if (NPC->ym > 0x100)
+			NPC->ym = 0x100;
+		if (NPC->ym < -0x100)
+			NPC->ym = 0x100;
+	}
+
+	NPC->x += NPC->xm;
+	NPC->y += NPC->ym;
+
+	constexpr RECT rcLeft[3] = { {64, 32, 80, 48}, {80, 32, 96, 48}, {92, 32, 112, 48} };
+	constexpr RECT rcRight[3] = { {64, 48, 80, 64}, {80, 48, 96, 64}, {96, 48, 112, 64} };
+
+	if (++NPC->ani_wait > 4)
+	{
+		NPC->ani_wait = 0;
+		++NPC->ani_no;
+	}
+	if (NPC->ani_no > 1)
+		NPC->ani_no = 0;
+	if (NPC->shock)
+		NPC->ani_no = 2;
+
+	if (NPC->direct == dirLeft)
+		NPC->rect = rcLeft[NPC->ani_no];
+	else
+		NPC->rect = rcRight[NPC->ani_no];
+}
+
 void npcAct073(npc *NPC) //Water drop
 {
 	NPC->ym += 0x20;
@@ -868,6 +926,30 @@ void npcAct074(npc *NPC) //Jack
 		NPC->rect = rcLeft[NPC->ani_no];
 }
 
+void npcAct075(npc * NPC)
+{
+	constexpr RECT rcNPC[2] = { {272, 32, 296, 56}, {296, 32, 320, 56} };
+
+	if (NPC->act_no)
+	{
+		if (NPC->act_no != 1)
+			goto doRects;
+	}
+	else
+	{
+		NPC->act_no = 1;
+		NPC->ani_no = 0;
+		NPC->ani_wait = 0;
+	}
+	NPC->ani_no = NPC->x - 0x6000 < currentPlayer.x
+		&& NPC->x + 0x6000 > currentPlayer.x
+		&& NPC->y - 0x6000 < currentPlayer.y
+		&& NPC->y + 0x2000 > currentPlayer.y;
+doRects:
+	NPC->rect = rcNPC[NPC->ani_no];
+	
+}
+
 void npcAct076(npc *NPC) //Flower
 {
 	NPC->rect.left = 16 * NPC->code_event; // Rects depend on the event number
@@ -930,3 +1012,4 @@ void npcAct079(npc *NPC) // Mahin
 	else
 		NPC->rect = rcRight[NPC->ani_no];
 }
+
