@@ -16,7 +16,7 @@ void npcAct042(npc *NPC) // Sue
 	rcLeft[4] = { 48, 0, 64, 16 };
 	rcLeft[5] = { 0, 0, 16, 16 };
 	rcLeft[6] = { 64, 0, 80, 16 };
-	rcLeft[7] = { 80, 32, 96 , 48 };
+	rcLeft[7] = { 80, 32, 96, 48 };
 	rcLeft[8] = { 96, 32, 112, 48 };
 	rcLeft[9] = { 128, 32, 144, 48 };
 	rcLeft[10] = { 0, 0, 16, 16 };
@@ -38,8 +38,8 @@ void npcAct042(npc *NPC) // Sue
 	rcRight[12] = { 160, 48, 176, 64 };
 
 
-	
-	
+
+
 	enum // Sue's states
 	{
 		standAndBlink = 0,
@@ -63,7 +63,7 @@ void npcAct042(npc *NPC) // Sue
 		NPC->ani_no = 0;
 		NPC->ani_wait = 0;
 		NPC->xm = 0;
-		// Fallthrough
+	// Fallthrough
 	case 1:
 		if (random(0, 120) == 10)
 		{
@@ -85,7 +85,7 @@ void npcAct042(npc *NPC) // Sue
 		NPC->act_no = 4;
 		NPC->ani_no = 2;
 		NPC->ani_wait = 0;
-		// Fallthrough
+	// Fallthrough
 	case 4:
 		if (++NPC->ani_wait > 4)
 		{
@@ -110,7 +110,7 @@ void npcAct042(npc *NPC) // Sue
 		NPC->act_wait = 0;
 		NPC->act_no = 7;
 		NPC->ani_no = 7;
-		// Fallthrough
+	// Fallthrough
 	case 7:
 		if (++NPC->act_wait > 10)
 			NPC->act_no = standAndBlink;
@@ -126,7 +126,7 @@ void npcAct042(npc *NPC) // Sue
 			NPC->xm = -0x400;
 		else
 			NPC->xm = 0x400;
-		// Fallthrough
+	// Fallthrough
 	case 9:
 		if (++NPC->act_wait > 3 && NPC->flag & ground)
 		{
@@ -149,7 +149,7 @@ void npcAct042(npc *NPC) // Sue
 		NPC->ani_no = 9;
 		NPC->ani_wait = 0;
 		NPC->xm = 0;
-		// Fallthrough
+	// Fallthrough
 	case 12:
 		if (++NPC->ani_wait > 8)
 		{
@@ -174,7 +174,7 @@ void npcAct042(npc *NPC) // Sue
 			break;
 		}
 		NPC->pNpc = &npcs[i];
-		// Fallthrough
+	// Fallthrough
 	case 14:
 		if (NPC->pNpc->direct != dirLeft)
 			NPC->direct = dirLeft;
@@ -196,7 +196,7 @@ void npcAct042(npc *NPC) // Sue
 		createNpc(NPC_RedCrystal, NPC->x + 0x10000, NPC->y, 0, 0, dirRight, nullptr);
 		NPC->xm = 0;
 		NPC->ani_no = 0;
-		// Fallthrough
+	// Fallthrough
 	case 16:
 		superXPos = NPC->x - 0x3000;
 		superYPos = NPC->y - 0x1000;
@@ -213,7 +213,7 @@ void npcAct042(npc *NPC) // Sue
 		NPC->act_no = 21;
 		NPC->ani_no = 2;
 		NPC->ani_wait = 0;
-		// Fallthrough
+	// Fallthrough
 	case 21:
 		if (++NPC->ani_wait > 2)
 		{
@@ -238,7 +238,7 @@ void npcAct042(npc *NPC) // Sue
 		NPC->act_no = 31;
 		NPC->ani_no = 2;
 		NPC->ani_wait = 0;
-		// Fallthrough
+	// Fallthrough
 	case 31:
 		if (++NPC->ani_wait > 2)
 		{
@@ -261,7 +261,7 @@ void npcAct042(npc *NPC) // Sue
 	default:
 		break;
 	}
-	
+
 	if (NPC->act_no != carriedByIgor + 1)
 	{
 		NPC->ym += 0x40;
@@ -312,7 +312,7 @@ void npcAct052(npc *NPC) // Blue robots
 void npcAct058(npc *NPC) //Basu 1
 {
 	const int action = NPC->act_no;
-	
+
 	if (!action)
 	{
 		//Don't appear until Quote walks into spawn area
@@ -367,7 +367,7 @@ void npcAct058(npc *NPC) //Basu 1
 				NPC->direct = dirLeft;
 				NPC->xm -= 16;
 			}
-			
+
 			//Bounce off of wall
 			if (NPC->flag & leftWall)
 				NPC->xm = 0x200;
@@ -438,7 +438,7 @@ void npcAct058(npc *NPC) //Basu 1
 				NPC->ani_wait = 0;
 				++NPC->ani_no;
 			}
-			
+
 			if (NPC->ani_no > 1)
 				NPC->ani_no = 0;
 
@@ -478,7 +478,7 @@ void npcAct059(npc *NPC) //Eye door
 	{
 	case 0:
 		NPC->act_no = 1;
-		// Fallthrough
+	// Fallthrough
 	case 2:
 		if (++NPC->ani_wait > 2)
 		{

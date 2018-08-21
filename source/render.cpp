@@ -33,9 +33,9 @@ int createWindow(int width, int height, int scale, bool fullscreen) // TBD : Han
 	//Set window
 	if (!window)
 		window = SDL_CreateWindow("Cave Story Engine",
-			SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
-			createWidth, createHeight,
-			0);
+		                          SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
+		                          createWidth, createHeight,
+		                          0);
 	else
 		SDL_SetWindowSize(window, createWidth, createHeight);
 
@@ -89,9 +89,13 @@ void switchScreenMode()
 }
 
 //Texture and drawing stuff
-void loadImage(const char *file, SDL_Texture **tex) {
+void loadImage(const char *file, SDL_Texture **tex)
+{
 	//Destroy previously existing texture and load new one
-	if (*tex != nullptr) { SDL_DestroyTexture(*tex); }
+	if (*tex != nullptr)
+	{
+		SDL_DestroyTexture(*tex);
+	}
 	*tex = IMG_LoadTexture(renderer, file);
 
 	//Error if anything failed
@@ -117,7 +121,8 @@ void setCliprect(const RECT *rect)
 	SDL_RenderSetClipRect(renderer, nullptr);
 }
 
-void drawTexture(SDL_Texture *texture, const RECT *rect, int x, int y) {
+void drawTexture(SDL_Texture *texture, const RECT *rect, int x, int y)
+{
 	//Set framerect
 	ImageRect = { rect->left, rect->top, rect->right - rect->left, rect->bottom - rect->top };
 
@@ -132,7 +137,8 @@ void drawTexture(SDL_Texture *texture, const RECT *rect, int x, int y) {
 		doError();
 }
 
-void drawTextureSize(SDL_Texture *texture, const RECT *rect, int x, int y, int w, int h) {
+void drawTextureSize(SDL_Texture *texture, const RECT *rect, int x, int y, int w, int h)
+{
 	//Set framerect
 	ImageRect = { rect->left, rect->top, rect->right - rect->left, rect->bottom - rect->top };
 
@@ -198,7 +204,7 @@ bool isMultibyte(uint8_t c) //Shift-JIS
 void drawString(int x, int y, const char *str, const uint8_t *flag)
 {
 	RECT rcChar;
-	
+
 	for (int i = 0; ; i++)
 	{
 		if (str[i]) //Go through string until reaching a terminator (0x00) character.

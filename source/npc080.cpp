@@ -36,7 +36,7 @@ void npcAct082(npc *NPC) //Misery standing
 	case 0: //Stand and blink
 		NPC->act_no = 1;
 		NPC->ani_no = 2;
-		// Fallthrough
+	// Fallthrough
 	case 1:
 		if (random(0, 120) == 10)
 		{
@@ -58,7 +58,7 @@ void npcAct082(npc *NPC) //Misery standing
 		NPC->act_no = 16;
 		NPC->act_wait = 0;
 		NPC->ani_no = 4;
-		// Fallthrough
+	// Fallthrough
 	case 16:
 		if (++NPC->act_wait == 30)
 		{
@@ -75,7 +75,7 @@ void npcAct082(npc *NPC) //Misery standing
 		NPC->ani_no = 0;
 		NPC->ym = 0;
 		NPC->bits |= npc_ignoresolid;
-		// Fallthrough
+	// Fallthrough
 	case 21:
 		NPC->ym -= 0x20;
 
@@ -88,7 +88,7 @@ void npcAct082(npc *NPC) //Misery standing
 		NPC->act_wait = 0;
 		NPC->ani_no = 5;
 		NPC->ani_wait = 0;
-		// Fallthrough
+	// Fallthrough
 	case 26:
 		if (++NPC->ani_no > 7)
 			NPC->ani_no = 5;
@@ -115,7 +115,7 @@ void npcAct082(npc *NPC) //Misery standing
 		NPC->act_no = 31;
 		NPC->ani_no = 3;
 		NPC->ani_wait = 0;
-		// Fallthrough
+	// Fallthrough
 	case 31:
 		if (++NPC->ani_wait > 10)
 		{
@@ -136,7 +136,7 @@ void npcAct082(npc *NPC) //Misery standing
 	case 40: //Cast bubbles
 		NPC->act_no = 41;
 		NPC->act_wait = 0;
-		// Fallthrough
+	// Fallthrough
 	case 41:
 		NPC->ani_no = 4;
 
@@ -163,7 +163,7 @@ void npcAct082(npc *NPC) //Misery standing
 	//Move
 	NPC->x += NPC->xm;
 	NPC->y += NPC->ym;
-	
+
 	if (NPC->act_no == 11) //"Sitting"??
 	{
 		if (NPC->ani_wait)
@@ -239,7 +239,7 @@ void npcAct083(npc *NPC) // Igor, standing
 		NPC->act_no = 1;
 		NPC->ani_no = 0;
 		NPC->ani_wait = 0;
-		// Fallthrough
+	// Fallthrough
 	case 1:
 		// Animate from animation no 0 to 1 with a 5 frame delay
 		if (++NPC->ani_wait > 5)
@@ -255,7 +255,7 @@ void npcAct083(npc *NPC) // Igor, standing
 		NPC->act_no = 3;
 		NPC->ani_no = 2;
 		NPC->ani_wait = 0;
-		// Fallthrough
+	// Fallthrough
 	case 3:
 		// Animate from animation no 2 to 5 with a 3 frame delay
 		if (++NPC->ani_wait > 3)
@@ -277,7 +277,7 @@ void npcAct083(npc *NPC) // Igor, standing
 		NPC->act_no = 5;
 		NPC->act_wait = 0;
 		NPC->ani_no = 6;
-		// Fallthrough
+	// Fallthrough
 	case 5:
 		if (++NPC->act_wait > 10)
 		{
@@ -295,7 +295,7 @@ void npcAct083(npc *NPC) // Igor, standing
 			NPC->ani_no = 0;
 		}
 		break;
-		
+
 	case 7:
 		NPC->act_no = 1;
 		break;
@@ -347,7 +347,7 @@ void npcAct084(npc *NPC) //Basu 1 projectile
 		NPC->ani_no = 0;
 
 	NPC->rect = rect[NPC->ani_no];
-	
+
 	if (++NPC->count1 > 300)
 	{
 		createCaret(NPC->x, NPC->y, effect_RisingDisc, 0);
@@ -360,7 +360,7 @@ void npcAct087(npc *NPC)
 	constexpr RECT rcEXP2[2] = { {32, 80, 48, 96}, { 48, 80, 64, 96 } };
 	constexpr RECT rcEXP6[2] = { {64, 80, 80, 96}, { 80, 80, 96, 96 } };
 	constexpr RECT rcCount1Above547 = { 16, 0, 32, 16 };
-	
+
 	if (NPC->direct == dirLeft)
 	{
 		if(++NPC->ani_wait > 2)
@@ -394,7 +394,7 @@ void npcAct087(npc *NPC)
 		NPC->x += NPC->xm;
 		NPC->y += NPC->ym;
 	}
-	
+
 	if (NPC->exp == 2)
 		NPC->rect = rcEXP2[NPC->ani_no];
 	else if (NPC->exp == 6)
@@ -415,7 +415,7 @@ void npcAct090(npc *NPC) // Background
 	NPC->rect = { 280, 80, 296, 104 };
 }
 
-void npcAct091(npc *NPC) // Cage 
+void npcAct091(npc *NPC) // Cage
 {
 	if (!NPC->act_no)
 	{
@@ -427,7 +427,7 @@ void npcAct091(npc *NPC) // Cage
 }
 
 void npcAct096(npc *NPC) //Fan left
-{	
+{
 	const int action = NPC->act_no;
 
 	switch (action)
@@ -470,7 +470,7 @@ void npcAct096(npc *NPC) //Fan left
 		NPC->ani_no = 0;
 		break;
 	}
-	
+
 	NPC->rect = { 272 + (NPC->ani_no << 4), 120, 288 + (NPC->ani_no << 4), 136 };
 }
 
