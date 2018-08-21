@@ -24,7 +24,7 @@ void npcAct129(npc *NPC) //Fireball Level 1/2 trail
 	rect[15] = { 0xB0, 0x50, 0xC0, 0x60 };
 	rect[16] = { 0xC0, 0x50, 0xD0, 0x60 };
 	rect[17] = { 0xD0, 0x50, 0xE0, 0x60 };
-	
+
 	if (++NPC->ani_wait > 1)
 	{
 		NPC->ani_wait = 0;
@@ -55,7 +55,7 @@ void npcAct139(npc *NPC) //Doctor with the crown
 	rcRight[0] = { 0, 160, 24, 192 };
 	rcRight[1] = { 24, 160, 48, 192 };
 	rcRight[2] = { 48, 160, 72, 192 };
-	
+
 	switch (NPC->act_no)
 	{
 	case 0: //Stand
@@ -63,7 +63,7 @@ void npcAct139(npc *NPC) //Doctor with the crown
 		NPC->xm = 0;
 		NPC->ym = 0;
 		NPC->y -= 0x1000;
-		// Fallthrough
+	// Fallthrough
 	case 1:
 		if (NPC->flag & ground)
 			NPC->ani_no = 0;
@@ -78,7 +78,7 @@ void npcAct139(npc *NPC) //Doctor with the crown
 		NPC->ani_no = 1;
 		NPC->ani_wait = 0;
 		NPC->count1 = 0;
-		// Fallthrough
+	// Fallthrough
 	case 11:
 		if (++NPC->ani_wait > 6)
 		{
@@ -105,7 +105,7 @@ void npcAct139(npc *NPC) //Doctor with the crown
 		NPC->act_wait = 0;
 		NPC->ani_no = 2;
 		NPC->tgt_y = NPC->y - 0x4000;
-		// Fallthrough
+	// Fallthrough
 	case 21:
 		if (NPC->y >= NPC->tgt_y)
 			NPC->ym -= 0x20;
@@ -125,7 +125,7 @@ void npcAct139(npc *NPC) //Doctor with the crown
 		NPC->ym = 0;
 		NPC->act_wait = 2 * (NPC->rect.bottom - NPC->rect.top);
 		playSound(SFX_Teleport);
-		// Fallthrough
+	// Fallthrough
 	case 31:
 		--NPC->act_wait;
 		NPC->ani_no = 0;
@@ -141,7 +141,7 @@ void npcAct139(npc *NPC) //Doctor with the crown
 		NPC->xm = 0;
 		NPC->ym = 0;
 		playSound(SFX_Teleport);
-		// Fallthrough
+	// Fallthrough
 	case 41:
 		NPC->ani_no = 2;
 

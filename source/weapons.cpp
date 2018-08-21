@@ -14,7 +14,8 @@ using std::string;
 using std::to_string;
 
 //Shoot functions
-weaponShoot shootFunctions[] = {
+weaponShoot shootFunctions[] =
+{
 	static_cast<weaponShoot>(nullptr),
 	static_cast<weaponShoot>(nullptr),
 	&shootPolarStar,
@@ -32,7 +33,8 @@ weaponShoot shootFunctions[] = {
 };
 
 //Weapon Levels
-WEAPONEXP weaponLevels[14] = {
+WEAPONEXP weaponLevels[14] =
+{
 	{{ 0,	0,	100 }},
 	{{ 30,	40,	16 }},
 	{{ 10,	20,	10 }},
@@ -96,7 +98,7 @@ int useWeaponAmmo(int num)
 bool weaponMaxExp()
 {
 	return weapons[selectedWeapon].level == 3
-		&& weapons[selectedWeapon].exp >= weaponLevels[weapons[selectedWeapon].code].exp[2];
+	       && weapons[selectedWeapon].exp >= weaponLevels[weapons[selectedWeapon].code].exp[2];
 }
 
 int weaponBullets(int arms_code)

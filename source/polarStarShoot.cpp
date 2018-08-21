@@ -4,7 +4,7 @@
 #include "sound.h"
 #include "player.h"
 #include "input.h"
-#include "caret.h"	
+#include "caret.h"
 
 void shootPolarStar(int level)
 {

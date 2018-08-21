@@ -19,8 +19,8 @@ void createValueView(int *px, int *py, int value)
 	if (valueviews.size())
 	{
 		for (size_t i = 0;
-			i < valueviews.size();
-			++i)
+		        i < valueviews.size();
+		        ++i)
 		{
 			if (!(!valueviews[i].flag || valueviews[i].px != px || ((valueviews[i].value >= 0 || value >= 0) && (valueviews[i].value <= 0 || value <= 0))))
 			{
@@ -49,7 +49,8 @@ void updateValueView()
 {
 	if (valueviews.size())
 	{
-		for (size_t i = 0; i < valueviews.size(); i++) {
+		for (size_t i = 0; i < valueviews.size(); i++)
+		{
 			if (valueviews[i].flag)
 				valueviews[i].update();
 		}
@@ -63,7 +64,8 @@ void drawValueView()
 {
 	if (valueviews.size())
 	{
-		for (size_t i = 0; i < valueviews.size(); i++) {
+		for (size_t i = 0; i < valueviews.size(); i++)
+		{
 			if (valueviews[i].flag)
 				valueviews[i].draw();
 		}
@@ -108,7 +110,7 @@ void valueview::draw()
 
 	rcPlus = { 32, 48 + hide, 40, 56 };
 	rcMinus = { 40, 48 + hide, 48, 56 };
-	
+
 	if (abs(value) < 1000)
 	{
 		if (abs(value) < 100)
@@ -123,7 +125,7 @@ void valueview::draw()
 	}
 	else
 		width = 40;
-	
+
 	//Draw + or -
 	int x = *px / 0x200 - width / 2 - viewport.x / 0x200;
 	const int y = *py / 0x200 + offset_y / 0x200 - 4 - viewport.y / 0x200;

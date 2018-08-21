@@ -42,7 +42,7 @@ void npcAct231(npc *NPC) //Momorin's rocket
 	case 10:
 		NPC->act_no = 11;
 		NPC->act_wait = 0;
-		// fallthrough
+	// fallthrough
 	case 11:
 		++NPC->act_wait;
 		NPC->ym += 8;
@@ -57,7 +57,7 @@ void npcAct231(npc *NPC) //Momorin's rocket
 
 	case 12:
 		NPC->bits &= ~npc_interact;
-		
+
 		NPC->act_no = 13;
 		NPC->act_wait = 0;
 		NPC->ani_no = 1;
@@ -67,7 +67,7 @@ void npcAct231(npc *NPC) //Momorin's rocket
 			createNpc(NPC_Smoke, NPC->x + (random(-16, 16) << 9), NPC->y + (random(-8, 8) << 9), 0, 0, 0, nullptr);
 			playSound(SFX_DestroyBreakableBlock);
 		}
-		// fallthrough
+	// fallthrough
 	case 13:
 		NPC->ym -= 8;
 
@@ -114,7 +114,7 @@ void npcAct231(npc *NPC) //Momorin's rocket
 		if (NPC->flag & ground)
 		{
 			NPC->bits |= npc_interact;
-			
+
 			NPC->act_no = 1;
 			NPC->ani_no = 0;
 		}

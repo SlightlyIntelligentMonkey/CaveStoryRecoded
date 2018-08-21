@@ -88,55 +88,64 @@ void handleView()
 
 void debugLevels()
 {
-	if (isKeyPressed(SDL_SCANCODE_1)) {
+	if (isKeyPressed(SDL_SCANCODE_1))
+	{
 		loadLevel(13);
 		currentPlayer.setPos(10 << 13, 8 << 13);
 
 		//sound::playOrg(8);
 	}
-	else if (isKeyPressed(SDL_SCANCODE_2)) {
+	else if (isKeyPressed(SDL_SCANCODE_2))
+	{
 		loadLevel(12);
 		currentPlayer.setPos(37 << 13, 11 << 13);
 
 		//sound::playOrg(8);
 	}
-	else if (isKeyPressed(SDL_SCANCODE_3)) {
+	else if (isKeyPressed(SDL_SCANCODE_3))
+	{
 		loadLevel(2);
 		currentPlayer.setPos(5 << 13, 6 << 13);
 
 		//sound::playOrg(1);
 	}
-	else if (isKeyPressed(SDL_SCANCODE_4)) {
+	else if (isKeyPressed(SDL_SCANCODE_4))
+	{
 		loadLevel(11);
 		currentPlayer.setPos(13 << 13, 34 << 13);
 
 		//sound::playOrg(9);
 	}
-	else if (isKeyPressed(SDL_SCANCODE_5)) {
+	else if (isKeyPressed(SDL_SCANCODE_5))
+	{
 		loadLevel(49);
 		currentPlayer.setPos(7 << 13, 6 << 13);
 
 		//sound::playOrg(27);
 	}
-	else if (isKeyPressed(SDL_SCANCODE_6)) {
+	else if (isKeyPressed(SDL_SCANCODE_6))
+	{
 		loadLevel(67);
 		currentPlayer.setPos(7 << 13, 52 << 13);
 
 		//sound::playOrg(29);
 	}
-	else if (isKeyPressed(SDL_SCANCODE_7)) {
+	else if (isKeyPressed(SDL_SCANCODE_7))
+	{
 		loadLevel(48);
 		currentPlayer.setPos(155 << 13, 1 << 13);
 
 		//sound::playOrg(38);
 	}
-	else if (isKeyPressed(SDL_SCANCODE_8)) {
+	else if (isKeyPressed(SDL_SCANCODE_8))
+	{
 		loadLevel(53);
 		currentPlayer.setPos(4 << 13, 165 << 13);
 
 		//sound::playOrg(38);
 	}
-	else if (isKeyPressed(SDL_SCANCODE_9)) {
+	else if (isKeyPressed(SDL_SCANCODE_9))
+	{
 		loadLevel(6);
 		currentPlayer.setPos(4 << 13, 18 << 13);
 
@@ -173,15 +182,24 @@ int escapeMenu()
 
 		//Handle events
 		getKeys(&events);
-		if (events.type == SDL_QUIT || exitGame) 
+		if (events.type == SDL_QUIT || exitGame)
 			return 0;
 
-		if (isKeyPressed(SDL_SCANCODE_ESCAPE)) { return 0; }
-		if (isKeyPressed(SDL_SCANCODE_F1)) { return 1; }
-		if (isKeyPressed(SDL_SCANCODE_F2)) { return 2; }
+		if (isKeyPressed(SDL_SCANCODE_ESCAPE))
+		{
+			return 0;
+		}
+		if (isKeyPressed(SDL_SCANCODE_F1))
+		{
+			return 1;
+		}
+		if (isKeyPressed(SDL_SCANCODE_F2))
+		{
+			return 2;
+		}
 
 		if ((isKeyDown(SDL_SCANCODE_LALT) && isKeyPressed(SDL_SCANCODE_RETURN)) ||
-			(isKeyPressed(SDL_SCANCODE_LALT) && isKeyDown(SDL_SCANCODE_RETURN)))
+		        (isKeyPressed(SDL_SCANCODE_LALT) && isKeyDown(SDL_SCANCODE_RETURN)))
 		{
 			switchScreenMode();
 		}
@@ -190,8 +208,8 @@ int escapeMenu()
 		SDL_RenderClear(renderer);
 
 		drawTexture(sprites[0x1A], &rcEscape,
-			(screenWidth >> 1) - 104,
-			(screenHeight >> 1) - 8);
+		            (screenWidth >> 1) - 104,
+		            (screenHeight >> 1) - 8);
 
 		SDL_RenderPresent(renderer);
 	}
@@ -358,14 +376,15 @@ int stageSelect(int *runEvent)
 int gameUpdatePlay()
 {
 	int tscResult = 0;
-	
+
 	while (true)
 	{
 		//Framerate limiter
 		const uint32_t timeNow = SDL_GetTicks();
 		const uint32_t timeNext = framerateTicks + framerate;
 
-		if (timeNow >= timeNext) {
+		if (timeNow >= timeNext)
+		{
 			framerateTicks = SDL_GetTicks();
 		}
 		else
@@ -492,7 +511,8 @@ int gameUpdateMenu()
 		const Uint32 timeNow = SDL_GetTicks();
 		const Uint32 timeNext = framerateTicks + framerate;
 
-		if (timeNow >= timeNext) {
+		if (timeNow >= timeNext)
+		{
 			framerateTicks = SDL_GetTicks();
 		}
 		else
@@ -595,7 +615,8 @@ int gameUpdateIntro()
 		const Uint32 timeNow = SDL_GetTicks();
 		const Uint32 timeNext = framerateTicks + framerate;
 
-		if (timeNow >= timeNext) {
+		if (timeNow >= timeNext)
+		{
 			framerateTicks = SDL_GetTicks();
 		}
 		else
@@ -624,7 +645,10 @@ int gameUpdateIntro()
 		if ((isKeyDown(SDL_SCANCODE_LALT) && isKeyPressed(SDL_SCANCODE_RETURN)) || (isKeyPressed(SDL_SCANCODE_LALT) && isKeyDown(SDL_SCANCODE_RETURN)))
 			switchScreenMode();
 
-		if (isKeyPressed(keyJump) || isKeyDown(keyShoot)) { break; }
+		if (isKeyPressed(keyJump) || isKeyDown(keyShoot))
+		{
+			break;
+		}
 
 		updateNPC();
 		updateCarets();
@@ -667,8 +691,10 @@ int gameUpdateIntro()
 	return MENU;
 }
 
-int mainGameLoop() {
-	while (gameMode != 0) {
+int mainGameLoop()
+{
+	while (gameMode != 0)
+	{
 		//////UPDATE//////
 		switch (gameMode)
 		{

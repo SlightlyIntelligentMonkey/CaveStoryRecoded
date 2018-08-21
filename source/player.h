@@ -2,7 +2,8 @@
 #include "common.h"
 #include "playerCollision.h"
 
-class player {
+class player
+{
 	public:
 		//State things
 		uint8_t cond;

@@ -20,49 +20,49 @@ struct BULLETSTATS
 
 class bullet
 {
-public:
-	int flag;
-	int code_bullet;
-	int bbits;
-	int cond;
+	public:
+		int flag;
+		int code_bullet;
+		int bbits;
+		int cond;
 
-	int x;
-	int y;
+		int x;
+		int y;
 
-	int xm;
-	int ym;
+		int xm;
+		int ym;
 
-	int tgt_x;
-	int tgt_y;
+		int tgt_x;
+		int tgt_y;
 
-	int act_no;
-	int act_wait;
+		int act_no;
+		int act_wait;
 
-	int ani_wait;
-	int ani_no;
-	uint8_t direct;
+		int ani_wait;
+		int ani_no;
+		uint8_t direct;
 
-	RECT rect;
+		RECT rect;
 
-	int count1;
-	int count2;
+		int count1;
+		int count2;
 
-	int life_count;
-	int damage;
-	int life;
+		int life_count;
+		int damage;
+		int life;
 
-	int enemyXL;
-	int enemyYL;
-	int blockXL;
-	int blockYL;
+		int enemyXL;
+		int enemyYL;
+		int blockXL;
+		int blockYL;
 
-	RECT view;
+		RECT view;
 
-public:
-	void init(int setCode, int setX, int setY, uint8_t setDir);
+	public:
+		void init(int setCode, int setX, int setY, uint8_t setDir);
 
-	void update();
-	void draw();
+		void update();
+		void draw();
 };
 
 void createBullet(int setCode, int setX, int setY, int setDir);

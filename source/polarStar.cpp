@@ -14,7 +14,7 @@ void actBulletPolarStar1(bullet *bul)
 		else
 		{
 			bul->act_no = 1;
-			
+
 			switch (bul->direct)
 			{
 			case dirLeft:

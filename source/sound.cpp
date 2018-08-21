@@ -23,7 +23,7 @@ SDL_AudioSpec want;
 void mixAudioSFX(int *dst, Uint32 len, SOUND_EFFECT *sound, Uint8 lVolume, Uint8 rVolume) // TBD : Handle lVolume and rVolume parameters
 {
 	unsigned int currentPos = 0;
-	//using 32 float point on native system 
+	//using 32 float point on native system
 	while (sound->pos + currentPos < sound->length && (currentPos << 2) < len)
 	{
 		dst[currentPos] += sound->buf[sound->pos + currentPos];
@@ -55,13 +55,16 @@ void ini_audio()
 	want.userdata = nullptr;
 
 	soundDev = SDL_OpenAudioDevice(
-		nullptr,
-		0,
-		&want,
-		&soundSpec,
-		0);
+	               nullptr,
+	               0,
+	               &want,
+	               &soundSpec,
+	               0);
 
-	if (soundDev == 0) { doError(); }
+	if (soundDev == 0)
+	{
+		doError();
+	}
 	memset(sounds, 0, sizeof(sounds));
 }
 
@@ -72,7 +75,7 @@ void loadSound(const char *path, SDL_AudioSpec *spec, int **buf, Uint32 *length)
 	uint8_t *pBuf = nullptr;
 
 	SDL_LoadWAV(path, spec, &pBuf, length);
-	
+
 	if (pBuf == nullptr)
 		doError();
 
@@ -157,7 +160,13 @@ void freeSounds()
 
 void playSound(int sound_no)
 {
-	if (sound_no > static_cast<int>(_countof(sounds)) - 1) { return; }
-	if (sounds[sound_no].buf == nullptr) { return; }
+	if (sound_no > static_cast<int>(_countof(sounds)) - 1)
+	{
+		return;
+	}
+	if (sounds[sound_no].buf == nullptr)
+	{
+		return;
+	}
 	sounds[sound_no].pos = 0;
 }

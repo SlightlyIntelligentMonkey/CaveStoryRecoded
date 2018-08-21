@@ -1,7 +1,8 @@
 #pragma once
 #include "common.h"
 
-struct TSC {
+struct TSC
+{
 	char path[260];
 	int size;
 	uint8_t *data;

@@ -66,7 +66,7 @@ int loadFile(const char *name, uint8_t **data)
 
 	//Load data
 	*data = static_cast<uint8_t *>(malloc(filesize));
-	if (fread(*data, 1, filesize, file) == 0) 
+	if (fread(*data, 1, filesize, file) == 0)
 	{
 		fclose(file);
 		return -1;
@@ -74,7 +74,7 @@ int loadFile(const char *name, uint8_t **data)
 
 	//Close file
 	fclose(file);
-	
+
 	return filesize;
 }
 
@@ -84,7 +84,7 @@ int writeFile(const char *name, void *data, size_t amount)
 	if ((file = fopen(name, "wb")) == nullptr)
 		return -1;
 
-	if (fwrite(data, 1, amount, file) == 0) 
+	if (fwrite(data, 1, amount, file) == 0)
 	{
 		fclose(file);
 		return -1;
@@ -173,7 +173,8 @@ void loadProfile()
 	}
 }
 
-void saveProfile() {
+void saveProfile()
+{
 	uint8_t profile[0x604] = { 0 };
 
 	if (profile == nullptr)
@@ -191,7 +192,7 @@ void saveProfile() {
 	writeLEshort(profile, currentPlayer.max_life, 0x1C); //Player max health
 	writeLEshort(profile, currentPlayer.star, 0x1E); //Whimsical star
 	writeLEshort(profile, currentPlayer.life, 0x20); //Player health
-	
+
 	writeLElong(profile, selectedWeapon, 0x24); //Selected weapon
 
 	writeLElong(profile, currentPlayer.equip, 0x2C); //Equipped items

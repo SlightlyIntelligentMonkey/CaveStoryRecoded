@@ -78,7 +78,7 @@ void npcAct302(npc *NPC) //Camera Helper NPC
 		NPC->y = (currentPlayer.y + NPC->pNpc->y) / 2;
 		return;
 	}
-	
+
 	if (NPC->direct == dirUp)
 		NPC->y -= 0x400;
 	else if (NPC->direct > dirUp)
@@ -90,7 +90,7 @@ void npcAct302(npc *NPC) //Camera Helper NPC
 	}
 	else if (NPC->direct == dirLeft)
 		NPC->x -= 1024;
-	
+
 	currentPlayer.x = NPC->x;
 	currentPlayer.y = NPC->y;
 }

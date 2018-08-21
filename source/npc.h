@@ -31,7 +31,7 @@ extern NPC_TABLE *npcTable;
 
 class npc
 {
-	//Variables
+		//Variables
 	public:
 		//state things
 		uint8_t cond;
@@ -94,7 +94,7 @@ class npc
 
 	private:
 
-	//Functions
+		//Functions
 	public:
 		void init(int setCode, int setX, int setY, int setXm, int setYm, int setDir, npc *parentNpc);
 

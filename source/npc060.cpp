@@ -15,7 +15,7 @@ void npcAct060(npc *NPC) //Toroko
 		NPC->ani_no = 0;
 		NPC->ani_wait = 0;
 		NPC->xm = 0;
-		// Fallthrough
+	// Fallthrough
 	case 1:
 		//Blink randomly
 		if (random(0, 120) == 10)
@@ -49,7 +49,7 @@ void npcAct060(npc *NPC) //Toroko
 		NPC->act_no = 4;
 		NPC->ani_no = 1;
 		NPC->ani_wait = 0;
-		// Fallthrough
+	// Fallthrough
 	case 4:
 		//Animate
 		if (++NPC->ani_wait > 2)
@@ -87,7 +87,7 @@ void npcAct060(npc *NPC) //Toroko
 		NPC->ani_no = 1;
 		NPC->ani_wait = 0;
 		NPC->ym = -0x400;
-		// Fallthrough
+	// Fallthrough
 	case 7: //In air
 		//Animate
 		if (++NPC->ani_wait > 2)
@@ -115,7 +115,7 @@ void npcAct060(npc *NPC) //Toroko
 		NPC->act_wait = 0;
 		NPC->act_no = 9;
 		NPC->ym = -0x200;
-		// Fallthrough
+	// Fallthrough
 	case 9:
 		if (++NPC->act_wait > 1 && NPC->flag & ground)
 			NPC->act_no = 0;
@@ -213,7 +213,7 @@ void npcAct061(npc *NPC) //King
 		NPC->ani_no = 0;
 		NPC->ani_wait = 0;
 		NPC->xm = 0;
-		// Fallthrough
+	// Fallthrough
 	case 1:
 		if (random(0, 120) == 10)
 		{
@@ -241,7 +241,7 @@ void npcAct061(npc *NPC) //King
 		NPC->act_wait = 0;
 		NPC->ani_wait = 0;
 		NPC->ym = -0x400;
-		// Fallthrough
+	// Fallthrough
 	case 7:
 		NPC->ani_no = 2;
 
@@ -259,7 +259,7 @@ void npcAct061(npc *NPC) //King
 		NPC->act_no = 9;
 		NPC->ani_no = 4;
 		NPC->ani_wait = 0;
-		// Fallthrough
+	// Fallthrough
 	case 9:
 		//Animate
 		if (++NPC->ani_wait > 4)
@@ -283,7 +283,7 @@ void npcAct061(npc *NPC) //King
 		NPC->act_no = 11;
 		NPC->ani_no = 4;
 		NPC->ani_wait = 0;
-		// Fallthrough
+	// Fallthrough
 	case 11:
 		//Animate
 		if (++NPC->ani_wait > 2)
@@ -314,7 +314,7 @@ void npcAct061(npc *NPC) //King
 		NPC->act_wait = 0;
 		NPC->ani_wait = 0;
 		NPC->ym = 0;
-		// Fallthrough
+	// Fallthrough
 	case 31:
 		NPC->ani_no = 2;
 
@@ -346,7 +346,7 @@ void npcAct061(npc *NPC) //King
 		NPC->act_wait = 0;
 		NPC->ani_no = 8;
 		playSound(SFX_Teleport);
-		// Fallthrough
+	// Fallthrough
 	case 42:
 		//Flash away
 		if (++NPC->ani_no > 9)
@@ -436,7 +436,7 @@ void npcAct062(npc *NPC) // Kazuma, facing away
 		NPC->act_no = typing;
 		NPC->ani_no = 0;
 		NPC->ani_wait = 0;
-		// Fallthrough
+	// Fallthrough
 	case typing:
 		if (++NPC->ani_wait > 2)
 		{
@@ -509,7 +509,7 @@ void npcAct063(npc * NPC) // Toroko, panicking
 		NPC->act_wait = 0;
 		NPC->ani_wait = 0;
 		NPC->ym = -0x400;
-		// Fallthrough
+	// Fallthrough
 	case 1:
 		if (NPC->ym > 0)
 			NPC->flag &= ~npc_ignoresolid;
@@ -536,7 +536,7 @@ void npcAct063(npc * NPC) // Toroko, panicking
 		NPC->act_wait = 0;
 		NPC->ani_no = 0;
 		NPC->ani_wait = 0;
-		// Fallthrough
+	// Fallthrough
 	case 3:
 		if (++NPC->ani_wait > 2)
 		{
@@ -587,26 +587,26 @@ void npcAct063(npc * NPC) // Toroko, panicking
 		}
 		break;
 
-    case 5:
-        NPC->xm = 0;
-        NPC->ani_no = 5;
-        break;
-    default:
-        break;
+	case 5:
+		NPC->xm = 0;
+		NPC->ani_no = 5;
+		break;
+	default:
+		break;
 	}
 
 	NPC->ym += 0x40;
-    if (NPC->xm > 0x400)
-        NPC->xm = 0x400;
-    if (NPC->xm < -0x400)
-        NPC->xm = -0x400;
-    if (NPC->ym > 0x5FF)
-        NPC->ym = 0x5FF;
+	if (NPC->xm > 0x400)
+		NPC->xm = 0x400;
+	if (NPC->xm < -0x400)
+		NPC->xm = -0x400;
+	if (NPC->ym > 0x5FF)
+		NPC->ym = 0x5FF;
 
-    if (NPC->direct == dirLeft)
-        NPC->rect = rcLeft[NPC->ani_no];
-    else
-        NPC->rect = rcRight[NPC->ani_no];
+	if (NPC->direct == dirLeft)
+		NPC->rect = rcLeft[NPC->ani_no];
+	else
+		NPC->rect = rcRight[NPC->ani_no];
 }
 
 void npcAct064(npc *NPC) //First Cave critter
@@ -689,11 +689,11 @@ void npcAct064(npc *NPC) //First Cave critter
 
 		//Go into "going to jump" state
 		if (NPC->act_wait >= 8
-			&& NPC->tgt_x >= 100
-			&& NPC->x - 0x8000 < currentPlayer.x
-			&& NPC->x + 0x8000 > currentPlayer.x
-			&& NPC->y - 0xA000 < currentPlayer.y
-			&& NPC->y + 0x6000 > currentPlayer.y)
+		        && NPC->tgt_x >= 100
+		        && NPC->x - 0x8000 < currentPlayer.x
+		        && NPC->x + 0x8000 > currentPlayer.x
+		        && NPC->y - 0xA000 < currentPlayer.y
+		        && NPC->y + 0x6000 > currentPlayer.y)
 		{
 			NPC->act_no = 2;
 			NPC->act_wait = 0;
@@ -729,7 +729,7 @@ void npcAct065(npc *NPC) //First Cave Bat
 		NPC->tgt_y = NPC->y;
 		NPC->act_no = 1;
 		NPC->act_wait = random(0, 50);
-		// Fallthrough
+	// Fallthrough
 	case 2:
 		//Face towards player
 		if (currentPlayer.x >= NPC->x)
@@ -807,7 +807,7 @@ void npcAct066(npc *NPC) //Bubble (to catch Toroko in the shack)
 				break;
 			}
 		}
-		// Fallthrough
+	// Fallthrough
 	case 1:
 		//Animate
 		if (++NPC->ani_wait > 1)
@@ -821,9 +821,9 @@ void npcAct066(npc *NPC) //Bubble (to catch Toroko in the shack)
 
 		//Check if hit Toroko
 		if (NPC->x - 0x600 < NPC->tgt_x
-			&& NPC->x + 0x600 > NPC->tgt_x
-			&& NPC->y - 0x600 < NPC->tgt_y
-			&& NPC->y + 0x600 > NPC->tgt_y)
+		        && NPC->x + 0x600 > NPC->tgt_x
+		        && NPC->y - 0x600 < NPC->tgt_y
+		        && NPC->y + 0x600 > NPC->tgt_y)
 		{
 			NPC->act_no = 2;
 			NPC->ani_no = 2;
@@ -941,9 +941,9 @@ void npcAct072(npc * NPC) // Sprinkler
 		}
 
 		if (currentPlayer.x < NPC->x + 0x28000
-			&& currentPlayer.x > NPC->x - 0x28000
-			&& currentPlayer.y < NPC->y + 0x1E000
-			&& currentPlayer.y > NPC->y - 0x1E000)
+		        && currentPlayer.x > NPC->x - 0x28000
+		        && currentPlayer.y < NPC->y + 0x1E000
+		        && currentPlayer.y > NPC->y - 0x1E000)
 		{
 			if (++NPC->act_no % 2)
 				createNpc(NPC_Waterdrop, NPC->x, NPC->y, 2 * random(-0x200, 0x200), 3 * random(-0x200, 0x80), dirLeft, nullptr);
@@ -1012,7 +1012,7 @@ void npcAct074(npc *NPC) //Jack
 		NPC->ani_no = 0;
 		NPC->ani_wait = 0;
 		NPC->xm = 0;
-		// Fallthrough
+	// Fallthrough
 	case 1:
 		//Glasses flash randomly
 		if (random(0, 120) == 10)
@@ -1037,7 +1037,7 @@ void npcAct074(npc *NPC) //Jack
 		NPC->act_no = 9;
 		NPC->ani_no = 2;
 		NPC->ani_wait = 0;
-		// Fallthrough
+	// Fallthrough
 	case 9:
 		//Animate
 		if (++NPC->ani_wait > 4)
@@ -1098,9 +1098,9 @@ void npcAct075(npc * NPC)
 		NPC->ani_wait = 0;
 	}
 	NPC->ani_no = NPC->x - 0x6000 < currentPlayer.x
-		&& NPC->x + 0x6000 > currentPlayer.x
-		&& NPC->y - 0x6000 < currentPlayer.y
-		&& NPC->y + 0x2000 > currentPlayer.y;
+	              && NPC->x + 0x6000 > currentPlayer.x
+	              && NPC->y - 0x6000 < currentPlayer.y
+	              && NPC->y + 0x2000 > currentPlayer.y;
 doRects:
 	NPC->rect = rcNPC[NPC->ani_no];
 
@@ -1176,9 +1176,9 @@ void npcAct079(npc *NPC) // Mahin
 			NPC->ani_no = 1;
 		}
 		if (NPC->x - 0x4000 < currentPlayer.x
-			&& NPC->x + 0x4000 > currentPlayer.x
-			&& NPC->y - 0x4000 < currentPlayer.y
-			&& NPC->y + 0x2000 > currentPlayer.x)
+		        && NPC->x + 0x4000 > currentPlayer.x
+		        && NPC->y - 0x4000 < currentPlayer.y
+		        && NPC->y + 0x2000 > currentPlayer.x)
 		{
 			if (NPC->x <= currentPlayer.x)
 				NPC->direct = dirRight;

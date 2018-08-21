@@ -62,7 +62,7 @@ void npcAct001(npc *NPC) //Experience
 			NPC->ym += 0x15;
 		else
 			NPC->ym += 0x2A;
-		
+
 		//Bounce off of walls
 		if (NPC->flag & leftWall && NPC->xm < 0)
 			NPC->xm = -NPC->xm;
@@ -196,7 +196,7 @@ void npcAct002(npc *NPC) //Behemoth
 
 	RECT rcLeft[7];
 	RECT rcRight[7];
-	
+
 	//Framerect
 	rcLeft[0] = { 32, 0, 64, 24 };
 	rcLeft[1] = { 0, 0, 32, 24 };
@@ -223,7 +223,8 @@ void npcAct002(npc *NPC) //Behemoth
 		NPC->direct = dirLeft;
 	}
 
-	switch (act_no) {
+	switch (act_no)
+	{
 	case 0: //Normal act
 		if (NPC->direct != dirLeft)
 			NPC->xm = 0x100;
@@ -288,7 +289,8 @@ void npcAct002(npc *NPC) //Behemoth
 			++NPC->ani_no;
 		}
 
-		if (NPC->ani_no > 6) {
+		if (NPC->ani_no > 6)
+		{
 			NPC->ani_no = 5;
 		}
 	}
@@ -466,11 +468,11 @@ void npcAct005(npc *NPC) //Egg Corridor critter
 
 		//Go into "going to jump" state
 		if (NPC->act_wait >= 8
-			&& NPC->tgt_x >= 100
-			&& NPC->x - 0x8000 < currentPlayer.x
-			&& NPC->x + 0x8000 > currentPlayer.x
-			&& NPC->y - 0xA000 < currentPlayer.y
-			&& NPC->y + 0x6000 > currentPlayer.y)
+		        && NPC->tgt_x >= 100
+		        && NPC->x - 0x8000 < currentPlayer.x
+		        && NPC->x + 0x8000 > currentPlayer.x
+		        && NPC->y - 0xA000 < currentPlayer.y
+		        && NPC->y + 0x6000 > currentPlayer.y)
 		{
 			NPC->act_no = 2;
 			NPC->act_wait = 0;
@@ -499,7 +501,8 @@ void npcAct006(npc *NPC) //Beetle
 {
 	const int act_no = NPC->act_no;
 
-	switch (act_no) {
+	switch (act_no)
+	{
 	case 0: //Init
 		if (NPC->direct != dirLeft)
 			NPC->act_no = 3;
@@ -575,7 +578,7 @@ void npcAct006(npc *NPC) //Beetle
 			NPC->ani_wait = 0;
 			++NPC->ani_no;
 		}
-		
+
 		if (NPC->ani_no > 2)
 			NPC->ani_no = 1;
 
@@ -827,7 +830,7 @@ void npcAct009(npc *NPC) //Balrog drop in
 	case 0:
 		NPC->act_no = 1;
 		NPC->ani_no = 2;
-		// Fallthrough
+	// Fallthrough
 	case 1: //Falling
 		NPC->ym += 0x20;
 
@@ -903,7 +906,7 @@ void npcAct011(npc *NPC) //Bubble
 
 	NPC->x += NPC->xm;
 	NPC->y += NPC->ym;
-	
+
 	if (++NPC->ani_wait > 1)
 	{
 		NPC->ani_wait = 0;
@@ -911,7 +914,7 @@ void npcAct011(npc *NPC) //Bubble
 		if (++NPC->ani_no > 2)
 			NPC->ani_no = 0;
 	}
-	
+
 	NPC->rect = rect[NPC->ani_no];
 
 	if (++NPC->count1 > 150)
@@ -972,7 +975,7 @@ void npcAct012(npc *NPC) //Balrog cutscene
 
 		NPC->act_no = 1;
 		NPC->ani_no = 0;
-		// Fallthrough
+	// Fallthrough
 	case 1: //Stand
 		if (random(0, 100) == 0)
 		{
@@ -1003,7 +1006,7 @@ void npcAct012(npc *NPC) //Balrog cutscene
 		NPC->ani_no = 2;
 		NPC->act_wait = 0;
 		NPC->tgt_x = 0;
-		// Fallthrough
+	// Fallthrough
 	case 11: //About to jump
 		if (++NPC->act_wait > 30)
 		{
@@ -1045,7 +1048,7 @@ void npcAct012(npc *NPC) //Balrog cutscene
 			createNpc(NPC_Smoke, NPC->x + (random(-12, 12) << 9), NPC->y + (random(-12, 12) << 9), random(-0x155, 0x155), random(-0x600, 0), 0, nullptr);
 
 		playSound(SFX_Explosion);
-		// Fallthrough
+	// Fallthrough
 	case 21:
 		NPC->tgt_x = 1;
 
@@ -1056,7 +1059,7 @@ void npcAct012(npc *NPC) //Balrog cutscene
 			NPC->x += 512;
 		else
 			NPC->x -= 512;
-		
+
 		if (NPC->act_wait > 100)
 		{
 			NPC->act_no = 11;
@@ -1093,7 +1096,7 @@ void npcAct012(npc *NPC) //Balrog cutscene
 		NPC->act_no = 41;
 		NPC->act_wait = 0;
 		NPC->ani_no = 5;
-		// Fallthrough
+	// Fallthrough
 	case 41:
 		if (++NPC->ani_wait / 2 & 1)
 			NPC->ani_no = 5;
@@ -1110,11 +1113,11 @@ void npcAct012(npc *NPC) //Balrog cutscene
 			else
 				NPC->direct = dirLeft;
 		}
-		
+
 		NPC->act_no = 43;
 		NPC->act_wait = 0;
 		NPC->ani_no = 6;
-		// Fallthrough
+	// Fallthrough
 	case 43:
 		if (++NPC->ani_wait / 2 & 1)
 			NPC->ani_no = 7;
@@ -1132,7 +1135,7 @@ void npcAct012(npc *NPC) //Balrog cutscene
 		NPC->act_no = 61;
 		NPC->ani_no = 9;
 		NPC->ani_wait = 0;
-		// Fallthrough
+	// Fallthrough
 	case 0x3D:
 		if (++NPC->ani_wait > 3)
 		{
@@ -1156,7 +1159,7 @@ void npcAct012(npc *NPC) //Balrog cutscene
 		NPC->act_wait = 64;
 		playSound(SFX_Teleport);
 		NPC->ani_no = 13;
-		// Fallthrough
+	// Fallthrough
 	case 71:
 		if (!--NPC->act_wait)
 			NPC->cond = 0;
@@ -1165,13 +1168,13 @@ void npcAct012(npc *NPC) //Balrog cutscene
 	case 80: //"Panic"
 		NPC->count1 = 0;
 		NPC->act_no = 81;
-		// Fallthrough
+	// Fallthrough
 	case 81:
 		if (++NPC->count1 / 2 & 1)
 			NPC->x += 512;
 		else
 			NPC->x -= 512;
-		
+
 		NPC->ani_no = 5;
 		NPC->xm = 0;
 		NPC->ym += 32;
@@ -1181,7 +1184,7 @@ void npcAct012(npc *NPC) //Balrog cutscene
 		NPC->act_no = 101;
 		NPC->act_wait = 0;
 		NPC->ani_no = 2;
-		// Fallthrough
+	// Fallthrough
 	case 101: //Going to jump
 		if (++NPC->act_wait > 20)
 		{
@@ -1263,7 +1266,8 @@ void npcAct015(npc *NPC) //Closed chest
 {
 	const int act_no = NPC->act_no;
 
-	switch (act_no) {
+	switch (act_no)
+	{
 	case 0:
 		NPC->act_no = 1;
 
@@ -1332,7 +1336,7 @@ void npcAct016(npc *NPC) //Save point
 		NPC->bits |= npc_interact;
 
 		//Spawn with smoke and stuff
-		if (NPC->direct != dirLeft) 
+		if (NPC->direct != dirLeft)
 		{
 			NPC->ym = -0x200;
 			NPC->bits &= ~npc_interact;
@@ -1383,7 +1387,7 @@ void npcAct017(npc *NPC) //Health refill
 			for (int i = 0; i < 4; ++i)
 				createNpc(NPC_Smoke, NPC->x + (random(-12, 12) << 9), NPC->y + (random(-12, 12) << 9), random(-0x155, 0x155), random(-0x600, 0), 0, nullptr);
 		}
-		// Fallthrough
+	// Fallthrough
 	case 1:
 		rand = random(0, 30);
 

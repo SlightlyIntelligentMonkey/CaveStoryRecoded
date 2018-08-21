@@ -9,7 +9,7 @@ void actBulletFireball1(bullet *bul)
 	if (++bul->count1 <= bul->life_count)
 	{
 		bool bBreak = false;
-		
+
 		//Stop existing if possibly stuck in a wall
 		if (bul->flag & ceiling && bul->flag & ground)
 			bBreak = true;
@@ -58,7 +58,7 @@ void actBulletFireball1(bullet *bul)
 			else
 			{
 				bul->act_no = 1;
-				
+
 				//Shoot in direction player is facing
 				switch (bul->direct)
 				{

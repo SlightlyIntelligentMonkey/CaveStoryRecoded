@@ -48,7 +48,7 @@ void npcAct022(npc *NPC) //Teleporter
 	rect[1].top = 152;
 	rect[1].right = 272;
 	rect[1].bottom = 184;
-	
+
 	if (NPC->act_no)
 	{
 		if (NPC->act_no == 1 && ++NPC->ani_no > 1)
@@ -72,7 +72,7 @@ void npcAct023(npc *NPC) //Teleporter lights
 
 	if (NPC->ani_no > 7)
 		NPC->ani_no = 0;
-	
+
 	NPC->rect = { 264, 16 + (NPC->ani_no * 4), 288, 20 + (NPC->ani_no * 4) };
 }
 
@@ -84,7 +84,7 @@ void npcAct027(npc *NPC) // Death Spikes
 void npcAct030(npc *NPC) // Hermit Gunsmith
 {
 	constexpr RECT rcNPC[3] = { { 48, 0, 64, 16 },{ 48, 16, 64, 32 },{ 0, 32, 16, 48 } };
-	
+
 	if (NPC->direct == dirLeft)	// Wherever he's awoken depends on his direction, it would seem
 	{
 		if (NPC->act_no == 0)
