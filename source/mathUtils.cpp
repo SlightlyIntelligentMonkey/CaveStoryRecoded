@@ -75,18 +75,21 @@ uint8_t getAtan(int x, int y)
 }
 
 //these are good functions
-int random(int32_t mi, int32_t ma) {
+int random(int32_t mi, int32_t ma)
+{
 	return (mi + (distrInt(engine) % (ma - mi + 1)));
 }
 
-int sign(int x) {
+int sign(int x)
+{
 	if (x != 0)
 		return x / std::abs(x);
 
 	return 0;
 }
 
-int clamp(int x, int mi, int ma) {
+int clamp(int x, int mi, int ma)
+{
 	return std::max(std::min(ma, x), mi);
 }
 

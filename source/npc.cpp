@@ -126,7 +126,8 @@ void updateNPC()
 	if (npcs.size())
 	{
 		//Update
-		for (size_t i = 0; i < npcs.size(); i++) {
+		for (size_t i = 0; i < npcs.size(); i++)
+		{
 			if (npcs[i].cond & npccond_alive)
 			{
 				npcs[i].update();
@@ -143,7 +144,8 @@ void drawNPC()
 {
 	if (npcs.size())
 	{
-		for (size_t i = 0; i < npcs.size(); i++) {
+		for (size_t i = 0; i < npcs.size(); i++)
+		{
 			if (npcs[i].cond & npccond_alive)
 				npcs[i].draw();
 		}
@@ -306,7 +308,7 @@ void loadNpcTable()
 
 	if (npcTable == nullptr)
 		doCustomError("Could not allocate memory for NPC table");
-	
+
 	int i;
 
 	for (i = 0; i < npcCount; ++i) //bits
@@ -347,7 +349,7 @@ void npc::init(int setCode, int setX, int setY, int setXm, int setYm, int setDir
 	pNpc = parentNpc;
 	bits = npcTable[code_char].bits;
 	exp = npcTable[code_char].exp;
-	
+
 	surf = npcTable[code_char].surf;
 	hit_voice = npcTable[code_char].hit_voice;
 	destroy_voice = npcTable[code_char].destroy_voice;

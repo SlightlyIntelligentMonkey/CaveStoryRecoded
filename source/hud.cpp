@@ -85,7 +85,7 @@ void drawWeaponStats()
 		rcExpVal = { 0, 80, 0, 88 };
 		rcExpMax = { 40, 72, 80, 80 };
 		rcExpFlash = { 40, 80, 80, 88 };
-		
+
 		//Set up some variables
 		const int lv = weapons[selectedWeapon].level - 1;
 		const int arms_code = weapons[selectedWeapon].code;

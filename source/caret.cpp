@@ -14,7 +14,8 @@ using std::memset;
 
 vector<caret> carets(0);
 
-CARETSTAT caretStats[] = {
+CARETSTAT caretStats[] =
+{
 	{ 0x0,		0x0 },
 	{ 0x800,	0x800 },
 	{ 0x1000,	0x1000 },
@@ -44,7 +45,8 @@ void updateCarets()
 			carets[i].update();
 
 		//Remove dead carets
-		for (size_t i = 0; i < carets.size(); i++) {
+		for (size_t i = 0; i < carets.size(); i++)
+		{
 			if (!(carets[i].cond & 0x80))
 			{
 				carets.erase(carets.begin() + i);
@@ -73,18 +75,18 @@ void caretAct001(caret *CARET) //Pulsing Disc Particles
 {
 	RECT rcRight[4];
 	RECT rcLeft[4];
-	
+
 	//A bunch of framerects
 	rcLeft[0] = { 0, 64, 8, 72 };
 	rcLeft[1] = { 8, 64, 16, 72 };
 	rcLeft[2] = { 16, 64, 24, 72 };
 	rcLeft[3] = { 24, 64, 32, 72 };
-	
+
 	rcRight[0] = { 64, 24, 72, 32 };
 	rcRight[1] = { 72, 24, 80, 32 };
 	rcRight[2] = { 80, 24, 88, 32 };
 	rcRight[3] = { 88, 24, 96, 32 };
-	
+
 	//Movement
 	if (!CARET->act_no)
 	{
@@ -93,9 +95,9 @@ void caretAct001(caret *CARET) //Pulsing Disc Particles
 		CARET->xm = random(-0x400, 0x400);
 		CARET->ym = random(-0x400, 0);
 	}
-	
+
 	CARET->ym += 0x40;
-	
+
 	CARET->x += CARET->xm;
 	CARET->y += CARET->ym;
 
@@ -103,7 +105,10 @@ void caretAct001(caret *CARET) //Pulsing Disc Particles
 	if (++CARET->ani_wait > 5)
 	{
 		CARET->ani_wait = 0;
-		if (++CARET->ani_no > 3) { CARET->cond = 0; }
+		if (++CARET->ani_no > 3)
+		{
+			CARET->cond = 0;
+		}
 	}
 
 	//Set framerect
@@ -193,10 +198,10 @@ void caretAct003(caret *CARET) //Star
 	{
 		CARET->ani_wait = 0;
 
-		if (CARET->ani_no++ > 3) 
+		if (CARET->ani_no++ > 3)
 			CARET->cond = 0;
 	}
-	
+
 	CARET->rect = rect[CARET->ani_no];
 }
 
@@ -221,7 +226,10 @@ void caretAct004(caret *CARET) //Fireball impact?
 	if (++CARET->ani_wait > 1)
 	{
 		CARET->ani_wait = 0;
-		if (++CARET->ani_no > 2) { CARET->cond = 0; }
+		if (++CARET->ani_no > 2)
+		{
+			CARET->cond = 0;
+		}
 	}
 
 	//framerect
@@ -332,7 +340,7 @@ void caretAct010(caret *CARET) //Level up and level down
 
 	if (CARET->direct != dirLeft)
 	{
-		if (CARET->ani_wait < 20) 
+		if (CARET->ani_wait < 20)
 			CARET->y -= 0x200;
 
 		if (CARET->ani_wait >= 80)
@@ -340,7 +348,7 @@ void caretAct010(caret *CARET) //Level up and level down
 	}
 	else
 	{
-		if (CARET->ani_wait < 20) 
+		if (CARET->ani_wait < 20)
 			CARET->y -= 0x400;
 
 		if (CARET->ani_wait >= 80)
@@ -379,7 +387,7 @@ void caretAct011(caret *CARET) //Damage effect
 		CARET->xm = 2 * getCos(deg);
 		CARET->ym = 2 * getSin(deg);
 	}
-	
+
 	CARET->x += CARET->xm;
 	CARET->y += CARET->ym;
 
@@ -401,7 +409,7 @@ void caretAct012(caret *CARET) //White "explosion" disc
 
 	rcLeft[0] = { 112, 0, 144, 32 };
 	rcLeft[1] = { 144, 0, 176, 32 };
-	
+
 	if (++CARET->ani_wait > 2)
 	{
 		CARET->ani_wait = 0;
@@ -419,11 +427,11 @@ void caretAct013(caret *CARET) //Headbump sparks
 
 	rcLeft[0] = { 56, 24, 64, 32 };
 	rcLeft[1] = { 0, 0, 0, 0 };
-	
+
 	if (!CARET->act_no)
 	{
 		CARET->act_no = 1;
-		
+
 		if (CARET->direct != dirLeft)
 		{
 			if (CARET->direct == dirUp)
@@ -499,7 +507,8 @@ void caretAct017(caret *CARET) //PUSH JUMP KEY!
 		CARET->rect = { 0, 144, 144, 152 };
 }
 
-caretAct caretActs[] = {
+caretAct caretActs[] =
+{
 	&caretAct000,
 	&caretAct001,
 	&caretAct002,

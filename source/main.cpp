@@ -32,7 +32,7 @@ bool exitGame = false;
 
 // Some global functions
 
-static void doQuit() 
+static void doQuit()
 {
 	//sound::quit();
 	SDL_Quit();
@@ -40,7 +40,7 @@ static void doQuit()
 	freeSounds();
 }
 
-void doError() 
+void doError()
 {
 	SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Critical Error", SDL_GetError(), nullptr);
 	SDL_ClearError();
@@ -48,7 +48,7 @@ void doError()
 	exit(EXIT_FAILURE);
 }
 
-void doCustomError(const char *msg) 
+void doCustomError(const char *msg)
 {
 	SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Critical Error", msg, nullptr);
 	doQuit();
@@ -57,7 +57,7 @@ void doCustomError(const char *msg)
 
 SDL_Texture* sprites[0x28];
 
-int init() 
+int init()
 {
 	//Initiate SDL and window stuff
 	if (SDL_Init(SDL_INIT_TIMER | SDL_INIT_AUDIO | SDL_INIT_VIDEO) < 0)
@@ -66,7 +66,7 @@ int init()
 	//Initiate SDL_image
 	if (!(IMG_Init(IMG_INIT_PNG) & IMG_INIT_PNG))
 		doCustomError("Couldn't initiate SDL Image");
-	
+
 	// TBD : Load config data, initialise keybinds and screen resolution based on it
 	// TBD : Init joypad
 
@@ -77,7 +77,7 @@ int init()
 	loadSounds();
 
 	currentPlayer.init();
-	
+
 	createWindow(320, 240, 2, true);
 
 	//Load assets

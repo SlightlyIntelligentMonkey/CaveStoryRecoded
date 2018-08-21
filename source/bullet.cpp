@@ -142,7 +142,7 @@ void updateBullets()
 
 		while (bullets.size() && !(bullets[bullets.size() - 1].cond & 0x80))
 			bullets.erase(bullets.begin() + bullets.size() - 1);
-		
+
 		bulletHitMap();
 		bulletHitNpcs();
 	}
@@ -195,7 +195,8 @@ void bullet::init(int setCode, int setX, int setY, uint8_t setDir)
 #include "fireball.h"
 #include "spur.h"
 
-bulletAct bulletActs[] = {
+bulletAct bulletActs[] =
+{
 	static_cast<bulletAct>(nullptr),	// There isn't a 0th bullet
 	static_cast<bulletAct>(nullptr),	// Snake
 	static_cast<bulletAct>(nullptr),
