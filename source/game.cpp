@@ -44,7 +44,7 @@ void initGame()
 
 	//Load stage
 	currentPlayer.init();
-	currentPlayer.setPos(10 << 13, 8 << 13);
+	currentPlayer.setPos(tileToCoord(10), tileToCoord(8));
 	loadLevel(13);
 	startTscEvent(200);
 }
@@ -53,12 +53,12 @@ void viewBounds()
 {
 	//Keep view in level
 	if ((levelWidth - 1) << 4 > screenWidth)
-		viewport.x = clamp(viewport.x, 0, ((levelWidth - 1) << 13) - (screenWidth << 9));
+		viewport.x = clamp(viewport.x, 0, tileToCoord(levelWidth - 1) - (screenWidth << 9));
 	else
 		viewport.x = ((levelWidth - 1) << 12) - (screenWidth << 8);
 
 	if ((levelHeight - 1) << 4 > screenHeight)
-		viewport.y = clamp(viewport.y, 0, ((levelHeight - 1) << 13) - (screenHeight << 9));
+		viewport.y = clamp(viewport.y, 0, tileToCoord(levelHeight - 1) - (screenHeight << 9));
 	else
 		viewport.y = ((levelHeight - 1) << 12) - (screenHeight << 8);
 }
@@ -91,63 +91,63 @@ void debugLevels()
 	if (isKeyPressed(SDL_SCANCODE_1))
 	{
 		loadLevel(13);
-		currentPlayer.setPos(10 << 13, 8 << 13);
+		currentPlayer.setPos(tileToCoord(10), tileToCoord(8));
 
 		//sound::playOrg(8);
 	}
 	else if (isKeyPressed(SDL_SCANCODE_2))
 	{
 		loadLevel(12);
-		currentPlayer.setPos(37 << 13, 11 << 13);
+		currentPlayer.setPos(tileToCoord(37), tileToCoord(11));
 
 		//sound::playOrg(8);
 	}
 	else if (isKeyPressed(SDL_SCANCODE_3))
 	{
 		loadLevel(2);
-		currentPlayer.setPos(5 << 13, 6 << 13);
+		currentPlayer.setPos(tileToCoord(5), tileToCoord(6));
 
 		//sound::playOrg(1);
 	}
 	else if (isKeyPressed(SDL_SCANCODE_4))
 	{
 		loadLevel(11);
-		currentPlayer.setPos(13 << 13, 34 << 13);
+		currentPlayer.setPos(tileToCoord(13), tileToCoord(34));
 
 		//sound::playOrg(9);
 	}
 	else if (isKeyPressed(SDL_SCANCODE_5))
 	{
 		loadLevel(49);
-		currentPlayer.setPos(7 << 13, 6 << 13);
+		currentPlayer.setPos(tileToCoord(7), tileToCoord(6));
 
 		//sound::playOrg(27);
 	}
 	else if (isKeyPressed(SDL_SCANCODE_6))
 	{
 		loadLevel(67);
-		currentPlayer.setPos(7 << 13, 52 << 13);
+		currentPlayer.setPos(tileToCoord(7), tileToCoord(52));
 
 		//sound::playOrg(29);
 	}
 	else if (isKeyPressed(SDL_SCANCODE_7))
 	{
 		loadLevel(48);
-		currentPlayer.setPos(155 << 13, 1 << 13);
+		currentPlayer.setPos(tileToCoord(155), tileToCoord(1));
 
 		//sound::playOrg(38);
 	}
 	else if (isKeyPressed(SDL_SCANCODE_8))
 	{
 		loadLevel(53);
-		currentPlayer.setPos(4 << 13, 165 << 13);
+		currentPlayer.setPos(tileToCoord(4), tileToCoord(165));
 
 		//sound::playOrg(38);
 	}
 	else if (isKeyPressed(SDL_SCANCODE_9))
 	{
 		loadLevel(6);
-		currentPlayer.setPos(4 << 13, 18 << 13);
+		currentPlayer.setPos(tileToCoord(4), tileToCoord(18));
 
 		//sound::playOrg(38);
 	}

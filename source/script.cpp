@@ -801,8 +801,8 @@ int updateTsc()
 				{
 					if ((npcs[i].cond & npccond_alive) && npcs[i].code_event == getTSCNumber(tsc.p_read + 4))
 					{
-						npcs[i].x = getTSCNumber(tsc.p_read + 9) << 13;
-						npcs[i].y = getTSCNumber(tsc.p_read + 14) << 13;
+						npcs[i].x = tileToCoord(getTSCNumber(tsc.p_read + 9));
+						npcs[i].y = tileToCoord(getTSCNumber(tsc.p_read + 14));
 
 						if (getTSCNumber(tsc.p_read + 19) != 5)
 						{
@@ -823,7 +823,7 @@ int updateTsc()
 				tscCleanup(4);
 				break;
 			case('<MOV'):
-				currentPlayer.setPos(getTSCNumber(tsc.p_read + 4) << 13, getTSCNumber(tsc.p_read + 9) << 13);
+				currentPlayer.setPos(tileToCoord(getTSCNumber(tsc.p_read + 4)), tileToCoord(getTSCNumber(tsc.p_read + 9)));
 				tscCleanup(2);
 				break;
 			case('<MPJ'):
@@ -965,8 +965,8 @@ int updateTsc()
 
 				createNpc(
 				    getTSCNumber(tsc.p_read + 4),
-				    getTSCNumber(tsc.p_read + 9) << 13,
-				    getTSCNumber(tsc.p_read + 14) << 13,
+				    tileToCoord(getTSCNumber(tsc.p_read + 9)),
+				    tileToCoord(getTSCNumber(tsc.p_read + 14)),
 				    0,
 				    0,
 				    getTSCNumber(tsc.p_read + 19),
@@ -997,8 +997,8 @@ int updateTsc()
 			case('<TRA'):
 				xt = getTSCNumber(tsc.p_read + 9);
 				currentPlayer.setPos(
-				    getTSCNumber(tsc.p_read + 14) << 13,
-				    getTSCNumber(tsc.p_read + 19) << 13);
+				    tileToCoord(getTSCNumber(tsc.p_read + 14)),
+				    tileToCoord(getTSCNumber(tsc.p_read + 19)));
 				loadLevel(getTSCNumber(tsc.p_read + 4));
 				startTscEvent(xt);
 				return 1;

@@ -68,17 +68,6 @@ struct VIEW
 	int quake2;
 };
 
-//Macro
-inline int tileToCoord(int x)
-{
-	return x << 13;
-}
-
-inline int coordToTile(int x)
-{
-	return x >> 13;
-}
-
 struct SDL_Window;
 struct SDL_Renderer;
 struct SDL_Rect;

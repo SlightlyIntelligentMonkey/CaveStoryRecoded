@@ -5,7 +5,7 @@ void npcJudgeBlock(const RECT *rcHit, npc *NPC, int tx, int ty)
 	if (NPC->y - rcHit->top < ((2 * ty + 1) << 12) - 0x600
 	        && NPC->y + rcHit->bottom > ((2 * ty - 1) << 12) + 0x600
 	        && NPC->x - rcHit->right < (2 * tx + 1) << 12
-	        && NPC->x - rcHit->right > tx << 13)
+	        && NPC->x - rcHit->right > tileToCoord(tx))
 	{
 		NPC->x = ((2 * tx + 1) << 12) + rcHit->right;
 
@@ -15,7 +15,7 @@ void npcJudgeBlock(const RECT *rcHit, npc *NPC, int tx, int ty)
 	if (NPC->y - rcHit->top < ((2 * ty + 1) << 12) - 0x600
 	        && NPC->y + rcHit->bottom > ((2 * ty - 1) << 12) + 0x600
 	        && NPC->x + rcHit->right > (2 * tx - 1) << 12
-	        && NPC->x + rcHit->right < tx << 13)
+	        && NPC->x + rcHit->right < tileToCoord(tx))
 	{
 		NPC->x = ((2 * tx - 1) << 12) - rcHit->right;
 
@@ -25,7 +25,7 @@ void npcJudgeBlock(const RECT *rcHit, npc *NPC, int tx, int ty)
 	if (NPC->x - rcHit->right < ((2 * tx + 1) << 12) - 0x600
 	        && NPC->x + rcHit->right > ((2 * tx - 1) << 12) + 0x600
 	        && NPC->y - rcHit->top < (2 * ty + 1) << 12
-	        && NPC->y - rcHit->top > ty << 13)
+	        && NPC->y - rcHit->top > tileToCoord(ty))
 	{
 		NPC->y = ((2 * ty + 1) << 12) + rcHit->top;
 		NPC->ym = 0;
@@ -36,7 +36,7 @@ void npcJudgeBlock(const RECT *rcHit, npc *NPC, int tx, int ty)
 	if (NPC->x - rcHit->right < ((2 * tx + 1) << 12) - 0x600
 	        && NPC->x + rcHit->right > ((2 * tx - 1) << 12) + 0x600
 	        && NPC->y + rcHit->bottom > (2 * ty - 1) << 12
-	        && NPC->y + rcHit->bottom < ty << 13)
+	        && NPC->y + rcHit->bottom < tileToCoord(ty))
 	{
 		NPC->y = ((2 * ty - 1) << 12) - rcHit->bottom;
 		NPC->ym = 0;
@@ -50,13 +50,13 @@ void npcJudgeTriangleA(const RECT *rcHit, npc *NPC, int tx, int ty)
 {
 	if (NPC->x > (2 * tx - 1) << 12
 	        && NPC->x < (2 * tx + 1) << 12
-	        && NPC->y - rcHit->top < (ty << 13) - (-0x2000 * tx + NPC->x) / 2 + 0x800
+	        && NPC->y - rcHit->top < tileToCoord(ty) - (-0x2000 * tx + NPC->x) / 2 + 0x800
 	        && NPC->y + rcHit->bottom >(2 * ty - 1) << 12)
 	{
 		if (NPC->ym < 0)
 			NPC->ym = 0;
 
-		NPC->y = (ty << 13) - (-0x2000 * tx + NPC->x) / 2 + 0x800 + rcHit->top;
+		NPC->y = tileToCoord(ty) - (-0x2000 * tx + NPC->x) / 2 + 0x800 + rcHit->top;
 
 		NPC->flag |= ceiling;
 	}
@@ -66,13 +66,13 @@ void npcJudgeTriangleB(const RECT *rcHit, npc *NPC, int tx, int ty)
 {
 	if (NPC->x > (2 * tx - 1) << 12
 	        && NPC->x < (2 * tx + 1) << 12
-	        && NPC->y - rcHit->top < (ty << 13) - (-0x2000 * tx + NPC->x) / 2 - 0x800
+	        && NPC->y - rcHit->top < tileToCoord(ty) - (-0x2000 * tx + NPC->x) / 2 - 0x800
 	        && NPC->y + rcHit->bottom >(2 * ty - 1) << 12)
 	{
 		if (NPC->ym < 0)
 			NPC->ym = 0;
 
-		NPC->y = (ty << 13) - (-0x2000 * tx + NPC->x) / 2 - 0x800 + rcHit->top;
+		NPC->y = tileToCoord(ty) - (-0x2000 * tx + NPC->x) / 2 - 0x800 + rcHit->top;
 
 		NPC->flag |= ceiling;
 	}
@@ -82,13 +82,13 @@ void npcJudgeTriangleC(const RECT *rcHit, npc *NPC, int tx, int ty)
 {
 	if (NPC->x > (2 * tx - 1) << 12
 	        && NPC->x < (2 * tx + 1) << 12
-	        && NPC->y - rcHit->top < (ty << 13) + (-0x2000 * tx + NPC->x) / 2 - 0x800
+	        && NPC->y - rcHit->top < tileToCoord(ty) + (-0x2000 * tx + NPC->x) / 2 - 0x800
 	        && NPC->y + rcHit->bottom >(2 * ty - 1) << 12)
 	{
 		if (NPC->ym < 0)
 			NPC->ym = 0;
 
-		NPC->y = (ty << 13) + (-0x2000 * tx + NPC->x) / 2 - 0x800 + rcHit->top;
+		NPC->y = tileToCoord(ty) + (-0x2000 * tx + NPC->x) / 2 - 0x800 + rcHit->top;
 
 		NPC->flag |= ceiling;
 	}
@@ -98,13 +98,13 @@ void npcJudgeTriangleD(const RECT *rcHit, npc *NPC, int tx, int ty)
 {
 	if (NPC->x > (2 * tx - 1) << 12
 	        && NPC->x < (2 * tx + 1) << 12
-	        && NPC->y - rcHit->top < (ty << 13) + (-0x2000 * tx + NPC->x) / 2 + 0x800
+	        && NPC->y - rcHit->top < tileToCoord(ty) + (-0x2000 * tx + NPC->x) / 2 + 0x800
 	        && NPC->y + rcHit->bottom >(2 * ty - 1) << 12)
 	{
 		if (NPC->ym < 0)
 			NPC->ym = 0;
 
-		NPC->y = (ty << 13) + (-0x2000 * tx + NPC->x) / 2 + 0x800 + rcHit->top;
+		NPC->y = tileToCoord(ty) + (-0x2000 * tx + NPC->x) / 2 + 0x800 + rcHit->top;
 
 		NPC->flag |= ceiling;
 	}
@@ -117,10 +117,10 @@ void npcJudgeTriangleE(const RECT *rcHit, npc *NPC, int tx, int ty)
 
 	if (NPC->x > (2 * tx - 1) << 12
 	        && NPC->x < (2 * tx + 1) << 12
-	        && NPC->y + rcHit->bottom >(ty << 13) + (-0x2000 * tx + NPC->x) / 2 - 0x800
+	        && NPC->y + rcHit->bottom > tileToCoord(ty) + (-0x2000 * tx + NPC->x) / 2 - 0x800
 	        && NPC->y - rcHit->top < (2 * ty + 1) << 12)
 	{
-		NPC->y = (ty << 13) + (-0x2000 * tx + NPC->x) / 2 - 0x800 - rcHit->bottom;
+		NPC->y = tileToCoord(ty) + (-0x2000 * tx + NPC->x) / 2 - 0x800 - rcHit->bottom;
 
 		if (NPC->ym > 0)
 			NPC->ym = 0;
@@ -135,10 +135,10 @@ void npcJudgeTriangleF(const RECT *rcHit, npc *NPC, int tx, int ty)
 
 	if (NPC->x < (2 * tx + 1) << 12
 	        && NPC->x >(2 * tx - 1) << 12
-	        && NPC->y + rcHit->bottom > (ty << 13) + (-0x2000 * tx + NPC->x) / 2 + 0x800
+	        && NPC->y + rcHit->bottom > tileToCoord(ty) + (-0x2000 * tx + NPC->x) / 2 + 0x800
 	        && NPC->y - rcHit->top < (2 * ty + 1) << 12)
 	{
-		NPC->y = (ty << 13) + (-0x2000 * tx + NPC->x) / 2 + 0x800 - rcHit->bottom;
+		NPC->y = tileToCoord(ty) + (-0x2000 * tx + NPC->x) / 2 + 0x800 - rcHit->bottom;
 
 		NPC->flag |= (ground | slopeLeft);
 	}
@@ -150,10 +150,10 @@ void npcJudgeTriangleG(const RECT *rcHit, npc *NPC, int tx, int ty)
 
 	if (NPC->x > (2 * tx - 1) << 12
 	        && NPC->x < (2 * tx + 1) << 12
-	        && NPC->y + rcHit->bottom >(ty << 13) - (-0x2000 * tx + NPC->x) / 2 + 0x800
+	        && NPC->y + rcHit->bottom > tileToCoord(ty) - (-0x2000 * tx + NPC->x) / 2 + 0x800
 	        && NPC->y - rcHit->top < (2 * ty + 1) << 12)
 	{
-		NPC->y = (ty << 13) - (-0x2000 * tx + NPC->x) / 2 + 0x800 - rcHit->bottom;
+		NPC->y = tileToCoord(ty) - (-0x2000 * tx + NPC->x) / 2 + 0x800 - rcHit->bottom;
 
 		if (NPC->ym > 0)
 			NPC->ym = 0;
@@ -168,10 +168,10 @@ void npcJudgeTriangleH(const RECT *rcHit, npc *NPC, int tx, int ty)
 
 	if (NPC->x > (2 * tx - 1) << 12
 	        && NPC->x < (2 * tx + 1) << 12
-	        && NPC->y + rcHit->bottom >(ty << 13) - (-0x2000 * tx + NPC->x) / 2 - 0x800
+	        && NPC->y + rcHit->bottom > tileToCoord(ty) - (-0x2000 * tx + NPC->x) / 2 - 0x800
 	        && NPC->y - rcHit->top < (2 * ty + 1) << 12)
 	{
-		NPC->y = (ty << 13) - (-0x2000 * tx + NPC->x) / 2 - 0x800 - rcHit->bottom;
+		NPC->y = tileToCoord(ty) - (-0x2000 * tx + NPC->x) / 2 - 0x800 - rcHit->bottom;
 
 		if (NPC->ym > 0)
 			NPC->ym = 0;
@@ -197,11 +197,11 @@ void npcHitMap(size_t NPCid)
 	NPC->flag = 0; //clear
 	const RECT *rcHit = &NPC->hit;
 
-	const int fromX = (NPC->x - rcHit->right + 0x1000) >> 13;
-	const int fromY = (NPC->y - rcHit->top + 0x1000) >> 13;
+	const int fromX = coordToTile(NPC->x - rcHit->right + 0x1000);
+	const int fromY = coordToTile(NPC->y - rcHit->top + 0x1000);
 
-	const int toX = (NPC->x + rcHit->right + 0x1000) >> 13;
-	const int toY = (NPC->y + rcHit->bottom + 0x1000) >> 13;
+	const int toX = coordToTile(NPC->x + rcHit->right + 0x1000);
+	const int toY = coordToTile(NPC->y + rcHit->bottom + 0x1000);
 
 	if (!(NPC->bits & npc_ignoresolid))
 	{

@@ -48,3 +48,13 @@ void loadStageTable();
 
 void loadLevel(int levelIndex);
 void drawLevel(bool foreground);
+
+inline int tileToCoord(int x)
+{
+	return x << 13;
+}
+
+inline int coordToTile(int x)
+{
+	return x >> 13;
+}

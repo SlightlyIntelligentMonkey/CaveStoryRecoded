@@ -93,7 +93,7 @@ bool changeTile(int x, int y, uint8_t tile)
 	levelMap[x + y * levelWidth] = tile;
 
 	for (int i = 0; i < 3; ++i)
-		createNpc(NPC_Smoke, x << 13, y << 13, 0, 0, 0, nullptr);
+		createNpc(NPC_Smoke, tileToCoord(x), tileToCoord(y), 0, 0, 0, nullptr);
 
 	return true;
 }
@@ -190,7 +190,7 @@ void loadLevel(int levelIndex)
 			continue;
 
 		npc newNPC;
-		newNPC.init(readLEshort(pxe, offset + 8), readLEshort(pxe, offset) << 13, readLEshort(pxe, offset + 2) << 13, 0, 0, 0, nullptr);
+		newNPC.init(readLEshort(pxe, offset + 8), tileToCoord(readLEshort(pxe, offset)), tileToCoord(readLEshort(pxe, offset + 2)), 0, 0, 0, nullptr);
 
 		newNPC.code_event = readLEshort(pxe, offset + 6);
 		newNPC.code_flag = readLEshort(pxe, offset + 4);
@@ -354,11 +354,11 @@ void drawLevel(bool foreground)
 	//Render tiles
 	RECT tileRect;
 
-	const int xFrom = clamp((viewport.x + 0x1000) >> 13, 0, levelWidth);
-	const int xTo = clamp((((viewport.x + 0x1000) + (screenWidth << 9)) >> 13) + 1, 0, levelWidth); //add 1 because edge wouldn't appear
+	const int xFrom = clamp(coordToTile(viewport.x + 0x1000), 0, levelWidth);
+	const int xTo = clamp((coordToTile((viewport.x + 0x1000) + (screenWidth << 9))) + 1, 0, levelWidth); //add 1 because edge wouldn't appear
 
-	const int yFrom = clamp((viewport.y + 0x1000) >> 13, 0, levelHeight);
-	const int yTo = clamp((((viewport.y + 0x1000) + (screenHeight << 9)) >> 13) + 1, 0, levelHeight); //add 1 because edge wouldn't appear
+	const int yFrom = clamp(coordToTile(viewport.y + 0x1000), 0, levelHeight);
+	const int yTo = clamp((coordToTile((viewport.y + 0x1000) + (screenWidth << 9))) + 1, 0, levelHeight); //add 1 because edge wouldn't appear
 
 	for (int x = xFrom; x < xTo; x++)
 	{
