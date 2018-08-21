@@ -1082,7 +1082,7 @@ void npcAct074(npc *NPC) //Jack
 		NPC->rect = rcLeft[NPC->ani_no];
 }
 
-void npcAct075(npc * NPC)
+void npcAct075(npc * NPC) // Kanpachi
 {
 	constexpr RECT rcNPC[2] = { {272, 32, 296, 56}, {296, 32, 320, 56} };
 
