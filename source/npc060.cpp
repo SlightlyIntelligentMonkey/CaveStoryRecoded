@@ -109,7 +109,7 @@ void npcAct060(npc *NPC) //Toroko
 			NPC->act_no = 3;
 
 		break;
-		
+
 	case 8: //Jump on the spot (I think this is used in the shack?)
 		NPC->ani_no = 1;
 		NPC->act_wait = 0;
@@ -483,6 +483,132 @@ void npcAct062(npc *NPC) // Kazuma, facing away
 	NPC->rect = rcNPC[NPC->ani_no];
 }
 
+void npcAct063(npc * NPC) // Toroko, panicking
+{
+	RECT rcLeft[6];
+	RECT rcRight[6];
+
+	rcLeft[0] = { 64, 64, 80, 80 };
+	rcLeft[1] = { 80, 64, 96, 80 };
+	rcLeft[2] = { 64, 64, 80, 80 };
+	rcLeft[3] = { 96, 64, 112, 80 };
+	rcLeft[4] = { 112, 64, 128, 80 };
+	rcLeft[5] = { 128, 64, 144, 80 };
+
+	rcRight[0] = { 64, 80, 80, 96 };
+	rcRight[1] = { 80, 80, 96, 96 };
+	rcRight[2] = { 64, 80, 80, 96 };
+	rcRight[3] = { 96, 80, 112, 96 };
+	rcRight[4] = { 112, 80, 128, 96 };
+	rcRight[5] = { 128, 80, 144, 96 };
+
+	switch (NPC->act_no)
+	{
+	case 0:
+		NPC->act_no = 1;
+		NPC->act_wait = 0;
+		NPC->ani_wait = 0;
+		NPC->ym = -0x400;
+		// Fallthrough
+	case 1:
+		if (NPC->ym > 0)
+			NPC->flag &= ~npc_ignoresolid;
+
+		if (++NPC->ani_wait > 2)
+		{
+			NPC->ani_wait = 0;
+			++NPC->ani_no;
+		}
+		if (NPC->ani_no > 3)
+			NPC->ani_no = 0;
+
+		if (NPC->direct != dirLeft)
+			NPC->xm = 0x100;
+		else
+			NPC->xm = -0x100;
+
+		if (NPC->act_wait++ && NPC->flag & npc_ignoresolid)
+			NPC->act_no = 2;
+		break;
+
+	case 2:
+		NPC->act_no = 3;
+		NPC->act_wait = 0;
+		NPC->ani_no = 0;
+		NPC->ani_wait = 0;
+		// Fallthrough
+	case 3:
+		if (++NPC->ani_wait > 2)
+		{
+			NPC->ani_wait = 0;
+			++NPC->ani_no;
+		}
+		if (NPC->ani_no > 3)
+			NPC->ani_no = 0;
+
+		if (++NPC->act_wait > 50)
+		{
+			NPC->act_wait = 40;
+			NPC->xm = -NPC->xm;
+			if (NPC->direct != dirLeft)
+				NPC->direct = dirLeft;
+			else
+				NPC->direct = dirRight;
+		}
+
+		if (NPC->act_wait > 35)
+			NPC->flag |= npc_shootable;
+
+		if (NPC->direct != dirLeft)
+			NPC->xm += 0x40;
+		else
+			NPC->xm -= 0x40;
+
+		if (NPC->shock)
+		{
+			NPC->act_no = 4;
+			NPC->ani_no = 4;
+			NPC->ym = -0x400;
+			NPC->flag &= ~npc_shootable;
+			NPC->damage = 0;
+		}
+		break;
+
+	case 4:
+		if (NPC->direct != dirLeft)
+			NPC->xm = 0x100;
+		else
+			NPC->xm = -0x100;
+
+		if (NPC->act_wait++ && NPC->flag & npc_ignoresolid)
+		{
+			NPC->act_no = 5;
+			NPC->code_flag |= npc_interact;
+		}
+		break;
+
+    case 5:
+        NPC->xm = 0;
+        NPC->ani_no = 5;
+        break;
+    default:
+        break;
+	}
+
+	NPC->ym += 0x40;
+    if (NPC->xm > 0x400)
+        NPC->xm = 0x400;
+    if (NPC->xm < -0x400)
+        NPC->xm = -0x400;
+    if (NPC->ym > 0x5FF)
+        NPC->ym = 0x5FF;
+
+    if (NPC->direct == dirLeft)
+        NPC->rect = rcLeft[NPC->ani_no];
+    else
+        NPC->rect = rcRight[NPC->ani_no];
+}
+
 void npcAct064(npc *NPC) //First Cave critter
 {
 	const int action = NPC->act_no;
@@ -662,7 +788,7 @@ void npcAct066(npc *NPC) //Bubble (to catch Toroko in the shack)
 	rect[1] = { 56, 192, 80, 216 };
 	rect[2] = { 32, 216, 56, 240 };
 	rect[3] = { 56, 216, 80, 240 };
-	
+
 	switch (NPC->act_no)
 	{
 	case 0:
@@ -756,7 +882,7 @@ void npcAct070(npc * NPC) // Sparkling Item
 	NPC->rect = rcNPC[NPC->ani_no];
 }
 
-void npcAct071(npc * NPC)
+void npcAct071(npc * NPC) // Chinfish (enemy)
 {
 	if (!NPC->act_no)
 	{
@@ -799,6 +925,36 @@ void npcAct071(npc * NPC)
 		NPC->rect = rcRight[NPC->ani_no];
 }
 
+void npcAct072(npc * NPC) // Sprinkler
+{
+	if (NPC->direct == dirLeft)
+	{
+		if (++NPC->ani_wait > 1)
+		{
+			NPC->ani_wait = 0;
+			++NPC->ani_no;
+		}
+		if (NPC->ani_no > 1)
+		{
+			NPC->ani_no = 0;
+			return;
+		}
+
+		if (currentPlayer.x < NPC->x + 0x28000
+			&& currentPlayer.x > NPC->x - 0x28000
+			&& currentPlayer.y < NPC->y + 0x1E000
+			&& currentPlayer.y > NPC->y - 0x1E000)
+		{
+			if (++NPC->act_no % 2)
+				createNpc(NPC_Waterdrop, NPC->x, NPC->y, 2 * random(-0x200, 0x200), 3 * random(-0x200, 0x80), dirLeft, nullptr);
+			createNpc(NPC_Waterdrop, NPC->x, NPC->y, 2 * random(-0x200, 0x200), 3 * random(-0x200, 0x80), dirLeft, nullptr);
+		}
+	}
+
+	constexpr RECT rcNPC[2] = { {224, 48, 240, 64}, {240, 28, 256, 64} };
+	NPC->rect = rcNPC[NPC->ani_no];
+}
+
 void npcAct073(npc *NPC) //Water drop
 {
 	NPC->ym += 0x20;
@@ -810,7 +966,7 @@ void npcAct073(npc *NPC) //Water drop
 
 	NPC->x += NPC->xm;
 	NPC->y += NPC->ym;
-	
+
 	//Set frameRect
 	NPC->rect = { 72 + (NPC->ani_no << 1), 16, 74 + (NPC->ani_no << 1), 18 };
 
@@ -947,7 +1103,7 @@ void npcAct075(npc * NPC)
 		&& NPC->y + 0x2000 > currentPlayer.y;
 doRects:
 	NPC->rect = rcNPC[NPC->ani_no];
-	
+
 }
 
 void npcAct076(npc *NPC) //Flower
@@ -956,6 +1112,39 @@ void npcAct076(npc *NPC) //Flower
 	NPC->rect.top = 0;
 	NPC->rect.right = NPC->rect.left + 16;
 	NPC->rect.bottom = 16;
+}
+
+void npcAct077(npc * NPC) // Sandaime's Pavillion
+{
+	constexpr RECT rcSandaimePresent[2] = { {0, 16, 48, 48}, {48, 16, 96, 48} };
+	constexpr RECT rcSandaimeGone = { 96, 16, 144, 48 };
+
+	if (NPC->act_no == 0)
+	{
+		NPC->act_no = 1;
+		NPC->ani_no = 0;
+		NPC->ani_wait = 0;
+	}
+	else if (NPC->act_no != 1)
+	{
+		if (NPC->act_no == 2 && (++NPC->act_wait > 8))
+		{
+			NPC->act_no = 1;
+			NPC->ani_no = 0;
+		}
+		goto doRects;
+	}
+	if (random(0, 120) == 10)
+	{
+		NPC->act_no = 2;
+		NPC->act_wait = 0;
+		NPC->ani_no = 1;
+	}
+doRects:
+	if (NPC->direct == dirLeft)
+		NPC->rect = rcSandaimePresent[NPC->ani_no];
+	else
+		NPC->rect = rcSandaimeGone;
 }
 
 void npcAct078(npc *NPC) //Pot

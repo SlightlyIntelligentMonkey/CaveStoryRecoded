@@ -43,7 +43,7 @@ int bulletJudgeBlock(int x, int y, bullet *bul) //For judging breakable blocks
 		playSound(SFX_DestroyBreakableBlock);
 
 		for (int i = 0; i < 4; ++i)
-			createNpc(NPC_Smoke, x << 13, y << 13, random(-512, 512), random(-512, 512), 0, nullptr);
+			createNpc(NPC_Smoke, tileToCoord(x), y << 13, random(-512, 512), random(-512, 512), 0, nullptr);
 
 		//Shift tile -1
 		shiftTile(x, y);
@@ -328,9 +328,6 @@ void bulletHitMap()
 	for (size_t i = 0; i < bullets.size(); i++)
 	{
 		bullet *bul = &bullets[i];
-		int offy[4];
-		int offx[4];
-		uint8_t atrb[4];
 
 		if (bul->cond & 0x80)
 		{
@@ -338,14 +335,11 @@ void bulletHitMap()
 			const int x = bul->x >> 13;
 			const int y = bul->y >> 13;
 
-			offx[0] = 0;
-			offx[1] = 1;
-			offx[2] = 0;
-			offx[3] = 1;
-			offy[0] = 0;
-			offy[1] = 0;
-			offy[2] = 1;
-			offy[3] = 1;
+			constexpr int offx[4] = { 0, 1, 0, 1 };
+
+			constexpr int offy[4] = { 0, 1, 0, 1 };
+
+			uint8_t atrb[4];
 
 			//Get tile attributes nearby
 			atrb[0] = getTileAttribute(x, y);

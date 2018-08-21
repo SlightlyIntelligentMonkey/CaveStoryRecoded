@@ -40,6 +40,15 @@ enum TSC_mode
 	WAS = 7
 };
 
+namespace YNJResult
+{
+enum
+{
+	no = 0,
+	yes = 1,
+};
+}
+
 //Init function
 bool initTsc()
 {
@@ -69,7 +78,8 @@ void decryptTsc(uint8_t *data, size_t size)
 	}
 }
 
-void loadStageTsc(const char *name) {
+void loadStageTsc(const char *name)
+{
 	//Load Head.tsc file
 	SDL_RWops *headRW = SDL_RWFromFile("data/Head.tsc", "rb");
 	if (headRW == nullptr)
@@ -101,7 +111,8 @@ void loadStageTsc(const char *name) {
 	strcpy(tsc.path, name);
 }
 
-void loadTsc2(const char *name) {
+void loadTsc2(const char *name)
+{
 	//Load tsc file
 	SDL_RWops *bodyRW = SDL_RWFromFile(name, "rb");
 	if (!bodyRW)
@@ -123,9 +134,9 @@ void loadTsc2(const char *name) {
 int getTSCNumber(int a)
 {
 	return			(static_cast<char>(tsc.data[a + 3]) - 0x30) +
-			10 *	(static_cast<char>(tsc.data[a + 2]) - 0x30) +
-			100 *	(static_cast<char>(tsc.data[a + 1]) - 0x30) +
-			1000 *	(static_cast<char>(tsc.data[a]) - 0x30);
+	                10 *	(static_cast<char>(tsc.data[a + 2]) - 0x30) +
+	                100 *	(static_cast<char>(tsc.data[a + 1]) - 0x30) +
+	                1000 *	(static_cast<char>(tsc.data[a]) - 0x30);
 }
 
 void tscClearText()
@@ -133,7 +144,7 @@ void tscClearText()
 	for (int i = 0; i < 4; ++i)
 	{
 		tsc.ypos_line[i] = 16 * i;
-		
+
 		memset(tscText + (i * 0x40), 0, 0x40);
 		memset(tscTextFlag + (i * 0x40), 0, 0x40);
 	}
@@ -353,16 +364,18 @@ int updateTsc()
 				//Play selection sound
 				playSound(SFX_YNConfirm);
 
-				if (tsc.select) //No selected
+				if (tsc.select == YNJResult::no)
 				{
 					jumpTscEvent(tsc.next_event); //Jump to specified event
 				}
-				else //Yes selected
+				else if (tsc.select == YNJResult::yes)
 				{
 					//Continue like normal
 					tsc.mode = PARSE;
 					tsc.wait_beam = 0;
 				}
+				else
+					doCustomError("Invalid YNJ result");
 			}
 			else if (isKeyPressed(keyLeft)) //Left pressed
 			{
@@ -572,7 +585,7 @@ int updateTsc()
 				break;
 			case('<CMP'):
 				changeTile(getTSCNumber(tsc.p_read + 4), getTSCNumber(tsc.p_read + 9),
-					getTSCNumber(tsc.p_read + 14));
+				           getTSCNumber(tsc.p_read + 14));
 				tscCleanup(3);
 				break;
 			case('<CMU'):
@@ -580,8 +593,8 @@ int updateTsc()
 				break;
 			case('<CNP'):
 				changeNpc(getTSCNumber(tsc.p_read + 4),
-					getTSCNumber(tsc.p_read + 9),
-					getTSCNumber(tsc.p_read + 14));
+				          getTSCNumber(tsc.p_read + 9),
+				          getTSCNumber(tsc.p_read + 14));
 				tscCleanup(3);
 				break;
 			case('<CPS'):
@@ -949,15 +962,15 @@ int updateTsc()
 				tscCleanup(2);
 				break;
 			case('<SNP'):
-				
+
 				createNpc(
-					getTSCNumber(tsc.p_read + 4),
-					getTSCNumber(tsc.p_read + 9) << 13,
-					getTSCNumber(tsc.p_read + 14) << 13,
-					0,
-					0,
-					getTSCNumber(tsc.p_read + 19),
-					nullptr);
+				    getTSCNumber(tsc.p_read + 4),
+				    getTSCNumber(tsc.p_read + 9) << 13,
+				    getTSCNumber(tsc.p_read + 14) << 13,
+				    0,
+				    0,
+				    getTSCNumber(tsc.p_read + 19),
+				    nullptr);
 				tscCleanup(4);
 				break;
 			case('<SOU'):
@@ -984,8 +997,8 @@ int updateTsc()
 			case('<TRA'):
 				xt = getTSCNumber(tsc.p_read + 9);
 				currentPlayer.setPos(
-					getTSCNumber(tsc.p_read + 14) << 13,
-					getTSCNumber(tsc.p_read + 19) << 13);
+				    getTSCNumber(tsc.p_read + 14) << 13,
+				    getTSCNumber(tsc.p_read + 19) << 13);
 				loadLevel(getTSCNumber(tsc.p_read + 4));
 				startTscEvent(xt);
 				return 1;
@@ -1077,9 +1090,9 @@ void drawTsc()
 			rcFrame1 = { 0, 0, 244, 8 };
 			rcFrame2 = { 0, 8, 244, 16 };
 			rcFrame3 = { 0, 16, 244, 24 };
-			
+
 			drawTexture(sprites[TEX_TEXTBOX], &rcFrame1, tsc.rcText.left - 14, tsc.rcText.top - 10);
-			
+
 			int strip;
 			for (strip = 1; strip <= 6; ++strip)
 				drawTexture(sprites[TEX_TEXTBOX], &rcFrame2, tsc.rcText.left - 14, 8 * strip + tsc.rcText.top - 10);
@@ -1087,7 +1100,7 @@ void drawTsc()
 		}
 
 		setCliprect(&tsc.rcText);
-		
+
 		//Move face into position
 		if ((tsc.face_x += 8) > 0)
 			tsc.face_x = 0;
@@ -1118,14 +1131,14 @@ void drawTsc()
 
 		//NOD cursor / beam?
 		const bool flash = tsc.wait_beam++ % 20 > 12;
-		
+
 		if (flash && tsc.mode == NOD)
 		{
 			SDL_SetRenderDrawColor(renderer, 255, 255, 254, 255);
 			drawRect(tsc.rcText.left + text_offset + (tsc.p_write * 6),
-					tsc.rcText.top + tsc.ypos_line[tsc.line % 4] + tsc.offsetY,
-					5,
-					11);
+			         tsc.rcText.top + tsc.ypos_line[tsc.line % 4] + tsc.offsetY,
+			         5,
+			         11);
 		}
 
 		//Define GIT rect
@@ -1172,7 +1185,7 @@ void drawTsc()
 		//Yes/No selection
 		rcYesNo = { 152, 48, 244, 80 };
 		rcSelection = { 112, 88, 128, 104 };
-		
+
 		if (tsc.mode == YNJ)
 		{
 			int y;

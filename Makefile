@@ -2,8 +2,8 @@ WARNINGS := -pedantic -Wall -Wextra -Wabi -Waggregate-return -Wcast-align -Wcast
 
 OPTIMISATIONS := -Ofast -flto -frename-registers -funroll-loops
 
-COMPILE_C := $(CC) -m32 $(OPTIMISATIONS) -c $(WARNINGS) -std=c++1z -I/mingw32/include/SDL2/ -mwindows
-COMPILE_CPP := $(CXX) -m32 $(OPTIMISATIONS) -c $(WARNINGS) -std=c++1z -I/mingw32/include/SDL2/ -mwindows
+COMPILE_C := $(CC) -m32 $(OPTIMISATIONS) $(WARNINGS) -std=c++1z -I/mingw32/include/SDL2/ -mwindows -c
+COMPILE_CPP := $(CXX) -m32 $(OPTIMISATIONS) $(WARNINGS) -std=c++1z -I/mingw32/include/SDL2/ -mwindows -c
 # Replace mingw32 with usr and remove -mwindows for actual Unix build
 LINK_CPP := $(CXX) -m32 $(OPTIMISATIONS) -static -static-libstdc++ -static-libgcc -s
 LINK_C := $(CC) -m32 $(OPTIMISATIONS) -static -static-libstdc++ -static-libgcc -s

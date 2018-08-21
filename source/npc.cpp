@@ -153,15 +153,15 @@ void drawNPC()
 //Npc death things
 void dropExperience(int x, int y, int exp)
 {
-	for (; exp > 0 ;)
+	while (exp > 0)
 	{
-		int sub_exp;
+		int sub_exp = 0;
 
 		if (exp <= 19)
 		{
 			if (exp <= 4)
 			{
-				if (exp > 0)
+				if (exp > 0)	// TBD : Document why this is always true
 				{
 					--exp;
 					sub_exp = 1;
