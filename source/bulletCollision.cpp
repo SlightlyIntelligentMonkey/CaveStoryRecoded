@@ -337,7 +337,7 @@ void bulletHitMap()
 
 			constexpr int offx[4] = { 0, 1, 0, 1 };
 
-			constexpr int offy[4] = { 0, 1, 0, 1 };
+			constexpr int offy[4] = { 0, 0, 1, 1 };
 
 			uint8_t atrb[4];
 

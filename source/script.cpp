@@ -40,15 +40,6 @@ enum TSC_mode
 	WAS = 7
 };
 
-namespace YNJResult
-{
-enum
-{
-	no = 0,
-	yes = 1,
-};
-}
-
 //Init function
 bool initTsc()
 {
@@ -364,11 +355,11 @@ int updateTsc()
 				//Play selection sound
 				playSound(SFX_YNConfirm);
 
-				if (tsc.select == YNJResult::no)
+				if (tsc.select == true)
 				{
 					jumpTscEvent(tsc.next_event); //Jump to specified event
 				}
-				else if (tsc.select == YNJResult::yes)
+				else if (tsc.select == false)
 				{
 					//Continue like normal
 					tsc.mode = PARSE;
