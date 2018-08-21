@@ -56,7 +56,8 @@ enum Direction
 };
 
 //Struct
-struct VIEW {
+struct VIEW
+{
 	int x;
 	int y;
 	int *lookX;
@@ -70,12 +71,12 @@ struct VIEW {
 //Macro
 inline int tileToCoord(int x)
 {
-    return x << 13;
+	return x << 13;
 }
 
 inline int coordToTile(int x)
 {
-    return x >> 13;
+	return x >> 13;
 }
 
 struct SDL_Window;
