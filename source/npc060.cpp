@@ -951,7 +951,7 @@ void npcAct072(npc * NPC) // Sprinkler
 		}
 	}
 
-	constexpr RECT rcNPC[2] = { {224, 48, 240, 64}, {240, 28, 256, 64} };
+	constexpr RECT rcNPC[2] = { {224, 48, 240, 64}, {240, 48, 256, 64} };
 	NPC->rect = rcNPC[NPC->ani_no];
 }
 

@@ -2,11 +2,12 @@ WARNINGS := -pedantic -Wall -Wextra -Wabi -Waggregate-return -Wcast-align -Wcast
 
 OPTIMISATIONS := -Ofast -flto -frename-registers -funroll-loops
 
-COMPILE_C := $(CC) -m32 $(OPTIMISATIONS) $(WARNINGS) -std=c++1z -I/mingw32/include/SDL2/ -mwindows -c
-COMPILE_CPP := $(CXX) -m32 $(OPTIMISATIONS) $(WARNINGS) -std=c++1z -I/mingw32/include/SDL2/ -mwindows -c
-# Replace mingw32 with usr and remove -mwindows for actual Unix build
-LINK_CPP := $(CXX) -m32 $(OPTIMISATIONS) -static -static-libstdc++ -static-libgcc -s
-LINK_C := $(CC) -m32 $(OPTIMISATIONS) -static -static-libstdc++ -static-libgcc -s
+COMPILE_C := $(CC) -m32 $(OPTIMISATIONS) $(WARNINGS) -std=c++1z -I/mingw32/include/SDL2/ -c
+COMPILE_CPP := $(CXX) -m32 $(OPTIMISATIONS) $(WARNINGS) -std=c++1z -I/mingw32/include/SDL2/ -c
+# Replace mingw32 with usr for actual Unix build
+LINK_CPP := $(CXX) -m32 $(OPTIMISATIONS) -static -static-libstdc++ -static-libgcc -mwindows
+LINK_C := $(CC) -m32 $(OPTIMISATIONS) -static -static-libstdc++ -static-libgcc -mwindows
+# Remove -mwindows for Unix build
 
 MAIN := bullet bulletCollision caret fade filesystem fireball fireballShoot flags game hud input level main mathUtils
 MAIN += npc npcAct npcCollision org player playerCollision polarStar polarStarShoot
@@ -19,8 +20,8 @@ OBJS := $(addprefix obj/, $(addsuffix .o, $(MAIN)))
 all: bin/CaveStoryRemake
 
 bin/CaveStoryRemake: $(OBJS)
-	$(LINK_CPP)  $(OBJS) -lmingw32 -lSDL2Main -lSDL2.dll -lSDL2_image.dll -o bin/CaveStoryRemake
-# Remove mingw32 for actual Unix build maybe ? Also prolly remove the ".dll"s at the end of SDL2.dll and SDL2_image.dll
+	$(LINK_CPP) $(OBJS) -lmingw32 -lSDL2Main -lSDL2.dll -lSDL2_image.dll -o bin/CaveStoryRemake
+# Remove -lmingw32 for actual Unix build maybe ? Also prolly remove the ".dll"s at the end of SDL2.dll and SDL2_image.dll
 
 # general compile
 
