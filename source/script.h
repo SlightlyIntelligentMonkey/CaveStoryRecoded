@@ -1,6 +1,15 @@
 #pragma once
 #include "common.h"
 
+/**
+
+	Yet to be implemented :
+
+    BOA, BSL, CIL, CLR, CMU, CPS, CRE, CSS, FLA, FMU, FOB, INP, IT+, IT-, ITJ, MLP, MS2, MS3, NCJ, NUM, RMU,
+    SIL, SMP, SPS, SSS, STC and XX1
+
+*/
+
 struct TSC
 {
 	char path[260];

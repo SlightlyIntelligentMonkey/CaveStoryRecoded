@@ -13,6 +13,7 @@
 
 #include <cstring>
 #include <cstdlib>
+#include <SDL_messagebox.h>
 #include <SDL_RWops.h>
 #include <SDL_render.h>
 
@@ -268,6 +269,11 @@ void tscCleanup(int numargs) //Function to shift the current read position after
 
 	if (numargs > 1)
 		tsc.p_read += (numargs - 1);
+}
+
+static inline void showTSCNotImplementedWarning(const char *message)
+{
+	SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_WARNING, "Unimplemented command", message, nullptr);
 }
 
 int updateTsc()
@@ -551,12 +557,27 @@ int updateTsc()
 						}
 					}
 				}
+
 				tscCleanup(3);
 				break;
 			case('<BOA'):
+				static bool notifiedAboutBOA = false;
+				if (!notifiedAboutBOA && debugFlags & notifyOnNotImplemented)
+				{
+					notifiedAboutBOA = true;
+					showTSCNotImplementedWarning("<BOA is not implemented");
+				}
+
 				tscCleanup(1);
 				break;
 			case('<BSL'):
+				static bool notifiedAboutBSL = false;
+				if (!notifiedAboutBSL && debugFlags & notifyOnNotImplemented)
+				{
+					notifiedAboutBSL = true;
+					showTSCNotImplementedWarning("<BSL is not implemented");
+				}
+
 				tscCleanup(1);
 				break;
 			case('<CAT'):
@@ -564,6 +585,13 @@ int updateTsc()
 				tscCleanup(0);
 				break;
 			case('<CIL'):
+				static bool notifiedAboutCIL = false;
+				if (!notifiedAboutCIL && debugFlags & notifyOnNotImplemented)
+				{
+					notifiedAboutCIL = true;
+					showTSCNotImplementedWarning("<CIL is not implemented");
+				}
+
 				tscCleanup(0);
 				break;
 			case('<CLO'):
@@ -580,6 +608,13 @@ int updateTsc()
 				tscCleanup(3);
 				break;
 			case('<CMU'):
+				static bool notifiedAboutCMU = false;
+				if (!notifiedAboutCMU && debugFlags & notifyOnNotImplemented)
+				{
+					notifiedAboutCMU = true;
+					showTSCNotImplementedWarning("<CMU is not implemented");
+				}
+
 				tscCleanup(1);
 				break;
 			case('<CNP'):
@@ -589,12 +624,33 @@ int updateTsc()
 				tscCleanup(3);
 				break;
 			case('<CPS'):
+				static bool notifiedAboutCPS = false;
+				if (!notifiedAboutCPS && debugFlags & notifyOnNotImplemented)
+				{
+					notifiedAboutCPS = true;
+					showTSCNotImplementedWarning("<CPS is not implemented");
+				}
+
 				tscCleanup(0);
 				break;
 			case('<CRE'):
+				static bool notifiedAboutCRE = false;
+				if (!notifiedAboutCRE && debugFlags & notifyOnNotImplemented)
+				{
+					notifiedAboutCRE = true;
+					showTSCNotImplementedWarning("<CRE is not implemented");
+				}
+
 				tscCleanup(0);
 				break;
 			case('<CSS'):
+				static bool notifiedAboutCSS = false;
+				if (!notifiedAboutCSS && debugFlags & notifyOnNotImplemented)
+				{
+					notifiedAboutCSS = true;
+					showTSCNotImplementedWarning("<CSS is not implemented");
+				}
+
 				tscCleanup(0);
 				break;
 			case('<DNA'):
@@ -691,6 +747,13 @@ int updateTsc()
 				tscCleanup(1);
 				break;
 			case('<FLA'):
+				static bool notifiedAboutFLA = false;
+				if (!notifiedAboutFLA && debugFlags & notifyOnNotImplemented)
+				{
+					notifiedAboutFLA = true;
+					showTSCNotImplementedWarning("<FLA is not implemented");
+				}
+
 				tscCleanup(0);
 				break;
 			case('<FLJ'):
@@ -700,9 +763,23 @@ int updateTsc()
 					tscCleanup(2);
 				break;
 			case('<FMU'):
+				static bool notifiedAboutFMU = false;
+				if (!notifiedAboutFMU && debugFlags & notifyOnNotImplemented)
+				{
+					notifiedAboutFMU = true;
+					showTSCNotImplementedWarning("<FMU is not implemented");
+				}
+
 				tscCleanup(0);
 				break;
 			case('<FOB'):
+				static bool notifiedAboutFOB = false;
+				if (!notifiedAboutFOB && debugFlags & notifyOnNotImplemented)
+				{
+					notifiedAboutFOB = true;
+					showTSCNotImplementedWarning("<FOB is not implemented");
+				}
+
 				tscCleanup(2);
 				break;
 			case('<FOM'):
@@ -744,15 +821,43 @@ int updateTsc()
 				initGame();
 				return 1;
 			case('<INP'):
+				static bool notifiedAboutINP = false;
+				if (!notifiedAboutINP && debugFlags & notifyOnNotImplemented)
+				{
+					notifiedAboutINP = true;
+					showTSCNotImplementedWarning("<INP is not implemented");
+				}
+
 				tscCleanup(3);
 				break;
 			case('<IT+'):
+				static bool notifiedAboutITPlus = false;
+				if (!notifiedAboutITPlus && debugFlags & notifyOnNotImplemented)
+				{
+					notifiedAboutITPlus = true;
+					showTSCNotImplementedWarning("<IT+ is not implemented");
+				}
+
 				tscCleanup(1);
 				break;
 			case('<IT-'):
+				static bool notifiedAboutITMinus = false;
+				if (!notifiedAboutITMinus && debugFlags & notifyOnNotImplemented)
+				{
+					notifiedAboutITMinus = true;
+					showTSCNotImplementedWarning("<IT- is not implemented");
+				}
+
 				tscCleanup(1);
 				break;
 			case('<ITJ'):
+				static bool notifiedAboutITJ = false;
+				if (!notifiedAboutITJ && debugFlags & notifyOnNotImplemented)
+				{
+					notifiedAboutITJ = true;
+					showTSCNotImplementedWarning("<ITJ is not implemented");
+				}
+
 				tscCleanup(2);
 				break;
 			case('<KEY'):
@@ -776,6 +881,13 @@ int updateTsc()
 				tscCleanup(1);
 				break;
 			case('<MLP'):
+				static bool notifiedAboutMLP = false;
+				if (!notifiedAboutMLP && debugFlags & notifyOnNotImplemented)
+				{
+					notifiedAboutMLP = true;
+					showTSCNotImplementedWarning("<MLP is not implemented");
+				}
+
 				tscCleanup(0);
 				break;
 			case('<MM0'):
@@ -828,9 +940,23 @@ int updateTsc()
 				tscCleanup(1);
 				break;
 			case('<MS2'):
+				static bool notifiedAboutMS2 = false;
+				if (!notifiedAboutMS2 && debugFlags & notifyOnNotImplemented)
+				{
+					notifiedAboutMS2 = true;
+					showTSCNotImplementedWarning("<MS2 is not implemented");
+				}
+
 				tscCleanup(0);
 				break;
 			case('<MS3'):
+				static bool notifiedAboutMS3 = false;
+				if (!notifiedAboutMS3 && debugFlags & notifyOnNotImplemented)
+				{
+					notifiedAboutMS3 = true;
+					showTSCNotImplementedWarning("<MS3 is not implemented");
+				}
+
 				tscCleanup(0);
 				break;
 			case('<MSG'):
@@ -885,6 +1011,12 @@ int updateTsc()
 				tscCleanup(1);
 				break;
 			case('<NCJ'):
+				static bool notifiedAboutNCJ = false;
+				if (!notifiedAboutNCJ && debugFlags & notifyOnNotImplemented)
+				{
+					notifiedAboutNCJ = true;
+					showTSCNotImplementedWarning("<NCJ is not implemented");
+				}
 				tscCleanup(2);
 				break;
 			case('<NOD'):
@@ -892,6 +1024,13 @@ int updateTsc()
 				tscCleanup(0);
 				return 1;
 			case('<NUM'):
+				static bool notifiedAboutNUM = false;
+				if (!notifiedAboutNUM && debugFlags & notifyOnNotImplemented)
+				{
+					notifiedAboutNUM = true;
+					showTSCNotImplementedWarning("<NUM is not implemented");
+				}
+
 				tscCleanup(1);
 				break;
 			case('<PRI'):
@@ -912,6 +1051,13 @@ int updateTsc()
 				tscCleanup(1);
 				break;
 			case('<RMU'):
+				static bool notifiedAboutRMU = false;
+				if (!notifiedAboutRMU && debugFlags & notifyOnNotImplemented)
+				{
+					notifiedAboutRMU = true;
+					showTSCNotImplementedWarning("<RMU is not implemented");
+				}
+
 				tscCleanup(0);
 				break;
 			case('<SAT'):
@@ -919,6 +1065,13 @@ int updateTsc()
 				tscCleanup(0);
 				break;
 			case('<SIL'):
+				static bool notifiedAboutSIL = false;
+				if (!notifiedAboutSIL && debugFlags & notifyOnNotImplemented)
+				{
+					notifiedAboutSIL = true;
+					showTSCNotImplementedWarning("<SIL is not implemented");
+				}
+
 				tscCleanup(1);
 				break;
 			case('<SK+'):
@@ -950,6 +1103,13 @@ int updateTsc()
 				tscCleanup(0);
 				break;
 			case('<SMP'):
+				static bool notifiedAboutSMP = false;
+				if (!notifiedAboutSMP && debugFlags & notifyOnNotImplemented)
+				{
+					notifiedAboutSMP = true;
+					showTSCNotImplementedWarning("<SMP is not implemented");
+				}
+
 				tscCleanup(2);
 				break;
 			case('<SNP'):
@@ -969,12 +1129,33 @@ int updateTsc()
 				tscCleanup(1);
 				break;
 			case('<SPS'):
+				static bool notifiedAboutSPS = false;
+				if (!notifiedAboutSPS && debugFlags & notifyOnNotImplemented)
+				{
+					notifiedAboutSPS = true;
+					showTSCNotImplementedWarning("<SPS is not implemented");
+				}
+
 				tscCleanup(0);
 				break;
 			case('<SSS'):
+				static bool notifiedAboutSSS = false;
+				if (!notifiedAboutSSS && debugFlags & notifyOnNotImplemented)
+				{
+					notifiedAboutSSS = true;
+					showTSCNotImplementedWarning("<SSS is not implemented");
+				}
+
 				tscCleanup(1);
 				break;
 			case('<STC'):
+				static bool notifiedAboutSTC = false;
+				if (!notifiedAboutSTC && debugFlags & notifyOnNotImplemented)
+				{
+					notifiedAboutSTC = true;
+					showTSCNotImplementedWarning("<STC is not implemented");
+				}
+
 				tscCleanup(0);
 				break;
 			case('<SVP'):
@@ -1017,6 +1198,13 @@ int updateTsc()
 				bExit = true;
 				break;
 			case('<XX1'):
+				static bool notifiedAboutXX1 = false;
+				if (!notifiedAboutXX1 && debugFlags & notifyOnNotImplemented)
+				{
+					notifiedAboutXX1 = true;
+					showTSCNotImplementedWarning("<XX1 is not implemented");
+				}
+
 				tscCleanup(1);
 				break;
 			case('<YNJ'):
@@ -1033,7 +1221,7 @@ int updateTsc()
 				tscCleanup(0);
 				break;
 			default:
-				doCustomError("oops invalid tsc command fuck you");
+				doCustomError("Unimplemented and unhandled (no fail-safe) TSC command");
 				break;
 			}
 		}
