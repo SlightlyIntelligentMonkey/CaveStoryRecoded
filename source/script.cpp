@@ -361,11 +361,11 @@ int updateTsc()
 				//Play selection sound
 				playSound(SFX_YNConfirm);
 
-				if (tsc.select == true)
+				if (tsc.select)
 				{
 					jumpTscEvent(tsc.next_event); //Jump to specified event
 				}
-				else if (tsc.select == false)
+				else if (!tsc.select)
 				{
 					//Continue like normal
 					tsc.mode = PARSE;

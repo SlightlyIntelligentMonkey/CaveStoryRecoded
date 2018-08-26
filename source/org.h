@@ -67,7 +67,7 @@ struct ORG
 constexpr const char *songNames[42]
 {
 	"xxxx",
-	"wanpaku"
+	"wanpaku",
 	"anzen",
 	"gameover",
 	"gravity",

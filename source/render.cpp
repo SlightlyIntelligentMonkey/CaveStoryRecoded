@@ -196,9 +196,7 @@ bool isMultibyte(uint8_t c) //Shift-JIS
 {
 	if (c > 0x80u && c <= 0x9Fu)
 		return true;
-	if (c <= 0xDFu || c > 0xEFu)
-		return false;
-	return true;
+	return !(c <= 0xDFu || c > 0xEFu);
 }
 
 void drawString(int x, int y, const char *str, const uint8_t *flag)
