@@ -580,6 +580,7 @@ int updateTsc()
 				tscCleanup(3);
 				break;
 			case('<CMU'):
+				changeOrg(getTSCNumber(tsc.p_read + 4));
 				tscCleanup(1);
 				break;
 			case('<CNP'):
@@ -912,6 +913,7 @@ int updateTsc()
 				tscCleanup(1);
 				break;
 			case('<RMU'):
+				resumeOrg();
 				tscCleanup(0);
 				break;
 			case('<SAT'):

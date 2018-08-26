@@ -741,3 +741,8 @@ extern int gameFlags;
 //Functions
 [[noreturn]] void doError();
 [[noreturn]] void doCustomError(const char *msg);
+
+#define BYTE unsigned char
+typedef unsigned int Uint32;
+typedef unsigned short Uint16;
+typedef unsigned char Uint8;

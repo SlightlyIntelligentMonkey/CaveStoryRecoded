@@ -216,14 +216,4 @@ void drawHud(bool hide) // TBD : Handle hide parameter
 	drawPlayerHealth();
 	drawPlayerAir();
 	drawHudWeapons();
-
-	if (debugFlags & showSlots)
-	{
-		string debugStr1 = "There are " + to_string(npcs.size()) + " npc slots.";
-		string debugStr2 = "There are " + to_string(bullets.size()) + " bullet slots.";
-		string debugStr3 = "There are " + to_string(carets.size()) + " caret slots.";
-		drawString(8, screenHeight - 12, debugStr1.c_str(), nullptr);
-		drawString(8, screenHeight - 24, debugStr2.c_str(), nullptr);
-		drawString(8, screenHeight - 36, debugStr3.c_str(), nullptr);
-	}
 }

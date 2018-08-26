@@ -6,10 +6,6 @@
 #include <thread>
 #include <cmath>
 
-#ifndef M_PI
-#define M_PI 3.14159265358979323846
-#endif
-
 using std::mt19937;
 using std::enable_if;
 using std::seed_seq;
@@ -90,3 +86,24 @@ int clamp(int x, int mi, int ma) {
 	return std::max(std::min(ma, x), mi);
 }
 
+
+//returns result of normalized sinc
+double sinc(double x)
+{
+	return (sin(M_PI*(float)x) / (M_PI*(float)x));
+}
+
+//returns greatest common denominator a and b
+int getGCD(int x, int y)
+{
+	if (x < y)
+		std::swap(x, y);
+
+	while (y > 0)
+	{
+		int f = x % y;
+		x = y;
+		y = f;
+	}
+	return x;
+}

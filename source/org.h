@@ -1,41 +1,97 @@
 #pragma once
 #include "common.h"
 
-struct NOTE
-{
-	uint32_t pos;
-	uint8_t note;
-	uint8_t length;
-	uint8_t volume;
-	uint8_t pan;
-};
 
-struct TRACK
-{
-	uint16_t freq;
-	uint8_t wave;
-	uint8_t pipi;
+//list of notes
+typedef struct NOTELIST {
+	NOTELIST *from;		//points to previous note
+	NOTELIST *to;		//points to next note
+	Uint32 start;
+	Uint8 note;
+	Uint8 length;
+	Uint8 volume;
+	Uint8 pan;
+}NOTELIST;
 
-	uint16_t amountNotes;
-	NOTE *note;
+//track stuff
+typedef struct {
+	Uint16 freq;			//1000 is default
+	Uint16 num_notes;		//total number of notes in track
+	Uint8 wave;				//instrument
+	Uint8 pi;				//pizzacatto
+
+	Uint8 length;			//length of note in steps
+
+	Uint8 key;
+	Uint8 keyOn;
+	Uint8 keyTwin;
+
+	int *noteBuf;
+	Uint32 noteBufLen;
+	//used for drums
+	Uint32 bufPos;
+
+	//calculated volume/pan amounts
+	double volume;
+	double lpan;
+	double rpan;
+
+	NOTELIST *note_p;		//pointer to current note
+	NOTELIST *note_list;	//pointer to start of notes
+}TRACKDATA;
+
+
+const Uint32 MAXMELODY = 8;
+const Uint32 MAXTRACK = 16;
+class ORG
+{
+private:
+	char header[6];			//describes which org version
+	Uint16 wait;			//length of step in milliseconds
+	Uint8 stepPerBar;
+	Uint8 beatsPerStep;
+
+	Uint32 loopStart;
+	Uint32 loopEnd;
+
+	TRACKDATA track[MAXTRACK];
 	
-	uint32_t samples;
+public:
+	int *stepBuf;
+	Uint32 stepBufPos;
+	Uint32 stepBufLen;
+	Uint32 samplesPerStep;
+	Uint32 pos;
+
+	void load(const char *path);
+	void playData();
+	void freemem();
+
+	//sets the play position
+	void setPos(long x)
+	{
+		for (Uint32 i = 0; i < MAXTRACK; i++)
+		{
+			track[i].note_p = track[i].note_list;
+			while (track[i].note_p != nullptr && track[i].note_p->start < x)
+				track[i].note_p = track[i].note_p->to;
+		}
+		pos = x;
+	}
 };
 
-struct ORG
+struct DRUM
 {
-	char header[6];
-
-	uint16_t tempo;
-
-	uint8_t stepPerBeat;
-	uint8_t beatPerMeasure;
-
-	uint32_t loopStart;
-	uint32_t loopEnd;
-
-	TRACK track[16];
-
-	uint32_t pos;
-	uint32_t samples;
+	int *buf;
+	Uint32 len;
 };
+
+void iniOrg();
+void exitOrg();
+void playWave(int wave, int *stream, Uint32 len, double frequency);
+
+#define MAXWAVES 100
+#define MAXDRUMS 9
+
+extern ORG *org;
+extern DRUM drumTbl[MAXDRUMS];

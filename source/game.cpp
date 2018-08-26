@@ -16,6 +16,7 @@
 #include "flags.h"
 
 #include <cstring>
+#include <string>
 #include <SDL_scancode.h>
 #include <SDL_timer.h>
 #include <SDL_render.h>
@@ -92,58 +93,122 @@ void debugLevels()
 		loadLevel(13);
 		currentPlayer.setPos(10 << 13, 8 << 13);
 
-		//sound::playOrg(8);
+		changeOrg(8);
 	}
 	else if (isKeyPressed(SDL_SCANCODE_2)) {
 		loadLevel(12);
 		currentPlayer.setPos(37 << 13, 11 << 13);
 
-		//sound::playOrg(8);
+		changeOrg(8);
 	}
 	else if (isKeyPressed(SDL_SCANCODE_3)) {
 		loadLevel(2);
 		currentPlayer.setPos(5 << 13, 6 << 13);
 
-		//sound::playOrg(1);
+		changeOrg(1);
 	}
 	else if (isKeyPressed(SDL_SCANCODE_4)) {
 		loadLevel(11);
 		currentPlayer.setPos(13 << 13, 34 << 13);
 
-		//sound::playOrg(9);
+		changeOrg(9);
 	}
 	else if (isKeyPressed(SDL_SCANCODE_5)) {
 		loadLevel(49);
 		currentPlayer.setPos(7 << 13, 6 << 13);
 
-		//sound::playOrg(27);
+		changeOrg(27);
 	}
 	else if (isKeyPressed(SDL_SCANCODE_6)) {
 		loadLevel(67);
 		currentPlayer.setPos(7 << 13, 52 << 13);
 
-		//sound::playOrg(29);
+		changeOrg(29);
 	}
 	else if (isKeyPressed(SDL_SCANCODE_7)) {
 		loadLevel(48);
 		currentPlayer.setPos(155 << 13, 1 << 13);
 
-		//sound::playOrg(38);
+		changeOrg(38);
 	}
 	else if (isKeyPressed(SDL_SCANCODE_8)) {
 		loadLevel(53);
 		currentPlayer.setPos(4 << 13, 165 << 13);
 
-		//sound::playOrg(38);
+		changeOrg(25);
 	}
 	else if (isKeyPressed(SDL_SCANCODE_9)) {
 		loadLevel(6);
 		currentPlayer.setPos(4 << 13, 18 << 13);
 
-		//sound::playOrg(38);
+		changeOrg(5);
+	}
+	else if (isKeyPressed(SDL_SCANCODE_0)) {
+		loadLevel(62);
+		currentPlayer.setPos(10 << 13, 18 << 13);
+
+		changeOrg(30);
 	}
 }
 
+Uint32 dispTimer = 0;
+char disp[64] = { 0 };
+int debugMode = 0;
+int debugFlags = showSlots | notifyOnNotImplemented;
+void debugFunction()
+{
+	char *retdVal = nullptr;
+	int flags = 0;
+	debugLevels();
+
+	if (dispTimer <= 0)
+	{
+		if (debugMode == 0 && isKeyDown(SDL_SCANCODE_RSHIFT) && isKeyDown(SDL_SCANCODE_BACKSPACE))
+		{
+			if (isKeyPressed(SDL_SCANCODE_M)) { debugMode = 1; }
+			if (isKeyPressed(SDL_SCANCODE_K)) { debugFlags ^= showSlots; }
+			if (isKeyPressed(SDL_SCANCODE_C)) { debugFlags ^= showCARId; }
+			if (isKeyPressed(SDL_SCANCODE_B)) { debugFlags ^= showBULId; }
+			if (isKeyPressed(SDL_SCANCODE_N)) { debugFlags ^= showNPCId; }
+		}
+
+		switch (debugMode)
+		{
+		case(0):
+			break;
+		case(1):
+			retdVal = debugSound();
+			if (retdVal != nullptr)
+			{
+				dispTimer = 100;
+				strcpy(disp, retdVal);
+				debugMode = 0;
+			}
+			break;
+		default:
+			debugMode = 0;
+			break;
+		}
+	}
+
+	if (dispTimer > 0)
+	{
+		drawString(0, 0, disp, 0);
+		dispTimer--;
+	}
+
+	if (debugFlags & showSlots)
+	{
+		std::string debugStr1 = "There are " + std::to_string(npcs.size()) + " npc slots.";
+		std::string debugStr2 = "There are " + std::to_string(bullets.size()) + " bullet slots.";
+		std::string debugStr3 = "There are " + std::to_string(carets.size()) + " caret slots.";
+		drawString(8, screenHeight - 12, debugStr1.c_str(), nullptr);
+		drawString(8, screenHeight - 24, debugStr2.c_str(), nullptr);
+		drawString(8, screenHeight - 36, debugStr3.c_str(), nullptr);
+	}
+
+	return;
+}
 //Escape menu
 RECT rcEscape = { 0, 128, 208, 144 };
 int escapeMenu()
@@ -394,8 +459,6 @@ int gameUpdatePlay()
 		if ((isKeyDown(SDL_SCANCODE_LALT) && isKeyPressed(SDL_SCANCODE_RETURN)) || (isKeyPressed(SDL_SCANCODE_LALT) && isKeyDown(SDL_SCANCODE_RETURN)))
 			switchScreenMode();
 
-		debugLevels();
-
 		//Update stuff
 		if (gameFlags & 1)
 		{
@@ -457,6 +520,8 @@ int gameUpdatePlay()
 			drawHud(false);
 
 		drawTsc();
+
+		debugFunction();
 
 		SDL_RenderPresent(renderer);
 	}

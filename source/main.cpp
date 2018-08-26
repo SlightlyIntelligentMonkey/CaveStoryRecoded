@@ -8,8 +8,6 @@
 #include "render.h"
 #include "game.h"
 
-//Debug flags
-int debugFlags = showSlots|notifyOnNotImplemented;
 
 //Rendering and view related variables
 SDL_Window *window;

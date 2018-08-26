@@ -153,7 +153,7 @@ void drawNPC()
 //Npc death things
 void dropExperience(int x, int y, int exp)
 {
-	for (; exp > 0 ;)
+	while (exp > 0)
 	{
 		int sub_exp;
 
@@ -400,7 +400,7 @@ void npc::draw()
 			side = view.right;
 
 		drawTexture(sprites[surf], &rect, (x - side) / 0x200 - viewport.x / 0x200 + xOffset, (y - view.top) / 0x200 - viewport.y / 0x200);
-
+		
 		if (debugFlags & showNPCId)
 		{
 			size_t index = 0;
@@ -414,7 +414,10 @@ void npc::draw()
 				}
 			}
 
-			drawString((x - side) / 0x200 - viewport.x / 0x200 + xOffset, (y - view.top) / 0x200 - viewport.y / 0x200 - 16, to_string(index).c_str(), nullptr);
+			int yOffset = 0;
+			yOffset = -view.top;
+
+			drawString((x - side) / 0x200 - viewport.x / 0x200 + xOffset, (y + yOffset) / 0x200 - viewport.y / 0x200 - 16, to_string(index).c_str(), nullptr);
 		}
 	}
 }

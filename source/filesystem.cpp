@@ -5,6 +5,7 @@
 #include "game.h"
 #include "flags.h"
 #include "script.h"
+#include "sound.h"
 
 #include <cstdio>
 #include <cstdlib>
@@ -112,7 +113,7 @@ void loadProfile()
 			doCustomError("Invalid profile (first 8 bytes aren't \"Do041120\"");
 
 		const int level = SDL_ReadLE32(profile); //level
-		SDL_ReadLE32(profile); //song
+		changeOrg(SDL_ReadLE32(profile)); //song
 
 		currentPlayer.init();
 
@@ -183,6 +184,7 @@ void saveProfile() {
 	memcpy(profile, profileCode, 0x08);
 
 	writeLElong(profile, currentLevel, 0x08); //Level
+	writeLElong(profile, currentOrg, 0xC); //song
 
 	writeLElong(profile, currentPlayer.x, 0x10); //Player X
 	writeLElong(profile, currentPlayer.y, 0x14); //Player Y
