@@ -4,7 +4,15 @@
 void ini_audio();
 void loadSounds();
 void freeSounds();
+
 void playSound(int sound_no);
+void playSound(int sound_no, int mode);
+
+//debug function
+char *debugSound();
+
+//sample rate
+constexpr unsigned int sampleRate = 44100;
 
 enum soundEffects
 {
@@ -170,3 +178,4 @@ enum soundEffects
 	SFX_Silence74 = 0x8,
 	SFX_Silence75 = 0x9,
 };
+

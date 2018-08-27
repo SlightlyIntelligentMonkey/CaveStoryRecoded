@@ -5,11 +5,12 @@
 #include "game.h"
 #include "flags.h"
 #include "script.h"
+#include "org.h"
 
 #include <cstdio>
 #include <cstdlib>
 #include <sys/stat.h>
-#include <SDL_RWops.h>
+#include <SDL_rwops.h>
 
 using std::FILE;
 using std::fopen;
@@ -112,7 +113,7 @@ void loadProfile()
 			doCustomError("Invalid profile (first 8 bytes aren't \"Do041120\"");
 
 		const int level = SDL_ReadLE32(profile); //level
-		SDL_ReadLE32(profile); //song
+		changeOrg(SDL_ReadLE32(profile)); //song
 
 		currentPlayer.init();
 
@@ -181,6 +182,7 @@ void saveProfile()
 	memcpy(profile, profileCode, 0x08);
 
 	writeLElong(profile, currentLevel, 0x08); //Level
+	writeLElong(profile, currentOrg, 0xC); //song
 
 	writeLElong(profile, currentPlayer.x, 0x10); //Player X
 	writeLElong(profile, currentPlayer.y, 0x14); //Player Y
@@ -217,3 +219,4 @@ void saveProfile()
 	//Save to file
 	writeFile(profileName, profile, 0x604);
 }
+

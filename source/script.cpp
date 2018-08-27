@@ -10,11 +10,12 @@
 #include "game.h"
 #include "player.h"
 #include "input.h"
+#include "org.h"
 
 #include <cstring>
 #include <cstdlib>
 #include <SDL_messagebox.h>
-#include <SDL_RWops.h>
+#include <SDL_rwops.h>
 #include <SDL_render.h>
 
 using std::malloc;
@@ -516,7 +517,6 @@ int updateTsc()
 			static bool notifiedAboutBOA = false;
 			static bool notifiedAboutBSL = false;
 			static bool notifiedAboutCIL = false;
-			static bool notifiedAboutCMU = false;
 			static bool notifiedAboutCPS = false;
 			static bool notifiedAboutCRE = false;
 			static bool notifiedAboutCSS = false;
@@ -532,7 +532,6 @@ int updateTsc()
 			static bool notifiedAboutMS3 = false;
 			static bool notifiedAboutNCJ = false;
 			static bool notifiedAboutNUM = false;
-			static bool notifiedAboutRMU = false;
 			static bool notifiedAboutSIL = false;
 			static bool notifiedAboutSMP = false;
 			static bool notifiedAboutSPS = false;
@@ -631,11 +630,7 @@ int updateTsc()
 				tscCleanup(3);
 				break;
 			case('<CMU'):
-				if (!notifiedAboutCMU && debugFlags & notifyOnNotImplemented)
-				{
-					notifiedAboutCMU = true;
-					showTSCNotImplementedWarning("<CMU is not implemented");
-				}
+				changeOrg(getTSCNumber(tsc.p_read + 4));
 
 				tscCleanup(1);
 				break;
@@ -1058,11 +1053,7 @@ int updateTsc()
 				tscCleanup(1);
 				break;
 			case('<RMU'):
-				if (!notifiedAboutRMU && debugFlags & notifyOnNotImplemented)
-				{
-					notifiedAboutRMU = true;
-					showTSCNotImplementedWarning("<RMU is not implemented");
-				}
+				resumeOrg();
 
 				tscCleanup(0);
 				break;

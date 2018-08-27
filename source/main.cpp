@@ -8,9 +8,6 @@
 #include "render.h"
 #include "game.h"
 
-//Debug flags
-int debugFlags = showSlots|notifyOnNotImplemented;
-
 //Rendering and view related variables
 SDL_Window *window;
 SDL_Renderer *renderer;
@@ -57,33 +54,8 @@ void doCustomError(const char *msg)
 
 SDL_Texture* sprites[0x28];
 
-int init()
+void loadInitialSprites()
 {
-	//Initiate SDL and window stuff
-	if (SDL_Init(SDL_INIT_TIMER | SDL_INIT_AUDIO | SDL_INIT_VIDEO) < 0)
-		doCustomError("Couldn't initiate SDL");
-
-	//Initiate SDL_image
-	if (!(IMG_Init(IMG_INIT_PNG) & IMG_INIT_PNG))
-		doCustomError("Couldn't initiate SDL Image");
-
-	// TBD : Load config data, initialise keybinds and screen resolution based on it
-	// TBD : Init joypad
-
-	initTsc();
-	initFlags();
-
-	ini_audio();
-	loadSounds();
-
-	currentPlayer.init();
-
-	createWindow(320, 240, 2, true);
-
-	//Load assets
-	loadNpcTable();
-	loadStageTable();
-
 	loadImage("data/Title.png", &sprites[0x00]);
 	loadImage("data/Pixel.png", &sprites[0x01]);
 
@@ -112,6 +84,37 @@ int init()
 
 	loadImage("data/Font.png", &sprites[0x26]);
 	loadImage("data/Missing.png", &sprites[0x27]);
+
+}
+
+int init()
+{
+	//Initiate SDL and window stuff
+	if (SDL_Init(SDL_INIT_TIMER | SDL_INIT_AUDIO | SDL_INIT_VIDEO) < 0)
+		doCustomError("Couldn't initiate SDL");
+
+	//Initiate SDL_image
+	if (!(IMG_Init(IMG_INIT_PNG) & IMG_INIT_PNG))
+		doCustomError("Couldn't initiate SDL Image");
+
+	// TBD : Load config data, initialise keybinds and screen resolution based on it
+	// TBD : Init joypad
+
+	initTsc();
+	initFlags();
+
+	ini_audio();
+	loadSounds();
+
+	currentPlayer.init();
+
+	createWindow(320, 240, 2, true);
+
+	//Load assets
+	loadNpcTable();
+	loadStageTable();
+
+	loadInitialSprites();
 
 	return 0;
 }

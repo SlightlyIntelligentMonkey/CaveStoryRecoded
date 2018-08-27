@@ -14,13 +14,17 @@
 #include "bullet.h"
 #include "mathUtils.h"
 #include "flags.h"
+#include "org.h"
 
+#include <string>
 #include <cstring>
 #include <SDL_scancode.h>
 #include <SDL_timer.h>
 #include <SDL_render.h>
 #include <SDL_events.h>
 
+using std::string;
+using std::to_string;
 using std::memset;
 
 int gameMode = 1;
@@ -93,63 +97,139 @@ void debugLevels()
 		loadLevel(13);
 		currentPlayer.setPos(tileToCoord(10), tileToCoord(8));
 
-		//sound::playOrg(8);
+		changeOrg(mus_Gestation);
 	}
 	else if (isKeyPressed(SDL_SCANCODE_2))
 	{
 		loadLevel(12);
 		currentPlayer.setPos(tileToCoord(37), tileToCoord(11));
 
-		//sound::playOrg(8);
+		changeOrg(mus_Gestation);
 	}
 	else if (isKeyPressed(SDL_SCANCODE_3))
 	{
 		loadLevel(2);
 		currentPlayer.setPos(tileToCoord(5), tileToCoord(6));
 
-		//sound::playOrg(1);
+		changeOrg(mus_MischievousRobot);
 	}
 	else if (isKeyPressed(SDL_SCANCODE_4))
 	{
 		loadLevel(11);
 		currentPlayer.setPos(tileToCoord(13), tileToCoord(34));
 
-		//sound::playOrg(9);
+		changeOrg(mus_MimigaTown);
 	}
 	else if (isKeyPressed(SDL_SCANCODE_5))
 	{
 		loadLevel(49);
 		currentPlayer.setPos(tileToCoord(7), tileToCoord(6));
 
-		//sound::playOrg(27);
+		changeOrg(mus_ScorchingBack);
 	}
 	else if (isKeyPressed(SDL_SCANCODE_6))
 	{
 		loadLevel(67);
 		currentPlayer.setPos(tileToCoord(7), tileToCoord(52));
 
-		//sound::playOrg(29);
+		changeOrg(mus_FinalCave);
 	}
 	else if (isKeyPressed(SDL_SCANCODE_7))
 	{
 		loadLevel(48);
 		currentPlayer.setPos(tileToCoord(155), tileToCoord(1));
 
-		//sound::playOrg(38);
+		changeOrg(mus_LivingWaterway);
 	}
 	else if (isKeyPressed(SDL_SCANCODE_8))
 	{
 		loadLevel(53);
 		currentPlayer.setPos(tileToCoord(4), tileToCoord(165));
 
-		//sound::playOrg(38);
+		changeOrg(mus_Moonsong);
 	}
 	else if (isKeyPressed(SDL_SCANCODE_9))
 	{
 		loadLevel(6);
 		currentPlayer.setPos(tileToCoord(4), tileToCoord(18));
 
-		//sound::playOrg(38);
+		changeOrg(mus_OnToGrasstown);
+	}
+	else if (isKeyPressed(SDL_SCANCODE_0))
+	{
+		loadLevel(62);
+		currentPlayer.setPos(tileToCoord(10), tileToCoord(18));
+
+		changeOrg(mus_Balcony);
+	}
+}
+
+int debugFlags = showSlots | notifyOnNotImplemented;
+
+void debugFunction()
+{
+	static uint32_t displayTimer = 0;
+	static char disp[64] = { 0 };
+	static int debugMode = 0;
+
+	char *retdVal = nullptr;
+	int flags = 0;
+	debugLevels();
+
+	if (displayTimer <= 0)
+	{
+		if (debugMode == 0 && isKeyDown(SDL_SCANCODE_RSHIFT) && isKeyDown(SDL_SCANCODE_BACKSPACE))
+		{
+			if (isKeyPressed(SDL_SCANCODE_M))
+				debugMode = 1;
+			if (isKeyPressed(SDL_SCANCODE_K))
+				debugFlags ^= showSlots;
+			if (isKeyPressed(SDL_SCANCODE_C))
+				debugFlags ^= showCARId;
+			if (isKeyPressed(SDL_SCANCODE_B))
+				debugFlags ^= showBULId;
+			if (isKeyPressed(SDL_SCANCODE_N))
+				debugFlags ^= showNPCId;
+		}
+
+		switch (debugMode)
+		{
+		case 0:
+			break;
+			
+		case 1:
+			retdVal = debugSound();
+
+			if (retdVal != nullptr)
+			{
+				displayTimer = 100;
+				strcpy(disp, retdVal);
+				debugMode = 0;
+			}
+			break;
+
+		default:
+			debugMode = 0;
+			break;
+		}
+	}
+
+	if (displayTimer > 0)
+	{
+		drawString(0, 0, disp, nullptr);
+		displayTimer--;
+	}
+
+	if (debugFlags & showSlots)
+	{
+		string debugStr1 = "There are " + to_string(npcs.size()) + " npc slots.";
+		string debugStr2 = "There are " + to_string(bullets.size()) + " bullet slots.";
+		string debugStr3 = "There are " + to_string(carets.size()) + " caret slots.";
+		string debugStr4 = "There are " + to_string(valueviews.size()) + " valueview slots";
+		drawString(8, screenHeight - 12, debugStr1.c_str(), nullptr);
+		drawString(8, screenHeight - 24, debugStr2.c_str(), nullptr);
+		drawString(8, screenHeight - 36, debugStr3.c_str(), nullptr);
+		drawString(8, screenHeight - 48, debugStr4.c_str(), nullptr);
 	}
 }
 
@@ -412,8 +492,6 @@ int gameUpdatePlay()
 		if ((isKeyDown(SDL_SCANCODE_LALT) && isKeyPressed(SDL_SCANCODE_RETURN)) || (isKeyPressed(SDL_SCANCODE_LALT) && isKeyDown(SDL_SCANCODE_RETURN)))
 			switchScreenMode();
 
-		debugLevels();
-
 		//Update stuff
 		if (gameFlags & 1)
 		{
@@ -475,6 +553,8 @@ int gameUpdatePlay()
 			drawHud(false);
 
 		drawTsc();
+
+		debugFunction();
 
 		SDL_RenderPresent(renderer);
 	}
@@ -715,3 +795,4 @@ int mainGameLoop()
 
 	return 0;
 }
+

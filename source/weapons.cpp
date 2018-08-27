@@ -14,7 +14,7 @@ using std::string;
 using std::to_string;
 
 //Shoot functions
-weaponShoot shootFunctions[] =
+weaponShoot shootFunctions[14] =
 {
 	static_cast<weaponShoot>(nullptr),
 	static_cast<weaponShoot>(nullptr),
