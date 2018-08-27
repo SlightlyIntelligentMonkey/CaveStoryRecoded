@@ -10,7 +10,7 @@ void writeLElong(uint8_t *data, uint32_t input, size_t offset);
 bool fileExists(const char *name);
 
 int loadFile(const char *name, uint8_t **data);
-int writeFile(const char *name, void *data, size_t amount);
+int writeFile(const char *name, const void *data, size_t amount);
 
 void loadProfile();
 void saveProfile();

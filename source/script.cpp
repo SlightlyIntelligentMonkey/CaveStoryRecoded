@@ -465,7 +465,7 @@ int updateTsc()
 				//Code for multibyte things?
 				c[0] = tsc.data[tsc.p_read];
 
-				if (c[0] >= 0)
+				if (c[0] >= 0) // Isn't c unsigned ?
 				{
 					c[1] = 0;
 				}
@@ -488,7 +488,7 @@ int updateTsc()
 				tsc.wait_beam = 0;
 
 				//Shift read and write positions
-				if (c[0] >= 0)
+				if (c[0] >= 0)	// Isn't c unsigned ?
 				{
 					++tsc.p_read;
 					++tsc.p_write;
@@ -513,6 +513,32 @@ int updateTsc()
 		}
 		else
 		{
+			static bool notifiedAboutBOA = false;
+			static bool notifiedAboutBSL = false;
+			static bool notifiedAboutCIL = false;
+			static bool notifiedAboutCMU = false;
+			static bool notifiedAboutCPS = false;
+			static bool notifiedAboutCRE = false;
+			static bool notifiedAboutCSS = false;
+			static bool notifiedAboutFLA = false;
+			static bool notifiedAboutFMU = false;
+			static bool notifiedAboutFOB = false;
+			static bool notifiedAboutINP = false;
+			static bool notifiedAboutITPlus = false;
+			static bool notifiedAboutITMinus = false;
+			static bool notifiedAboutITJ = false;
+			static bool notifiedAboutMLP = false;
+			static bool notifiedAboutMS2 = false;
+			static bool notifiedAboutMS3 = false;
+			static bool notifiedAboutNCJ = false;
+			static bool notifiedAboutNUM = false;
+			static bool notifiedAboutRMU = false;
+			static bool notifiedAboutSIL = false;
+			static bool notifiedAboutSMP = false;
+			static bool notifiedAboutSPS = false;
+			static bool notifiedAboutSSS = false;
+			static bool notifiedAboutSTC = false;
+			static bool notifiedAboutXX1 = false;
 			//Parse and run TSC commands
 			switch (tsc.data[tsc.p_read + 3] + (tsc.data[tsc.p_read + 2] << 8) + (tsc.data[tsc.p_read + 1] << 16) + (tsc.data[tsc.p_read] << 24))
 			{
@@ -561,7 +587,6 @@ int updateTsc()
 				tscCleanup(3);
 				break;
 			case('<BOA'):
-				static bool notifiedAboutBOA = false;
 				if (!notifiedAboutBOA && debugFlags & notifyOnNotImplemented)
 				{
 					notifiedAboutBOA = true;
@@ -571,7 +596,6 @@ int updateTsc()
 				tscCleanup(1);
 				break;
 			case('<BSL'):
-				static bool notifiedAboutBSL = false;
 				if (!notifiedAboutBSL && debugFlags & notifyOnNotImplemented)
 				{
 					notifiedAboutBSL = true;
@@ -585,7 +609,6 @@ int updateTsc()
 				tscCleanup(0);
 				break;
 			case('<CIL'):
-				static bool notifiedAboutCIL = false;
 				if (!notifiedAboutCIL && debugFlags & notifyOnNotImplemented)
 				{
 					notifiedAboutCIL = true;
@@ -608,7 +631,6 @@ int updateTsc()
 				tscCleanup(3);
 				break;
 			case('<CMU'):
-				static bool notifiedAboutCMU = false;
 				if (!notifiedAboutCMU && debugFlags & notifyOnNotImplemented)
 				{
 					notifiedAboutCMU = true;
@@ -624,7 +646,6 @@ int updateTsc()
 				tscCleanup(3);
 				break;
 			case('<CPS'):
-				static bool notifiedAboutCPS = false;
 				if (!notifiedAboutCPS && debugFlags & notifyOnNotImplemented)
 				{
 					notifiedAboutCPS = true;
@@ -634,7 +655,6 @@ int updateTsc()
 				tscCleanup(0);
 				break;
 			case('<CRE'):
-				static bool notifiedAboutCRE = false;
 				if (!notifiedAboutCRE && debugFlags & notifyOnNotImplemented)
 				{
 					notifiedAboutCRE = true;
@@ -644,7 +664,6 @@ int updateTsc()
 				tscCleanup(0);
 				break;
 			case('<CSS'):
-				static bool notifiedAboutCSS = false;
 				if (!notifiedAboutCSS && debugFlags & notifyOnNotImplemented)
 				{
 					notifiedAboutCSS = true;
@@ -747,7 +766,6 @@ int updateTsc()
 				tscCleanup(1);
 				break;
 			case('<FLA'):
-				static bool notifiedAboutFLA = false;
 				if (!notifiedAboutFLA && debugFlags & notifyOnNotImplemented)
 				{
 					notifiedAboutFLA = true;
@@ -763,7 +781,6 @@ int updateTsc()
 					tscCleanup(2);
 				break;
 			case('<FMU'):
-				static bool notifiedAboutFMU = false;
 				if (!notifiedAboutFMU && debugFlags & notifyOnNotImplemented)
 				{
 					notifiedAboutFMU = true;
@@ -773,7 +790,6 @@ int updateTsc()
 				tscCleanup(0);
 				break;
 			case('<FOB'):
-				static bool notifiedAboutFOB = false;
 				if (!notifiedAboutFOB && debugFlags & notifyOnNotImplemented)
 				{
 					notifiedAboutFOB = true;
@@ -821,7 +837,6 @@ int updateTsc()
 				initGame();
 				return 1;
 			case('<INP'):
-				static bool notifiedAboutINP = false;
 				if (!notifiedAboutINP && debugFlags & notifyOnNotImplemented)
 				{
 					notifiedAboutINP = true;
@@ -831,7 +846,6 @@ int updateTsc()
 				tscCleanup(3);
 				break;
 			case('<IT+'):
-				static bool notifiedAboutITPlus = false;
 				if (!notifiedAboutITPlus && debugFlags & notifyOnNotImplemented)
 				{
 					notifiedAboutITPlus = true;
@@ -841,7 +855,6 @@ int updateTsc()
 				tscCleanup(1);
 				break;
 			case('<IT-'):
-				static bool notifiedAboutITMinus = false;
 				if (!notifiedAboutITMinus && debugFlags & notifyOnNotImplemented)
 				{
 					notifiedAboutITMinus = true;
@@ -851,7 +864,6 @@ int updateTsc()
 				tscCleanup(1);
 				break;
 			case('<ITJ'):
-				static bool notifiedAboutITJ = false;
 				if (!notifiedAboutITJ && debugFlags & notifyOnNotImplemented)
 				{
 					notifiedAboutITJ = true;
@@ -881,7 +893,6 @@ int updateTsc()
 				tscCleanup(1);
 				break;
 			case('<MLP'):
-				static bool notifiedAboutMLP = false;
 				if (!notifiedAboutMLP && debugFlags & notifyOnNotImplemented)
 				{
 					notifiedAboutMLP = true;
@@ -940,7 +951,6 @@ int updateTsc()
 				tscCleanup(1);
 				break;
 			case('<MS2'):
-				static bool notifiedAboutMS2 = false;
 				if (!notifiedAboutMS2 && debugFlags & notifyOnNotImplemented)
 				{
 					notifiedAboutMS2 = true;
@@ -950,7 +960,6 @@ int updateTsc()
 				tscCleanup(0);
 				break;
 			case('<MS3'):
-				static bool notifiedAboutMS3 = false;
 				if (!notifiedAboutMS3 && debugFlags & notifyOnNotImplemented)
 				{
 					notifiedAboutMS3 = true;
@@ -1011,7 +1020,6 @@ int updateTsc()
 				tscCleanup(1);
 				break;
 			case('<NCJ'):
-				static bool notifiedAboutNCJ = false;
 				if (!notifiedAboutNCJ && debugFlags & notifyOnNotImplemented)
 				{
 					notifiedAboutNCJ = true;
@@ -1024,7 +1032,6 @@ int updateTsc()
 				tscCleanup(0);
 				return 1;
 			case('<NUM'):
-				static bool notifiedAboutNUM = false;
 				if (!notifiedAboutNUM && debugFlags & notifyOnNotImplemented)
 				{
 					notifiedAboutNUM = true;
@@ -1051,7 +1058,6 @@ int updateTsc()
 				tscCleanup(1);
 				break;
 			case('<RMU'):
-				static bool notifiedAboutRMU = false;
 				if (!notifiedAboutRMU && debugFlags & notifyOnNotImplemented)
 				{
 					notifiedAboutRMU = true;
@@ -1065,7 +1071,6 @@ int updateTsc()
 				tscCleanup(0);
 				break;
 			case('<SIL'):
-				static bool notifiedAboutSIL = false;
 				if (!notifiedAboutSIL && debugFlags & notifyOnNotImplemented)
 				{
 					notifiedAboutSIL = true;
@@ -1103,7 +1108,6 @@ int updateTsc()
 				tscCleanup(0);
 				break;
 			case('<SMP'):
-				static bool notifiedAboutSMP = false;
 				if (!notifiedAboutSMP && debugFlags & notifyOnNotImplemented)
 				{
 					notifiedAboutSMP = true;
@@ -1129,7 +1133,6 @@ int updateTsc()
 				tscCleanup(1);
 				break;
 			case('<SPS'):
-				static bool notifiedAboutSPS = false;
 				if (!notifiedAboutSPS && debugFlags & notifyOnNotImplemented)
 				{
 					notifiedAboutSPS = true;
@@ -1139,7 +1142,6 @@ int updateTsc()
 				tscCleanup(0);
 				break;
 			case('<SSS'):
-				static bool notifiedAboutSSS = false;
 				if (!notifiedAboutSSS && debugFlags & notifyOnNotImplemented)
 				{
 					notifiedAboutSSS = true;
@@ -1149,7 +1151,6 @@ int updateTsc()
 				tscCleanup(1);
 				break;
 			case('<STC'):
-				static bool notifiedAboutSTC = false;
 				if (!notifiedAboutSTC && debugFlags & notifyOnNotImplemented)
 				{
 					notifiedAboutSTC = true;
@@ -1198,7 +1199,6 @@ int updateTsc()
 				bExit = true;
 				break;
 			case('<XX1'):
-				static bool notifiedAboutXX1 = false;
 				if (!notifiedAboutXX1 && debugFlags & notifyOnNotImplemented)
 				{
 					notifiedAboutXX1 = true;

@@ -78,7 +78,7 @@ int loadFile(const char *name, uint8_t **data)
 	return filesize;
 }
 
-int writeFile(const char *name, void *data, size_t amount)
+int writeFile(const char *name, const void *data, size_t amount)
 {
 	FILE *file;
 	if ((file = fopen(name, "wb")) == nullptr)
@@ -176,9 +176,6 @@ void loadProfile()
 void saveProfile()
 {
 	uint8_t profile[0x604] = { 0 };
-
-	if (profile == nullptr)
-		doCustomError("Could not allocate memory for profile");
 
 	//Set data
 	memcpy(profile, profileCode, 0x08);

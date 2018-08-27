@@ -19,42 +19,42 @@ void initFlags()
 
 void setFlag(int a)
 {
-	tscFlags[a / 8] |= 1 << a % 8;
+	tscFlags[a / 8] |= 1 << (a % 8);
 }
 
 void clearFlag(int a)
 {
-	tscFlags[a / 8] &= ~(1 << a % 8);
+	tscFlags[a / 8] &= ~(1 << (a % 8));
 }
 
 bool getFlag(int a)
 {
-	return ((tscFlags[a / 8] >> a % 8) & 1) != 0;
+	return ((tscFlags[a / 8] >> (a % 8)) & 1) != 0;
 }
 
 //Skip flags
 void setSkipFlag(int a)
 {
-	skipFlags[a / 8] |= 1 << a % 8;
+	skipFlags[a / 8] |= 1 << (a % 8);
 }
 
 void clearSkipFlag(int a)
 {
-	skipFlags[a / 8] &= ~(1 << a % 8);
+	skipFlags[a / 8] &= ~(1 << (a % 8));
 }
 
 bool getSkipFlag(int a)
 {
-	return ((skipFlags[a / 8] >> a % 8) & 1) != 0;
+	return ((skipFlags[a / 8] >> (a % 8)) & 1) != 0;
 }
 
 //Map flags
 void setMapFlag(int a)
 {
-	mapFlags[a / 8] |= 1 << a % 8;
+	mapFlags[a / 8] |= 1 << (a % 8);
 }
 
 bool getMapFlag(int a)
 {
-	return ((mapFlags[a / 8] >> a % 8) & 1) != 0;
+	return ((mapFlags[a / 8] >> (a % 8)) & 1) != 0;
 }
