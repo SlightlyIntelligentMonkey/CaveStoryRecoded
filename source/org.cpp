@@ -10,52 +10,9 @@
 #include <stdio.h>
 #include <string.h>
 #include <SDL.h>
+#include <vector>
 
-const char *musicList[]
-{
-	"xxxx.org",
-	"wanpaku.org",
-	"anzen.org",
-	"gameover.org",
-	"gravity.org",
-	"weed.org",
-	"mdown2.org",
-	"fireeye.org",
-	"vivi.org",
-	"mura.org",
-	"fanfale1.org",
-	"ginsuke.org",
-	"cemetery.org",
-	"plant.org",
-	"kodou.org",
-	"fanfale3.org",
-	"fanfale2.org",
-	"dr.org",
-	"escape.org",
-	"jenka.org",
-	"maze.org",
-	"access.org",
-	"ironh.org",
-	"grand.org",
-	"curly.org",
-	"oside.org",
-	"requiem.org",
-	"wanpak2.org",
-	"quiet.org",
-	"lastcave.org",
-	"balcony.org",
-	"lastbtl.org",
-	"lastbt3.org",
-	"ending.org",
-	"zonbie.org",
-	"bdown.org",
-	"hell.org",
-	"jenka2.org",
-	"marine.org",
-	"ballos.org",
-	"toroko.org",
-	"white.org"
-};
+std::vector<char *> musicList;
 
 //instruments in memory
 int *waveTbl[MAXWAVES] = { nullptr };
@@ -133,7 +90,6 @@ void loadWaveTable()
 
 	return;
 }
-
 //frees the org wave table
 void freeWaveTable()
 {
@@ -144,9 +100,58 @@ void freeWaveTable()
 	return;
 }
 
+//loads musicList.txt
+void loadMusicList(const char *path)
+{
+	Uint32 c = 0;
+	char *temp = nullptr;
+	char *current = nullptr;
+	char *buf = nullptr;
+	loadFile(path, (uint8_t**)&buf);
+	if (buf == nullptr) { doError(); }
+
+	current = buf;
+	for (c = 0; buf[c] != 0; c++)
+	{
+		if (buf[c] == '\n')
+		{
+			temp = static_cast<char*>(calloc(1, &buf[c] - current));
+			strncpy(temp, current, (&buf[c] - current) - 1);
+			musicList.push_back(temp);
+			current = &buf[c+1];
+		}
+	}
+	temp = static_cast<char*>(calloc(1, &buf[c] - current));
+	strcpy(temp, current);
+	for (c = 0; temp[c] != 0; c++)
+	{
+		if (temp[c] == -3)
+		{
+			temp[c] = 0;
+			break;
+		}
+	}
+	musicList.push_back(temp);
+	free(buf);
+
+	return;
+}
+void freeMusicList()
+{
+	for (Uint32 s = 0; s < musicList.size(); s++)
+	{
+		free(musicList[s]);
+	}
+	musicList.clear();
+	musicList.shrink_to_fit();
+
+	return;
+}
+
 void iniOrg()
 {
 	loadWaveTable();
+	loadMusicList("data/Org/musicList.txt");
 
 	org = (ORG *)malloc(sizeof(ORG));
 	memset(org, 0, sizeof(ORG));
@@ -158,6 +163,7 @@ void exitOrg()
 	freeWaveTable();
 	org->freemem();
 	free(org);
+	freeMusicList();
 
 	return;
 }
@@ -658,7 +664,7 @@ char *debugSound()
 		{
 			no += (pow(10, (i-1)))*(input[abs(i - dsEndPos)] - 0x30);
 		}
-		if (no > _countof(musicList) || no < 0)
+		if (no > musicList.size() || no < 0)
 		{
 			memset(input, 0, sizeof(input));
 			strcpy(retVal, "INVALID ORG");
