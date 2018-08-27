@@ -48,7 +48,7 @@ const char *musicList[]
 	"lastbt3.org",
 	"ending.org",
 	"zonbie.org",
-	"breakDown.org",
+	"bdown.org",
 	"hell.org",
 	"jenka2.org",
 	"marine.org",
