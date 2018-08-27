@@ -92,7 +92,7 @@ void audio_callback(void *userdata, Uint8 *stream, int len) // TBD : Handle user
 	mixAudioOrg((int*)stream, len);
 }
 
-void ini_audio()
+void initAudio()
 {
 	want.channels = 2;
 	want.freq = sampleRate;

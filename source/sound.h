@@ -1,7 +1,7 @@
 #pragma once
 #include "common.h"
 
-void ini_audio();
+void initAudio();
 void loadSounds();
 void freeSounds();
 

@@ -103,7 +103,7 @@ int init()
 	initTsc();
 	initFlags();
 
-	ini_audio();
+	initAudio();
 	loadSounds();
 
 	currentPlayer.init();
