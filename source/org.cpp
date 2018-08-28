@@ -85,7 +85,7 @@ void loadWaveTable()
 		for (Uint32 s = 0; s < 0x100; s++)
 		{
 			waveTbl[w][s << 1] = (0x7FFFFFFF / 0xFF) * (dat[(w * 0x100) + s]);
-			waveTbl[w][(s << 1) + 1] = (0x7FFFFFFF / 0xFF) * (dat[(w * 0x100) + s]);	// Calculated through the same expression ? TBD : Either simplify this or correct this if it's an error
+			waveTbl[w][(s << 1) + 1] = (0x7FFFFFFF / 0xFF) * (dat[(w * 0x100) + s]);	// Calculated through the same expression ? TBD : Either optimize this or correct this if it's an error
 		}
 	}
 }
@@ -102,9 +102,9 @@ void loadMusicList(const char *path)
 {
 	uint32_t c = 0;
 	char *temp = nullptr;
-	char *current = nullptr;
+	char *current;
 	char *buf = nullptr;
-	loadFile(path, (uint8_t**)&buf);
+	loadFile(path, static_cast<uint8_t**>(&buf));
 	if (buf == nullptr)
 		doError();
 	current = buf;
@@ -448,21 +448,14 @@ void ORG::playData()
 		{
 			if (track[i].note_p->note != 0xFF)
 			{
-				if (track[i].noteBuf != nullptr)
-				{
-					free(track[i].noteBuf);
-				}
+				free(track[i].noteBuf);
 				track[i].noteBuf = createDrumBuf(track[i].wave, &track[i].noteBufLen, track[i].note_p->note, track[i].freq);
 				track[i].bufPos = 0;
 			}
 			if (track[i].note_p->pan != 0xFF)
-			{
 				calcPan((pan_tbl[track[i].note_p->pan] - 256) * 10, &track[i].lpan, &track[i].rpan);
-			}
 			if (track[i].note_p->volume != 0xFF)
-			{
 				track[i].volume = calcVolume((track[i].note_p->volume - 255) * 8);
-			}
 			//point to next note
 			track[i].note_p = track[i].note_p->to;
 		}
