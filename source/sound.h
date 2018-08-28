@@ -5,8 +5,8 @@ void initAudio();
 void loadSounds();
 void freeSounds();
 
-void playSound(int sound_no);
-void playSound(int sound_no, int mode);
+void playSound(size_t sound_no);
+void playSound(size_t sound_no, int mode);
 
 //debug function
 char *debugSound();

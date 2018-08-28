@@ -82,7 +82,7 @@ void iniOrg();
 void exitOrg();
 void playWave(int wave, int *stream, uint32_t len, double frequency);
 
-void changeOrg(const int num);
+void changeOrg(const uint32_t num);
 void resumeOrg();
 
 extern uint32_t currentOrg;

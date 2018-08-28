@@ -4,6 +4,8 @@
 #include "input.h"
 #include "filesystem.h"
 #include "mathUtils.h"
+
+#include <vector>
 #include <memory>
 #include <cmath>
 #include <cstdlib>
@@ -11,60 +13,20 @@
 #include <cstring>
 #include <SDL.h>
 
-const char *musicList[]
-{
-	"xxxx.org",
-	"wanpaku.org",
-	"anzen.org",
-	"gameover.org",
-	"gravity.org",
-	"weed.org",
-	"mdown2.org",
-	"fireeye.org",
-	"vivi.org",
-	"mura.org",
-	"fanfale1.org",
-	"ginsuke.org",
-	"cemetery.org",
-	"plant.org",
-	"kodou.org",
-	"fanfale3.org",
-	"fanfale2.org",
-	"dr.org",
-	"escape.org",
-	"jenka.org",
-	"maze.org",
-	"access.org",
-	"ironh.org",
-	"grand.org",
-	"curly.org",
-	"oside.org",
-	"requiem.org",
-	"wanpak2.org",
-	"quiet.org",
-	"lastcave.org",
-	"balcony.org",
-	"lastbtl.org",
-	"lastbt3.org",
-	"ending.org",
-	"zonbie.org",
-	"bdown.org",
-	"hell.org",
-	"jenka2.org",
-	"marine.org",
-	"ballos.org",
-	"toroko.org",
-	"white.org"
-};
+using std::vector;
+
+vector<char *> musicList;
 
 //instruments in memory
 int *waveTbl[MAXWAVES] = { nullptr };
-DRUM drumTbl[MAXDRUMS] = { nullptr };
+DRUM drumTbl[MAXDRUMS] = { nullptr, 0 };
+
 //org in memory
 ORG *org;
 Uint32 currentOrg = 0;
 Uint32 prevOrg = 0;
 Uint32 prevOrgPos = 0;
+
 //filter variables
 const int a = 2;
 const int windowWidth = 128;
@@ -82,31 +44,31 @@ struct OCTWAVE
 //octave wave table because pixel dummy
 OCTWAVE oct_wave[8] =
 {
-{ 256,  1, 4 },		//0 Oct
-{ 256,  2, 8 },		//1 Oct
-{ 128,  4, 12 },	//2 Oct
-{ 128,  8, 16 },	//3 Oct
-{ 64,  16, 20 },	//4 Oct
-{ 32,  32, 24 },	//5 Oct
-{ 16,  64, 28 },	//6 Oct
-{ 8,  128, 32 },	//7 Oct
+	{ 256,  1, 4 },		//0 Oct
+	{ 256,  2, 8 },		//1 Oct
+	{ 128,  4, 12 },	//2 Oct
+	{ 128,  8, 16 },	//3 Oct
+	{ 64,  16, 20 },	//4 Oct
+	{ 32,  32, 24 },	//5 Oct
+	{ 16,  64, 28 },	//6 Oct
+	{ 8,  128, 32 },	//7 Oct
 };
 
 //frequency table because pixel dummy
 double freq_tbl[12] =
 {
-261.62556530060,
-277.18263097687,
-293.66476791741,
-311.12698372208,
-329.62755691287,
-349.22823143300,
-369.99442271163,
-391.99543598175,
-415.30469757995,
-440.00000000000,
-466.16376151809,
-493.88330125612
+	261.62556530060,
+	277.18263097687,
+	293.66476791741,
+	311.12698372208,
+	329.62755691287,
+	349.22823143300,
+	369.99442271163,
+	391.99543598175,
+	415.30469757995,
+	440.00000000000,
+	466.16376151809,
+	493.88330125612
 };
 
 // --org starting and exiting functions -- //
@@ -116,9 +78,7 @@ void loadWaveTable()
 	Sint8 *dat = nullptr;
 	loadFile("data/Wave100.dat", reinterpret_cast<Uint8**>(&dat));
 	if (dat == nullptr)
-	{
 		doError();
-	}
 	for (Uint16 w = 0; w < MAXWAVES; w++)
 	{
 		waveTbl[w] = static_cast<int*>(calloc(4 * 2, 0x100));
@@ -134,40 +94,78 @@ void loadWaveTable()
 void freeWaveTable()
 {
 	for (Uint16 w = 0; w < 100; w++)
-	{
 		free(waveTbl[w]);
-	}
 }
+
+// Load musicList from musicList.txt
+void loadMusicList(const char *path)
+{
+	uint32_t c = 0;
+	char *temp = nullptr;
+	char *current = nullptr;
+	char *buf = nullptr;
+	loadFile(path, (uint8_t**)&buf);
+	if (buf == nullptr)
+		doError();
+	current = buf;
+	for (c = 0; buf[c] != 0; c++)
+		if (buf[c] == '\n')
+		{
+			temp = static_cast<char*>(calloc(1, &buf[c] - current));
+			strncpy(temp, current, (&buf[c] - current) - 1);
+			musicList.push_back(temp);
+			current = &buf[c + 1];
+		}
+	temp = static_cast<char*>(calloc(1, &buf[c] - current));
+	strcpy(temp, current);
+	for (c = 0; temp[c] != 0; c++)
+		if (temp[c] == -3)
+		{
+			temp[c] = 0;
+			break;
+		}
+	musicList.push_back(temp);
+	free(buf);
+}
+
+void freeMusicList()
+{
+	for (uint32_t s = 0; s < musicList.size(); s++)
+		free(musicList[s]);
+	musicList.clear();
+	musicList.shrink_to_fit();
+}
+
 void iniOrg()
 {
 	loadWaveTable();
+	loadMusicList("data/Org/musicList.txt");
 	org = static_cast<ORG *>(malloc(sizeof(ORG)));
 	memset(org, 0, sizeof(ORG));
 }
+
 void exitOrg()
 {
 	freeWaveTable();
 	org->freemem();
 	free(org);
+	freeMusicList();
 }
+
 // -- other org functions -- //
-void changeOrg(const int num)
+void changeOrg(const uint32_t num)
 {
 	char path[64];
 	if (num == currentOrg)
-	{
 		return;
-	}
 	org->samplesPerStep = 0;
 	org->stepBufLen = 0;
 	org->freemem();
 	prevOrg = currentOrg;
 	prevOrgPos = org->pos;
 	currentOrg = num;
-	if (num == 0)
-	{
+	if (num == mus_Silence)
 		return;
-	}
 	strcpy(path, orgFolder);
 	strcat(path, musicList[num]);
 	org->load(path);
@@ -195,13 +193,9 @@ void resumeOrg()
 double calcVolume(int volume)
 {
 	if (volume > 0)
-	{
 		volume = 0;
-	}
 	if (volume < -2048)
-	{
 		volume = -2048;
-	}
 	double attenuation = 1 - (static_cast<double>(volume) / -2048);
 	return attenuation;
 }
@@ -209,13 +203,9 @@ double calcVolume(int volume)
 void calcPan(int pan, double *lpan, double *rpan)
 {
 	if (pan > 2560)
-	{
 		pan = 2560;
-	}
 	if (pan < -2560)
-	{
 		pan = -2560;
-	}
 	if (pan < 0)
 	{
 		*lpan = 1 - (static_cast<double>(pan) / -2560);
@@ -236,13 +226,9 @@ void genFilter(int nt, int fc, int bw, int g, int fsr)
 	{
 		x = (i - (static_cast<double>(nt) / 2)) * 2.0*M_PI*bw / fsr; //  scale Sinc width
 		if (x == 0)
-		{
-			ys = 1;
-		} //  calculate Sinc function
+			ys = 1; //  calculate Sinc function
 		else
-		{
 			ys = sinc(x);
-		}
 		windowGain = g * (4.0 * bw / fsr); //  correct window gain
 		//  lanczos window
 		window = a * sin(M_PI*(i - (nt / 2)))*sin((M_PI*(i - (nt / 2))) / a) /
@@ -265,17 +251,11 @@ int resamp(int x, const int *indat, int alim, int fmax, int fsr, int wnwdth)
 		window = a * sin(M_PI*(j - x))*sin((M_PI*(j - x)) / a) / (pow(M_PI, 2)*pow((j - x), 2));
 		r_a = 2 * M_PI*(j - x)*fmax / fsr;
 		if (r_a == 0)
-		{
 			r_snc = 1;
-		}
 		else
-		{
 			r_snc = sinc(r_a);
-		}
 		if ((j >= 0) && (j < alim))
-		{
 			r_y += r_g * window * r_snc * indat[j];
-		}
 	}
 	return lround(r_y + 0.5);// Return new filtered sample
 }
@@ -287,9 +267,7 @@ void changeFrequency(int **buf, Uint32 *len, double frequency, Uint32 curFreq)
 	auto newLen = static_cast<uint32_t>((*len*curFreq) / frequency);
 	auto *tBuf = static_cast<int *>(calloc(4, newLen));
 	for (Uint32 s = 0; s < newLen; s++)
-	{
 		tBuf[(s)] = (*buf)[lround(((s)*inverse) + 0.5)];
-	}
 
 	free(*buf);
 	*buf = tBuf;
@@ -311,6 +289,7 @@ int *createWaveBuf(int wave, Uint32 *size, Uint8 note, Uint16 freq)
 	changeFrequency(&buf, size, calcFrequency, 22050);
 	return buf;
 }
+
 int *createDrumBuf(int drum, Uint32 *size, Uint8 note, Uint16 freq)
 {
 	//creates buffer for drum 
@@ -322,15 +301,14 @@ int *createDrumBuf(int drum, Uint32 *size, Uint8 note, Uint16 freq)
 	changeFrequency(&buf, size, calcFrequency, 32500);
 	return buf;
 }
+
 // -- org class function definitions -- //
 void ORG::load(const char *path)
 {
 	SDL_RWops *orgRaw = SDL_RWFromFile(path, "rb");
 	if (orgRaw == nullptr)
-	{
 		doError();
-	}
-//reads the weird string thing at the start
+	//reads the weird string thing at the start
 	orgRaw->read(orgRaw, header, 1, 6);
 	//reads basic information about the song
 	wait = SDL_ReadLE16(orgRaw);
@@ -352,7 +330,7 @@ void ORG::load(const char *path)
 	for (Uint32 t = 0; t < MAXTRACK; t++)
 	{
 		if (track[t].num_notes > 0)
-			track[t].note_list = (NOTELIST*)calloc(track[t].num_notes, sizeof(NOTELIST));
+			track[t].note_list = static_cast<NOTELIST*>(calloc(track[t].num_notes, sizeof(NOTELIST)));
 		else
 		{
 			track[t].note_list = nullptr;
@@ -369,29 +347,19 @@ void ORG::load(const char *path)
 		track[t].note_list[track[t].num_notes - 1].to = nullptr;
 		//reads the start for every note in the track
 		for (int n = 0; n < track[t].num_notes; n++)
-		{
 			track[t].note_list[n].start = SDL_ReadLE32(orgRaw);
-		}
 		//reads the frequency/pitch for the notes
 		for (int n = 0; n < track[t].num_notes; n++)
-		{
 			track[t].note_list[n].note = SDL_ReadU8(orgRaw);
-		}
 		//reads the length of the notes
 		for (int n = 0; n < track[t].num_notes; n++)
-		{
 			track[t].note_list[n].length = SDL_ReadU8(orgRaw);
-		}
 		//reads the volume for the notes
 		for (int n = 0; n < track[t].num_notes; n++)
-		{
 			track[t].note_list[n].volume = SDL_ReadU8(orgRaw);
-		}
 		//reads the pan of the notes
 		for (int n = 0; n < track[t].num_notes; n++)
-		{
 			track[t].note_list[n].pan = SDL_ReadU8(orgRaw);
-		}
 	}
 	//make sure pos is set to start
 	setPos(0);
@@ -405,7 +373,7 @@ void ORG::load(const char *path)
 void ORG::playData()
 {
 	//plays waves
-	for (int i = 0; i < MAXMELODY; i++)
+	for (size_t i = 0; i < MAXMELODY; i++)
 	{
 		if (track[i].note_p != nullptr && pos == track[i].note_p->start)
 		{
@@ -472,8 +440,9 @@ void ORG::playData()
 		if (track[i].length > 0)
 			track[i].length--;
 	}
+
 	//plays drums
-	for (int i = MAXMELODY; i < MAXTRACK; i++)
+	for (size_t i = MAXMELODY; i < MAXTRACK; i++)
 	{
 		if (track[i].note_p != nullptr && pos == track[i].note_p->start)
 		{
@@ -565,7 +534,7 @@ void ORG::freemem()
 }
 
 // -- sound test functions -- //
-void playWave(int wave, int *stream, Uint32 len, double frequency)
+void playWave(int wave, int *stream, uint32_t len, double frequency)
 {
 	Uint32 nlen = 0x200;
 	auto *tBuf = static_cast<int*>(calloc(4 * 2, 0x100));
@@ -580,70 +549,42 @@ void playWave(int wave, int *stream, Uint32 len, double frequency)
 }
 
 char input[6];
-int dsEndPos = 0;
+size_t dsEndPos = 0;
 char *debugSound()
 {
 	char temp[16];
 	static char retVal[32];
 	Uint32 no = 0;
 	if ((isKeyPressed(SDL_SCANCODE_1) || isKeyPressed(SDL_SCANCODE_KP_1)) && dsEndPos < sizeof(input))
-	{
 		strcat(input, "1");
-	}
 	if ((isKeyPressed(SDL_SCANCODE_2) || isKeyPressed(SDL_SCANCODE_KP_2)) && dsEndPos < sizeof(input))
-	{
 		strcat(input, "2");
-	}
 	if ((isKeyPressed(SDL_SCANCODE_3) || isKeyPressed(SDL_SCANCODE_KP_3)) && dsEndPos < sizeof(input))
-	{
 		strcat(input, "3");
-	}
 	if ((isKeyPressed(SDL_SCANCODE_4) || isKeyPressed(SDL_SCANCODE_KP_4)) && dsEndPos < sizeof(input))
-	{
 		strcat(input, "4");
-	}
 	if ((isKeyPressed(SDL_SCANCODE_5) || isKeyPressed(SDL_SCANCODE_KP_5)) && dsEndPos < sizeof(input))
-	{
 		strcat(input, "5");
-	}
 	if ((isKeyPressed(SDL_SCANCODE_6) || isKeyPressed(SDL_SCANCODE_KP_6)) && dsEndPos < sizeof(input))
-	{
 		strcat(input, "6");
-	}
 	if ((isKeyPressed(SDL_SCANCODE_7) || isKeyPressed(SDL_SCANCODE_KP_7)) && dsEndPos < sizeof(input))
-	{
 		strcat(input, "7");
-	}
 	if ((isKeyPressed(SDL_SCANCODE_8) || isKeyPressed(SDL_SCANCODE_KP_8)) && dsEndPos < sizeof(input))
-	{
 		strcat(input, "8");
-	}
 	if ((isKeyPressed(SDL_SCANCODE_9) || isKeyPressed(SDL_SCANCODE_KP_9)) && dsEndPos < sizeof(input))
-	{
 		strcat(input, "9");
-	}
 	if ((isKeyPressed(SDL_SCANCODE_0) || isKeyPressed(SDL_SCANCODE_KP_0)) && dsEndPos < sizeof(input))
-	{
 		strcat(input, "0");
-	}
 	for (dsEndPos = 0; dsEndPos < sizeof(input); dsEndPos++)
-	{
 		if (input[dsEndPos] == 0)
-		{
 			break;
-		}
-	}
 	if (isKeyPressed(SDL_SCANCODE_BACKSPACE) && input[0] != 0)
-	{
 		input[dsEndPos - 1] = 0;
-	}
 	if (isKeyPressed(SDL_SCANCODE_RETURN) || isKeyPressed(SDL_SCANCODE_KP_ENTER))
 	{
-		for (int i = dsEndPos; i > 0; i--)
-		{
-			no += static_cast<uint32_t>((pow(10, (i - 1)))*(input[abs(i - dsEndPos)] - 0x30));
-		}
-		if (no > _countof(musicList))
+		for (size_t i = dsEndPos; i > 0; i--)
+			no += static_cast<uint32_t>((pow(10, (i - 1)))*(input[abs(static_cast<int>(i) - static_cast<int>(dsEndPos))] - 0x30));
+		if (no > musicList.size())
 		{
 			memset(input, 0, sizeof(input));
 			strcpy(retVal, "INVALID ORG");
@@ -652,13 +593,9 @@ char *debugSound()
 		changeOrg(no);
 		memset(input, 0, sizeof(input));
 		if (musicList[no] != nullptr)
-		{
 			strcpy(retVal, musicList[no]);
-		}
 		else
-		{
 			strcpy(retVal, "nothing");
-		}
 		return retVal;
 	}
 	const char *play = "play: ";

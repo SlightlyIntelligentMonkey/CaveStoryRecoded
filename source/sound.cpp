@@ -201,11 +201,11 @@ void loadSounds()
 
 void freeSounds()
 {
-	for (int s = 0; s < _countof(sounds); s++)
+	for (size_t s = 0; s < _countof(sounds); s++)
 		free(sounds[s].buf);
 }
 
-void playSound(int sound_no)
+void playSound(size_t sound_no)
 {
 	if (sound_no > _countof(sounds) - 1)
 		return;
@@ -215,7 +215,7 @@ void playSound(int sound_no)
 	sounds[sound_no].mode = 1;
 }
 
-void playSound(int sound_no, int mode)
+void playSound(size_t sound_no, int mode)
 {
 	if (sound_no > _countof(sounds) - 1)
 		return;
