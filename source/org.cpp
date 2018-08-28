@@ -104,7 +104,7 @@ void loadMusicList(const char *path)
 	char *temp = nullptr;
 	char *current;
 	char *buf = nullptr;
-	loadFile(path, static_cast<uint8_t**>(&buf));
+	loadFile(path, reinterpret_cast<uint8_t**>(&buf));
 	if (buf == nullptr)
 		doError();
 	current = buf;
