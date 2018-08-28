@@ -101,3 +101,12 @@ extern int gameFlags;
 //Functions
 [[noreturn]] void doError();
 [[noreturn]] void doCustomError(const char *msg);
+
+//Macros
+#ifdef __GNUC__
+#define attrPure __attribute__((pure))
+#define attrConst __attribute__((const))
+#else
+#define attrPure
+#define attrConst
+#endif

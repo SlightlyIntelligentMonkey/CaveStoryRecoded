@@ -170,6 +170,7 @@ void changeOrg(const uint32_t num)
 	strcat(path, musicList[num]);
 	org->load(path);
 }
+
 void resumeOrg()
 {
 	char path[64];
@@ -188,6 +189,7 @@ void resumeOrg()
 	org->setPos(prevOrgPos);
 	prevOrgPos = temp;
 }
+
 // -- note buffer functions -- //
 //calculates the attenuation for a volume, algorithm based off of directsound documentation
 double calcVolume(int volume)
@@ -199,6 +201,7 @@ double calcVolume(int volume)
 	double attenuation = 1 - (static_cast<double>(volume) / -2048);
 	return attenuation;
 }
+
 //calculates the attenuation for panning
 void calcPan(int pan, double *lpan, double *rpan)
 {
