@@ -5,21 +5,21 @@
 
 class valueview
 {
-	public: //Variables
-		int flag;
-		int *px;
-		int *py;
-		int offset_y;
-		int value;
-		int count;
-		RECT rect;
+public: //Variables
+	int flag;
+	int *px;
+	int *py;
+	int offset_y;
+	int value;
+	int count;
+	RECT rect;
 
-	public: //Functions
-		void init(int *px, int *py, int value);
-		void add(int value);
+public: //Functions
+	void init(int *px, int *py, int value);
+	void add(int value);
 
-		void update();
-		void draw();
+	void update();
+	void draw();
 };
 
 void createValueView(int *px, int *py, int value);

@@ -11,32 +11,32 @@ struct CARETSTAT
 
 class caret
 {
-	public:
-		int cond;
-		int code;
+public:
+	int cond;
+	int code;
 
-		int direct;
-		int x;
-		int y;
+	int direct;
+	int x;
+	int y;
 
-		int xm;
-		int ym;
+	int xm;
+	int ym;
 
-		int act_no;
-		int act_wait;
+	int act_no;
+	int act_wait;
 
-		int ani_no;
-		int ani_wait;
+	int ani_no;
+	int ani_wait;
 
-		int view_left;
-		int view_top;
-		RECT rect;
+	int view_left;
+	int view_top;
+	RECT rect;
 
-	public:
-		void init(int setX, int setY, int setType, int setDir);
+public:
+	void init(int setX, int setY, int setType, int setDir);
 
-		void update();
-		void draw();
+	void update();
+	void draw();
 };
 
 using caretAct = void (*)(caret *);

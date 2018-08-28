@@ -238,8 +238,8 @@ void delimitFramerate()
 	while (true)
 	{
 		//Framerate limiter
-		const Uint32 timeNow = SDL_GetTicks();
-		const Uint32 timeNext = framerateTicks + framerate;
+		const uint32_t timeNow = SDL_GetTicks();
+		const uint32_t timeNext = framerateTicks + framerate;
 
 		if (timeNow >= timeNext)
 			framerateTicks = SDL_GetTicks();
@@ -587,19 +587,7 @@ int gameUpdateMenu()
 
 	while (true)
 	{
-		//Framerate limiter
-		const Uint32 timeNow = SDL_GetTicks();
-		const Uint32 timeNext = framerateTicks + framerate;
-
-		if (timeNow >= timeNext)
-		{
-			framerateTicks = SDL_GetTicks();
-		}
-		else
-		{
-			SDL_Delay(timeNext - timeNow);
-			continue;
-		}
+		delimitFramerate();
 
 		//Handle events
 		getKeys(&events);
@@ -691,19 +679,8 @@ int gameUpdateIntro()
 
 	while (frame < 500)
 	{
-		//Framerate limiter
-		const Uint32 timeNow = SDL_GetTicks();
-		const Uint32 timeNext = framerateTicks + framerate;
+		delimitFramerate();
 
-		if (timeNow >= timeNext)
-		{
-			framerateTicks = SDL_GetTicks();
-		}
-		else
-		{
-			SDL_Delay(timeNext - timeNow);
-			continue;
-		}
 		frame++;
 
 		//Handle events

@@ -92,7 +92,7 @@ int clamp(int x, int mi, int ma)
 //returns result of normalized sinc
 double sinc(double x)
 {
-	return (sin(M_PI*(float)x) / (M_PI*(float)x));
+	return (sin(M_PI*static_cast<float>(x)) / (M_PI*static_cast<float>(x)));
 }
 
 //returns greatest common denominator a and b

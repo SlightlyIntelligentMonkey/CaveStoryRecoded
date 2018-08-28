@@ -3,16 +3,19 @@
 #include "input.h"
 #include "filesystem.h"
 
-#include <stdlib.h>
+#include <string>
 #include <memory>
-#include <stdio.h>
+#include <cstdlib>
+#include <cstdio>
 #include <SDL.h>
+
+using std::string;
 
 struct SOUND_EFFECT
 {
 	int *buf;
-	Uint32 length;
-	Uint32 pos;
+	uint32_t length;
+	uint32_t pos;
 	uint8_t mode;
 };
 SOUND_EFFECT sounds[160];
@@ -22,7 +25,7 @@ SDL_AudioSpec soundSpec;
 SDL_AudioSpec want;
 
 //use int pointers for easy use
-void mixAudioSFX(int *dst, Uint32 len, SOUND_EFFECT *sound)
+void mixAudioSFX(int *dst, uint32_t len, SOUND_EFFECT *sound)
 {
 	unsigned int currentPos = 0;
 	//using 32 signed int on native system 
@@ -35,24 +38,18 @@ void mixAudioSFX(int *dst, Uint32 len, SOUND_EFFECT *sound)
 	sound->pos += currentPos;
 }
 
-Uint32 frequency = 22050;
-void mixAudioOrg(int *dst, Uint32 len)
+uint32_t frequency = 22050;
+void mixAudioOrg(int *dst, uint32_t len)
 {
 	unsigned int currentPos = 0;
 
 	if (org == nullptr || org->samplesPerStep == 0)
-	{
 		return;
-	}
 
 	if (isKeyDown(SDL_SCANCODE_UP))
-	{
 		frequency = static_cast<uint32_t>(static_cast<double>(frequency) * 1.01);
-	}
 	if (isKeyDown(SDL_SCANCODE_DOWN))
-	{
 		frequency = static_cast<uint32_t>(static_cast<double>(frequency) * 0.99);
-	}
 
 //playWave(66, dst, len, frequency);
 //return;
@@ -67,9 +64,7 @@ void mixAudioOrg(int *dst, Uint32 len)
 		while (org->stepBufPos < org->stepBufLen && (currentPos << 2) < len)
 		{
 			if (org->samplesPerStep == 0)
-			{
 				return;
-			}
 			dst[currentPos] += org->stepBuf[org->stepBufPos];
 			currentPos++;
 			org->stepBufPos++;
@@ -77,19 +72,15 @@ void mixAudioOrg(int *dst, Uint32 len)
 	}
 }
 
-void audio_callback(void *userdata, Uint8 *stream, int len) // TBD : Handle userdata parameter
+void __cdecl audio_callback(void *userdata, Uint8 *stream, int len) // TBD : Handle userdata parameter
 {
 	memset(stream, 0, len);
 
 	for (unsigned int sfx = 0; sfx < _countof(sounds); sfx++)
-	{
 		if (sounds[sfx].pos < sounds[sfx].length)
-		{
-			mixAudioSFX((int*)stream, len, &sounds[sfx]);
-		}
-	}
+			mixAudioSFX(reinterpret_cast<int *>(stream), len, &sounds[sfx]);
 
-	mixAudioOrg((int*)stream, len);
+	mixAudioOrg(reinterpret_cast<int*>(stream), len);
 }
 
 void initAudio()
@@ -108,9 +99,7 @@ void initAudio()
 		&soundSpec,
 		0);
 	if (soundDev == 0)
-	{
 		doError();
-	}
 	memset(sounds, 0, sizeof(sounds));
 
 	iniOrg();
@@ -118,7 +107,7 @@ void initAudio()
 
 //since sdl doesn't actually get the loaded wav in the specified format,
 //we have to do it ourselves
-void loadSound(const char *path, SDL_AudioSpec *spec, int **buf, Uint32 *length)
+void loadSound(const char *path, SDL_AudioSpec *spec, int **buf, uint32_t *length)
 {
 	uint8_t *pBuf = nullptr;
 
@@ -140,9 +129,7 @@ void loadSound(const char *path, SDL_AudioSpec *spec, int **buf, Uint32 *length)
 
 	//converting to 32 signed int format from unsigned 8 bit
 	for (size_t b = 0; b < *length; b++)
-	{
 		fakeBuf[b] = (0x7FFFFFFF / 0xFF) * (pBuf[b] - ((0xFF / 2) + 1));
-	}
 
 	//interpolation
 	for (size_t i = 0; i < *length; i++)
@@ -163,24 +150,21 @@ const char* hexStr[16] = { "0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "A"
 
 void loadSounds()
 {
-	char path[64];
 
 	for (int i = 0; i < 10; i++)
 	{
 		for (int v = 0; v < 16; v++)
 		{
 			int s = i * 16 + v;
-			sprintf(path, "data/Sound/%s%s.wav", hexStr[i], hexStr[v]);
+			string path = "data/Sound/" + string(hexStr[i]) + hexStr[v];
 
-			if (fileExists(path))
+			if (fileExists(path.c_str()))
 			{
-				loadSound(path, &soundSpec, &sounds[s].buf, &sounds[s].length);
+				loadSound(path.c_str(), &soundSpec, &sounds[s].buf, &sounds[s].length);
 				sounds[s].pos = sounds[s].length;
 			}
 			else
-			{
 				sounds[s].buf = nullptr;
-			}
 		}
 	}
 
@@ -218,21 +202,15 @@ void loadSounds()
 void freeSounds()
 {
 	for (int s = 0; s < _countof(sounds); s++)
-	{
 		free(sounds[s].buf);
-	}
 }
 
 void playSound(int sound_no)
 {
 	if (sound_no > _countof(sounds) - 1)
-	{
 		return;
-	}
 	if (sounds[sound_no].buf == nullptr)
-	{
 		return;
-	}
 	sounds[sound_no].pos = 0;
 	sounds[sound_no].mode = 1;
 }
@@ -240,13 +218,9 @@ void playSound(int sound_no)
 void playSound(int sound_no, int mode)
 {
 	if (sound_no > _countof(sounds) - 1)
-	{
 		return;
-	}
 	if (sounds[sound_no].buf == nullptr)
-	{
 		return;
-	}
 	sounds[sound_no].pos = 0;
 	sounds[sound_no].mode = mode;
 }

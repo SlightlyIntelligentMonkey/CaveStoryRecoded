@@ -1,13 +1,14 @@
-#include "org.h"
+﻿#include "org.h"
 #include "sound.h"
 #include "render.h"
 #include "input.h"
 #include "filesystem.h"
 #include "mathUtils.h"
-#include <stdlib.h>
 #include <memory>
-#include <stdio.h>
-#include <string.h>
+#include <cmath>
+#include <cstdlib>
+#include <cstdio>
+#include <cstring>
 #include <SDL.h>
 
 const char *musicList[]
@@ -69,13 +70,13 @@ const int a = 2;
 const int windowWidth = 128;
 double lanczos[windowWidth] = { 0 };
 const char *orgFolder = "data/Org/";
-short pan_tbl[13] = { 0,43,86,129,172,215,256,297,340,383,426,469,512 };
+int16_t pan_tbl[13] = { 0,43,86,129,172,215,256,297,340,383,426,469,512 };
 
 struct OCTWAVE
 {
-	short wave_size;	//Waveform size
-	short oct_par;		//Multiplier for achieving octave (/ 8)
-	short oct_size;		//length multiplier or something
+	int16_t wave_size;	//Waveform size
+	int16_t oct_par;		//Multiplier for achieving octave (/ 8)
+	int16_t oct_size;		//length multiplier or something
 };
 
 //octave wave table because pixel dummy
@@ -90,6 +91,7 @@ OCTWAVE oct_wave[8] =
 { 16,  64, 28 },	//6 Oct
 { 8,  128, 32 },	//7 Oct
 };
+
 //frequency table because pixel dummy
 double freq_tbl[12] =
 {
@@ -106,12 +108,13 @@ double freq_tbl[12] =
 466.16376151809,
 493.88330125612
 };
-// -- org starting and exiting functions -- //
+
+// --org starting and exiting functions -- //
 //loads the org wave table
 void loadWaveTable()
 {
 	Sint8 *dat = nullptr;
-	loadFile("data/Wave100.dat", (Uint8**)&dat);
+	loadFile("data/Wave100.dat", reinterpret_cast<Uint8**>(&dat));
 	if (dat == nullptr)
 	{
 		doError();
@@ -122,10 +125,11 @@ void loadWaveTable()
 		for (Uint32 s = 0; s < 0x100; s++)
 		{
 			waveTbl[w][s << 1] = (0x7FFFFFFF / 0xFF) * (dat[(w * 0x100) + s]);
-			waveTbl[w][(s << 1) + 1] = (0x7FFFFFFF / 0xFF) * (dat[(w * 0x100) + s]);
+			waveTbl[w][(s << 1) + 1] = (0x7FFFFFFF / 0xFF) * (dat[(w * 0x100) + s]);	// Calculated through the same expression ? TBD : Either simplify this or correct this if it's an error
 		}
 	}
 }
+
 //frees the org wave table
 void freeWaveTable()
 {
@@ -137,7 +141,7 @@ void freeWaveTable()
 void iniOrg()
 {
 	loadWaveTable();
-	org = (ORG *)malloc(sizeof(ORG));
+	org = static_cast<ORG *>(malloc(sizeof(ORG)));
 	memset(org, 0, sizeof(ORG));
 }
 void exitOrg()
@@ -223,13 +227,14 @@ void calcPan(int pan, double *lpan, double *rpan)
 		*lpan = 1;
 	}
 }
+
 //generates filter coefficients
 void genFilter(int nt, int fc, int bw, int g, int fsr)
 {
 	double x, windowGain, window, ys, yf = 0;
 	for (int i = 0; i < nt; i++)
 	{
-		x = (i - (nt / 2)) * 2.0*M_PI*bw / fsr; //  scale Sinc width
+		x = (i - (static_cast<double>(nt) / 2)) * 2.0*M_PI*bw / fsr; //  scale Sinc width
 		if (x == 0)
 		{
 			ys = 1;
@@ -246,11 +251,12 @@ void genFilter(int nt, int fc, int bw, int g, int fsr)
 		lanczos[i] = yf * window * windowGain * ys; // assign coefficient
 	}
 }
-int resamp(int x, int *indat, int alim, int fmax, int fsr, int wnwdth)
+
+int resamp(int x, const int *indat, int alim, int fmax, int fsr, int wnwdth)
 {
 	int j = 0;
 	double window, r_snc, r_a = 0;
-	double r_g = 2 * fmax / fsr; //Calc gain correction factor
+	double r_g = 2 * static_cast<double>(fmax) / fsr; //Calc gain correction factor
 	double r_y = 0;
 	for (int i = -wnwdth / 2; i < (wnwdth / 2); i++)// For 1 window width
 	{
@@ -271,17 +277,18 @@ int resamp(int x, int *indat, int alim, int fmax, int fsr, int wnwdth)
 			r_y += r_g * window * r_snc * indat[j];
 		}
 	}
-	return static_cast<int>(r_y + 0.5);// Return new filtered sample
+	return lround(r_y + 0.5);// Return new filtered sample
 }
+
 //changes the frequency of a sound buffer, with len being length in samples
 void changeFrequency(int **buf, Uint32 *len, double frequency, Uint32 curFreq)
 {
 	double inverse = frequency / curFreq;
-	uint32_t newLen = static_cast<uint32_t>((*len*curFreq) / frequency);
+	auto newLen = static_cast<uint32_t>((*len*curFreq) / frequency);
 	auto *tBuf = static_cast<int *>(calloc(4, newLen));
 	for (Uint32 s = 0; s < newLen; s++)
 	{
-		tBuf[(s)] = (*buf)[static_cast<int>(((s)*inverse) + 0.5)];
+		tBuf[(s)] = (*buf)[lround(((s)*inverse) + 0.5)];
 	}
 
 	free(*buf);
@@ -298,8 +305,8 @@ int *createWaveBuf(int wave, Uint32 *size, Uint8 note, Uint16 freq)
 
 	//calculates the frequency of the wave
 	calcFrequency =
-		((((double)oct_wave[note / 12].wave_size * freq_tbl[note % 12])*(double)oct_wave[note / 12].oct_par) / 8.00f)
-		+ (double)(a - 1000.0f);
+		(((static_cast<double>(oct_wave[note / 12].wave_size) * freq_tbl[note % 12]) * static_cast<double>(oct_wave[note / 12].oct_par)) / 8.00f)
+		+ static_cast<double>(a - 1000.0f);
 	*size = 0x200;
 	changeFrequency(&buf, size, calcFrequency, 22050);
 	return buf;
@@ -310,7 +317,7 @@ int *createDrumBuf(int drum, Uint32 *size, Uint8 note, Uint16 freq)
 	auto buf = static_cast<int *>(calloc(4, drumTbl[drum].len));
 	memcpy(buf, drumTbl[drum].buf, drumTbl[drum].len << 2);
 	//calculates the frequency of the wave
-	double calcFrequency = (note * 800) + 100;
+	double calcFrequency = (static_cast<double>(note) * 800) + 100;
 	*size = drumTbl[drum].len;
 	changeFrequency(&buf, size, calcFrequency, 32500);
 	return buf;
@@ -407,10 +414,7 @@ void ORG::playData()
 				if (track[i].key == 0xFF)
 				{
 					//new sound
-					if (track[i].noteBuf != nullptr)
-					{
-						free(track[i].noteBuf);
-					}
+					free(track[i].noteBuf);
 					track[i].noteBuf =
 						createWaveBuf(track[i].wave, &track[i].noteBufLen, track[i].note_p->note, track[i].freq);
 					track[i].key = track[i].note_p->note;
@@ -422,10 +426,7 @@ void ORG::playData()
 					track[i].keyTwin++;
 					if (track[i].keyTwin == 2)
 						track[i].keyTwin = 0;
-					if (track[i].noteBuf != nullptr)
-					{
-						free(track[i].noteBuf);
-					}
+					free(track[i].noteBuf);
 					track[i].noteBuf =
 						createWaveBuf(track[i].wave, &track[i].noteBufLen, track[i].note_p->note, track[i].freq);
 				}
@@ -503,10 +504,7 @@ void ORG::playData()
 		setPos(loopStart);
 
 	//mixes tracks into buffer
-	if (stepBuf != nullptr)
-	{
-		free(stepBuf);
-	}
+	free(stepBuf);
 	stepBuf = static_cast<int*>(calloc(4 * 2, samplesPerStep));
 	//mixes waves
 	for (int t = 0; t < 8; t++)
@@ -570,7 +568,7 @@ void ORG::freemem()
 void playWave(int wave, int *stream, Uint32 len, double frequency)
 {
 	Uint32 nlen = 0x200;
-	int *tBuf = static_cast<int*>(calloc(4 * 2, 0x100));
+	auto *tBuf = static_cast<int*>(calloc(4 * 2, 0x100));
 	memcpy(tBuf, waveTbl[wave], 0x200);
 	changeFrequency(&tBuf, &nlen, frequency, 22050);
 	for (Uint32 i = 0; (i << 2) < len >> 1; i++)
@@ -653,7 +651,7 @@ char *debugSound()
 		}
 		changeOrg(no);
 		memset(input, 0, sizeof(input));
-		if (musicList[no] != NULL)
+		if (musicList[no] != nullptr)
 		{
 			strcpy(retVal, musicList[no]);
 		}
@@ -666,6 +664,6 @@ char *debugSound()
 	const char *play = "play: ";
 	strcpy(temp, play);
 	strcat(temp, input);
-	drawString(0, 0, temp, 0);
+	drawString(0, 0, temp, nullptr);
 	return nullptr;
 }

@@ -2,7 +2,7 @@
 #include "common.h"
 
 //list of notes
-typedef struct NOTELIST
+struct NOTELIST
 {
 	NOTELIST *from;		//points to previous note
 	NOTELIST *to;		//points to next note
@@ -11,10 +11,10 @@ typedef struct NOTELIST
 	uint8_t length;
 	uint8_t volume;
 	uint8_t pan;
-}NOTELIST;
+};
 
 //track stuff
-typedef struct
+struct TRACKDATA
 {
 	uint16_t freq;			//1000 is default
 	uint16_t num_notes;		//total number of notes in track
@@ -34,7 +34,7 @@ typedef struct
 	double rpan;
 	NOTELIST *note_p;		//pointer to current note
 	NOTELIST *note_list;	//pointer to start of notes
-}TRACKDATA;
+};
 
 constexpr uint32_t MAXMELODY = 8;
 constexpr uint32_t MAXTRACK = 16;

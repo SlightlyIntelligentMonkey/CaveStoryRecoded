@@ -31,75 +31,75 @@ extern NPC_TABLE *npcTable;
 
 class npc
 {
-		//Variables
-	public:
-		//state things
-		uint8_t cond;
-		int flag;
+	//Variables
+public:
+	//state things
+	uint8_t cond;
+	int flag;
 
-		//position
-		int x;
-		int y;
+	//position
+	int x;
+	int y;
 
-		//speed
-		int xm;
-		int ym;
-		int xm2;
-		int ym2;
+	//speed
+	int xm;
+	int ym;
+	int xm2;
+	int ym2;
 
-		int tgt_x;
-		int tgt_y;
+	int tgt_x;
+	int tgt_y;
 
-		//npc things
-		int code_char;
-		int code_flag;
-		int code_event;
+	//npc things
+	int code_char;
+	int code_flag;
+	int code_event;
 
-		//stuff?
-		int surf;
-		int hit_voice;
-		int destroy_voice;
+	//stuff?
+	int surf;
+	int hit_voice;
+	int destroy_voice;
 
-		//life stuff
-		int life;
-		int exp;
-		int size;
+	//life stuff
+	int life;
+	int exp;
+	int size;
 
-		//what do i look like and bits
-		int direct;
-		unsigned __int16 bits;
-		RECT rect;
+	//what do i look like and bits
+	int direct;
+	unsigned __int16 bits;
+	RECT rect;
 
-		//state, counters, and action
-		int ani_wait;
-		int ani_no;
-		int count1;
-		int count2;
-		int act_no;
-		int act_wait;
+	//state, counters, and action
+	int ani_wait;
+	int ani_no;
+	int count1;
+	int count2;
+	int act_no;
+	int act_wait;
 
-		//hitbox
-		RECT hit;
+	//hitbox
+	RECT hit;
 
-		//offset
-		RECT view;
+	//offset
+	RECT view;
 
-		//damage
-		uint8_t shock;
-		int damage_view;
-		int damage;
+	//damage
+	uint8_t shock;
+	int damage_view;
+	int damage;
 
-		//parent
-		npc *pNpc;
+	//parent
+	npc *pNpc;
 
-	private:
+private:
 
-		//Functions
-	public:
-		void init(int setCode, int setX, int setY, int setXm, int setYm, int setDir, npc *parentNpc);
+	//Functions
+public:
+	void init(int setCode, int setX, int setY, int setXm, int setYm, int setDir, npc *parentNpc);
 
-		void update();
-		void draw();
+	void update();
+	void draw();
 };
 
 void loadNpcTable();
