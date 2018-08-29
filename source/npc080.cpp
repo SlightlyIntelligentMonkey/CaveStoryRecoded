@@ -355,12 +355,80 @@ void npcAct084(npc *NPC) //Basu 1 projectile
 	}
 }
 
-void npcAct087(npc *NPC)
+void npcAct086(npc *NPC) //Dropped missiles
 {
-	constexpr RECT rcEXP2[2] = { {32, 80, 48, 96}, { 48, 80, 64, 96 } };
-	constexpr RECT rcEXP6[2] = { {64, 80, 80, 96}, { 80, 80, 96, 96 } };
-	constexpr RECT rcCount1Above547 = { 16, 0, 32, 16 };
+	RECT rcMissile1[2];
+	RECT rcMissile3[2];
+	RECT rcLast;
 
+	rcMissile1[0] = { 0, 80, 16, 96 };
+	rcMissile1[1] = { 16, 80, 32, 96 };
+	rcMissile3[0] = { 0, 122, 16, 128 };
+	rcMissile3[1] = { 16, 112, 32, 128 };
+	rcLast = { 16, 0, 32, 16 };
+	
+	if (!NPC->direct)
+	{
+		if (++NPC->ani_wait > 2)
+		{
+			NPC->ani_wait = 0;
+			++NPC->ani_no;
+		}
+
+		if (NPC->ani_no > 1)
+			NPC->ani_no = 0;
+	}
+
+	if (backgroundScroll == 5 || backgroundScroll == 6)
+	{
+		if (!NPC->act_no)
+		{
+			NPC->act_no = 1;
+			NPC->ym = random(-32, 32);
+			NPC->xm = random(127, 256);
+		}
+
+		NPC->xm -= 8;
+
+		if (NPC->x <= 40959)
+			NPC->cond = 0;
+		if (NPC->x < -1536)
+			NPC->x = -1536;
+		if (NPC->flag & 1)
+			NPC->xm = 256;
+		if (NPC->flag & 2)
+			NPC->ym = 64;
+		if (NPC->flag & 8)
+			NPC->ym = -64;
+
+		NPC->x += NPC->xm;
+		NPC->y += NPC->ym;
+	}
+
+	if (NPC->exp == 1)
+		NPC->rect = rcMissile1[NPC->ani_no];
+	else if (NPC->exp == 3)
+		NPC->rect = rcMissile3[NPC->ani_no];
+
+	if (!NPC->direct)
+		++NPC->count1;
+
+	if (NPC->count1 > 550)
+		NPC->cond = 0;
+
+	if (NPC->count1 > 500 && NPC->count1 / 2 & 1)
+		NPC->rect.right = 0;
+
+	if (NPC->count1 > 547)
+		NPC->rect = rcLast;
+}
+
+void npcAct087(npc *NPC) //Health refill
+{
+	constexpr RECT rcHealth2[2] = { {32, 80, 48, 96}, { 48, 80, 64, 96 } };
+	constexpr RECT rcHealth6[2] = { {64, 80, 80, 96}, { 80, 80, 96, 96 } };
+	constexpr RECT rcLast = { 16, 0, 32, 16 };
+	
 	if (NPC->direct == dirLeft)
 	{
 		if(++NPC->ani_wait > 2)
@@ -380,7 +448,9 @@ void npcAct087(npc *NPC)
 			NPC->ym = random(-0x20, 0x20);
 			NPC->xm = random(0x7F, 0x100);
 		}
+
 		NPC->xm -= 8;
+
 		if (NPC->x < 0xA000)
 			NPC->cond = 0;
 		if (NPC->x < -0x600)
@@ -391,23 +461,27 @@ void npcAct087(npc *NPC)
 			NPC->ym = 0x40;
 		if (NPC->flag & npc_ignoresolid)
 			NPC->ym = -0x40;
+
 		NPC->x += NPC->xm;
 		NPC->y += NPC->ym;
 	}
 
 	if (NPC->exp == 2)
-		NPC->rect = rcEXP2[NPC->ani_no];
+		NPC->rect = rcHealth2[NPC->ani_no];
 	else if (NPC->exp == 6)
-		NPC->rect = rcEXP6[NPC->ani_no];
+		NPC->rect = rcHealth6[NPC->ani_no];
 
 	if (NPC->direct == dirLeft)
 		++NPC->count1;
+
 	if (NPC->count1 > 550)
 		NPC->cond = 0;
+
 	if (NPC->count1 > 500 && NPC->count1 / 2 % 2)
 		NPC->rect.right = 0;
+
 	if (NPC->count1 > 547)
-		NPC->rect = rcCount1Above547;
+		NPC->rect = rcLast;
 }
 
 void npcAct090(npc *NPC) // Background

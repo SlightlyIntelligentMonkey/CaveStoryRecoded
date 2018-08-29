@@ -203,6 +203,7 @@
     <ClCompile Include="fireballShoot.cpp" />
     <ClCompile Include="game.cpp" />
     <ClCompile Include="hud.cpp" />
+    <ClCompile Include="inventory.cpp" />
     <ClCompile Include="npc080.cpp" />
     <ClCompile Include="npc100.cpp" />
     <ClCompile Include="npc120.cpp" />
@@ -248,6 +249,7 @@
     <ClCompile Include="spur.cpp" />
     <ClCompile Include="fireball.cpp" />
     <ClCompile Include="spurShoot.cpp" />
+    <ClCompile Include="stageSelect.cpp" />
     <ClCompile Include="valueview.cpp" />
     <ClCompile Include="weapons.cpp" />
   </ItemGroup>

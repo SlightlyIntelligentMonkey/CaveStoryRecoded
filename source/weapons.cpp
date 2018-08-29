@@ -29,7 +29,7 @@ weaponShoot shootFunctions[14] =
 	static_cast<weaponShoot>(nullptr),
 	static_cast<weaponShoot>(nullptr),
 	static_cast<weaponShoot>(nullptr),
-	shootSpur,
+	&shootSpur,
 };
 
 //Weapon Levels
@@ -51,7 +51,8 @@ WEAPONEXP weaponLevels[14] =
 	{{ 40,	60,	200 }},
 };
 
-WEAPON weapons[8];
+WEAPON weapons[WEAPONS];
+
 RECT weaponRect;
 int selectedWeapon;
 int weaponShiftX;
@@ -72,8 +73,10 @@ void actWeapon()
 	else if (debugFlags & notifyOnNotImplemented)
 	{
 		static bool wasNotifiedAbout[_countof(shootFunctions)] = { false };
+
 		if (wasNotifiedAbout[weapons[selectedWeapon].code])
 			return;
+
 		wasNotifiedAbout[weapons[selectedWeapon].code] = true;
 		string msg = "Weapon " + to_string(weapons[selectedWeapon].code) + " is not implemented.";
 		SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_WARNING, "Missing Weapon", msg.c_str(), nullptr);
@@ -115,9 +118,9 @@ int weaponBullets(int arms_code)
 //TSC functions
 int tradeWeapons(int code1, int code2, int max_num) noexcept
 {
-	int i; // [esp+Ch] [ebp-4h]
-	for (i = 0; i < 8 && weapons[i].code != code1; ++i);
-	if (i == 8)
+	int i;
+	for (i = 0; i < WEAPONS && weapons[i].code != code1; ++i);
+	if (i == WEAPONS)
 		return 0;
 
 	weapons[i].level = 1;
@@ -131,8 +134,8 @@ int tradeWeapons(int code1, int code2, int max_num) noexcept
 int giveWeapon(int code, int max_num) noexcept
 {
 	int i;
-	for (i = 0; i < 8 && weapons[i].code != code && weapons[i].code; ++i);
-	if (i == 8)
+	for (i = 0; i < WEAPONS && weapons[i].code != code && weapons[i].code; ++i);
+	if (i == WEAPONS)
 		return 0;
 
 	//Ensure past data is erased
@@ -155,8 +158,8 @@ int giveWeapon(int code, int max_num) noexcept
 int removeWeapon(int code) noexcept
 {
 	int i;
-	for (i = 0; i < 8 && weapons[i].code != code; ++i);
-	if (i == 8)
+	for (i = 0; i < WEAPONS && weapons[i].code != code; ++i);
+	if (i == WEAPONS)
 		return 0;
 
 	//Push back all weapons ahead
@@ -172,7 +175,7 @@ int removeWeapon(int code) noexcept
 
 void clearWeaponExperience() noexcept
 {
-	for (int a = 0; a < 8; ++a)
+	for (int a = 0; a < WEAPONS; ++a)
 	{
 		weapons[a].level = 1;
 		weapons[a].exp = 0;
@@ -181,13 +184,13 @@ void clearWeaponExperience() noexcept
 
 void maxWeaponAmmo() noexcept
 {
-	for (int a = 0; a < 8; ++a)
+	for (int a = 0; a < WEAPONS; ++a)
 		weapons[a].num = weapons[a].max_num;
 }
 
 bool checkWeapon(int code) noexcept
 {
-	for (int i = 0; i <= 7; ++i)
+	for (int i = 0; i < WEAPONS; ++i)
 	{
 		if (weapons[i].code == code)
 			return true;
@@ -251,7 +254,7 @@ int rotateWeaponRight() noexcept
 {
 	int weaponNo;
 
-	for (weaponNo = 0; weapons[weaponNo].code != 0; ++weaponNo);
+	for (weaponNo = 0; weaponNo < WEAPONS && weapons[weaponNo].code != 0; ++weaponNo);
 	if (!weaponNo)
 		return 0;
 
@@ -275,7 +278,7 @@ int rotateWeaponLeft() noexcept
 {
 	int weaponNo;
 
-	for (weaponNo = 0; weapons[weaponNo].code != 0; ++weaponNo);
+	for (weaponNo = 0; weaponNo < WEAPONS && weapons[weaponNo].code != 0; ++weaponNo);
 	if (!weaponNo)
 		return 0;
 

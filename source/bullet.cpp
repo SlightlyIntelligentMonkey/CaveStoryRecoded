@@ -255,8 +255,10 @@ void bullet::update()
 		else if (debugFlags & notifyOnNotImplemented)
 		{
 			static bool wasNotifiedAboutBullet[_countof(bulletActs)] = { false };
+
 			if (wasNotifiedAboutBullet[this->code_bullet])
 				return;
+
 			wasNotifiedAboutBullet[this->code_bullet] = true;
 			string msg = "Bullet " + to_string(this->code_bullet) + " is not implemented yet.";
 			SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_WARNING, "Missing Bullet", msg.c_str(), nullptr);

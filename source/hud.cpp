@@ -125,7 +125,7 @@ void drawHudWeapons()
 	RECT rect = { 0, 0, 0, 16 };
 
 	int weaponNo;
-	for (weaponNo = 0; weapons[weaponNo].code != 0; ++weaponNo);
+	for (weaponNo = 0; weaponNo < WEAPONS && weapons[weaponNo].code != 0; ++weaponNo);
 
 	if (weaponNo)
 	{
@@ -146,7 +146,7 @@ void drawHudWeapons()
 
 			if (8 * (2 * (weaponNo + 3) + 1) <= x)
 				x += 16 * (-3 - weaponNo);
-			if (x <= 71 && x > 23)
+			if (x < 72 && x >= 24)
 				x -= 48;
 
 			//Set rect and draw

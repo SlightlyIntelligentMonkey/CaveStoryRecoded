@@ -529,9 +529,6 @@ int updateTsc()
 			static bool notifiedAboutFMU = false;
 			static bool notifiedAboutFOB = false;
 			static bool notifiedAboutINP = false;
-			static bool notifiedAboutITPlus = false;
-			static bool notifiedAboutITMinus = false;
-			static bool notifiedAboutITJ = false;
 			static bool notifiedAboutMLP = false;
 			static bool notifiedAboutMS2 = false;
 			static bool notifiedAboutMS3 = false;
@@ -846,31 +843,37 @@ int updateTsc()
 				tscCleanup(3);
 				break;
 			case('<IT+'):
-				if (!notifiedAboutITPlus && debugFlags & notifyOnNotImplemented)
+				for (xt = 0; xt < ITEMS && items[xt].code != getTSCNumber(tsc.p_read + 4) && items[xt].code; ++xt);
+				if (xt == ITEMS)
 				{
-					notifiedAboutITPlus = true;
-					showTSCNotImplementedWarning("<IT+ is not implemented");
+					tscCleanup(1);
+					break;
 				}
 
+				items[xt].code = getTSCNumber(tsc.p_read + 4);
 				tscCleanup(1);
 				break;
 			case('<IT-'):
-				if (!notifiedAboutITMinus && debugFlags & notifyOnNotImplemented)
+				for (xt = 0; xt < ITEMS && items[xt].code != getTSCNumber(tsc.p_read + 4); ++xt);
+				if (xt == ITEMS)
 				{
-					notifiedAboutITMinus = true;
-					showTSCNotImplementedWarning("<IT- is not implemented");
+					tscCleanup(1);
+					break;
 				}
 
+				for (yt = xt + 1; yt <= 31; ++yt)
+					items[yt - 1] = items[yt];
+				items[yt - 1].code = 0;
+
+				selectedItem = 0;
 				tscCleanup(1);
 				break;
 			case('<ITJ'):
-				if (!notifiedAboutITJ && debugFlags & notifyOnNotImplemented)
-				{
-					notifiedAboutITJ = true;
-					showTSCNotImplementedWarning("<ITJ is not implemented");
-				}
-
-				tscCleanup(2);
+				for (xt = 0; xt < ITEMS && items[xt].code != getTSCNumber(tsc.p_read + 4); ++xt);
+				if (xt == ITEMS)
+					tscCleanup(2);
+				else
+					jumpTscEvent(getTSCNumber(tsc.p_read + 9));
 				break;
 			case('<KEY'):
 				gameFlags |= 1;

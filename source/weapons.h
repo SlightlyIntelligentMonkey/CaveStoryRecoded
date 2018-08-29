@@ -19,7 +19,7 @@ struct WEAPON
 
 using weaponShoot = void(*)(int);
 
-extern WEAPON weapons[8];
+extern WEAPON weapons[WEAPONS];
 extern RECT weaponRect;
 extern int selectedWeapon;
 extern int weaponShiftX;

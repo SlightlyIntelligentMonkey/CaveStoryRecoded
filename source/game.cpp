@@ -41,6 +41,7 @@ void initGame()
 	//Clear other stuff
 	initWeapons();
 	memset(permitStage, 0, sizeof(permitStage));
+	memset(items, 0, sizeof(items));
 
 	//Set up fade
 	initFade();
@@ -254,6 +255,7 @@ void delimitFramerate() noexcept
 
 //Escape menu
 RECT rcEscape = { 0, 128, 208, 144 };
+
 int escapeMenu()
 {
 	while (true)
@@ -532,6 +534,22 @@ int gameUpdatePlay()
 		drawCarets();
 		drawValueView();
 		drawFade();
+
+		//Open inventory and map system
+		if (!(gameFlags & 4))
+		{
+			if (isKeyPressed(keyMenu))
+			{
+				int inventoryRet = openInventory();
+
+				if (!inventoryRet)
+					return 0;
+				if (inventoryRet == 2)
+					return 1;
+
+				currentPlayer.cond &= ~player_interact;
+			}
+		}
 
 		//Rotate weapons
 		if (gameFlags & 2)

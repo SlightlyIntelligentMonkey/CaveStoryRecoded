@@ -124,8 +124,12 @@ void loadProfile()
 			return;
 
 		const uint64_t code = SDL_ReadLE64(profile); //Code
-		if (memcmp(&code, "Do041220", sizeof(code)) != 0)
-			doCustomError("Invalid profile (first 8 bytes aren't \"Do041120\"");
+		if (memcmp(&code, profileCode, sizeof(code)) != 0)
+		{
+			char errorMsg[0x80];
+			sprintf(errorMsg, "Invalid profile (first 8 bytes aren't \"%s\"", profileCode);
+			doCustomError(errorMsg);
+		}
 
 		const int level = SDL_ReadLE32(profile); //level
 		changeOrg(SDL_ReadLE32(profile)); //song
@@ -143,7 +147,7 @@ void loadProfile()
 		SDL_ReadLE16(profile); // a?
 
 		selectedWeapon = SDL_ReadLE32(profile); //current weapon
-		SDL_ReadLE32(profile); //current item
+		selectedItem = SDL_ReadLE32(profile); //current item
 
 		currentPlayer.equip = SDL_ReadLE32(profile); //equipped items
 		currentPlayer.unit = SDL_ReadLE32(profile); //physics
@@ -159,7 +163,10 @@ void loadProfile()
 			weapons[i].num = SDL_ReadLE32(profile);
 		}
 
-		SDL_RWseek(profile, 0x158, 0);
+		for (size_t i = 0; i < 32; i++)
+		{
+			items[i].code = SDL_ReadLE32(profile);
+		}
 
 		for (size_t i = 0; i < 8; i++)
 		{
@@ -208,6 +215,7 @@ void saveProfile()
 	writeLEshort(profile, currentPlayer.life, 0x20); //Player health
 
 	writeLElong(profile, selectedWeapon, 0x24); //Selected weapon
+	writeLElong(profile, selectedItem, 0x28); //Selected item
 
 	writeLElong(profile, currentPlayer.equip, 0x2C); //Equipped items
 	writeLElong(profile, currentPlayer.unit, 0x30); //Current physics
@@ -219,6 +227,11 @@ void saveProfile()
 		writeLElong(profile, weapons[i].exp, 0x40 + i * 0x14);
 		writeLElong(profile, weapons[i].max_num, 0x44 + i * 0x14);
 		writeLElong(profile, weapons[i].num, 0x48 + i * 0x14);
+	}
+
+	for (size_t i = 0; i < 32; i++)
+	{
+		writeLElong(profile, items[i].code, 0xD8 + i * 0x4);
 	}
 
 	for (size_t i = 0; i < 8; i++)
