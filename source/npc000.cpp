@@ -15,11 +15,14 @@ void npcActNone(npc *NPC)
 {
 	NPC->surf = 0x27;
 	NPC->rect = { 0, 0, NPC->view.left >> 8, NPC->view.top >> 8 };
-	if (debugFlags | notifyOnNotImplemented)
+
+	if (debugFlags & notifyOnNotImplemented)
 	{
 		static bool wasNotifiedAbout[_countof(npcActs)] = { 0 };
+
 		if (wasNotifiedAbout[NPC->code_char])
 			return;
+
 		wasNotifiedAbout[NPC->code_char] = true;
 		string msg = "NPC " + to_string(NPC->code_char) + " is not implementated yet.";
 		SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_WARNING, "Missing NPC", msg.c_str(), nullptr);

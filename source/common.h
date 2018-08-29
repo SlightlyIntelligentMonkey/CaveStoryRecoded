@@ -22,6 +22,7 @@ enum debugFlagsEnum
 	showBULId = 0x04,
 	showCARId = 0x08,
 	notifyOnNotImplemented = 0x10,
+	showNPCHealth = 0x20,
 };
 
 //Enums
@@ -707,6 +708,11 @@ struct VIEW {
 
 //Macro
 #define TILE2COORD(x) ((x) << 13)
+
+//Constants
+#define WEAPONS 8
+#define ITEMS 32
+#define PERMITSTAGES 8
 
 struct SDL_Window;
 struct SDL_Renderer;

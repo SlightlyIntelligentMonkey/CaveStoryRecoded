@@ -192,6 +192,12 @@
     <ClCompile Include="spurShoot.cpp">
       <Filter>Source Files\classes\weapons\shoot</Filter>
     </ClCompile>
+    <ClCompile Include="stageSelect.cpp">
+      <Filter>Source Files\states</Filter>
+    </ClCompile>
+    <ClCompile Include="inventory.cpp">
+      <Filter>Source Files\states</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="level.h">

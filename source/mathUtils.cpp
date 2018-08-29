@@ -75,7 +75,8 @@ uint8_t getAtan(int x, int y)
 }
 
 //these are good functions
-int random(int32_t mi, int32_t ma) {
+int random(int32_t mi, int32_t ma)
+{
 	return (mi + (distrInt(engine) % (ma - mi + 1)));
 }
 
