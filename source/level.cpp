@@ -293,6 +293,15 @@ void drawLevel(bool foreground)
 
 				break;
 
+			case 5:
+				for (int x = -(backgroundEffect / 0x200 % w); x < screenWidth; x += w)
+				{
+					for (int y = 0; y < screenHeight; y += h)
+						drawTexture(sprites[0x1C], &rect, x, y);
+				}
+
+				break;
+
 			case 6: case 7:
 				//Draw sky
 				rect = { 0, 0, w / 2, 88 };
