@@ -54,6 +54,9 @@ int bulletJudgeBlock(int x, int y, bullet *bul) //For judging breakable blocks
 
 int bulletJudgeBlock2(int x, int y, const uint8_t *atrb, bullet *bul) //For judging actual solid blocks
 {
+	if (atrb == nullptr)
+		doCustomError("atrb was nullptr in bulletJudgeBlock2");
+
 	int block[4];
 	int workX;
 	int workY;

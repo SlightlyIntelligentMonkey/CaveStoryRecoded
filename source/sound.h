@@ -3,10 +3,9 @@
 
 void initAudio();
 void loadSounds();
-void freeSounds();
+void freeSounds() noexcept;
 
-void playSound(size_t sound_no);
-void playSound(size_t sound_no, int mode);
+void playSound(size_t sound_no, int soundMode = 1) noexcept;
 
 //debug function
 char *debugSound();

@@ -67,7 +67,7 @@ void loadStageTable()
 	}
 }
 
-uint8_t getTileAttribute(int x, int y)
+uint8_t getTileAttribute(int x, int y) noexcept
 {
 	if (x >= 0 && x < levelWidth && y >= 0 && y < levelHeight)
 		return levelTileAttributes[levelMap[(x + y * levelWidth)]];
@@ -75,12 +75,12 @@ uint8_t getTileAttribute(int x, int y)
 	return 0;
 }
 
-void deleteTile(int x, int y)
+void deleteTile(int x, int y) noexcept
 {
 	levelMap[x + y * levelWidth] = 0;
 }
 
-void shiftTile(int x, int y)
+void shiftTile(int x, int y) noexcept
 {
 	--levelMap[x + y * levelWidth];
 }

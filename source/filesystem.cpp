@@ -23,23 +23,35 @@ using std::fclose;
 //Read function stuff
 uint16_t readLEshort(const uint8_t * data, size_t offset)
 {
+	if (data == nullptr)
+		doCustomError("data was nullptr in readLEshort");
+
 	return ((data[offset + 1] << 8) + data[offset]);
 }
 
 uint32_t readLElong(const uint8_t * data, size_t offset)
 {
+	if (data == nullptr)
+		doCustomError("data was nullptr in readLEshort");
+
 	return ((data[offset + 3] << 24) + (data[offset + 2] << 16) + (data[offset + 1] << 8) + data[offset]);
 }
 
 //Write stuff
 void writeLEshort(uint8_t *data, uint16_t input, size_t offset)
 {
+	if (data == nullptr)
+		doCustomError("data was nullptr in writeLEshort");
+
 	data[offset] = static_cast<uint8_t>(input);
 	data[offset + 1] = static_cast<uint8_t>(input >> 8);
 }
 
 void writeLElong(uint8_t *data, uint32_t input, size_t offset)
 {
+	if (data == nullptr)
+		doCustomError("data was nullptr in writeLElong");
+
 	data[offset] = static_cast<uint8_t>(input);
 	data[offset + 1] = static_cast<uint8_t>(input >> 8);
 	data[offset + 2] = static_cast<uint8_t>(input >> 16);
@@ -47,7 +59,7 @@ void writeLElong(uint8_t *data, uint32_t input, size_t offset)
 }
 
 //Loading and writing functions
-bool fileExists(const char *name)
+bool fileExists(const char *name) noexcept
 {
 	struct stat buffer;
 	return (stat(name, &buffer) == 0);
@@ -55,6 +67,9 @@ bool fileExists(const char *name)
 
 int loadFile(const char *name, uint8_t **data)
 {
+	if (data == nullptr)
+		doCustomError("data was nullptr in loadFile");
+
 	//Open file
 	FILE *file = fopen(name, "rb");
 	if (file == nullptr)
@@ -79,7 +94,7 @@ int loadFile(const char *name, uint8_t **data)
 	return filesize;
 }
 
-int writeFile(const char *name, const void *data, size_t amount)
+int writeFile(const char *name, const void *data, size_t amount) noexcept
 {
 	FILE *file;
 	if ((file = fopen(name, "wb")) == nullptr)

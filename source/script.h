@@ -5,10 +5,11 @@
 
 	Yet to be implemented :
 
-    BOA, BSL, CIL, CLR, CMU, CPS, CRE, CSS, FLA, FMU, FOB, INP, IT+, IT-, ITJ, MLP, MS2, MS3, NCJ, NUM, RMU,
+    BOA, BSL, CIL, CLR, CPS, CRE, CSS, FLA, FMU, FOB, INP, IT+, IT-, ITJ, MLP, MS2, MS3, NCJ, NUM,
     SIL, SMP, SPS, SSS, STC and XX1
 
 */
+
 
 struct TSC
 {
@@ -37,14 +38,14 @@ struct TSC
 extern TSC tsc;
 
 //Functions
-bool initTsc();
+bool initTsc() noexcept;
 
 void loadStageTsc(const char *name);
 void loadTsc2(const char *name);
 
-int startTscEvent(int no);
-int jumpTscEvent(int no);
-void stopTsc();
+int startTscEvent(int no) noexcept;
+int jumpTscEvent(int no) noexcept;
+void stopTsc() noexcept;
 
 int updateTsc();
 void drawTsc();

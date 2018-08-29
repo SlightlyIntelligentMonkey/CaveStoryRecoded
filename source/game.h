@@ -18,7 +18,7 @@ struct PERMIT_STAGE
 extern PERMIT_STAGE permitStage[8];
 
 //Functions
-void viewBounds();
+void viewBounds() noexcept;
 void initGame();
 int stageSelect(int *runEvent);
 int mainGameLoop();

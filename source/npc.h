@@ -96,9 +96,9 @@ private:
 
 	//Functions
 public:
-	void init(int setCode, int setX, int setY, int setXm, int setYm, int setDir, npc *parentNpc);
+	void init(int setCode, int setX, int setY, int setXm, int setYm, int setDir, npc *parentNpc) noexcept;
 
-	void update();
+	void update() noexcept;
 	void draw();
 };
 

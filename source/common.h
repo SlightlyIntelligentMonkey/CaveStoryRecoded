@@ -99,8 +99,8 @@ extern bool exitGame;
 extern int gameFlags;
 
 //Functions
-[[noreturn]] void doError();
-[[noreturn]] void doCustomError(const char *msg);
+[[noreturn]] void doError() noexcept;
+[[noreturn]] void doCustomError(const char *msg) noexcept;
 
 //Macros
 #ifdef __GNUC__

@@ -82,6 +82,9 @@ void loadWaveTable()
 	for (Uint16 w = 0; w < MAXWAVES; w++)
 	{
 		waveTbl[w] = static_cast<int*>(calloc(4 * 2, 0x100));
+		if (waveTbl[w] == nullptr)
+			doCustomError("Could not allocate memory for waveTbl[w]");
+
 		for (Uint32 s = 0; s < 0x100; s++)
 		{
 			waveTbl[w][s << 1] = (0x7FFFFFFF / 0xFF) * (dat[(w * 0x100) + s]);
@@ -91,7 +94,7 @@ void loadWaveTable()
 }
 
 //frees the org wave table
-void freeWaveTable()
+void freeWaveTable() noexcept
 {
 	for (Uint16 w = 0; w < 100; w++)
 		free(waveTbl[w]);
@@ -112,11 +115,17 @@ void loadMusicList(const char *path)
 		if (buf[c] == '\n')
 		{
 			temp = static_cast<char*>(calloc(1, &buf[c] - current));
+			if (temp == nullptr)
+				doCustomError("Could not allocate temp memory");
+
 			strncpy(temp, current, (&buf[c] - current) - 1);
 			musicList.push_back(temp);
 			current = &buf[c + 1];
 		}
 	temp = static_cast<char*>(calloc(1, &buf[c] - current));
+	if (temp == nullptr)
+		doCustomError("Could not allocate temp memory");
+
 	strcpy(temp, current);
 	for (c = 0; temp[c] != 0; c++)
 		if (temp[c] == -3)
@@ -141,6 +150,9 @@ void iniOrg()
 	loadWaveTable();
 	loadMusicList("data/Org/musicList.txt");
 	org = static_cast<ORG *>(malloc(sizeof(ORG)));
+	if (org == nullptr)
+		doCustomError("Could not allocate memory for org");
+
 	memset(org, 0, sizeof(ORG));
 }
 
@@ -190,21 +202,28 @@ void resumeOrg()
 	prevOrgPos = temp;
 }
 
+constexpr double calcVolume(int volume) noexcept attrConst;
+
 // -- note buffer functions -- //
 //calculates the attenuation for a volume, algorithm based off of directsound documentation
-double calcVolume(int volume)
+constexpr double calcVolume(int volume) noexcept
 {
 	if (volume > 0)
 		volume = 0;
 	if (volume < -2048)
 		volume = -2048;
-	double attenuation = 1 - (static_cast<double>(volume) / -2048);
+	const double attenuation = 1 - (static_cast<double>(volume) / -2048);
 	return attenuation;
 }
 
 //calculates the attenuation for panning
 void calcPan(int pan, double *lpan, double *rpan)
 {
+	if (lpan == nullptr)
+		doCustomError("lpan was nullptr in calcPan");
+	if (rpan == nullptr)
+		doCustomError("rpan was nullptr in calcPan");
+
 	if (pan > 2560)
 		pan = 2560;
 	if (pan < -2560)
@@ -224,7 +243,7 @@ void calcPan(int pan, double *lpan, double *rpan)
 //generates filter coefficients
 void genFilter(int nt, int fc, int bw, int g, int fsr)
 {
-	double x, windowGain, window, ys, yf = 0;
+	double x, windowGain, windowThingy, ys, yf = 0;
 	for (int i = 0; i < nt; i++)
 	{
 		x = (i - (static_cast<double>(nt) / 2)) * 2.0*M_PI*bw / fsr; //  scale Sinc width
@@ -234,31 +253,36 @@ void genFilter(int nt, int fc, int bw, int g, int fsr)
 			ys = sinc(x);
 		windowGain = g * (4.0 * bw / fsr); //  correct window gain
 		//  lanczos window
-		window = a * sin(M_PI*(i - (nt / 2)))*sin((M_PI*(i - (nt / 2))) / a) /
+		windowThingy = a * sin(M_PI*(i - (nt / 2)))*sin((M_PI*(i - (nt / 2))) / a) /
 			(pow(M_PI, 2)*pow(i - (nt / 2), 2));
 		yf = cos((i - nt / 2) * 2.0*M_PI*fc / fsr); //  spectral shift to fc
-		lanczos[i] = yf * window * windowGain * ys; // assign coefficient
+		lanczos[i] = yf * windowThingy * windowGain * ys; // assign coefficient
 	}
 }
 
+int resamp(int x, const int *indat, int alim, int fmax, int fsr, int wnwdth) attrPure;
+
 int resamp(int x, const int *indat, int alim, int fmax, int fsr, int wnwdth)
 {
+	if (indat == nullptr)
+		doCustomError("indat was nullptr in resamp");
+
 	int j = 0;
-	double window, r_snc, r_a = 0;
-	double r_g = 2 * static_cast<double>(fmax) / fsr; //Calc gain correction factor
+	double windowThingy, r_snc, r_a = 0;
+	const double r_g = 2 * static_cast<double>(fmax) / fsr; //Calc gain correction factor
 	double r_y = 0;
 	for (int i = -wnwdth / 2; i < (wnwdth / 2); i++)// For 1 window width
 	{
 		j = x + i;// Calc input sample index
 		// calculate window and calculate Sinc
-		window = a * sin(M_PI*(j - x))*sin((M_PI*(j - x)) / a) / (pow(M_PI, 2)*pow((j - x), 2));
+		windowThingy = a * sin(M_PI*(j - x))*sin((M_PI*(j - x)) / a) / (pow(M_PI, 2)*pow((j - x), 2));
 		r_a = 2 * M_PI*(j - x)*fmax / fsr;
 		if (r_a == 0)
 			r_snc = 1;
 		else
 			r_snc = sinc(r_a);
 		if ((j >= 0) && (j < alim))
-			r_y += r_g * window * r_snc * indat[j];
+			r_y += r_g * windowThingy * r_snc * indat[j];
 	}
 	return lround(r_y + 0.5);// Return new filtered sample
 }
@@ -266,9 +290,17 @@ int resamp(int x, const int *indat, int alim, int fmax, int fsr, int wnwdth)
 //changes the frequency of a sound buffer, with len being length in samples
 void changeFrequency(int **buf, Uint32 *len, double frequency, Uint32 curFreq)
 {
-	double inverse = frequency / curFreq;
+	if (buf == nullptr)
+		doCustomError("buf was nullptr in changeFrequency");
+	if (len == nullptr)
+		doCustomError("len was nullptr in changeFrequency");
+
+	const double inverse = frequency / curFreq;
 	auto newLen = static_cast<uint32_t>((*len*curFreq) / frequency);
 	auto *tBuf = static_cast<int *>(calloc(4, newLen));
+	if (tBuf == nullptr)
+		doCustomError("Couldn't allocate memory for tBuf");
+
 	for (Uint32 s = 0; s < newLen; s++)
 		tBuf[(s)] = (*buf)[lround(((s)*inverse) + 0.5)];
 
@@ -279,9 +311,15 @@ void changeFrequency(int **buf, Uint32 *len, double frequency, Uint32 curFreq)
 
 int *createWaveBuf(int wave, Uint32 *size, Uint8 note, Uint16 freq)
 {
+	if (size == nullptr)
+		doCustomError("size was nullptr in createWaveBuf");
+
 	double calcFrequency = 0;
 	//creates buffer for wave note
 	auto buf = static_cast<int *>(calloc(4 * 2, 0x100));
+	if (buf == nullptr)
+		doCustomError("Could not allocate memory for buf");
+
 	memcpy(buf, waveTbl[wave], 4 * 2 * 0x100);
 
 	//calculates the frequency of the wave
@@ -295,11 +333,17 @@ int *createWaveBuf(int wave, Uint32 *size, Uint8 note, Uint16 freq)
 
 int *createDrumBuf(int drum, Uint32 *size, Uint8 note, Uint16 freq)
 {
+	if (size == nullptr)
+		doCustomError("size was nullptr in createDrumBuf");
+
 	//creates buffer for drum 
 	auto buf = static_cast<int *>(calloc(4, drumTbl[drum].len));
+	if (buf == nullptr)
+		doCustomError("Could not allocate memory for buf");
+
 	memcpy(buf, drumTbl[drum].buf, drumTbl[drum].len << 2);
 	//calculates the frequency of the wave
-	double calcFrequency = (static_cast<double>(note) * 800) + 100;
+	const double calcFrequency = (static_cast<double>(note) * 800) + 100;
 	*size = drumTbl[drum].len;
 	changeFrequency(&buf, size, calcFrequency, 32500);
 	return buf;
@@ -333,7 +377,11 @@ void ORG::load(const char *path)
 	for (Uint32 t = 0; t < MAXTRACK; t++)
 	{
 		if (track[t].num_notes > 0)
+		{
 			track[t].note_list = static_cast<NOTELIST*>(calloc(track[t].num_notes, sizeof(NOTELIST)));
+			if (track[t].note_list == nullptr)
+				doCustomError("Could not allocate memory for track[t].note_list");
+		}
 		else
 		{
 			track[t].note_list = nullptr;
@@ -471,6 +519,9 @@ void ORG::playData()
 	//mixes tracks into buffer
 	free(stepBuf);
 	stepBuf = static_cast<int*>(calloc(4 * 2, samplesPerStep));
+	if (stepBuf == nullptr)
+		doCustomError("Could not allocate memory for stepBuf");
+
 	//mixes waves
 	for (int t = 0; t < 8; t++)
 	{
@@ -511,7 +562,7 @@ void ORG::playData()
 }
 
 //frees notes and shit
-void ORG::freemem()
+void ORG::freemem() noexcept
 {
 	//frees note information
 	for (int t = 0; t < 16; t++)
@@ -532,8 +583,15 @@ void ORG::freemem()
 // -- sound test functions -- //
 void playWave(int wave, int *stream, uint32_t len, double frequency)
 {
+	if (stream == nullptr)
+		doCustomError("stream was nullptr in playWave");
+
 	Uint32 nlen = 0x200;
+
 	auto *tBuf = static_cast<int*>(calloc(4 * 2, 0x100));
+	if (tBuf == nullptr)
+		doCustomError("Could not allocate memory for tBuf");
+
 	memcpy(tBuf, waveTbl[wave], 0x200);
 	changeFrequency(&tBuf, &nlen, frequency, 22050);
 	for (Uint32 i = 0; (i << 2) < len >> 1; i++)

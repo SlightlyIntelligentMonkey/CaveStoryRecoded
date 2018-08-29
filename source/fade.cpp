@@ -12,12 +12,12 @@ FADE_STATE fade;
 
 const int fadeFrames = 16;
 
-void initFade()
+void initFade() noexcept
 {
 	memset(&fade, 0, sizeof(FADE_STATE));
 }
 
-void updateFade()
+void updateFade() noexcept
 {
 	if (fade.mode)
 	{

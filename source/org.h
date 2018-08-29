@@ -58,9 +58,9 @@ public:
 	uint32_t pos;
 	void load(const char *path);
 	void playData();
-	void freemem();
+	void freemem() noexcept;
 	//sets the play position
-	void setPos(uint32_t x)
+	void setPos(uint32_t x) noexcept
 	{
 		for (uint32_t i = 0; i < MAXTRACK; i++)
 		{

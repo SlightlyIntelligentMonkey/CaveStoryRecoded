@@ -27,6 +27,11 @@ SDL_AudioSpec want;
 //use int pointers for easy use
 void mixAudioSFX(int *dst, uint32_t len, SOUND_EFFECT *sound)
 {
+	if (sound == nullptr)
+		doCustomError("sound was nullptr in mixAudioSFX");
+	if (dst == nullptr)
+		doCustomError("dst was nullptr in mixAudioSFX");
+
 	unsigned int currentPos = 0;
 	//using 32 signed int on native system 
 	while (sound->pos + currentPos < sound->length && (currentPos << 3) < len)
@@ -41,6 +46,9 @@ void mixAudioSFX(int *dst, uint32_t len, SOUND_EFFECT *sound)
 uint32_t frequency = 22050;
 void mixAudioOrg(int *dst, uint32_t len)
 {
+	if (dst == nullptr)
+		doCustomError("dst was nullptr in mixAudioOrg");
+
 	unsigned int currentPos = 0;
 
 	if (org == nullptr || org->samplesPerStep == 0)
@@ -109,6 +117,11 @@ void initAudio()
 //we have to do it ourselves
 void loadSound(const char *path, SDL_AudioSpec *spec, int **buf, uint32_t *length)
 {
+	if (length == nullptr)
+		doCustomError("length was nullptr in loadSound");
+	if (buf == nullptr)
+		doCustomError("buf was nullptr in loadSound");
+
 	uint8_t *pBuf = nullptr;
 
 	SDL_LoadWAV(path, spec, &pBuf, length);
@@ -199,28 +212,18 @@ void loadSounds()
 	SDL_PauseAudioDevice(soundDev, 0);
 }
 
-void freeSounds()
+void freeSounds() noexcept
 {
 	for (size_t s = 0; s < _countof(sounds); s++)
 		free(sounds[s].buf);
 }
 
-void playSound(size_t sound_no)
+void playSound(size_t sound_no, int soundMode) noexcept
 {
 	if (sound_no > _countof(sounds) - 1)
 		return;
 	if (sounds[sound_no].buf == nullptr)
 		return;
 	sounds[sound_no].pos = 0;
-	sounds[sound_no].mode = 1;
-}
-
-void playSound(size_t sound_no, int mode)
-{
-	if (sound_no > _countof(sounds) - 1)
-		return;
-	if (sounds[sound_no].buf == nullptr)
-		return;
-	sounds[sound_no].pos = 0;
-	sounds[sound_no].mode = mode;
+	sounds[sound_no].mode = soundMode;
 }

@@ -261,6 +261,8 @@ int playerJudgeTriangleH(const RECT *rcHit, player *me, int tx, int ty)
 	return slopeH;
 }
 
+int playerJudgeWater(const RECT *rcHit, const player *me, int tx, int ty) attrPure;
+
 int playerJudgeWater(const RECT *rcHit, const player *me, int tx, int ty)
 {
 	int hit = 0;
@@ -276,6 +278,8 @@ int playerJudgeWater(const RECT *rcHit, const player *me, int tx, int ty)
 	return hit;
 }
 
+int playerJudgeSpike(const RECT *rcHit, const player *me, int tx, int ty) attrPure;
+
 int playerJudgeSpike(const RECT *rcHit, const player *me, int tx, int ty)
 {
 	if (me->x - 0x800 < (4 * tx + 1) << 11
@@ -288,6 +292,8 @@ int playerJudgeSpike(const RECT *rcHit, const player *me, int tx, int ty)
 
 	return 0;
 }
+
+int playerJudgeWaterSpike(const RECT *rcHit, const player *me, int tx, int ty) attrPure;
 
 int playerJudgeWaterSpike(const RECT *rcHit, const player *me, int tx, int ty)
 {
@@ -303,6 +309,8 @@ int playerJudgeWaterSpike(const RECT *rcHit, const player *me, int tx, int ty)
 }
 
 //Current
+int playerJudgeCurrentLeft(const RECT *rcHit, const player *me, int tx, int ty) attrPure;
+
 int playerJudgeCurrentLeft(const RECT *rcHit, const player *me, int tx, int ty)
 {
 	if (me->x - rcHit->left < (4 * (2 * tx + 1) - 1) << 10
@@ -315,6 +323,8 @@ int playerJudgeCurrentLeft(const RECT *rcHit, const player *me, int tx, int ty)
 
 	return 0;
 }
+
+int playerJudgeCurrentUp(const RECT *rcHit, const player *me, int tx, int ty) attrPure;
 
 int playerJudgeCurrentUp(const RECT *rcHit, const player *me, int tx, int ty)
 {
@@ -329,6 +339,8 @@ int playerJudgeCurrentUp(const RECT *rcHit, const player *me, int tx, int ty)
 	return 0;
 }
 
+int playerJudgeCurrentRight(const RECT *rcHit, const player *me, int tx, int ty) attrPure;
+
 int playerJudgeCurrentRight(const RECT *rcHit, const player *me, int tx, int ty)
 {
 	if (me->x - rcHit->left < (4 * (2 * tx + 1) - 1) << 10
@@ -341,6 +353,8 @@ int playerJudgeCurrentRight(const RECT *rcHit, const player *me, int tx, int ty)
 
 	return 0;
 }
+
+int playerJudgeCurrentDown(const RECT *rcHit, const player *me, int tx, int ty) attrPure;
 
 int playerJudgeCurrentDown(const RECT *rcHit, const player *me, int tx, int ty)
 {
@@ -692,6 +706,8 @@ int playerHitNpcHardSolid(const RECT *rcHit, player *me, const npc *NPC)
 	}
 	return hit;
 }
+
+int playerHitNpcNonSolid(const RECT *rcHit, const player *me, const npc *NPC) attrPure;
 
 int playerHitNpcNonSolid(const RECT *rcHit, const player *me, const npc *NPC)
 {

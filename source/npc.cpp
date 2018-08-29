@@ -215,6 +215,9 @@ int dropMissiles(int x, int y, int val)
 
 void killNpc(npc *NPC, bool bVanish)
 {
+	if (NPC == nullptr)
+		doCustomError("NPC was nullptr in killNpc");
+
 	const int x = NPC->x;
 	const int y = NPC->y;
 	const int flag = NPC->code_flag;
@@ -333,7 +336,7 @@ void loadNpcTable()
 		tblStream->read(tblStream, &npcTable[i].view, 4, 1);
 }
 
-void npc::init(int setCode, int setX, int setY, int setXm, int setYm, int setDir, npc *parentNpc)
+void npc::init(int setCode, int setX, int setY, int setXm, int setYm, int setDir, npc *parentNpc) noexcept
 {
 	memset(this, 0, sizeof(*this));
 
@@ -369,7 +372,7 @@ void npc::init(int setCode, int setX, int setY, int setXm, int setYm, int setDir
 	view.bottom = npcTable[code_char].view.bottom << 9;
 }
 
-void npc::update()
+void npc::update() noexcept
 {
 	npcActs[code_char](this);
 

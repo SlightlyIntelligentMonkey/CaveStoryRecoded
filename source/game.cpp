@@ -53,7 +53,7 @@ void initGame()
 	startTscEvent(200);
 }
 
-void viewBounds()
+void viewBounds() noexcept
 {
 	//Keep view in level
 	if ((levelWidth - 1) << 4 > screenWidth)
@@ -233,7 +233,7 @@ void debugFunction()
 	}
 }
 
-void delimitFramerate()
+void delimitFramerate() noexcept
 {
 	while (true)
 	{
@@ -303,7 +303,7 @@ int selectedStage;
 int stageSelectTitleY;
 int stageSelectFlash;
 
-void moveStageSelectCursor()
+void moveStageSelectCursor() noexcept
 {
 	int stageNo; // [esp+18h] [ebp-10h]
 
@@ -371,6 +371,9 @@ void drawStageSelect()
 
 int stageSelect(int *runEvent)
 {
+	if (runEvent == nullptr)
+		doCustomError("runEvent was nullptr in stageSelect");
+
 	//Keep track of old one
 	char oldScript[260];
 	strcpy(oldScript, tsc.path);

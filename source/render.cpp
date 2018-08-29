@@ -21,7 +21,7 @@ int charHeight = 24;
 int charScale = 2;
 
 //Create window
-int createWindow(int width, int height, int scale, bool fullscreen) // TBD : Handle fullscreen parameter
+int createWindow(int width, int height, int scale, bool fullscreen) noexcept // TBD : Handle fullscreen parameter
 {
 	const int createWidth = width * scale;
 	const int createHeight = height * scale;
@@ -91,6 +91,9 @@ void switchScreenMode()
 //Texture and drawing stuff
 void loadImage(const char *file, SDL_Texture **tex)
 {
+	if (tex == nullptr)
+		doCustomError("tex was nullptr in loadImage");
+
 	//Destroy previously existing texture and load new one
 	if (*tex != nullptr)
 	{
@@ -108,7 +111,7 @@ void loadImage(const char *file, SDL_Texture **tex)
 }
 
 //Drawing functions
-void setCliprect(const RECT *rect)
+void setCliprect(const RECT *rect) noexcept
 {
 	//All of this code should be pretty self explanatory
 	if (rect != nullptr)
@@ -192,7 +195,9 @@ void drawNumber(int value, int x, int y, bool bZero)
 	}
 }
 
-bool isMultibyte(uint8_t c) //Shift-JIS
+bool isMultibyte(uint8_t c) noexcept attrConst;
+
+bool isMultibyte(uint8_t c) noexcept //Shift-JIS
 {
 	if (c > 0x80u && c <= 0x9Fu)
 		return true;
@@ -201,6 +206,9 @@ bool isMultibyte(uint8_t c) //Shift-JIS
 
 void drawString(int x, int y, const char *str, const uint8_t *flag)
 {
+	if (str == nullptr)
+		doCustomError("str was nullptr in drawString");
+
 	RECT rcChar;
 
 	for (int i = 0; ; i++)
@@ -249,7 +257,7 @@ void drawString(int x, int y, const char *str, const uint8_t *flag)
 	}
 }
 
-void drawRect(int x, int y, int w, int h)
+void drawRect(int x, int y, int w, int h) noexcept
 {
 	//Map this onto an SDL_Rect
 	drawRectangle.x = x * screenScale;

@@ -73,7 +73,7 @@ void drawValueView()
 }
 
 //Class
-void valueview::init(int *px, int *py, int value)
+void valueview::init(int *px, int *py, int value) noexcept
 {
 	memset(this, 0, sizeof(*this));
 	this->px = px;
@@ -82,13 +82,13 @@ void valueview::init(int *px, int *py, int value)
 	this->value = value;
 }
 
-void valueview::add(int value)
+void valueview::add(int value) noexcept
 {
 	this->count = 0x20;
 	this->value += value;
 }
 
-void valueview::update()
+void valueview::update() noexcept
 {
 	if (++count < 32)
 		offset_y -= 0x100;

@@ -38,10 +38,10 @@ extern SDL_Texture *levelTileset;
 extern uint8_t backgroundScroll;
 extern SDL_Texture *levelBackground;
 
-uint8_t getTileAttribute(int x, int y);
+uint8_t getTileAttribute(int x, int y) noexcept attrPure;
 
-void deleteTile(int x, int y);
-void shiftTile(int x, int y);
+void deleteTile(int x, int y) noexcept;
+void shiftTile(int x, int y) noexcept;
 bool changeTile(int x, int y, uint8_t tile);
 
 void loadStageTable();
@@ -49,12 +49,16 @@ void loadStageTable();
 void loadLevel(int levelIndex);
 void drawLevel(bool foreground);
 
-inline int tileToCoord(int x)
+constexpr inline int tileToCoord(int x) noexcept attrConst;
+
+constexpr inline int tileToCoord(int x) noexcept
 {
 	return x << 13;
 }
 
-inline int coordToTile(int x)
+constexpr inline int coordToTile(int x) noexcept attrConst;
+
+constexpr inline int coordToTile(int x) noexcept
 {
 	return x >> 13;
 }

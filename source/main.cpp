@@ -29,7 +29,7 @@ bool exitGame = false;
 
 // Some global functions
 
-static void doQuit()
+static void doQuit() noexcept
 {
 	//sound::quit();
 	SDL_Quit();
@@ -37,7 +37,7 @@ static void doQuit()
 	freeSounds();
 }
 
-void doError()
+void doError() noexcept
 {
 	SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Critical Error", SDL_GetError(), nullptr);
 	SDL_ClearError();
@@ -45,7 +45,7 @@ void doError()
 	exit(EXIT_FAILURE);
 }
 
-void doCustomError(const char *msg)
+void doCustomError(const char *msg) noexcept
 {
 	SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Critical Error", msg, nullptr);
 	doQuit();

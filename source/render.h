@@ -30,16 +30,16 @@ enum TextureNums
 };
 
 //Functions for handling the window
-int createWindow(int width, int height, int scale, bool fullscreen);
+int createWindow(int width, int height, int scale, bool fullscreen) noexcept;
 void switchScreenMode();
 
 //Load texture function
 void loadImage(const char *file, SDL_Texture **tex);
 
 //Drawing functions
-void setCliprect(const RECT *rect);
+void setCliprect(const RECT *rect) noexcept;
 void drawTexture(SDL_Texture *texture, const RECT *rect, int x, int y);
 void drawTextureSize(SDL_Texture *texture, const RECT *rect, int x, int y, int w, int h);
 void drawNumber(int value, int x, int y, bool bZero);
 void drawString(int x, int y, const char *str, const uint8_t *flag);
-void drawRect(int x, int y, int w, int h);
+void drawRect(int x, int y, int w, int h) noexcept;

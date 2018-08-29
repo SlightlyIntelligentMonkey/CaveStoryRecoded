@@ -57,7 +57,7 @@ int selectedWeapon;
 int weaponShiftX;
 int weaponExpFlash;
 
-void initWeapons()
+void initWeapons() noexcept
 {
 	memset(weapons, 0, sizeof(weapons));
 	selectedWeapon = 0;
@@ -80,7 +80,7 @@ void actWeapon()
 	}
 }
 
-int useWeaponAmmo(int num)
+int useWeaponAmmo(int num) noexcept
 {
 	//Some checks
 	if (!weapons[selectedWeapon].max_num)
@@ -95,7 +95,7 @@ int useWeaponAmmo(int num)
 	return 1;
 }
 
-bool weaponMaxExp()
+bool weaponMaxExp() noexcept
 {
 	return weapons[selectedWeapon].level == 3
 	       && weapons[selectedWeapon].exp >= weaponLevels[weapons[selectedWeapon].code].exp[2];
@@ -113,7 +113,7 @@ int weaponBullets(int arms_code)
 }
 
 //TSC functions
-int tradeWeapons(int code1, int code2, int max_num)
+int tradeWeapons(int code1, int code2, int max_num) noexcept
 {
 	int i; // [esp+Ch] [ebp-4h]
 	for (i = 0; i < 8 && weapons[i].code != code1; ++i);
@@ -128,7 +128,7 @@ int tradeWeapons(int code1, int code2, int max_num)
 	return 1;
 }
 
-int giveWeapon(int code, int max_num)
+int giveWeapon(int code, int max_num) noexcept
 {
 	int i;
 	for (i = 0; i < 8 && weapons[i].code != code && weapons[i].code; ++i);
@@ -152,7 +152,7 @@ int giveWeapon(int code, int max_num)
 	return 1;
 }
 
-int removeWeapon(int code)
+int removeWeapon(int code) noexcept
 {
 	int i;
 	for (i = 0; i < 8 && weapons[i].code != code; ++i);
@@ -170,7 +170,7 @@ int removeWeapon(int code)
 	return 1;
 }
 
-void clearWeaponExperience()
+void clearWeaponExperience() noexcept
 {
 	for (int a = 0; a < 8; ++a)
 	{
@@ -179,13 +179,13 @@ void clearWeaponExperience()
 	}
 }
 
-void maxWeaponAmmo()
+void maxWeaponAmmo() noexcept
 {
 	for (int a = 0; a < 8; ++a)
 		weapons[a].num = weapons[a].max_num;
 }
 
-bool checkWeapon(int code)
+bool checkWeapon(int code) noexcept
 {
 	for (int i = 0; i <= 7; ++i)
 	{
@@ -247,7 +247,7 @@ void giveWeaponExperience(int x)
 }
 
 //Rotate weapon functions
-int rotateWeaponRight()
+int rotateWeaponRight() noexcept
 {
 	int weaponNo;
 
@@ -271,7 +271,7 @@ int rotateWeaponRight()
 	return weapons[weaponNo].code;
 }
 
-int rotateWeaponLeft()
+int rotateWeaponLeft() noexcept
 {
 	int weaponNo;
 
