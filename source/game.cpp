@@ -171,12 +171,12 @@ void debugFunction()
 {
 	static uint32_t displayTimer = 0;
 	static string disp;
-	static int debugMode = 0;
 
 	debugLevels();
 
-	if (displayTimer <= 0)
+	if (displayTimer == 0)
 	{
+		static int debugMode = 0;
 		if (debugMode == 0 && isKeyDown(SDL_SCANCODE_RSHIFT) && isKeyDown(SDL_SCANCODE_BACKSPACE))
 		{
 			if (isKeyPressed(SDL_SCANCODE_M))
@@ -404,8 +404,7 @@ int gameUpdatePlay()
 
 		drawMapName(false);
 
-		if (gameFlags & 2)
-			drawHud(false);
+		drawHud(gameFlags & 2);
 
 		drawTsc();
 

@@ -207,12 +207,14 @@ void drawPlayerAir()
 			drawNumber(currentPlayer.air / 10, x + 32, y, false);
 
 		//Draw the "AIR" thing
-		drawTexture(sprites[0x1A], &rcAir[(currentPlayer.air % 30 <= 10)], x, y);
+		drawTexture(sprites[0x1A], &rcAir[currentPlayer.air % 30 <= 10], x, y);
 	}
 }
 
-void drawHud(bool hide) // TBD : Handle hide parameter
+void drawHud(bool hide)
 {
+	if (hide)
+		return;
 	drawWeaponStats();
 	drawPlayerHealth();
 	drawPlayerAir();

@@ -73,19 +73,19 @@ void drawValueView()
 }
 
 //Class
-void valueview::init(int *px, int *py, int value) noexcept
+void valueview::init(int *setPx, int *setPy, int setVal) noexcept
 {
 	memset(this, 0, sizeof(*this));
-	this->px = px;
-	this->py = py;
+	this->px = setPx;
+	this->py = setPy;
 	this->flag = 1;
-	this->value = value;
+	this->value = setVal;
 }
 
-void valueview::add(int value) noexcept
+void valueview::add(int addVal) noexcept
 {
 	this->count = 0x20;
-	this->value += value;
+	this->value += addVal;
 }
 
 void valueview::update() noexcept

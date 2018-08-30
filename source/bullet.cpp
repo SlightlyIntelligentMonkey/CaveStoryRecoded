@@ -104,7 +104,7 @@ BULLETSTATS bulletTable[] =
 };
 
 //Bullet functions
-void createBullet(int setCode, int setX, int setY, int setDir)
+void createBullet(int setCode, int setX, int setY, uint8_t setDir)
 {
 	bullet *repBullet = nullptr;
 

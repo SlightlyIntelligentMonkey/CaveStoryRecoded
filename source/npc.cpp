@@ -11,7 +11,7 @@
 #include <deque>
 #include <string>
 #include <cstring>
-#include <SDL_RWops.h>
+#include <SDL_rwops.h>
 
 using std::memset;
 using std::string;

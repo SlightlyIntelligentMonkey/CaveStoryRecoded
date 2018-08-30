@@ -280,7 +280,7 @@ int playerJudgeWater(const RECT *rcHit, const player *me, int tx, int ty)
 
 int playerJudgeSpike(const RECT *rcHit, const player *me, int tx, int ty) attrPure;
 
-int playerJudgeSpike(const RECT *rcHit, const player *me, int tx, int ty)
+int playerJudgeSpike(const RECT * /*rcHit*/, const player *me, int tx, int ty)
 {
 	if (me->x - 0x800 < (4 * tx + 1) << 11
 	        && me->x + 0x800 > (4 * tx - 1) << 11
@@ -295,7 +295,7 @@ int playerJudgeSpike(const RECT *rcHit, const player *me, int tx, int ty)
 
 int playerJudgeWaterSpike(const RECT *rcHit, const player *me, int tx, int ty) attrPure;
 
-int playerJudgeWaterSpike(const RECT *rcHit, const player *me, int tx, int ty)
+int playerJudgeWaterSpike(const RECT * /*rcHit*/, const player *me, int tx, int ty)
 {
 	if (me->x - 0x800 < (4 * tx + 1) << 11
 	        && me->x + 0x800 > (4 * tx - 1) << 11
@@ -709,7 +709,7 @@ int playerHitNpcHardSolid(const RECT *rcHit, player *me, const npc *NPC)
 
 int playerHitNpcNonSolid(const RECT *rcHit, const player *me, const npc *NPC) attrPure;
 
-int playerHitNpcNonSolid(const RECT *rcHit, const player *me, const npc *NPC)
+int playerHitNpcNonSolid(const RECT * /*rcHit*/, const player *me, const npc *NPC)
 {
 	if (NPC->direct != dirLeft)
 	{
@@ -742,7 +742,7 @@ void playerHitNpcs()
 	{
 		for (size_t i = 0; i < npcs.size(); ++i)
 		{
-			if ((npcs[i].cond & npccond_alive))
+			if (npcs[i].cond & npccond_alive)
 			{
 				int hit = 0;
 				if (npcs[i].bits & npc_solidsoft)

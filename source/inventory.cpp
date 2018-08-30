@@ -9,10 +9,12 @@
 #include "caret.h"
 #include "valueview.h"
 
+#include <string>
 #include <cstring>
 #include <SDL_events.h>
 #include <SDL_render.h>
 
+using std::string;
 using std::strcpy;
 
 
@@ -32,9 +34,9 @@ void moveInventoryCursor()
 	while (weaponNo < static_cast<int>(ITEMS) && items[itemNo].code != 0)
 		++itemNo;
 
-	bool bChange = false;
 	if (weaponNo || itemNo)
 	{
+		bool bChange = false;
 		if (inventoryActive)
 		{
 			if (isKeyPressed(keyLeft))
@@ -193,8 +195,8 @@ void drawInventory()
 
 		if (weapons[i].max_num)
 		{
-			drawNumber(weapons[i].num, 40 * i + screenWidth / 2 - 112, 48, 0);
-			drawNumber(weapons[i].max_num, 40 * i + screenWidth / 2 - 112, 56, 0);
+			drawNumber(weapons[i].num, 40 * i + screenWidth / 2 - 112, 48, false);
+			drawNumber(weapons[i].max_num, 40 * i + screenWidth / 2 - 112, 56, false);
 		}
 		else
 		{
@@ -240,8 +242,7 @@ void drawInventory()
 int openInventory()
 {
 	//Keep track of old one
-	char oldScript[260];
-	strcpy(oldScript, tsc.path);
+	string oldScript(tsc.path);
 
 	//Set up some variables
 	inventoryTitleY = 24;
@@ -309,7 +310,7 @@ int openInventory()
 			if (isKeyPressed(keyMenu) || isKeyPressed(keyJump) || isKeyPressed(keyShoot))
 			{
 				stopTsc();
-				loadStageTsc(oldScript);
+				loadStageTsc(oldScript.c_str());
 				weaponShiftX = 32;
 				return 1;
 			}
@@ -318,7 +319,7 @@ int openInventory()
 		if (gameFlags & 2 && (isKeyPressed(keyMenu) || isKeyPressed(keyShoot)))
 		{
 			stopTsc();
-			loadStageTsc(oldScript);
+			loadStageTsc(oldScript.c_str());
 			weaponShiftX = 32;
 			return 1;
 		}

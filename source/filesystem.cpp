@@ -143,9 +143,8 @@ void loadProfile()
 		const uint64_t code = SDL_ReadLE64(profile); //Code
 		if (memcmp(&code, profileCode, sizeof(code)) != 0)
 		{
-			char errorMsg[0x80];
-			sprintf(errorMsg, "Invalid profile (first 8 bytes aren't \"%s\"", profileCode);
-			doCustomError(errorMsg);
+			string errorMsg(string("Invalid profile (first 8 bytes aren't \"") + profileCode + "\"");
+			doCustomError(errorMsg.c_str());
 		}
 
 		const int level = SDL_ReadLE32(profile); //level
@@ -171,33 +170,31 @@ void loadProfile()
 
 		SDL_ReadLE32(profile); //counter
 
-		for (size_t i = 0; i < 8; i++)
+		for (auto& i : weapons)
 		{
-			weapons[i].code = SDL_ReadLE32(profile);
-			weapons[i].level = SDL_ReadLE32(profile);
-			weapons[i].exp = SDL_ReadLE32(profile);
-			weapons[i].max_num = SDL_ReadLE32(profile);
-			weapons[i].num = SDL_ReadLE32(profile);
+			i.code = SDL_ReadLE32(profile);
+			i.level = SDL_ReadLE32(profile);
+			i.exp = SDL_ReadLE32(profile);
+			i.max_num = SDL_ReadLE32(profile);
+			i.num = SDL_ReadLE32(profile);
 		}
 
-		for (size_t i = 0; i < 32; i++)
+		for (auto& i : items)
+			i.code = SDL_ReadLE32(profile);
+
+		for (auto& i : permitStage)
 		{
-			items[i].code = SDL_ReadLE32(profile);
+			i.index = SDL_ReadLE32(profile);
+			i.event = SDL_ReadLE32(profile);
 		}
 
-		for (size_t i = 0; i < 8; i++)
-		{
-			permitStage[i].index = SDL_ReadLE32(profile);
-			permitStage[i].event = SDL_ReadLE32(profile);
-		}
-
-		for (size_t i = 0; i < 0x80; i++)
-			SDL_RWread(profile, &mapFlags[i], 1, 1);
+		for (auto& i : mapFlags)
+			SDL_RWread(profile, &i, 1, 1);
 
 		SDL_ReadLE32(profile); //FLAG
 
-		for (size_t i = 0; i < 1000; i++)
-			SDL_RWread(profile, &tscFlags[i], 1, 1);
+		for (auto& i : tscFlags)
+			SDL_RWread(profile, &i, 1, 1);
 
 		//Now load level
 		loadLevel(level);

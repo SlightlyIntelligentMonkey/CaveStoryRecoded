@@ -43,7 +43,7 @@ void shootFireball(int level)
 		}
 		else
 		{
-			int shootDirect;
+			uint8_t shootDirect;
 			int shootX;
 			int shootY;
 			int caretX;

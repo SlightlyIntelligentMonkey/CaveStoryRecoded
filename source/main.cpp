@@ -119,7 +119,7 @@ int init()
 	return 0;
 }
 
-int main(int argc, char **argv) // TDB : Do something with command-line parameters
+int main(int /*argc*/, char ** /*argv*/) // TDB : Do something with command-line parameters
 {
 	init();
 

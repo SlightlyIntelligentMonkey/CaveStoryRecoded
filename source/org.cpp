@@ -52,7 +52,7 @@ void organyaReleaseNote()
 {
 	for (int i = 0; i < 16; i++) {
 		if (org.tdata[i].note_p != NULL)
-			free(org.tdata[i].note_p);//delete org.tdata[i].note_p;
+			free(org.tdata[i].note_p); //delete org.tdata[i].note_p;
 	}
 
 	for (int i = 0; i < 8; i++)
@@ -180,9 +180,7 @@ long now_leng[16] = { NULL }; //Length of notes during playback
 void changeNoteFrequency(int key, char track, long a)
 {
 	if (key != 0xFF)
-	{
 		orgWaves[track].key = key;
-	}
 }
 
 unsigned char old_key[16] = { 255 }; //Sound during playback
@@ -218,9 +216,9 @@ void changeNoteVolume(long volume, char track)
 }
 
 //Play note
-void playOrganyaNote(int key, int mode, char track, long freq)
+void playOrganyaNote(int key, int noteMode, char track, long freq)
 {
-	switch (mode)
+	switch (noteMode)
 	{
 	case -1:
 		if (old_key[track] == 0xFF) //Play
@@ -295,9 +293,9 @@ void changeDrumVolume(long volume, char track)
 	orgDrums[track].volume = orgVolumeMin + ((long double)volume / 255.0f * (1.0 - orgVolumeMin));
 }
 
-void playOrganyaDrum(int key, int mode, char track)
+void playOrganyaDrum(int key, int drumMode, char track)
 {
-	switch (mode) {
+	switch (drumMode) {
 	case 0: // Stop
 		orgDrums[track].playing = false;
 		orgDrums[track].pos = 0;
@@ -333,7 +331,7 @@ void organyaPlayStep(void)
 {
 	//char str[10];
 	//char oldstr[10];
-	char end_cnt = 16;
+	//char end_cnt = 16;
 
 	//Melody playback
 	for (int i = 0; i < 8; i++)
@@ -406,7 +404,6 @@ void loadOrganya(const char *name)
 
 	//Password check
 	char passCheck[6];
-	bool pass = false;
 
 	SDL_RWread(fp, &passCheck[0], sizeof(char), 6);
 	
@@ -594,7 +591,7 @@ void resumeOrg()
 	temp = currentOrg;
 	currentOrg = prevOrg;
 	prevOrg = temp;
-	string path(orgFolder + musicList[currentOrg].c_str());
+	string path(orgFolder + musicList[currentOrg]);
 	temp = play_p;
 	loadOrganya(path.c_str());
 	organyaSetPlayPosition(prevOrgPos);

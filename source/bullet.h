@@ -65,7 +65,7 @@ public:
 	void draw();
 };
 
-void createBullet(int setCode, int setX, int setY, int setDir);
+void createBullet(int setCode, int setX, int setY, uint8_t setDir);
 void updateBullets();
 void drawBullets();
 

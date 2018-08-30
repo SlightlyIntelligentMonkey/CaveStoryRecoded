@@ -382,7 +382,7 @@ void caretAct011(caret *CARET) //Damage effect
 	{
 		CARET->act_no = 1;
 
-		const int deg = random(0, 255);
+		const uint8_t deg = random(0, 255);
 
 		CARET->xm = 2 * getCos(deg);
 		CARET->ym = 2 * getSin(deg);
