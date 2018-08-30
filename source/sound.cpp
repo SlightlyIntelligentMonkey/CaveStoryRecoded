@@ -8,6 +8,7 @@
 #include <string>
 #include <fstream>
 #include <memory>
+#include <cctype>
 #include <cstdlib>
 #include <cstdio>
 #include <SDL.h>
@@ -51,7 +52,7 @@ void initAudio()
 }
 
 //Loading and parsing pxt
-std::vector<long double> getNumbersFromString(char *string)
+std::vector<long double> getNumbersFromString(const string& str)
 {
 	std::vector<long double> numbers;
 
@@ -60,27 +61,26 @@ std::vector<long double> getNumbersFromString(char *string)
 	bool numberDecimal = false;
 
 	size_t i = 0;
-	while (string[i])
+	while (str[i])
 	{
-		if (string[i] == '.' || (string[i] >= 0x30 && string[i] <= 0x39))
+		if (str[i] == '.' || isdigit(str[i]))
 		{
 			if (!parsingNumber)
 			{
 				parsingNumber = true;
-				numberDecimal = false;
 				currentValue = 0;
-				numberDecimal = (string[i] == '.');
+				numberDecimal = (str[i] == '.');
 			}
 
-			if (string[i] != '.')
+			if (str[i] != '.')
 			{
 				//Get position
 				size_t v = i;
-				while (string[v])
+				while (str[v])
 				{
-					if (string[v] == '.' || (string[v] >= 0x30 && string[v] <= 0x39))
+					if (str[v] == '.' || (isdigit(str[v])))
 					{
-						if (string[v] == '.')
+						if (str[v] == '.')
 							break;
 					}
 					else
@@ -92,9 +92,9 @@ std::vector<long double> getNumbersFromString(char *string)
 
 				//Add value to number
 				if (!numberDecimal)
-					currentValue += (long double)(string[i] - 0x30) * (pow(10, (v - i) - 1));
+					currentValue += (long double)(str[i] - 0x30) * (pow(10, (v - i) - 1));
 				else
-					currentValue += (long double)(string[i] - 0x30) * (1.0 / pow(10, 2 - ((v - i) - 1)));
+					currentValue += (long double)(str[i] - 0x30) * (1.0 / pow(10, 2 - ((v - i) - 1)));
 			}
 			else
 			{

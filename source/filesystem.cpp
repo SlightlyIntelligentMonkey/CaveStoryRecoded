@@ -27,17 +27,6 @@ using std::malloc;
 using std::fread;
 using std::fclose;
 
-//Read function stuff
-std::vector<std::string> getLinesFromFile(char *path)
-{
-	std::vector<std::string> lines;
-	std::ifstream inFile(path);
-	std::string line;
-	while (getline(inFile, line))
-		lines.push_back(line);
-	return lines;
-}
-
 uint16_t readLEshort(const uint8_t * data, size_t offset)
 {
 	if (data == nullptr)
@@ -143,7 +132,7 @@ void loadProfile()
 		const uint64_t code = SDL_ReadLE64(profile); //Code
 		if (memcmp(&code, profileCode, sizeof(code)) != 0)
 		{
-			string errorMsg(string("Invalid profile (first 8 bytes aren't \"") + profileCode + "\"");
+			const string errorMsg(string("Invalid profile (first 8 bytes aren't \"") + profileCode + "\"");
 			doCustomError(errorMsg.c_str());
 		}
 

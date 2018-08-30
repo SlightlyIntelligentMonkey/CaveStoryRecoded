@@ -190,7 +190,7 @@ void maxWeaponAmmo() noexcept
 
 bool checkWeapon(int code) noexcept
 {
-	for (auto& i : weapons)
+	for (const auto& i : weapons)
 	{
 		if (i.code == code)
 			return true;

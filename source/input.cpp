@@ -18,8 +18,8 @@ int keyMap = SDL_SCANCODE_W;
 int keyRotLeft = SDL_SCANCODE_A;
 int keyRotRight = SDL_SCANCODE_S;
 
-Uint8 key_prev[SDL_NUM_SCANCODES] = { 0 };
-Uint8 key[SDL_NUM_SCANCODES] = { 0 };
+uint8_t key_prev[SDL_NUM_SCANCODES] = { 0 };
+uint8_t key[SDL_NUM_SCANCODES] = { 0 };
 int key_array_size = 0;
 
 void getKeys(SDL_Event *event) noexcept
