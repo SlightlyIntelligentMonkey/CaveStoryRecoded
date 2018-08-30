@@ -12,6 +12,8 @@
 #include <cstdio>
 #include <SDL.h>
 
+using std::string;
+
 //Variable things
 SDL_AudioDeviceID soundDev;
 SDL_AudioSpec soundSpec;
@@ -120,7 +122,7 @@ std::vector<long double> getNumbersFromString(char *string)
 	return numbers;
 }
 
-void loadSound(char *path)
+void loadSound(const char *path)
 {
 	std::vector<std::string> lines = getLinesFromFile(path);
 
@@ -144,11 +146,8 @@ void loadSounds()
 
 		if (fileExists(path.c_str()))
 		{
-			loadSound(path.c_str(), &soundSpec, &sounds[s].buf, &sounds[s].length);
-			sounds[s].pos = sounds[s].length;
+			loadSound(path.c_str());
 		}
-		else
-			sounds[s].buf = nullptr;
 	}
 }
 
