@@ -2,6 +2,7 @@
 #include "org.h"
 #include "input.h"
 #include "filesystem.h"
+#include "stdUtils.h"
 
 #include <string>
 #include <memory>
@@ -119,28 +120,20 @@ void loadSound(const char *path, SDL_AudioSpec *spec, int **buf, uint32_t *lengt
 	*buf = realBuf;
 }
 
-
-const char* hexStr[16] = { "0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "A", "B", "C", "D", "E", "F" };
-
 void loadSounds()
 {
-	for (int i = 0; i < 10; i++)
+	for (size_t s = 0; s < 0x80; s++)
 	{
-		for (int v = 0; v < 16; v++)
+		string path = "data/Sound/" + hexToString(s) + ".wav";
+
+		if (fileExists(path.c_str()))
 		{
-			int s = i * 16 + v;
-			string path = "data/Sound/" + string(hexStr[i]) + hexStr[v] + ".wav";
-
-			if (fileExists(path.c_str()))
-			{
-				loadSound(path.c_str(), &soundSpec, &sounds[s].buf, &sounds[s].length);
-				sounds[s].pos = sounds[s].length;
-			}
-			else
-				sounds[s].buf = nullptr;
+			loadSound(path.c_str(), &soundSpec, &sounds[s].buf, &sounds[s].length);
+			sounds[s].pos = sounds[s].length;
 		}
+		else
+			sounds[s].buf = nullptr;
 	}
-
 	SDL_PauseAudioDevice(soundDev, 0);
 }
 

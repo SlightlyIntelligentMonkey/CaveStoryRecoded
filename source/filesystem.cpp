@@ -7,11 +7,18 @@
 #include "script.h"
 #include "org.h"
 
+#include <string>
+#include <vector>
+#include <fstream>
 #include <cstdio>
 #include <cstdlib>
 #include <sys/stat.h>
 #include <SDL_rwops.h>
 
+using std::string;
+using std::vector;
+using std::ifstream;
+using std::getline;
 using std::FILE;
 using std::fopen;
 using std::fseek;
@@ -247,4 +254,15 @@ void saveProfile()
 	//Save to file
 	writeFile(profileName, profile, 0x604);
 }
+
+vector<string> getLinesFromFile(string fileName)
+{
+	vector<string> lines;
+	ifstream inFile(fileName);
+	string line;
+	while (getline(inFile, line))
+		lines.push_back(line);
+	return lines;
+}
+
 

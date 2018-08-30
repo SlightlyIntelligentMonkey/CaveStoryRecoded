@@ -5,6 +5,7 @@
 #include "filesystem.h"
 #include "mathUtils.h"
 
+#include <string>
 #include <vector>
 #include <memory>
 #include <cmath>
@@ -13,12 +14,13 @@
 #include <cstring>
 #include <SDL.h>
 
-#include <string>
+using std::string;
+using std::vector;
 
 WAVE orgWaves[8];
 DRUM orgDrums[8];
 
-std::vector<char *> musicList;
+vector<string> musicList;
 
 MUSICINFO org;
 Uint32 currentOrg = 0;
@@ -168,38 +170,7 @@ void orgCallback(void *userdata, uint8_t *stream, int len)
 // Load musicList from musicList.txt
 void loadMusicList(const char *path)
 {
-	uint32_t c = 0;
-	char *temp = nullptr;
-	char *current;
-	char *buf = nullptr;
-	loadFile(path, reinterpret_cast<uint8_t**>(&buf));
-	if (buf == nullptr)
-		doError();
-	current = buf;
-	for (c = 0; buf[c] != 0; c++)
-		if (buf[c] == '\n')
-		{
-			temp = static_cast<char*>(calloc(1, &buf[c] - current));
-			if (temp == nullptr)
-				doCustomError("Could not allocate temp memory");
-
-			strncpy(temp, current, (&buf[c] - current) - 1);
-			musicList.push_back(temp);
-			current = &buf[c + 1];
-		}
-	temp = static_cast<char*>(calloc(1, &buf[c] - current));
-	if (temp == nullptr)
-		doCustomError("Could not allocate temp memory");
-
-	strcpy(temp, current);
-	for (c = 0; temp[c] != 0; c++)
-		if (temp[c] == -3)
-		{
-			temp[c] = 0;
-			break;
-		}
-	musicList.push_back(temp);
-	free(buf);
+	musicList = getLinesFromFile(path);
 }
 
 void initOrganya()
@@ -644,7 +615,7 @@ void changeOrg(const uint32_t num)
 	prevOrgPos = play_p;
 	currentOrg = num;
 	strcpy(path, orgFolder);
-	strcat(path, musicList[num]);
+	strcat(path, musicList[num].c_str());
 	loadOrganya(path);
 }
 
@@ -656,7 +627,7 @@ void resumeOrg()
 	currentOrg = prevOrg;
 	prevOrg = temp;
 	strcpy(path, orgFolder);
-	strcat(path, musicList[currentOrg]);
+	strcat(path, musicList[currentOrg].c_str());
 	temp = play_p;
 	loadOrganya(path);
 	organyaSetPlayPosition(prevOrgPos);
