@@ -1476,3 +1476,89 @@ void npcAct018(npc *NPC) //Door
 		NPC->rect = { 224, 16, 240, 40 };
 	}
 }
+
+void npcAct019(npc *NPC) //Balrog burst
+{
+	RECT rcLeft[4];
+	RECT rcRight[5];
+
+	rcLeft[0] = { 0, 0, 40, 24 };
+	rcLeft[1] = { 160, 0, 200, 24 };
+	rcLeft[2] = { 80, 0, 120, 24 };
+	rcLeft[3] = { 120, 0, 160, 24 };
+
+	rcRight[0] = { 0, 24, 40, 48 };
+	rcRight[1] = { 160, 24, 200, 48 };
+	rcRight[2] = { 80, 24, 120, 48 };
+	rcRight[3] = { 120, 24, 160, 48 };
+
+	switch (NPC->act_no)
+	{
+	case 0:
+		for (int i = 0; i <= 15; ++i)
+			createNpc(4, NPC->x + (random(-12, 12) << 9), NPC->y + (random(-12, 12) << 9), random(-0x155, 0x155), random(-0x600, 0), 0, nullptr);
+
+		NPC->y += 0x1400;
+		NPC->act_no = 1;
+		NPC->ani_no = 3;
+		NPC->ym = -0x100;
+		playSound(12);
+		playSound(26);
+		viewport.quake = 30;
+//Fallthrough
+	case 1:
+		NPC->ym += 16;
+
+		if (NPC->ym > 0 && NPC->flag & ground)
+		{
+			NPC->act_no = 2;
+			NPC->ani_no = 2;
+			NPC->act_wait = 0;
+			playSound(26);
+			viewport.quake = 30;
+		}
+		break;
+
+	case 2:
+		if (++NPC->act_wait > 16)
+		{
+			NPC->act_no = 3;
+			NPC->ani_no = 0;
+			NPC->ani_wait = 0;
+		}
+		break;
+
+	case 3:
+		if (random(0, 100) == 0)
+		{
+			NPC->act_no = 4;
+			NPC->act_wait = 0;
+			NPC->ani_no = 1;
+		}
+		break;
+
+	case 4:
+		if (++NPC->act_wait > 16)
+		{
+			NPC->act_no = 3;
+			NPC->ani_no = 0;
+		}
+		break;
+
+	default:
+		break;
+	}
+
+	if (NPC->ym > 0x5FF)
+		NPC->ym = 0x5FF;
+	if (NPC->ym < -0x5FF)
+		NPC->ym = -0x5FF;
+
+	NPC->x += NPC->xm;
+	NPC->y += NPC->ym;
+
+	if (NPC->direct)
+		NPC->rect = rcRight[NPC->ani_no];
+	else
+		NPC->rect = rcLeft[NPC->ani_no];
+}

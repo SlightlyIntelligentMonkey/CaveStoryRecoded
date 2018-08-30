@@ -1,97 +1,74 @@
 #pragma once
 #include "common.h"
 
-//list of notes
-struct NOTELIST
-{
-	NOTELIST *from;		//points to previous note
-	NOTELIST *to;		//points to next note
-	uint32_t start;
-	uint8_t note;
-	uint8_t length;
-	uint8_t volume;
-	uint8_t pan;
+//Below are Organya song data structures
+struct NOTELIST {
+	NOTELIST *from; //Previous address
+	NOTELIST *to; //Next address
+
+	long x; //Position
+	unsigned char length; //Sound length
+	unsigned char y; //Sound height
+	unsigned char volume; //Volume
+	unsigned char pan;
 };
 
-//track stuff
-struct TRACKDATA
-{
-	uint16_t freq;			//1000 is default
-	uint16_t num_notes;		//total number of notes in track
-	uint8_t wave;				//instrument
-	uint8_t pi;				//pizzacatto
-	uint8_t length;			//length of note in steps
-	uint8_t key;
-	uint8_t keyOn;
-	uint8_t keyTwin;
-	int *noteBuf;
-	uint32_t noteBufLen;
-	//used for drums
-	uint32_t bufPos;
-	//calculated volume/pan amounts
-	double volume;
-	double lpan;
-	double rpan;
-	NOTELIST *note_p;		//pointer to current note
-	NOTELIST *note_list;	//pointer to start of notes
+//Track data * 8
+struct TRACKDATA{
+	unsigned short freq; //Frequency (1000 is default)
+	unsigned char wave_no; //Waveform No.
+	unsigned short note_num; //Number of notes
+	char pipi;
+
+	NOTELIST *note_p;
+	NOTELIST *note_list;
 };
 
-constexpr uint32_t MAXMELODY = 8;
-constexpr uint32_t MAXTRACK = 16;
-
-class ORG
-{
-private:
-	char header[6];			//describes which org version
-	uint16_t wait;			//length of step in milliseconds
-	uint8_t stepPerBar;
-	uint8_t beatsPerStep;
-	uint32_t loopStart;
-	uint32_t loopEnd;
-	TRACKDATA track[MAXTRACK];
-
-public:
-	int *stepBuf;
-	uint32_t stepBufPos;
-	uint32_t stepBufLen;
-	uint32_t samplesPerStep;
-	uint32_t pos;
-	void load(const char *path);
-	void playData();
-	void freemem() noexcept;
-	//sets the play position
-	void setPos(uint32_t x) noexcept
-	{
-		for (uint32_t i = 0; i < MAXTRACK; i++)
-		{
-			track[i].note_p = track[i].note_list;
-			while (track[i].note_p != nullptr && track[i].note_p->start < x)
-				track[i].note_p = track[i].note_p->to;
-		}
-		pos = x;
-	}
+//Unique information held in songs
+struct MUSICINFO {
+	unsigned short wait;
+	unsigned char line; //Number of lines in one measure
+	unsigned char dot; //Number of dots per line
+	unsigned short alloc_note; //Number of allocated notes
+	long repeat_x; //Repeat
+	long end_x; //End of song (Return to repeat)
+	int samples;
+	TRACKDATA tdata[16];
 };
 
-struct DRUM
-{
-	int *buf;
-	uint32_t len;
+//Wave struct
+struct WAVE {
+	int8_t wave[0x100];
+	int key;
+	bool playing;
+	unsigned int pos;
+	long double volume;
+	long double volume_l;
+	long double volume_r;
 };
 
-void iniOrg();
-void exitOrg();
-void playWave(int wave, int *stream, uint32_t len, double frequency);
+//Drum struct
+struct DRUM {
+	uint8_t *wave; //Dynamic size
+	int length;
+	int key;
+	bool playing;
+	size_t pos;
+	long double volume;
+	long double volume_l;
+	long double volume_r;
+};
 
-void changeOrg(const uint32_t num);
-void resumeOrg();
+
+void initOrganya();
+void loadOrganya(const char *name);
+
+void organyaPlayStep();
 
 extern uint32_t currentOrg;
 
-constexpr uint32_t MAXWAVES = 100;
-constexpr uint32_t MAXDRUMS = 9;
-
-extern ORG *org;
-extern DRUM drumTbl[MAXDRUMS];
+void changeOrg(const uint32_t num);
+void resumeOrg();
 
 enum musics
 {

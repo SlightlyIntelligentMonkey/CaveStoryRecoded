@@ -196,7 +196,7 @@ void npcAct150(npc *NPC) // Quote
 		NPC->tgt_y = NPC->y;
 	// Fallthrough
 	case 61:
-		NPC->tgt_x += 0x100;
+		NPC->tgt_y += 0x100;
 		NPC->x = NPC->tgt_x + (random(-1, 1) << 9);
 		NPC->y = NPC->tgt_y + (random(-1, 1) << 9);
 		break;
@@ -268,7 +268,7 @@ void npcAct150(npc *NPC) // Quote
 	{
 		NPC->rect.bottom = NPC->rect.top + NPC->act_wait / 4;
 		if (NPC->act_wait / 2 % 2)
-			++NPC->rect.left;	// For the "Disappear from the right" effect
+			++NPC->rect.left;	// For the shaking effect
 	}
 
 	if (currentPlayer.equip & equip_mimigaMask)

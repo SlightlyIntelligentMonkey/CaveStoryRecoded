@@ -43,43 +43,6 @@ void mixAudioSFX(int *dst, uint32_t len, SOUND_EFFECT *sound)
 	sound->pos += currentPos;
 }
 
-uint32_t frequency = 22050;
-void mixAudioOrg(int *dst, uint32_t len)
-{
-	if (dst == nullptr)
-		doCustomError("dst was nullptr in mixAudioOrg");
-
-	unsigned int currentPos = 0;
-
-	if (org == nullptr || org->samplesPerStep == 0)
-		return;
-
-	if (isKeyDown(SDL_SCANCODE_UP))
-		frequency = static_cast<uint32_t>(static_cast<double>(frequency) * 1.01);
-	if (isKeyDown(SDL_SCANCODE_DOWN))
-		frequency = static_cast<uint32_t>(static_cast<double>(frequency) * 0.99);
-
-//playWave(66, dst, len, frequency);
-//return;
-
-	while ((currentPos << 2) < len)
-	{
-		if (org->stepBufPos >= org->stepBufLen)
-		{
-			org->stepBufPos = 0;
-			org->playData();
-		}
-		while (org->stepBufPos < org->stepBufLen && (currentPos << 2) < len)
-		{
-			if (org->samplesPerStep == 0)
-				return;
-			dst[currentPos] += org->stepBuf[org->stepBufPos];
-			currentPos++;
-			org->stepBufPos++;
-		}
-	}
-}
-
 void __cdecl audio_callback(void *userdata, Uint8 *stream, int len) // TBD : Handle userdata parameter
 {
 	memset(stream, 0, len);
@@ -87,8 +50,6 @@ void __cdecl audio_callback(void *userdata, Uint8 *stream, int len) // TBD : Han
 	for (unsigned int sfx = 0; sfx < _countof(sounds); sfx++)
 		if (sounds[sfx].pos < sounds[sfx].length)
 			mixAudioSFX(reinterpret_cast<int *>(stream), len, &sounds[sfx]);
-
-	mixAudioOrg(reinterpret_cast<int*>(stream), len);
 }
 
 void initAudio()
@@ -110,7 +71,7 @@ void initAudio()
 		doError();
 	memset(sounds, 0, sizeof(sounds));
 
-	iniOrg();
+	initOrganya();
 }
 
 //since sdl doesn't actually get the loaded wav in the specified format,
@@ -163,13 +124,12 @@ const char* hexStr[16] = { "0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "A"
 
 void loadSounds()
 {
-
 	for (int i = 0; i < 10; i++)
 	{
 		for (int v = 0; v < 16; v++)
 		{
 			int s = i * 16 + v;
-			string path = "data/Sound/" + string(hexStr[i]) + hexStr[v];
+			string path = "data/Sound/" + string(hexStr[i]) + hexStr[v] + ".wav";
 
 			if (fileExists(path.c_str()))
 			{
@@ -180,34 +140,6 @@ void loadSounds()
 				sounds[s].buf = nullptr;
 		}
 	}
-
-	//have to organize drums like this because pixel dumb
-	drumTbl[0].buf = sounds[0x96 + 0].buf;
-	drumTbl[0].len = sounds[0x96 + 0].length;
-
-	//drumTbl[1].buf = sounds[0x96 + 0].buf;
-	//drumTbl[1].len = sounds[0x96 + 0].length;
-
-	drumTbl[2].buf = sounds[0x96 + 1].buf;
-	drumTbl[2].len = sounds[0x96 + 1].length;
-
-	//drumTbl[3].buf = sounds[0x96 + 0].buf;
-	//drumTbl[3].len = sounds[0x96 + 0].length;
-
-	drumTbl[4].buf = sounds[0x96 + 4].buf;
-	drumTbl[4].len = sounds[0x96 + 4].length;
-
-	drumTbl[5].buf = sounds[0x96 + 2].buf;
-	drumTbl[5].len = sounds[0x96 + 2].length;
-
-	drumTbl[6].buf = sounds[0x96 + 3].buf;
-	drumTbl[6].len = sounds[0x96 + 3].length;
-
-	//drumTbl[7].buf = sounds[0x96 + 3].buf;
-	//drumTbl[7].len = sounds[0x96 + 3].length;
-
-	drumTbl[8].buf = sounds[0x96 + 5].buf;
-	drumTbl[8].len = sounds[0x96 + 5].length;
 
 	SDL_PauseAudioDevice(soundDev, 0);
 }

@@ -165,7 +165,7 @@ void debugLevels()
 	}
 }
 
-int debugFlags = showSlots | notifyOnNotImplemented;
+int debugFlags = 0;
 
 void debugFunction()
 {
@@ -199,14 +199,6 @@ void debugFunction()
 			break;
 			
 		case 1:
-			retdVal = debugSound();
-
-			if (retdVal != nullptr)
-			{
-				displayTimer = 100;
-				strcpy(disp, retdVal);
-				debugMode = 0;
-			}
 			break;
 
 		default:
@@ -443,6 +435,8 @@ int gameUpdateMenu()
 	uint32_t frame = 0;
 	const uint8_t frameOrder[] = { 0, 1, 0, 2 };
 
+	changeOrg(mus_CaveStory);
+
 	if (fileExists("Profile.dat"))
 		select = 1;
 	else
@@ -474,13 +468,6 @@ int gameUpdateMenu()
 		if (isKeyPressed(keyJump))
 		{
 			playSound(SFX_YNConfirm);
-
-			if (select == 0)
-			{
-				initGame();
-				break;
-			}
-			loadProfile();
 			break;
 		}
 
@@ -518,6 +505,8 @@ int gameUpdateMenu()
 		SDL_RenderPresent(renderer);
 	}
 
+	changeOrg(0);
+
 	frame = SDL_GetTicks();
 	while (SDL_GetTicks() < frame + 1000)
 	{
@@ -527,6 +516,11 @@ int gameUpdateMenu()
 		SDL_RenderPresent(renderer);
 	}
 
+	if (select == 0)
+		initGame();
+	else
+		loadProfile();
+
 	return PLAY;
 }
 
@@ -535,6 +529,7 @@ int gameUpdateIntro()
 	uint32_t frame = 0;
 	loadLevel(72);
 	startTscEvent(100);
+	changeOrg(0);
 
 	//Set up fade
 	initFade();

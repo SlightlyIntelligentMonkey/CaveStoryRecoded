@@ -483,7 +483,7 @@ void npcAct062(npc *NPC) // Kazuma, facing away
 	NPC->rect = rcNPC[NPC->ani_no];
 }
 
-void npcAct063(npc * NPC) // Toroko, panicking
+void npcAct063(npc *NPC) // Toroko, panicking
 {
 	RECT rcLeft[6];
 	RECT rcRight[6];
@@ -512,7 +512,7 @@ void npcAct063(npc * NPC) // Toroko, panicking
 	// Fallthrough
 	case 1:
 		if (NPC->ym > 0)
-			NPC->flag &= ~npc_ignoresolid;
+			NPC->bits &= ~npc_ignoresolid;
 
 		if (++NPC->ani_wait > 2)
 		{
@@ -527,7 +527,7 @@ void npcAct063(npc * NPC) // Toroko, panicking
 		else
 			NPC->xm = -0x100;
 
-		if (NPC->act_wait++ && NPC->flag & npc_ignoresolid)
+		if (NPC->act_wait++ && NPC->flag & ground)
 			NPC->act_no = 2;
 		break;
 
@@ -557,7 +557,7 @@ void npcAct063(npc * NPC) // Toroko, panicking
 		}
 
 		if (NPC->act_wait > 35)
-			NPC->flag |= npc_shootable;
+			NPC->bits |= npc_shootable;
 
 		if (NPC->direct != dirLeft)
 			NPC->xm += 0x40;
@@ -569,7 +569,7 @@ void npcAct063(npc * NPC) // Toroko, panicking
 			NPC->act_no = 4;
 			NPC->ani_no = 4;
 			NPC->ym = -0x400;
-			NPC->flag &= ~npc_shootable;
+			NPC->bits &= ~npc_shootable;
 			NPC->damage = 0;
 		}
 		break;
@@ -580,10 +580,10 @@ void npcAct063(npc * NPC) // Toroko, panicking
 		else
 			NPC->xm = -0x100;
 
-		if (NPC->act_wait++ && NPC->flag & npc_ignoresolid)
+		if (NPC->act_wait++ && NPC->flag & ground)
 		{
 			NPC->act_no = 5;
-			NPC->code_flag |= npc_interact;
+			NPC->bits |= npc_interact;
 		}
 		break;
 
@@ -602,6 +602,9 @@ void npcAct063(npc * NPC) // Toroko, panicking
 		NPC->xm = -0x400;
 	if (NPC->ym > 0x5FF)
 		NPC->ym = 0x5FF;
+
+	NPC->x += NPC->xm;
+	NPC->y += NPC->ym;
 
 	if (NPC->direct == dirLeft)
 		NPC->rect = rcLeft[NPC->ani_no];
@@ -865,6 +868,178 @@ void npcAct066(npc *NPC) //Bubble (to catch Toroko in the shack)
 	NPC->y += NPC->ym;
 
 	NPC->rect = rect[NPC->ani_no];
+}
+
+void npcAct067(npc *NPC) //Misery floating
+{
+	RECT rcLeft[8];
+	RECT rcRight[8];
+	
+	rcLeft[0] = { 0x50, 0x00, 0x60, 0x10 };
+	rcLeft[1] = { 0x60, 0x00, 0x70, 0x10 };
+	rcLeft[2] = { 0x70, 0x00, 0x80, 0x10 };
+	rcLeft[3] = { 0x80, 0x00, 0x90, 0x10 };
+	rcLeft[4] = { 0x90, 0x00, 0xA0, 0x10 };
+	rcLeft[5] = { 0xA0, 0x00, 0xB0, 0x10 };
+	rcLeft[6] = { 0xB0, 0x00, 0xC0, 0x10 };
+	rcLeft[7] = { 0x90, 0x00, 0xA0, 0x10 };
+
+	rcRight[0] = { 0x50, 0x10, 0x60, 0x20 };
+	rcRight[1] = { 0x60, 0x10, 0x70, 0x20 };
+	rcRight[2] = { 0x70, 0x10, 0x80, 0x20 };
+	rcRight[3] = { 0x80, 0x10, 0x90, 0x20 };
+	rcRight[4] = { 0x90, 0x10, 0xA0, 0x20 };
+	rcRight[5] = { 0xA0, 0x10, 0xB0, 0x20 };
+	rcRight[6] = { 0xB0, 0x10, 0xC0, 0x20 };
+	rcRight[7] = { 0x90, 0x10, 0xA0, 0x20 };
+
+	switch (NPC->act_no)
+	{
+	case 0: //Teleport in
+		NPC->act_no = 1;
+		NPC->tgt_x = NPC->x;
+		NPC->tgt_y = NPC->y;
+		NPC->ani_no = 0;
+		playSound(29);
+//Fallthrough
+	case 1:
+		NPC->x = NPC->tgt_x + (random(-1, 1) << 9);
+
+		if (++NPC->act_wait >= 32)
+			NPC->act_no = 10;
+		break;
+
+	case 10: //Floating
+		NPC->act_no = 11;
+		NPC->act_wait = 0;
+		NPC->ani_no = 0;
+		NPC->ym = 0x200;
+//Fallthrough
+	case 11:
+		if (NPC->tgt_y < NPC->y)
+			NPC->ym -= 0x10;
+		if (NPC->tgt_y > NPC->y)
+			NPC->ym += 0x10;
+		if (NPC->ym > 0x100)
+			NPC->ym = 0x100;
+		if (NPC->ym < -0x100)
+			NPC->ym = -0x100;
+		break;
+
+	case 13: //Fall down to the floor
+		NPC->ani_no = 1;
+		NPC->ym += 0x40;
+
+		if (NPC->ym > 0x5FF)
+			NPC->ym = 0x5FF;
+
+		if (NPC->flag & ground)
+		{
+			playSound(23);
+			NPC->ym = 0;
+			NPC->act_no = 14;
+			NPC->bits |= npc_ignoresolid;
+			NPC->ani_no = 2;
+		}
+		break;
+
+	case 15: //Shoot bubble towards Toroko?
+		NPC->act_no = 16;
+		NPC->act_wait = 0;
+		NPC->ani_no = 4;
+		//Fallthrough
+	case 16:
+		if (++NPC->act_wait == 30)
+		{
+			playSound(21);
+			createNpc(66, NPC->x, NPC->y - 0x2000, 0, 0, 0, NPC);
+		}
+		if (NPC->act_wait >= 50)
+			NPC->act_no = 14;
+		break;
+
+	case 20: //Fly up
+		NPC->act_no = 21;
+		NPC->ani_no = 0;
+		NPC->ym = 0;
+		NPC->bits |= npc_ignoresolid;
+		//Fallthrough
+	case 21:
+		NPC->ym -= 0x20;
+		if (NPC->y < -0x1000)
+			NPC->cond = 0;
+		break;
+
+	case 25:
+		NPC->act_no = 26;
+		NPC->act_wait = 0;
+		NPC->ani_no = 5;
+		NPC->ani_wait = 0;
+//Fallthrough
+	case 26:
+		if (++NPC->ani_no > 7)
+			NPC->ani_no = 5;
+
+		if (++NPC->act_wait >= 30)
+		{
+			playSound(101);
+			//SetFlash(0, 0, 2);
+			NPC->act_no = 27;
+			NPC->ani_no = 7;
+		}
+		break;
+
+	case 27:
+		if (++NPC->act_wait == 50)
+			NPC->act_no = 14;
+		break;
+
+	default:
+		break;
+	}
+
+	NPC->x += NPC->xm;
+	NPC->y += NPC->ym;
+
+	if (NPC->act_no == 11)
+	{
+		if (NPC->ani_wait)
+		{
+			--NPC->ani_wait;
+			NPC->ani_no = 1;
+		}
+		else
+		{
+			if (random(0, 100) == 1)
+				NPC->ani_wait = 30;
+
+			NPC->ani_no = 0;
+		}
+	}
+
+	if (NPC->act_no == 14)
+	{
+		if (NPC->ani_wait)
+		{
+			--NPC->ani_wait;
+			NPC->ani_no = 3;
+		}
+		else
+		{
+			if (random(0, 100) == 1)
+				NPC->ani_wait = 30;
+
+			NPC->ani_no = 2;
+		}
+	}
+
+	if (NPC->direct)
+		NPC->rect = rcRight[NPC->ani_no];
+	else
+		NPC->rect = rcLeft[NPC->ani_no];
+
+	if (NPC->act_no == 1 && NPC->ani_wait < 32)
+		NPC->rect.bottom += ++NPC->ani_wait / 2 - 16;
 }
 
 void npcAct070(npc * NPC) // Sparkling Item
@@ -1141,7 +1316,7 @@ void npcAct077(npc * NPC) // Sandaime's Pavillion
 		NPC->ani_no = 1;
 	}
 doRects:
-	if (NPC->direct == dirLeft)
+	if (!NPC->direct)
 		NPC->rect = rcSandaimePresent[NPC->ani_no];
 	else
 		NPC->rect = rcSandaimeGone;

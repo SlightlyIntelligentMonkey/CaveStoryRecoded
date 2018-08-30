@@ -7,9 +7,6 @@ void freeSounds() noexcept;
 
 void playSound(size_t sound_no, int soundMode = 1) noexcept;
 
-//debug function
-char *debugSound();
-
 //sample rate
 constexpr unsigned int sampleRate = 44100;
 

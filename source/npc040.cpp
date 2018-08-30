@@ -309,6 +309,73 @@ void npcAct052(npc *NPC) // Blue robots
 	NPC->rect = { 240, 96, 256, 112 };
 }
 
+void npcAct055(npc *NPC) //Kazuma
+{
+	RECT rcLeft[6];
+	RECT rcRight[6];
+
+	rcLeft[0] = { 0xC0, 0xC0, 0xD0, 0xD8 };
+	rcLeft[1] = { 0xD0, 0xC0, 0xE0, 0xD8 };
+	rcLeft[2] = { 0xC0, 0xC0, 0xD0, 0xD8 };
+	rcLeft[3] = { 0xE0, 0xC0, 0xF0, 0xD8 };
+	rcLeft[4] = { 0xC0, 0xC0, 0xD0, 0xD8 };
+	rcLeft[5] = { 0xF0, 0xC0, 0x100, 0xD8 };
+
+	rcRight[0] = { 0xC0, 0xD8, 0xD0, 0xF0 };
+	rcRight[1] = { 0xD0, 0xD8, 0xE0, 0xF0 };
+	rcRight[2] = { 0xC0, 0xD8, 0xD0, 0xF0 };
+	rcRight[3] = { 0xE0, 0xD8, 0xF0, 0xF0 };
+	rcRight[4] = { 0xC0, 0xD8, 0xD0, 0xF0 };
+	rcRight[5] = { 0xF0, 0xD8, 0x100, 0xF0 };
+
+	switch (NPC->act_no)
+	{
+	case 0:
+		NPC->act_no = 1;
+		NPC->ani_no = 0;
+		NPC->ani_wait = 0;
+		break;
+
+	case 3:
+		NPC->act_no = 4;
+		NPC->ani_no = 1;
+		NPC->ani_wait = 0;
+//Fallthrough
+	case 4:
+		if (++NPC->ani_wait > 4)
+		{
+			NPC->ani_wait = 0;
+			++NPC->ani_no;
+		}
+
+		if (NPC->ani_no > 4)
+			NPC->ani_no = 1;
+
+		if (NPC->direct)
+			NPC->x += 0x200;
+		else
+			NPC->x -= 0x200;
+		break;
+
+	case 5:
+		NPC->ani_no = 5;
+		break;
+	default:
+		break;
+	}
+
+	NPC->ym += 32;
+	if (NPC->ym > 1535)
+		NPC->ym = 1535;
+
+	NPC->y += NPC->ym;
+
+	if (NPC->direct)
+		NPC->rect = rcRight[NPC->ani_no];
+	else
+		NPC->rect = rcLeft[NPC->ani_no];
+}
+
 void npcAct058(npc *NPC) //Basu 1
 {
 	const int action = NPC->act_no;
