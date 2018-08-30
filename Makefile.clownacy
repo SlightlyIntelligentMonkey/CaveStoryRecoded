@@ -7,7 +7,7 @@ LDFLAGS = -static -mwindows `sdl2-config --static-libs` -lSDL2_image -ljpeg -lpn
 
 MAIN := bullet bulletCollision caret fade filesystem fireball fireballShoot flags game hud input inventory level main mathUtils
 MAIN += npc npcAct npcCollision org player playerCollision polarStar polarStarShoot
-MAIN += render script sound spur spurShoot stageSelect valueview weapons
+MAIN += render script sound spur spurShoot stageSelect stdUtils valueview weapons
 
 MAIN += npc000 npc020 npc040 npc060 npc080 npc100 npc120 npc140 npc180 npc200 npc220 npc240 npc280 npc300 npc340
 
