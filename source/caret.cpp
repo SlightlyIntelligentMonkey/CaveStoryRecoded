@@ -5,14 +5,14 @@
 #include "render.h"
 
 #include <string>
-#include <vector>
+#include <deque>
 #include <cstring>
 
 using std::to_string;
-using std::vector;
+using std::deque;
 using std::memset;
 
-vector<caret> carets(0);
+deque<caret> carets(0);
 
 CARETSTAT caretStats[] =
 {

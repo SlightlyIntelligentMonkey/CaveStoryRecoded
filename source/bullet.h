@@ -1,7 +1,7 @@
 #pragma once
 #include "common.h"
 
-#include <vector>
+#include <deque>
 
 struct BULLETSTATS
 {
@@ -70,7 +70,7 @@ void updateBullets();
 void drawBullets();
 
 using bulletAct = void(*)(bullet *);
-extern std::vector<bullet> bullets;
+extern std::deque<bullet> bullets;
 
 enum bulletFlags
 {
