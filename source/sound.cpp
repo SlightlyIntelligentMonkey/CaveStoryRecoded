@@ -16,11 +16,65 @@
 using std::string;
 
 //Variable things
+SOUND sounds[0x100];
+
 SDL_AudioDeviceID soundDev;
 SDL_AudioSpec soundSpec;
 SDL_AudioSpec want;
 
-void __cdecl audio_callback(void * /*userdata*/, Uint8 *stream, int len) // TBD : Handle userdata parameter
+//Pxt waves
+uint8_t waveModelTable[6][256];
+
+void makeWaveTables()
+{
+	int v0;
+	signed int i;
+	signed int j;
+	signed int k;
+	signed int l;
+	signed int m;
+	signed int n;
+	int v2;
+	int v1;
+	int b3;
+
+	for (i = 0; i < 256; ++i)
+	{
+		waveModelTable[0][i] = (unsigned __int64)(sin((long double)i * 6.283184 / 256.0) * 64.0);
+		v0 = waveModelTable[0][i];
+	}
+
+	v2 = 0;
+	for (j = 0; j < 64; ++j)
+		waveModelTable[1][j] = (v2++ << 6) / 64;
+
+	v1 = 0;
+	while (j < 192)
+		waveModelTable[1][j++] = 64 - (v1++ << 6) / 64;
+
+	b3 = 0;
+	while (j < 256)
+		waveModelTable[1][j++] = (b3++ << 6) / 64 - 64;
+
+	for (k = 0; k < 256; ++k)
+		waveModelTable[2][k] = k / 2 - 64;
+
+	for (l = 0; l < 256; ++l)
+		waveModelTable[3][l] = 64 - l / 2;
+
+	for (m = 0; m < 128; ++m)
+		waveModelTable[4][m] = 64;
+
+	while (m < 256)
+		waveModelTable[4][m++] = -64;
+
+	srand(0);
+	for (n = 0; n < 256; ++n)
+		waveModelTable[5][n] = (char)rand() / 2;
+}
+
+//Audio callback and things
+void audio_callback(void *userdata, Uint8 *stream, int len) // TBD : Handle userdata parameter
 {
 	memset(stream, 0, len);
 	mixOrg(stream, len / 2);
@@ -140,6 +194,7 @@ void loadSound(const char *path)
 
 void loadSounds()
 {
+	memset(sounds, 0, sizeof(sounds));
 	for (size_t s = 0; s < 0x80; s++)
 	{
 		string path = "data/Sound/" + hexToString(s) + ".wav";
