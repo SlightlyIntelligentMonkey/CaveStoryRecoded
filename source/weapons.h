@@ -19,6 +19,8 @@ struct WEAPON
 
 using weaponShoot = void(*)(int);
 
+constexpr auto WEAPONS = 8;
+
 extern WEAPON weapons[WEAPONS];
 extern RECT weaponRect;
 extern int selectedWeapon;

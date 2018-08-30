@@ -124,15 +124,15 @@ void drawHudWeapons()
 {
 	RECT rect = { 0, 0, 0, 16 };
 
-	int weaponNo;
+	size_t weaponNo;
 	for (weaponNo = 0; weaponNo < WEAPONS && weapons[weaponNo].code != 0; ++weaponNo);
 
 	if (weaponNo)
 	{
-		for (int a = 0; a < weaponNo; ++a)
+		for (size_t a = 0; a < weaponNo; ++a)
 		{
 			//Get position to draw at
-			int x = 16 * (a - selectedWeapon) + weaponShiftX;
+			size_t x = 16 * (a - selectedWeapon) + weaponShiftX;
 
 			if (x >= 8)
 			{

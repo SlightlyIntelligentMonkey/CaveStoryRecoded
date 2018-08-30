@@ -69,11 +69,6 @@ struct VIEW
 	int quake2;
 };
 
-//Constants
-#define WEAPONS 8
-#define ITEMS 32
-#define PERMITSTAGES 8
-
 struct SDL_Window;
 struct SDL_Renderer;
 struct SDL_Rect;

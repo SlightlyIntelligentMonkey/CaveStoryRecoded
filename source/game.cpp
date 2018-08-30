@@ -165,7 +165,7 @@ void debugLevels()
 	}
 }
 
-int debugFlags = 0;
+int debugFlags = showSlots | showNPCId | showBULId | showCARId | notifyOnNotImplemented | showNPCHealth;
 
 void debugFunction()
 {
@@ -173,8 +173,6 @@ void debugFunction()
 	static char disp[64] = { 0 };
 	static int debugMode = 0;
 
-	char *retdVal = nullptr;
-	int flags = 0;
 	debugLevels();
 
 	if (displayTimer <= 0)
@@ -376,7 +374,7 @@ int gameUpdatePlay()
 			{
 				changeOrg(mus_TheWayBackHome);
 
-				int inventoryRet = openInventory();
+				const int inventoryRet = openInventory();
 
 				if (!inventoryRet)
 					return 0;

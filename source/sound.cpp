@@ -19,7 +19,7 @@ SDL_AudioDeviceID soundDev;
 SDL_AudioSpec soundSpec;
 SDL_AudioSpec want;
 
-void __cdecl audio_callback(void *userdata, Uint8 *stream, int len) // TBD : Handle userdata parameter
+void __cdecl audio_callback(void * /*userdata*/, Uint8 *stream, int len) // TBD : Handle userdata parameter
 {
 	memset(stream, 0, len);
 	mixOrg(stream, len / 2);
@@ -134,7 +134,7 @@ void loadSound(const char *path)
 	{
 		char error[0x100];
 		sprintf(error, "Can't parse .pxt which isn't exactly 92 lines long.\n(given file is %s lines long)", std::to_string(lines.size()).c_str());
-		doCustomError(error);
+		// doCustomError(error);
 	}
 }
 
@@ -144,8 +144,8 @@ void loadSounds()
 	{
 		string path = "data/Sound/" + hexToString(s) + ".wav";
 
-		if (fileExists(path.c_str()));
-			//loadSound(path.c_str());
+		if (fileExists(path.c_str()))
+			loadSound(path.c_str());
 	}
 }
 

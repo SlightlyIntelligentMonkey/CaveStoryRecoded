@@ -1,27 +1,20 @@
 #include "game.h"
 #include "weapons.h"
-#include "level.h"
-#include "hud.h"
-#include "script.h"
-#include "fade.h"
 #include "input.h"
-#include "filesystem.h"
+#include "script.h"
+#include "sound.h"
+#include "render.h"
+#include "level.h"
+#include "player.h"
 #include "caret.h"
 #include "valueview.h"
-#include "render.h"
-#include "sound.h"
-#include "player.h"
-#include "bullet.h"
-#include "mathUtils.h"
-#include "flags.h"
 
 #include <cstring>
-#include <SDL_scancode.h>
-#include <SDL_timer.h>
-#include <SDL_render.h>
 #include <SDL_events.h>
+#include <SDL_render.h>
 
-using std::memset;
+using std::strcpy;
+
 
 //Inventory
 ITEM items[ITEMS];
@@ -34,9 +27,9 @@ void moveInventoryCursor()
 {
 	int weaponNo = 0;
 	int itemNo = 0;
-	while (weaponNo < WEAPONS && weapons[weaponNo].code != 0)
+	while (weaponNo < static_cast<int>(WEAPONS) && weapons[weaponNo].code != 0)
 		++weaponNo;
-	while (weaponNo < ITEMS && items[itemNo].code != 0)
+	while (weaponNo < static_cast<int>(ITEMS) && items[itemNo].code != 0)
 		++itemNo;
 
 	bool bChange = false;
@@ -142,7 +135,6 @@ void moveInventoryCursor()
 	}
 }
 
-int inventoryFlash;
 void drawInventory()
 {
 	//Draw main box
@@ -173,6 +165,7 @@ void drawInventory()
 	rcCur1[0] = { 0, 88, 40, 128 };
 	rcCur1[1] = { 40, 88, 80, 128 };
 
+	static int inventoryFlash;
 	++inventoryFlash;
 	if (inventoryActive)
 		drawTexture(sprites[TEX_TEXTBOX], &rcCur1[1], 40 * selectedWeapon + screenWidth / 2 - 112, 24);
@@ -185,7 +178,7 @@ void drawInventory()
 	RECT rcPer = { 72, 48, 80, 56 };
 	RECT rcArms;
 
-	for (int i = 0; i < WEAPONS && weapons[i].code; ++i)
+	for (size_t i = 0; i < WEAPONS && weapons[i].code; ++i)
 	{
 		rcArms.left = 16 * (weapons[i].code % 16);
 		rcArms.right = rcArms.left + 16;
@@ -232,7 +225,7 @@ void drawInventory()
 	//Draw items
 	RECT rcItem;
 
-	for (int i = 0; i < ITEMS && items[i].code; ++i)
+	for (size_t i = 0; i < ITEMS && items[i].code; ++i)
 	{
 		rcItem.left = 32 * (items[i].code % 8);
 		rcItem.right = rcItem.left + 32;
@@ -259,7 +252,7 @@ int openInventory()
 	loadTsc2("data/ArmsItem.tsc");
 
 	//Start appropriate event
-	int weaponNo;
+	size_t weaponNo;
 	for (weaponNo = 0; weaponNo < WEAPONS && weapons[weaponNo].code != 0; ++weaponNo);
 
 	if (weaponNo)
@@ -269,18 +262,7 @@ int openInventory()
 
 	while (true)
 	{
-		//Framerate limiter
-		const Uint32 timeNow = SDL_GetTicks();
-		const Uint32 timeNext = framerateTicks + framerate;
-
-		if (timeNow >= timeNext) {
-			framerateTicks = SDL_GetTicks();
-		}
-		else
-		{
-			SDL_Delay(timeNext - timeNow);
-			continue;
-		}
+		delimitFramerate();
 
 		//Handle events
 		getKeys(&events);
@@ -345,3 +327,4 @@ int openInventory()
 		SDL_RenderPresent(renderer);
 	}
 }
+
