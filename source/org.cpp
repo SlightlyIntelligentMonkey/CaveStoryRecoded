@@ -32,7 +32,7 @@ void organyaAllocNote(unsigned short alloc)
 	for (int j = 0; j < 16; j++) {
 		org.tdata[j].wave_no = 0;
 		org.tdata[j].note_list = NULL; //I want to make the constructor
-		org.tdata[j].note_p = (NOTELIST*)calloc(alloc, sizeof(NOTELIST)); //new NOTELIST[alloc];
+		org.tdata[j].note_p = static_cast<NOTELIST*>(calloc(alloc, sizeof(NOTELIST))); //new NOTELIST[alloc];
 
 		if (org.tdata[j].note_p == NULL)
 			return;
@@ -174,10 +174,10 @@ void initOrganya()
 
 long play_p; //Current playback position
 NOTELIST *play_np[16]; //Currently ready to play notes
-long now_leng[16] = { NULL }; //Length of notes during playback
+long now_leng[16] = { 0 }; //Length of notes during playback
 
 //Change frequency
-void changeNoteFrequency(int key, char track, long a)
+void changeNoteFrequency(int key, size_t track, long a)
 {
 	if (key != 0xFF)
 		orgWaves[track].key = key;
@@ -190,7 +190,7 @@ unsigned char key_twin[16] = { 0 }; //Key used now
 const long double orgVolumeMin = 0.04;
 const short pan_tbl[13] = { 0,43,86,129,172,215,256,297,340,383,426,469,512 };
 
-void changeNotePan(unsigned char pan, char track)
+void changeNotePan(unsigned char pan, size_t track)
 {
 	if (old_key[track] != 0xFF)
 	{
@@ -207,7 +207,7 @@ void changeNotePan(unsigned char pan, char track)
 	}
 }
 
-void changeNoteVolume(long volume, char track)
+void changeNoteVolume(long volume, size_t track)
 {
 	if (old_key[track] != 0xFF)
 	{
@@ -216,7 +216,7 @@ void changeNoteVolume(long volume, char track)
 }
 
 //Play note
-void playOrganyaNote(int key, int noteMode, char track, long freq)
+void playOrganyaNote(int key, int noteMode, size_t track, long freq)
 {
 	switch (noteMode)
 	{
@@ -269,12 +269,12 @@ void playOrganyaNote(int key, int noteMode, char track, long freq)
 ///////////////////////////
 ////===ORGANYA DRUMS===////
 ///////////////////////////
-void changeDrumFrequency(int key, char track)
+void changeDrumFrequency(int key, size_t track)
 {
 	orgDrums[track].key = key;
 }
 
-void changeDrumPan(unsigned char pan, char track)
+void changeDrumPan(unsigned char pan, size_t track)
 {
 	orgDrums[track].volume_l = 1.0f;
 	orgDrums[track].volume_r = 1.0f;
@@ -288,12 +288,12 @@ void changeDrumPan(unsigned char pan, char track)
 	if (orgDrums[track].volume_r > 1.0f) orgDrums[track].volume_r = 1.0f;
 }
 
-void changeDrumVolume(long volume, char track)
+void changeDrumVolume(long volume, size_t track)
 {
 	orgDrums[track].volume = orgVolumeMin + ((long double)volume / 255.0f * (1.0 - orgVolumeMin));
 }
 
-void playOrganyaDrum(int key, int drumMode, char track)
+void playOrganyaDrum(int key, int drumMode, size_t track)
 {
 	switch (drumMode) {
 	case 0: // Stop
@@ -336,7 +336,7 @@ void organyaPlayStep(void)
 	//Melody playback
 	for (int i = 0; i < 8; i++)
 	{
-		if (play_np[i] != NULL && play_p == play_np[i]->x) //The sound came.
+		if (play_np[i] != nullptr && play_p == play_np[i]->x) //The sound came.
 		{
 			if (play_np[i]->y != 0xFF) {
 				playOrganyaNote(play_np[i]->y, -1, i, org.tdata[i].freq);
@@ -352,7 +352,7 @@ void organyaPlayStep(void)
 		}
 
 		if (now_leng[i] == 0)
-			playOrganyaNote(NULL, 2, i, org.tdata[i].freq);
+			playOrganyaNote(0, 2, i, org.tdata[i].freq);
 
 		if (now_leng[i] > 0)now_leng[i]--;
 	}
@@ -360,7 +360,7 @@ void organyaPlayStep(void)
 	//Drum playback
 	for (int i = 8; i < 16; i++)
 	{
-		if (play_np[i] != NULL && play_p == play_np[i]->x) //The sound came.
+		if (play_np[i] != nullptr && play_p == play_np[i]->x) //The sound came.
 		{
 			if (play_np[i]->y != 0xFF)
 				playOrganyaDrum(play_np[i]->y, 1, i - 8);
