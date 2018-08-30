@@ -170,7 +170,7 @@ int debugFlags = showSlots | showNPCId | showBULId | showCARId | notifyOnNotImpl
 void debugFunction()
 {
 	static uint32_t displayTimer = 0;
-	static char disp[64] = { 0 };
+	static string disp;
 	static int debugMode = 0;
 
 	debugLevels();
@@ -207,7 +207,7 @@ void debugFunction()
 
 	if (displayTimer > 0)
 	{
-		drawString(0, 0, disp, nullptr);
+		drawString(0, 0, disp.c_str(), nullptr);
 		displayTimer--;
 	}
 

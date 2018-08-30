@@ -8,10 +8,12 @@
 #include "caret.h"
 #include "valueview.h"
 
+#include <string>
 #include <cstring>
 #include <SDL_events.h>
 #include <SDL_render.h>
 
+using std::string;
 using std::strcpy;
 
 //Teleporter Menu
@@ -93,8 +95,7 @@ int stageSelect(int *runEvent)
 		doCustomError("runEvent was nullptr in stageSelect");
 
 	//Keep track of old one
-	char oldScript[260];
-	strcpy(oldScript, tsc.path);
+	string oldScript(tsc.path);
 
 	//Init some stuff
 	selectedStage = 0;
@@ -119,7 +120,7 @@ int stageSelect(int *runEvent)
 			if (!escape)
 				return 0;
 			if (escape == 2)
-				return 1;
+				return 2;
 		}
 
 		//Update menu
@@ -150,7 +151,7 @@ int stageSelect(int *runEvent)
 		if (isKeyPressed(keyJump))
 		{
 			stopTsc();
-			loadStageTsc(oldScript);
+			loadStageTsc(oldScript.c_str());
 			*runEvent = permitStage[selectedStage].event;
 			return 1;
 		}
@@ -159,7 +160,7 @@ int stageSelect(int *runEvent)
 		if (isKeyPressed(keyShoot))
 		{
 			stopTsc();
-			loadStageTsc(oldScript);
+			loadStageTsc(oldScript.c_str());
 			*runEvent = 0;
 			return 1;
 		}
