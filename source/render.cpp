@@ -102,7 +102,8 @@ void captureScreen(enum TextureNums texture_id)
 	int width, height;
 	SDL_GetRendererOutputSize(renderer, &width, &height);
 
-	SDL_Surface *surface = SDL_CreateRGBSurfaceWithFormat(0, width, height, SDL_BITSPERPIXEL(SDL_PIXELFORMAT_RGB888), SDL_PIXELFORMAT_RGB888);
+	// The depth parameter here is unused. Be aware, it will be removed in SDL 2.1.
+	SDL_Surface *surface = SDL_CreateRGBSurfaceWithFormat(0, width, height, 0, SDL_PIXELFORMAT_RGB888);
 	SDL_RenderReadPixels(renderer, nullptr, SDL_PIXELFORMAT_RGB888, surface->pixels, surface->pitch);
 
 	sprites[texture_id] = SDL_CreateTextureFromSurface(renderer, surface);
