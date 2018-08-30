@@ -129,7 +129,7 @@ void mixOrg(uint8_t *stream, int len)
 		//Play Drums
 		for (int wave = 0; wave < 8; wave++)
 		{
-			int waveSamples = (signed __int64)((long double)(800 * orgDrums[wave].key + 100) / (double)orgSampleRate * 4096.0);
+			unsigned int waveSamples = (unsigned int)((long double)(800 * orgDrums[wave].key + 100) / (double)orgSampleRate * 4096.0);
 
 			if (orgDrums[wave].playing)
 			{
@@ -605,7 +605,7 @@ void loadOrganya(const char *name)
 						doError();
 
 					orgDrums[wave].wave = (uint8_t*)malloc(orgDrums[wave].length);
-					for (int b = 0; b < orgDrums[wave].length; b++)
+					for (size_t b = 0; b < orgDrums[wave].length; b++)
 						orgDrums[wave].wave[b] = pBuf[b];
 				}
 				else

@@ -50,7 +50,7 @@ struct WAVE {
 //Drum struct
 struct DRUM {
 	uint8_t *wave; //Dynamic size
-	int length;
+	size_t length;
 	int key;
 	bool playing;
 	size_t pos;
