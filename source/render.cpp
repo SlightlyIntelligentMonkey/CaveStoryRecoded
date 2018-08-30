@@ -88,6 +88,28 @@ void switchScreenMode()
 	SDL_SetWindowFullscreen(window, windowFlags);
 }
 
+void drawWindow()
+{
+	SDL_RenderPresent(renderer);
+}
+
+void captureScreen(enum TextureNums texture_id)
+{
+	//Destroy previously existing texture and load new one
+	if (sprites[texture_id] != nullptr)
+		SDL_DestroyTexture(sprites[texture_id]);
+
+	int width, height;
+	SDL_GetRendererOutputSize(renderer, &width, &height);
+
+	SDL_Surface *surface = SDL_CreateRGBSurfaceWithFormat(0, width, height, SDL_BITSPERPIXEL(SDL_PIXELFORMAT_RGB888), SDL_PIXELFORMAT_RGB888);
+	SDL_RenderReadPixels(renderer, nullptr, SDL_PIXELFORMAT_RGB888, surface->pixels, surface->pitch);
+
+	sprites[texture_id] = SDL_CreateTextureFromSurface(renderer, surface);
+
+	SDL_FreeSurface(surface);
+}
+
 //Texture and drawing stuff
 void loadImage(const char *file, SDL_Texture **tex)
 {
