@@ -530,8 +530,6 @@ int updateTsc()
 			static bool notifiedAboutFOB = false;
 			static bool notifiedAboutINP = false;
 			static bool notifiedAboutMLP = false;
-			static bool notifiedAboutMS2 = false;
-			static bool notifiedAboutMS3 = false;
 			static bool notifiedAboutNCJ = false;
 			static bool notifiedAboutNUM = false;
 			static bool notifiedAboutSIL = false;
@@ -954,26 +952,27 @@ int updateTsc()
 				tscCleanup(1);
 				break;
 			case('<MS2'):
-				if (!notifiedAboutMS2 && debugFlags & notifyOnNotImplemented)
-				{
-					notifiedAboutMS2 = true;
-					showTSCNotImplementedWarning("<MS2 is not implemented");
-				}
-
+				clearTextLine();
+				tsc.flags |= 0x21;
+				tsc.flags &= ~0x12;
+				if (tsc.flags & 0x40)
+					tsc.flags |= 0x10u;
+				tsc.face = 0;
 				tscCleanup(0);
+				bExit = true;
 				break;
 			case('<MS3'):
-				if (!notifiedAboutMS3 && debugFlags & notifyOnNotImplemented)
-				{
-					notifiedAboutMS3 = true;
-					showTSCNotImplementedWarning("<MS3 is not implemented");
-				}
-
+				clearTextLine();
+				tsc.flags |= 0x23;
+				tsc.flags &= ~0x10;
+				if (tsc.flags & 0x40)
+					tsc.flags |= 0x10u;
 				tscCleanup(0);
+				bExit = true;
 				break;
 			case('<MSG'):
 				clearTextLine();
-				tsc.flags |= 3u;
+				tsc.flags |= 3;
 				tsc.flags &= ~0x30;
 				if (tsc.flags & 0x40)
 					tsc.flags |= 0x10u;

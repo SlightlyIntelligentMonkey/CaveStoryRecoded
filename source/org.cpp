@@ -121,8 +121,8 @@ void mixOrg(uint8_t *stream, int len)
 				
 				int val = (int)(sample1 + (sample2 - sample1) * ((double)(orgWaves[wave].pos & 0xFFF) / 4096.0));
 
-				stream[2 * i] += (uint8_t)((long double)val * orgWaves[wave].volume * orgWaves[wave].volume_l / 4.0);
-				stream[2 * i + 1] += (uint8_t)((long double)val * orgWaves[wave].volume * orgWaves[wave].volume_r / 4.0);
+				stream[2 * i] += (uint8_t)((long double)val * orgWaves[wave].volume * orgWaves[wave].volume_l / 2.0);
+				stream[2 * i + 1] += (uint8_t)((long double)val * orgWaves[wave].volume * orgWaves[wave].volume_r / 2.0);
 			}
 		}
 
@@ -151,8 +151,8 @@ void mixOrg(uint8_t *stream, int len)
 
 					int val = (int)(sample1 + (sample2 - sample1) * ((double)(orgDrums[wave].pos & 0xFFF) / 4096.0));
 
-					stream[2 * i] += (uint8_t)((long double)val * orgDrums[wave].volume * orgDrums[wave].volume_l / 4.0);
-					stream[2 * i + 1] += (uint8_t)((long double)val * orgDrums[wave].volume * orgDrums[wave].volume_r / 4.0);
+					stream[2 * i] += (uint8_t)((long double)val * orgDrums[wave].volume * orgDrums[wave].volume_l / 2.0);
+					stream[2 * i + 1] += (uint8_t)((long double)val * orgDrums[wave].volume * orgDrums[wave].volume_r / 2.0);
 				}
 			}
 		}
@@ -249,6 +249,7 @@ unsigned char old_key[16] = { 255 }; //Sound during playback
 unsigned char key_on[16] = { 0 }; //Key switch
 unsigned char key_twin[16] = { 0 }; //Key used now
 
+const long double orgVolumeMin = 0.04;
 short pan_tbl[13] = { 0,43,86,129,172,215,256,297,340,383,426,469,512 };
 
 void changeNotePan(unsigned char pan, char track)
@@ -272,7 +273,7 @@ void changeNoteVolume(long volume, char track)
 {
 	if (old_key[track] != 0xFF)
 	{
-		orgWaves[track].volume = (long double)volume / 255.0f;
+		orgWaves[track].volume = orgVolumeMin + ((long double)volume / 255.0f * (1.0 - orgVolumeMin));
 	}
 }
 
@@ -351,7 +352,7 @@ void changeDrumPan(unsigned char pan, char track)
 
 void changeDrumVolume(long volume, char track)
 {
-	orgDrums[track].volume = (long double)volume / 255.0f;
+	orgDrums[track].volume = orgVolumeMin + ((long double)volume / 255.0f * (1.0 - orgVolumeMin));
 }
 
 void playOrganyaDrum(int key, int mode, char track)

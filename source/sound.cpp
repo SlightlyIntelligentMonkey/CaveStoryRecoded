@@ -36,8 +36,8 @@ void mixAudioSFX(int *dst, uint32_t len, SOUND_EFFECT *sound)
 	//using 32 signed int on native system 
 	while (sound->pos + currentPos < sound->length && (currentPos << 3) < len)
 	{
-		dst[(currentPos << 1)] += sound->buf[sound->pos + currentPos];
-		dst[(currentPos << 1) + 1] += sound->buf[sound->pos + currentPos];
+		dst[(currentPos << 1)] += sound->buf[sound->pos + currentPos] * 2;
+		dst[(currentPos << 1) + 1] += sound->buf[sound->pos + currentPos] * 2;
 		currentPos++;
 	}
 	sound->pos += currentPos;
