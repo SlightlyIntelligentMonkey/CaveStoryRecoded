@@ -374,6 +374,8 @@ int gameUpdatePlay()
 		{
 			if (isKeyPressed(keyMenu))
 			{
+				changeOrg(mus_TheWayBackHome);
+
 				int inventoryRet = openInventory();
 
 				if (!inventoryRet)

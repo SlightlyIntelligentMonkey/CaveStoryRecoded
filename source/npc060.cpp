@@ -1109,6 +1109,7 @@ void npcAct072(npc * NPC) // Sprinkler
 			NPC->ani_wait = 0;
 			++NPC->ani_no;
 		}
+
 		if (NPC->ani_no > 1)
 		{
 			NPC->ani_no = 0;

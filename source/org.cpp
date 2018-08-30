@@ -454,6 +454,10 @@ void loadOrganya(const char *name)
 	organyaReleaseNote();
 	organyaAllocNote(10000);
 
+	memset(old_key, 0xFF, sizeof(old_key));
+	memset(key_on, 0x00, sizeof(key_on));
+	memset(key_twin, 0x00, sizeof(key_twin));
+
 	//Load
 	SDL_RWops *fp = SDL_RWFromFile(name, "rb");
 
@@ -616,26 +620,6 @@ void loadOrganya(const char *name)
 				}
 			}
 		}
-
-		/*
-		drumTbl[0].buf = sounds[0x96 + 0].buf;
-		drumTbl[0].len = sounds[0x96 + 0].length;
-
-		drumTbl[2].buf = sounds[0x96 + 1].buf;
-		drumTbl[2].len = sounds[0x96 + 1].length;
-
-		drumTbl[4].buf = sounds[0x96 + 4].buf;
-		drumTbl[4].len = sounds[0x96 + 4].length;
-
-		drumTbl[5].buf = sounds[0x96 + 2].buf;
-		drumTbl[5].len = sounds[0x96 + 2].length;
-
-		drumTbl[6].buf = sounds[0x96 + 3].buf;
-		drumTbl[6].len = sounds[0x96 + 3].length;
-
-		drumTbl[8].buf = sounds[0x96 + 5].buf;
-		drumTbl[8].len = sounds[0x96 + 5].length;
-		*/
 
 		//Make sure position is at start
 		organyaSetPlayPosition(0);
