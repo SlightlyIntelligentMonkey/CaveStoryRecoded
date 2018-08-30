@@ -17,4 +17,4 @@ int writeFile(const char *name, const void *data, size_t amount) noexcept;
 void loadProfile();
 void saveProfile();
 
-std::vector<std::string> getLinesFromFile(std::string fileName);
+std::vector<std::string> getLinesFromFile(const std::string& fileName);

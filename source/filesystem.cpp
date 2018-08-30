@@ -265,7 +265,7 @@ void saveProfile()
 	writeFile(profileName, profile, 0x604);
 }
 
-vector<string> getLinesFromFile(string fileName)
+vector<string> getLinesFromFile(const string& fileName)
 {
 	vector<string> lines;
 	ifstream inFile(fileName);
