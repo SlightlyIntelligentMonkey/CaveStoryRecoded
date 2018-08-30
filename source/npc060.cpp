@@ -1100,7 +1100,7 @@ void npcAct071(npc * NPC) // Chinfish (enemy)
 		NPC->rect = rcRight[NPC->ani_no];
 }
 
-void npcAct072(npc * NPC) // Sprinkler
+void npcAct072(npc *NPC) // Sprinkler
 {
 	if (NPC->direct == dirLeft)
 	{

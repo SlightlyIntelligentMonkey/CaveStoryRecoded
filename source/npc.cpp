@@ -8,6 +8,7 @@
 #include "sound.h"
 #include "flags.h"
 
+#include <deque>
 #include <string>
 #include <cstring>
 #include <SDL_RWops.h>
@@ -15,9 +16,9 @@
 using std::memset;
 using std::string;
 using std::to_string;
-using std::vector;
+using std::deque;
 
-vector<npc> npcs(0);
+deque<npc> npcs(0);
 
 int superXPos = 0;	// Used by undead core related NPCs ?
 int superYPos = 0;
