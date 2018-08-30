@@ -31,7 +31,7 @@ bool exitGame = false;
 
 static void doQuit() noexcept
 {
-	//sound::quit();
+	//sound::quit(); // TBD : Make a sound quit method, make the quit method a global destructor or remove this
 	SDL_Quit();
 	IMG_Quit();
 	freeSounds();

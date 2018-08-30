@@ -419,7 +419,7 @@ void loadOrganya(const char *name)
 		org.repeat_x = SDL_ReadLE32(fp);
 		org.end_x = SDL_ReadLE32(fp);
 
-		for (int i = 0; i < 16; i++) {
+		for (size_t i = 0; i < 16; i++) {
 			org.tdata[i].freq = SDL_ReadLE16(fp);
 			org.tdata[i].wave_no = SDL_ReadU8(fp);
 			org.tdata[i].pipi = SDL_ReadU8(fp);
@@ -430,7 +430,7 @@ void loadOrganya(const char *name)
 		}
 
 		//Load notes
-		for (int i = 0; i < 16; i++)
+		for (size_t i = 0; i < 16; i++)
 		{
 			//Check if there are no notes to load
 			if (org.tdata[i].note_num == 0)
@@ -446,7 +446,7 @@ void loadOrganya(const char *name)
 			np->to = (np + 1);
 			np++;
 
-			for (int j = 1; j < org.tdata[i].note_num; j++) {
+			for (size_t j = 1; j < org.tdata[i].note_num; j++) {
 				np->from = (np - 1);
 				np->to = (np + 1);
 				np++;
@@ -458,25 +458,25 @@ void loadOrganya(const char *name)
 
 			//Substitute content
 			np = org.tdata[i].note_p; //X coordinate
-			for (int j = 0; j < org.tdata[i].note_num; j++) {
+			for (size_t j = 0; j < org.tdata[i].note_num; j++) {
 				np->x = SDL_ReadLE32(fp);
 				np++;
 			}
 
 			np = org.tdata[i].note_p; //Y coordinate
-			for (int j = 0; j < org.tdata[i].note_num; j++) {
+			for (size_t j = 0; j < org.tdata[i].note_num; j++) {
 				np->y = SDL_ReadU8(fp);
 				np++;
 			}
 
 			np = org.tdata[i].note_p; //Length
-			for (int j = 0; j < org.tdata[i].note_num; j++) {
+			for (size_t j = 0; j < org.tdata[i].note_num; j++) {
 				np->length = SDL_ReadU8(fp);
 				np++;
 			}
 
 			np = org.tdata[i].note_p; //Volume
-			for (int j = 0; j < org.tdata[i].note_num; j++) {
+			for (size_t j = 0; j < org.tdata[i].note_num; j++) {
 				np->volume = SDL_ReadU8(fp);
 				np++;
 			}
@@ -579,28 +579,24 @@ const char *orgFolder = "data/Org/";
 
 void changeOrg(const uint32_t num)
 {
-	char path[64];
 	if (num == currentOrg)
 		return;
 	prevOrg = currentOrg;
 	prevOrgPos = play_p;
 	currentOrg = num;
-	strcpy(path, orgFolder);
-	strcat(path, musicList[num].c_str());
-	loadOrganya(path);
+	string path(orgFolder + musicList[num]);
+	loadOrganya(path.c_str());
 }
 
 void resumeOrg()
 {
-	char path[64];
 	Uint32 temp = 0;
 	temp = currentOrg;
 	currentOrg = prevOrg;
 	prevOrg = temp;
-	strcpy(path, orgFolder);
-	strcat(path, musicList[currentOrg].c_str());
+	string path(orgFolder + musicList[currentOrg].c_str());
 	temp = play_p;
-	loadOrganya(path);
+	loadOrganya(path.c_str());
 	organyaSetPlayPosition(prevOrgPos);
 	prevOrgPos = temp;
 }
