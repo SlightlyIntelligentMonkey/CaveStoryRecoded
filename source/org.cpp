@@ -63,11 +63,6 @@ void organyaReleaseNote()
 }
 
 //sound function things
-SDL_AudioDeviceID orgSoundDev = 0;
-SDL_AudioSpec orgSoundSpec;
-SDL_AudioSpec orgWant;
-const int orgSampleRate = 44100;
-
 __int16 octfreq[12] = { 1, 2, 4, 8, 16, 32, 64, 128, 0, 0, 0, 0 };
 __int16 notefreq[12] = { 262, 277, 294, 311, 330, 349, 370, 392, 415, 440, 466, 494 };
 
@@ -96,7 +91,7 @@ void mixOrg(uint8_t *stream, int len)
 	for (int i = 0; i < len; i++)
 	{
 		//Update
-		int samplesPerBeat = (orgSampleRate / 1000) * org.wait;
+		int samplesPerBeat = (sampleRate / 1000) * org.wait;
 		if (++org.samples > samplesPerBeat)
 		{
 			organyaPlayStep();
@@ -131,7 +126,7 @@ void mixOrg(uint8_t *stream, int len)
 		//Play Drums
 		for (int wave = 0; wave < 8; wave++)
 		{
-			unsigned int waveSamples = (unsigned int)((long double)(800 * orgDrums[wave].key + 100) / (double)orgSampleRate * 4096.0);
+			unsigned int waveSamples = (unsigned int)((long double)(800 * orgDrums[wave].key + 100) / (double)sampleRate * 4096.0);
 
 			if (orgDrums[wave].playing)
 			{
@@ -161,12 +156,6 @@ void mixOrg(uint8_t *stream, int len)
 	}
 }
 
-void orgCallback(void *userdata, uint8_t *stream, int len)
-{
-	memset(stream, 0, len);
-	mixOrg(stream, len / 2);
-}
-
 // Load musicList from musicList.txt
 void loadMusicList(const char *path)
 {
@@ -177,26 +166,6 @@ void initOrganya()
 {
 	//Load music list
 	loadMusicList("data/Org/musicList.txt");
-
-	//Create sound device
-	orgWant.channels = 2;
-	orgWant.freq = orgSampleRate;
-	orgWant.format = 0x8008;//AUDIO_S8;
-	orgWant.samples = 1024;
-	orgWant.callback = orgCallback;
-	orgWant.userdata = nullptr;
-
-	orgSoundDev = SDL_OpenAudioDevice(
-		nullptr,
-		0,
-		&orgWant,
-		&orgSoundSpec,
-		0);
-
-	if (orgSoundDev == 0)
-		doError();
-
-	SDL_PauseAudioDevice(orgSoundDev, 0);
 }
 
 ///////////////////////////
@@ -221,7 +190,7 @@ unsigned char key_on[16] = { 0 }; //Key switch
 unsigned char key_twin[16] = { 0 }; //Key used now
 
 const long double orgVolumeMin = 0.04;
-short pan_tbl[13] = { 0,43,86,129,172,215,256,297,340,383,426,469,512 };
+const short pan_tbl[13] = { 0,43,86,129,172,215,256,297,340,383,426,469,512 };
 
 void changeNotePan(unsigned char pan, char track)
 {
@@ -417,7 +386,7 @@ void organyaPlayStep(void)
 //Load function
 void loadOrganya(const char *name)
 {
-	SDL_PauseAudioDevice(orgSoundDev, -1);
+	SDL_PauseAudioDevice(soundDev, -1);
 
 	NOTELIST *np;
 
@@ -541,6 +510,7 @@ void loadOrganya(const char *name)
 		//Load drums
 		memset(orgDrums, 0, sizeof(orgDrums));
 
+		/*
 		for (int wave = 0; wave < 8; wave++)
 		{
 			char *drumPath = nullptr;
@@ -591,6 +561,7 @@ void loadOrganya(const char *name)
 				}
 			}
 		}
+		*/
 
 		//Make sure position is at start
 		organyaSetPlayPosition(0);
@@ -600,7 +571,7 @@ void loadOrganya(const char *name)
 		doCustomError("File given either isn't a .org or isn't a valid version.");
 	}
 
-	SDL_PauseAudioDevice(orgSoundDev, 0);
+	SDL_PauseAudioDevice(soundDev, 0);
 }
 
 //Other functions

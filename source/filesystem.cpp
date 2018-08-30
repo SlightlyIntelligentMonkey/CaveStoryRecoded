@@ -28,6 +28,16 @@ using std::fread;
 using std::fclose;
 
 //Read function stuff
+std::vector<std::string> getLinesFromFile(char *path)
+{
+	std::vector<std::string> lines;
+	std::ifstream inFile(path);
+	std::string line;
+	while (getline(inFile, line))
+		lines.push_back(line);
+	return lines;
+}
+
 uint16_t readLEshort(const uint8_t * data, size_t offset)
 {
 	if (data == nullptr)
