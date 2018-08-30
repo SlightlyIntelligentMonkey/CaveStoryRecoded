@@ -3,60 +3,33 @@
 #include "input.h"
 #include "filesystem.h"
 
+#include <vector>
 #include <string>
+#include <fstream>
 #include <memory>
 #include <cstdlib>
 #include <cstdio>
 #include <SDL.h>
 
-using std::string;
-
-struct SOUND_EFFECT
-{
-	int *buf;
-	uint32_t length;
-	uint32_t pos;
-	uint8_t mode;
-};
-SOUND_EFFECT sounds[160];
-
-SDL_AudioDeviceID soundDev = 0;
+//Variable things
+SDL_AudioDeviceID soundDev;
 SDL_AudioSpec soundSpec;
 SDL_AudioSpec want;
-
-//use int pointers for easy use
-void mixAudioSFX(int *dst, uint32_t len, SOUND_EFFECT *sound)
-{
-	if (sound == nullptr)
-		doCustomError("sound was nullptr in mixAudioSFX");
-	if (dst == nullptr)
-		doCustomError("dst was nullptr in mixAudioSFX");
-
-	unsigned int currentPos = 0;
-	//using 32 signed int on native system 
-	while (sound->pos + currentPos < sound->length && (currentPos << 3) < len)
-	{
-		dst[(currentPos << 1)] += sound->buf[sound->pos + currentPos] * 2;
-		dst[(currentPos << 1) + 1] += sound->buf[sound->pos + currentPos] * 2;
-		currentPos++;
-	}
-	sound->pos += currentPos;
-}
 
 void __cdecl audio_callback(void *userdata, Uint8 *stream, int len) // TBD : Handle userdata parameter
 {
 	memset(stream, 0, len);
-
-	for (unsigned int sfx = 0; sfx < _countof(sounds); sfx++)
-		if (sounds[sfx].pos < sounds[sfx].length)
-			mixAudioSFX(reinterpret_cast<int *>(stream), len, &sounds[sfx]);
+	mixOrg(stream, len / 2);
 }
 
 void initAudio()
 {
+	initOrganya();
+
+	//Create sound device
 	want.channels = 2;
 	want.freq = sampleRate;
-	want.format = AUDIO_S32SYS;
+	want.format = AUDIO_S8;
 	want.samples = 1024;
 	want.callback = audio_callback;
 	want.userdata = nullptr;
@@ -67,95 +40,125 @@ void initAudio()
 		&want,
 		&soundSpec,
 		0);
+
 	if (soundDev == 0)
 		doError();
-	memset(sounds, 0, sizeof(sounds));
-
-	initOrganya();
-}
-
-//since sdl doesn't actually get the loaded wav in the specified format,
-//we have to do it ourselves
-void loadSound(const char *path, SDL_AudioSpec *spec, int **buf, uint32_t *length)
-{
-	if (length == nullptr)
-		doCustomError("length was nullptr in loadSound");
-	if (buf == nullptr)
-		doCustomError("buf was nullptr in loadSound");
-
-	uint8_t *pBuf = nullptr;
-
-	SDL_LoadWAV(path, spec, &pBuf, length);
-
-	if (pBuf == nullptr)
-		doError();
-
-	auto fakeBuf = static_cast<int *>(malloc(*length * 4));
-	if (fakeBuf == nullptr)
-		doCustomError("Could not allocate memory for fakeBuf");
-
-	//number of data points to interolate (22050 is the sample rate of .pxt wavs)
-	int dist = sampleRate / 22050;
-
-	auto realBuf = static_cast<int *>(calloc(dist, *length * 4));
-	if (realBuf == nullptr)
-		doCustomError("Could not allocate memory for realBuf");
-
-	//converting to 32 signed int format from unsigned 8 bit
-	for (size_t b = 0; b < *length; b++)
-		fakeBuf[b] = (0x7FFFFFFF / 0xFF) * (pBuf[b] - ((0xFF / 2) + 1));
-
-	//interpolation
-	for (size_t i = 0; i < *length; i++)
-	{
-		realBuf[i << 1] = fakeBuf[i];
-		realBuf[(i << 1) + 1] = fakeBuf[i];
-	}
-
-	free(fakeBuf);
-	SDL_FreeWAV(pBuf);
-
-	*length *= dist;
-	*buf = realBuf;
-}
-
-
-const char* hexStr[16] = { "0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "A", "B", "C", "D", "E", "F" };
-
-void loadSounds()
-{
-	for (int i = 0; i < 10; i++)
-	{
-		for (int v = 0; v < 16; v++)
-		{
-			int s = i * 16 + v;
-			string path = "data/Sound/" + string(hexStr[i]) + hexStr[v] + ".wav";
-
-			if (fileExists(path.c_str()))
-			{
-				loadSound(path.c_str(), &soundSpec, &sounds[s].buf, &sounds[s].length);
-				sounds[s].pos = sounds[s].length;
-			}
-			else
-				sounds[s].buf = nullptr;
-		}
-	}
 
 	SDL_PauseAudioDevice(soundDev, 0);
 }
 
+//Loading and parsing pxt
+std::vector<long double> getNumbersFromString(char *string)
+{
+	std::vector<long double> numbers;
+
+	long double currentValue = 0;
+	bool parsingNumber = false;
+	bool numberDecimal = false;
+
+	size_t i = 0;
+	while (string[i])
+	{
+		if (string[i] == '.' || (string[i] >= 0x30 && string[i] <= 0x39))
+		{
+			if (!parsingNumber)
+			{
+				parsingNumber = true;
+				numberDecimal = false;
+				currentValue = 0;
+				numberDecimal = (string[i] == '.');
+			}
+
+			if (string[i] != '.')
+			{
+				//Get position
+				size_t v = i;
+				while (string[v])
+				{
+					if (string[v] == '.' || (string[v] >= 0x30 && string[v] <= 0x39))
+					{
+						if (string[v] == '.')
+							break;
+					}
+					else
+					{
+						break;
+					}
+					v++;
+				}
+
+				//Add value to number
+				if (!numberDecimal)
+					currentValue += (long double)(string[i] - 0x30) * (pow(10, (v - i) - 1));
+				else
+					currentValue += (long double)(string[i] - 0x30) * (1.0 / pow(10, 2 - ((v - i) - 1)));
+			}
+			else
+			{
+				numberDecimal = true;
+			}
+		}
+		else
+		{
+			if (parsingNumber)
+			{
+				parsingNumber = false;
+				numbers.push_back(currentValue);
+			}
+		}
+
+		i++;
+	}
+
+	if (parsingNumber)
+	{
+		parsingNumber = false;
+		numbers.push_back(currentValue);
+	}
+
+	return numbers;
+}
+
+void loadSound(char *path)
+{
+	std::vector<std::string> lines = getLinesFromFile(path);
+
+	if (lines.size() == 92)
+	{
+
+	}
+	else
+	{
+		char error[0x100];
+		sprintf(error, "Can't parse .pxt which isn't exactly 92 lines long.\n(given file is %s lines long)", std::to_string(lines.size()).c_str());
+		doCustomError(error);
+	}
+}
+
+const char *hexNibble[16] = {"0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "A", "B", "C", "D", "E", "F"};
+void loadSounds()
+{
+	for (int n1 = 0; n1 < 16; n1++)
+	{
+		for (int n2 = 0; n2 < 16; n2++)
+		{
+			char path[0x100];
+			sprintf(path, "data/Sound/%s%s.pxt", hexNibble[n1], hexNibble[n2]);
+
+			if (fileExists(path))
+			{
+				loadSound(path);
+			}
+		}
+	}
+}
+
 void freeSounds() noexcept
 {
-	for (size_t s = 0; s < _countof(sounds); s++)
-		free(sounds[s].buf);
+
 }
 
 void playSound(size_t sound_no, int soundMode) noexcept
 {
-	if (sound_no > _countof(sounds) - 1)
-		return;
-	if (sounds[sound_no].buf == nullptr)
-		return;
-	sounds[sound_no].pos = 0;
-	sounds[sound_no].mode = soundMode;
+	
 }

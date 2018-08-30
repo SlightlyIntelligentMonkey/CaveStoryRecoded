@@ -1,6 +1,10 @@
 #pragma once
 #include "common.h"
+#include <vector>
+#include <string>
+#include <fstream>
 
+std::vector<std::string> getLinesFromFile(char *path);
 uint16_t readLEshort(const uint8_t *data, size_t offset) attrPure;
 uint32_t readLElong(const uint8_t *data, size_t offset) attrPure;
 

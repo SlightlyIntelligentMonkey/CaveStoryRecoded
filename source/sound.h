@@ -7,6 +7,22 @@ void freeSounds() noexcept;
 
 void playSound(size_t sound_no, int soundMode = 1) noexcept;
 
+//Sound struct
+struct SOUND {
+	uint8_t *wave; //Dynamic size
+	size_t length;
+	bool playing;
+	size_t pos;
+};
+
+//sound device things
+typedef uint32_t SDL_AudioDeviceID;
+struct SDL_AudioSpec;
+
+extern SDL_AudioDeviceID soundDev;
+extern SDL_AudioSpec soundSpec;
+extern SDL_AudioSpec want;
+
 //sample rate
 constexpr unsigned int sampleRate = 44100;
 
