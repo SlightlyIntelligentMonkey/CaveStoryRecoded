@@ -1,27 +1,20 @@
 #include "game.h"
-#include "weapons.h"
-#include "level.h"
-#include "hud.h"
-#include "script.h"
-#include "fade.h"
 #include "input.h"
-#include "filesystem.h"
+#include "script.h"
+#include "sound.h"
+#include "render.h"
+#include "level.h"
+#include "player.h"
 #include "caret.h"
 #include "valueview.h"
-#include "render.h"
-#include "sound.h"
-#include "player.h"
-#include "bullet.h"
-#include "mathUtils.h"
-#include "flags.h"
 
+#include <string>
 #include <cstring>
-#include <SDL_scancode.h>
-#include <SDL_timer.h>
-#include <SDL_render.h>
 #include <SDL_events.h>
+#include <SDL_render.h>
 
-using std::memset;
+using std::string;
+using std::strcpy;
 
 //Teleporter Menu
 PERMIT_STAGE permitStage[PERMITSTAGES];
@@ -31,7 +24,7 @@ int stageSelectFlash;
 
 void moveStageSelectCursor()
 {
-	int stageNo;
+	size_t stageNo;
 
 	for (stageNo = 0; stageNo < PERMITSTAGES && permitStage[stageNo].index != 0; ++stageNo);
 
@@ -46,7 +39,7 @@ void moveStageSelectCursor()
 		//Wrap around
 		if (selectedStage < 0)
 			selectedStage = stageNo - 1;
-		if (selectedStage >= stageNo)
+		if (static_cast<size_t>(selectedStage) >= stageNo)
 			selectedStage = 0;
 
 		//Run event and play sound
@@ -63,7 +56,7 @@ void drawStageSelect()
 	RECT rcTitle1;
 	RECT rcStage;
 
-	int stageNo;
+	size_t stageNo;
 
 	rcCur[0] = { 80, 88, 112, 104 };
 	rcCur[1] = { 80, 104, 112, 120 };
@@ -79,12 +72,12 @@ void drawStageSelect()
 
 	if (stageNo)
 	{
-		const int stageX = (-40 * stageNo + screenWidth) / 2;
+		const int stageX = (-40 * static_cast<int>(stageNo) + screenWidth) / 2;
 
 		//Draw everything now
 		drawTexture(sprites[TEX_TEXTBOX], &rcCur[(stageSelectFlash >> 1) & 1], stageX + 40 * selectedStage, 64);
 
-		for (int i = 0; i < PERMITSTAGES && permitStage[i].index; ++i)
+		for (size_t i = 0; i < PERMITSTAGES && permitStage[i].index; ++i)
 		{
 			rcStage.left = 32 * (permitStage[i].index % 8);
 			rcStage.right = rcStage.left + 32;
@@ -98,9 +91,11 @@ void drawStageSelect()
 
 int stageSelect(int *runEvent)
 {
+	if (runEvent == nullptr)
+		doCustomError("runEvent was nullptr in stageSelect");
+
 	//Keep track of old one
-	char oldScript[260];
-	strcpy(oldScript, tsc.path);
+	string oldScript(tsc.path);
 
 	//Init some stuff
 	selectedStage = 0;
@@ -112,18 +107,7 @@ int stageSelect(int *runEvent)
 
 	while (true)
 	{
-		//Framerate limiter
-		const Uint32 timeNow = SDL_GetTicks();
-		const Uint32 timeNext = framerateTicks + framerate;
-
-		if (timeNow >= timeNext) {
-			framerateTicks = SDL_GetTicks();
-		}
-		else
-		{
-			SDL_Delay(timeNext - timeNow);
-			continue;
-		}
+		delimitFramerate();
 
 		//Handle events
 		getKeys(&events);
@@ -136,7 +120,7 @@ int stageSelect(int *runEvent)
 			if (!escape)
 				return 0;
 			if (escape == 2)
-				return 1;
+				return 2;
 		}
 
 		//Update menu
@@ -167,7 +151,7 @@ int stageSelect(int *runEvent)
 		if (isKeyPressed(keyJump))
 		{
 			stopTsc();
-			loadStageTsc(oldScript);
+			loadStageTsc(oldScript.c_str());
 			*runEvent = permitStage[selectedStage].event;
 			return 1;
 		}
@@ -176,7 +160,7 @@ int stageSelect(int *runEvent)
 		if (isKeyPressed(keyShoot))
 		{
 			stopTsc();
-			loadStageTsc(oldScript);
+			loadStageTsc(oldScript.c_str());
 			*runEvent = 0;
 			return 1;
 		}
@@ -185,3 +169,4 @@ int stageSelect(int *runEvent)
 		SDL_RenderPresent(renderer);
 	}
 }
+

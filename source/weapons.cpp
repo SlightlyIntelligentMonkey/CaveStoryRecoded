@@ -175,24 +175,24 @@ int removeWeapon(int code) noexcept
 
 void clearWeaponExperience() noexcept
 {
-	for (int a = 0; a < WEAPONS; ++a)
+	for (auto& i : weapons)
 	{
-		weapons[a].level = 1;
-		weapons[a].exp = 0;
+		i.level = 1;
+		i.exp = 0;
 	}
 }
 
 void maxWeaponAmmo() noexcept
 {
-	for (int a = 0; a < WEAPONS; ++a)
-		weapons[a].num = weapons[a].max_num;
+	for (auto& i : weapons)
+		i.num = i.max_num;
 }
 
 bool checkWeapon(int code) noexcept
 {
-	for (int i = 0; i < WEAPONS; ++i)
+	for (const auto& i : weapons)
 	{
-		if (weapons[i].code == code)
+		if (i.code == code)
 			return true;
 	}
 	return false;
@@ -297,3 +297,4 @@ int rotateWeaponLeft() noexcept
 
 	return weapons[weaponNo].code;
 }
+

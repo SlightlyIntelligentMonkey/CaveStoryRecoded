@@ -5,14 +5,14 @@
 #include "render.h"
 
 #include <string>
-#include <vector>
+#include <deque>
 #include <cstring>
 
 using std::to_string;
-using std::vector;
+using std::deque;
 using std::memset;
 
-vector<caret> carets(0);
+deque<caret> carets(0);
 
 CARETSTAT caretStats[] =
 {
@@ -382,7 +382,7 @@ void caretAct011(caret *CARET) //Damage effect
 	{
 		CARET->act_no = 1;
 
-		const int deg = random(0, 255);
+		const uint8_t deg = random(0, 255);
 
 		CARET->xm = 2 * getCos(deg);
 		CARET->ym = 2 * getSin(deg);

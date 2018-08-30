@@ -20,6 +20,9 @@ struct ITEM
 };
 
 //Game variables
+constexpr auto ITEMS = 32;
+constexpr auto PERMITSTAGES = 8;
+
 extern PERMIT_STAGE permitStage[PERMITSTAGES];
 extern ITEM items[ITEMS];
 extern int selectedItem;
@@ -33,3 +36,5 @@ int escapeMenu();
 int openInventory();
 int stageSelect(int *runEvent);
 int mainGameLoop();
+
+void delimitFramerate() noexcept;

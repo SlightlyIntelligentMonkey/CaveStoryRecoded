@@ -3,16 +3,17 @@
 #include "bulletCollision.h"
 #include "render.h"
 
-#include <SDL_messagebox.h>
 #include <string>
+#include <deque>
+#include <SDL_messagebox.h>
 #include <cstring>
 
 using std::string;
 using std::to_string;
-using std::vector;
+using std::deque;
 using std::memset;
 
-vector<bullet> bullets(0);
+deque<bullet> bullets(0);
 
 BULLETSTATS bulletTable[] =
 {
@@ -104,7 +105,7 @@ BULLETSTATS bulletTable[] =
 };
 
 //Bullet functions
-void createBullet(int setCode, int setX, int setY, int setDir)
+void createBullet(int setCode, int setX, int setY, uint8_t setDir)
 {
 	bullet *repBullet = nullptr;
 

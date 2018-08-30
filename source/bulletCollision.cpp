@@ -338,10 +338,6 @@ void bulletHitMap()
 			const int x = coordToTile(bul->x);
 			const int y = coordToTile(bul->y);
 
-			constexpr int offx[4] = { 0, 1, 0, 1 };
-
-			constexpr int offy[4] = { 0, 0, 1, 1 };
-
 			uint8_t atrb[4];
 
 			//Get tile attributes nearby
@@ -357,6 +353,9 @@ void bulletHitMap()
 			{
 				for (int j = 0; j < 4; ++j) //Go through each tile
 				{
+					constexpr int offx[4] = { 0, 1, 0, 1 };
+					constexpr int offy[4] = { 0, 0, 1, 1 };
+
 					switch (atrb[j])
 					{
 					case 0x41:

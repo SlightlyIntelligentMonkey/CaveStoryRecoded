@@ -16,7 +16,7 @@ struct SOUND {
 };
 
 //sound device things
-typedef uint32_t SDL_AudioDeviceID;
+using SDL_AudioDeviceID = uint32_t;
 struct SDL_AudioSpec;
 
 extern SDL_AudioDeviceID soundDev;

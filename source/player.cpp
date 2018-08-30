@@ -278,7 +278,7 @@ void player::actNormal(bool bKey)
 						}
 						else
 						{
-							boost_sw = 2;
+							boost_sw = 2;	// same as with keyUp
 
 							xm = 0;
 							ym = -0x5FF;

@@ -165,20 +165,18 @@ void debugLevels()
 	}
 }
 
-int debugFlags = 0;
+int debugFlags = showSlots | showNPCId | showBULId | showCARId | notifyOnNotImplemented | showNPCHealth;
 
 void debugFunction()
 {
 	static uint32_t displayTimer = 0;
-	static char disp[64] = { 0 };
-	static int debugMode = 0;
+	static string disp;
 
-	char *retdVal = nullptr;
-	int flags = 0;
 	debugLevels();
 
-	if (displayTimer <= 0)
+	if (displayTimer == 0)
 	{
+		static int debugMode = 0;
 		if (debugMode == 0 && isKeyDown(SDL_SCANCODE_RSHIFT) && isKeyDown(SDL_SCANCODE_BACKSPACE))
 		{
 			if (isKeyPressed(SDL_SCANCODE_M))
@@ -209,7 +207,7 @@ void debugFunction()
 
 	if (displayTimer > 0)
 	{
-		drawString(0, 0, disp, nullptr);
+		drawString(0, 0, disp.c_str(), nullptr);
 		displayTimer--;
 	}
 
@@ -376,7 +374,7 @@ int gameUpdatePlay()
 			{
 				changeOrg(mus_TheWayBackHome);
 
-				int inventoryRet = openInventory();
+				const int inventoryRet = openInventory();
 
 				if (!inventoryRet)
 					return 0;
@@ -406,8 +404,7 @@ int gameUpdatePlay()
 
 		drawMapName(false);
 
-		if (gameFlags & 2)
-			drawHud(false);
+		drawHud(gameFlags & 2);
 
 		drawTsc();
 

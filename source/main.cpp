@@ -31,7 +31,7 @@ bool exitGame = false;
 
 static void doQuit() noexcept
 {
-	//sound::quit();
+	//sound::quit(); // TBD : Make a sound quit method, make the quit method a global destructor or remove this
 	SDL_Quit();
 	IMG_Quit();
 	freeSounds();
@@ -119,7 +119,7 @@ int init()
 	return 0;
 }
 
-int main(int argc, char **argv) // TDB : Do something with command-line parameters
+int main(int /*argc*/, char ** /*argv*/) // TDB : Do something with command-line parameters
 {
 	init();
 

@@ -1,7 +1,7 @@
 #pragma once
 #include "common.h"
 
-#include <vector>
+#include <deque>
 
 struct CARETSTAT
 {
@@ -42,7 +42,7 @@ public:
 using caretAct = void (*)(caret *);
 extern caretAct caretActs[];
 
-extern std::vector<caret> carets;
+extern std::deque<caret> carets;
 
 void updateCarets();
 void drawCarets();

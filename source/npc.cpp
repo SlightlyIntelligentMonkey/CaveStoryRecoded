@@ -8,16 +8,17 @@
 #include "sound.h"
 #include "flags.h"
 
+#include <deque>
 #include <string>
 #include <cstring>
-#include <SDL_RWops.h>
+#include <SDL_rwops.h>
 
 using std::memset;
 using std::string;
 using std::to_string;
-using std::vector;
+using std::deque;
 
-vector<npc> npcs(0);
+deque<npc> npcs(0);
 
 int superXPos = 0;	// Used by undead core related NPCs ?
 int superYPos = 0;
@@ -157,31 +158,28 @@ void dropExperience(int x, int y, int exp)
 {
 	while (exp > 0)
 	{
-		int sub_exp = 0;
+		int effectiveExp = 0;
 
 		if (exp <= 19)
 		{
 			if (exp <= 4)
 			{
-				if (exp > 0)	// TBD : Document why this is always true
-				{
-					--exp;
-					sub_exp = 1;
-				}
+				--exp;
+				effectiveExp = 1;
 			}
 			else
 			{
 				exp -= 5;
-				sub_exp = 5;
+				effectiveExp = 5;
 			}
 		}
 		else
 		{
 			exp -= 20;
-			sub_exp = 20;
+			effectiveExp = 20;
 		}
 
-		createNpcExp(1, x, y, 0, 0, 0, nullptr, 0, sub_exp);
+		createNpcExp(1, x, y, 0, 0, 0, nullptr, 0, effectiveExp);
 	}
 }
 

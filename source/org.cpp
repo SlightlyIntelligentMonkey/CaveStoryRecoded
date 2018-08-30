@@ -27,44 +27,39 @@ Uint32 currentOrg = 0;
 Uint32 prevOrg = 0;
 Uint32 prevOrgPos = 0;
 
-void organyaAllocNote(unsigned short alloc)
+void organyaAllocNote(uint16_t alloc)
 {
-	for (int j = 0; j < 16; j++) {
-		org.tdata[j].wave_no = 0;
-		org.tdata[j].note_list = NULL; //I want to make the constructor
-		org.tdata[j].note_p = (NOTELIST*)calloc(alloc, sizeof(NOTELIST)); //new NOTELIST[alloc];
+	for (auto& j : org.tdata) {
+		j.wave_no = 0;
+		j.note_list = nullptr; //I want to make the constructor
+		j.note_p = static_cast<NOTELIST*>(calloc(alloc, sizeof(NOTELIST))); //new NOTELIST[alloc];
 
-		if (org.tdata[j].note_p == NULL)
+		if (j.note_p == nullptr)
 			return;
 
 		for (int i = 0; i < alloc; i++) {
-			(org.tdata[j].note_p + i)->from = NULL;
-			(org.tdata[j].note_p + i)->to = NULL;
-			(org.tdata[j].note_p + i)->length = 0;
-			(org.tdata[j].note_p + i)->pan = 0xFF;
-			(org.tdata[j].note_p + i)->volume = 0xFF;
-			(org.tdata[j].note_p + i)->y = 0xFF;
+			(j.note_p + i)->from = nullptr;
+			(j.note_p + i)->to = nullptr;
+			(j.note_p + i)->length = 0;
+			(j.note_p + i)->pan = 0xFF;
+			(j.note_p + i)->volume = 0xFF;
+			(j.note_p + i)->y = 0xFF;
 		}
 	}
 }
 
 void organyaReleaseNote()
 {
-	for (int i = 0; i < 16; i++) {
-		if (org.tdata[i].note_p != NULL)
-			free(org.tdata[i].note_p);//delete org.tdata[i].note_p;
-	}
+	for (auto& i : org.tdata)
+		free(i.note_p); //delete org.tdata[i].note_p;
 
-	for (int i = 0; i < 8; i++)
-	{
-		if (orgDrums[i].wave != NULL)
-			free(orgDrums[i].wave);
-	}
+	for (auto& i : orgDrums)
+		free(i.wave);
 }
 
 //sound function things
-__int16 octfreq[12] = { 1, 2, 4, 8, 16, 32, 64, 128, 0, 0, 0, 0 };
-__int16 notefreq[12] = { 262, 277, 294, 311, 330, 349, 370, 392, 415, 440, 466, 494 };
+constexpr __int16 octfreq[12] = { 1, 2, 4, 8, 16, 32, 64, 128, 0, 0, 0, 0 };
+constexpr __int16 notefreq[12] = { 262, 277, 294, 311, 330, 349, 370, 392, 415, 440, 466, 494 };
 
 /*typedef struct {
 	short wave_size;
@@ -88,10 +83,13 @@ double freq_tbl[12] = { 261.62556530060, 277.18263097687, 293.66476791741, 311.1
 
 void mixOrg(uint8_t *stream, int len)
 {
+	if (stream == nullptr)
+		doCustomError("stream was nullptr in mixOrg");
+
 	for (int i = 0; i < len; i++)
 	{
 		//Update
-		int samplesPerBeat = (sampleRate / 1000) * org.wait;
+		const int samplesPerBeat = (sampleRate / 1000) * org.wait;
 		if (++org.samples > samplesPerBeat)
 		{
 			organyaPlayStep();
@@ -101,7 +99,8 @@ void mixOrg(uint8_t *stream, int len)
 		//Play waves
 		for (int wave = 0; wave < 8; wave++)
 		{
-			int waveSamples = (int)(((long double)(octfreq[orgWaves[wave].key / 12] * (signed int)notefreq[orgWaves[wave].key % 12])
+			const int waveSamples = (int)(((long double)(octfreq[orgWaves[wave].key / 12] * (signed int)notefreq[orgWaves[wave].key 
+				% 12])
 				* 32.0
 				+ (long double)org.tdata[wave].freq
 				- 1000.0)
@@ -111,12 +110,12 @@ void mixOrg(uint8_t *stream, int len)
 			if (orgWaves[wave].playing)
 			{
 				orgWaves[wave].pos = (orgWaves[wave].pos + waveSamples) & 0xFFFFF;
-				unsigned int s_offset_1 = orgWaves[wave].pos >> 12;
+				const unsigned int s_offset_1 = orgWaves[wave].pos >> 12;
 
-				int sample1 = orgWaves[wave].wave[s_offset_1];
-				int sample2 = orgWaves[wave].wave[(s_offset_1 + 1) % 0x100];//(unsigned __int8)(((unsigned int)((s_offset_1 + 1) >> 31) >> 24) + s_offset_1 + 1) - ((unsigned int)((s_offset_1 + 1) >> 31) >> 24)];
+				const int sample1 = orgWaves[wave].wave[s_offset_1];
+				const int sample2 = orgWaves[wave].wave[(s_offset_1 + 1) % 0x100];//(unsigned __int8)(((unsigned int)((s_offset_1 + 1) >> 31) >> 24) + s_offset_1 + 1) - ((unsigned int)((s_offset_1 + 1) >> 31) >> 24)];
 				
-				int val = (int)(sample1 + (sample2 - sample1) * ((double)(orgWaves[wave].pos & 0xFFF) / 4096.0));
+				const auto val = (int)(sample1 + (sample2 - sample1) * ((double)(orgWaves[wave].pos & 0xFFF) / 4096.0));
 
 				stream[2 * i] += (uint8_t)((long double)val * orgWaves[wave].volume * orgWaves[wave].volume_l / 2.0);
 				stream[2 * i + 1] += (uint8_t)((long double)val * orgWaves[wave].volume * orgWaves[wave].volume_r / 2.0);
@@ -124,32 +123,32 @@ void mixOrg(uint8_t *stream, int len)
 		}
 
 		//Play Drums
-		for (int wave = 0; wave < 8; wave++)
+		for (auto& wave : orgDrums)
 		{
-			unsigned int waveSamples = (unsigned int)((long double)(800 * orgDrums[wave].key + 100) / (double)sampleRate * 4096.0);
+			const auto waveSamples = (unsigned int)((long double)(800 * wave.key + 100) / (double)sampleRate * 4096.0);
 
-			if (orgDrums[wave].playing)
+			if (wave.playing)
 			{
-				orgDrums[wave].pos += waveSamples;
+				wave.pos += waveSamples;
 
-				if ((orgDrums[wave].pos >> 12) >= orgDrums[wave].length)
+				if ((wave.pos >> 12) >= wave.length)
 				{
-					orgDrums[wave].playing = false;
+					wave.playing = false;
 				}
 				else
 				{
-					size_t s_offset_1 = orgDrums[wave].pos >> 12;
+					const size_t s_offset_1 = wave.pos >> 12;
 
-					int sample1 = orgDrums[wave].wave[s_offset_1] - 0x80;
-					int sample2 = 0;//orgDrums[wave].wave[(s_offset_1 + 1) % 0x100] - 0x80; //(unsigned __int8)(((unsigned int)((s_offset_1 + 1) >> 31) >> 24) + s_offset_1 + 1) - ((unsigned int)((s_offset_1 + 1) >> 31) >> 24)];
+					const int sample1 = wave.wave[s_offset_1] - 0x80;
+					int sample2 = 0; //orgDrums[wave].wave[(s_offset_1 + 1) % 0x100] - 0x80; //(unsigned __int8)(((unsigned int)((s_offset_1 + 1) >> 31) >> 24) + s_offset_1 + 1) - ((unsigned int)((s_offset_1 + 1) >> 31) >> 24)];
 
-					if ((orgDrums[wave].pos >> 12) < orgDrums[wave].length - 1)
-						sample2 = orgDrums[wave].wave[s_offset_1 + 1] - 0x80;
+					if ((wave.pos >> 12) < wave.length - 1)
+						sample2 = wave.wave[s_offset_1 + 1] - 0x80;
 
-					int val = (int)(sample1 + (sample2 - sample1) * ((double)(orgDrums[wave].pos & 0xFFF) / 4096.0));
+					const auto val = (int)(sample1 + (sample2 - sample1) * ((double)(wave.pos & 0xFFF) / 4096.0));
 
-					stream[2 * i] += (uint8_t)((long double)val * orgDrums[wave].volume * orgDrums[wave].volume_l / 2.0);
-					stream[2 * i + 1] += (uint8_t)((long double)val * orgDrums[wave].volume * orgDrums[wave].volume_r / 2.0);
+					stream[2 * i] += (uint8_t)((long double)val * wave.volume * wave.volume_l / 2.0);
+					stream[2 * i + 1] += (uint8_t)((long double)val * wave.volume * wave.volume_r / 2.0);
 				}
 			}
 		}
@@ -172,34 +171,32 @@ void initOrganya()
 ////==ORGANYA  MELODY==////
 ///////////////////////////
 
-long play_p; //Current playback position
+int32_t play_p; //Current playback position
 NOTELIST *play_np[16]; //Currently ready to play notes
-long now_leng[16] = { NULL }; //Length of notes during playback
+int32_t now_leng[16] = { 0 }; //Length of notes during playback
 
 //Change frequency
-void changeNoteFrequency(int key, char track, long a)
+void changeNoteFrequency(int key, size_t track, int32_t a)
 {
 	if (key != 0xFF)
-	{
 		orgWaves[track].key = key;
-	}
 }
 
 unsigned char old_key[16] = { 255 }; //Sound during playback
 unsigned char key_on[16] = { 0 }; //Key switch
 unsigned char key_twin[16] = { 0 }; //Key used now
 
-const long double orgVolumeMin = 0.04;
-const short pan_tbl[13] = { 0,43,86,129,172,215,256,297,340,383,426,469,512 };
+constexpr long double orgVolumeMin = 0.04;
+constexpr int16_t pan_tbl[13] = { 0,43,86,129,172,215,256,297,340,383,426,469,512 };
 
-void changeNotePan(unsigned char pan, char track)
+void changeNotePan(unsigned char pan, size_t track)
 {
 	if (old_key[track] != 0xFF)
 	{
 		orgWaves[track].volume_l = 1.0f;
 		orgWaves[track].volume_r = 1.0f;
 
-		int pan_val = pan_tbl[pan];
+		const int pan_val = pan_tbl[pan];
 
 		orgWaves[track].volume_l = (512.0f - (long double)pan_val) / 256.0f;
 		orgWaves[track].volume_r = (long double)pan_val / 256.0f;
@@ -209,7 +206,7 @@ void changeNotePan(unsigned char pan, char track)
 	}
 }
 
-void changeNoteVolume(long volume, char track)
+void changeNoteVolume(int32_t volume, size_t track)
 {
 	if (old_key[track] != 0xFF)
 	{
@@ -218,9 +215,9 @@ void changeNoteVolume(long volume, char track)
 }
 
 //Play note
-void playOrganyaNote(int key, int mode, char track, long freq)
+void playOrganyaNote(int key, int noteMode, size_t track, int32_t freq)
 {
-	switch (mode)
+	switch (noteMode)
 	{
 	case -1:
 		if (old_key[track] == 0xFF) //Play
@@ -271,17 +268,17 @@ void playOrganyaNote(int key, int mode, char track, long freq)
 ///////////////////////////
 ////===ORGANYA DRUMS===////
 ///////////////////////////
-void changeDrumFrequency(int key, char track)
+void changeDrumFrequency(int key, size_t track)
 {
 	orgDrums[track].key = key;
 }
 
-void changeDrumPan(unsigned char pan, char track)
+void changeDrumPan(unsigned char pan, size_t track)
 {
 	orgDrums[track].volume_l = 1.0f;
 	orgDrums[track].volume_r = 1.0f;
 
-	int pan_val = pan_tbl[pan];
+	const int pan_val = pan_tbl[pan];
 
 	orgDrums[track].volume_l = (512.0f - (long double)pan_val) / 256.0f;
 	orgDrums[track].volume_r = (long double)pan_val / 256.0f;
@@ -290,14 +287,14 @@ void changeDrumPan(unsigned char pan, char track)
 	if (orgDrums[track].volume_r > 1.0f) orgDrums[track].volume_r = 1.0f;
 }
 
-void changeDrumVolume(long volume, char track)
+void changeDrumVolume(int32_t volume, size_t track)
 {
 	orgDrums[track].volume = orgVolumeMin + ((long double)volume / 255.0f * (1.0 - orgVolumeMin));
 }
 
-void playOrganyaDrum(int key, int mode, char track)
+void playOrganyaDrum(int key, int drumMode, size_t track)
 {
-	switch (mode) {
+	switch (drumMode) {
 	case 0: // Stop
 		orgDrums[track].playing = false;
 		orgDrums[track].pos = 0;
@@ -318,27 +315,27 @@ void playOrganyaDrum(int key, int mode, char track)
 }
 
 //Playing functions
-void organyaSetPlayPosition(long x)
+void organyaSetPlayPosition(int32_t x)
 {
 	for (int i = 0; i < 16; i++) {
 		play_np[i] = org.tdata[i].note_list;
-		while (play_np[i] != NULL && play_np[i]->x < x)
+		while (play_np[i] != nullptr && play_np[i]->x < x)
 			play_np[i] = play_np[i]->to; //Set notes to watch
 	}
 
 	play_p = x;
 }
 
-void organyaPlayStep(void)
+void organyaPlayStep()
 {
 	//char str[10];
 	//char oldstr[10];
-	char end_cnt = 16;
+	//char end_cnt = 16;
 
 	//Melody playback
 	for (int i = 0; i < 8; i++)
 	{
-		if (play_np[i] != NULL && play_p == play_np[i]->x) //The sound came.
+		if (play_np[i] != nullptr && play_p == play_np[i]->x) //The sound came.
 		{
 			if (play_np[i]->y != 0xFF) {
 				playOrganyaNote(play_np[i]->y, -1, i, org.tdata[i].freq);
@@ -354,7 +351,7 @@ void organyaPlayStep(void)
 		}
 
 		if (now_leng[i] == 0)
-			playOrganyaNote(NULL, 2, i, org.tdata[i].freq);
+			playOrganyaNote(0, 2, i, org.tdata[i].freq);
 
 		if (now_leng[i] > 0)now_leng[i]--;
 	}
@@ -362,7 +359,7 @@ void organyaPlayStep(void)
 	//Drum playback
 	for (int i = 8; i < 16; i++)
 	{
-		if (play_np[i] != NULL && play_p == play_np[i]->x) //The sound came.
+		if (play_np[i] != nullptr && play_p == play_np[i]->x) //The sound came.
 		{
 			if (play_np[i]->y != 0xFF)
 				playOrganyaDrum(play_np[i]->y, 1, i - 8);
@@ -406,7 +403,6 @@ void loadOrganya(const char *name)
 
 	//Password check
 	char passCheck[6];
-	bool pass = false;
 
 	SDL_RWread(fp, &passCheck[0], sizeof(char), 6);
 	
@@ -419,34 +415,34 @@ void loadOrganya(const char *name)
 		org.repeat_x = SDL_ReadLE32(fp);
 		org.end_x = SDL_ReadLE32(fp);
 
-		for (int i = 0; i < 16; i++) {
-			org.tdata[i].freq = SDL_ReadLE16(fp);
-			org.tdata[i].wave_no = SDL_ReadU8(fp);
-			org.tdata[i].pipi = SDL_ReadU8(fp);
-			org.tdata[i].note_num = SDL_ReadLE16(fp);
+		for (auto& i : org.tdata) {
+			i.freq = SDL_ReadLE16(fp);
+			i.wave_no = SDL_ReadU8(fp);
+			i.pipi = SDL_ReadU8(fp);
+			i.note_num = SDL_ReadLE16(fp);
 
 			if (!memcmp(passCheck, "Org-01", 6))
-				org.tdata[i].pipi = 0;
+				i.pipi = 0;
 		}
 
 		//Load notes
-		for (int i = 0; i < 16; i++)
+		for (auto& i : org.tdata)
 		{
 			//Check if there are no notes to load
-			if (org.tdata[i].note_num == 0)
+			if (i.note_num == 0)
 			{
-				org.tdata[i].note_list = NULL;
+				i.note_list = nullptr;
 				continue;
 			}
 
 			//Load the notes
-			np = org.tdata[i].note_p;
-			org.tdata[i].note_list = org.tdata[i].note_p;
-			np->from = NULL;
+			np = i.note_p;
+			i.note_list = i.note_p;
+			np->from = nullptr;
 			np->to = (np + 1);
 			np++;
 
-			for (int j = 1; j < org.tdata[i].note_num; j++) {
+			for (size_t j = 1; j < i.note_num; j++) {
 				np->from = (np - 1);
 				np->to = (np + 1);
 				np++;
@@ -454,35 +450,35 @@ void loadOrganya(const char *name)
 
 			//The last note to is NULL
 			np--;
-			np->to = NULL;
+			np->to = nullptr;
 
 			//Substitute content
-			np = org.tdata[i].note_p; //X coordinate
-			for (int j = 0; j < org.tdata[i].note_num; j++) {
+			np = i.note_p; //X coordinate
+			for (size_t j = 0; j < i.note_num; j++) {
 				np->x = SDL_ReadLE32(fp);
 				np++;
 			}
 
-			np = org.tdata[i].note_p; //Y coordinate
-			for (int j = 0; j < org.tdata[i].note_num; j++) {
+			np = i.note_p; //Y coordinate
+			for (size_t j = 0; j < i.note_num; j++) {
 				np->y = SDL_ReadU8(fp);
 				np++;
 			}
 
-			np = org.tdata[i].note_p; //Length
-			for (int j = 0; j < org.tdata[i].note_num; j++) {
+			np = i.note_p; //Length
+			for (size_t j = 0; j < i.note_num; j++) {
 				np->length = SDL_ReadU8(fp);
 				np++;
 			}
 
-			np = org.tdata[i].note_p; //Volume
-			for (int j = 0; j < org.tdata[i].note_num; j++) {
+			np = i.note_p; //Volume
+			for (size_t j = 0; j < i.note_num; j++) {
 				np->volume = SDL_ReadU8(fp);
 				np++;
 			}
 
-			np = org.tdata[i].note_p; //Panning
-			for (int j = 0; j < org.tdata[i].note_num; j++) {
+			np = i.note_p; //Panning
+			for (int j = 0; j < i.note_num; j++) {
 				np->pan = SDL_ReadU8(fp);
 				np++;
 			}
@@ -501,8 +497,8 @@ void loadOrganya(const char *name)
 		for (int wave = 0; wave < 8; wave++)
 		{
 			SDL_RWseek(rawWave100, 0x100 * org.tdata[wave].wave_no, 0);
-			for (int sample = 0; sample < 0x100; sample++)
-				orgWaves[wave].wave[sample] = SDL_ReadU8(rawWave100);
+			for (auto& sample : orgWaves[wave].wave)
+				sample = SDL_ReadU8(rawWave100);
 		}
 
 		SDL_RWclose(rawWave100);
@@ -579,28 +575,24 @@ const char *orgFolder = "data/Org/";
 
 void changeOrg(const uint32_t num)
 {
-	char path[64];
 	if (num == currentOrg)
 		return;
 	prevOrg = currentOrg;
 	prevOrgPos = play_p;
 	currentOrg = num;
-	strcpy(path, orgFolder);
-	strcat(path, musicList[num].c_str());
-	loadOrganya(path);
+	string path(orgFolder + musicList[num]);
+	loadOrganya(path.c_str());
 }
 
 void resumeOrg()
 {
-	char path[64];
 	Uint32 temp = 0;
 	temp = currentOrg;
 	currentOrg = prevOrg;
 	prevOrg = temp;
-	strcpy(path, orgFolder);
-	strcat(path, musicList[currentOrg].c_str());
+	string path(orgFolder + musicList[currentOrg]);
 	temp = play_p;
-	loadOrganya(path);
+	loadOrganya(path.c_str());
 	organyaSetPlayPosition(prevOrgPos);
 	prevOrgPos = temp;
 }

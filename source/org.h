@@ -6,7 +6,7 @@ struct NOTELIST {
 	NOTELIST *from; //Previous address
 	NOTELIST *to; //Next address
 
-	long x; //Position
+	int32_t x; //Position
 	unsigned char length; //Sound length
 	unsigned char y; //Sound height
 	unsigned char volume; //Volume
@@ -15,9 +15,9 @@ struct NOTELIST {
 
 //Track data * 8
 struct TRACKDATA{
-	unsigned short freq; //Frequency (1000 is default)
+	uint16_t freq; //Frequency (1000 is default)
 	unsigned char wave_no; //Waveform No.
-	unsigned short note_num; //Number of notes
+	uint16_t note_num; //Number of notes
 	char pipi;
 
 	NOTELIST *note_p;
@@ -26,12 +26,12 @@ struct TRACKDATA{
 
 //Unique information held in songs
 struct MUSICINFO {
-	unsigned short wait;
+	uint16_t wait;
 	unsigned char line; //Number of lines in one measure
 	unsigned char dot; //Number of dots per line
-	unsigned short alloc_note; //Number of allocated notes
-	long repeat_x; //Repeat
-	long end_x; //End of song (Return to repeat)
+	uint16_t alloc_note; //Number of allocated notes
+	int32_t repeat_x; //Repeat
+	int32_t end_x; //End of song (Return to repeat)
 	int samples;
 	TRACKDATA tdata[16];
 };
