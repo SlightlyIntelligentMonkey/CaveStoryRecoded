@@ -5,6 +5,7 @@
 #include "filesystem.h"
 #include "mathUtils.h"
 
+#include <string>
 #include <vector>
 #include <memory>
 #include <cmath>
@@ -13,12 +14,13 @@
 #include <cstring>
 #include <SDL.h>
 
-#include <string>
+using std::string;
+using std::vector;
 
 WAVE orgWaves[8];
 DRUM orgDrums[8];
 
-std::vector<std::string> musicList;
+vector<string> musicList;
 
 MUSICINFO org;
 Uint32 currentOrg = 0;
@@ -157,7 +159,7 @@ void mixOrg(uint8_t *stream, int len)
 // Load musicList from musicList.txt
 void loadMusicList(const char *path)
 {
-	musicList = getLinesFromFile((char*)path);
+	musicList = getLinesFromFile(path);
 }
 
 void initOrganya()

@@ -2,9 +2,7 @@
 #include "common.h"
 #include <vector>
 #include <string>
-#include <fstream>
 
-std::vector<std::string> getLinesFromFile(char *path);
 uint16_t readLEshort(const uint8_t *data, size_t offset) attrPure;
 uint32_t readLElong(const uint8_t *data, size_t offset) attrPure;
 
@@ -18,3 +16,5 @@ int writeFile(const char *name, const void *data, size_t amount) noexcept;
 
 void loadProfile();
 void saveProfile();
+
+std::vector<std::string> getLinesFromFile(std::string fileName);

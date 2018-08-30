@@ -2,6 +2,7 @@
 #include "org.h"
 #include "input.h"
 #include "filesystem.h"
+#include "stdUtils.h"
 
 #include <vector>
 #include <string>
@@ -10,6 +11,8 @@
 #include <cstdlib>
 #include <cstdio>
 #include <SDL.h>
+
+using std::string;
 
 //Variable things
 SDL_AudioDeviceID soundDev;
@@ -119,7 +122,7 @@ std::vector<long double> getNumbersFromString(char *string)
 	return numbers;
 }
 
-void loadSound(char *path)
+void loadSound(const char *path)
 {
 	std::vector<std::string> lines = getLinesFromFile(path);
 
@@ -135,20 +138,15 @@ void loadSound(char *path)
 	}
 }
 
-const char *hexNibble[16] = {"0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "A", "B", "C", "D", "E", "F"};
 void loadSounds()
 {
-	for (int n1 = 0; n1 < 16; n1++)
+	for (size_t s = 0; s < 0x80; s++)
 	{
-		for (int n2 = 0; n2 < 16; n2++)
-		{
-			char path[0x100];
-			sprintf(path, "data/Sound/%s%s.pxt", hexNibble[n1], hexNibble[n2]);
+		string path = "data/Sound/" + hexToString(s) + ".wav";
 
-			if (fileExists(path))
-			{
-				loadSound(path);
-			}
+		if (fileExists(path.c_str()))
+		{
+			loadSound(path.c_str());
 		}
 	}
 }

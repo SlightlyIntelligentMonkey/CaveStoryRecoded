@@ -250,6 +250,7 @@
     <ClCompile Include="fireball.cpp" />
     <ClCompile Include="spurShoot.cpp" />
     <ClCompile Include="stageSelect.cpp" />
+    <ClCompile Include="stdUtils.cpp" />
     <ClCompile Include="valueview.cpp" />
     <ClCompile Include="weapons.cpp" />
   </ItemGroup>
@@ -275,6 +276,7 @@
     <ClInclude Include="script.h" />
     <ClInclude Include="shootFunctions.h" />
     <ClInclude Include="spur.h" />
+    <ClInclude Include="stdUtils.h" />
     <ClInclude Include="valueview.h" />
     <ClInclude Include="weapons.h" />
     <ClInclude Include="hud.h" />
