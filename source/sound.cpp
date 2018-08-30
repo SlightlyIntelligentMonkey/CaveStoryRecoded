@@ -145,9 +145,7 @@ void loadSounds()
 		string path = "data/Sound/" + hexToString(s) + ".wav";
 
 		if (fileExists(path.c_str()))
-		{
 			loadSound(path.c_str());
-		}
 	}
 }
 
