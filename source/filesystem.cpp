@@ -65,10 +65,10 @@ void writeLElong(uint8_t *data, uint32_t input, size_t offset)
 }
 
 //Loading and writing functions
-bool fileExists(const char *name) noexcept
+bool fileExists(const string& name) noexcept
 {
 	struct stat buffer;
-	return (stat(name, &buffer) == 0);
+	return (stat(name.c_str(), &buffer) == 0);
 }
 
 int loadFile(const char *name, uint8_t **data)

@@ -20,12 +20,14 @@ OBJS := $(addprefix obj/, $(addsuffix .o, $(MAIN)))
 all: bin/CaveStoryRemake
 
 bin/CaveStoryRemake: $(OBJS)
+	@mkdir -p $(@D)
 	$(LINK_CPP) $(OBJS) -lmingw32 -lSDL2Main -lSDL2.dll -lSDL2_image.dll -o $@
 # Remove -lmingw32 for actual Unix build maybe ? Also prolly remove the ".dll"s at the end of SDL2.dll and SDL2_image.dll
 
 # general compile
 
 obj/%.o: source/%.cpp
+	@mkdir -p $(@D)
 	$(COMPILE_CPP) $^ -o $@
 
 # cleanup

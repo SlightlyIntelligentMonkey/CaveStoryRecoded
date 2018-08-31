@@ -129,10 +129,17 @@ int init()
 
 int main(int /*argc*/, char ** /*argv*/) // TDB : Do something with command-line parameters
 {
-	init();
+	try
+	{
+		init();
 
-	mainGameLoop();
+		mainGameLoop();
 
-	doQuit();
-	return 0;
+		doQuit();
+		return 0;
+	}
+	catch (const std::exception& e)
+	{
+		doCustomError(e.what());
+	}
 }

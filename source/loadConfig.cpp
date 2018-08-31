@@ -2,6 +2,7 @@
 
 #include "game.h"
 #include "org.h"
+#include "filesystem.h"
 
 #include <string>
 #include <fstream>
@@ -15,9 +16,9 @@ const string baseJsonFolder = "data/Config/";
 
 json loadJsonFromFile(const string& path)
 {
-	ifstream file(path);
-	if (file.bad())
+	if (!fileExists(path))
 		return json();
+	ifstream file(path);
 	json j;
 	file >> j;
 	return j;
