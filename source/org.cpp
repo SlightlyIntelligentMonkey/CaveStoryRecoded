@@ -27,6 +27,8 @@ Uint32 currentOrg = 0;
 Uint32 prevOrg = 0;
 Uint32 prevOrgPos = 0;
 
+bool disableOrg = true;
+
 void organyaAllocNote(uint16_t alloc)
 {
 	for (auto& j : org.tdata) {
@@ -413,6 +415,8 @@ void organyaPlayStep()
 //Load function
 void loadOrganya(const char *name)
 {
+	if (disableOrg)
+		return;
 	SDL_PauseAudioDevice(soundDev, -1);
 
 	NOTELIST *np;

@@ -4,6 +4,17 @@
 #include "sound.h"
 #include "mathUtils.h"
 
+void npcAct041(npc * NPC) // Busted doorway
+{
+	if (!NPC->act_no)
+	{
+		++NPC->act_no;
+		NPC->y -= 0x2000;
+	}
+
+	NPC->rect = { 0, 80, 48, 112 };
+}
+
 void npcAct042(npc *NPC) // Sue
 {
 	RECT rcLeft[13];
@@ -280,6 +291,19 @@ void npcAct042(npc *NPC) // Sue
 		NPC->rect = rcLeft[NPC->ani_no];
 	else
 		NPC->rect = rcRight[NPC->ani_no];
+}
+
+void npcAct043(npc * NPC) // Blackboard
+{
+	if (!NPC->act_no)
+	{
+		NPC->act_no = 1;
+		NPC->y -= 0x2000;
+	}
+	if (NPC->direct != dirLeft)
+		NPC->rect = { 168, 80, 208, 112 };
+	else
+		NPC->rect = { 128, 80, 168, 112 };
 }
 
 void npcAct046(npc *NPC) //H/V trigger
@@ -598,3 +622,4 @@ void npcAct059(npc *NPC) //Eye door
 
 	NPC->rect = { setRect->left, setRect->top, setRect->right, setRect->bottom };
 }
+

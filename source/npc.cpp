@@ -7,6 +7,7 @@
 #include "render.h"
 #include "sound.h"
 #include "flags.h"
+#include "game.h"
 
 #include <deque>
 #include <string>

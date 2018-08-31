@@ -8,6 +8,7 @@
 #include "sound.h"
 #include "caret.h"
 #include "bullet.h"
+#include "game.h"
 
 using std::memset;
 using std::string;

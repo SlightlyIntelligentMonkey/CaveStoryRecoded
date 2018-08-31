@@ -71,6 +71,8 @@ extern uint32_t currentOrg;
 void changeOrg(const uint32_t num);
 void resumeOrg();
 
+extern bool disableOrg;
+
 enum musics
 {
 	mus_Silence = 0x0,

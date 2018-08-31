@@ -4,6 +4,7 @@
 #include <cstring>
 #include <cmath>
 #include "render.h"
+#include "game.h"
 
 using std::memset;
 using std::abs;

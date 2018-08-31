@@ -8,15 +8,15 @@
 #include "npc100.h"
 #include "npc120.h"
 #include "npc140.h"
-
+#include "npc160.h"
 #include "npc180.h"
 #include "npc200.h"
 #include "npc220.h"
 #include "npc240.h"
-
+#include "npc260.h"
 #include "npc280.h"
 #include "npc300.h"
-
+#include "npc320.h"
 #include "npc340.h"
 
 npcAct npcActs[361] =
@@ -59,12 +59,12 @@ npcAct npcActs[361] =
 	&npcActNone,
 	&npcActNone,
 	&npcAct037,
-	&npcActNone,
+	&npcAct038,
 	&npcAct039,
 	&npcActNone,
-	&npcActNone,
+	&npcAct041,
 	&npcAct042,
-	&npcActNone,
+	&npcAct043,
 	&npcActNone,
 	&npcActNone,
 	&npcAct046,
@@ -89,7 +89,7 @@ npcAct npcActs[361] =
 	&npcAct065,
 	&npcAct066,
 	&npcAct067,
-	&npcActNone,
+	&npcAct068,
 	&npcActNone,
 	&npcAct070,
 	&npcAct071,
@@ -299,7 +299,7 @@ npcAct npcActs[361] =
 	&npcActNone,
 	&npcActNone,
 	&npcActNone,
-	&npcActNone,
+	&npcAct278,
 	&npcActNone,
 	&npcActNone,
 	&npcActNone,

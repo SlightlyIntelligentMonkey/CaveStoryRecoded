@@ -9,7 +9,7 @@ ALL_LDFLAGS = -static `sdl2-config --static-libs` $(LDFLAGS)
 LIBS = 
 ALL_LIBS = -lSDL2_image -ljpeg -lpng -lwebp -lz -ltiff -llzma $(LIBS)
 
-MAIN := bullet bulletCollision caret fade filesystem fireball fireballShoot flags game hud input inventory level main mathUtils
+MAIN := bullet bulletCollision caret fade filesystem fireball fireballShoot flags game hud input inventory level loadConfig main mathUtils
 MAIN += npc npcAct npcCollision org player playerCollision polarStar polarStarShoot
 MAIN += render script sound spur spurShoot stageSelect stdUtils valueview weapons
 

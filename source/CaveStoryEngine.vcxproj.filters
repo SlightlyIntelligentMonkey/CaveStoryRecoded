@@ -201,6 +201,18 @@
     <ClCompile Include="stdUtils.cpp">
       <Filter>Source Files\modules</Filter>
     </ClCompile>
+    <ClCompile Include="loadConfig.cpp">
+      <Filter>Source Files\modules</Filter>
+    </ClCompile>
+    <ClCompile Include="npc320.cpp">
+      <Filter>Source Files\classes\npc\act</Filter>
+    </ClCompile>
+    <ClCompile Include="npc160.cpp">
+      <Filter>Source Files\classes\npc\act</Filter>
+    </ClCompile>
+    <ClCompile Include="npc260.cpp">
+      <Filter>Source Files\classes\npc\act</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="level.h">
@@ -334,6 +346,18 @@
     </ClInclude>
     <ClInclude Include="stdUtils.h">
       <Filter>Source Files\modules</Filter>
+    </ClInclude>
+    <ClInclude Include="loadConfig.h">
+      <Filter>Source Files\modules</Filter>
+    </ClInclude>
+    <ClInclude Include="npc320.h">
+      <Filter>Source Files\classes\npc\act</Filter>
+    </ClInclude>
+    <ClInclude Include="npc260.h">
+      <Filter>Source Files\classes\npc\act</Filter>
+    </ClInclude>
+    <ClInclude Include="npc160.h">
+      <Filter>Source Files\classes\npc\act</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

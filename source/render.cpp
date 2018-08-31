@@ -2,6 +2,7 @@
 #include "common.h"
 
 #include <SDL_image.h>
+#include "game.h"
 
 SDL_Rect drawRectangle = { 0, 0, 0, 0 };
 SDL_Rect cliprect = { 0, 0, 0, 0 };

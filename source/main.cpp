@@ -1,5 +1,6 @@
 #include "common.h"
 
+#include <string>
 #include <SDL_image.h>
 #include "sound.h"
 #include "script.h"
@@ -7,6 +8,9 @@
 #include "player.h"
 #include "render.h"
 #include "game.h"
+#include "loadConfig.h"
+
+using std::string;
 
 //Rendering and view related variables
 SDL_Window *window;
@@ -44,9 +48,9 @@ void doError() noexcept
 	exit(EXIT_FAILURE);
 }
 
-void doCustomError(const char *msg) noexcept
+void doCustomError(const string& msg) noexcept
 {
-	SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Critical Error", msg, nullptr);
+	SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Critical Error", msg.c_str(), nullptr);
 	doQuit();
 	exit(EXIT_FAILURE);
 }
@@ -86,6 +90,8 @@ void loadInitialSprites()
 
 }
 
+constexpr bool useExperimentalJsonLoading = true;
+
 int init()
 {
 	//Initiate SDL and window stuff
@@ -95,6 +101,9 @@ int init()
 	//Initiate SDL_image
 	if (!(IMG_Init(IMG_INIT_PNG) & IMG_INIT_PNG))
 		doCustomError("Couldn't initiate SDL Image");
+
+	if (useExperimentalJsonLoading)
+		loadConfigFiles();
 
 	// TBD : Load config data, initialise keybinds and screen resolution based on it
 	// TBD : Init joypad

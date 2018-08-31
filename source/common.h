@@ -1,6 +1,7 @@
 #pragma once
 
 #include <cstdint>
+#include <string>
 
 struct RECT
 {
@@ -12,26 +13,13 @@ struct POINT
 	int32_t x, y;
 };
 
-//Debug flags
-extern int debugFlags;
-
-enum debugFlagsEnum
-{
-	showSlots = 0x01,
-	showNPCId = 0x02,
-	showBULId = 0x04,
-	showCARId = 0x08,
-	notifyOnNotImplemented = 0x10,
-	showNPCHealth = 0x20,
-};
-
 //Enums
 enum Collisions
 {
-	leftWall = 0b0001, //Touching a left wall
-	ceiling = 0b0010, //Touching a ceiling
-	rightWall = 0b0100, //Touching a right wall
-	ground = 0b1000, //Touching the ground
+	leftWall = 0x1, //Touching a left wall
+	ceiling = 0x2, //Touching a ceiling
+	rightWall = 0x4, //Touching a right wall
+	ground = 0x8, //Touching the ground
 	slopeRight = 0x10, //On a slope that goes up to the right (used to keep Quote on the slope)
 	slopeLeft = 0x20, //On a slope that goes up to the left (used to keep Quote on the slope)
 	water = 0x100, //In water
@@ -56,19 +44,6 @@ enum Direction
 	dirCenter,
 };
 
-//Struct
-struct VIEW
-{
-	int x;
-	int y;
-	int *lookX;
-	int *lookY;
-	int speed;
-
-	int quake;
-	int quake2;
-};
-
 struct SDL_Window;
 struct SDL_Renderer;
 struct SDL_Rect;
@@ -81,8 +56,6 @@ extern SDL_Renderer *renderer;
 
 extern SDL_Rect DrawRect;
 extern SDL_Rect ImageRect;
-
-extern VIEW viewport;
 
 extern SDL_Texture* sprites[40];
 
@@ -100,7 +73,7 @@ extern int gameFlags;
 
 //Functions
 [[noreturn]] void doError() noexcept;
-[[noreturn]] void doCustomError(const char *msg) noexcept;
+[[noreturn]] void doCustomError(const std::string& msg) noexcept;
 
 //Macros
 #ifdef __GNUC__

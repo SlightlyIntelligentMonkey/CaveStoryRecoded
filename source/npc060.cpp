@@ -3,6 +3,7 @@
 #include "mathUtils.h"
 #include "player.h"
 #include "sound.h"
+#include "game.h"
 
 void npcAct060(npc *NPC) //Toroko
 {
@@ -1042,6 +1043,220 @@ void npcAct067(npc *NPC) //Misery floating
 		NPC->rect.bottom += ++NPC->ani_wait / 2 - 16;
 }
 
+void npcAct068(npc * NPC) // Balrog, Running (boss)
+{
+	enum
+	{
+		initial = 0,
+		runTowardsQuote = 2,
+		jump = 4,
+		slowDown = 9,
+		caughtQuote = 10,
+		throwQuote = 20,
+	};
+
+	switch (NPC->act_no)
+	{
+	case initial:
+		NPC->act_no = initial + 1;
+		NPC->ani_no = 0;
+		NPC->act_wait = 20;
+
+		// Face player
+		if (NPC->x <= currentPlayer.x)
+			NPC->direct = dirRight;
+		else
+			NPC->direct = dirLeft;
+		// Fallthrough
+	case initial + 1:
+		if (!--NPC->act_wait)
+		{
+			NPC->act_no = 2;
+			++NPC->count1;
+		}
+		break;
+
+	case runTowardsQuote:
+		NPC->act_no = runTowardsQuote + 1;
+		NPC->act_wait = 0;
+		NPC->ani_no = 1;
+		NPC->ani_wait = 0;
+		// Fallthrough
+	case runTowardsQuote + 1:
+		if (++NPC->ani_wait > 3)
+		{
+			NPC->ani_wait = 0;
+			if (++NPC->ani_no == 2 || NPC->ani_no == 4)
+				playSound(SFX_QuoteHitGround);
+		}
+		if (NPC->ani_no > 4)
+			NPC->ani_no = 1;
+
+		if (NPC->direct != dirLeft)
+			NPC->xm += 0x10;
+		else
+			NPC->xm -= 0x10;
+
+		if (NPC->act_wait < 8
+			|| NPC->x - 0x1800 >= currentPlayer.x
+			|| NPC->x + 0x1800 <= currentPlayer.x
+			|| NPC->y - 0x1800 >= currentPlayer.y
+			|| NPC->y + 0x1800 <= currentPlayer.y)
+		{
+			++NPC->act_wait;
+			if (NPC->flag & (rightWall | leftWall) || NPC->act_wait > 75)
+			{
+				NPC->act_no = slowDown;
+				NPC->ani_no = 0;
+			}
+			else if (!(NPC->count1 % 3) && NPC->act_wait > 25)
+			{
+				NPC->act_no = jump;
+				NPC->ani_no = 7;
+				NPC->ym = -0x400;
+			}
+		}
+		else
+		{
+			NPC->act_no = caughtQuote;
+			NPC->ani_no = 5;
+			currentPlayer.cond |= player_removed;
+			currentPlayer.damage(2);
+		}
+		break;
+
+	case jump:
+		if (NPC->flag & ground)
+		{
+			NPC->act_no = slowDown;
+			NPC->ani_no = 8;
+			viewport.quake = 30;
+			playSound(SFX_LargeObjectHitGround);
+		}
+
+		if (NPC->act_wait >= 8
+			&& NPC->x - 0x1800 < currentPlayer.x
+			&& NPC->x + 0x1800 > currentPlayer.x
+			&& NPC->y - 0x1800 < currentPlayer.y
+			&& NPC->y + 0x1800 > currentPlayer.y)
+		{
+			NPC->act_no = caughtQuote;
+			NPC->ani_no = 5;
+			currentPlayer.cond |= player_removed;
+			currentPlayer.damage(2);
+		}
+		break;
+
+	case slowDown:
+		NPC->xm = (4 * NPC->xm) / 5;
+		if (!NPC->xm)
+			NPC->act_no = initial;
+		break;
+
+	case caughtQuote:
+		currentPlayer.x = NPC->x;
+		currentPlayer.y = NPC->y;
+		NPC->xm = (4 * NPC->xm) / 5;
+
+		if (!NPC->xm)
+		{
+			NPC->act_no = caughtQuote + 1;
+			NPC->act_wait = 0;
+			NPC->ani_no = 5;
+			NPC->ani_wait = 0;
+		}
+		break;
+
+	case caughtQuote + 1:
+		currentPlayer.x = NPC->x;
+		currentPlayer.y = NPC->y;
+
+		if (++NPC->ani_wait > 2)
+		{
+			NPC->ani_wait = 0;
+			++NPC->ani_no;
+		}
+		if (NPC->ani_no > 6)
+			NPC->ani_no = 5;
+
+		if (++NPC->act_wait > 100)
+			NPC->act_no = throwQuote;
+		break;
+
+	case throwQuote:
+		playSound(SFX_SillyExplosion);
+		currentPlayer.cond &= ~player_removed;
+
+		if (NPC->direct != dirLeft)
+		{
+			currentPlayer.x -= 0x800;
+			currentPlayer.y -= 0x1000;
+			currentPlayer.xm = -0x5FF;
+			currentPlayer.ym = -0x200;
+			currentPlayer.direct = dirLeft;
+			NPC->direct = dirLeft;
+		}
+		else
+		{
+			currentPlayer.x += 0x800;
+			currentPlayer.y -= 0x1000;
+			currentPlayer.xm = 0x5FF;
+			currentPlayer.ym = -0x200;
+			currentPlayer.direct = dirLeft;
+			NPC->direct = dirLeft;
+		}
+
+		NPC->act_no = throwQuote + 1;
+		NPC->act_wait = 0;
+		NPC->ani_no = 7;
+		// Fallthrough
+
+	case throwQuote + 1:
+		if (++NPC->act_wait >= 50)
+			NPC->act_no = initial;
+		break;
+
+	default:
+		break;
+	}
+
+	NPC->ym += 0x20;
+	if (NPC->xm < -0x400)
+		NPC->xm = -0x400;
+	if (NPC->xm > 0x400)
+		NPC->xm = 0x400;
+	if (NPC->ym > 0x5FF)
+		NPC->ym = 0x5FF;
+	NPC->x += NPC->xm;
+	NPC->y += NPC->ym;
+
+	RECT rcLeft[9];
+	RECT rcRight[9];
+	rcLeft[0] = { 0, 0, 40, 24 };
+	rcLeft[1] = { 0, 48, 40, 72 };
+	rcLeft[2] = rcLeft[0];
+	rcLeft[3] = { 40, 48, 80, 72 };
+	rcLeft[4] = rcLeft[0];
+	rcLeft[5] = { 80, 48, 120, 72 };
+	rcLeft[6] = { 120, 48, 160, 72 };
+	rcLeft[7] = { 120, 0, 160, 24 };
+	rcLeft[8] = { 80, 0, 120, 24 };
+	rcRight[0] = { 0, 24, 40, 48 };
+	rcRight[1] = { 0, 72, 40, 96 };
+	rcRight[2] = rcRight[0];
+	rcRight[3] = { 40, 72, 80, 96 };
+	rcRight[4] = rcRight[0];
+	rcRight[5] = { 80, 72, 120, 96 };
+	rcRight[6] = { 120, 72, 160, 96 };
+	rcRight[7] = { 120, 24, 160, 48 };
+	rcRight[8] = { 80, 24, 120, 48 };
+
+	if (NPC->direct == dirLeft)
+		NPC->rect = rcLeft[NPC->ani_no];
+	else
+		NPC->rect = rcRight[NPC->ani_no];
+};
+
 void npcAct070(npc * NPC) // Sparkling Item
 {
 	constexpr RECT rcNPC[4] = { {96, 48, 112, 64}, {112, 48, 128, 64}, {128, 48, 144, 64}, {144, 48, 160, 64} };
@@ -1377,4 +1592,5 @@ void npcAct079(npc *NPC) // Mahin
 	else
 		NPC->rect = rcRight[NPC->ani_no];
 }
+
 

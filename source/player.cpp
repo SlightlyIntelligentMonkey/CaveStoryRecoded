@@ -8,6 +8,7 @@
 #include "sound.h"
 #include "mathUtils.h"
 #include "valueview.h"
+#include "game.h"
 
 #include <cstring>
 
