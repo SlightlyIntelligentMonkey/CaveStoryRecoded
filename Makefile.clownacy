@@ -24,4 +24,4 @@ obj/%.o: source/%.cpp
 	@$(CXX) $(CXXFLAGS) $^ -o $@ -c
 
 clean:
-	rm obj/*
+	rm -rf obj bin
