@@ -2,6 +2,35 @@
 
 #include "sound.h"
 
+void npcAct125(npc *NPC) //Hidden item
+{
+	if (NPC->life <= 989)
+	{
+		createSmoke(NPC->x, NPC->y, NPC->view.right, 8);
+		playSound(70);
+		if (NPC->direct)
+			createNpc(86, NPC->x, NPC->y, 0, 0, 2, nullptr);
+		else
+			createNpc(87, NPC->x, NPC->y, 0, 0, 2, nullptr);
+		NPC->cond = 0;
+	}
+
+	if (NPC->direct)
+	{
+		NPC->rect.left = 16;
+		NPC->rect.top = 96;
+		NPC->rect.right = 32;
+	}
+	else
+	{
+		NPC->rect.left = 0;
+		NPC->rect.top = 96;
+		NPC->rect.right = 16;
+	}
+
+	NPC->rect.bottom = 112;
+}
+
 void npcAct129(npc *NPC) //Fireball Level 1/2 trail
 {
 	RECT rect[18];

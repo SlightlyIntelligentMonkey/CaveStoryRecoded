@@ -3,7 +3,7 @@ WARNINGS = -pedantic -Wall -Wextra -Wno-multichar -Wno-unused-parameter
 OPTIMISATIONS = -Ofast -flto -frename-registers -funroll-loops
 
 CXXFLAGS = $(OPTIMISATIONS) $(WARNINGS)
-ALL_CXXFLAGS = -std=c++17 `sdl2-config --cflags` -m32 $(CXXFLAGS)
+ALL_CXXFLAGS = -std=c++17 `sdl2-config --cflags` -m32 -IJson_Modern_Cpp $(CXXFLAGS)
 LDFLAGS = -s -mwindows
 ALL_LDFLAGS = -static `sdl2-config --static-libs` $(LDFLAGS)
 LIBS = 
