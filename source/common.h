@@ -16,10 +16,10 @@ struct POINT
 //Enums
 enum Collisions
 {
-	leftWall = 0b0001, //Touching a left wall
-	ceiling = 0b0010, //Touching a ceiling
-	rightWall = 0b0100, //Touching a right wall
-	ground = 0b1000, //Touching the ground
+	leftWall = 0x1, //Touching a left wall
+	ceiling = 0x2, //Touching a ceiling
+	rightWall = 0x4, //Touching a right wall
+	ground = 0x8, //Touching the ground
 	slopeRight = 0x10, //On a slope that goes up to the right (used to keep Quote on the slope)
 	slopeLeft = 0x20, //On a slope that goes up to the left (used to keep Quote on the slope)
 	water = 0x100, //In water

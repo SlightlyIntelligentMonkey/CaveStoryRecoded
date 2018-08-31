@@ -4,6 +4,17 @@
 #include "sound.h"
 #include "mathUtils.h"
 
+void npcAct041(npc * NPC) // Busted doorway
+{
+	if (!NPC->act_no)
+	{
+		++NPC->act_no;
+		NPC->y -= 0x2000;
+	}
+
+	NPC->rect = { 0, 80, 48, 112 };
+}
+
 void npcAct042(npc *NPC) // Sue
 {
 	RECT rcLeft[13];
@@ -598,3 +609,4 @@ void npcAct059(npc *NPC) //Eye door
 
 	NPC->rect = { setRect->left, setRect->top, setRect->right, setRect->bottom };
 }
+

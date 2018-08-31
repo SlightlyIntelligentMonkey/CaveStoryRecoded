@@ -1,6 +1,6 @@
 {
   "debugFlags": {
-    "showSlots": true,
+    "showSlots": false,
     "showNPCId ": false,
     "showBULId": false,
     "showCARId": false,
