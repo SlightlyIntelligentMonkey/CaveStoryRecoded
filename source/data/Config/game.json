@@ -6,5 +6,6 @@
     "showCARId": false,
     "notifyOnNotImplemented": true,
     "showNPCHealth": false
-  }
+  },
+  "millisecondsPerFrame": 20
 }

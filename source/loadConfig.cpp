@@ -1,5 +1,8 @@
 #include "loadConfig.h"
 
+#include "game.h"
+#include "org.h"
+
 #include <string>
 #include <fstream>
 #include <json.hpp>
@@ -14,7 +17,7 @@ json loadJsonFromFile(const string& path)
 {
 	ifstream file(path);
 	if (file.bad())
-		doCustomError("Could not open" + path);
+		return json();
 	json j;
 	file >> j;
 	return j;
@@ -22,7 +25,6 @@ json loadJsonFromFile(const string& path)
 
 void loadGameJson()
 {
-
 	auto jGame = loadJsonFromFile(baseJsonFolder + "game.json");
 
 	debugFlags = 0;
@@ -37,9 +39,23 @@ void loadGameJson()
 		debugFlags |= notifyOnNotImplemented;
 	if (jDbgFlgs["showNPCHealth"] == true)
 		debugFlags |= showNPCHealth;
+
+	if (jGame.count("millisecondsPerFrame"))
+		framerate = jGame["millisecondsPerFrame"];
+}
+
+void loadOrgJson()
+{
+	auto jOrg = loadJsonFromFile(baseJsonFolder + "org.json");
+
+	disableOrg = false;
+
+	if (jOrg["disableOrg"] == true)
+		disableOrg = true;
 }
 
 void loadConfigFiles()
 {
 	loadGameJson();
+	loadOrgJson();
 }

@@ -13,19 +13,6 @@ struct POINT
 	int32_t x, y;
 };
 
-//Debug flags
-extern int debugFlags;
-
-enum debugFlagsEnum
-{
-	showSlots = 0x01,
-	showNPCId = 0x02,
-	showBULId = 0x04,
-	showCARId = 0x08,
-	notifyOnNotImplemented = 0x10,
-	showNPCHealth = 0x20,
-};
-
 //Enums
 enum Collisions
 {
@@ -57,19 +44,6 @@ enum Direction
 	dirCenter,
 };
 
-//Struct
-struct VIEW
-{
-	int x;
-	int y;
-	int *lookX;
-	int *lookY;
-	int speed;
-
-	int quake;
-	int quake2;
-};
-
 struct SDL_Window;
 struct SDL_Renderer;
 struct SDL_Rect;
@@ -82,8 +56,6 @@ extern SDL_Renderer *renderer;
 
 extern SDL_Rect DrawRect;
 extern SDL_Rect ImageRect;
-
-extern VIEW viewport;
 
 extern SDL_Texture* sprites[40];
 

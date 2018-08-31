@@ -5,6 +5,7 @@
 #include "sound.h"
 #include "caret.h"
 #include "npcAct.h"
+#include "game.h"
 
 #include <string>
 #include <SDL_messagebox.h>

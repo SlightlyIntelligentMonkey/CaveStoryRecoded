@@ -1,5 +1,7 @@
 #include "npc280.h"
 
+#include "game.h"
+
 void npcAct292(npc * /*NPC*/) //Quake
 {
 	viewport.quake = 10;
