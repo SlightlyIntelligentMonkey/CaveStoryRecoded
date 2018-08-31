@@ -133,7 +133,7 @@ void npcAct231(npc *NPC) //Momorin's rocket
 	NPC->rect = rc[NPC->ani_no];
 }
 
-void npcAct234(npc * NPC)
+void npcAct234(npc * NPC) // Red Flowers, picked
 {
 	if (!NPC->act_no)
 	{
