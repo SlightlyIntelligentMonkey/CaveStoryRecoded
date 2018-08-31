@@ -68,29 +68,29 @@ void mixSounds(int16_t *stream, int len)
 {
 	for (int i = 0; i < len; i++)
 	{
-		for (int sound = 0; sound < 0x100; sound++)
+		for (auto& sound : sounds)
 		{
 			const auto waveSamples = (size_t)(22050.0 / (double)sampleRate * 4096.0);
 
-			if (sounds[sound].playing == true)
+			if (sound.playing == true)
 			{
-				sounds[sound].pos += waveSamples;
+				sound.pos += waveSamples;
 
-				if ((sounds[sound].pos >> 12) >= sounds[sound].length)
+				if ((sound.pos >> 12) >= sound.length)
 				{
-					sounds[sound].playing = false;
+					sound.playing = false;
 				}
 				else
 				{
-					const size_t s_offset_1 = sounds[sound].pos >> 12;
+					const size_t s_offset_1 = sound.pos >> 12;
 
-					const int sample1 = (sounds[sound].wave[s_offset_1] - 0x80) << 7;
+					const int sample1 = (sound.wave[s_offset_1] - 0x80) << 7;
 					int sample2 = 0;
 
-					if ((sounds[sound].pos >> 12) < sounds[sound].length - 1)
-						sample2 = (sounds[sound].wave[s_offset_1 + 1] - 0x80) << 7;
+					if ((sound.pos >> 12) < sound.length - 1)
+						sample2 = (sound.wave[s_offset_1 + 1] - 0x80) << 7;
 
-					const auto val = (int)(sample1 + (sample2 - sample1) * ((double)(sounds[sound].pos & 0xFFF) / 4096.0));
+					const auto val = (int)(sample1 + (sample2 - sample1) * ((double)(sound.pos & 0xFFF) / 4096.0));
 
 					stream[2 * i] += val * 1.333333333333333;
 					stream[2 * i + 1] += val * 1.333333333333333;
@@ -391,7 +391,7 @@ int loadSound(const char *path, size_t id)
 						if (dest[j] + pBlock[j] - 0x100 <= 0x7F)
 							pBlock[j] += dest[j] + -0x80;
 						else
-							pBlock[j] = -1;	// TBD : Remove this or make pBlock signed
+							pBlock[j] = (uint8_t)-1;
 					}
 					else
 					{
@@ -435,7 +435,6 @@ int loadSound(const char *path, size_t id)
 }
 
 const char *hexNibble[16] = {"0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "A", "B", "C", "D", "E", "F"};
-
 void loadSounds()
 {
 	memset(sounds, 0, sizeof(sounds));
@@ -451,7 +450,7 @@ void loadSounds()
 				if (loadSound(path, (n1 << 4) + n2) <= 0)
 				{
 					char error[0x100];
-					sprintf(error, "Failed to load PXT %s", path);
+					sprintf(error, "Failed to load PXT at %s", path);
 					doCustomError(error);
 				}
 			}
