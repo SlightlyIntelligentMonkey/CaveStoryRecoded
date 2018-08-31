@@ -7,6 +7,7 @@
 #include "player.h"
 #include "render.h"
 #include "game.h"
+#include "loadConfig.h"
 
 //Rendering and view related variables
 SDL_Window *window;
@@ -96,6 +97,8 @@ int init()
 	//Initiate SDL_image
 	if (!(IMG_Init(IMG_INIT_PNG) & IMG_INIT_PNG))
 		doCustomError("Couldn't initiate SDL Image");
+
+	loadConfigFiles();
 
 	// TBD : Load config data, initialise keybinds and screen resolution based on it
 	// TBD : Init joypad

@@ -165,7 +165,7 @@ void debugLevels()
 	}
 }
 
-int debugFlags = showSlots | showNPCId | showBULId | showCARId | notifyOnNotImplemented | showNPCHealth;
+int debugFlags = 0;
 
 void debugFunction()
 {
