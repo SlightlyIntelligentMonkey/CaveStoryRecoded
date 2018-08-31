@@ -2,7 +2,7 @@ WARNINGS := -pedantic -Wall -Wextra -Wabi -Walloc-zero -Wbool-compare -Wcast-ali
 
 OPTIMISATIONS := -Ofast -flto -frename-registers -funroll-loops
 
-COMPILE_C := $(CC) -m32 $(OPTIMISATIONS) $(WARNINGS) -std=c++17 -I/mingw32/include/SDL2/ -IJson_Modern_Cpp -c
+COMPILE_C := $(CC) -m32 $(OPTIMISATIONS) $(WARNINGS) -std=c11 -I/mingw32/include/SDL2/ -IJson_Modern_Cpp -c
 COMPILE_CPP := $(CXX) -m32 $(OPTIMISATIONS) $(WARNINGS) -std=c++17 -I/mingw32/include/SDL2/ -IJson_Modern_Cpp -c
 # Replace mingw32 with usr for actual Unix build
 LINK_CPP := $(CXX) -m32 $(OPTIMISATIONS) $(WARNINGS) -static -static-libstdc++ -static-libgcc -mwindows
@@ -20,7 +20,7 @@ OBJS := $(addprefix obj/, $(addsuffix .o, $(MAIN)))
 all: bin/CaveStoryRemake
 
 bin/CaveStoryRemake: $(OBJS)
-	$(LINK_CPP) $(OBJS) -lmingw32 -lSDL2Main -lSDL2.dll -lSDL2_image.dll -o bin/CaveStoryRemake
+	$(LINK_CPP) $(OBJS) -lmingw32 -lSDL2Main -lSDL2.dll -lSDL2_image.dll -o $@
 # Remove -lmingw32 for actual Unix build maybe ? Also prolly remove the ".dll"s at the end of SDL2.dll and SDL2_image.dll
 
 # general compile

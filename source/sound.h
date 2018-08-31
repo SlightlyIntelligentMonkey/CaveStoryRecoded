@@ -15,6 +15,8 @@ struct SOUND {
 	size_t pos;
 };
 
+extern SOUND sounds[0x100];
+
 //sound device things
 using SDL_AudioDeviceID = uint32_t;
 struct SDL_AudioSpec;

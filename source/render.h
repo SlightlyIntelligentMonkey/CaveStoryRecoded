@@ -13,6 +13,7 @@ enum TextureNums
 	TEX_TILESET = 2,
 	TEX_FADE = 6,
 	TEX_ITEMIMAGE = 8,
+	TEX_SCREENSHOT = 10,
 	TEX_ARMS = 11,
 	TEX_ARMSIMAGE = 12,
 	TEX_MAPNAMEBUF = 13,
@@ -32,6 +33,8 @@ enum TextureNums
 //Functions for handling the window
 int createWindow(int width, int height, int scale, bool fullscreen) noexcept;
 void switchScreenMode();
+void drawWindow();
+void captureScreen(enum TextureNums texture_id);
 
 //Load texture function
 void loadImage(const char *file, SDL_Texture **tex);

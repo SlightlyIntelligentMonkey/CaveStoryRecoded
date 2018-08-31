@@ -59,7 +59,7 @@ struct DRUM {
 	long double volume_r;
 };
 
-void mixOrg(uint8_t *stream, int len);
+void mixOrg(int16_t *stream, int len);
 
 void initOrganya();
 void loadOrganya(const char *name);
