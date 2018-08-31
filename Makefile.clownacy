@@ -3,7 +3,7 @@ WARNINGS = -pedantic -Wall -Wextra -Wno-multichar -Wno-unused-parameter
 OPTIMISATIONS = -Ofast -flto -frename-registers -funroll-loops
 
 CXXFLAGS = $(OPTIMISATIONS) $(WARNINGS) -std=c++17 `sdl2-config --cflags` -m32
-LDFLAGS = -static -mwindows `sdl2-config --static-libs` -lSDL2_image -ljpeg -lpng -lwebp -lz -ltiff -llzma
+LDFLAGS = -s -static -mwindows `sdl2-config --static-libs` -lSDL2_image -ljpeg -lpng -lwebp -lz -ltiff -llzma
 
 MAIN := bullet bulletCollision caret fade filesystem fireball fireballShoot flags game hud input inventory level main mathUtils
 MAIN += npc npcAct npcCollision org player playerCollision polarStar polarStarShoot
@@ -16,9 +16,11 @@ OBJS := $(addprefix obj/, $(addsuffix .o, $(MAIN)))
 all: bin/CaveStoryRemake
 
 bin/CaveStoryRemake: $(OBJS)
+	@mkdir -p $(@D)
 	@$(CXX) $(CXXFLAGS) $(OBJS) -o $@ $(LDFLAGS)
 
 obj/%.o: source/%.cpp
+	@mkdir -p $(@D)
 	@$(CXX) $(CXXFLAGS) $^ -o $@ -c
 
 clean:
