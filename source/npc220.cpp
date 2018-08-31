@@ -133,6 +133,20 @@ void npcAct231(npc *NPC) //Momorin's rocket
 	NPC->rect = rc[NPC->ani_no];
 }
 
+void npcAct234(npc * NPC)
+{
+	if (!NPC->act_no)
+	{
+		NPC->act_no = 1;
+		NPC->y += 0x2000;
+	}
+
+	if (NPC->direct != dirLeft)
+		NPC->rect = { 144, 112, 192, 128 };
+	else
+		NPC->rect = { 144, 96, 192, 112 };
+}
+
 void npcAct238(npc *NPC) //Killer press
 {
 	RECT rc[3];
@@ -235,3 +249,4 @@ void npcAct238(npc *NPC) //Killer press
 
 	NPC->rect = rc[NPC->ani_no];
 }
+
