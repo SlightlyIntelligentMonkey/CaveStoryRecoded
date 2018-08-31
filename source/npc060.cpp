@@ -1257,6 +1257,130 @@ void npcAct068(npc * NPC) // Balrog, Running (boss)
 		NPC->rect = rcRight[NPC->ani_no];
 }
 
+void npcAct069(npc *NPC) //Pignon
+{
+	RECT rcLeft[6];
+	RECT rcRight[6];
+
+	rcLeft[0] = { 48, 0, 64, 16 };
+	rcLeft[1] = { 64, 0, 80, 16 };
+	rcLeft[2] = { 80, 0, 96, 16 };
+	rcLeft[3] = { 96, 0, 112, 16 };
+	rcLeft[4] = { 48, 0, 64, 16 };
+	rcLeft[5] = { 112, 0, 128, 16 };
+	rcRight[0] = { 48, 16, 64, 32 };
+	rcRight[1] = { 64, 16, 80, 32 };
+	rcRight[2] = { 80, 16, 96, 32 };
+	rcRight[3] = { 96, 16, 112, 32 };
+	rcRight[4] = { 48, 16, 64, 32 };
+	rcRight[5] = { 112, 16, 128, 32 };
+
+	switch (NPC->act_no)
+	{
+	case 0:
+		NPC->act_no = 1;
+		NPC->ani_no = 0;
+		NPC->ani_wait = 0;
+		NPC->xm = 0;
+//Fallthrough
+	case 1:
+		if (random(0, 100) == 1)
+		{
+			NPC->act_no = 2;
+			NPC->act_wait = 0;
+			NPC->ani_no = 1;
+		}
+		else
+		{
+			if (random(0, 150) == 1)
+			{
+				if (NPC->direct)
+					NPC->direct = 0;
+				else
+					NPC->direct = 2;
+			}
+			if (random(0, 150) == 1)
+			{
+				NPC->act_no = 3;
+				NPC->act_wait = 50;
+				NPC->ani_no = 0;
+			}
+		}
+		break;
+
+	case 2:
+		if (++NPC->act_wait > 8)
+		{
+			NPC->act_no = 1;
+			NPC->ani_no = 0;
+		}
+		break;
+
+	case 3:
+		NPC->act_no = 4;
+		NPC->ani_no = 2;
+		NPC->ani_wait = 0;
+//Fallthrough
+	case 4:
+		if (!--NPC->act_wait)
+			NPC->act_no = 0;
+
+		if (++NPC->ani_wait > 2)
+		{
+			NPC->ani_wait = 0;
+			++NPC->ani_no;
+		}
+
+		if (NPC->ani_no > 4)
+			NPC->ani_no = 2;
+
+		if (NPC->flag & leftWall)
+		{
+			NPC->direct = 2;
+			NPC->xm = 0x200; //Overwritten right away
+		}
+
+		if (NPC->flag & rightWall)
+		{
+			NPC->direct = 0;
+			NPC->xm = -0x200; //Overwritten right away
+		}
+
+		if (NPC->direct)
+			NPC->xm = 0x100;
+		else
+			NPC->xm = -0x100;
+		break;
+
+	case 5:
+		if (NPC->flag & 8)
+			NPC->act_no = 0;
+		break;
+
+	default:
+		break;
+	}
+
+	if (NPC->act_no < 5 && (1 << NPC->act_no) & 0x16 && NPC->shock)
+	{
+		NPC->ym = -0x200;
+		NPC->ani_no = 5;
+		NPC->act_no = 5;
+	}
+
+	NPC->ym += 0x40;
+	if (NPC->ym > 0x5FF)
+		NPC->ym = 0x5FF;
+
+	NPC->x += NPC->xm;
+	NPC->y += NPC->ym;
+
+	if (NPC->direct)
+		NPC->rect = rcRight[NPC->ani_no];
+	else
+		NPC->rect = rcLeft[NPC->ani_no];
+}
+
 void npcAct070(npc * NPC) // Sparkling Item
 {
 	constexpr RECT rcNPC[4] = { {96, 48, 112, 64}, {112, 48, 128, 64}, {128, 48, 144, 64}, {144, 48, 160, 64} };
