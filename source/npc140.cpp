@@ -277,3 +277,43 @@ void npcAct150(npc *NPC) // Quote
 		NPC->rect.bottom += 32;
 	}
 }
+
+void npcAct151(npc *NPC) //Blue robot standing
+{
+	RECT rcLeft[2];
+	RECT rcRight[2];
+
+	rcLeft[0] = { 192, 0, 208, 16 };
+	rcLeft[1] = { 208, 0, 224, 16 };
+	rcRight[0] = { 192, 16, 208, 32 };
+	rcRight[1] = { 208, 16, 224, 32 };
+
+	switch (NPC->act_no)
+	{
+	case 0:
+		NPC->act_no = 1;
+		NPC->ani_no = 0;
+		NPC->ani_wait = 0;
+//Fallthrough
+	case 1:
+		if (random(0, 100) == 0)
+		{
+			NPC->act_no = 2;
+			NPC->act_wait = 0;
+			NPC->ani_no = 1;
+		}
+		break;
+
+	case 2:
+		if (++NPC->act_wait > 16)
+		{
+			NPC->act_no = 1;
+			NPC->ani_no = 0;
+		}
+	}
+
+	if (NPC->direct)
+		NPC->rect = rcRight[NPC->ani_no];
+	else
+		NPC->rect = rcLeft[NPC->ani_no];
+}
