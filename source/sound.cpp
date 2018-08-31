@@ -3,6 +3,7 @@
 #include "input.h"
 #include "filesystem.h"
 #include "stdUtils.h"
+#include "mathUtils.h"	// For M_PI definition
 
 #include <vector>
 #include <string>
@@ -209,58 +210,58 @@ std::vector<long double> getNumbersFromString(const string& str)
 
 int makePixelWaveData(std::vector<long double> pxtData, uint8_t *data)
 {
-	double currentEnvelope;
-	double currentEnvelopea;
-	double currentEnvelopeb;
-	double currentEnvelopec;
+	long double currentEnvelope;
+	long double currentEnvelopea;
+	long double currentEnvelopeb;
+	long double currentEnvelopec;
 	char envelopeTable[256];
 	
 	//Get some envelope stuff
 	memset(envelopeTable, 0, 0x100u);
-	currentEnvelope = (long double)pxtData[14];
+	currentEnvelope = pxtData[14];
 
 	size_t i = 0;
 
 	//Point A
-	currentEnvelope = (long double)pxtData[14];
+	currentEnvelope = pxtData[14];
 	while (i < pxtData[15])
 	{
 		envelopeTable[i] = (unsigned __int64)currentEnvelope;
-		currentEnvelope = ((long double)pxtData[16] - (long double)pxtData[14])
-			/ (long double)pxtData[15]
+		currentEnvelope = (pxtData[16] - pxtData[14])
+			/ pxtData[15]
 			+ currentEnvelope;
 		++i;
 	}
 
 	//Point B
-	currentEnvelopea = (long double)pxtData[16];
+	currentEnvelopea = pxtData[16];
 	while (i < pxtData[17])
 	{
 		envelopeTable[i] = (unsigned __int64)currentEnvelopea;
-		currentEnvelopea = ((long double)pxtData[18] - (long double)pxtData[16])
-			/ (long double)(pxtData[17] - pxtData[15])
+		currentEnvelopea = (pxtData[18] - pxtData[16])
+			/ (pxtData[17] - pxtData[15])
 			+ currentEnvelopea;
 		++i;
 	}
 
 	//Point C
-	currentEnvelopeb = (long double)pxtData[18];
+	currentEnvelopeb = pxtData[18];
 	while (i < pxtData[19])
 	{
 		envelopeTable[i] = (unsigned __int64)currentEnvelopeb;
-		currentEnvelopeb = ((long double)pxtData[20] - (long double)pxtData[18])
-			/ (long double)(pxtData[19] - pxtData[17])
+		currentEnvelopeb = (pxtData[20] - pxtData[18])
+			/ (pxtData[19] - pxtData[17])
 			+ currentEnvelopeb;
 		++i;
 	}
 
 	//End
-	currentEnvelopec = (long double)pxtData[20];
+	currentEnvelopec = pxtData[20];
 	while (i < 256)
 	{
 		envelopeTable[i] = (unsigned __int64)currentEnvelopec;
 		currentEnvelopec = currentEnvelopec
-			- (long double)pxtData[20] / (long double)(256 - pxtData[19]);
+			- pxtData[20] / (256 - pxtData[19]);
 		++i;
 	}
 
@@ -269,25 +270,25 @@ int makePixelWaveData(std::vector<long double> pxtData, uint8_t *data)
 	long double volumeOffset = pxtData[13];
 	
 	//Main
-	double mainFreq;
+	long double mainFreq;
 	if (pxtData[3] == 0.0)
 		mainFreq = 0.0;
 	else
-		mainFreq = 256.0 / ((long double)pxtData[1] / pxtData[3]);
+		mainFreq = 256.0 / (pxtData[1] / pxtData[3]);
 
 	//Pitch
-	double pitchFreq;
+	long double pitchFreq;
 	if (pxtData[7] == 0.0)
 		pitchFreq = 0.0;
 	else
-		pitchFreq = 256.0 / ((long double)pxtData[1] / pxtData[7]);
+		pitchFreq = 256.0 / (pxtData[1] / pxtData[7]);
 
 	//Volume
-	double volumeFreq;
+	long double volumeFreq;
 	if (pxtData[11] == 0.0)
 		volumeFreq = 0.0;
 	else
-		volumeFreq = 256.0 / ((long double)pxtData[1] / pxtData[11]);
+		volumeFreq = 256.0 / (pxtData[1] / pxtData[11]);
 
 	for (i = 0; i < pxtData[1]; ++i)
 	{
@@ -295,7 +296,7 @@ int makePixelWaveData(std::vector<long double> pxtData, uint8_t *data)
 		int v2 = (int)(uint64_t)pitchOffset % 256;
 
 		//Input data
-		data[i] = envelopeTable[(unsigned __int64)((long double)(i << 8) / (long double)pxtData[1])]
+		data[i] = envelopeTable[(unsigned __int64)((long double)(i << 8) / pxtData[1])]
 			* (pxtData[4]
 				* waveModelTable[(size_t)pxtData[2]][a]
 				/ 64
@@ -311,7 +312,7 @@ int makePixelWaveData(std::vector<long double> pxtData, uint8_t *data)
 		if (waveModelTable[(size_t)pxtData[6]][v2] >= 0)
 			newMainOffset = (mainFreq * 2)
 			* (long double)waveModelTable[(size_t)pxtData[6]][(signed int)(unsigned __int64)pitchOffset % 256]
-			* (long double)pxtData[8]
+			* pxtData[8]
 			/ 64.0
 			/ 64.0
 			+ mainFreq
@@ -321,7 +322,7 @@ int makePixelWaveData(std::vector<long double> pxtData, uint8_t *data)
 			- mainFreq
 			* 0.5
 			* (long double)-waveModelTable[(size_t)pxtData[6]][v2]
-			* (long double)pxtData[8]
+			* pxtData[8]
 			/ 64.0
 			/ 64.0
 			+ mainOffset;
@@ -392,7 +393,7 @@ int loadSound(const char *path, size_t id)
 						if (dest[j] + pBlock[j] - 0x100 <= 0x7F)
 							pBlock[j] += dest[j] + -0x80;
 						else
-							pBlock[j] = -1;
+							pBlock[j] = -1;	// TBD : Remove this or make pBlock signed
 					}
 					else
 					{
