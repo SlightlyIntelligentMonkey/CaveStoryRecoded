@@ -1255,7 +1255,7 @@ void npcAct068(npc * NPC) // Balrog, Running (boss)
 		NPC->rect = rcLeft[NPC->ani_no];
 	else
 		NPC->rect = rcRight[NPC->ani_no];
-};
+}
 
 void npcAct070(npc * NPC) // Sparkling Item
 {
