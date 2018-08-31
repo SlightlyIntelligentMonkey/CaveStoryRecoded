@@ -123,32 +123,62 @@ void mixOrg(uint8_t *stream, int len)
 		}
 
 		//Play Drums
-		for (auto& wave : orgDrums)
+		for (int wave = 0; wave < 8; wave++)
 		{
-			const auto waveSamples = (unsigned int)((long double)(800 * wave.key + 100) / (double)sampleRate * 4096.0);
+			const auto waveSamples = (unsigned int)((long double)(800 * orgDrums[wave].key + 100) / (double)sampleRate * 4096.0);
 
-			if (wave.playing)
+			int id;
+
+			switch (org.tdata[wave + 8].wave_no)
 			{
-				wave.pos += waveSamples;
+			case 0:
+				id = 0x96;
+				break;
+			case 2:
+				id = 0x97;
+				break;
+			case 4:
+				id = 0x9A;
+				break;
+			case 5:
+				id = 0x98;
+				break;
+			case 6:
+				id = 0x99;
+				break;
+			case 9:
+				id = 0x9B;
+				break;
+			default:
+				id = 0;
+				break;
+			}
 
-				if ((wave.pos >> 12) >= wave.length)
+			if (id)
+			{
+				if (orgDrums[wave].playing)
 				{
-					wave.playing = false;
-				}
-				else
-				{
-					const size_t s_offset_1 = wave.pos >> 12;
+					orgDrums[wave].pos += waveSamples;
 
-					const int sample1 = wave.wave[s_offset_1] - 0x80;
-					int sample2 = 0; //orgDrums[wave].wave[(s_offset_1 + 1) % 0x100] - 0x80; //(unsigned __int8)(((unsigned int)((s_offset_1 + 1) >> 31) >> 24) + s_offset_1 + 1) - ((unsigned int)((s_offset_1 + 1) >> 31) >> 24)];
+					if ((orgDrums[wave].pos >> 12) >= sounds[id].length)
+					{
+						orgDrums[wave].playing = false;
+					}
+					else
+					{
+						const size_t s_offset_1 = orgDrums[wave].pos >> 12;
 
-					if ((wave.pos >> 12) < wave.length - 1)
-						sample2 = wave.wave[s_offset_1 + 1] - 0x80;
+						const int sample1 = sounds[id].wave[s_offset_1] - 0x80;
+						int sample2 = 0; //orgDrums[wave].wave[(s_offset_1 + 1) % 0x100] - 0x80; //(unsigned __int8)(((unsigned int)((s_offset_1 + 1) >> 31) >> 24) + s_offset_1 + 1) - ((unsigned int)((s_offset_1 + 1) >> 31) >> 24)];
 
-					const auto val = (int)(sample1 + (sample2 - sample1) * ((double)(wave.pos & 0xFFF) / 4096.0));
+						if ((orgDrums[wave].pos >> 12) < sounds[id].length - 1)
+							sample2 = sounds[id].wave[s_offset_1 + 1] - 0x80;
 
-					stream[2 * i] += (uint8_t)((long double)val * wave.volume * wave.volume_l / 2.0);
-					stream[2 * i + 1] += (uint8_t)((long double)val * wave.volume * wave.volume_r / 2.0);
+						const auto val = (int)(sample1 + (sample2 - sample1) * ((double)(orgDrums[wave].pos & 0xFFF) / 4096.0));
+
+						stream[2 * i] += (uint8_t)((long double)val * orgDrums[wave].volume * orgDrums[wave].volume_l / 2.0);
+						stream[2 * i + 1] += (uint8_t)((long double)val * orgDrums[wave].volume * orgDrums[wave].volume_r / 2.0);
+					}
 				}
 			}
 		}
@@ -505,59 +535,6 @@ void loadOrganya(const char *name)
 
 		//Load drums
 		memset(orgDrums, 0, sizeof(orgDrums));
-
-		/*
-		for (int wave = 0; wave < 8; wave++)
-		{
-			char *drumPath = nullptr;
-
-			switch (org.tdata[wave + 8].wave_no)
-			{
-			case 0:
-				drumPath = (char*)"data/Sound/96.wav";
-				break;
-			case 2:
-				drumPath = (char*)"data/Sound/97.wav";
-				break;
-			case 4:
-				drumPath = (char*)"data/Sound/9A.wav";
-				break;
-			case 5:
-				drumPath = (char*)"data/Sound/98.wav";
-				break;
-			case 6:
-				drumPath = (char*)"data/Sound/99.wav";
-				break;
-			case 9:
-				drumPath = (char*)"data/Sound/9B.wav";
-				break;
-			default:
-				break;
-			}
-
-			if (drumPath)
-			{
-				if (fileExists(drumPath))
-				{
-					uint8_t *pBuf = nullptr;
-					SDL_LoadWAV(drumPath, &orgSoundSpec, &pBuf, (uint32_t*)&orgDrums[wave].length);
-
-					if (pBuf == nullptr)
-						doError();
-
-					orgDrums[wave].wave = (uint8_t*)malloc(orgDrums[wave].length);
-					for (size_t b = 0; b < orgDrums[wave].length; b++)
-						orgDrums[wave].wave[b] = pBuf[b];
-				}
-				else
-				{
-					char error[0x100];
-					sprintf(error, "Failed to load drum at: %s", drumPath);
-					doCustomError(error);
-				}
-			}
-		}
-		*/
 
 		//Make sure position is at start
 		organyaSetPlayPosition(0);

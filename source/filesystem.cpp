@@ -260,5 +260,3 @@ vector<string> getLinesFromFile(const string& fileName)
 		lines.push_back(line);
 	return lines;
 }
-
-
