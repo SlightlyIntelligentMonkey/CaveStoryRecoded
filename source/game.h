@@ -36,5 +36,3 @@ int escapeMenu();
 int openInventory();
 int stageSelect(int *runEvent);
 int mainGameLoop();
-
-void delimitFramerate() noexcept;
