@@ -372,8 +372,6 @@ int gameUpdatePlay()
 		{
 			if (isKeyPressed(keyMenu))
 			{
-				changeOrg(mus_TheWayBackHome);
-
 				captureScreen(TEX_SCREENSHOT);
 				const int inventoryRet = openInventory();
 
