@@ -81,7 +81,7 @@ OCTWAVE oct_wave[8] = {
 double freq_tbl[12] = { 261.62556530060, 277.18263097687, 293.66476791741, 311.12698372208, 329.62755691287, 349.22823143300, 369.99442271163, 391.99543598175, 415.30469757995, 440.00000000000, 466.16376151809, 493.88330125612 };
 */
 
-void mixOrg(uint8_t *stream, int len)
+void mixOrg(int16_t *stream, int len)
 {
 	if (stream == nullptr)
 		doCustomError("stream was nullptr in mixOrg");
@@ -112,13 +112,13 @@ void mixOrg(uint8_t *stream, int len)
 				orgWaves[wave].pos = (orgWaves[wave].pos + waveSamples) & 0xFFFFF;
 				const unsigned int s_offset_1 = orgWaves[wave].pos >> 12;
 
-				const int sample1 = orgWaves[wave].wave[s_offset_1];
-				const int sample2 = orgWaves[wave].wave[(s_offset_1 + 1) % 0x100];//(unsigned __int8)(((unsigned int)((s_offset_1 + 1) >> 31) >> 24) + s_offset_1 + 1) - ((unsigned int)((s_offset_1 + 1) >> 31) >> 24)];
+				const int sample1 = orgWaves[wave].wave[s_offset_1] << 7;
+				const int sample2 = orgWaves[wave].wave[(s_offset_1 + 1) % 0x100] << 7;//(unsigned __int8)(((unsigned int)((s_offset_1 + 1) >> 31) >> 24) + s_offset_1 + 1) - ((unsigned int)((s_offset_1 + 1) >> 31) >> 24)];
 				
 				const auto val = (int)(sample1 + (sample2 - sample1) * ((double)(orgWaves[wave].pos & 0xFFF) / 4096.0));
 
-				stream[2 * i] += (uint8_t)((long double)val * orgWaves[wave].volume * orgWaves[wave].volume_l / 2.0);
-				stream[2 * i + 1] += (uint8_t)((long double)val * orgWaves[wave].volume * orgWaves[wave].volume_r / 2.0);
+				stream[2 * i] += (int16_t)((long double)val * orgWaves[wave].volume * orgWaves[wave].volume_l / 1.5);
+				stream[2 * i + 1] += (int16_t)((long double)val * orgWaves[wave].volume * orgWaves[wave].volume_r / 1.5);
 			}
 		}
 
@@ -168,16 +168,16 @@ void mixOrg(uint8_t *stream, int len)
 					{
 						const size_t s_offset_1 = orgDrums[wave].pos >> 12;
 
-						const int sample1 = sounds[id].wave[s_offset_1] - 0x80;
+						const int sample1 = (sounds[id].wave[s_offset_1] - 0x80) << 7;
 						int sample2 = 0; //orgDrums[wave].wave[(s_offset_1 + 1) % 0x100] - 0x80; //(unsigned __int8)(((unsigned int)((s_offset_1 + 1) >> 31) >> 24) + s_offset_1 + 1) - ((unsigned int)((s_offset_1 + 1) >> 31) >> 24)];
 
 						if ((orgDrums[wave].pos >> 12) < sounds[id].length - 1)
-							sample2 = sounds[id].wave[s_offset_1 + 1] - 0x80;
+							sample2 = (sounds[id].wave[s_offset_1 + 1] - 0x80) << 7;
 
 						const auto val = (int)(sample1 + (sample2 - sample1) * ((double)(orgDrums[wave].pos & 0xFFF) / 4096.0));
 
-						stream[2 * i] += (uint8_t)((long double)val * orgDrums[wave].volume * orgDrums[wave].volume_l / 2.0);
-						stream[2 * i + 1] += (uint8_t)((long double)val * orgDrums[wave].volume * orgDrums[wave].volume_r / 2.0);
+						stream[2 * i] += (int16_t)((long double)val * orgDrums[wave].volume * orgDrums[wave].volume_l / 1.5);
+						stream[2 * i + 1] += (int16_t)((long double)val * orgDrums[wave].volume * orgDrums[wave].volume_r / 1.5);
 					}
 				}
 			}
