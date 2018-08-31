@@ -369,24 +369,3 @@ void npcAct119(npc *NPC) // Table & Chair
 {
 	NPC->rect = { 248, 184, 272, 200 };
 }
-
-void npcAct125(npc * NPC) // Hidden Heart/Missile
-{
-	if (NPC->life < 990)
-	{
-		createSmoke(NPC->x, NPC->y, NPC->view.right, 8);
-		playSound(SFX_EnemySmokePoof);
-
-		if (NPC->direct != dirLeft)
-			createNpc(NPC_Missile, NPC->x, NPC->y, 0, 0, dirRight, nullptr);
-		else
-			createNpc(NPC_Heart, NPC->x, NPC->y, 0, 0, dirRight, nullptr);
-		NPC->cond = 0;
-	}
-
-	if (NPC->direct != dirLeft)
-		NPC->rect = { 16, 96, 32, 112 };
-	else
-		NPC->rect = { 0, 96, 16, 112 };
-}
-

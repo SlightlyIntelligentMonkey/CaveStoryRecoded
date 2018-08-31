@@ -92,9 +92,6 @@ public:
 	//parent
 	npc *pNpc;
 
-private:
-
-	//Functions
 public:
 	void init(int setCode, int setX, int setY, int setXm, int setYm, int setDir, npc *parentNpc) noexcept;
 

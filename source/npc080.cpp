@@ -4,6 +4,8 @@
 #include "mathUtils.h"
 #include "caret.h"
 #include "sound.h"
+#include "npcUtils.h"
+#include "game.h"
 
 void npcAct080(npc *NPC) //Gravekeeper
 {
@@ -707,6 +709,32 @@ void npcAct084(npc *NPC) //Basu 1 projectile
 	}
 }
 
+void npcAct085(npc * NPC) // Terminal
+{
+	constexpr RECT rcLeft[3] = { {256, 96, 272, 120}, {256, 96, 272, 120}, {272, 96, 288, 120} };
+	constexpr RECT rcRight[3] = { {256, 96, 272, 120}, {288, 96, 304, 120}, {304, 96, 320, 120} };
+
+	if (NPC->act_no == 0)
+	{
+		NPC->ani_no = 0;
+		if (NPC->x - 0x1000 < currentPlayer.x
+			&& NPC->x + 0x1000 > currentPlayer.x
+			&& NPC->y - 0x2000 < currentPlayer.y
+			&& NPC->y + 0x1000 > currentPlayer.y)
+		{
+			playSound(SFX_ComputerScreenOn);
+			NPC->act_no = 1;
+		}
+	}
+	else if (NPC->act_no == 1 && ++NPC->ani_no > 2)
+		NPC->ani_no = 1;
+
+	if (NPC->direct == dirLeft)
+		NPC->rect = rcLeft[NPC->ani_no];
+	else
+		NPC->rect = rcRight[NPC->ani_no];
+}
+
 void npcAct086(npc *NPC) //Dropped missiles
 {
 	RECT rcMissile1[2];
@@ -834,6 +862,232 @@ void npcAct087(npc *NPC) //Health refill
 
 	if (NPC->count1 > 547)
 		NPC->rect = rcLast;
+}
+
+void npcAct088(npc * NPC)
+{
+	RECT rcLeft[12];
+	RECT rcRight[12];
+
+	rcLeft[0] = { 0, 0, 40, 40 };
+	rcLeft[1] = { 40, 0, 80, 40 };
+	rcLeft[2] = { 80, 0, 120, 40 };
+	rcLeft[3] = rcLeft[0];
+	rcLeft[4] = { 120, 0, 160, 40 };
+	rcLeft[5] = rcLeft[0];
+	rcLeft[6] = { 160, 0, 200, 40 };
+	rcLeft[7] = { 200, 0, 240, 40 };
+	rcLeft[8] = { 0, 80, 40, 120 };
+	rcLeft[9] = { 40, 80, 80, 120 };
+	rcLeft[10] = { 240, 0, 280, 40 };
+	rcLeft[11] = { 280, 0, 320, 40 };
+
+	rcRight[0] = { 0, 40, 40, 80 };
+	rcRight[1] = { 40, 40, 80, 80 };
+	rcRight[2] = { 80, 40, 120, 80 };
+	rcRight[3] = rcRight[0];
+	rcRight[4] = { 120, 40, 160, 80 };
+	rcRight[5] = rcRight[0];
+	rcRight[6] = { 160, 40, 200, 80 };
+	rcRight[7] = { 200, 40, 240, 80 };
+	rcRight[8] = { 120, 80, 160, 120 };
+	rcRight[9] = { 160, 80, 200, 120 };
+	rcRight[10] = { 240, 40, 280, 80 };
+	rcRight[11] = { 280, 40, 320, 80 };
+
+	enum
+	{
+		init = 0,
+		stand = 1,
+		startAttack = 2,
+		walk = 3,
+		startPunch = 4,
+		waitPunch = 5,
+		punch = 6,
+		jump = 7,
+		land = 8,
+		startMouthBlast = 9,
+		mouthBlast = 10,
+	};
+	
+	switch (NPC->act_no)
+	{
+	case init:
+		NPC->xm = 0;
+		NPC->act_no = stand;
+		NPC->ani_no = 0;
+		NPC->ani_wait = 0;
+		// Fallthrough
+	case stand:
+		npcAnimate(NPC, 5, 0, 1);
+		if (++NPC->act_wait > 50)
+			NPC->act_no = startAttack;
+		break;
+
+	case startAttack:
+		NPC->act_no = walk;
+		NPC->act_wait = 0;
+		NPC->ani_no = 2;
+		NPC->ani_wait = 0;
+
+		npcFacePlayer(NPC);
+
+		if (++NPC->count1 >= 3 && NPC->life <= 150)
+		{
+			NPC->count2 = 1;
+			NPC->direct = (NPC->direct == dirLeft) ? dirRight : dirLeft;
+		}
+		else
+			NPC->count2 = 0;
+		// Fallthrough
+	case walk:
+		++NPC->act_wait;
+		npcAnimate(NPC, 3, 2, 5);
+		npcMove(NPC, &NPC->xm, 0x200);
+
+		if (NPC->count2)
+		{
+			if (NPC->act_wait > 0x10)
+			{
+				NPC->act_no = startMouthBlast;
+				NPC->xm = 0;
+				NPC->ani_no = 10;
+			}
+		}
+		else if (NPC->act_wait <= 50)
+		{
+			if (NPC->direct != dirLeft)
+			{
+				if (NPC->x + 0x3000 > currentPlayer.x)
+					NPC->act_no = startPunch;
+			}
+			else if (NPC->x - 0x3000 < currentPlayer.x)
+				NPC->act_no = startPunch;
+		}
+		else
+		{
+			NPC->ani_no = 8;
+			NPC->ym = -0x400;
+			NPC->act_no = jump;
+			NPC->act_wait = 0;
+			NPC->xm = 3 * NPC->xm / 2;
+			NPC->damage = 2;
+		}
+		break;
+
+	case startPunch:
+		NPC->xm = 0;
+		NPC->act_no = waitPunch;
+		NPC->act_wait = 0;
+		NPC->ani_no = 6;
+		// Fallthrough
+	case waitPunch:
+		if (++NPC->act_wait > 12)
+		{
+			NPC->act_wait = 0;
+			NPC->act_no = punch;
+			NPC->ani_no = 7;
+			playSound(SFX_EnemySmokePoof);
+			NPC->damage = 5;
+			NPC->hit.left = 0x3000;
+			NPC->hit.top = 1;
+		}
+		break;
+
+	case punch:
+		if (++NPC->act_wait > 10)
+		{
+			NPC->act_no = init;
+			NPC->ani_no = 0;
+			NPC->damage = 0;
+			NPC->hit.left = 0x1000;
+			NPC->hit.top = 0x2000;
+		}
+		break;
+
+	case jump:
+		if (NPC->flag & ground)
+		{
+			NPC->act_no = land;
+			NPC->ani_no = 9;
+			playSound(SFX_LargeObjectHitGround);
+			viewport.quake = 30;
+			NPC->damage = 0;
+			
+			for (size_t i = 0; i < 4; ++i)
+				createNpc(NPC_Smoke,
+					NPC->x + (random(-12, 12) << 9),
+					NPC->y + (random(-12, 12) << 9),
+					random(-0x155, 0x155),
+					random(-0x600, 0),
+					dirLeft,
+					nullptr);
+		}
+		break;
+
+	case land:
+		NPC->xm = 0;
+		if (++NPC->act_wait > 10)
+		{
+			NPC->act_no = 0;
+			NPC->ani_no = 0;
+			NPC->damage = 0;
+		}
+		break;
+
+	case startMouthBlast:
+		NPC->act_no = mouthBlast;
+		NPC->act_wait = 0;
+		npcFacePlayer(NPC);
+		// Fallthrough
+	case mouthBlast:
+		if (++NPC->act_wait > 100 && NPC->act_wait % 6 == 1)
+		{
+			uint8_t angle = (NPC->direct != dirLeft) ? 248 : 136;
+			angle += random(-0x10, 0x10);
+
+			createNpc(NPC_ProjectileBalrogEnergyBallInvincible
+				, NPC->x
+				, NPC->y + 0x800
+				, 3 * getCos(angle)
+				, 3 * getSin(angle)
+				, dirLeft
+				, nullptr);
+			playSound(SFX_DestroyBreakableBlock);
+		}
+
+		if (NPC->act_wait > 50 && NPC->act_wait / 2 % 2)
+			NPC->ani_no = 11;
+		else
+			NPC->ani_no = 10;
+		
+		if (NPC->act_wait > 132)	// After having fired 6 shots
+		{
+			NPC->act_no = init;
+			NPC->ani_no = 0;
+			NPC->count1 = 0;
+		}
+		break;
+
+	default:
+		break;
+	}
+
+	NPC->ym += 0x40;
+	if (NPC->ym > 0x5FF)
+		NPC->ym = 0x5FF;
+
+	NPC->x += NPC->xm;
+	NPC->y += NPC->ym;
+
+	if (NPC->direct == dirLeft)
+		NPC->rect = rcLeft[NPC->ani_no];
+	else
+		NPC->rect = rcRight[NPC->ani_no];
+}
+
+void npcAct089(npc * NPC)
+{
 }
 
 void npcAct090(npc *NPC) // Background
