@@ -263,8 +263,6 @@ int openInventory()
 
 	while (true)
 	{
-		delimitFramerate();
-
 		//Handle events
 		getKeys(&events);
 		if (events.type == SDL_QUIT || exitGame) { return 0; }

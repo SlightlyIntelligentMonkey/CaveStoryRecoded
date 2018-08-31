@@ -224,25 +224,6 @@ void debugFunction()
 	}
 }
 
-void delimitFramerate() noexcept
-{
-	while (true)
-	{
-		//Framerate limiter
-		const uint32_t timeNow = SDL_GetTicks();
-		const uint32_t timeNext = framerateTicks + framerate;
-
-		if (timeNow >= timeNext)
-			framerateTicks = SDL_GetTicks();
-		else
-		{
-			SDL_Delay(timeNext - timeNow);
-			continue;
-		}
-		return;
-	}
-}
-
 //Escape menu
 RECT rcEscape = { 0, 128, 208, 144 };
 
@@ -250,8 +231,6 @@ int escapeMenu()
 {
 	while (true)
 	{
-		delimitFramerate();
-
 		//Handle events
 		getKeys(&events);
 		if (events.type == SDL_QUIT || exitGame)
@@ -296,20 +275,6 @@ int gameUpdatePlay()
 
 	while (true)
 	{
-		//Framerate limiter
-		const uint32_t timeNow = SDL_GetTicks();
-		const uint32_t timeNext = framerateTicks + framerate;
-
-		if (timeNow >= timeNext)
-		{
-			framerateTicks = SDL_GetTicks();
-		}
-		else
-		{
-			SDL_Delay(timeNext - timeNow);
-			continue;
-		}
-
 		//Handle events
 		getKeys(&events);
 
@@ -442,8 +407,6 @@ int gameUpdateMenu()
 
 	while (true)
 	{
-		delimitFramerate();
-
 		//Handle events
 		getKeys(&events);
 
@@ -535,8 +498,6 @@ int gameUpdateIntro()
 
 	while (frame < 500)
 	{
-		delimitFramerate();
-
 		frame++;
 
 		//Handle events
