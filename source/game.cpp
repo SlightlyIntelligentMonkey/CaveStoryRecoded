@@ -165,7 +165,7 @@ void debugLevels()
 	}
 }
 
-int debugFlags = showSlots | showNPCId | showBULId | showCARId | notifyOnNotImplemented | showNPCHealth;
+int debugFlags = 0;
 
 void debugFunction()
 {
@@ -283,7 +283,7 @@ int escapeMenu()
 		            (screenWidth >> 1) - 104,
 		            (screenHeight >> 1) - 8);
 
-		SDL_RenderPresent(renderer);
+		drawWindow();
 	}
 
 	return 0;
@@ -372,8 +372,7 @@ int gameUpdatePlay()
 		{
 			if (isKeyPressed(keyMenu))
 			{
-				changeOrg(mus_TheWayBackHome);
-
+				captureScreen(TEX_SCREENSHOT);
 				const int inventoryRet = openInventory();
 
 				if (!inventoryRet)
@@ -404,13 +403,13 @@ int gameUpdatePlay()
 
 		drawMapName(false);
 
-		drawHud(gameFlags & 2);
+		drawHud(!(gameFlags & 2));
 
 		drawTsc();
 
 		debugFunction();
 
-		SDL_RenderPresent(renderer);
+		drawWindow();
 	}
 
 	return 0;
@@ -501,7 +500,7 @@ int gameUpdateMenu()
 		RECT rcChar = { 0 + (frameOrder[(anime / 10) % 4] << 4), 16, 16 + (frameOrder[(anime / 10) % 4] << 4), 32 };
 		drawTexture(sprites[0x10], &rcChar, (screenWidth >> 1) - 44, 127 + (20 * select));
 
-		SDL_RenderPresent(renderer);
+		drawWindow();
 	}
 
 	changeOrg(0);
@@ -512,7 +511,7 @@ int gameUpdateMenu()
 		getKeys(&events);
 		SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
 		SDL_RenderClear(renderer);
-		SDL_RenderPresent(renderer);
+		drawWindow();
 	}
 
 	if (select == 0)
@@ -589,7 +588,7 @@ int gameUpdateIntro()
 
 		drawMapName(false);
 
-		SDL_RenderPresent(renderer);
+		drawWindow();
 	}
 
 	//wait 500 ms
@@ -599,7 +598,7 @@ int gameUpdateIntro()
 		getKeys(&events);
 		SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
 		SDL_RenderClear(renderer);
-		SDL_RenderPresent(renderer);
+		drawWindow();
 	}
 
 	return MENU;
