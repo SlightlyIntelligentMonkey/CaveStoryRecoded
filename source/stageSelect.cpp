@@ -101,6 +101,8 @@ int stageSelect(int *runEvent)
 	selectedStage = 0;
 	stageSelectTitleY = 54;
 
+	captureScreen(TEX_SCREENSHOT);
+
 	//Load stage select tsc
 	loadTsc2("data/StageSelect.tsc");
 	startTscEvent(permitStage[selectedStage].index + 1000);
@@ -132,16 +134,9 @@ int stageSelect(int *runEvent)
 		if (tscResult == 2)
 			return 2;
 
-		//Draw background
-		SDL_SetRenderDrawColor(renderer, 0, 0, 32, 255);
-		SDL_RenderClear(renderer);
-
-		drawLevel(false);
-		drawNPC();
-		currentPlayer.draw();
-		drawLevel(true);
-		drawCarets();
-		drawValueView();
+		// Draw screenshot
+		if (SDL_RenderCopy(renderer, sprites[TEX_SCREENSHOT], nullptr, nullptr) != 0)
+			doError();
 
 		//Draw menu
 		drawStageSelect();
@@ -166,7 +161,7 @@ int stageSelect(int *runEvent)
 		}
 
 		//Present
-		SDL_RenderPresent(renderer);
+		drawWindow();
 	}
 }
 
