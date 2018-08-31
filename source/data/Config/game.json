@@ -1,10 +1,10 @@
 {
   "debugFlags": {
     "showSlots": true,
-    "showNPCId ": true,
-    "showBULId": true,
-    "showCARId": true,
+    "showNPCId ": false,
+    "showBULId": false,
+    "showCARId": false,
     "notifyOnNotImplemented": true,
-    "showNPCHealth": true
+    "showNPCHealth": false
   }
 }

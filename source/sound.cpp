@@ -378,10 +378,8 @@ int loadSound(const char *path, size_t id)
 				//Get wave data
 				if (!makePixelWaveData(lineNumbers[i], dest))
 				{
-					if (dest)
-						free(dest);
-					if (pBlock)
-						free(pBlock);
+					free(dest);
+					free(pBlock);
 					return -1;
 				}
 				
@@ -405,24 +403,24 @@ int loadSound(const char *path, size_t id)
 			//Put data from buffers into main sound buffer
 			sounds[id].wave = (uint8_t*)malloc(size);
 			if (!sounds[id].wave)
+			{
+				free(dest);
+				free(pBlock);
 				return -1;
+			}
 			sounds[id].length = size;
 			memcpy(sounds[id].wave, pBlock, size);
 
 			//Free the two buffers
-			if (dest)
-				free(dest);
-			if (pBlock)
-				free(pBlock);
+			free(dest);
+			free(pBlock);
 
 			return 1;
 		}
 		else
 		{
-			if (dest)
-				free(dest);
-			if (pBlock)
-				free(pBlock);
+			free(dest);
+			free(pBlock);
 			return -1;
 		}
 	}

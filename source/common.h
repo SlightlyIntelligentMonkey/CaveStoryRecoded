@@ -1,6 +1,7 @@
 #pragma once
 
 #include <cstdint>
+#include <string>
 
 struct RECT
 {
@@ -101,7 +102,7 @@ extern int gameFlags;
 
 //Functions
 [[noreturn]] void doError() noexcept;
-[[noreturn]] void doCustomError(const char *msg) noexcept;
+[[noreturn]] void doCustomError(const std::string& msg) noexcept;
 
 //Macros
 #ifdef __GNUC__
