@@ -109,8 +109,6 @@ int stageSelect(int *runEvent)
 
 	while (true)
 	{
-		delimitFramerate();
-
 		//Handle events
 		getKeys(&events);
 		if (events.type == SDL_QUIT || exitGame) { return 0; }

@@ -64,7 +64,6 @@ extern SDL_Event events;
 
 //Some game variables
 extern int framerate;
-extern unsigned int framerateTicks;
 
 extern int mode;
 
