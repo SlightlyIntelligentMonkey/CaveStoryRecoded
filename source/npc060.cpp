@@ -1120,7 +1120,7 @@ void npcAct068(npc * NPC) // Balrog, Running (boss)
 		{
 			NPC->act_no = caughtQuote;
 			NPC->ani_no = 5;
-			currentPlayer.flag |= ceiling;
+			currentPlayer.cond |= player_removed;
 			currentPlayer.damage(2);
 		}
 		break;
@@ -1142,7 +1142,7 @@ void npcAct068(npc * NPC) // Balrog, Running (boss)
 		{
 			NPC->act_no = caughtQuote;
 			NPC->ani_no = 5;
-			currentPlayer.flag |= ceiling;
+			currentPlayer.cond |= player_removed;
 			currentPlayer.damage(2);
 		}
 		break;
@@ -1185,7 +1185,7 @@ void npcAct068(npc * NPC) // Balrog, Running (boss)
 
 	case throwQuote:
 		playSound(SFX_SillyExplosion);
-		currentPlayer.flag &= ~ceiling;
+		currentPlayer.cond &= ~player_removed;
 
 		if (NPC->direct != dirLeft)
 		{

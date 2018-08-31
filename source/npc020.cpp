@@ -174,6 +174,35 @@ void npcAct037(npc *NPC) //Sign
 	NPC->rect = rect[NPC->ani_no];
 }
 
+void npcAct038(npc * NPC)
+{
+	constexpr RECT rcNPC[4] = { {128, 64, 144, 80}, {144, 64, 160, 80}, {160, 64, 176, 80}, {176, 64, 192, 80} };
+
+	if (NPC->act_no != 0)
+	{
+		if (NPC->act_no == 10)
+		{
+			NPC->act_no = 11;
+			createSmoke(NPC->x, NPC->y, NPC->view.bottom, 8);
+		}
+		else if (NPC->act_no != 11)
+			return;
+		NPC->rect.left = 0;
+		NPC->rect.right = 0;
+		return;
+	}
+
+	if (++NPC->ani_wait > 3)
+	{
+		NPC->ani_wait = 0;
+		NPC->ani_no++;
+	}
+	if (NPC->ani_no > 3)
+		NPC->ani_no = 0;
+	
+	NPC->rect = rcNPC[NPC->ani_no];
+}
+
 void npcAct039(npc *NPC) //Save Sign
 {
 	RECT *setRect;
@@ -197,3 +226,4 @@ void npcAct039(npc *NPC) //Save Sign
 
 	NPC->rect = { setRect->left, setRect->top, setRect->right, setRect->bottom };
 }
+

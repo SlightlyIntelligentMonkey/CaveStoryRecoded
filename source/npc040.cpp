@@ -293,6 +293,19 @@ void npcAct042(npc *NPC) // Sue
 		NPC->rect = rcRight[NPC->ani_no];
 }
 
+void npcAct043(npc * NPC) // Blackboard
+{
+	if (!NPC->act_no)
+	{
+		NPC->act_no = 1;
+		NPC->y -= 0x2000;
+	}
+	if (NPC->direct != dirLeft)
+		NPC->rect = { 168, 80, 208, 112 };
+	else
+		NPC->rect = { 128, 80, 168, 112 };
+}
+
 void npcAct046(npc *NPC) //H/V trigger
 {
 	NPC->bits |= npc_eventtouch;

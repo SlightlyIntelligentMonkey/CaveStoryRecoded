@@ -83,9 +83,9 @@ extern player currentPlayer;
 
 enum player_flag
 {
-	player_interact = 0b0001, //Inspecting
-	player_removed = 0b0010, //Removed
-	player_walk = 0b0100, //Walking (used for animation)
+	player_interact = 0x1, //Inspecting
+	player_removed = 0x2, //Removed
+	player_walk = 0x4, //Walking (used for animation)
 	player_noFriction = 0x20, //Disables friction
 	player_visible = 0x80, //Quote is visible
 	player_water = 0x100,
