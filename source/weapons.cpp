@@ -69,18 +69,24 @@ void initWeapons() noexcept
 //Functions for shooting
 void actWeapon()
 {
-	if (shootFunctions[weapons[selectedWeapon].code] != nullptr)
-		shootFunctions[weapons[selectedWeapon].code](weapons[selectedWeapon].level);
-	else if (debugFlags & notifyOnNotImplemented)
+	if (!(currentPlayer.cond & player_removed))
 	{
-		static bool wasNotifiedAbout[_countof(shootFunctions)] = { false };
+		if (weapons[selectedWeapon].code)
+		{
+			if (shootFunctions[weapons[selectedWeapon].code] != nullptr)
+				shootFunctions[weapons[selectedWeapon].code](weapons[selectedWeapon].level);
+			else if (debugFlags & notifyOnNotImplemented)
+			{
+				static bool wasNotifiedAbout[_countof(shootFunctions)] = { false };
 
-		if (wasNotifiedAbout[weapons[selectedWeapon].code])
-			return;
+				if (wasNotifiedAbout[weapons[selectedWeapon].code])
+					return;
 
-		wasNotifiedAbout[weapons[selectedWeapon].code] = true;
-		string msg = "Weapon " + to_string(weapons[selectedWeapon].code) + " is not implemented.";
-		SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_WARNING, "Missing Weapon", msg.c_str(), nullptr);
+				wasNotifiedAbout[weapons[selectedWeapon].code] = true;
+				string msg = "Weapon " + to_string(weapons[selectedWeapon].code) + " is not implemented.";
+				SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_WARNING, "Missing Weapon", msg.c_str(), nullptr);
+			}
+		}
 	}
 }
 
