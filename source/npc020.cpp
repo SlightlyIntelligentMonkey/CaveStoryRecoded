@@ -154,6 +154,14 @@ void npcAct032(npc *NPC) //Life Capsule
 	NPC->rect = { setRect->left, setRect->top, setRect->right, setRect->bottom };
 }
 
+void npcAct034(npc * NPC)
+{
+	if (NPC->direct == dirLeft)
+		NPC->rect = { 192, 48, 224, 64 };
+	else
+		NPC->rect = { 192, 184, 224, 200 };
+}
+
 void npcAct037(npc *NPC) //Sign
 {
 	RECT rect[2];
