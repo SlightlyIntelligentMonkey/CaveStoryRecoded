@@ -316,6 +316,6 @@ void bullet::draw()
 			}
 		}
 
-		drawString(drawX / 0x200 - viewport.x / 0x200, drawY / 0x200 - viewport.y / 0x200 - 16, std::to_string(index).c_str(), nullptr);
+		drawString(drawX / 0x200 - viewport.x / 0x200, drawY / 0x200 - viewport.y / 0x200 - 16, std::to_string(index).c_str());
 	}
 }
