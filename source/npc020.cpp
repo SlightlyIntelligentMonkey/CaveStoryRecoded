@@ -150,7 +150,7 @@ void npcAct030(npc *NPC) // Hermit Gunsmith
 		if (++NPC->act_wait > 100)
 		{
 			NPC->act_wait = 0;
-			createCaret(NPC->x, NPC->y - 1024, effect_ZzZ, 0);
+			createCaret(NPC->x, NPC->y - 1024, effect_ZzZ);
 		}
 	}
 doRects:

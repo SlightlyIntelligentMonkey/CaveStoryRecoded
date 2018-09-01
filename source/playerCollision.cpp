@@ -11,8 +11,8 @@ void putLittleStar(const RECT *rcHit, const player *me)
 	if (!(me->cond & player_removed) && me->ym < -0x200)
 	{
 		playSound(SFX_QuoteBumpHead);
-		createCaret(me->x, me->y - rcHit->top, effect_HeadbumpSparks, 0);
-		createCaret(me->x, me->y - rcHit->top, effect_HeadbumpSparks, 0);
+		createCaret(me->x, me->y - rcHit->top, effect_HeadbumpSparks);
+		createCaret(me->x, me->y - rcHit->top, effect_HeadbumpSparks);
 	}
 }
 

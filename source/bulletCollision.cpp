@@ -12,10 +12,10 @@ void bulletVanish(bullet *bul)
 	if (bul->code_bullet != 37 && bul->code_bullet != 38 && bul->code_bullet != 39)
 		playSound(SFX_ShotHitWall);
 	else
-		createCaret(bul->x, bul->y, effect_RisingDisc, 1);
+		createCaret(bul->x, bul->y, effect_RisingDisc, dirUp);
 
 	bul->cond = 0;
-	createCaret(bul->x, bul->y, effect_RisingDisc, 2);
+	createCaret(bul->x, bul->y, effect_RisingDisc, dirRight);
 }
 
 int bulletJudgeBlock(int x, int y, bullet *bul) //For judging breakable blocks
@@ -39,7 +39,7 @@ int bulletJudgeBlock(int x, int y, bullet *bul) //For judging breakable blocks
 			bul->cond = 0;
 
 		//Do effects when breaking block
-		createCaret(bul->x, bul->y, effect_RisingDisc, 0);
+		createCaret(bul->x, bul->y, effect_RisingDisc);
 		playSound(SFX_DestroyBreakableBlock);
 
 		for (int i = 0; i < 4; ++i)
@@ -459,9 +459,9 @@ void bulletHitNpcs()
 								//Shock if not already shocked for 2 frames
 								if (npcs[n].shock < 14)
 								{
-									createCaret((bul->x + npcs[n].x) / 2, (bul->y + npcs[n].y) / 2, effect_RedDamageRings, 0);
-									createCaret((bul->x + npcs[n].x) / 2, (bul->y + npcs[n].y) / 2, effect_RedDamageRings, 0);
-									createCaret((bul->x + npcs[n].x) / 2, (bul->y + npcs[n].y) / 2, effect_RedDamageRings, 0);
+									createCaret((bul->x + npcs[n].x) / 2, (bul->y + npcs[n].y) / 2, effect_RedDamageRings);
+									createCaret((bul->x + npcs[n].x) / 2, (bul->y + npcs[n].y) / 2, effect_RedDamageRings);
+									createCaret((bul->x + npcs[n].x) / 2, (bul->y + npcs[n].y) / 2, effect_RedDamageRings);
 
 									playSound(npcs[n].hit_voice);
 									npcs[n].shock = 16;
@@ -496,7 +496,7 @@ void bulletHitNpcs()
 						         && !(bul->bbits & 0x10))
 						{
 							//Break if hitting a non-shootable NPC
-							createCaret((bul->x + npcs[n].x) / 2, (bul->y + npcs[n].y) / 2, effect_RisingDisc, 2);
+							createCaret((bul->x + npcs[n].x) / 2, (bul->y + npcs[n].y) / 2, effect_RisingDisc, dirRight);
 							playSound(SFX_ShotHitInvulnerableEntity);
 							bul->life = 0;
 							continue;

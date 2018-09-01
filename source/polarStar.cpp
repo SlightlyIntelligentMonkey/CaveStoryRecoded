@@ -46,7 +46,7 @@ void actBulletPolarStar1(bullet *bul)
 	else
 	{
 		bul->cond = 0;
-		createCaret(bul->x, bul->y, effect_Star, 0);
+		createCaret(bul->x, bul->y, effect_Star);
 	}
 }
 
@@ -94,7 +94,7 @@ void actBulletPolarStar2(bullet *bul)
 	else
 	{
 		bul->cond = 0;
-		createCaret(bul->x, bul->y, effect_Star, 0);
+		createCaret(bul->x, bul->y, effect_Star);
 	}
 }
 
@@ -138,6 +138,6 @@ void actBulletPolarStar3(bullet *bul)
 	else
 	{
 		bul->cond = 0;
-		createCaret(bul->x, bul->y, effect_Star, 0);
+		createCaret(bul->x, bul->y, effect_Star);
 	}
 }

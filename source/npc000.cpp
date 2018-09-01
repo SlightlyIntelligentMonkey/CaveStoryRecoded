@@ -905,7 +905,7 @@ void npcAct011(npc *NPC) //Bubble
 	if (NPC->flag & 0xFF)
 	{
 		NPC->cond = 0;
-		createCaret(NPC->x, NPC->y, effect_RisingDisc, 0);
+		createCaret(NPC->x, NPC->y, effect_RisingDisc);
 	}
 
 	NPC->x += NPC->xm;
@@ -923,7 +923,7 @@ void npcAct011(npc *NPC) //Bubble
 
 	if (++NPC->count1 > 150)
 	{
-		createCaret(NPC->x, NPC->y, effect_RisingDisc, 0);
+		createCaret(NPC->x, NPC->y, effect_RisingDisc);
 		NPC->cond = 0;
 	}
 }

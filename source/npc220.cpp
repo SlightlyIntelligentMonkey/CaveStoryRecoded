@@ -72,10 +72,10 @@ void npcAct231(npc *NPC) //Momorin's rocket
 		NPC->ym -= 8;
 
 		if (!(++NPC->act_wait & 1))
-			createCaret(NPC->x - 0x1400, NPC->y + 0x1000, effect_BoosterSmoke, 3);
+			createCaret(NPC->x - 0x1400, NPC->y + 0x1000, effect_BoosterSmoke, dirDown);
 
 		if (NPC->act_wait % 2 == 1)
-			createCaret(NPC->x + 0x1400, NPC->y + 0x1000, effect_BoosterSmoke, 3);
+			createCaret(NPC->x + 0x1400, NPC->y + 0x1000, effect_BoosterSmoke, dirDown);
 
 		if (NPC->act_wait % 4 == 1)
 			playSound(SFX_FireballBounce);
@@ -102,10 +102,10 @@ void npcAct231(npc *NPC) //Momorin's rocket
 		if (NPC->ym < 0)
 		{
 			if (!(NPC->act_wait & 7))
-				createCaret(NPC->x - 0x1400, NPC->y + 0x1000, effect_BoosterSmoke, 3);
+				createCaret(NPC->x - 0x1400, NPC->y + 0x1000, effect_BoosterSmoke, dirDown);
 
 			if (NPC->act_wait % 8 == 4)
-				createCaret(NPC->x + 0x1400, NPC->y + 0x1000, effect_BoosterSmoke, 3);
+				createCaret(NPC->x + 0x1400, NPC->y + 0x1000, effect_BoosterSmoke, dirDown);
 
 			if (NPC->act_wait % 16 == 1)
 				playSound(SFX_FireballBounce);

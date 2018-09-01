@@ -25,7 +25,7 @@ void actBulletFireball1(bullet *bul)
 		if (bBreak)
 		{
 			bul->cond = 0;
-			createCaret(bul->x, bul->y, effect_RisingDisc, 0);
+			createCaret(bul->x, bul->y, effect_RisingDisc);
 			playSound(SFX_ShotHitWall);
 		}
 		else
@@ -136,7 +136,7 @@ void actBulletFireball1(bullet *bul)
 	else
 	{
 		bul->cond = 0;
-		createCaret(bul->x, bul->y, effect_Star, 0);
+		createCaret(bul->x, bul->y, effect_Star);
 	}
 }
 
@@ -161,7 +161,7 @@ void actBulletFireball2(bullet *bul)
 		if (bBreak)
 		{
 			bul->cond = 0;
-			createCaret(bul->x, bul->y, effect_RisingDisc, 0);
+			createCaret(bul->x, bul->y, effect_RisingDisc);
 			playSound(SFX_ShotHitWall);
 		}
 		else
@@ -274,7 +274,7 @@ void actBulletFireball2(bullet *bul)
 	else
 	{
 		bul->cond = 0;
-		createCaret(bul->x, bul->y, effect_Star, 0);
+		createCaret(bul->x, bul->y, effect_Star);
 	}
 }
 
@@ -299,7 +299,7 @@ void actBulletFireball3(bullet *bul)
 		if (bBreak)
 		{
 			bul->cond = 0;
-			createCaret(bul->x, bul->y, effect_RisingDisc, 0);
+			createCaret(bul->x, bul->y, effect_RisingDisc);
 			playSound(SFX_ShotHitWall);
 		}
 		else
@@ -412,6 +412,6 @@ void actBulletFireball3(bullet *bul)
 	else
 	{
 		bul->cond = 0;
-		createCaret(bul->x, bul->y, effect_Star, 0);
+		createCaret(bul->x, bul->y, effect_Star);
 	}
 }

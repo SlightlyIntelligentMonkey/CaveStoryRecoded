@@ -113,6 +113,7 @@ void changeNpc(int code_event, int code_char, int dir);
 
 void updateNPC();
 void drawNPC();
+void dropExperience(int x, int y, int exp);
 void killNpc(npc *NPC, bool bVanish);
 
 extern std::deque<npc> npcs;
@@ -127,10 +128,10 @@ enum NPC_cond
 
 enum NPC_flags
 {
-	npc_solidsoft = 0b0001, //Pushes quote out
-	npc_ignore44 = 0b0010, //Ignores tile 44 (No NPC)
-	npc_invulnerable = 0b0100, //Can't get hit
-	npc_ignoresolid = 0b1000, //Doesn't collide with anything
+	npc_solidsoft = 0x1, //Pushes quote out
+	npc_ignore44 = 0x2, //Ignores tile 44 (No NPC)
+	npc_invulnerable = 0x4, //Can't get hit
+	npc_ignoresolid = 0x8, //Doesn't collide with anything
 	npc_bouncy = 0x10, //Quote bounces on the top
 	npc_shootable = 0x20, //Can be shot
 	npc_solidhard = 0x40, //Essentially acts as level tiles

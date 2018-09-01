@@ -681,7 +681,7 @@ void npcAct084(npc *NPC) //Basu 1 projectile
 	//Remove if hit anything
 	if (NPC->flag & 0xFF)
 	{
-		createCaret(NPC->x, NPC->y, effect_RisingDisc, 0);
+		createCaret(NPC->x, NPC->y, effect_RisingDisc);
 		NPC->cond = 0;
 	}
 
@@ -703,7 +703,7 @@ void npcAct084(npc *NPC) //Basu 1 projectile
 
 	if (++NPC->count1 > 300)
 	{
-		createCaret(NPC->x, NPC->y, effect_RisingDisc, 0);
+		createCaret(NPC->x, NPC->y, effect_RisingDisc);
 		NPC->cond = 0;
 	}
 }
@@ -863,7 +863,7 @@ void npcAct087(npc *NPC) //Health refill
 		NPC->rect = rcLast;
 }
 
-void npcAct088(npc * NPC)
+void npcAct088(npc * NPC) // Igor (boss)
 {
 	RECT rcLeft[12];
 	RECT rcRight[12];
@@ -1085,7 +1085,7 @@ void npcAct088(npc * NPC)
 		NPC->rect = rcRight[NPC->ani_no];
 }
 
-void npcAct089(npc * NPC)
+void npcAct089(npc * NPC) // Igor, dying
 {
 	constexpr RECT rcLeft[4] = { {80, 80, 120, 120}, {240, 80, 264, 104}, {264, 80, 288, 104}, {288, 80, 312, 104} };
 	constexpr RECT rcRight[4] = { {200, 80, 240, 120}, {240, 104, 264, 128}, {264, 104, 288, 128}, {288, 104, 312, 128} };

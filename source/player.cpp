@@ -118,7 +118,7 @@ void player::damage(int16_t damage)
 
 				//Level down caret
 				if (life > 0 && weapons[selectedWeapon].code != 13)
-					createCaret(x, y, effect_LevelUpOrDown, 2);
+					createCaret(x, y, effect_LevelUpOrDown, dirRight);
 			}
 		}
 
@@ -131,7 +131,7 @@ void player::damage(int16_t damage)
 			cond = 0;
 
 			createSmoke(x, y, 5120, 64);
-			createCaret(x, y, effect_BigExplosion, 0);
+			createCaret(x, y, effect_BigExplosion);
 			startTscEvent(40);
 		}
 	}
@@ -369,9 +369,9 @@ void player::actNormal(bool bKey)
 				if (isKeyPressed(keyJump) || boost_cnt % 3 == 1)
 				{
 					if (direct == dirLeft)
-						createCaret(x + 0x400, y + 0x400, effect_BoosterSmoke, 2);
+						createCaret(x + 0x400, y + 0x400, effect_BoosterSmoke, dirRight);
 					if (direct == dirRight)
-						createCaret(x - 0x400, y + 0x400, effect_BoosterSmoke, 0);
+						createCaret(x - 0x400, y + 0x400, effect_BoosterSmoke, dirLeft);
 
 					playSound(SFX_Booster);
 				}
@@ -383,13 +383,13 @@ void player::actNormal(bool bKey)
 
 				if (isKeyPressed(keyJump) || boost_cnt % 3 == 1)
 				{
-					createCaret(x, y + 0xC00, effect_BoosterSmoke, 3);
+					createCaret(x, y + 0xC00, effect_BoosterSmoke, dirDown);
 					playSound(SFX_Booster);
 				}
 			}
 			else if (boost_sw == 3 && (isKeyPressed(keyJump) || boost_cnt % 3 == 1))
 			{
-				createCaret(x, y - 0xC00, effect_BoosterSmoke, 1);
+				createCaret(x, y - 0xC00, effect_BoosterSmoke, dirUp);
 				playSound(SFX_Booster);
 			}
 		}
@@ -403,7 +403,7 @@ void player::actNormal(bool bKey)
 
 			if (!(boost_cnt % 3))
 			{
-				createCaret(x, hit.bottom / 2 + y, effect_BoosterSmoke, 3);
+				createCaret(x, hit.bottom / 2 + y, effect_BoosterSmoke, dirDown);
 				playSound(SFX_Booster);
 			}
 
@@ -829,9 +829,9 @@ void player::update(bool bKey)
 								startTscEvent(41);
 
 								if (direct != dirLeft)
-									createCaret(x, y, effect_DrownedQuote, 2);
+									createCaret(x, y, effect_DrownedQuote, dirRight);
 								else
-									createCaret(x, y, effect_DrownedQuote, 0);
+									createCaret(x, y, effect_DrownedQuote, dirLeft);
 
 								cond &= ~player_visible;
 							}
