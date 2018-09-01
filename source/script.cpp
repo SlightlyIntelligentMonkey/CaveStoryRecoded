@@ -1122,8 +1122,7 @@ int updateTsc()
 				    tileToCoord(getTSCNumber(tsc.p_read + 14)),
 				    0,
 				    0,
-				    getTSCNumber(tsc.p_read + 19),
-				    nullptr);
+				    getTSCNumber(tsc.p_read + 19));
 				tscCleanup(4);
 				break;
 			case('<SOU'):

@@ -55,8 +55,10 @@ public:
 	int code_flag;
 	int code_event;
 
-	//stuff?
+	// Sprite index
 	int surf;
+
+	//stuff?
 	int hit_voice;
 	int destroy_voice;
 
@@ -98,7 +100,7 @@ public:
 	void facePlayer();
 	void move(int *pVel, int vel);
 
-	void init(int setCode, int setX, int setY, int setXm, int setYm, int setDir, npc *parentNpc) noexcept;
+	void init(int setCode, int setX = 0, int setY = 0, int setXm = 0, int setYm = 0, int setDir = dirLeft, npc *parentNpc = nullptr) noexcept;
 
 	void update() noexcept;
 	void draw();
@@ -106,15 +108,16 @@ public:
 
 void loadNpcTable();
 
-void createSmoke(int x, int y, int w, int num);
 
-void createNpc(int setCode, int setX, int setY, int setXm, int setYm, int setDir, npc *parentNpc);
-void changeNpc(int code_event, int code_char, int dir);
+void createSmoke(int x, int y, int w, size_t num);
+
+void createNpc(int setCode, int setX = 0, int setY = 0, int setXm = 0, int setYm = 0, int setDir = dirLeft, npc *parentNpc = nullptr);
+void changeNpc(int code_event, int code_char, int dir = dirLeft);
 
 void updateNPC();
 void drawNPC();
 void dropExperience(int x, int y, int exp);
-void killNpc(npc *NPC, bool bVanish);
+void killNpc(npc *NPC, bool bVanish = true);
 
 extern std::deque<npc> npcs;
 

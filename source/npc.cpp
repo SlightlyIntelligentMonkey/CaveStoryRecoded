@@ -25,16 +25,16 @@ int superXPos = 0;	// Used by undead core related NPCs ?
 int superYPos = 0;
 
 //NPC Functions
-void createSmoke(int x, int y, int w, int num)
+void createSmoke(int x, int y, int w, size_t num)
 {
 	const int wa = w / 0x200;
 
-	for (int i = 0; i < num; i++)
+	for (size_t i = 0; i < num; i++)
 	{
 		const int offsetX = random(-wa, wa) << 9;
 		const int offsetY = random(-wa, wa) << 9;
 
-		createNpc(NPC_Smoke, x + offsetX, offsetY + y, 0, 0, 0, nullptr);
+		createNpc(NPC_Smoke, x + offsetX, offsetY + y);
 	}
 }
 

@@ -54,7 +54,7 @@ void player::setDir(int setDirect)
 	{
 		cond |= player_interact;
 		xm = 0;
-		animate(false);
+		this->animate(false);
 		return;
 	}
 
@@ -64,7 +64,7 @@ void player::setDir(int setDirect)
 	{
 		direct = setDirect;
 		xm = 0;
-		animate(false);
+		this->animate(false);
 		return;
 	}
 
@@ -78,7 +78,7 @@ void player::setDir(int setDirect)
 				direct = dirLeft;
 
 			xm = 0;
-			animate(false);
+			this->animate(false);
 			return;
 		}
 	}
@@ -476,9 +476,7 @@ void player::actNormal(bool bKey)
 				if (xm > 0x200 || xm < -0x200)
 				{
 					for (int i = 0; i < 8; ++i)
-					{
-						createNpc(NPC_Waterdrop, x + (random(-8, 8) << 9), y, xm + random(-512, 512), random(-0x200, 0x80), dir, nullptr);
-					}
+						createNpc(NPC_Waterdrop, x + (random(-8, 8) << 9), y, xm + random(-512, 512), random(-0x200, 0x80), dir);
 
 					playSound(SFX_WaterSplash);
 				}
@@ -486,9 +484,7 @@ void player::actNormal(bool bKey)
 			else
 			{
 				for (int i = 0; i < 8; ++i)
-				{
-					createNpc(NPC_Waterdrop, x + (random(-8, 8) << 9), y, xm + random(-512, 512), random(-0x200, 0x80) - ym / 2, dir, nullptr);
-				}
+					createNpc(NPC_Waterdrop, x + (random(-8, 8) << 9), y, xm + random(-512, 512), random(-0x200, 0x80) - ym / 2, dir,);
 
 				playSound(SFX_WaterSplash);
 			}
@@ -501,7 +497,7 @@ void player::actNormal(bool bKey)
 
 		//Spike damage
 		if (flag & spike)
-			damage(10);
+			this->damage(10);
 
 		//Camera
 		if (direct != dirLeft)

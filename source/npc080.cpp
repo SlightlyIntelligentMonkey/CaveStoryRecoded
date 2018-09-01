@@ -416,7 +416,7 @@ void npcAct082(npc *NPC) //Misery standing
 		if (++NPC->act_wait == 30)
 		{
 			playSound(SFX_Bubble);
-			createNpc(NPC_ProjectileMiseryBubble, NPC->x, NPC->y - 0x2000, 0, 0, 0, NPC);
+			createNpc(NPC_ProjectileMiseryBubble, NPC->x, NPC->y - 0x2000);
 		}
 
 		if (NPC->act_wait == 50)
@@ -497,7 +497,7 @@ void npcAct082(npc *NPC) //Misery standing
 
 		if (something <= 0x14 && (1 << something) & 0x100401)
 		{
-			createNpc(NPC_ProjectileBalrogEnergyBallInvincible, NPC->x + 0x1000, NPC->y - 0x100, 0x600, random(-0x200, 0), 0, nullptr);
+			createNpc(NPC_ProjectileBalrogEnergyBallInvincible, NPC->x + 0x1000, NPC->y - 0x100, 0x600, random(-0x200, 0));
 			playSound(SFX_FireballShoot);
 		}
 
@@ -1018,9 +1018,7 @@ void npcAct088(npc * NPC) // Igor (boss)
 					NPC->x + (random(-12, 12) << 9),
 					NPC->y + (random(-12, 12) << 9),
 					random(-0x155, 0x155),
-					random(-0x600, 0),
-					dirLeft,
-					nullptr);
+					random(-0x600, 0));
 		}
 		break;
 
@@ -1049,9 +1047,7 @@ void npcAct088(npc * NPC) // Igor (boss)
 				, NPC->x
 				, NPC->y + 0x800
 				, 3 * getCos(angle)
-				, 3 * getSin(angle)
-				, dirLeft
-				, nullptr);
+				, 3 * getSin(angle));
 			playSound(SFX_DestroyBreakableBlock);
 		}
 
@@ -1107,8 +1103,7 @@ void npcAct089(npc * NPC) // Igor, dying
 		for (size_t i = 0; i < 8; ++i)
 			createNpc(NPC_Smoke,
 				NPC->x + (random(-12, 12) << 9), NPC->y + (random(-12, 12) << 9),
-				random(-0x155, 0x155), random(-0x600, 0),
-				dirLeft, nullptr);
+				random(-0x155, 0x155), random(-0x600, 0));
 		NPC->act_no = smokeLoop;
 		// Fallthrough
 	case smokeLoop:
@@ -1121,8 +1116,7 @@ void npcAct089(npc * NPC) // Igor, dying
 		if (!(NPC->act_wait % 5))
 			createNpc(NPC_Smoke,
 				NPC->x + (random(-12, 12) << 9), NPC->y + (random(-12, 12) << 9),
-				random(-0x155, 0x155), random(-0x600, 0),
-				dirLeft, nullptr);
+				random(-0x155, 0x155), random(-0x600, 0));
 
 		if (NPC->direct != dirLeft)
 			NPC->rect = rcRight[0];
@@ -1158,8 +1152,7 @@ void npcAct089(npc * NPC) // Igor, dying
 		if (!(NPC->act_wait % 9))
 			createNpc(NPC_Smoke,
 				NPC->x + (random(-12, 12) << 9), NPC->y + (random(-12, 12) << 9),
-				random(-0x155, 0x155), random(-0x600, 0),
-				dirLeft, nullptr);
+				random(-0x155, 0x155), random(-0x600, 0));
 
 		if (NPC->direct == dirLeft)
 			NPC->rect = rcLeft[NPC->ani_no];
@@ -1296,9 +1289,7 @@ void npcAct096(npc *NPC) //Fan left
 
 		//Current effect
 		if (currentPlayer.x > NPC->x - 0x28000 && currentPlayer.x < NPC->x + 0x28000 && currentPlayer.y > NPC->y - 0x28000 && currentPlayer.y < NPC->y + 0x28000 && random(0, 5) == 1)
-		{
-			createNpc(NPC_UnderwaterCurrent, NPC->x + (random(-8, 8) << 9), NPC->y, 0, 0, 0, nullptr);
-		}
+			createNpc(NPC_UnderwaterCurrent, NPC->x + (random(-8, 8) << 9), NPC->y, 0, 0, dirLeft);
 
 		//Blow quote
 		if (currentPlayer.y < NPC->y + 0x1000 && currentPlayer.y > NPC->y - 0x1000 && currentPlayer.x < NPC->x && currentPlayer.x > NPC->x - 0xC000)
@@ -1344,15 +1335,11 @@ void npcAct097(npc *NPC) //Fan up
 
 		//Current effect
 		if (currentPlayer.x > NPC->x - 0x28000 && currentPlayer.x < NPC->x + 0x28000 && currentPlayer.y > NPC->y - 0x28000 && currentPlayer.y < NPC->y + 0x28000 && random(0, 5) == 1)
-		{
-			createNpc(NPC_UnderwaterCurrent, NPC->x + (random(-8, 8) << 9), NPC->y, 0, 0, 1, nullptr);
-		}
+			createNpc(NPC_UnderwaterCurrent, NPC->x + (random(-8, 8) << 9), NPC->y, 0, 0, dirUp);
 
 		//Blow quote
 		if (currentPlayer.x < NPC->x + 0x1000 && currentPlayer.x > NPC->x - 0x1000 && currentPlayer.y < NPC->y && currentPlayer.y > NPC->y - 0xC000)
-		{
 			currentPlayer.ym -= 0x88;
-		}
 
 		break;
 	case 0:
@@ -1391,9 +1378,7 @@ void npcAct098(npc *NPC) //Fan right
 
 		//Current effect
 		if (currentPlayer.x > NPC->x - 0x28000 && currentPlayer.x < NPC->x + 0x28000 && currentPlayer.y > NPC->y - 0x28000 && currentPlayer.y < NPC->y + 0x28000 && random(0, 5) == 1)
-		{
-			createNpc(NPC_UnderwaterCurrent, NPC->x + (random(-8, 8) << 9), NPC->y, 0, 0, 2, nullptr);
-		}
+			createNpc(NPC_UnderwaterCurrent, NPC->x + (random(-8, 8) << 9), NPC->y, 0, 0, dirRight);
 
 		//Blow quote
 		if (currentPlayer.y < NPC->y + 0x1000 && currentPlayer.y > NPC->y - 0x1000 && currentPlayer.x > NPC->x && currentPlayer.x < NPC->x + 0xC000)

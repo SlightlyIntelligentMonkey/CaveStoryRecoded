@@ -93,7 +93,7 @@ bool changeTile(int x, int y, uint8_t tile)
 	levelMap[x + y * levelWidth] = tile;
 
 	for (int i = 0; i < 3; ++i)
-		createNpc(NPC_Smoke, tileToCoord(x), tileToCoord(y), 0, 0, 0, nullptr);
+		createNpc(NPC_Smoke, tileToCoord(x), tileToCoord(y));
 
 	return true;
 }

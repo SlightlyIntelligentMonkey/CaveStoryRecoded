@@ -77,9 +77,9 @@ void npcAct200(npc *NPC) // Dragon Zombie (enemy)
 			int yVel = 3 * getSin(angle);
 			int xVel = 3 * getCos(angle);
 			if (NPC->direct != dirLeft)
-				createNpc(NPC_ProjectileDragonZombie, NPC->x + 0x1C00, NPC->y, xVel, yVel, dirLeft, nullptr);
+				createNpc(NPC_ProjectileDragonZombie, NPC->x + 0x1C00, NPC->y, xVel, yVel);
 			else
-				createNpc(NPC_ProjectileDragonZombie, NPC->x - 0x1C00, NPC->y, xVel, yVel, dirLeft, nullptr);
+				createNpc(NPC_ProjectileDragonZombie, NPC->x - 0x1C00, NPC->y, xVel, yVel);
 
 			if (!(currentPlayer.cond & player_removed))	// wot ?
 				playSound(SFX_FireballShoot);
@@ -117,7 +117,7 @@ void npcAct202(npc * NPC) // Dragon Zombie fire (projectile)
 	NPC->x += NPC->xm;
 	NPC->y += NPC->ym;
 
-	constexpr RECT rcNPC = { {184, 216, 200, 240}, {200, 216, 216, 240}, {216, 216, 232, 240} };
+	constexpr RECT rcNPC[3] = { {184, 216, 200, 240}, {200, 216, 216, 240}, {216, 216, 232, 240} };
 
 	NPC->animate(1, 0, 2);
 

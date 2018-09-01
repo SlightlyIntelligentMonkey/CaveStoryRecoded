@@ -9,9 +9,9 @@ void npcAct125(npc *NPC) //Hidden item
 		createSmoke(NPC->x, NPC->y, NPC->view.right, 8);
 		playSound(70);
 		if (NPC->direct)
-			createNpc(86, NPC->x, NPC->y, 0, 0, 2, nullptr);
+			createNpc(NPC_Missile, NPC->x, NPC->y, 0, 0, dirRight);
 		else
-			createNpc(87, NPC->x, NPC->y, 0, 0, 2, nullptr);
+			createNpc(NPC_Heart, NPC->x, NPC->y, 0, 0, dirRight);
 		NPC->cond = 0;
 	}
 

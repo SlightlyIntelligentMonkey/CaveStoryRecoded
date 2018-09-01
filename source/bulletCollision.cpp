@@ -43,7 +43,7 @@ int bulletJudgeBlock(int x, int y, bullet *bul) //For judging breakable blocks
 		playSound(SFX_DestroyBreakableBlock);
 
 		for (int i = 0; i < 4; ++i)
-			createNpc(NPC_Smoke, tileToCoord(x), tileToCoord(y), random(-512, 512), random(-512, 512), 0, nullptr);
+			createNpc(NPC_Smoke, tileToCoord(x), tileToCoord(y), random(-512, 512), random(-512, 512));
 
 		//Shift tile -1
 		shiftTile(x, y);

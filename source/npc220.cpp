@@ -64,7 +64,7 @@ void npcAct231(npc *NPC) //Momorin's rocket
 
 		for (int i = 0; i < 10; ++i)
 		{
-			createNpc(NPC_Smoke, NPC->x + (random(-16, 16) << 9), NPC->y + (random(-8, 8) << 9), 0, 0, 0, nullptr);
+			createNpc(NPC_Smoke, NPC->x + (random(-16, 16) << 9), NPC->y + (random(-8, 8) << 9));
 			playSound(SFX_DestroyBreakableBlock);
 		}
 	// fallthrough
@@ -89,7 +89,7 @@ void npcAct231(npc *NPC) //Momorin's rocket
 
 			for (int i = 0; i < 6; ++i)
 			{
-				createNpc(NPC_Smoke, NPC->x + (random(-16, 16) << 9), NPC->y + (random(-8, 8) << 9), 0, 0, 0, nullptr);
+				createNpc(NPC_Smoke, NPC->x + (random(-16, 16) << 9), NPC->y + (random(-8, 8) << 9));
 				playSound(SFX_DestroyBreakableBlock);
 			}
 		}
@@ -198,7 +198,7 @@ void npcAct238(npc *NPC) //Killer press
 
 			for (int i = 0; i < 4; ++i)
 			{
-				createNpc(NPC_Smoke, NPC->x + (random(-16, 16) << 9), NPC->y + (random(-8, 8) << 9), 0, 0, 0, nullptr);
+				createNpc(NPC_Smoke, NPC->x + (random(-16, 16) << 9), NPC->y + (random(-8, 8) << 9));
 				playSound(SFX_DestroyBreakableBlock);
 			}
 		}

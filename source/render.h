@@ -43,6 +43,18 @@ void loadImage(const char *file, SDL_Texture **tex);
 void setCliprect(const RECT *rect) noexcept;
 void drawTexture(SDL_Texture *texture, const RECT *rect, int x, int y);
 void drawTextureSize(SDL_Texture *texture, const RECT *rect, int x, int y, int w, int h);
-void drawNumber(int value, int x, int y, bool bZero);
-void drawString(int x, int y, const char *str, const uint8_t *flag);
+void drawNumber(int value, int x, int y, bool bZero = false);
+void drawString(int x, int y, const char *str, const uint8_t *flag = nullptr);
 void drawRect(int x, int y, int w, int h) noexcept;
+
+template <typename T>
+inline T pixelToCoord(T x) noexcept
+{
+	return x << 9;
+}
+
+template <typename T>
+inline T coordToPixel(T x) noexcept
+{
+	return x >> 9;
+}

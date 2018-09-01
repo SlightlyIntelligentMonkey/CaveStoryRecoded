@@ -268,7 +268,7 @@ void actBulletFireball2(bullet *bul)
 			else
 				bul->rect = rect_left2[bul->ani_no];
 
-			createNpc(NPC_ProjectileFireballSnakeTrail, bul->x, bul->y, 0, -512, bul->ani_no, nullptr);
+			createNpc(NPC_ProjectileFireballSnakeTrail, bul->x, bul->y, 0, -512, bul->ani_no);
 		}
 	}
 	else
@@ -406,7 +406,7 @@ void actBulletFireball3(bullet *bul)
 			else
 				bul->rect = rect_left2[bul->ani_no];
 
-			createNpc(NPC_ProjectileFireballSnakeTrail, bul->x, bul->y, 0, -512, bul->ani_no + 3, nullptr);
+			createNpc(NPC_ProjectileFireballSnakeTrail, bul->x, bul->y, 0, -512, bul->ani_no + 3);
 		}
 	}
 	else
