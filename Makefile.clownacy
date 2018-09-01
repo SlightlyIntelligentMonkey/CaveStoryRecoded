@@ -1,0 +1,31 @@
+WARNINGS = -pedantic -Wall -Wextra -Wno-multichar -Wno-unused-parameter
+
+OPTIMISATIONS = -Ofast -flto -frename-registers -funroll-loops
+
+CXXFLAGS = $(OPTIMISATIONS) $(WARNINGS)
+ALL_CXXFLAGS = -std=c++17 `sdl2-config --cflags` -m32 -IJson_Modern_Cpp $(CXXFLAGS)
+LDFLAGS = -s -mwindows
+ALL_LDFLAGS = -static `sdl2-config --static-libs` $(LDFLAGS)
+LIBS = 
+ALL_LIBS = -lSDL2_image -ljpeg -lpng -lwebp -lz -ltiff -llzma $(LIBS)
+
+MAIN := bullet bulletCollision caret fade filesystem fireball fireballShoot flags game hud input inventory level loadConfig main mathUtils
+MAIN += npc npcAct npcCollision org player playerCollision polarStar polarStarShoot
+MAIN += render script sound spur spurShoot stageSelect stdUtils valueview weapons
+
+MAIN += npc000 npc020 npc040 npc060 npc080 npc100 npc120 npc140 npc160 npc180 npc200 npc220 npc240 npc260 npc280 npc300 npc320 npc340
+
+OBJS := $(addprefix obj/, $(addsuffix .o, $(MAIN)))
+
+all: bin/CaveStoryRemake
+
+bin/CaveStoryRemake: $(OBJS)
+	@mkdir -p $(@D)
+	@$(CXX) $(ALL_CXXFLAGS) $(OBJS) -o $@ $(ALL_LDFLAGS) $(ALL_LIBS)
+
+obj/%.o: source/%.cpp
+	@mkdir -p $(@D)
+	@$(CXX) $(ALL_CXXFLAGS) $^ -o $@ -c
+
+clean:
+	rm -rf obj bin

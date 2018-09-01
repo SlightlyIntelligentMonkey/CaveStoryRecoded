@@ -8,13 +8,15 @@
 #include "sound.h"
 #include "caret.h"
 #include "bullet.h"
+#include "game.h"
 
 using std::memset;
 using std::string;
 using std::to_string;
 
 //Shoot functions
-weaponShoot shootFunctions[] = {
+weaponShoot shootFunctions[14] =
+{
 	static_cast<weaponShoot>(nullptr),
 	static_cast<weaponShoot>(nullptr),
 	&shootPolarStar,
@@ -28,11 +30,12 @@ weaponShoot shootFunctions[] = {
 	static_cast<weaponShoot>(nullptr),
 	static_cast<weaponShoot>(nullptr),
 	static_cast<weaponShoot>(nullptr),
-	shootSpur,
+	&shootSpur,
 };
 
 //Weapon Levels
-WEAPONEXP weaponLevels[14] = {
+WEAPONEXP weaponLevels[14] =
+{
 	{{ 0,	0,	100 }},
 	{{ 30,	40,	16 }},
 	{{ 10,	20,	10 }},
@@ -49,13 +52,14 @@ WEAPONEXP weaponLevels[14] = {
 	{{ 40,	60,	200 }},
 };
 
-WEAPON weapons[8];
+WEAPON weapons[WEAPONS];
+
 RECT weaponRect;
 int selectedWeapon;
 int weaponShiftX;
 int weaponExpFlash;
 
-void initWeapons()
+void initWeapons() noexcept
 {
 	memset(weapons, 0, sizeof(weapons));
 	selectedWeapon = 0;
@@ -65,20 +69,28 @@ void initWeapons()
 //Functions for shooting
 void actWeapon()
 {
-	if (shootFunctions[weapons[selectedWeapon].code] != nullptr)
-		shootFunctions[weapons[selectedWeapon].code](weapons[selectedWeapon].level);
-	else if (debugFlags | notifyOnNotImplemented)
+	if (!(currentPlayer.cond & player_removed))
 	{
-		static bool wasNotifiedAbout[_countof(shootFunctions)] = { false };
-		if (wasNotifiedAbout[weapons[selectedWeapon].code])
-			return;
-		wasNotifiedAbout[weapons[selectedWeapon].code] = true;
-		string msg = "Weapon " + to_string(weapons[selectedWeapon].code) + " is not implemented.";
-		SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_WARNING, "Missing Weapon", msg.c_str(), nullptr);
+		if (weapons[selectedWeapon].code)
+		{
+			if (shootFunctions[weapons[selectedWeapon].code] != nullptr)
+				shootFunctions[weapons[selectedWeapon].code](weapons[selectedWeapon].level);
+			else if (debugFlags & notifyOnNotImplemented)
+			{
+				static bool wasNotifiedAbout[_countof(shootFunctions)] = { false };
+
+				if (wasNotifiedAbout[weapons[selectedWeapon].code])
+					return;
+
+				wasNotifiedAbout[weapons[selectedWeapon].code] = true;
+				string msg = "Weapon " + to_string(weapons[selectedWeapon].code) + " is not implemented.";
+				SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_WARNING, "Missing Weapon", msg.c_str(), nullptr);
+			}
+		}
 	}
 }
 
-int useWeaponAmmo(int num)
+int useWeaponAmmo(int num) noexcept
 {
 	//Some checks
 	if (!weapons[selectedWeapon].max_num)
@@ -93,10 +105,10 @@ int useWeaponAmmo(int num)
 	return 1;
 }
 
-bool weaponMaxExp()
+bool weaponMaxExp() noexcept
 {
 	return weapons[selectedWeapon].level == 3
-		&& weapons[selectedWeapon].exp >= weaponLevels[weapons[selectedWeapon].code].exp[2];
+	       && weapons[selectedWeapon].exp >= weaponLevels[weapons[selectedWeapon].code].exp[2];
 }
 
 int weaponBullets(int arms_code)
@@ -111,11 +123,11 @@ int weaponBullets(int arms_code)
 }
 
 //TSC functions
-int tradeWeapons(int code1, int code2, int max_num)
+int tradeWeapons(int code1, int code2, int max_num) noexcept
 {
-	int i; // [esp+Ch] [ebp-4h]
-	for (i = 0; i < 8 && weapons[i].code != code1; ++i);
-	if (i == 8)
+	int i;
+	for (i = 0; i < WEAPONS && weapons[i].code != code1; ++i);
+	if (i == WEAPONS)
 		return 0;
 
 	weapons[i].level = 1;
@@ -126,11 +138,11 @@ int tradeWeapons(int code1, int code2, int max_num)
 	return 1;
 }
 
-int giveWeapon(int code, int max_num)
+int giveWeapon(int code, int max_num) noexcept
 {
 	int i;
-	for (i = 0; i < 8 && weapons[i].code != code && weapons[i].code; ++i);
-	if (i == 8)
+	for (i = 0; i < WEAPONS && weapons[i].code != code && weapons[i].code; ++i);
+	if (i == WEAPONS)
 		return 0;
 
 	//Ensure past data is erased
@@ -150,11 +162,11 @@ int giveWeapon(int code, int max_num)
 	return 1;
 }
 
-int removeWeapon(int code)
+int removeWeapon(int code) noexcept
 {
 	int i;
-	for (i = 0; i < 8 && weapons[i].code != code; ++i);
-	if (i == 8)
+	for (i = 0; i < WEAPONS && weapons[i].code != code; ++i);
+	if (i == WEAPONS)
 		return 0;
 
 	//Push back all weapons ahead
@@ -168,26 +180,26 @@ int removeWeapon(int code)
 	return 1;
 }
 
-void clearWeaponExperience()
+void clearWeaponExperience() noexcept
 {
-	for (int a = 0; a < 8; ++a)
+	for (auto& i : weapons)
 	{
-		weapons[a].level = 1;
-		weapons[a].exp = 0;
+		i.level = 1;
+		i.exp = 0;
 	}
 }
 
-void maxWeaponAmmo()
+void maxWeaponAmmo() noexcept
 {
-	for (int a = 0; a < 8; ++a)
-		weapons[a].num = weapons[a].max_num;
+	for (auto& i : weapons)
+		i.num = i.max_num;
 }
 
-bool checkWeapon(int code)
+bool checkWeapon(int code) noexcept
 {
-	for (int i = 0; i <= 7; ++i)
+	for (const auto& i : weapons)
 	{
-		if (weapons[i].code == code)
+		if (i.code == code)
 			return true;
 	}
 	return false;
@@ -245,11 +257,11 @@ void giveWeaponExperience(int x)
 }
 
 //Rotate weapon functions
-int rotateWeaponRight()
+int rotateWeaponRight() noexcept
 {
 	int weaponNo;
 
-	for (weaponNo = 0; weapons[weaponNo].code != 0; ++weaponNo);
+	for (weaponNo = 0; weaponNo < WEAPONS && weapons[weaponNo].code != 0; ++weaponNo);
 	if (!weaponNo)
 		return 0;
 
@@ -269,11 +281,11 @@ int rotateWeaponRight()
 	return weapons[weaponNo].code;
 }
 
-int rotateWeaponLeft()
+int rotateWeaponLeft() noexcept
 {
 	int weaponNo;
 
-	for (weaponNo = 0; weapons[weaponNo].code != 0; ++weaponNo);
+	for (weaponNo = 0; weaponNo < WEAPONS && weapons[weaponNo].code != 0; ++weaponNo);
 	if (!weaponNo)
 		return 0;
 
@@ -292,3 +304,4 @@ int rotateWeaponLeft()
 
 	return weapons[weaponNo].code;
 }
+

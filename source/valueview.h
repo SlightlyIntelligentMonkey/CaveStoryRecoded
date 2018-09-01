@@ -13,12 +13,12 @@ public: //Variables
 	int value;
 	int count;
 	RECT rect;
-	
-public: //Functions
-	void init(int *px, int *py, int value);
-	void add(int value);
 
-	void update();
+public: //Functions
+	void init(int *px, int *py, int value) noexcept;
+	void add(int value) noexcept;
+
+	void update() noexcept;
 	void draw();
 };
 

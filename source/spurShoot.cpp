@@ -85,10 +85,12 @@ void shootSpur(int level)
 		else
 			bul_no = 38;
 		break;
+	default:
+		doCustomError("level argument of shootSpur was invalid");
 	}
 
 	//Shoot bullet
-	bool cantShoot = weaponBullets(13) > 0 || weaponBullets(14) > 0;
+	const bool cantShoot = weaponBullets(13) > 0 || weaponBullets(14) > 0;
 
 	if (!cantShoot && (isKeyPressed(keyShoot) || bShot))
 	{
@@ -98,7 +100,7 @@ void shootSpur(int level)
 		}
 		else
 		{
-			int shootDirect;
+			uint8_t shootDirect;
 			int shootX;
 			int shootY;
 			int caretX;
@@ -106,14 +108,14 @@ void shootSpur(int level)
 			//Get bullet orientation and position
 			if (currentPlayer.up)
 			{
-				shootDirect = 1;
+				shootDirect = dirUp;
 				shootX = (currentPlayer.direct - 1) * 0x200;
 				caretX = (currentPlayer.direct - 1) * 0x200;
 				shootY = -0x1000;
 			}
 			else if (currentPlayer.down)
 			{
-				shootDirect = 3;
+				shootDirect = dirDown;
 				shootX = (currentPlayer.direct - 1) * 0x200;
 				caretX = (currentPlayer.direct - 1) * 0x200;
 				shootY = 0x1000;
