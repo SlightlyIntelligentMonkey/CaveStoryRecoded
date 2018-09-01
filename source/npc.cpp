@@ -236,9 +236,7 @@ void killNpc(npc *NPC, bool bVanish)
 			createValueView(&NPC->x, &NPC->y, NPC->damage_view);
 
 		if (bVanish)
-		{
-			NPC->init(3, NPC->x, NPC->y, 0, 0, 0, nullptr);
-		}
+			NPC->init(NPC_DeletesItself, NPC->x, NPC->y, 0, 0, 0, nullptr);
 	}
 
 	//Play sound

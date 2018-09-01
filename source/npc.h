@@ -100,7 +100,7 @@ public:
 	void facePlayer();
 	void move(int *pVel, int vel);
 
-	void init(int setCode, int setX = 0, int setY = 0, int setXm = 0, int setYm = 0, int setDir = dirLeft, npc *parentNpc = nullptr) noexcept;
+	void init(int setCode, int setX, int setY, int setXm, int setYm, int setDir, npc *parentNpc) noexcept;
 
 	void update() noexcept;
 	void draw();
