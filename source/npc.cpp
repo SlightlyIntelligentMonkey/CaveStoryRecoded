@@ -335,6 +335,35 @@ void loadNpcTable()
 		tblStream->read(tblStream, &npcTable[i].view, 4, 1);
 }
 
+void npc::animate(int aniWait, int aniStart, int aniMax)
+{
+	{
+		if (++this->ani_wait > aniWait)
+		{
+			this->ani_wait = 0;
+			++this->ani_no;
+		}
+		if (this->ani_no > aniMax)
+			this->ani_no = aniStart;
+	}
+}
+
+void npc::facePlayer()
+{
+	if (currentPlayer.x >= this->x)
+		this->direct = dirRight;
+	else
+		this->direct = dirLeft;
+}
+
+void npc::move(int * pVel, int vel)
+{
+	if (this->direct != dirLeft)
+		*pVel = vel;
+	else
+		*pVel = -vel;
+}
+
 void npc::init(int setCode, int setX, int setY, int setXm, int setYm, int setDir, npc *parentNpc) noexcept
 {
 	memset(this, 0, sizeof(*this));
@@ -431,3 +460,4 @@ void npc::draw()
 		}
 	}
 }
+

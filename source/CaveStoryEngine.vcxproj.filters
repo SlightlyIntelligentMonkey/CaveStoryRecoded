@@ -359,9 +359,6 @@
     <ClInclude Include="npc160.h">
       <Filter>Source Files\classes\npc\act</Filter>
     </ClInclude>
-    <ClInclude Include="npcUtils.h">
-      <Filter>Source Files\classes\npc\act</Filter>
-    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="CaveStoryEngine.rc">

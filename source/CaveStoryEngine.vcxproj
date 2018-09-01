@@ -287,7 +287,6 @@
     <ClInclude Include="npc280.h" />
     <ClInclude Include="npc300.h" />
     <ClInclude Include="npc320.h" />
-    <ClInclude Include="npcUtils.h" />
     <ClInclude Include="org.h" />
     <ClInclude Include="polarStar.h" />
     <ClInclude Include="script.h" />

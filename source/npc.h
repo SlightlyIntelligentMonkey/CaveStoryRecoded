@@ -93,6 +93,11 @@ public:
 	npc *pNpc;
 
 public:
+	/// These are kinda supposed to be internal, but I can't put them as protected/private
+	void animate(int aniWait, int aniStart, int aniMax);
+	void facePlayer();
+	void move(int *pVel, int vel);
+
 	void init(int setCode, int setX, int setY, int setXm, int setYm, int setDir, npc *parentNpc) noexcept;
 
 	void update() noexcept;

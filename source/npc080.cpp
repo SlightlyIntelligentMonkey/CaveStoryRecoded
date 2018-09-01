@@ -4,7 +4,6 @@
 #include "mathUtils.h"
 #include "caret.h"
 #include "sound.h"
-#include "npcUtils.h"
 #include "game.h"
 
 void npcAct080(npc *NPC) //Gravekeeper
@@ -919,7 +918,7 @@ void npcAct088(npc * NPC)
 		NPC->ani_wait = 0;
 		// Fallthrough
 	case stand:
-		npcAnimate(NPC, 5, 0, 1);
+		NPC->animate(5, 0, 1);
 		if (++NPC->act_wait > 50)
 			NPC->act_no = startAttack;
 		break;
@@ -930,7 +929,7 @@ void npcAct088(npc * NPC)
 		NPC->ani_no = 2;
 		NPC->ani_wait = 0;
 
-		npcFacePlayer(NPC);
+		NPC->facePlayer();
 
 		if (++NPC->count1 >= 3 && NPC->life <= 150)
 		{
@@ -942,8 +941,8 @@ void npcAct088(npc * NPC)
 		// Fallthrough
 	case walk:
 		++NPC->act_wait;
-		npcAnimate(NPC, 3, 2, 5);
-		npcMove(NPC, &NPC->xm, 0x200);
+		NPC->animate(3, 2, 5);
+		NPC->move(&NPC->xm, 0x200);
 
 		if (NPC->count2)
 		{
@@ -1038,7 +1037,7 @@ void npcAct088(npc * NPC)
 	case startMouthBlast:
 		NPC->act_no = mouthBlast;
 		NPC->act_wait = 0;
-		npcFacePlayer(NPC);
+		NPC->facePlayer();
 		// Fallthrough
 	case mouthBlast:
 		if (++NPC->act_wait > 100 && NPC->act_wait % 6 == 1)
@@ -1088,6 +1087,111 @@ void npcAct088(npc * NPC)
 
 void npcAct089(npc * NPC)
 {
+	constexpr RECT rcLeft[4] = { {80, 80, 120, 120}, {240, 80, 264, 104}, {264, 80, 288, 104}, {288, 80, 312, 104} };
+	constexpr RECT rcRight[4] = { {200, 80, 240, 120}, {240, 104, 264, 128}, {264, 104, 288, 128}, {288, 104, 312, 128} };
+
+	enum
+	{
+		init = 0,
+		smokeLoop = 1,
+		flashBigSmall = 2,
+		fallDown = 3,
+	};
+
+	switch (NPC->act_no)
+	{
+	case init:
+		playSound(SFX_Explosion);
+		NPC->facePlayer();
+
+		for (size_t i = 0; i < 8; ++i)
+			createNpc(NPC_Smoke,
+				NPC->x + (random(-12, 12) << 9), NPC->y + (random(-12, 12) << 9),
+				random(-0x155, 0x155), random(-0x600, 0),
+				dirLeft, nullptr);
+		NPC->act_no = smokeLoop;
+		// Fallthrough
+	case smokeLoop:
+		if (++NPC->act_wait > 100)
+		{
+			NPC->act_wait = 0;
+			NPC->act_no = flashBigSmall;
+		}
+
+		if (!(NPC->act_wait % 5))
+			createNpc(NPC_Smoke,
+				NPC->x + (random(-12, 12) << 9), NPC->y + (random(-12, 12) << 9),
+				random(-0x155, 0x155), random(-0x600, 0),
+				dirLeft, nullptr);
+
+		if (NPC->direct != dirLeft)
+			NPC->rect = rcRight[0];
+		else
+			NPC->rect = rcLeft[0];
+		
+		if (NPC->act_wait / 2 % 2)
+			--NPC->rect.left;
+		break;
+
+	case flashBigSmall:
+		if (++NPC->act_wait / 2 % 2 && NPC->act_wait < 100)
+		{
+			NPC->ani_no = 0;
+			NPC->view.right = 0x2800;
+			NPC->view.left = 0x2800;
+			NPC->view.top = 0x2800;
+		}
+		else
+		{
+			NPC->ani_no = 0;
+			NPC->view.right = 0x1800;
+			NPC->view.left = 0x1800;
+			NPC->view.top = 0x1000;
+		}
+
+		if (NPC->act_wait > 150)
+		{
+			NPC->act_wait = 0;
+			NPC->act_no = fallDown;
+			NPC->ani_no = 1;
+		}
+		if (!(NPC->act_wait % 9))
+			createNpc(NPC_Smoke,
+				NPC->x + (random(-12, 12) << 9), NPC->y + (random(-12, 12) << 9),
+				random(-0x155, 0x155), random(-0x600, 0),
+				dirLeft, nullptr);
+
+		if (NPC->direct == dirLeft)
+			NPC->rect = rcLeft[NPC->ani_no];
+		else
+			NPC->rect = rcRight[NPC->ani_no];
+		break;
+
+	case fallDown:
+		if (++NPC->ani_wait > 50)
+		{
+			NPC->ani_wait = 0;
+			++NPC->ani_no;
+		}
+		if (NPC->ani_no == 3)
+			NPC->act_no = 4;
+
+		if (NPC->direct == dirLeft)
+			NPC->rect = rcLeft[NPC->ani_no];
+		else
+			NPC->rect = rcRight[NPC->ani_no];
+		break;
+
+	default:
+		break;
+	}
+
+	NPC->ym += 0x40;
+	if (NPC->ym > 0x5FF)
+		NPC->ym = 0x5FF;
+
+	NPC->x += NPC->xm;
+	NPC->y += NPC->ym;
 }
 
 void npcAct090(npc *NPC) // Background
@@ -1104,6 +1208,68 @@ void npcAct091(npc *NPC) // Cage
 	}
 
 	NPC->rect = { 96, 88, 128, 112 };
+}
+
+void npcAct092(npc * NPC)
+{
+	constexpr RECT rcNPC[3] = { {272, 216, 288, 240}, {288, 216, 304, 240}, {304, 216, 320, 240} };
+
+	enum
+	{
+		init = 0,
+		typing = 1,
+		slouch = 2,
+		upright = 3,
+	};
+
+	switch (NPC->act_no)
+	{
+	case init:
+		NPC->x -= 0x800;
+		NPC->y += 0x2000;
+		NPC->act_no = typing;
+		NPC->ani_no = 0;
+		NPC->ani_wait = 0;
+		// Fallthrough
+	case typing:
+		NPC->animate(2, 0, 1);
+
+		if (!random(0, 80))
+		{
+			NPC->act_no = slouch;
+			NPC->act_wait = 0;
+			NPC->ani_no = 1;
+		}
+		if (!random(0, 120))
+		{
+			NPC->act_no = upright;
+			NPC->act_wait = 0;
+			NPC->ani_no = 2;
+		}
+		break;
+
+	case slouch:
+		if (++NPC->act_wait > 40)
+		{
+			NPC->act_no = upright;
+			NPC->act_wait = 0;
+			NPC->ani_no = 2;
+		}
+		break;
+
+	case upright:
+		if (++NPC->act_wait > 80)
+		{
+			NPC->act_no = typing;
+			NPC->ani_no = 0;
+		}
+		break;
+
+	default:
+		break;
+	}
+
+	NPC->rect = rcNPC[NPC->ani_no];
 }
 
 void npcAct096(npc *NPC) //Fan left
