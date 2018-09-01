@@ -2,6 +2,7 @@
 #include "common.h"
 
 #include <SDL_image.h>
+#include "game.h"
 
 SDL_Rect drawRectangle = { 0, 0, 0, 0 };
 SDL_Rect cliprect = { 0, 0, 0, 0 };
@@ -21,7 +22,7 @@ int charHeight = 24;
 int charScale = 2;
 
 //Create window
-int createWindow(int width, int height, int scale, bool fullscreen) // TBD : Handle fullscreen parameter
+int createWindow(int width, int height, int scale, bool fullscreen) noexcept // TBD : Handle fullscreen parameter
 {
 	const int createWidth = width * scale;
 	const int createHeight = height * scale;
@@ -33,9 +34,9 @@ int createWindow(int width, int height, int scale, bool fullscreen) // TBD : Han
 	//Set window
 	if (!window)
 		window = SDL_CreateWindow("Cave Story Engine",
-			SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
-			createWidth, createHeight,
-			0);
+		                          SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
+		                          createWidth, createHeight,
+		                          0);
 	else
 		SDL_SetWindowSize(window, createWidth, createHeight);
 
@@ -88,10 +89,60 @@ void switchScreenMode()
 	SDL_SetWindowFullscreen(window, windowFlags);
 }
 
-//Texture and drawing stuff
-void loadImage(const char *file, SDL_Texture **tex) {
+void drawWindow()
+{
+	//Framerate limiter
+	while (true)
+	{
+		static uint32_t timePrev;
+		const uint32_t timeNow = SDL_GetTicks();
+		const uint32_t timeNext = timePrev + framerate;
+
+		if (timeNow >= timeNext)
+		{
+			if (timeNow < timePrev + 100)
+				timePrev += framerate;
+			else
+				timePrev = timeNow;	// If the timer is freakishly out of sync, panic and reset it, instead of spamming frames for who-knows how long
+
+			break;
+		}
+
+		SDL_Delay(timeNext - timeNow);
+	}
+
+	SDL_RenderPresent(renderer);
+}
+
+void captureScreen(enum TextureNums texture_id)
+{
 	//Destroy previously existing texture and load new one
-	if (*tex != nullptr) { SDL_DestroyTexture(*tex); }
+	if (sprites[texture_id] != nullptr)
+		SDL_DestroyTexture(sprites[texture_id]);
+
+	int width, height;
+	SDL_GetRendererOutputSize(renderer, &width, &height);
+
+	// The depth parameter here is unused. Be aware, it will be removed in SDL 2.1.
+	SDL_Surface *surface = SDL_CreateRGBSurfaceWithFormat(0, width, height, 0, SDL_PIXELFORMAT_RGB888);
+	SDL_RenderReadPixels(renderer, nullptr, SDL_PIXELFORMAT_RGB888, surface->pixels, surface->pitch);
+
+	sprites[texture_id] = SDL_CreateTextureFromSurface(renderer, surface);
+
+	SDL_FreeSurface(surface);
+}
+
+//Texture and drawing stuff
+void loadImage(const char *file, SDL_Texture **tex)
+{
+	if (tex == nullptr)
+		doCustomError("tex was nullptr in loadImage");
+
+	//Destroy previously existing texture and load new one
+	if (*tex != nullptr)
+	{
+		SDL_DestroyTexture(*tex);
+	}
 	*tex = IMG_LoadTexture(renderer, file);
 
 	//Error if anything failed
@@ -104,7 +155,7 @@ void loadImage(const char *file, SDL_Texture **tex) {
 }
 
 //Drawing functions
-void setCliprect(const RECT *rect)
+void setCliprect(const RECT *rect) noexcept
 {
 	//All of this code should be pretty self explanatory
 	if (rect != nullptr)
@@ -117,7 +168,8 @@ void setCliprect(const RECT *rect)
 	SDL_RenderSetClipRect(renderer, nullptr);
 }
 
-void drawTexture(SDL_Texture *texture, const RECT *rect, int x, int y) {
+void drawTexture(SDL_Texture *texture, const RECT *rect, int x, int y)
+{
 	//Set framerect
 	ImageRect = { rect->left, rect->top, rect->right - rect->left, rect->bottom - rect->top };
 
@@ -132,7 +184,8 @@ void drawTexture(SDL_Texture *texture, const RECT *rect, int x, int y) {
 		doError();
 }
 
-void drawTextureSize(SDL_Texture *texture, const RECT *rect, int x, int y, int w, int h) {
+void drawTextureSize(SDL_Texture *texture, const RECT *rect, int x, int y, int w, int h)
+{
 	//Set framerect
 	ImageRect = { rect->left, rect->top, rect->right - rect->left, rect->bottom - rect->top };
 
@@ -186,19 +239,22 @@ void drawNumber(int value, int x, int y, bool bZero)
 	}
 }
 
-bool isMultibyte(uint8_t c) //Shift-JIS
+bool isMultibyte(uint8_t c) noexcept attrConst;
+
+bool isMultibyte(uint8_t c) noexcept //Shift-JIS
 {
 	if (c > 0x80u && c <= 0x9Fu)
 		return true;
-	if (c <= 0xDFu || c > 0xEFu)
-		return false;
-	return true;
+	return !(c <= 0xDFu || c > 0xEFu);
 }
 
 void drawString(int x, int y, const char *str, const uint8_t *flag)
 {
+	if (str == nullptr)
+		doCustomError("str was nullptr in drawString");
+
 	RECT rcChar;
-	
+
 	for (int i = 0; ; i++)
 	{
 		if (str[i]) //Go through string until reaching a terminator (0x00) character.
@@ -221,7 +277,7 @@ void drawString(int x, int y, const char *str, const uint8_t *flag)
 
 				if (isMultibyte(str[i]))
 				{
-					int localChar = 0x81 + str[i + 1] + ((str[i] - 0x81) * 0x100);
+					const int localChar = 0x81 + str[i + 1] + ((str[i] - 0x81) * 0x100);
 					rcChar.left = ((localChar % 32) * charWidth);
 					rcChar.top = ((localChar >> 5) * charHeight);
 					rcChar.right = rcChar.left + charWidth;
@@ -245,7 +301,7 @@ void drawString(int x, int y, const char *str, const uint8_t *flag)
 	}
 }
 
-void drawRect(int x, int y, int w, int h)
+void drawRect(int x, int y, int w, int h) noexcept
 {
 	//Map this onto an SDL_Rect
 	drawRectangle.x = x * screenScale;

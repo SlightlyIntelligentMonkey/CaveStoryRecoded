@@ -71,24 +71,24 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);$(SolutionDir)SDL2_image-2.0.3\include;$(SolutionDir)SDL2-2.0.8\include</IncludePath>
+    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);$(SolutionDir)SDL2_image-2.0.3\include;$(SolutionDir)SDL2-2.0.8\include;$(SolutionDir)Json_Modern_Cpp</IncludePath>
     <CodeAnalysisRuleSet>CS_RuleSet.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);$(SolutionDir)SDL2_image-2.0.3\include;$(SolutionDir)SDL2-2.0.8\include</IncludePath>
+    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);$(SolutionDir)SDL2_image-2.0.3\include;$(SolutionDir)SDL2-2.0.8\include;$(SolutionDir)Json_Modern_Cpp</IncludePath>
     <CodeAnalysisRuleSet>CS_RuleSet.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);$(SolutionDir)SDL2_image-2.0.3\include;$(SolutionDir)SDL2-2.0.8\include</IncludePath>
+    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);$(SolutionDir)SDL2_image-2.0.3\include;$(SolutionDir)SDL2-2.0.8\include;$(SolutionDir)Json_Modern_Cpp</IncludePath>
     <CodeAnalysisRuleSet>CS_RuleSet.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);$(SolutionDir)SDL2_image-2.0.3\include;$(SolutionDir)SDL2-2.0.8\include</IncludePath>
+    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);$(SolutionDir)SDL2_image-2.0.3\include;$(SolutionDir)SDL2-2.0.8\include;$(SolutionDir)Json_Modern_Cpp</IncludePath>
     <CodeAnalysisRuleSet>CS_RuleSet.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
-      <WarningLevel>Level3</WarningLevel>
+      <WarningLevel>Level4</WarningLevel>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -103,6 +103,11 @@
       <EnableModules>true</EnableModules>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PrecompiledHeaderFile>common.h</PrecompiledHeaderFile>
+      <CallingConvention>Cdecl</CallingConvention>
+      <CompileAs>CompileAsCpp</CompileAs>
+      <UseFullPaths>false</UseFullPaths>
+      <TreatWarningAsError>false</TreatWarningAsError>
+      <DisableSpecificWarnings>4244;4100;4127;</DisableSpecificWarnings>
     </ClCompile>
     <Link>
       <AdditionalDependencies>kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;$(SolutionDir)SDL2-2.0.8\lib\SDL2.lib;$(SolutionDir)SDL2-2.0.8\lib\SDL2main.lib;$(SolutionDir)SDL2_image-2.0.3\lib\SDL2_image.lib;%(AdditionalDependencies);</AdditionalDependencies>
@@ -111,7 +116,7 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
-      <WarningLevel>Level3</WarningLevel>
+      <WarningLevel>Level4</WarningLevel>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -123,6 +128,11 @@
       <OmitFramePointers>false</OmitFramePointers>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PrecompiledHeaderFile>common.h</PrecompiledHeaderFile>
+      <CallingConvention>Cdecl</CallingConvention>
+      <CompileAs>CompileAsCpp</CompileAs>
+      <UseFullPaths>false</UseFullPaths>
+      <TreatWarningAsError>false</TreatWarningAsError>
+      <DisableSpecificWarnings>4244;4100;4127;</DisableSpecificWarnings>
     </ClCompile>
     <Link>
       <AdditionalDependencies>kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;$(SolutionDir)SDL2-2.0.8\lib\SDL2.lib;$(SolutionDir)SDL2-2.0.8\lib\SDL2main.lib;$(SolutionDir)SDL2_image-2.0.3\lib\SDL2_image.lib;%(AdditionalDependencies);</AdditionalDependencies>
@@ -131,7 +141,7 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
-      <WarningLevel>Level3</WarningLevel>
+      <WarningLevel>Level4</WarningLevel>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
@@ -150,6 +160,11 @@
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PrecompiledHeaderFile>common.h</PrecompiledHeaderFile>
+      <CallingConvention>Cdecl</CallingConvention>
+      <CompileAs>CompileAsCpp</CompileAs>
+      <UseFullPaths>false</UseFullPaths>
+      <TreatWarningAsError>false</TreatWarningAsError>
+      <DisableSpecificWarnings>4244;4100;4127;</DisableSpecificWarnings>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
@@ -160,7 +175,7 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
-      <WarningLevel>Level3</WarningLevel>
+      <WarningLevel>Level4</WarningLevel>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
@@ -175,6 +190,11 @@
       <EnableFiberSafeOptimizations>true</EnableFiberSafeOptimizations>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PrecompiledHeaderFile>common.h</PrecompiledHeaderFile>
+      <CallingConvention>Cdecl</CallingConvention>
+      <CompileAs>CompileAsCpp</CompileAs>
+      <UseFullPaths>false</UseFullPaths>
+      <TreatWarningAsError>false</TreatWarningAsError>
+      <DisableSpecificWarnings>4244;4100;4127;</DisableSpecificWarnings>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
@@ -191,22 +211,34 @@
     <ClCompile Include="fireballShoot.cpp" />
     <ClCompile Include="game.cpp" />
     <ClCompile Include="hud.cpp" />
+    <ClCompile Include="inventory.cpp" />
+    <ClCompile Include="loadConfig.cpp" />
+    <ClCompile Include="missile.cpp" />
+    <ClCompile Include="missileLaunch.cpp" />
     <ClCompile Include="npc080.cpp" />
     <ClCompile Include="npc100.cpp" />
     <ClCompile Include="npc120.cpp" />
     <ClCompile Include="npc140.cpp" />
+    <ClCompile Include="npc160.cpp" />
     <ClCompile Include="npc180.cpp" />
     <ClCompile Include="npc220.cpp" />
     <ClCompile Include="npc240.cpp" />
+    <ClCompile Include="npc260.cpp" />
     <ClCompile Include="npc280.cpp" />
     <ClCompile Include="npc300.cpp" />
+    <ClCompile Include="npc320.cpp" />
     <ClCompile Include="npc340.cpp" />
     <ClCompile Include="npcCollision.cpp" />
     <ClCompile Include="filesystem.cpp" />
     <ClCompile Include="flags.cpp" />
     <ClCompile Include="input.cpp" />
     <ClCompile Include="level.cpp" />
-    <ClCompile Include="main.cpp" />
+    <ClCompile Include="main.cpp">
+      <CallingConvention Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Cdecl</CallingConvention>
+      <CallingConvention Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Cdecl</CallingConvention>
+      <CallingConvention Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Cdecl</CallingConvention>
+      <CallingConvention Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Cdecl</CallingConvention>
+    </ClCompile>
     <ClCompile Include="mathUtils.cpp" />
     <ClCompile Include="npc.cpp" />
     <ClCompile Include="npc000.cpp" />
@@ -231,6 +263,8 @@
     <ClCompile Include="spur.cpp" />
     <ClCompile Include="fireball.cpp" />
     <ClCompile Include="spurShoot.cpp" />
+    <ClCompile Include="stageSelect.cpp" />
+    <ClCompile Include="stdUtils.cpp" />
     <ClCompile Include="valueview.cpp" />
     <ClCompile Include="weapons.cpp" />
   </ItemGroup>
@@ -242,20 +276,26 @@
     <ClInclude Include="fireball.h" />
     <ClInclude Include="flags.h" />
     <ClInclude Include="game.h" />
+    <ClInclude Include="loadConfig.h" />
+    <ClInclude Include="missile.h" />
     <ClInclude Include="npc080.h" />
     <ClInclude Include="npc100.h" />
     <ClInclude Include="npc120.h" />
     <ClInclude Include="npc140.h" />
+    <ClInclude Include="npc160.h" />
     <ClInclude Include="npc180.h" />
     <ClInclude Include="npc220.h" />
     <ClInclude Include="npc240.h" />
+    <ClInclude Include="npc260.h" />
     <ClInclude Include="npc280.h" />
     <ClInclude Include="npc300.h" />
+    <ClInclude Include="npc320.h" />
     <ClInclude Include="org.h" />
     <ClInclude Include="polarStar.h" />
     <ClInclude Include="script.h" />
     <ClInclude Include="shootFunctions.h" />
     <ClInclude Include="spur.h" />
+    <ClInclude Include="stdUtils.h" />
     <ClInclude Include="valueview.h" />
     <ClInclude Include="weapons.h" />
     <ClInclude Include="hud.h" />

@@ -18,6 +18,18 @@ void npcAct195(npc *NPC) // Grate mouth
 	NPC->rect = { 112, 64, 128, 80 };
 }
 
+void npcAct196(npc *NPC) //Stream floor
+{
+	NPC->x -= 0xC00;
+	if (NPC->x <= 0x26000)
+		NPC->x += 0x2C000;
+
+	if (NPC->direct)
+		NPC->rect = { 112, 80, 144, 96 };
+	else
+		NPC->rect = { 112, 64, 144, 80 };
+}
+
 void npcAct199(npc *NPC) //Current / fan effect
 {
 	if (!NPC->act_no)

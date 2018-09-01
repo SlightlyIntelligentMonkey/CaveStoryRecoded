@@ -10,10 +10,12 @@
 #include "game.h"
 #include "player.h"
 #include "input.h"
+#include "org.h"
 
 #include <cstring>
 #include <cstdlib>
-#include <SDL_RWops.h>
+#include <SDL_messagebox.h>
+#include <SDL_rwops.h>
 #include <SDL_render.h>
 
 using std::malloc;
@@ -41,7 +43,7 @@ enum TSC_mode
 };
 
 //Init function
-bool initTsc()
+bool initTsc() noexcept
 {
 	tsc.mode = 0;
 	gameFlags &= ~4;
@@ -56,6 +58,9 @@ bool initTsc()
 //Loading functions
 void decryptTsc(uint8_t *data, size_t size)
 {
+	if (data == nullptr)
+		doCustomError("data was nullptr in decryptTsc");
+
 	const size_t half = size / 2;
 	uint8_t key = data[half];
 
@@ -69,7 +74,8 @@ void decryptTsc(uint8_t *data, size_t size)
 	}
 }
 
-void loadStageTsc(const char *name) {
+void loadStageTsc(const char *name)
+{
 	//Load Head.tsc file
 	SDL_RWops *headRW = SDL_RWFromFile("data/Head.tsc", "rb");
 	if (headRW == nullptr)
@@ -101,7 +107,8 @@ void loadStageTsc(const char *name) {
 	strcpy(tsc.path, name);
 }
 
-void loadTsc2(const char *name) {
+void loadTsc2(const char *name)
+{
 	//Load tsc file
 	SDL_RWops *bodyRW = SDL_RWFromFile(name, "rb");
 	if (!bodyRW)
@@ -120,16 +127,29 @@ void loadTsc2(const char *name) {
 }
 
 //Get number function
-int getTSCNumber(int a)
+int getTSCNumber(int a) noexcept attrPure;
+
+int getTSCNumber(int a) noexcept
 {
 	return			(static_cast<char>(tsc.data[a + 3]) - 0x30) +
-			10 *	(static_cast<char>(tsc.data[a + 2]) - 0x30) +
-			100 *	(static_cast<char>(tsc.data[a + 1]) - 0x30) +
-			1000 *	(static_cast<char>(tsc.data[a]) - 0x30);
+	                10 *	(static_cast<char>(tsc.data[a + 2]) - 0x30) +
+	                100 *	(static_cast<char>(tsc.data[a + 1]) - 0x30) +
+	                1000 *	(static_cast<char>(tsc.data[a]) - 0x30);
+}
+
+void tscClearText() noexcept
+{
+	for (int i = 0; i < 4; ++i)
+	{
+		tsc.ypos_line[i] = 16 * i;
+
+		memset(tscText + (i * 0x40), 0, 0x40);
+		memset(tscTextFlag + (i * 0x40), 0, 0x40);
+	}
 }
 
 //TSC run event functions
-int startTscEvent(int no)
+int startTscEvent(int no) noexcept
 {
 	tsc.mode = 1;
 	gameFlags |= 5;
@@ -145,14 +165,6 @@ int startTscEvent(int no)
 
 	tsc.rcText = { 52, 184, 268, 234 };
 
-	//Clear text
-	for (int i = 0; i < 4; ++i)
-	{
-		tsc.ypos_line[i] = 16 * i;
-		memset(tscText + (i * 0x40), 0, 0x40);
-		memset(tscTextFlag + (i * 0x40), 0, 0x40);
-	}
-
 	//Get event id
 	int event_no;
 	for (tsc.p_read = 0; ; ++tsc.p_read)
@@ -169,13 +181,13 @@ int startTscEvent(int no)
 			return 0;
 	}
 
-	while (tsc.data[tsc.p_read] != 10)
+	while (tsc.data[tsc.p_read] != '\n')
 		++tsc.p_read;
 	++tsc.p_read;
 	return 1;
 }
 
-int jumpTscEvent(int no)
+int jumpTscEvent(int no) noexcept
 {
 	tsc.mode = 1;
 	gameFlags |= 4;
@@ -184,14 +196,7 @@ int jumpTscEvent(int no)
 	tsc.wait = 4;
 	tsc.wait_beam = 0;
 
-	//Clear text
-	for (int i = 0; i < 4; ++i)
-	{
-		tsc.ypos_line[i] = 16 * i;
-
-		memset(tscText + (i * 0x40), 0, 0x40);
-		memset(tscTextFlag + (i * 0x40), 0, 0x40);
-	}
+	tscClearText();
 
 	//Get event id
 	int event_no;
@@ -209,13 +214,13 @@ int jumpTscEvent(int no)
 			return 0;
 	}
 
-	while (tsc.data[tsc.p_read] != 10)
+	while (tsc.data[tsc.p_read] != '\n')
 		++tsc.p_read;
 	++tsc.p_read;
 	return 1;
 }
 
-void stopTsc()
+void stopTsc() noexcept
 {
 	tsc.mode = 0;
 	gameFlags &= ~4;
@@ -224,7 +229,7 @@ void stopTsc()
 }
 
 //Check new line
-void checkNewLine()
+void checkNewLine() noexcept
 {
 	if (tsc.ypos_line[tsc.line % 4] == 48)
 	{
@@ -235,7 +240,7 @@ void checkNewLine()
 	}
 }
 
-void clearTextLine()
+void clearTextLine() noexcept
 {
 	//Reset current writing position
 	tsc.line = 0;
@@ -253,7 +258,7 @@ void clearTextLine()
 }
 
 //TSC Update
-int tscCheck()
+int tscCheck() noexcept
 {
 	//End tsc if in END state, continue if not
 	if (tsc.mode)
@@ -264,12 +269,17 @@ int tscCheck()
 	return 1;
 }
 
-void tscCleanup(int numargs) //Function to shift the current read position after a command
+void tscCleanup(int numargs) noexcept //Function to shift the current read position after a command
 {
 	tsc.p_read += 4 + (numargs * 4);
 
 	if (numargs > 1)
 		tsc.p_read += (numargs - 1);
+}
+
+static inline void showTSCNotImplementedWarning(const char *message) noexcept
+{
+	SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_WARNING, "Unimplemented command", message, nullptr);
 }
 
 int updateTsc()
@@ -312,14 +322,14 @@ int updateTsc()
 
 	case SCROLL:
 		//Go through every line
-		for (int i = 0; i < 4; ++i)
+		for (auto& i : tsc.ypos_line)
 		{
-			tsc.ypos_line[i] -= 4;
-			if (!tsc.ypos_line[i]) //Check if done scrolling
+			i -= 4;
+			if (!i) //Check if done scrolling
 				tsc.mode = PARSE; //Continue like normal
 
-			if (tsc.ypos_line[i] == -16) //Check if scrolled off
-				tsc.ypos_line[i] = 48;
+			if (i == -16) //Check if scrolled off
+				i = 48;
 		}
 
 		return tscCheck();
@@ -357,16 +367,18 @@ int updateTsc()
 				//Play selection sound
 				playSound(SFX_YNConfirm);
 
-				if (tsc.select) //No selected
+				if (tsc.select)
 				{
 					jumpTscEvent(tsc.next_event); //Jump to specified event
 				}
-				else //Yes selected
+				else if (!tsc.select)
 				{
 					//Continue like normal
 					tsc.mode = PARSE;
 					tsc.wait_beam = 0;
 				}
+				else
+					doCustomError("Invalid YNJ result");
 			}
 			else if (isKeyPressed(keyLeft)) //Left pressed
 			{
@@ -459,7 +471,7 @@ int updateTsc()
 				//Code for multibyte things?
 				c[0] = tsc.data[tsc.p_read];
 
-				if (c[0] >= 0)
+				if (c[0] >= 0) // Isn't c unsigned ?
 				{
 					c[1] = 0;
 				}
@@ -482,7 +494,7 @@ int updateTsc()
 				tsc.wait_beam = 0;
 
 				//Shift read and write positions
-				if (c[0] >= 0)
+				if (c[0] >= 0)	// Isn't c unsigned ?
 				{
 					++tsc.p_read;
 					++tsc.p_write;
@@ -507,6 +519,25 @@ int updateTsc()
 		}
 		else
 		{
+			static bool notifiedAboutBOA = false;
+			static bool notifiedAboutBSL = false;
+			static bool notifiedAboutCIL = false;
+			static bool notifiedAboutCPS = false;
+			static bool notifiedAboutCRE = false;
+			static bool notifiedAboutCSS = false;
+			static bool notifiedAboutFLA = false;
+			static bool notifiedAboutFMU = false;
+			static bool notifiedAboutFOB = false;
+			static bool notifiedAboutINP = false;
+			static bool notifiedAboutMLP = false;
+			static bool notifiedAboutNCJ = false;
+			static bool notifiedAboutNUM = false;
+			static bool notifiedAboutSIL = false;
+			static bool notifiedAboutSMP = false;
+			static bool notifiedAboutSPS = false;
+			static bool notifiedAboutSSS = false;
+			static bool notifiedAboutSTC = false;
+			static bool notifiedAboutXX1 = false;
 			//Parse and run TSC commands
 			switch (tsc.data[tsc.p_read + 3] + (tsc.data[tsc.p_read + 2] << 8) + (tsc.data[tsc.p_read + 1] << 16) + (tsc.data[tsc.p_read] << 24))
 			{
@@ -551,12 +582,25 @@ int updateTsc()
 						}
 					}
 				}
+
 				tscCleanup(3);
 				break;
 			case('<BOA'):
+				if (!notifiedAboutBOA && debugFlags & notifyOnNotImplemented)
+				{
+					notifiedAboutBOA = true;
+					showTSCNotImplementedWarning("<BOA is not implemented");
+				}
+
 				tscCleanup(1);
 				break;
 			case('<BSL'):
+				if (!notifiedAboutBSL && debugFlags & notifyOnNotImplemented)
+				{
+					notifiedAboutBSL = true;
+					showTSCNotImplementedWarning("<BSL is not implemented");
+				}
+
 				tscCleanup(1);
 				break;
 			case('<CAT'):
@@ -564,6 +608,12 @@ int updateTsc()
 				tscCleanup(0);
 				break;
 			case('<CIL'):
+				if (!notifiedAboutCIL && debugFlags & notifyOnNotImplemented)
+				{
+					notifiedAboutCIL = true;
+					showTSCNotImplementedWarning("<CIL is not implemented");
+				}
+
 				tscCleanup(0);
 				break;
 			case('<CLO'):
@@ -576,26 +626,45 @@ int updateTsc()
 				break;
 			case('<CMP'):
 				changeTile(getTSCNumber(tsc.p_read + 4), getTSCNumber(tsc.p_read + 9),
-					getTSCNumber(tsc.p_read + 14));
+				           getTSCNumber(tsc.p_read + 14));
 				tscCleanup(3);
 				break;
 			case('<CMU'):
 				changeOrg(getTSCNumber(tsc.p_read + 4));
+
 				tscCleanup(1);
 				break;
 			case('<CNP'):
 				changeNpc(getTSCNumber(tsc.p_read + 4),
-					getTSCNumber(tsc.p_read + 9),
-					getTSCNumber(tsc.p_read + 14));
+				          getTSCNumber(tsc.p_read + 9),
+				          getTSCNumber(tsc.p_read + 14));
 				tscCleanup(3);
 				break;
 			case('<CPS'):
+				if (!notifiedAboutCPS && debugFlags & notifyOnNotImplemented)
+				{
+					notifiedAboutCPS = true;
+					showTSCNotImplementedWarning("<CPS is not implemented");
+				}
+
 				tscCleanup(0);
 				break;
 			case('<CRE'):
+				if (!notifiedAboutCRE && debugFlags & notifyOnNotImplemented)
+				{
+					notifiedAboutCRE = true;
+					showTSCNotImplementedWarning("<CRE is not implemented");
+				}
+
 				tscCleanup(0);
 				break;
 			case('<CSS'):
+				if (!notifiedAboutCSS && debugFlags & notifyOnNotImplemented)
+				{
+					notifiedAboutCSS = true;
+					showTSCNotImplementedWarning("<CSS is not implemented");
+				}
+
 				tscCleanup(0);
 				break;
 			case('<DNA'):
@@ -692,6 +761,12 @@ int updateTsc()
 				tscCleanup(1);
 				break;
 			case('<FLA'):
+				if (!notifiedAboutFLA && debugFlags & notifyOnNotImplemented)
+				{
+					notifiedAboutFLA = true;
+					showTSCNotImplementedWarning("<FLA is not implemented");
+				}
+
 				tscCleanup(0);
 				break;
 			case('<FLJ'):
@@ -701,9 +776,21 @@ int updateTsc()
 					tscCleanup(2);
 				break;
 			case('<FMU'):
+				if (!notifiedAboutFMU && debugFlags & notifyOnNotImplemented)
+				{
+					notifiedAboutFMU = true;
+					showTSCNotImplementedWarning("<FMU is not implemented");
+				}
+
 				tscCleanup(0);
 				break;
 			case('<FOB'):
+				if (!notifiedAboutFOB && debugFlags & notifyOnNotImplemented)
+				{
+					notifiedAboutFOB = true;
+					showTSCNotImplementedWarning("<FOB is not implemented");
+				}
+
 				tscCleanup(2);
 				break;
 			case('<FOM'):
@@ -745,16 +832,46 @@ int updateTsc()
 				initGame();
 				return 1;
 			case('<INP'):
+				if (!notifiedAboutINP && debugFlags & notifyOnNotImplemented)
+				{
+					notifiedAboutINP = true;
+					showTSCNotImplementedWarning("<INP is not implemented");
+				}
+
 				tscCleanup(3);
 				break;
 			case('<IT+'):
+				for (xt = 0; xt < ITEMS && items[xt].code != getTSCNumber(tsc.p_read + 4) && items[xt].code; ++xt);
+				if (xt == ITEMS)
+				{
+					tscCleanup(1);
+					break;
+				}
+
+				items[xt].code = getTSCNumber(tsc.p_read + 4);
 				tscCleanup(1);
 				break;
 			case('<IT-'):
+				for (xt = 0; xt < ITEMS && items[xt].code != getTSCNumber(tsc.p_read + 4); ++xt);
+				if (xt == ITEMS)
+				{
+					tscCleanup(1);
+					break;
+				}
+
+				for (yt = xt + 1; yt <= 31; ++yt)
+					items[yt - 1] = items[yt];
+				items[yt - 1].code = 0;
+
+				selectedItem = 0;
 				tscCleanup(1);
 				break;
 			case('<ITJ'):
-				tscCleanup(2);
+				for (xt = 0; xt < ITEMS && items[xt].code != getTSCNumber(tsc.p_read + 4); ++xt);
+				if (xt == ITEMS)
+					tscCleanup(2);
+				else
+					jumpTscEvent(getTSCNumber(tsc.p_read + 9));
 				break;
 			case('<KEY'):
 				gameFlags |= 1;
@@ -777,6 +894,12 @@ int updateTsc()
 				tscCleanup(1);
 				break;
 			case('<MLP'):
+				if (!notifiedAboutMLP && debugFlags & notifyOnNotImplemented)
+				{
+					notifiedAboutMLP = true;
+					showTSCNotImplementedWarning("<MLP is not implemented");
+				}
+
 				tscCleanup(0);
 				break;
 			case('<MM0'):
@@ -793,8 +916,8 @@ int updateTsc()
 				{
 					if ((npcs[i].cond & npccond_alive) && npcs[i].code_event == getTSCNumber(tsc.p_read + 4))
 					{
-						npcs[i].x = getTSCNumber(tsc.p_read + 9) << 13;
-						npcs[i].y = getTSCNumber(tsc.p_read + 14) << 13;
+						npcs[i].x = tileToCoord(getTSCNumber(tsc.p_read + 9));
+						npcs[i].y = tileToCoord(getTSCNumber(tsc.p_read + 14));
 
 						if (getTSCNumber(tsc.p_read + 19) != 5)
 						{
@@ -815,7 +938,7 @@ int updateTsc()
 				tscCleanup(4);
 				break;
 			case('<MOV'):
-				currentPlayer.setPos(getTSCNumber(tsc.p_read + 4) << 13, getTSCNumber(tsc.p_read + 9) << 13);
+				currentPlayer.setPos(tileToCoord(getTSCNumber(tsc.p_read + 4)), tileToCoord(getTSCNumber(tsc.p_read + 9)));
 				tscCleanup(2);
 				break;
 			case('<MPJ'):
@@ -829,14 +952,27 @@ int updateTsc()
 				tscCleanup(1);
 				break;
 			case('<MS2'):
+				clearTextLine();
+				tsc.flags |= 0x21;
+				tsc.flags &= ~0x12;
+				if (tsc.flags & 0x40)
+					tsc.flags |= 0x10u;
+				tsc.face = 0;
 				tscCleanup(0);
+				bExit = true;
 				break;
 			case('<MS3'):
+				clearTextLine();
+				tsc.flags |= 0x23;
+				tsc.flags &= ~0x10;
+				if (tsc.flags & 0x40)
+					tsc.flags |= 0x10u;
 				tscCleanup(0);
+				bExit = true;
 				break;
 			case('<MSG'):
 				clearTextLine();
-				tsc.flags |= 3u;
+				tsc.flags |= 3;
 				tsc.flags &= ~0x30;
 				if (tsc.flags & 0x40)
 					tsc.flags |= 0x10u;
@@ -886,6 +1022,11 @@ int updateTsc()
 				tscCleanup(1);
 				break;
 			case('<NCJ'):
+				if (!notifiedAboutNCJ && debugFlags & notifyOnNotImplemented)
+				{
+					notifiedAboutNCJ = true;
+					showTSCNotImplementedWarning("<NCJ is not implemented");
+				}
 				tscCleanup(2);
 				break;
 			case('<NOD'):
@@ -893,6 +1034,12 @@ int updateTsc()
 				tscCleanup(0);
 				return 1;
 			case('<NUM'):
+				if (!notifiedAboutNUM && debugFlags & notifyOnNotImplemented)
+				{
+					notifiedAboutNUM = true;
+					showTSCNotImplementedWarning("<NUM is not implemented");
+				}
+
 				tscCleanup(1);
 				break;
 			case('<PRI'):
@@ -914,6 +1061,7 @@ int updateTsc()
 				break;
 			case('<RMU'):
 				resumeOrg();
+
 				tscCleanup(0);
 				break;
 			case('<SAT'):
@@ -921,6 +1069,12 @@ int updateTsc()
 				tscCleanup(0);
 				break;
 			case('<SIL'):
+				if (!notifiedAboutSIL && debugFlags & notifyOnNotImplemented)
+				{
+					notifiedAboutSIL = true;
+					showTSCNotImplementedWarning("<SIL is not implemented");
+				}
+
 				tscCleanup(1);
 				break;
 			case('<SK+'):
@@ -952,18 +1106,24 @@ int updateTsc()
 				tscCleanup(0);
 				break;
 			case('<SMP'):
+				if (!notifiedAboutSMP && debugFlags & notifyOnNotImplemented)
+				{
+					notifiedAboutSMP = true;
+					showTSCNotImplementedWarning("<SMP is not implemented");
+				}
+
 				tscCleanup(2);
 				break;
 			case('<SNP'):
-				
+
 				createNpc(
-					getTSCNumber(tsc.p_read + 4),
-					getTSCNumber(tsc.p_read + 9) << 13,
-					getTSCNumber(tsc.p_read + 14) << 13,
-					0,
-					0,
-					getTSCNumber(tsc.p_read + 19),
-					nullptr);
+				    getTSCNumber(tsc.p_read + 4),
+				    tileToCoord(getTSCNumber(tsc.p_read + 9)),
+				    tileToCoord(getTSCNumber(tsc.p_read + 14)),
+				    0,
+				    0,
+				    getTSCNumber(tsc.p_read + 19),
+				    nullptr);
 				tscCleanup(4);
 				break;
 			case('<SOU'):
@@ -971,12 +1131,30 @@ int updateTsc()
 				tscCleanup(1);
 				break;
 			case('<SPS'):
+				if (!notifiedAboutSPS && debugFlags & notifyOnNotImplemented)
+				{
+					notifiedAboutSPS = true;
+					showTSCNotImplementedWarning("<SPS is not implemented");
+				}
+
 				tscCleanup(0);
 				break;
 			case('<SSS'):
+				if (!notifiedAboutSSS && debugFlags & notifyOnNotImplemented)
+				{
+					notifiedAboutSSS = true;
+					showTSCNotImplementedWarning("<SSS is not implemented");
+				}
+
 				tscCleanup(1);
 				break;
 			case('<STC'):
+				if (!notifiedAboutSTC && debugFlags & notifyOnNotImplemented)
+				{
+					notifiedAboutSTC = true;
+					showTSCNotImplementedWarning("<STC is not implemented");
+				}
+
 				tscCleanup(0);
 				break;
 			case('<SVP'):
@@ -990,8 +1168,8 @@ int updateTsc()
 			case('<TRA'):
 				xt = getTSCNumber(tsc.p_read + 9);
 				currentPlayer.setPos(
-					getTSCNumber(tsc.p_read + 14) << 13,
-					getTSCNumber(tsc.p_read + 19) << 13);
+				    tileToCoord(getTSCNumber(tsc.p_read + 14)),
+				    tileToCoord(getTSCNumber(tsc.p_read + 19)));
 				loadLevel(getTSCNumber(tsc.p_read + 4));
 				startTscEvent(xt);
 				return 1;
@@ -1019,6 +1197,12 @@ int updateTsc()
 				bExit = true;
 				break;
 			case('<XX1'):
+				if (!notifiedAboutXX1 && debugFlags & notifyOnNotImplemented)
+				{
+					notifiedAboutXX1 = true;
+					showTSCNotImplementedWarning("<XX1 is not implemented");
+				}
+
 				tscCleanup(1);
 				break;
 			case('<YNJ'):
@@ -1035,7 +1219,7 @@ int updateTsc()
 				tscCleanup(0);
 				break;
 			default:
-				doCustomError("oops invalid tsc command fuck you");
+				doCustomError("Unimplemented and unhandled (no fail-safe) TSC command");
 				break;
 			}
 		}
@@ -1083,9 +1267,9 @@ void drawTsc()
 			rcFrame1 = { 0, 0, 244, 8 };
 			rcFrame2 = { 0, 8, 244, 16 };
 			rcFrame3 = { 0, 16, 244, 24 };
-			
+
 			drawTexture(sprites[TEX_TEXTBOX], &rcFrame1, tsc.rcText.left - 14, tsc.rcText.top - 10);
-			
+
 			int strip;
 			for (strip = 1; strip <= 6; ++strip)
 				drawTexture(sprites[TEX_TEXTBOX], &rcFrame2, tsc.rcText.left - 14, 8 * strip + tsc.rcText.top - 10);
@@ -1093,7 +1277,7 @@ void drawTsc()
 		}
 
 		setCliprect(&tsc.rcText);
-		
+
 		//Move face into position
 		if ((tsc.face_x += 8) > 0)
 			tsc.face_x = 0;
@@ -1124,14 +1308,14 @@ void drawTsc()
 
 		//NOD cursor / beam?
 		const bool flash = tsc.wait_beam++ % 20 > 12;
-		
+
 		if (flash && tsc.mode == NOD)
 		{
 			SDL_SetRenderDrawColor(renderer, 255, 255, 254, 255);
 			drawRect(tsc.rcText.left + text_offset + (tsc.p_write * 6),
-					tsc.rcText.top + tsc.ypos_line[tsc.line % 4] + tsc.offsetY,
-					5,
-					11);
+			         tsc.rcText.top + tsc.ypos_line[tsc.line % 4] + tsc.offsetY,
+			         5,
+			         11);
 		}
 
 		//Define GIT rect
@@ -1178,7 +1362,7 @@ void drawTsc()
 		//Yes/No selection
 		rcYesNo = { 152, 48, 244, 80 };
 		rcSelection = { 112, 88, 128, 104 };
-		
+
 		if (tsc.mode == YNJ)
 		{
 			int y;
@@ -1194,3 +1378,4 @@ void drawTsc()
 		}
 	}
 }
+

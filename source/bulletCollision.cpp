@@ -24,9 +24,9 @@ int bulletJudgeBlock(int x, int y, bullet *bul) //For judging breakable blocks
 
 	//Check if hit tile
 	if (bul->x - bul->blockXL < (2 * x + 1) << 12
-		&& bul->blockXL + bul->x > (2 * x - 1) << 12
-		&& bul->y - bul->blockYL < (2 * y + 1) << 12
-		&& bul->blockYL + bul->y > (2 * y - 1) << 12)
+	        && bul->blockXL + bul->x > (2 * x - 1) << 12
+	        && bul->y - bul->blockYL < (2 * y + 1) << 12
+	        && bul->blockYL + bul->y > (2 * y - 1) << 12)
 	{
 		hit = 0x200;
 	}
@@ -43,7 +43,7 @@ int bulletJudgeBlock(int x, int y, bullet *bul) //For judging breakable blocks
 		playSound(SFX_DestroyBreakableBlock);
 
 		for (int i = 0; i < 4; ++i)
-			createNpc(NPC_Smoke, x << 13, y << 13, random(-512, 512), random(-512, 512), 0, nullptr);
+			createNpc(NPC_Smoke, tileToCoord(x), tileToCoord(y), random(-512, 512), random(-512, 512), 0, nullptr);
 
 		//Shift tile -1
 		shiftTile(x, y);
@@ -54,6 +54,9 @@ int bulletJudgeBlock(int x, int y, bullet *bul) //For judging breakable blocks
 
 int bulletJudgeBlock2(int x, int y, const uint8_t *atrb, bullet *bul) //For judging actual solid blocks
 {
+	if (atrb == nullptr)
+		doCustomError("atrb was nullptr in bulletJudgeBlock2");
+
 	int block[4];
 	int workX;
 	int workY;
@@ -167,12 +170,12 @@ int bulletJudgeTriangleA(int x, int y, bullet *bul)
 	int hit = 0;
 
 	if (bul->x < (2 * x + 1) << 12
-		&& bul->x > (2 * x - 1) << 12
-		&& bul->y - 0x400 < (y << 13) - (-0x2000 * x + bul->x) / 2 + 0x800
-		&& bul->y + 0x400 > (2 * y - 1) << 12)
+	        && bul->x > (2 * x - 1) << 12
+	        && bul->y - 0x400 < tileToCoord(y) - (-0x2000 * x + bul->x) / 2 + 0x800
+	        && bul->y + 0x400 > (2 * y - 1) << 12)
 	{
 		if (bul->bbits & bullet_goThroughWalls)
-			bul->y = (y << 13) - (-0x2000 * x + bul->x) / 2 + 0xC00;
+			bul->y = tileToCoord(y) - (-0x2000 * x + bul->x) / 2 + 0xC00;
 		else
 			bulletVanish(bul);
 
@@ -187,12 +190,12 @@ int bulletJudgeTriangleB(int x, int y, bullet *bul)
 	int hit = 0;
 
 	if (bul->x < (2 * x + 1) << 12
-		&& bul->x > (2 * x - 1) << 12
-		&& bul->y - 0x400 < (y << 13) - (-0x2000 * x + bul->x) / 2 - 0x800
-		&& bul->y + 0x400 > (2 * y - 1) << 12)
+	        && bul->x > (2 * x - 1) << 12
+	        && bul->y - 0x400 < tileToCoord(y) - (-0x2000 * x + bul->x) / 2 - 0x800
+	        && bul->y + 0x400 > (2 * y - 1) << 12)
 	{
 		if (bul->bbits & bullet_goThroughWalls)
-			bul->y = (y << 13) - (-0x2000 * x + bul->x) / 2 - 0x400;
+			bul->y = tileToCoord(y) - (-0x2000 * x + bul->x) / 2 - 0x400;
 		else
 			bulletVanish(bul);
 
@@ -207,12 +210,12 @@ int bulletJudgeTriangleC(int x, int y, bullet *bul)
 	int hit = 0;
 
 	if (bul->x < (2 * x + 1) << 12
-		&& bul->x > (2 * x - 1) << 12
-		&& bul->y - 0x400 < (y << 13) + (-0x2000 * x + bul->x) / 2 - 0x800
-		&& bul->y + 0x400 > (2 * y - 1) << 12)
+	        && bul->x > (2 * x - 1) << 12
+	        && bul->y - 0x400 < tileToCoord(y) + (-0x2000 * x + bul->x) / 2 - 0x800
+	        && bul->y + 0x400 > (2 * y - 1) << 12)
 	{
 		if (bul->bbits & bullet_goThroughWalls)
-			bul->y = (y << 13) + (-8192 * x + bul->x) / 2 - 0x400;
+			bul->y = tileToCoord(y) + (-8192 * x + bul->x) / 2 - 0x400;
 		else
 			bulletVanish(bul);
 
@@ -227,12 +230,12 @@ int bulletJudgeTriangleD(int x, int y, bullet *bul)
 	int hit = 0;
 
 	if (bul->x < (2 * x + 1) << 12
-		&& bul->x > (2 * x - 1) << 12
-		&& bul->y - 0x400 < (y << 13) + (-0x2000 * x + bul->x) / 2 + 0x800
-		&& bul->y + 0x400 > (2 * y - 1) << 12)
+	        && bul->x > (2 * x - 1) << 12
+	        && bul->y - 0x400 < tileToCoord(y) + (-0x2000 * x + bul->x) / 2 + 0x800
+	        && bul->y + 0x400 > (2 * y - 1) << 12)
 	{
 		if (bul->bbits & bullet_goThroughWalls)
-			bul->y = (y << 13) + (-8192 * x + bul->x) / 2 + 0xC00;
+			bul->y = tileToCoord(y) + (-8192 * x + bul->x) / 2 + 0xC00;
 		else
 			bulletVanish(bul);
 
@@ -247,12 +250,12 @@ int bulletJudgeTriangleE(int x, int y, bullet *bul)
 	int hit = 0;
 
 	if (bul->x < (2 * x + 1) << 12
-		&& bul->x - 0x200 >(2 * x - 1) << 12
-		&& bul->y + 0x400 > (y << 13) + (-0x2000 * x + bul->x) / 2 - 0x800
-		&& bul->y - 0x400 < (2 * y + 1) << 12)
+	        && bul->x - 0x200 >(2 * x - 1) << 12
+	        && bul->y + 0x400 > tileToCoord(y) + (-0x2000 * x + bul->x) / 2 - 0x800
+	        && bul->y - 0x400 < (2 * y + 1) << 12)
 	{
 		if (bul->bbits & bullet_goThroughWalls)
-			bul->y = (y << 13) + (-0x2000 * x + bul->x) / 2 - 0xC00;
+			bul->y = tileToCoord(y) + (-0x2000 * x + bul->x) / 2 - 0xC00;
 		else
 			bulletVanish(bul);
 
@@ -267,12 +270,12 @@ int bulletJudgeTriangleF(int x, int y, bullet *bul)
 	int hit = 0;
 
 	if (bul->x < (2 * x + 1) << 12
-		&& bul->x - 0x200 >(2 * x - 1) << 12
-		&& bul->y + 0x400 > (y << 13) + (-0x2000 * x + bul->x) / 2 + 0x800
-		&& bul->y - 0x400 < (2 * y + 1) << 12)
+	        && bul->x - 0x200 >(2 * x - 1) << 12
+	        && bul->y + 0x400 > tileToCoord(y) + (-0x2000 * x + bul->x) / 2 + 0x800
+	        && bul->y - 0x400 < (2 * y + 1) << 12)
 	{
 		if (bul->bbits & bullet_goThroughWalls)
-			bul->y = (y << 13) + (-0x2000 * x + bul->x) / 2 + 0x400;
+			bul->y = tileToCoord(y) + (-0x2000 * x + bul->x) / 2 + 0x400;
 		else
 			bulletVanish(bul);
 
@@ -287,12 +290,12 @@ int bulletJudgeTriangleG(int x, int y, bullet *bul)
 	int hit = 0;
 
 	if (bul->x < (2 * x + 1) << 12
-		&& bul->x - 0x200 >(2 * x - 1) << 12
-		&& bul->y + 0x400 > (y << 13) - (-0x2000 * x + bul->x) / 2 + 0x800
-		&& bul->y - 0x400 < (2 * y + 1) << 12)
+	        && bul->x - 0x200 >(2 * x - 1) << 12
+	        && bul->y + 0x400 > tileToCoord(y) - (-0x2000 * x + bul->x) / 2 + 0x800
+	        && bul->y - 0x400 < (2 * y + 1) << 12)
 	{
 		if (bul->bbits & bullet_goThroughWalls)
-			bul->y = (y << 13) - (-0x2000 * x + bul->x) / 2 + 0x400;
+			bul->y = tileToCoord(y) - (-0x2000 * x + bul->x) / 2 + 0x400;
 		else
 			bulletVanish(bul);
 
@@ -307,12 +310,12 @@ int bulletJudgeTriangleH(int x, int y, bullet *bul)
 	int hit = 0;
 
 	if (bul->x < (2 * x + 1) << 12
-		&& bul->x - 0x200 >(2 * x - 1) << 12
-		&& bul->y + 0x400 > (y << 13) - (-0x2000 * x + bul->x) / 2 - 0x800
-		&& bul->y - 0x400 < (2 * y + 1) << 12)
+	        && bul->x - 0x200 >(2 * x - 1) << 12
+	        && bul->y + 0x400 > tileToCoord(y) - (-0x2000 * x + bul->x) / 2 - 0x800
+	        && bul->y - 0x400 < (2 * y + 1) << 12)
 	{
 		if (bul->bbits & bullet_goThroughWalls)
-			bul->y = (y << 13) - (-0x2000 * x + bul->x) / 2 - 0xC00;
+			bul->y = tileToCoord(y) - (-0x2000 * x + bul->x) / 2 - 0xC00;
 		else
 			bulletVanish(bul);
 
@@ -328,24 +331,14 @@ void bulletHitMap()
 	for (size_t i = 0; i < bullets.size(); i++)
 	{
 		bullet *bul = &bullets[i];
-		int offy[4];
-		int offx[4];
-		uint8_t atrb[4];
 
 		if (bul->cond & 0x80)
 		{
 			//Get offset positions for tile checking
-			const int x = bul->x >> 13;
-			const int y = bul->y >> 13;
+			const int x = coordToTile(bul->x);
+			const int y = coordToTile(bul->y);
 
-			offx[0] = 0;
-			offx[1] = 1;
-			offx[2] = 0;
-			offx[3] = 1;
-			offy[0] = 0;
-			offy[1] = 0;
-			offy[2] = 1;
-			offy[3] = 1;
+			uint8_t atrb[4];
 
 			//Get tile attributes nearby
 			atrb[0] = getTileAttribute(x, y);
@@ -360,9 +353,16 @@ void bulletHitMap()
 			{
 				for (int j = 0; j < 4; ++j) //Go through each tile
 				{
+					constexpr int offx[4] = { 0, 1, 0, 1 };
+					constexpr int offy[4] = { 0, 0, 1, 1 };
+
 					switch (atrb[j])
 					{
-					case 0x41: case 0x43: case 0x44: case 0x61: case 0x64:
+					case 0x41:
+					case 0x43:
+					case 0x44:
+					case 0x61:
+					case 0x64:
 						bul->flag |= bulletJudgeBlock(x + offx[j], y + offy[j], bul);
 						break;
 
@@ -428,23 +428,23 @@ void bulletHitNpcs()
 				}
 
 				bullet *bul = &bullets[i];
-				
+
 				//Check if the bullet is tangible
 				if (bul->cond & 0x80 && bul->damage != -1)
 				{
 					bool bHit = false;
-					
+
 					if (npcs[n].bits & npc_shootable //Check for shootable npc collision
-						&& npcs[n].x - npcs[n].hit.right < bul->x + bul->enemyXL
-						&& npcs[n].x + npcs[n].hit.right > bul->x - bul->enemyXL
-						&& npcs[n].y - npcs[n].hit.top < bul->y + bul->enemyYL
-						&& npcs[n].y + npcs[n].hit.bottom > bul->y - bul->enemyYL)
+					        && npcs[n].x - npcs[n].hit.right < bul->x + bul->enemyXL
+					        && npcs[n].x + npcs[n].hit.right > bul->x - bul->enemyXL
+					        && npcs[n].y - npcs[n].hit.top < bul->y + bul->enemyYL
+					        && npcs[n].y + npcs[n].hit.bottom > bul->y - bul->enemyYL)
 						bHit = true;
 					else if (npcs[n].bits & npc_invulnerable //Check for collision with a specifically not shootable npc
-						&& npcs[n].x - npcs[n].hit.right < bul->x + bul->blockXL
-						&& npcs[n].x + npcs[n].hit.right > bul->x - bul->blockXL
-						&& npcs[n].y - npcs[n].hit.top < bul->y + bul->blockYL
-						&& npcs[n].y + npcs[n].hit.bottom > bul->y - bul->blockYL)
+					         && npcs[n].x - npcs[n].hit.right < bul->x + bul->blockXL
+					         && npcs[n].x + npcs[n].hit.right > bul->x - bul->blockXL
+					         && npcs[n].y - npcs[n].hit.top < bul->y + bul->blockYL
+					         && npcs[n].y + npcs[n].hit.bottom > bul->y - bul->blockYL)
 						bHit = true;
 
 					if (bHit)
@@ -488,12 +488,12 @@ void bulletHitNpcs()
 							}
 						}
 						else if (bul->code_bullet != 13
-							&& bul->code_bullet != 14
-							&& bul->code_bullet != 15
-							&& bul->code_bullet != 28
-							&& bul->code_bullet != 29
-							&& bul->code_bullet != 30
-							&& !(bul->bbits & 0x10))
+						         && bul->code_bullet != 14
+						         && bul->code_bullet != 15
+						         && bul->code_bullet != 28
+						         && bul->code_bullet != 29
+						         && bul->code_bullet != 30
+						         && !(bul->bbits & 0x10))
 						{
 							//Break if hitting a non-shootable NPC
 							createCaret((bul->x + npcs[n].x) / 2, (bul->y + npcs[n].y) / 2, effect_RisingDisc, 2);

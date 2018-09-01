@@ -1,5 +1,6 @@
 #include "common.h"
 
+#include <string>
 #include <SDL_image.h>
 #include "sound.h"
 #include "script.h"
@@ -7,7 +8,9 @@
 #include "player.h"
 #include "render.h"
 #include "game.h"
+#include "loadConfig.h"
 
+using std::string;
 
 //Rendering and view related variables
 SDL_Window *window;
@@ -22,7 +25,6 @@ SDL_Event events;
 int gameFlags = 0;
 
 int framerate = 20; //17 for 60-ish fps
-unsigned int framerateTicks;
 
 int mode;
 
@@ -30,15 +32,15 @@ bool exitGame = false;
 
 // Some global functions
 
-static void doQuit() 
+static void doQuit() noexcept
 {
-	//sound::quit();
+	//sound::quit(); // TBD : Make a sound quit method, make the quit method a global destructor or remove this
 	SDL_Quit();
 	IMG_Quit();
 	freeSounds();
 }
 
-void doError() 
+void doError() noexcept
 {
 	SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Critical Error", SDL_GetError(), nullptr);
 	SDL_ClearError();
@@ -46,42 +48,17 @@ void doError()
 	exit(EXIT_FAILURE);
 }
 
-void doCustomError(const char *msg) 
+void doCustomError(const string& msg) noexcept
 {
-	SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Critical Error", msg, nullptr);
+	SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Critical Error", msg.c_str(), nullptr);
 	doQuit();
 	exit(EXIT_FAILURE);
 }
 
 SDL_Texture* sprites[0x28];
 
-int init() 
+void loadInitialSprites()
 {
-	//Initiate SDL and window stuff
-	if (SDL_Init(SDL_INIT_TIMER | SDL_INIT_AUDIO | SDL_INIT_VIDEO) < 0)
-		doCustomError("Couldn't initiate SDL");
-
-	//Initiate SDL_image
-	if (!(IMG_Init(IMG_INIT_PNG) & IMG_INIT_PNG))
-		doCustomError("Couldn't initiate SDL Image");
-	
-	// TBD : Load config data, initialise keybinds and screen resolution based on it
-	// TBD : Init joypad
-
-	initTsc();
-	initFlags();
-
-	ini_audio();
-	loadSounds();
-
-	currentPlayer.init();
-	
-	createWindow(320, 240, 2, true);
-
-	//Load assets
-	loadNpcTable();
-	loadStageTable();
-
 	loadImage("data/Title.png", &sprites[0x00]);
 	loadImage("data/Pixel.png", &sprites[0x01]);
 
@@ -111,15 +88,58 @@ int init()
 	loadImage("data/Font.png", &sprites[0x26]);
 	loadImage("data/Missing.png", &sprites[0x27]);
 
+}
+
+constexpr bool useExperimentalJsonLoading = true;
+
+int init()
+{
+	//Initiate SDL and window stuff
+	if (SDL_Init(SDL_INIT_TIMER | SDL_INIT_AUDIO | SDL_INIT_VIDEO) < 0)
+		doCustomError("Couldn't initiate SDL");
+
+	//Initiate SDL_image
+	if (!(IMG_Init(IMG_INIT_PNG) & IMG_INIT_PNG))
+		doCustomError("Couldn't initiate SDL Image");
+
+	if (useExperimentalJsonLoading)
+		loadConfigFiles();
+
+	// TBD : Load config data, initialise keybinds and screen resolution based on it
+	// TBD : Init joypad
+
+	initTsc();
+	initFlags();
+
+	initAudio();
+	loadSounds();
+
+	currentPlayer.init();
+
+	createWindow(320, 240, 2, true);
+
+	//Load assets
+	loadNpcTable();
+	loadStageTable();
+
+	loadInitialSprites();
+
 	return 0;
 }
 
-int main(int argc, char **argv) // TDB : Do something with command-line parameters
+int main(int /*argc*/, char ** /*argv*/) // TDB : Do something with command-line parameters
 {
-	init();
+	try
+	{
+		init();
 
-	mainGameLoop();
+		mainGameLoop();
 
-	doQuit();
-	return 0;
+		doQuit();
+		return 0;
+	}
+	catch (const std::exception& e)
+	{
+		doCustomError(e.what());
+	}
 }

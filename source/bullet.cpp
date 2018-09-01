@@ -2,17 +2,19 @@
 #include "weapons.h"
 #include "bulletCollision.h"
 #include "render.h"
+#include "game.h"
 
-#include <SDL_messagebox.h>
 #include <string>
+#include <deque>
+#include <SDL_messagebox.h>
 #include <cstring>
 
 using std::string;
 using std::to_string;
-using std::vector;
+using std::deque;
 using std::memset;
 
-vector<bullet> bullets(0);
+deque<bullet> bullets(0);
 
 BULLETSTATS bulletTable[] =
 {
@@ -104,7 +106,7 @@ BULLETSTATS bulletTable[] =
 };
 
 //Bullet functions
-void createBullet(int setCode, int setX, int setY, int setDir)
+void createBullet(int setCode, int setX, int setY, uint8_t setDir)
 {
 	bullet *repBullet = nullptr;
 
@@ -142,7 +144,7 @@ void updateBullets()
 
 		while (bullets.size() && !(bullets[bullets.size() - 1].cond & 0x80))
 			bullets.erase(bullets.begin() + bullets.size() - 1);
-		
+
 		bulletHitMap();
 		bulletHitNpcs();
 	}
@@ -161,7 +163,7 @@ void drawBullets()
 }
 
 //CLASS
-void bullet::init(int setCode, int setX, int setY, uint8_t setDir)
+void bullet::init(int setCode, int setX, int setY, uint8_t setDir) noexcept
 {
 	memset(this, 0, sizeof(*this));
 
@@ -191,11 +193,16 @@ void bullet::init(int setCode, int setX, int setY, uint8_t setDir)
 }
 
 //Act functions
+
 #include "polarStar.h"
 #include "fireball.h"
+
+#include "missile.h"
+
 #include "spur.h"
 
-bulletAct bulletActs[] = {
+bulletAct bulletActs[46] =
+{
 	static_cast<bulletAct>(nullptr),	// There isn't a 0th bullet
 	static_cast<bulletAct>(nullptr),	// Snake
 	static_cast<bulletAct>(nullptr),
@@ -209,12 +216,12 @@ bulletAct bulletActs[] = {
 	static_cast<bulletAct>(nullptr),
 	static_cast<bulletAct>(nullptr),
 	static_cast<bulletAct>(nullptr),
-	static_cast<bulletAct>(nullptr),
-	static_cast<bulletAct>(nullptr),
-	static_cast<bulletAct>(nullptr),
-	static_cast<bulletAct>(nullptr),
-	static_cast<bulletAct>(nullptr),
-	static_cast<bulletAct>(nullptr),
+	&actBulletMissileLauncher1,
+	&actBulletMissileLauncher2,
+	&actBulletMissileLauncher3,
+	&actBulletBoom1,
+	&actBulletBoom2,
+	&actBulletBoom3,
 	static_cast<bulletAct>(nullptr),
 	static_cast<bulletAct>(nullptr),
 	static_cast<bulletAct>(nullptr),
@@ -251,11 +258,13 @@ void bullet::update()
 	{
 		if (bulletActs[code_bullet] != nullptr)
 			bulletActs[code_bullet](this);
-		else if (debugFlags | notifyOnNotImplemented)
+		else if (debugFlags & notifyOnNotImplemented)
 		{
 			static bool wasNotifiedAboutBullet[_countof(bulletActs)] = { false };
+
 			if (wasNotifiedAboutBullet[this->code_bullet])
 				return;
+
 			wasNotifiedAboutBullet[this->code_bullet] = true;
 			string msg = "Bullet " + to_string(this->code_bullet) + " is not implemented yet.";
 			SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_WARNING, "Missing Bullet", msg.c_str(), nullptr);
@@ -311,7 +320,6 @@ void bullet::draw()
 			}
 		}
 
-		drawString(drawX / 0x200 - viewport.x / 0x200, drawY / 0x200 - viewport.y / 0x200 - 16, 
-			std::to_string(index).c_str(), nullptr);
+		drawString(drawX / 0x200 - viewport.x / 0x200, drawY / 0x200 - viewport.y / 0x200 - 16, std::to_string(index).c_str(), nullptr);
 	}
 }

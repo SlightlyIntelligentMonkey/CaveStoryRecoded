@@ -8,6 +8,7 @@
 #include "sound.h"
 #include "mathUtils.h"
 #include "valueview.h"
+#include "game.h"
 
 #include <cstring>
 
@@ -15,7 +16,8 @@ using std::memset;
 
 player currentPlayer;
 
-void player::init() {
+void player::init() noexcept
+{
 	memset(this, 0, sizeof(*this));
 	cond = player_visible;
 	direct = dirRight;
@@ -31,7 +33,8 @@ void player::init() {
 	max_life = 3;
 }
 
-void player::setPos(int setX, int setY) {
+void player::setPos(int setX, int setY) noexcept
+{
 	x = setX;
 	y = setY;
 
@@ -45,7 +48,8 @@ void player::setPos(int setX, int setY) {
 	cond &= ~player_interact;
 }
 
-void player::setDir(int setDirect) {
+void player::setDir(int setDirect)
+{
 	if (setDirect == 3)
 	{
 		cond |= player_interact;
@@ -53,7 +57,7 @@ void player::setDir(int setDirect) {
 		animate(false);
 		return;
 	}
-	
+
 	cond &= ~player_interact;
 
 	if (setDirect < 10)
@@ -80,7 +84,8 @@ void player::setDir(int setDirect) {
 	}
 }
 
-void player::damage(int16_t damage) {
+void player::damage(int16_t damage)
+{
 	if (!shock)
 	{
 		playSound(SFX_QuoteHurt);
@@ -132,7 +137,8 @@ void player::damage(int16_t damage) {
 	}
 }
 
-void player::actNormal(bool bKey) {
+void player::actNormal(bool bKey)
+{
 
 
 	if (!(cond & player_removed))
@@ -186,7 +192,7 @@ void player::actNormal(bool bKey) {
 			if (bKey)
 			{
 				const bool notDown = (isKeyDown(keyShoot) || isKeyDown(keyJump) || isKeyDown(keyUp) || isKeyDown(keyLeft) || isKeyDown(keyRight) || isKeyDown(keyMap) || isKeyDown(keyMenu) || isKeyDown(keyRotLeft) || isKeyDown(keyRotRight));
-				
+
 				if (notDown || cond & player_interact || gameFlags & 4) //Moving and interaction
 				{
 					//Move left and right
@@ -260,7 +266,7 @@ void player::actNormal(bool bKey) {
 						else if (isKeyDown(keyRight))
 						{
 							boost_sw = 1;
-							
+
 							xm = 0x5FF;
 							ym = 0;
 						}
@@ -273,7 +279,7 @@ void player::actNormal(bool bKey) {
 						}
 						else
 						{
-							boost_sw = 2;
+							boost_sw = 2;	// same as with keyUp
 
 							xm = 0;
 							ym = -0x5FF;
@@ -319,8 +325,8 @@ void player::actNormal(bool bKey) {
 
 			//Jump
 			if (isKeyPressed(keyJump)
-				&& (flag & ground || flag & slopeRight || flag & slopeLeft)
-				&& !(flag & windUp))
+			        && (flag & ground || flag & slopeRight || flag & slopeLeft)
+			        && !(flag & windUp))
 			{
 				ym = -jump;
 				playSound(SFX_QuoteJump);
@@ -463,7 +469,7 @@ void player::actNormal(bool bKey) {
 
 			if (flag & bloodWater)
 				dir = 2;
-			
+
 			//Splash stuff
 			if (flag & ground || ym <= 0x200)
 			{
@@ -668,7 +674,7 @@ void player::actStream(bool bKey)
 	y += ym;
 }
 
-void player::animate(bool bKey)
+void player::animate(bool bKey) noexcept
 {
 	RECT rcLeft[12];
 	RECT rcRight[12];
@@ -776,7 +782,8 @@ void player::animate(bool bKey)
 	}
 }
 
-void player::update(bool bKey) {
+void player::update(bool bKey)
+{
 
 	if (cond & player_visible)
 	{
@@ -792,7 +799,7 @@ void player::update(bool bKey) {
 			createValueView(&x, &y, exp_count);
 			exp_count = 0;
 		}
-		
+
 		if (!unit)
 		{
 			actNormal(bKey);
@@ -849,11 +856,12 @@ void player::update(bool bKey) {
 	}
 }
 
-void player::draw() {
+void player::draw()
+{
 	RECT rcBubble[2];
 	rcBubble[0] = { 56, 96, 80, 120 };
 	rcBubble[1] = { 80, 96, 104, 120 };
-	
+
 	if ((cond & player_visible) != 0 && !(cond & player_removed))
 	{
 		//Set held weapon's framerect
@@ -894,7 +902,7 @@ void player::draw() {
 		{
 			//Draw Quote
 			drawTexture(sprites[TEX_MYCHAR], &rect, (x - view.left) / 0x200 - viewport.x / 0x200, (y - view.top) / 0x200 - viewport.y / 0x200);
-			
+
 			//Draw bubble
 			bubble++;
 			if (equip & equip_airTank && flag & water)

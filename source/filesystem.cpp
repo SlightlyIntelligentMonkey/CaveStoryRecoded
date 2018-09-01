@@ -5,13 +5,20 @@
 #include "game.h"
 #include "flags.h"
 #include "script.h"
-#include "sound.h"
+#include "org.h"
 
+#include <string>
+#include <vector>
+#include <fstream>
 #include <cstdio>
 #include <cstdlib>
 #include <sys/stat.h>
-#include <SDL_RWops.h>
+#include <SDL_rwops.h>
 
+using std::string;
+using std::vector;
+using std::ifstream;
+using std::getline;
 using std::FILE;
 using std::fopen;
 using std::fseek;
@@ -20,26 +27,37 @@ using std::malloc;
 using std::fread;
 using std::fclose;
 
-//Read function stuff
 uint16_t readLEshort(const uint8_t * data, size_t offset)
 {
+	if (data == nullptr)
+		doCustomError("data was nullptr in readLEshort");
+
 	return ((data[offset + 1] << 8) + data[offset]);
 }
 
 uint32_t readLElong(const uint8_t * data, size_t offset)
 {
+	if (data == nullptr)
+		doCustomError("data was nullptr in readLEshort");
+
 	return ((data[offset + 3] << 24) + (data[offset + 2] << 16) + (data[offset + 1] << 8) + data[offset]);
 }
 
 //Write stuff
 void writeLEshort(uint8_t *data, uint16_t input, size_t offset)
 {
+	if (data == nullptr)
+		doCustomError("data was nullptr in writeLEshort");
+
 	data[offset] = static_cast<uint8_t>(input);
 	data[offset + 1] = static_cast<uint8_t>(input >> 8);
 }
 
 void writeLElong(uint8_t *data, uint32_t input, size_t offset)
 {
+	if (data == nullptr)
+		doCustomError("data was nullptr in writeLElong");
+
 	data[offset] = static_cast<uint8_t>(input);
 	data[offset + 1] = static_cast<uint8_t>(input >> 8);
 	data[offset + 2] = static_cast<uint8_t>(input >> 16);
@@ -47,14 +65,17 @@ void writeLElong(uint8_t *data, uint32_t input, size_t offset)
 }
 
 //Loading and writing functions
-bool fileExists(const char *name)
+bool fileExists(const string& name) noexcept
 {
 	struct stat buffer;
-	return (stat(name, &buffer) == 0);
+	return (stat(name.c_str(), &buffer) == 0);
 }
 
 int loadFile(const char *name, uint8_t **data)
 {
+	if (data == nullptr)
+		doCustomError("data was nullptr in loadFile");
+
 	//Open file
 	FILE *file = fopen(name, "rb");
 	if (file == nullptr)
@@ -67,7 +88,7 @@ int loadFile(const char *name, uint8_t **data)
 
 	//Load data
 	*data = static_cast<uint8_t *>(malloc(filesize));
-	if (fread(*data, 1, filesize, file) == 0) 
+	if (fread(*data, 1, filesize, file) == 0)
 	{
 		fclose(file);
 		return -1;
@@ -75,17 +96,17 @@ int loadFile(const char *name, uint8_t **data)
 
 	//Close file
 	fclose(file);
-	
+
 	return filesize;
 }
 
-int writeFile(const char *name, void *data, size_t amount)
+int writeFile(const char *name, const void *data, size_t amount) noexcept
 {
 	FILE *file;
 	if ((file = fopen(name, "wb")) == nullptr)
 		return -1;
 
-	if (fwrite(data, 1, amount, file) == 0) 
+	if (fwrite(data, 1, amount, file) == 0)
 	{
 		fclose(file);
 		return -1;
@@ -109,8 +130,11 @@ void loadProfile()
 			return;
 
 		const uint64_t code = SDL_ReadLE64(profile); //Code
-		if (memcmp(&code, "Do041220", sizeof(code)) != 0)
-			doCustomError("Invalid profile (first 8 bytes aren't \"Do041120\"");
+		if (memcmp(&code, profileCode, sizeof(code)) != 0)
+		{
+			const string errorMsg(string("Invalid profile (first 8 bytes aren't \"") + profileCode + "\"");
+			doCustomError(errorMsg.c_str());
+		}
 
 		const int level = SDL_ReadLE32(profile); //level
 		changeOrg(SDL_ReadLE32(profile)); //song
@@ -128,37 +152,38 @@ void loadProfile()
 		SDL_ReadLE16(profile); // a?
 
 		selectedWeapon = SDL_ReadLE32(profile); //current weapon
-		SDL_ReadLE32(profile); //current item
+		selectedItem = SDL_ReadLE32(profile); //current item
 
 		currentPlayer.equip = SDL_ReadLE32(profile); //equipped items
 		currentPlayer.unit = SDL_ReadLE32(profile); //physics
 
 		SDL_ReadLE32(profile); //counter
 
-		for (size_t i = 0; i < 8; i++)
+		for (auto& i : weapons)
 		{
-			weapons[i].code = SDL_ReadLE32(profile);
-			weapons[i].level = SDL_ReadLE32(profile);
-			weapons[i].exp = SDL_ReadLE32(profile);
-			weapons[i].max_num = SDL_ReadLE32(profile);
-			weapons[i].num = SDL_ReadLE32(profile);
+			i.code = SDL_ReadLE32(profile);
+			i.level = SDL_ReadLE32(profile);
+			i.exp = SDL_ReadLE32(profile);
+			i.max_num = SDL_ReadLE32(profile);
+			i.num = SDL_ReadLE32(profile);
 		}
 
-		SDL_RWseek(profile, 0x158, 0);
+		for (auto& i : items)
+			i.code = SDL_ReadLE32(profile);
 
-		for (size_t i = 0; i < 8; i++)
+		for (auto& i : permitStage)
 		{
-			permitStage[i].index = SDL_ReadLE32(profile);
-			permitStage[i].event = SDL_ReadLE32(profile);
+			i.index = SDL_ReadLE32(profile);
+			i.event = SDL_ReadLE32(profile);
 		}
 
-		for (size_t i = 0; i < 0x80; i++)
-			SDL_RWread(profile, &mapFlags[i], 1, 1);
+		for (auto& i : mapFlags)
+			SDL_RWread(profile, &i, 1, 1);
 
 		SDL_ReadLE32(profile); //FLAG
 
-		for (size_t i = 0; i < 1000; i++)
-			SDL_RWread(profile, &tscFlags[i], 1, 1);
+		for (auto& i : tscFlags)
+			SDL_RWread(profile, &i, 1, 1);
 
 		//Now load level
 		loadLevel(level);
@@ -174,11 +199,9 @@ void loadProfile()
 	}
 }
 
-void saveProfile() {
+void saveProfile()
+{
 	uint8_t profile[0x604] = { 0 };
-
-	if (profile == nullptr)
-		doCustomError("Could not allocate memory for profile");
 
 	//Set data
 	memcpy(profile, profileCode, 0x08);
@@ -193,8 +216,9 @@ void saveProfile() {
 	writeLEshort(profile, currentPlayer.max_life, 0x1C); //Player max health
 	writeLEshort(profile, currentPlayer.star, 0x1E); //Whimsical star
 	writeLEshort(profile, currentPlayer.life, 0x20); //Player health
-	
+
 	writeLElong(profile, selectedWeapon, 0x24); //Selected weapon
+	writeLElong(profile, selectedItem, 0x28); //Selected item
 
 	writeLElong(profile, currentPlayer.equip, 0x2C); //Equipped items
 	writeLElong(profile, currentPlayer.unit, 0x30); //Current physics
@@ -206,6 +230,11 @@ void saveProfile() {
 		writeLElong(profile, weapons[i].exp, 0x40 + i * 0x14);
 		writeLElong(profile, weapons[i].max_num, 0x44 + i * 0x14);
 		writeLElong(profile, weapons[i].num, 0x48 + i * 0x14);
+	}
+
+	for (size_t i = 0; i < 32; i++)
+	{
+		writeLElong(profile, items[i].code, 0xD8 + i * 0x4);
 	}
 
 	for (size_t i = 0; i < 8; i++)
@@ -220,4 +249,14 @@ void saveProfile() {
 
 	//Save to file
 	writeFile(profileName, profile, 0x604);
+}
+
+vector<string> getLinesFromFile(const string& fileName)
+{
+	vector<string> lines;
+	ifstream inFile(fileName);
+	string line;
+	while (getline(inFile, line))
+		lines.push_back(line);
+	return lines;
 }

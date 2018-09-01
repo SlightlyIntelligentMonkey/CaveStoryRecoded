@@ -67,19 +67,20 @@ void loadStageTable()
 	}
 }
 
-uint8_t getTileAttribute(int x, int y) {
+uint8_t getTileAttribute(int x, int y) noexcept
+{
 	if (x >= 0 && x < levelWidth && y >= 0 && y < levelHeight)
 		return levelTileAttributes[levelMap[(x + y * levelWidth)]];
 
 	return 0;
 }
 
-void deleteTile(int x, int y)
+void deleteTile(int x, int y) noexcept
 {
 	levelMap[x + y * levelWidth] = 0;
 }
 
-void shiftTile(int x, int y)
+void shiftTile(int x, int y) noexcept
 {
 	--levelMap[x + y * levelWidth];
 }
@@ -92,12 +93,13 @@ bool changeTile(int x, int y, uint8_t tile)
 	levelMap[x + y * levelWidth] = tile;
 
 	for (int i = 0; i < 3; ++i)
-		createNpc(NPC_Smoke, x << 13, y << 13, 0, 0, 0, nullptr);
+		createNpc(NPC_Smoke, tileToCoord(x), tileToCoord(y), 0, 0, 0, nullptr);
 
 	return true;
 }
 
-void loadLevel(int levelIndex) {
+void loadLevel(int levelIndex)
+{
 	currentLevel = levelIndex;
 
 	//Clear old carets
@@ -177,7 +179,8 @@ void loadLevel(int levelIndex) {
 	//Load npcs
 	const int npcAmount = readLElong(pxe, 4);
 
-	for (int i = 0; i < npcAmount; i++) {
+	for (int i = 0; i < npcAmount; i++)
+	{
 		const int offset = (i * 12) + 8;
 
 		if (readLEshort(pxe, offset + 10) & npc_appearset && !(getFlag(readLEshort(pxe, offset + 4))))
@@ -187,7 +190,7 @@ void loadLevel(int levelIndex) {
 			continue;
 
 		npc newNPC;
-		newNPC.init(readLEshort(pxe, offset + 8), readLEshort(pxe, offset) << 13, readLEshort(pxe, offset + 2) << 13, 0, 0, 0, nullptr);
+		newNPC.init(readLEshort(pxe, offset + 8), tileToCoord(readLEshort(pxe, offset)), tileToCoord(readLEshort(pxe, offset + 2)), 0, 0, 0, nullptr);
 
 		newNPC.code_event = readLEshort(pxe, offset + 6);
 		newNPC.code_flag = readLEshort(pxe, offset + 4);
@@ -242,7 +245,8 @@ void loadLevel(int levelIndex) {
 
 void drawLevel(bool foreground)
 {
-	if (!foreground) { //Draw background
+	if (!foreground)   //Draw background
+	{
 		RECT rect;
 
 		int skyOff;
@@ -266,8 +270,35 @@ void drawLevel(bool foreground)
 
 		switch (backgroundScroll)
 		{
-			case 0:
-				for (int x = 0; x < screenWidth; x += w)
+		case 0:
+			for (int x = 0; x < screenWidth; x += w)
+			{
+				for (int y = 0; y < screenHeight; y += h)
+					drawTexture(sprites[0x1C], &rect, x, y);
+			}
+
+			break;
+
+		case 1:
+			for (int x = -(viewport.x / 0x400 % w); x < screenWidth; x += w)
+			{
+				for (int y = -(viewport.y / 0x400 % h); y < screenHeight; y += h)
+					drawTexture(sprites[0x1C], &rect, x, y);
+			}
+
+			break;
+
+		case 2:
+			for (int x = -(viewport.x / 0x200 % w); x < screenWidth; x += w)
+			{
+				for (int y = -(viewport.y / 0x200 % h); y < screenHeight; y += h)
+					drawTexture(sprites[0x1C], &rect, x, y);
+			}
+
+			break;
+        
+			case 5:
+				for (int x = -(backgroundEffect / 0x200 % w); x < screenWidth; x += w)
 				{
 					for (int y = 0; y < screenHeight; y += h)
 						drawTexture(sprites[0x1C], &rect, x, y);
@@ -275,70 +306,53 @@ void drawLevel(bool foreground)
 
 				break;
 
-			case 1:
-				for (int x = -(viewport.x / 0x400 % w); x < screenWidth; x += w)
-				{
-					for (int y = -(viewport.y / 0x400 % h); y < screenHeight; y += h)
-						drawTexture(sprites[0x1C], &rect, x, y);
-				}
-
-				break;
-
-			case 2:
-				for (int x = -(viewport.x / 0x200 % w); x < screenWidth; x += w)
-				{
-					for (int y = -(viewport.y / 0x200 % h); y < screenHeight; y += h)
-						drawTexture(sprites[0x1C], &rect, x, y);
-				}
-
-				break;
-
-			case 6: case 7:
+			case 6: 
+      case 7:
 				//Draw sky
 				rect = { 0, 0, w / 2, 88 };
 
-				skyOff = (((w / 2) - screenWidth) / 2);
+			skyOff = (((w / 2) - screenWidth) / 2);
 
-				//Draw middle
-				drawTexture(sprites[0x1C], &rect, -skyOff, 0);
+			//Draw middle
+			drawTexture(sprites[0x1C], &rect, -skyOff, 0);
 
-				//Repeat stars or whatever
-				rect = { w / 2, 0, w, 88 };
+			//Repeat stars or whatever
+			rect = { w / 2, 0, w, 88 };
 
-				for (int i = 0; i < screenWidth - (skyOff / 2 + rect.left); i += rect.left)
-				{
-					drawTexture(sprites[0x1C], &rect, -skyOff + (rect.left + i), 0);
-					drawTexture(sprites[0x1C], &rect, -skyOff - (rect.left + i), 0);
-				}
+			for (int i = 0; i < screenWidth - (skyOff / 2 + rect.left); i += rect.left)
+			{
+				drawTexture(sprites[0x1C], &rect, -skyOff + (rect.left + i), 0);
+				drawTexture(sprites[0x1C], &rect, -skyOff - (rect.left + i), 0);
+			}
 
-				//Cloud layers
-				rect.left = 0;
-				rect.right = w;
+			//Cloud layers
+			rect.left = 0;
+			rect.right = w;
 
-				rect.top = 88;
-				rect.bottom = 123;
-				for (int i = 0; i <= (screenWidth / w) + 1; ++i)
-					drawTexture(sprites[0x1C], &rect, (w * i) - (backgroundEffect / 2) % w, rect.top);
+			rect.top = 88;
+			rect.bottom = 123;
+			for (int i = 0; i <= (screenWidth / w) + 1; ++i)
+				drawTexture(sprites[0x1C], &rect, (w * i) - (backgroundEffect / 2) % w, rect.top);
 
-				rect.top = 123;
-				rect.bottom = 146;
-				for (int i = 0; i <= (screenWidth / w) + 1; ++i)
-					drawTexture(sprites[0x1C], &rect, (w * i) - backgroundEffect % w, rect.top);
+			rect.top = 123;
+			rect.bottom = 146;
+			for (int i = 0; i <= (screenWidth / w) + 1; ++i)
+				drawTexture(sprites[0x1C], &rect, (w * i) - backgroundEffect % w, rect.top);
 
-				rect.top = 146;
-				rect.bottom = 176;
-				for (int i = 0; i <= (screenWidth / w) + 1; ++i)
-					drawTexture(sprites[0x1C], &rect, (w * i) - (backgroundEffect * 2) % w, rect.top);
+			rect.top = 146;
+			rect.bottom = 176;
+			for (int i = 0; i <= (screenWidth / w) + 1; ++i)
+				drawTexture(sprites[0x1C], &rect, (w * i) - (backgroundEffect * 2) % w, rect.top);
 
-				rect.top = 176;
-				rect.bottom = 240;
-				for (int i = 0; i <= (screenWidth / w) + 1; ++i)
-					drawTexture(sprites[0x1C], &rect, (w * i) - (backgroundEffect * 4) % w, rect.top);
+			rect.top = 176;
+			rect.bottom = 240;
+			for (int i = 0; i <= (screenWidth / w) + 1; ++i)
+				drawTexture(sprites[0x1C], &rect, (w * i) - (backgroundEffect * 4) % w, rect.top);
 
-				break;
+			break;
 
-			default:
-				break;
+		default:
+			break;
 		}
 	}
 
@@ -349,18 +363,21 @@ void drawLevel(bool foreground)
 	//Render tiles
 	RECT tileRect;
 
-	const int xFrom = clamp((viewport.x + 0x1000) >> 13, 0, levelWidth);
-	const int xTo = clamp((((viewport.x + 0x1000) + (screenWidth << 9)) >> 13) + 1, 0, levelWidth); //add 1 because edge wouldn't appear
+	const int xFrom = clamp(coordToTile(viewport.x + 0x1000), 0, levelWidth);
+	const int xTo = clamp((coordToTile((viewport.x + 0x1000) + (screenWidth << 9))) + 1, 0, levelWidth); //add 1 because edge wouldn't appear
 
-	const int yFrom = clamp((viewport.y + 0x1000) >> 13, 0, levelHeight);
-	const int yTo = clamp((((viewport.y + 0x1000) + (screenHeight << 9)) >> 13) + 1, 0, levelHeight); //add 1 because edge wouldn't appear
+	const int yFrom = clamp(coordToTile(viewport.y + 0x1000), 0, levelHeight);
+	const int yTo = clamp((coordToTile((viewport.y + 0x1000) + (screenWidth << 9))) + 1, 0, levelHeight); //add 1 because edge wouldn't appear
 
-	for (int x = xFrom; x < xTo; x++) {
-		for (int y = yFrom; y < yTo; y++) {
+	for (int x = xFrom; x < xTo; x++)
+	{
+		for (int y = yFrom; y < yTo; y++)
+		{
 			const int i = x + y * levelWidth;
 
 			const int tile = levelMap[i];
-			if (tile) {
+			if (tile)
+			{
 				const int attribute = levelTileAttributes[tile];
 
 				if ((attribute < 0x20 && !foreground) || (attribute >= 0x40 && foreground))
@@ -385,28 +402,32 @@ void drawLevel(bool foreground)
 					{
 						switch (attribute)
 						{
-						case 0x80: case 0xA0:
+						case 0x80:
+						case 0xA0:
 							tileRect.left = (currentEffect & 0xF) + 224;
 							tileRect.right = (currentEffect & 0xF) + 240;
 							tileRect.top = 48;
 							tileRect.bottom = 64;
 							break;
 
-						case 0x81: case 0xA1:
+						case 0x81:
+						case 0xA1:
 							tileRect.left = 224;
 							tileRect.right = 240;
 							tileRect.top = (currentEffect & 0xF) + 48;
 							tileRect.bottom = (currentEffect & 0xF) + 64;
 							break;
 
-						case 0x82: case 0xA2:
+						case 0x82:
+						case 0xA2:
 							tileRect.left = 240 - (currentEffect & 0xF);
 							tileRect.right = 256 - (currentEffect & 0xF);
 							tileRect.top = 48;
 							tileRect.bottom = 64;
 							break;
 
-						case 0x83: case 0xA3:
+						case 0x83:
+						case 0xA3:
 							tileRect.left = 224;
 							tileRect.right = 240;
 							tileRect.top = 64 - (currentEffect & 0xF);

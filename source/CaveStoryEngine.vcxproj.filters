@@ -123,9 +123,6 @@
     <ClCompile Include="caret.cpp">
       <Filter>Source Files\classes\caret</Filter>
     </ClCompile>
-    <ClCompile Include="org.cpp">
-      <Filter>Source Files\modules\sound</Filter>
-    </ClCompile>
     <ClCompile Include="npc220.cpp">
       <Filter>Source Files\classes\npc\act</Filter>
     </ClCompile>
@@ -192,6 +189,36 @@
     <ClCompile Include="spurShoot.cpp">
       <Filter>Source Files\classes\weapons\shoot</Filter>
     </ClCompile>
+    <ClCompile Include="stageSelect.cpp">
+      <Filter>Source Files\states</Filter>
+    </ClCompile>
+    <ClCompile Include="inventory.cpp">
+      <Filter>Source Files\states</Filter>
+    </ClCompile>
+    <ClCompile Include="org.cpp">
+      <Filter>Source Files\modules\sound</Filter>
+    </ClCompile>
+    <ClCompile Include="stdUtils.cpp">
+      <Filter>Source Files\modules</Filter>
+    </ClCompile>
+    <ClCompile Include="loadConfig.cpp">
+      <Filter>Source Files\modules</Filter>
+    </ClCompile>
+    <ClCompile Include="npc320.cpp">
+      <Filter>Source Files\classes\npc\act</Filter>
+    </ClCompile>
+    <ClCompile Include="npc160.cpp">
+      <Filter>Source Files\classes\npc\act</Filter>
+    </ClCompile>
+    <ClCompile Include="npc260.cpp">
+      <Filter>Source Files\classes\npc\act</Filter>
+    </ClCompile>
+    <ClCompile Include="missileLaunch.cpp">
+      <Filter>Source Files\classes\weapons\shoot</Filter>
+    </ClCompile>
+    <ClCompile Include="missile.cpp">
+      <Filter>Source Files\classes\bullet\act</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="level.h">
@@ -253,9 +280,6 @@
     </ClInclude>
     <ClInclude Include="caret.h">
       <Filter>Source Files\classes\caret</Filter>
-    </ClInclude>
-    <ClInclude Include="org.h">
-      <Filter>Source Files\modules\sound</Filter>
     </ClInclude>
     <ClInclude Include="npc220.h">
       <Filter>Source Files\classes\npc\act</Filter>
@@ -321,6 +345,27 @@
       <Filter>Source Files\classes\bullet</Filter>
     </ClInclude>
     <ClInclude Include="fireball.h">
+      <Filter>Source Files\classes\bullet\act</Filter>
+    </ClInclude>
+    <ClInclude Include="org.h">
+      <Filter>Source Files\modules\sound</Filter>
+    </ClInclude>
+    <ClInclude Include="stdUtils.h">
+      <Filter>Source Files\modules</Filter>
+    </ClInclude>
+    <ClInclude Include="loadConfig.h">
+      <Filter>Source Files\modules</Filter>
+    </ClInclude>
+    <ClInclude Include="npc320.h">
+      <Filter>Source Files\classes\npc\act</Filter>
+    </ClInclude>
+    <ClInclude Include="npc260.h">
+      <Filter>Source Files\classes\npc\act</Filter>
+    </ClInclude>
+    <ClInclude Include="npc160.h">
+      <Filter>Source Files\classes\npc\act</Filter>
+    </ClInclude>
+    <ClInclude Include="missile.h">
       <Filter>Source Files\classes\bullet\act</Filter>
     </ClInclude>
   </ItemGroup>

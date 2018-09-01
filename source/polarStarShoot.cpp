@@ -4,11 +4,11 @@
 #include "sound.h"
 #include "player.h"
 #include "input.h"
-#include "caret.h"	
+#include "caret.h"
 
 void shootPolarStar(int level)
 {
-	if (weaponBullets(2) < 2 && isKeyPressed(keyShoot))
+	if (weaponBullets(bullet_PolarStarLevel1) < 2 && isKeyPressed(keyShoot))
 	{
 		if (useWeaponAmmo(1) ^ 1)
 		{

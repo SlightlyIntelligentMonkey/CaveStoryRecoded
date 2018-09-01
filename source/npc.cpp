@@ -7,17 +7,20 @@
 #include "render.h"
 #include "sound.h"
 #include "flags.h"
+#include "game.h"
+#include "caret.h"
 
+#include <deque>
 #include <string>
 #include <cstring>
-#include <SDL_RWops.h>
+#include <SDL_rwops.h>
 
 using std::memset;
 using std::string;
 using std::to_string;
-using std::vector;
+using std::deque;
 
-vector<npc> npcs(0);
+deque<npc> npcs(0);
 
 int superXPos = 0;	// Used by undead core related NPCs ?
 int superYPos = 0;
@@ -126,7 +129,8 @@ void updateNPC()
 	if (npcs.size())
 	{
 		//Update
-		for (size_t i = 0; i < npcs.size(); i++) {
+		for (size_t i = 0; i < npcs.size(); i++)
+		{
 			if (npcs[i].cond & npccond_alive)
 			{
 				npcs[i].update();
@@ -143,7 +147,8 @@ void drawNPC()
 {
 	if (npcs.size())
 	{
-		for (size_t i = 0; i < npcs.size(); i++) {
+		for (size_t i = 0; i < npcs.size(); i++)
+		{
 			if (npcs[i].cond & npccond_alive)
 				npcs[i].draw();
 		}
@@ -155,31 +160,28 @@ void dropExperience(int x, int y, int exp)
 {
 	while (exp > 0)
 	{
-		int sub_exp;
+		int effectiveExp = 0;
 
 		if (exp <= 19)
 		{
 			if (exp <= 4)
 			{
-				if (exp > 0)
-				{
-					--exp;
-					sub_exp = 1;
-				}
+				--exp;
+				effectiveExp = 1;
 			}
 			else
 			{
 				exp -= 5;
-				sub_exp = 5;
+				effectiveExp = 5;
 			}
 		}
 		else
 		{
 			exp -= 20;
-			sub_exp = 20;
+			effectiveExp = 20;
 		}
 
-		createNpcExp(1, x, y, 0, 0, 0, nullptr, 0, sub_exp);
+		createNpcExp(1, x, y, 0, 0, 0, nullptr, 0, effectiveExp);
 	}
 }
 
@@ -213,6 +215,9 @@ int dropMissiles(int x, int y, int val)
 
 void killNpc(npc *NPC, bool bVanish)
 {
+	if (NPC == nullptr)
+		doCustomError("NPC was nullptr in killNpc");
+
 	const int x = NPC->x;
 	const int y = NPC->y;
 	const int flag = NPC->code_flag;
@@ -306,7 +311,7 @@ void loadNpcTable()
 
 	if (npcTable == nullptr)
 		doCustomError("Could not allocate memory for NPC table");
-	
+
 	int i;
 
 	for (i = 0; i < npcCount; ++i) //bits
@@ -331,7 +336,7 @@ void loadNpcTable()
 		tblStream->read(tblStream, &npcTable[i].view, 4, 1);
 }
 
-void npc::init(int setCode, int setX, int setY, int setXm, int setYm, int setDir, npc *parentNpc)
+void npc::init(int setCode, int setX, int setY, int setXm, int setYm, int setDir, npc *parentNpc) noexcept
 {
 	memset(this, 0, sizeof(*this));
 
@@ -347,7 +352,7 @@ void npc::init(int setCode, int setX, int setY, int setXm, int setYm, int setDir
 	pNpc = parentNpc;
 	bits = npcTable[code_char].bits;
 	exp = npcTable[code_char].exp;
-	
+
 	surf = npcTable[code_char].surf;
 	hit_voice = npcTable[code_char].hit_voice;
 	destroy_voice = npcTable[code_char].destroy_voice;
@@ -367,7 +372,7 @@ void npc::init(int setCode, int setX, int setY, int setXm, int setYm, int setDir
 	view.bottom = npcTable[code_char].view.bottom << 9;
 }
 
-void npc::update()
+void npc::update() noexcept
 {
 	npcActs[code_char](this);
 
@@ -400,7 +405,7 @@ void npc::draw()
 			side = view.right;
 
 		drawTexture(sprites[surf], &rect, (x - side) / 0x200 - viewport.x / 0x200 + xOffset, (y - view.top) / 0x200 - viewport.y / 0x200);
-		
+
 		if (debugFlags & showNPCId)
 		{
 			size_t index = 0;
@@ -414,10 +419,30 @@ void npc::draw()
 				}
 			}
 
-			int yOffset = 0;
-			yOffset = -view.top;
+			drawString((x - side) / 0x200 - viewport.x / 0x200 + xOffset, (y - view.top) / 0x200 - viewport.y / 0x200 - 16, to_string(index).c_str(), nullptr);
+		}
 
-			drawString((x - side) / 0x200 - viewport.x / 0x200 + xOffset, (y + yOffset) / 0x200 - viewport.y / 0x200 - 16, to_string(index).c_str(), nullptr);
+		if (debugFlags & showNPCHealth && life)
+		{
+			RECT rcPer = { 72, 48, 80, 56 };
+
+			drawNumber(life, (x - side) / 0x200 - viewport.x / 0x200 + xOffset, (y - view.top) / 0x200 - viewport.y / 0x200 - 24, true);
+			drawTexture(sprites[TEX_TEXTBOX], &rcPer, (x - side) / 0x200 - viewport.x / 0x200 + xOffset + 32, (y - view.top) / 0x200 - viewport.y / 0x200 - 24);
+			drawNumber(npcTable[code_char].life, (x - side) / 0x200 - viewport.x / 0x200 + xOffset + 40, (y - view.top) / 0x200 - viewport.y / 0x200 - 24, true);
 		}
 	}
+}
+
+void createExplosion(int x, int y, int w, int num)
+{
+	int offset_x = 0;
+	int offset_y = 0;
+	int wa = w / 512;
+	for (int i = 0; i < num; ++i)
+	{
+		offset_x = random(-wa, wa) << 9;
+		offset_y = random(-wa, wa) << 9;
+		createNpc(NPC_Smoke, x + offset_x, offset_y + y, 0, 0, 0, nullptr);
+	}
+	createCaret(x, y, 12, 0);
 }

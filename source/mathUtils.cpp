@@ -32,11 +32,11 @@ auto seededRandomEngine() -> typename enable_if<!!N, T>::type
 		T seededEngine(seeds);
 		return seededEngine;
 	}
-	srand(uint32_t(std::chrono::high_resolution_clock::now().time_since_epoch().count()));
+	srand(static_cast<unsigned int>(std::chrono::high_resolution_clock::now().time_since_epoch().count()));
 	seed_seq seeds
 	{
-		int(std::chrono::high_resolution_clock::now().time_since_epoch().count()),
-		int(std::chrono::high_resolution_clock::now().time_since_epoch().count() >> 32),
+		static_cast<int>(std::chrono::high_resolution_clock::now().time_since_epoch().count()),
+		static_cast<int>(std::chrono::high_resolution_clock::now().time_since_epoch().count() >> 32),
 		rand(),
 		rand(),
 		rand(),
@@ -55,12 +55,12 @@ thread_local mt19937 engine(seededRandomEngine());
 uniform_int_distribution<int32_t> distrInt;
 
 //Not the original code, because it's better
-int getSin(uint8_t deg)
+int getSin(uint8_t deg) noexcept
 {
 	return static_cast<int>(sin(deg * (M_PI / 0x80)) * 512.0);
 }
 
-int getCos(uint8_t deg)
+int getCos(uint8_t deg) noexcept
 {
 	return static_cast<int>(cos(deg * (M_PI / 0x80)) * 512.0);
 }
@@ -71,37 +71,38 @@ uint8_t getAtan(int x, int y)
 }
 
 //these are good functions
-int random(int32_t mi, int32_t ma) {
+int random(int32_t mi, int32_t ma)
+{
 	return (mi + (distrInt(engine) % (ma - mi + 1)));
 }
 
-int sign(int x) {
+int sign(int x) noexcept
+{
 	if (x != 0)
 		return x / std::abs(x);
 
 	return 0;
 }
 
-int clamp(int x, int mi, int ma) {
+int clamp(int x, int mi, int ma) noexcept
+{
 	return std::max(std::min(ma, x), mi);
 }
 
-
 //returns result of normalized sinc
-double sinc(double x)
+double sinc(double x) noexcept
 {
-	return (sin(M_PI*(float)x) / (M_PI*(float)x));
+	return (sin(M_PI*static_cast<float>(x)) / (M_PI*static_cast<float>(x)));
 }
 
 //returns greatest common denominator a and b
-int getGCD(int x, int y)
+int getGCD(int x, int y) noexcept
 {
 	if (x < y)
 		std::swap(x, y);
-
 	while (y > 0)
 	{
-		int f = x % y;
+		const int f = x % y;
 		x = y;
 		y = f;
 	}

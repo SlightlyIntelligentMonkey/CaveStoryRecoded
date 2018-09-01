@@ -22,9 +22,9 @@ int playerJudgeBlock(const RECT *rcHit, player *me, int tx, int ty)
 	int hit = 0;
 
 	if (me->y - rcHit->top < (2 * (2 * ty + 1) - 1) << 11
-		&& rcHit->bottom + me->y > (2 * (2 * ty - 1) + 1) << 11
-		&& me->x - rcHit->left < (2 * tx + 1) << 12
-		&& me->x - rcHit->left > tx << 13)
+	        && rcHit->bottom + me->y > (2 * (2 * ty - 1) + 1) << 11
+	        && me->x - rcHit->left < (2 * tx + 1) << 12
+	        && me->x - rcHit->left > tileToCoord(tx))
 	{
 		me->x = ((2 * tx + 1) << 12) + rcHit->left;
 
@@ -38,9 +38,9 @@ int playerJudgeBlock(const RECT *rcHit, player *me, int tx, int ty)
 	}
 
 	if (me->y - rcHit->top < (2 * (2 * ty + 1) - 1) << 11
-		&& rcHit->bottom + me->y > (2 * (2 * ty - 1) + 1) << 11
-		&& rcHit->right + me->x > (2 * tx - 1) << 12
-		&& rcHit->right + me->x < tx << 13)
+	        && rcHit->bottom + me->y > (2 * (2 * ty - 1) + 1) << 11
+	        && rcHit->right + me->x > (2 * tx - 1) << 12
+	        && rcHit->right + me->x < tileToCoord(tx))
 	{
 		me->x = ((2 * tx - 1) << 12) - rcHit->right;
 
@@ -54,9 +54,9 @@ int playerJudgeBlock(const RECT *rcHit, player *me, int tx, int ty)
 	}
 
 	if (me->x - rcHit->left < ((2 * tx + 1) << 12) - 0x600
-		&& rcHit->right + me->x > ((2 * tx - 1) << 12) + 0x600
-		&& me->y - rcHit->top < (2 * ty + 1) << 12
-		&& me->y - rcHit->top > ty << 13)
+	        && rcHit->right + me->x > ((2 * tx - 1) << 12) + 0x600
+	        && me->y - rcHit->top < (2 * ty + 1) << 12
+	        && me->y - rcHit->top > tileToCoord(ty))
 	{
 		me->y = ((2 * ty + 1) << 12) + rcHit->top;
 
@@ -69,9 +69,9 @@ int playerJudgeBlock(const RECT *rcHit, player *me, int tx, int ty)
 	}
 
 	if (me->x - rcHit->left < ((2 * tx + 1) << 12) - 0x600
-		&& rcHit->right + me->x > ((2 * tx - 1) << 12) + 0x600
-		&& rcHit->bottom + me->y > (2 * ty - 1) << 12
-		&& rcHit->bottom + me->y < ty << 13)
+	        && rcHit->right + me->x > ((2 * tx - 1) << 12) + 0x600
+	        && rcHit->bottom + me->y > (2 * ty - 1) << 12
+	        && rcHit->bottom + me->y < tileToCoord(ty))
 	{
 		me->y = ((2 * ty - 1) << 12) - rcHit->bottom;
 
@@ -91,19 +91,19 @@ int playerJudgeBlock(const RECT *rcHit, player *me, int tx, int ty)
 int playerJudgeTriangleA(const RECT *rcHit, player *me, int tx, int ty)
 {
 	int hit = 0;
-	
+
 	if (me->x > (2 * tx - 1) << 12
-		&& me->x < (2 * tx + 1) << 12
-		&& me->y - rcHit->top < (ty << 13) - (-0x2000 * tx + me->x) / 2 + 0x800
-		&& me->y + rcHit->bottom > (2 * ty - 1) << 12)
+	        && me->x < (2 * tx + 1) << 12
+	        && me->y - rcHit->top < tileToCoord(ty) - (-0x2000 * tx + me->x) / 2 + 0x800
+	        && me->y + rcHit->bottom > (2 * ty - 1) << 12)
 	{
 		if (!(me->cond & player_removed) && me->ym < -0x200)
 			putLittleStar(rcHit, me);
 		if (me->ym < 0)
 			me->ym = 0;
 
-		me->y = (ty << 13) - (-0x2000 * tx + me->x) / 2 + 0x800 + rcHit->top;
-		
+		me->y = tileToCoord(ty) - (-0x2000 * tx + me->x) / 2 + 0x800 + rcHit->top;
+
 		hit = ceiling;
 	}
 
@@ -115,16 +115,16 @@ int playerJudgeTriangleB(const RECT *rcHit, player *me, int tx, int ty)
 	int hit = 0;
 
 	if (me->x > (2 * tx - 1) << 12
-		&& me->x < (2 * tx + 1) << 12
-		&& me->y - rcHit->top < (ty << 13) - (-0x2000 * tx + me->x) / 2 - 0x800
-		&& me->y + rcHit->bottom >(2 * ty - 1) << 12)
+	        && me->x < (2 * tx + 1) << 12
+	        && me->y - rcHit->top < tileToCoord(ty) - (-0x2000 * tx + me->x) / 2 - 0x800
+	        && me->y + rcHit->bottom >(2 * ty - 1) << 12)
 	{
 		if (!(me->cond & player_removed) && me->ym < -0x200)
 			putLittleStar(rcHit, me);
 		if (me->ym < 0)
 			me->ym = 0;
 
-		me->y = (ty << 13) - (-0x2000 * tx + me->x) / 2 - 0x800 + rcHit->top;
+		me->y = tileToCoord(ty) - (-0x2000 * tx + me->x) / 2 - 0x800 + rcHit->top;
 
 		hit = ceiling;
 	}
@@ -137,16 +137,16 @@ int playerJudgeTriangleC(const RECT *rcHit, player *me, int tx, int ty)
 	int hit = 0;
 
 	if (me->x > (2 * tx - 1) << 12
-		&& me->x < (2 * tx + 1) << 12
-		&& me->y - rcHit->top < (ty << 13) + (-0x2000 * tx + me->x) / 2 - 0x800
-		&& me->y + rcHit->bottom >(2 * ty - 1) << 12)
+	        && me->x < (2 * tx + 1) << 12
+	        && me->y - rcHit->top < tileToCoord(ty) + (-0x2000 * tx + me->x) / 2 - 0x800
+	        && me->y + rcHit->bottom >(2 * ty - 1) << 12)
 	{
 		if (!(me->cond & player_removed) && me->ym < -0x200)
 			putLittleStar(rcHit, me);
 		if (me->ym < 0)
 			me->ym = 0;
 
-		me->y = (ty << 13) + (-0x2000 * tx + me->x) / 2 - 0x800 + rcHit->top;
+		me->y = tileToCoord(ty) + (-0x2000 * tx + me->x) / 2 - 0x800 + rcHit->top;
 
 		hit = ceiling;
 	}
@@ -159,16 +159,16 @@ int playerJudgeTriangleD(const RECT *rcHit, player *me, int tx, int ty)
 	int hit = 0;
 
 	if (me->x > (2 * tx - 1) << 12
-		&& me->x < (2 * tx + 1) << 12
-		&& me->y - rcHit->top < (ty << 13) + (-0x2000 * tx + me->x) / 2 + 0x800
-		&& me->y + rcHit->bottom >(2 * ty - 1) << 12)
+	        && me->x < (2 * tx + 1) << 12
+	        && me->y - rcHit->top < tileToCoord(ty) + (-0x2000 * tx + me->x) / 2 + 0x800
+	        && me->y + rcHit->bottom >(2 * ty - 1) << 12)
 	{
 		if (!(me->cond & player_removed) && me->ym < -0x200)
 			putLittleStar(rcHit, me);
 		if (me->ym < 0)
 			me->ym = 0;
 
-		me->y = (ty << 13) + (-0x2000 * tx + me->x) / 2 + 0x800 + rcHit->top;
+		me->y = tileToCoord(ty) + (-0x2000 * tx + me->x) / 2 + 0x800 + rcHit->top;
 
 		hit = ceiling;
 	}
@@ -180,18 +180,18 @@ int playerJudgeTriangleD(const RECT *rcHit, player *me, int tx, int ty)
 int playerJudgeTriangleE(const RECT *rcHit, player *me, int tx, int ty)
 {
 	if (me->x > (2 * tx - 1) << 12
-		&& me->x < (2 * tx + 1) << 12
-		&& me->y + rcHit->bottom > (ty << 13) + (-0x2000 * tx + me->x) / 2 - 0x800
-		&& me->y - rcHit->top < (2 * ty + 1) << 12)
+	        && me->x < (2 * tx + 1) << 12
+	        && me->y + rcHit->bottom > tileToCoord(ty) + (-0x2000 * tx + me->x) / 2 - 0x800
+	        && me->y - rcHit->top < (2 * ty + 1) << 12)
 	{
-		me->y = (ty << 13) + (-0x2000 * tx + me->x) / 2 - 0x800 - rcHit->bottom;
+		me->y = tileToCoord(ty) + (-0x2000 * tx + me->x) / 2 - 0x800 - rcHit->bottom;
 
 		if (me->ym > 0x400)
 			playSound(SFX_QuoteHitGround);
 
 		if (me->ym > 0)
 			me->ym = 0;
-		
+
 		return (ground | slopeLeft | slopeE);
 	}
 
@@ -201,11 +201,11 @@ int playerJudgeTriangleE(const RECT *rcHit, player *me, int tx, int ty)
 int playerJudgeTriangleF(const RECT *rcHit, player *me, int tx, int ty)
 {
 	if (me->x < (2 * tx + 1) << 12
-		&& me->x >(2 * tx - 1) << 12
-		&& me->y + rcHit->bottom > (ty << 13) + (-0x2000 * tx + me->x) / 2 + 0x800
-		&& me->y - rcHit->top < (2 * ty + 1) << 12)
+	        && me->x >(2 * tx - 1) << 12
+	        && me->y + rcHit->bottom > tileToCoord(ty) + (-0x2000 * tx + me->x) / 2 + 0x800
+	        && me->y - rcHit->top < (2 * ty + 1) << 12)
 	{
-		me->y = (ty << 13) + (-0x2000 * tx + me->x) / 2 + 0x800 - rcHit->bottom;
+		me->y = tileToCoord(ty) + (-0x2000 * tx + me->x) / 2 + 0x800 - rcHit->bottom;
 
 		if (me->ym > 0x400)
 			playSound(SFX_QuoteHitGround);
@@ -222,11 +222,11 @@ int playerJudgeTriangleF(const RECT *rcHit, player *me, int tx, int ty)
 int playerJudgeTriangleG(const RECT *rcHit, player *me, int tx, int ty)
 {
 	if (me->x > (2 * tx - 1) << 12
-		&& me->x < (2 * tx + 1) << 12
-		&& me->y + rcHit->bottom > (ty << 13) - (-0x2000 * tx + me->x) / 2 + 0x800
-		&& me->y - rcHit->top < (2 * ty + 1) << 12)
+	        && me->x < (2 * tx + 1) << 12
+	        && me->y + rcHit->bottom > tileToCoord(ty) - (-0x2000 * tx + me->x) / 2 + 0x800
+	        && me->y - rcHit->top < (2 * ty + 1) << 12)
 	{
-		me->y = (ty << 13) - (-0x2000 * tx + me->x) / 2 + 0x800 - rcHit->bottom;
+		me->y = tileToCoord(ty) - (-0x2000 * tx + me->x) / 2 + 0x800 - rcHit->bottom;
 
 		if (me->ym > 0x400)
 			playSound(SFX_QuoteHitGround);
@@ -243,11 +243,11 @@ int playerJudgeTriangleG(const RECT *rcHit, player *me, int tx, int ty)
 int playerJudgeTriangleH(const RECT *rcHit, player *me, int tx, int ty)
 {
 	if (me->x > (2 * tx - 1) << 12
-		&& me->x < (2 * tx + 1) << 12
-		&& me->y + rcHit->bottom > (ty << 13) - (-0x2000 * tx + me->x) / 2 - 0x800
-		&& me->y - rcHit->top < (2 * ty + 1) << 12)
+	        && me->x < (2 * tx + 1) << 12
+	        && me->y + rcHit->bottom > tileToCoord(ty) - (-0x2000 * tx + me->x) / 2 - 0x800
+	        && me->y - rcHit->top < (2 * ty + 1) << 12)
 	{
-		me->y = (ty << 13) - (-0x2000 * tx + me->x) / 2 - 0x800 - rcHit->bottom;
+		me->y = tileToCoord(ty) - (-0x2000 * tx + me->x) / 2 - 0x800 - rcHit->bottom;
 
 		if (me->ym > 0x400)
 			playSound(SFX_QuoteHitGround);
@@ -261,14 +261,16 @@ int playerJudgeTriangleH(const RECT *rcHit, player *me, int tx, int ty)
 	return slopeH;
 }
 
+int playerJudgeWater(const RECT *rcHit, const player *me, int tx, int ty) attrPure;
+
 int playerJudgeWater(const RECT *rcHit, const player *me, int tx, int ty)
 {
 	int hit = 0;
 
 	if (me->x - rcHit->left < ((2 * tx + 1) << 12) - 0x600
-		&& me->x + rcHit->right > ((2 * tx - 1) << 12) + 0x600
-		&& me->y - rcHit->top < ((2 * ty + 1) << 12) - 0x600
-		&& me->y + rcHit->bottom > ty << 13)
+	        && me->x + rcHit->right > ((2 * tx - 1) << 12) + 0x600
+	        && me->y - rcHit->top < ((2 * ty + 1) << 12) - 0x600
+	        && me->y + rcHit->bottom > tileToCoord(ty))
 	{
 		hit = water;
 	}
@@ -276,12 +278,14 @@ int playerJudgeWater(const RECT *rcHit, const player *me, int tx, int ty)
 	return hit;
 }
 
-int playerJudgeSpike(const RECT *rcHit, const player *me, int tx, int ty)
+int playerJudgeSpike(const RECT *rcHit, const player *me, int tx, int ty) attrPure;
+
+int playerJudgeSpike(const RECT * /*rcHit*/, const player *me, int tx, int ty)
 {
 	if (me->x - 0x800 < (4 * tx + 1) << 11
-		&& me->x + 0x800 > (4 * tx - 1) << 11
-		&& me->y - 0x800 < (ty << 13) + 0x600
-		&& me->y + 0x800 > (ty << 13) - 0x600)
+	        && me->x + 0x800 > (4 * tx - 1) << 11
+	        && me->y - 0x800 < tileToCoord(ty) + 0x600
+	        && me->y + 0x800 > tileToCoord(ty) - 0x600)
 	{
 		return spike;
 	}
@@ -289,12 +293,14 @@ int playerJudgeSpike(const RECT *rcHit, const player *me, int tx, int ty)
 	return 0;
 }
 
-int playerJudgeWaterSpike(const RECT *rcHit, const player *me, int tx, int ty)
+int playerJudgeWaterSpike(const RECT *rcHit, const player *me, int tx, int ty) attrPure;
+
+int playerJudgeWaterSpike(const RECT * /*rcHit*/, const player *me, int tx, int ty)
 {
 	if (me->x - 0x800 < (4 * tx + 1) << 11
-		&& me->x + 0x800 > (4 * tx - 1) << 11
-		&& me->y - 0x800 < (ty << 13) + 0x600
-		&& me->y + 0x800 > (ty << 13) - 0x600)
+	        && me->x + 0x800 > (4 * tx - 1) << 11
+	        && me->y - 0x800 < tileToCoord(ty) + 0x600
+	        && me->y + 0x800 > tileToCoord(ty) - 0x600)
 	{
 		return (spike | water | bloodWater);
 	}
@@ -303,12 +309,14 @@ int playerJudgeWaterSpike(const RECT *rcHit, const player *me, int tx, int ty)
 }
 
 //Current
+int playerJudgeCurrentLeft(const RECT *rcHit, const player *me, int tx, int ty) attrPure;
+
 int playerJudgeCurrentLeft(const RECT *rcHit, const player *me, int tx, int ty)
 {
 	if (me->x - rcHit->left < (4 * (2 * tx + 1) - 1) << 10
-		&& me->x + rcHit->right > (4 * (2 * tx - 1) + 1) << 10
-		&& me->y - rcHit->top < (4 * (2 * ty + 1) - 1) << 10
-		&& me->y + rcHit->bottom > (4 * (2 * ty - 1) + 1) << 10)
+	        && me->x + rcHit->right > (4 * (2 * tx - 1) + 1) << 10
+	        && me->y - rcHit->top < (4 * (2 * ty + 1) - 1) << 10
+	        && me->y + rcHit->bottom > (4 * (2 * ty - 1) + 1) << 10)
 	{
 		return windLeft;
 	}
@@ -316,12 +324,14 @@ int playerJudgeCurrentLeft(const RECT *rcHit, const player *me, int tx, int ty)
 	return 0;
 }
 
+int playerJudgeCurrentUp(const RECT *rcHit, const player *me, int tx, int ty) attrPure;
+
 int playerJudgeCurrentUp(const RECT *rcHit, const player *me, int tx, int ty)
 {
 	if (me->x - rcHit->left < (4 * (2 * tx + 1) - 1) << 10
-		&& me->x + rcHit->right >(4 * (2 * tx - 1) + 1) << 10
-		&& me->y - rcHit->top < (4 * (2 * ty + 1) - 1) << 10
-		&& me->y + rcHit->bottom >(4 * (2 * ty - 1) + 1) << 10)
+	        && me->x + rcHit->right >(4 * (2 * tx - 1) + 1) << 10
+	        && me->y - rcHit->top < (4 * (2 * ty + 1) - 1) << 10
+	        && me->y + rcHit->bottom >(4 * (2 * ty - 1) + 1) << 10)
 	{
 		return windUp;
 	}
@@ -329,12 +339,14 @@ int playerJudgeCurrentUp(const RECT *rcHit, const player *me, int tx, int ty)
 	return 0;
 }
 
+int playerJudgeCurrentRight(const RECT *rcHit, const player *me, int tx, int ty) attrPure;
+
 int playerJudgeCurrentRight(const RECT *rcHit, const player *me, int tx, int ty)
 {
 	if (me->x - rcHit->left < (4 * (2 * tx + 1) - 1) << 10
-		&& me->x + rcHit->right >(4 * (2 * tx - 1) + 1) << 10
-		&& me->y - rcHit->top < (4 * (2 * ty + 1) - 1) << 10
-		&& me->y + rcHit->bottom >(4 * (2 * ty - 1) + 1) << 10)
+	        && me->x + rcHit->right >(4 * (2 * tx - 1) + 1) << 10
+	        && me->y - rcHit->top < (4 * (2 * ty + 1) - 1) << 10
+	        && me->y + rcHit->bottom >(4 * (2 * ty - 1) + 1) << 10)
 	{
 		return windRight;
 	}
@@ -342,12 +354,14 @@ int playerJudgeCurrentRight(const RECT *rcHit, const player *me, int tx, int ty)
 	return 0;
 }
 
+int playerJudgeCurrentDown(const RECT *rcHit, const player *me, int tx, int ty) attrPure;
+
 int playerJudgeCurrentDown(const RECT *rcHit, const player *me, int tx, int ty)
 {
 	if (me->x - rcHit->left < (4 * (2 * tx + 1) - 1) << 10
-		&& me->x + rcHit->right >(4 * (2 * tx - 1) + 1) << 10
-		&& me->y - rcHit->top < (4 * (2 * ty + 1) - 1) << 10
-		&& me->y + rcHit->bottom >(4 * (2 * ty - 1) + 1) << 10)
+	        && me->x + rcHit->right >(4 * (2 * tx - 1) + 1) << 10
+	        && me->y - rcHit->top < (4 * (2 * ty + 1) - 1) << 10
+	        && me->y + rcHit->bottom >(4 * (2 * ty - 1) + 1) << 10)
 	{
 		return windDown;
 	}
@@ -363,10 +377,10 @@ void playerHitMap()
 
 	me->flag = 0;
 
-	const int fromX = (me->x - rcHit->left + 0x1000) >> 13;
-	const int fromY = (me->y - rcHit->top + 0x1000) >> 13;
-	const int toX = (me->x + rcHit->right + 0x1000) >> 13;
-	const int toY = (me->y + rcHit->bottom + 0x1000) >> 13;
+	const int fromX = coordToTile(me->x - rcHit->left + 0x1000);
+	const int fromY = coordToTile(me->y - rcHit->top + 0x1000);
+	const int toX = coordToTile(me->x + rcHit->right + 0x1000);
+	const int toY = coordToTile(me->y + rcHit->bottom + 0x1000);
 
 	for (int currentX = fromX; currentX <= toX; currentX++)
 	{
@@ -374,17 +388,20 @@ void playerHitMap()
 		{
 			switch (getTileAttribute(currentX, currentY))
 			{
-				//Solid
-			case 0x05u: case 0x41u: case 0x43u: case 0x46u:
+			//Solid
+			case 0x05u:
+			case 0x41u:
+			case 0x43u:
+			case 0x46u:
 				me->flag |= playerJudgeBlock(rcHit, me, currentX, currentY);
 				break;
 
-				//Spike
+			//Spike
 			case 0x42u:
 				me->flag |= playerJudgeSpike(rcHit, me, currentX, currentY);
 				break;
 
-				//Ceiling slopes
+			//Ceiling slopes
 			case 0x50u:
 				me->flag |= playerJudgeTriangleA(rcHit, me, currentX, currentY);
 				break;
@@ -401,7 +418,7 @@ void playerHitMap()
 				me->flag |= playerJudgeTriangleD(rcHit, me, currentX, currentY);
 				break;
 
-				//Floor slopes
+			//Floor slopes
 			case 0x54u:
 				me->flag |= playerJudgeTriangleE(rcHit, me, currentX, currentY);
 				break;
@@ -418,7 +435,7 @@ void playerHitMap()
 				me->flag |= playerJudgeTriangleH(rcHit, me, currentX, currentY);
 				break;
 
-				//Water, water solid, and water spike
+			//Water, water solid, and water spike
 			case 0x60u:
 				me->flag |= playerJudgeWater(rcHit, me, currentX, currentY);
 				break;
@@ -432,8 +449,8 @@ void playerHitMap()
 				me->flag |= playerJudgeWaterSpike(rcHit, me, currentX, currentY);
 				break;
 
-					//Water slopes
-				//Ceiling slopes
+			//Water slopes
+			//Ceiling slopes
 			case 0x70u:
 				me->flag |= playerJudgeTriangleA(rcHit, me, currentX, currentY);
 				me->flag |= playerJudgeWater(rcHit, me, currentX, currentY);
@@ -453,8 +470,8 @@ void playerHitMap()
 				me->flag |= playerJudgeTriangleD(rcHit, me, currentX, currentY);
 				me->flag |= playerJudgeWater(rcHit, me, currentX, currentY);
 				break;
-				
-				//Floor slopes
+
+			//Floor slopes
 			case 0x74u:
 				me->flag |= playerJudgeTriangleE(rcHit, me, currentX, currentY);
 				me->flag |= playerJudgeWater(rcHit, me, currentX, currentY);
@@ -475,7 +492,7 @@ void playerHitMap()
 				me->flag |= playerJudgeWater(rcHit, me, currentX, currentY);
 				break;
 
-				//Wind
+			//Wind
 			case 0x80u:
 				me->flag |= playerJudgeCurrentLeft(rcHit, me, currentX, currentY);
 				break;
@@ -492,7 +509,7 @@ void playerHitMap()
 				me->flag |= playerJudgeCurrentDown(rcHit, me, currentX, currentY);
 				break;
 
-				//Water current
+			//Water current
 			case 0xA0u:
 				me->flag |= playerJudgeCurrentLeft(rcHit, me, currentX, currentY);
 				me->flag |= playerJudgeWater(rcHit, me, currentX, currentY);
@@ -513,7 +530,7 @@ void playerHitMap()
 				me->flag |= playerJudgeWater(rcHit, me, currentX, currentY);
 				break;
 
-				//Default
+			//Default
 			default:
 				break;
 			}
@@ -527,9 +544,9 @@ int playerHitNpcSoftSolid(const RECT *rcHit, player *me, const npc *NPC)
 	int hit = 0;
 
 	if (me->y - rcHit->top < NPC->y + NPC->hit.bottom - 0x600
-		&& me->y + rcHit->bottom > NPC->y - NPC->hit.top + 0x600
-		&& me->x - rcHit->left < NPC->x + NPC->hit.right
-		&& me->x - rcHit->left > NPC->x)
+	        && me->y + rcHit->bottom > NPC->y - NPC->hit.top + 0x600
+	        && me->x - rcHit->left < NPC->x + NPC->hit.right
+	        && me->x - rcHit->left > NPC->x)
 	{
 		if (me->xm <= 0x1FF)
 			me->xm += 0x200;
@@ -538,9 +555,9 @@ int playerHitNpcSoftSolid(const RECT *rcHit, player *me, const npc *NPC)
 	}
 
 	if (me->y - rcHit->top < NPC->y + NPC->hit.bottom - 0x600
-		&& me->y + rcHit->bottom > NPC->y - NPC->hit.top + 0x600
-		&& me->x + rcHit->right - 0x200 > NPC->x - NPC->hit.right
-		&& me->x + rcHit->right - 0x200 < NPC->x)
+	        && me->y + rcHit->bottom > NPC->y - NPC->hit.top + 0x600
+	        && me->x + rcHit->right - 0x200 > NPC->x - NPC->hit.right
+	        && me->x + rcHit->right - 0x200 < NPC->x)
 	{
 		if (me->xm >= -0x1FF)
 			me->xm -= 0x200;
@@ -549,9 +566,9 @@ int playerHitNpcSoftSolid(const RECT *rcHit, player *me, const npc *NPC)
 	}
 
 	if (me->x - rcHit->left < NPC->x + NPC->hit.right - 0x600
-		&& me->x + rcHit->right > NPC->x - NPC->hit.right + 0x600
-		&& me->y - rcHit->top < NPC->y + NPC->hit.bottom
-		&& me->y - rcHit->top > NPC->y)
+	        && me->x + rcHit->right > NPC->x - NPC->hit.right + 0x600
+	        && me->y - rcHit->top < NPC->y + NPC->hit.bottom
+	        && me->y - rcHit->top > NPC->y)
 	{
 		if (me->ym < 0)
 			me->ym = 0;
@@ -560,9 +577,9 @@ int playerHitNpcSoftSolid(const RECT *rcHit, player *me, const npc *NPC)
 	}
 
 	if (me->x - rcHit->left < NPC->x + NPC->hit.right - 0x600
-		&& me->x + rcHit->right > NPC->x - NPC->hit.right + 0x600
-		&& me->y + rcHit->bottom > NPC->y - NPC->hit.top
-		&& me->y + rcHit->bottom < NPC->y + 0x600)
+	        && me->x + rcHit->right > NPC->x - NPC->hit.right + 0x600
+	        && me->y + rcHit->bottom > NPC->y - NPC->hit.top
+	        && me->y + rcHit->bottom < NPC->y + 0x600)
 	{
 		if (NPC->bits & npc_bouncy)
 		{
@@ -690,23 +707,25 @@ int playerHitNpcHardSolid(const RECT *rcHit, player *me, const npc *NPC)
 	return hit;
 }
 
-int playerHitNpcNonSolid(const RECT *rcHit, const player *me, const npc *NPC)
+int playerHitNpcNonSolid(const RECT *rcHit, const player *me, const npc *NPC) attrPure;
+
+int playerHitNpcNonSolid(const RECT * /*rcHit*/, const player *me, const npc *NPC)
 {
 	if (NPC->direct != dirLeft)
 	{
 		if (me->x + 0x400 > NPC->x - NPC->hit.right
-			&& me->x - 0x400 < NPC->x + NPC->hit.left
-			&& me->y + 0x400 > NPC->y - NPC->hit.top
-			&& me->y - 0x400 < NPC->y + NPC->hit.bottom)
+		        && me->x - 0x400 < NPC->x + NPC->hit.left
+		        && me->y + 0x400 > NPC->y - NPC->hit.top
+		        && me->y - 0x400 < NPC->y + NPC->hit.bottom)
 		{
 			return 1;
 		}
 	}
 
 	if (me->x + 0x400 > NPC->x - NPC->hit.left
-		&& me->x - 0x400 < NPC->x + NPC->hit.right
-		&& me->y + 0x400 > NPC->y - NPC->hit.top
-		&& me->y - 0x400 < NPC->y + NPC->hit.bottom)
+	        && me->x - 0x400 < NPC->x + NPC->hit.right
+	        && me->y + 0x400 > NPC->y - NPC->hit.top
+	        && me->y - 0x400 < NPC->y + NPC->hit.bottom)
 	{
 		return 1;
 	}
@@ -723,7 +742,7 @@ void playerHitNpcs()
 	{
 		for (size_t i = 0; i < npcs.size(); ++i)
 		{
-			if ((npcs[i].cond & npccond_alive))
+			if (npcs[i].cond & npccond_alive)
 			{
 				int hit = 0;
 				if (npcs[i].bits & npc_solidsoft)
@@ -752,7 +771,7 @@ void playerHitNpcs()
 				if (hit && npcs[i].code_char == 86)
 				{
 					playSound(SFX_QuoteMissileGet);
-					//AddBulletMyChar(gNPC[i].code_event, gNPC[i].exp);
+					giveAmmo(npcs[i].code_event, npcs[i].exp);
 					npcs[i].cond = 0;
 				}
 

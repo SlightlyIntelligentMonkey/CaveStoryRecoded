@@ -48,7 +48,7 @@ void npcAct022(npc *NPC) //Teleporter
 	rect[1].top = 152;
 	rect[1].right = 272;
 	rect[1].bottom = 184;
-	
+
 	if (NPC->act_no)
 	{
 		if (NPC->act_no == 1 && ++NPC->ani_no > 1)
@@ -72,8 +72,109 @@ void npcAct023(npc *NPC) //Teleporter lights
 
 	if (NPC->ani_no > 7)
 		NPC->ani_no = 0;
-	
+
 	NPC->rect = { 264, 16 + (NPC->ani_no * 4), 288, 20 + (NPC->ani_no * 4) };
+}
+
+void npcAct025(npc *NPC) //egg corridor lift thing
+{
+	switch (NPC->act_no)
+	{
+	case 0:
+		NPC->act_no = 1;
+		NPC->ani_no = 0;
+		NPC->ani_wait = 0;
+		NPC->x += 4096;
+	case 1:
+		if (++NPC->act_wait > 150)
+		{
+			NPC->act_wait = 0;
+			++NPC->act_no;
+		}
+		break;
+	case 2:
+		if (++NPC->act_wait > 64)
+		{
+			NPC->act_wait = 0;
+			++NPC->act_no;
+		}
+		else
+		{
+			NPC->y -= 512;
+		}
+		break;
+	case 3:
+		if (++NPC->act_wait > 150)
+		{
+			NPC->act_wait = 0;
+			++NPC->act_no;
+		}
+		break;
+	case 4:
+		if (++NPC->act_wait > 64)
+		{
+			NPC->act_wait = 0;
+			++NPC->act_no;
+		}
+		else
+		{
+			NPC->y -= 512;
+		}
+		break;
+	case 5:
+		if (++NPC->act_wait > 150)
+		{
+			NPC->act_wait = 0;
+			++NPC->act_no;
+		}
+		break;
+	case 6:
+		if (++NPC->act_wait > 64)
+		{
+			NPC->act_wait = 0;
+			++NPC->act_no;
+		}
+		else
+		{
+			NPC->y += 512;
+		}
+		break;
+	case 7:
+		if (++NPC->act_wait > 150)
+		{
+			NPC->act_wait = 0;
+			++NPC->act_no;
+		}
+		break;
+	case 8:
+		if (++NPC->act_wait > 64)
+		{
+			NPC->act_wait = 0;
+			NPC->act_no = 1;
+		}
+		else
+		{
+			NPC->y += 512;
+		}
+		break;
+	default:
+		break;
+	}
+	if (NPC->act_no <= 8 && (1 << NPC->act_no) & 0x154)
+	{
+		if (++NPC->ani_wait > 1)
+		{
+			NPC->ani_wait = 0;
+			++NPC->ani_no;
+		}
+		if (NPC->ani_no > 1)
+			NPC->ani_no = 0;
+	}
+
+	NPC->rect.left = 256;
+	NPC->rect.top = 64 + (16 * NPC->ani_no);
+	NPC->rect.right = 288;
+	NPC->rect.bottom = 80 + (16 * NPC->ani_no);
 }
 
 void npcAct027(npc *NPC) // Death Spikes
@@ -84,7 +185,7 @@ void npcAct027(npc *NPC) // Death Spikes
 void npcAct030(npc *NPC) // Hermit Gunsmith
 {
 	constexpr RECT rcNPC[3] = { { 48, 0, 64, 16 },{ 48, 16, 64, 32 },{ 0, 32, 16, 48 } };
-	
+
 	if (NPC->direct == dirLeft)	// Wherever he's awoken depends on his direction, it would seem
 	{
 		if (NPC->act_no == 0)
@@ -154,6 +255,14 @@ void npcAct032(npc *NPC) //Life Capsule
 	NPC->rect = { setRect->left, setRect->top, setRect->right, setRect->bottom };
 }
 
+void npcAct034(npc * NPC)
+{
+	if (NPC->direct == dirLeft)
+		NPC->rect = { 192, 48, 224, 64 };
+	else
+		NPC->rect = { 192, 184, 224, 200 };
+}
+
 void npcAct037(npc *NPC) //Sign
 {
 	RECT rect[2];
@@ -172,6 +281,35 @@ void npcAct037(npc *NPC) //Sign
 		NPC->ani_no = 0;
 
 	NPC->rect = rect[NPC->ani_no];
+}
+
+void npcAct038(npc * NPC)
+{
+	constexpr RECT rcNPC[4] = { {128, 64, 144, 80}, {144, 64, 160, 80}, {160, 64, 176, 80}, {176, 64, 192, 80} };
+
+	if (NPC->act_no != 0)
+	{
+		if (NPC->act_no == 10)
+		{
+			NPC->act_no = 11;
+			createSmoke(NPC->x, NPC->y, NPC->view.bottom, 8);
+		}
+		else if (NPC->act_no != 11)
+			return;
+		NPC->rect.left = 0;
+		NPC->rect.right = 0;
+		return;
+	}
+
+	if (++NPC->ani_wait > 3)
+	{
+		NPC->ani_wait = 0;
+		NPC->ani_no++;
+	}
+	if (NPC->ani_no > 3)
+		NPC->ani_no = 0;
+	
+	NPC->rect = rcNPC[NPC->ani_no];
 }
 
 void npcAct039(npc *NPC) //Save Sign
@@ -197,3 +335,4 @@ void npcAct039(npc *NPC) //Save Sign
 
 	NPC->rect = { setRect->left, setRect->top, setRect->right, setRect->bottom };
 }
+

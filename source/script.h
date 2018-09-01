@@ -1,7 +1,18 @@
 #pragma once
 #include "common.h"
 
-struct TSC {
+/**
+
+	Yet to be implemented :
+
+    BOA, BSL, CIL, CLR, CPS, CRE, CSS, FLA, FMU, FOB, INP, MLP, NCJ, NUM,
+    SIL, SMP, SPS, SSS, STC and XX1
+
+*/
+
+
+struct TSC
+{
 	char path[260];
 	int size;
 	uint8_t *data;
@@ -27,14 +38,14 @@ struct TSC {
 extern TSC tsc;
 
 //Functions
-bool initTsc();
+bool initTsc() noexcept;
 
 void loadStageTsc(const char *name);
 void loadTsc2(const char *name);
 
-int startTscEvent(int no);
-int jumpTscEvent(int no);
-void stopTsc();
+int startTscEvent(int no) noexcept;
+int jumpTscEvent(int no) noexcept;
+void stopTsc() noexcept;
 
 int updateTsc();
 void drawTsc();

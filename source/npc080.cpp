@@ -5,6 +5,358 @@
 #include "caret.h"
 #include "sound.h"
 
+void npcAct080(npc *NPC) //Gravekeeper
+{
+	RECT rcLeft[7];
+	RECT rcRight[7];
+
+	rcLeft[0].left = 0; //Sorry I'm lazy
+	rcLeft[0].top = 64;
+	rcLeft[0].right = 24;
+	rcLeft[0].bottom = 88;
+	rcLeft[1].left = 24;
+	rcLeft[1].top = 64;
+	rcLeft[1].right = 48;
+	rcLeft[1].bottom = 88;
+	rcLeft[2].left = 0;
+	rcLeft[2].top = 64;
+	rcLeft[2].right = 24;
+	rcLeft[2].bottom = 88;
+	rcLeft[3].left = 48;
+	rcLeft[3].top = 64;
+	rcLeft[3].right = 72;
+	rcLeft[3].bottom = 88;
+	rcLeft[4].left = 72;
+	rcLeft[4].top = 64;
+	rcLeft[4].right = 96;
+	rcLeft[4].bottom = 88;
+	rcLeft[5].left = 96;
+	rcLeft[5].top = 64;
+	rcLeft[5].right = 120;
+	rcLeft[5].bottom = 88;
+	rcLeft[6].left = 120;
+	rcLeft[6].top = 64;
+	rcLeft[6].right = 144;
+	rcLeft[6].bottom = 88;
+	rcRight[0].left = 0;
+	rcRight[0].top = 88;
+	rcRight[0].right = 24;
+	rcRight[0].bottom = 112;
+	rcRight[1].left = 24;
+	rcRight[1].top = 88;
+	rcRight[1].right = 48;
+	rcRight[1].bottom = 112;
+	rcRight[2].left = 0;
+	rcRight[2].top = 88;
+	rcRight[2].right = 24;
+	rcRight[2].bottom = 112;
+	rcRight[3].left = 48;
+	rcRight[3].top = 88;
+	rcRight[3].right = 72;
+	rcRight[3].bottom = 112;
+	rcRight[4].left = 72;
+	rcRight[4].top = 88;
+	rcRight[4].right = 96;
+	rcRight[4].bottom = 112;
+	rcRight[5].left = 96;
+	rcRight[5].top = 88;
+	rcRight[5].right = 120;
+	rcRight[5].bottom = 112;
+	rcRight[6].left = 120;
+	rcRight[6].top = 88;
+	rcRight[6].right = 144;
+	rcRight[6].bottom = 112;
+
+	switch (NPC->act_no)
+	{
+	case 0:
+		NPC->bits &= ~npc_shootable;
+		NPC->act_no = 1;
+		NPC->damage = 0;
+		NPC->hit.left = 0x800;
+//Fallthrough
+	case 1:
+		NPC->ani_no = 0;
+		if (NPC->x - 0x10000 < currentPlayer.x && NPC->x + 0x10000 > currentPlayer.x && NPC->y - 0x6000 < currentPlayer.y && NPC->y + 0x4000 > currentPlayer.y)
+		{
+			NPC->ani_wait = 0;
+			NPC->act_no = 2;
+		}
+
+		if (NPC->shock)
+		{
+			NPC->ani_no = 1;
+			NPC->ani_wait = 0;
+			NPC->act_no = 2;
+			NPC->bits &= ~npc_shootable;
+		}
+
+		if (currentPlayer.x >= NPC->x)
+			NPC->direct = 2;
+		else
+			NPC->direct = 0;
+		break;
+
+	case 2:
+		if (++NPC->ani_wait > 6)
+		{
+			NPC->ani_wait = 0;
+			++NPC->ani_no;
+		}
+
+		if (NPC->ani_no > 3)
+			NPC->ani_no = 0;
+
+		if (NPC->x - 0x2000 < currentPlayer.x && NPC->x + 0x2000 > currentPlayer.x)
+		{
+			NPC->hit.left = 0x2400;
+			NPC->act_wait = 0;
+			NPC->act_no = 3;
+			NPC->bits |= npc_shootable;
+
+			if (NPC->direct)
+				NPC->xm = 0x400;
+			else
+				NPC->xm = -0x400;
+		}
+
+		if (currentPlayer.x >= NPC->x)
+		{
+			NPC->direct = 2;
+			NPC->xm = 0x100;
+		}
+		else
+		{
+			NPC->direct = 0;
+			NPC->xm = -0x100;
+		}
+		break;
+
+	case 3:
+		NPC->xm = 0;
+
+		if (++NPC->act_wait > 40)
+		{
+			NPC->act_wait = 0;
+			NPC->act_no = 4;
+		}
+
+		NPC->ani_no = 4;
+		break;
+
+	case 4:
+		NPC->damage = 10;
+
+		if (++NPC->act_wait > 2)
+		{
+			NPC->act_wait = 0;
+			NPC->act_no = 5;
+		}
+
+		NPC->ani_no = 5;
+		break;
+
+	case 5:
+		NPC->ani_no = 6;
+		if (++NPC->act_wait > 60)
+			NPC->act_no = 0;
+		break;
+
+	default:
+		break;
+	}
+
+	if (NPC->xm < 0 && NPC->flag & leftWall)
+		NPC->xm = 0;
+	if (NPC->xm > 0 && NPC->flag & rightWall)
+		NPC->xm = 0;
+
+	NPC->ym += 0x20;
+
+	if (NPC->xm > 0x400)
+		NPC->xm = 0x400;
+	if (NPC->xm < -0x400)
+		NPC->xm = -0x400;
+
+	if (NPC->ym > 0x5FF)
+		NPC->xm = 0x5FF;
+	if (NPC->ym < -0x5FF)
+		NPC->xm = -0x5FF;
+
+	NPC->x += NPC->xm;
+	NPC->y += NPC->ym;
+
+	if (NPC->direct)
+		NPC->rect = rcRight[NPC->ani_no];
+	else
+		NPC->rect = rcLeft[NPC->ani_no];
+}
+
+void npcAct081(npc *NPC) //Big pignon
+{
+	RECT rcLeft[6];
+	RECT rcRight[6];
+
+	rcLeft[0].left = 144;
+	rcLeft[0].top = 64;
+	rcLeft[0].right = 168;
+	rcLeft[0].bottom = 88;
+	rcLeft[1].left = 168;
+	rcLeft[1].top = 64;
+	rcLeft[1].right = 192;
+	rcLeft[1].bottom = 88;
+	rcLeft[2].left = 192;
+	rcLeft[2].top = 64;
+	rcLeft[2].right = 216;
+	rcLeft[2].bottom = 88;
+	rcLeft[3].left = 216;
+	rcLeft[3].top = 64;
+	rcLeft[3].right = 240;
+	rcLeft[3].bottom = 88;
+	rcLeft[4].left = 144;
+	rcLeft[4].top = 64;
+	rcLeft[4].right = 168;
+	rcLeft[4].bottom = 88;
+	rcLeft[5].left = 240;
+	rcLeft[5].top = 64;
+	rcLeft[5].right = 264;
+	rcLeft[5].bottom = 88;
+	rcRight[0].left = 144;
+	rcRight[0].top = 88;
+	rcRight[0].right = 168;
+	rcRight[0].bottom = 112;
+	rcRight[1].left = 168;
+	rcRight[1].top = 88;
+	rcRight[1].right = 192;
+	rcRight[1].bottom = 112;
+	rcRight[2].left = 192;
+	rcRight[2].top = 88;
+	rcRight[2].right = 216;
+	rcRight[2].bottom = 112;
+	rcRight[3].left = 216;
+	rcRight[3].top = 88;
+	rcRight[3].right = 240;
+	rcRight[3].bottom = 112;
+	rcRight[4].left = 144;
+	rcRight[4].top = 88;
+	rcRight[4].right = 168;
+	rcRight[4].bottom = 112;
+	rcRight[5].left = 240;
+	rcRight[5].top = 88;
+	rcRight[5].right = 264;
+	rcRight[5].bottom = 112;
+
+	switch (NPC->act_no)
+	{
+	case 0:
+		NPC->act_no = 1;
+		NPC->ani_no = 0;
+		NPC->ani_wait = 0;
+		NPC->xm = 0;
+//Fallthrough
+	case 1:
+		if (random(0, 100) == 1)
+		{
+			NPC->act_no = 2;
+			NPC->act_wait = 0;
+			NPC->ani_no = 1;
+		}
+		else
+		{
+			if (random(0, 150) == 1)
+			{
+				if (NPC->direct)
+					NPC->direct = 0;
+				else
+					NPC->direct = 2;
+			}
+
+			if (random(0, 150) == 1)
+			{
+				NPC->act_no = 3;
+				NPC->act_wait = 50;
+				NPC->ani_no = 0;
+			}
+		}
+		break;
+
+	case 2:
+		if (++NPC->act_wait > 8)
+		{
+			NPC->act_no = 1;
+			NPC->ani_no = 0;
+		}
+		break;
+
+	case 3:
+		NPC->act_no = 4;
+		NPC->ani_no = 2;
+		NPC->ani_wait = 0;
+//Fallthrough
+	case 4:
+		if (!--NPC->act_wait)
+			NPC->act_no = 0;
+
+		if (++NPC->ani_wait > 2)
+		{
+			NPC->ani_wait = 0;
+			++NPC->ani_no;
+		}
+
+		if (NPC->ani_no > 4)
+			NPC->ani_no = 2;
+
+		if (NPC->flag & leftWall)
+		{
+			NPC->direct = 2;
+			NPC->xm = 0x200;
+		}
+
+		if (NPC->flag & rightWall)
+		{
+			NPC->direct = 0;
+			NPC->xm = -0x200;
+		}
+
+		if (NPC->direct)
+			NPC->xm = 0x100;
+		else
+			NPC->xm = -0x100;
+		break;
+
+	case 5:
+		if (NPC->flag & ground)
+			NPC->act_no = 0;
+		break;
+	default:
+		break;
+	}
+
+	if (NPC->act_no < 5 && (1 << NPC->act_no) & 0x16 && NPC->shock)
+	{
+		NPC->ym = -512;
+		NPC->ani_no = 5;
+		NPC->act_no = 5;
+
+		if (NPC->x >= currentPlayer.x)
+			NPC->xm = -0x100;
+		else
+			NPC->xm = 0x100;
+	}
+
+	NPC->ym += 0x40;
+	if (NPC->ym > 0x5FF)
+		NPC->ym = 0x5FF;
+
+	NPC->x += NPC->xm;
+	NPC->y += NPC->ym;
+
+	if (NPC->direct)
+		NPC->rect = rcRight[NPC->ani_no];
+	else
+		NPC->rect = rcLeft[NPC->ani_no];
+}
+
 void npcAct082(npc *NPC) //Misery standing
 {
 	int something; //This is like, set to act_wait - 30 after act_wait is increased by 1? Then it does weird shit in an if statement???
@@ -36,7 +388,7 @@ void npcAct082(npc *NPC) //Misery standing
 	case 0: //Stand and blink
 		NPC->act_no = 1;
 		NPC->ani_no = 2;
-		// Fallthrough
+	// Fallthrough
 	case 1:
 		if (random(0, 120) == 10)
 		{
@@ -58,7 +410,7 @@ void npcAct082(npc *NPC) //Misery standing
 		NPC->act_no = 16;
 		NPC->act_wait = 0;
 		NPC->ani_no = 4;
-		// Fallthrough
+	// Fallthrough
 	case 16:
 		if (++NPC->act_wait == 30)
 		{
@@ -75,7 +427,7 @@ void npcAct082(npc *NPC) //Misery standing
 		NPC->ani_no = 0;
 		NPC->ym = 0;
 		NPC->bits |= npc_ignoresolid;
-		// Fallthrough
+	// Fallthrough
 	case 21:
 		NPC->ym -= 0x20;
 
@@ -88,7 +440,7 @@ void npcAct082(npc *NPC) //Misery standing
 		NPC->act_wait = 0;
 		NPC->ani_no = 5;
 		NPC->ani_wait = 0;
-		// Fallthrough
+	// Fallthrough
 	case 26:
 		if (++NPC->ani_no > 7)
 			NPC->ani_no = 5;
@@ -115,7 +467,7 @@ void npcAct082(npc *NPC) //Misery standing
 		NPC->act_no = 31;
 		NPC->ani_no = 3;
 		NPC->ani_wait = 0;
-		// Fallthrough
+	// Fallthrough
 	case 31:
 		if (++NPC->ani_wait > 10)
 		{
@@ -136,7 +488,7 @@ void npcAct082(npc *NPC) //Misery standing
 	case 40: //Cast bubbles
 		NPC->act_no = 41;
 		NPC->act_wait = 0;
-		// Fallthrough
+	// Fallthrough
 	case 41:
 		NPC->ani_no = 4;
 
@@ -163,7 +515,7 @@ void npcAct082(npc *NPC) //Misery standing
 	//Move
 	NPC->x += NPC->xm;
 	NPC->y += NPC->ym;
-	
+
 	if (NPC->act_no == 11) //"Sitting"??
 	{
 		if (NPC->ani_wait)
@@ -239,7 +591,7 @@ void npcAct083(npc *NPC) // Igor, standing
 		NPC->act_no = 1;
 		NPC->ani_no = 0;
 		NPC->ani_wait = 0;
-		// Fallthrough
+	// Fallthrough
 	case 1:
 		// Animate from animation no 0 to 1 with a 5 frame delay
 		if (++NPC->ani_wait > 5)
@@ -255,7 +607,7 @@ void npcAct083(npc *NPC) // Igor, standing
 		NPC->act_no = 3;
 		NPC->ani_no = 2;
 		NPC->ani_wait = 0;
-		// Fallthrough
+	// Fallthrough
 	case 3:
 		// Animate from animation no 2 to 5 with a 3 frame delay
 		if (++NPC->ani_wait > 3)
@@ -277,7 +629,7 @@ void npcAct083(npc *NPC) // Igor, standing
 		NPC->act_no = 5;
 		NPC->act_wait = 0;
 		NPC->ani_no = 6;
-		// Fallthrough
+	// Fallthrough
 	case 5:
 		if (++NPC->act_wait > 10)
 		{
@@ -295,7 +647,7 @@ void npcAct083(npc *NPC) // Igor, standing
 			NPC->ani_no = 0;
 		}
 		break;
-		
+
 	case 7:
 		NPC->act_no = 1;
 		break;
@@ -347,7 +699,7 @@ void npcAct084(npc *NPC) //Basu 1 projectile
 		NPC->ani_no = 0;
 
 	NPC->rect = rect[NPC->ani_no];
-	
+
 	if (++NPC->count1 > 300)
 	{
 		createCaret(NPC->x, NPC->y, effect_RisingDisc, 0);
@@ -355,11 +707,79 @@ void npcAct084(npc *NPC) //Basu 1 projectile
 	}
 }
 
-void npcAct087(npc *NPC)
+void npcAct086(npc *NPC) //Dropped missiles
 {
-	constexpr RECT rcEXP2[2] = { {32, 80, 48, 96}, { 48, 80, 64, 96 } };
-	constexpr RECT rcEXP6[2] = { {64, 80, 80, 96}, { 80, 80, 96, 96 } };
-	constexpr RECT rcCount1Above547 = { 16, 0, 32, 16 };
+	RECT rcMissile1[2];
+	RECT rcMissile3[2];
+	RECT rcLast;
+
+	rcMissile1[0] = { 0, 80, 16, 96 };
+	rcMissile1[1] = { 16, 80, 32, 96 };
+	rcMissile3[0] = { 0, 122, 16, 128 };
+	rcMissile3[1] = { 16, 112, 32, 128 };
+	rcLast = { 16, 0, 32, 16 };
+	
+	if (!NPC->direct)
+	{
+		if (++NPC->ani_wait > 2)
+		{
+			NPC->ani_wait = 0;
+			++NPC->ani_no;
+		}
+
+		if (NPC->ani_no > 1)
+			NPC->ani_no = 0;
+	}
+
+	if (backgroundScroll == 5 || backgroundScroll == 6)
+	{
+		if (!NPC->act_no)
+		{
+			NPC->act_no = 1;
+			NPC->ym = random(-32, 32);
+			NPC->xm = random(127, 256);
+		}
+
+		NPC->xm -= 8;
+
+		if (NPC->x <= 40959)
+			NPC->cond = 0;
+		if (NPC->x < -1536)
+			NPC->x = -1536;
+		if (NPC->flag & 1)
+			NPC->xm = 256;
+		if (NPC->flag & 2)
+			NPC->ym = 64;
+		if (NPC->flag & 8)
+			NPC->ym = -64;
+
+		NPC->x += NPC->xm;
+		NPC->y += NPC->ym;
+	}
+
+	if (NPC->exp == 1)
+		NPC->rect = rcMissile1[NPC->ani_no];
+	else if (NPC->exp == 3)
+		NPC->rect = rcMissile3[NPC->ani_no];
+
+	if (!NPC->direct)
+		++NPC->count1;
+
+	if (NPC->count1 > 550)
+		NPC->cond = 0;
+
+	if (NPC->count1 > 500 && NPC->count1 / 2 & 1)
+		NPC->rect.right = 0;
+
+	if (NPC->count1 > 547)
+		NPC->rect = rcLast;
+}
+
+void npcAct087(npc *NPC) //Health refill
+{
+	constexpr RECT rcHealth2[2] = { {32, 80, 48, 96}, { 48, 80, 64, 96 } };
+	constexpr RECT rcHealth6[2] = { {64, 80, 80, 96}, { 80, 80, 96, 96 } };
+	constexpr RECT rcLast = { 16, 0, 32, 16 };
 	
 	if (NPC->direct == dirLeft)
 	{
@@ -372,7 +792,7 @@ void npcAct087(npc *NPC)
 			NPC->ani_no = 0;
 	}
 
-	if (false) // if (currentBackground.mode == 5 || currentBackground.mode == 6)
+	if (backgroundScroll == 5 || backgroundScroll == 6)
 	{
 		if (NPC->act_no == 0)
 		{
@@ -380,7 +800,9 @@ void npcAct087(npc *NPC)
 			NPC->ym = random(-0x20, 0x20);
 			NPC->xm = random(0x7F, 0x100);
 		}
+
 		NPC->xm -= 8;
+
 		if (NPC->x < 0xA000)
 			NPC->cond = 0;
 		if (NPC->x < -0x600)
@@ -391,23 +813,27 @@ void npcAct087(npc *NPC)
 			NPC->ym = 0x40;
 		if (NPC->flag & npc_ignoresolid)
 			NPC->ym = -0x40;
+
 		NPC->x += NPC->xm;
 		NPC->y += NPC->ym;
 	}
-	
+
 	if (NPC->exp == 2)
-		NPC->rect = rcEXP2[NPC->ani_no];
+		NPC->rect = rcHealth2[NPC->ani_no];
 	else if (NPC->exp == 6)
-		NPC->rect = rcEXP6[NPC->ani_no];
+		NPC->rect = rcHealth6[NPC->ani_no];
 
 	if (NPC->direct == dirLeft)
 		++NPC->count1;
+
 	if (NPC->count1 > 550)
 		NPC->cond = 0;
+
 	if (NPC->count1 > 500 && NPC->count1 / 2 % 2)
 		NPC->rect.right = 0;
+
 	if (NPC->count1 > 547)
-		NPC->rect = rcCount1Above547;
+		NPC->rect = rcLast;
 }
 
 void npcAct090(npc *NPC) // Background
@@ -415,7 +841,7 @@ void npcAct090(npc *NPC) // Background
 	NPC->rect = { 280, 80, 296, 104 };
 }
 
-void npcAct091(npc *NPC) // Cage 
+void npcAct091(npc *NPC) // Cage
 {
 	if (!NPC->act_no)
 	{
@@ -427,7 +853,7 @@ void npcAct091(npc *NPC) // Cage
 }
 
 void npcAct096(npc *NPC) //Fan left
-{	
+{
 	const int action = NPC->act_no;
 
 	switch (action)
@@ -470,7 +896,7 @@ void npcAct096(npc *NPC) //Fan left
 		NPC->ani_no = 0;
 		break;
 	}
-	
+
 	NPC->rect = { 272 + (NPC->ani_no << 4), 120, 288 + (NPC->ani_no << 4), 136 };
 }
 

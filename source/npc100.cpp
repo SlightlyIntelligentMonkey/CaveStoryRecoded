@@ -22,7 +22,7 @@ void npcAct111(npc *NPC) //Quote teleport out
 
 	rcRight[0] = { 0, 16, 16, 32 };
 	rcRight[1] = { 16, 16, 32, 32 };
-	
+
 	switch (NPC->act_no)
 	{
 	case 0:
@@ -118,31 +118,31 @@ void npcAct112(npc *NPC) //Quote teleport in
 
 	switch (NPC->act_no)
 	{
-		case 1:
-			if (++NPC->act_wait >= 64)
-			{
-				NPC->act_no = 2;
-				NPC->act_wait = 0;
-			}
-			break;
+	case 1:
+		if (++NPC->act_wait >= 64)
+		{
+			NPC->act_no = 2;
+			NPC->act_wait = 0;
+		}
+		break;
 
-		case 2:
-			if (++NPC->act_wait > 20)
-			{
-				NPC->act_no = 3;
-				NPC->ani_no = 1;
-				NPC->hit.bottom = 0x1000;
-			}
-			break;
+	case 2:
+		if (++NPC->act_wait > 20)
+		{
+			NPC->act_no = 3;
+			NPC->ani_no = 1;
+			NPC->hit.bottom = 0x1000;
+		}
+		break;
 
-		case 3:
-			if (NPC->flag & ground)
-			{
-				NPC->act_no = 4;
-				NPC->act_wait = 0;
-				NPC->ani_no = 0;
-			}
-			break;
+	case 3:
+		if (NPC->flag & ground)
+		{
+			NPC->act_no = 4;
+			NPC->act_wait = 0;
+			NPC->ani_no = 0;
+		}
+		break;
 	}
 
 	NPC->ym += 64;
@@ -206,11 +206,11 @@ void npcAct117(npc *NPC)
 			else
 				NPC->direct = dirLeft;
 		}
-		
+
 		NPC->act_no = 1;
 		NPC->ani_no = 0;
 		NPC->ani_wait = 0;
-		// Fallthrough
+	// Fallthrough
 	case 1:
 		NPC->xm = 0;
 		NPC->ym += 0x40;
@@ -220,7 +220,7 @@ void npcAct117(npc *NPC)
 		NPC->act_no = 4;
 		NPC->ani_no = 1;
 		NPC->ani_wait = 0;
-		// Fallthrough
+	// Fallthrough
 	case 4:
 		//Animate
 		if (++NPC->ani_wait > 4)
@@ -263,7 +263,7 @@ void npcAct117(npc *NPC)
 			NPC->direct = dirRight;
 		else
 			NPC->direct = dirLeft;
-		// Fallthrough
+	// Fallthrough
 	case 11:
 		//Animate
 		if (++NPC->ani_wait > 4)
@@ -301,7 +301,7 @@ void npcAct117(npc *NPC)
 		NPC->act_no = 31;
 		NPC->act_wait = 0;
 		NPC->ym = -1024;
-		// Fallthrough
+	// Fallthrough
 	case 31:
 		NPC->ani_no = 7;
 
@@ -331,7 +331,7 @@ void npcAct117(npc *NPC)
 		NPC->act_wait = 0;
 		NPC->ani_no = 1;
 		NPC->ani_wait = 0;
-		// Fallthrough
+	// Fallthrough
 	case 71:
 		if (NPC->direct != dirLeft)
 			NPC->x -= 0x100;
