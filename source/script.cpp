@@ -525,7 +525,6 @@ int updateTsc()
 			static bool notifiedAboutCRE = false;
 			static bool notifiedAboutCSS = false;
 			static bool notifiedAboutFLA = false;
-			static bool notifiedAboutFMU = false;
 			static bool notifiedAboutFOB = false;
 			static bool notifiedAboutINP = false;
 			static bool notifiedAboutMLP = false;
@@ -783,12 +782,7 @@ int updateTsc()
 					tscCleanup(2);
 				break;
 			case('<FMU'):
-				if (!notifiedAboutFMU && debugFlags & notifyOnNotImplemented)
-				{
-					notifiedAboutFMU = true;
-					showTSCNotImplementedWarning("<FMU is not implemented");
-				}
-
+				orgFadeout = true;
 				tscCleanup(0);
 				break;
 			case('<FOB'):
