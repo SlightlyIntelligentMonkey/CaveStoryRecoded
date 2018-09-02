@@ -36,7 +36,5 @@ bool isKeyDown(int keynum) noexcept
 
 bool isKeyPressed(int keynum) noexcept
 {
-	if (keynum == keyShoot)
-		return true;
 	return (key_prev[keynum] == 0 && key[keynum] == 1);
 }
