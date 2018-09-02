@@ -8,8 +8,11 @@ void npcAct021(npc *NPC);
 void npcAct022(npc *NPC);
 void npcAct023(npc *NPC);
 
+void npcAct025(npc *NPC);
+
 void npcAct027(npc *NPC);
 
+void npcAct029(npc *NPC);
 void npcAct030(npc *NPC);
 
 void npcAct032(npc *NPC);

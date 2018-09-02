@@ -55,8 +55,10 @@ public:
 	int code_flag;
 	int code_event;
 
-	//stuff?
+	// Sprite index
 	int surf;
+
+	//stuff?
 	int hit_voice;
 	int destroy_voice;
 
@@ -92,10 +94,23 @@ public:
 	//parent
 	npc *pNpc;
 
-private:
-
-	//Functions
 public:
+	/// These are kinda supposed to be internal, but I can't put them as protected/private
+	void animate(int aniWait, int aniStart, int aniMax);
+	void facePlayer();
+	void moveTowardsPlayer(int vel);
+	bool isPlayerWithinDistance(int xDist, int yDistHigh, int yDistLow);
+	inline bool isPlayerWithinDistance(int xDist, int yDist)
+	{
+		return isPlayerWithinDistance(xDist, yDist, yDist);
+	}
+
+	bool isPlayerAligned(int xRay, int yRayHigh, int yRayLow);
+	inline bool isPlayerAligned(int xRay, int yRay)
+	{
+		return isPlayerAligned(xRay, yRay, yRay);
+	}
+
 	void init(int setCode, int setX, int setY, int setXm, int setYm, int setDir, npc *parentNpc) noexcept;
 
 	void update() noexcept;
@@ -104,14 +119,16 @@ public:
 
 void loadNpcTable();
 
-void createSmoke(int x, int y, int w, int num);
+void createSmoke(int x, int y, int w, size_t num);
+void createExplosion(int x, int y, int w, int num);
 
-void createNpc(int setCode, int setX, int setY, int setXm, int setYm, int setDir, npc *parentNpc);
-void changeNpc(int code_event, int code_char, int dir);
+void createNpc(int setCode, int setX = 0, int setY = 0, int setXm = 0, int setYm = 0, int setDir = dirLeft, npc *parentNpc = nullptr);
+void changeNpc(int code_event, int code_char, int dir = dirLeft);
 
 void updateNPC();
 void drawNPC();
-void killNpc(npc *NPC, bool bVanish);
+void dropExperience(int x, int y, int exp);
+void killNpc(npc *NPC, bool bVanish = true);
 
 extern std::deque<npc> npcs;
 
@@ -125,10 +142,10 @@ enum NPC_cond
 
 enum NPC_flags
 {
-	npc_solidsoft = 0b0001, //Pushes quote out
-	npc_ignore44 = 0b0010, //Ignores tile 44 (No NPC)
-	npc_invulnerable = 0b0100, //Can't get hit
-	npc_ignoresolid = 0b1000, //Doesn't collide with anything
+	npc_solidsoft = 0x1, //Pushes quote out
+	npc_ignore44 = 0x2, //Ignores tile 44 (No NPC)
+	npc_invulnerable = 0x4, //Can't get hit
+	npc_ignoresolid = 0x8, //Doesn't collide with anything
 	npc_bouncy = 0x10, //Quote bounces on the top
 	npc_shootable = 0x20, //Can be shot
 	npc_solidhard = 0x40, //Essentially acts as level tiles

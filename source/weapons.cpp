@@ -105,6 +105,19 @@ int useWeaponAmmo(int num) noexcept
 	return 1;
 }
 
+void giveAmmo(int amount, int ammoToRefill)
+{
+	int i;
+	for (i = 0; i < 8 && weapons[i].code != 5 && weapons[i].code != 10; ++i)
+		;
+	if (i != 8)
+	{
+		weapons[i].num += ammoToRefill;
+		if (weapons[i].num > weapons[i].max_num)
+			weapons[i].num = weapons[i].max_num;
+	}
+}
+
 bool weaponMaxExp() noexcept
 {
 	return weapons[selectedWeapon].level == 3
@@ -237,7 +250,7 @@ void giveWeaponExperience(int x)
 				if (weapons[selectedWeapon].code != 13)
 				{
 					playSound(SFX_LevelUp);
-					createCaret(currentPlayer.x, currentPlayer.y, effect_LevelUpOrDown, 0);
+					createCaret(currentPlayer.x, currentPlayer.y, effect_LevelUpOrDown);
 				}
 			}
 

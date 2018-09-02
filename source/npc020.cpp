@@ -2,6 +2,7 @@
 
 #include "mathUtils.h"
 #include "caret.h"
+#include "player.h"
 
 void npcAct020(npc *NPC) // Computer
 {
@@ -76,9 +77,139 @@ void npcAct023(npc *NPC) //Teleporter lights
 	NPC->rect = { 264, 16 + (NPC->ani_no * 4), 288, 20 + (NPC->ani_no * 4) };
 }
 
+void npcAct025(npc *NPC) //egg corridor lift thing
+{
+	switch (NPC->act_no)
+	{
+	case 0:
+		NPC->act_no = 1;
+		NPC->ani_no = 0;
+		NPC->ani_wait = 0;
+		NPC->x += 4096;
+	case 1:
+		if (++NPC->act_wait > 150)
+		{
+			NPC->act_wait = 0;
+			++NPC->act_no;
+		}
+		break;
+	case 2:
+		if (++NPC->act_wait > 64)
+		{
+			NPC->act_wait = 0;
+			++NPC->act_no;
+		}
+		else
+		{
+			NPC->y -= 512;
+		}
+		break;
+	case 3:
+		if (++NPC->act_wait > 150)
+		{
+			NPC->act_wait = 0;
+			++NPC->act_no;
+		}
+		break;
+	case 4:
+		if (++NPC->act_wait > 64)
+		{
+			NPC->act_wait = 0;
+			++NPC->act_no;
+		}
+		else
+		{
+			NPC->y -= 512;
+		}
+		break;
+	case 5:
+		if (++NPC->act_wait > 150)
+		{
+			NPC->act_wait = 0;
+			++NPC->act_no;
+		}
+		break;
+	case 6:
+		if (++NPC->act_wait > 64)
+		{
+			NPC->act_wait = 0;
+			++NPC->act_no;
+		}
+		else
+		{
+			NPC->y += 512;
+		}
+		break;
+	case 7:
+		if (++NPC->act_wait > 150)
+		{
+			NPC->act_wait = 0;
+			++NPC->act_no;
+		}
+		break;
+	case 8:
+		if (++NPC->act_wait > 64)
+		{
+			NPC->act_wait = 0;
+			NPC->act_no = 1;
+		}
+		else
+		{
+			NPC->y += 512;
+		}
+		break;
+	default:
+		break;
+	}
+	if (NPC->act_no <= 8 && (1 << NPC->act_no) & 0x154)
+	{
+		if (++NPC->ani_wait > 1)
+		{
+			NPC->ani_wait = 0;
+			++NPC->ani_no;
+		}
+		if (NPC->ani_no > 1)
+			NPC->ani_no = 0;
+	}
+
+	NPC->rect.left = 256;
+	NPC->rect.top = 64 + (16 * NPC->ani_no);
+	NPC->rect.right = 288;
+	NPC->rect.bottom = 80 + (16 * NPC->ani_no);
+}
+
 void npcAct027(npc *NPC) // Death Spikes
 {
 	NPC->rect = { 96, 64, 128, 88 };
+}
+
+void npcAct029(npc *NPC) // Cthulhu
+{
+	constexpr RECT rcLeft[2] = { {0, 192, 16, 216}, {16, 192, 32, 216} };
+	constexpr RECT rcRight[2] = { {0, 216, 16, 240}, {16, 216, 32, 240} };
+
+	if (NPC->act_no != 0)
+	{
+		if (NPC->act_no != 1)
+			goto doRects;
+	}
+	else
+	{
+		NPC->act_no = 1;
+		NPC->ani_no = 0;
+		NPC->ani_wait = 0;
+	}
+
+	NPC->ani_no = NPC->x - 0x6000 < currentPlayer.x
+		&& NPC->x + 0x6000 > currentPlayer.x
+		&& NPC->y - 0x6000 < currentPlayer.y
+		&& NPC->y + 0x2000 > currentPlayer.y;
+
+doRects:
+	if (NPC->direct == dirLeft)
+		NPC->rect = rcLeft[NPC->ani_no];
+	else
+		NPC->rect = rcRight[NPC->ani_no];
 }
 
 void npcAct030(npc *NPC) // Hermit Gunsmith
@@ -120,7 +251,7 @@ void npcAct030(npc *NPC) // Hermit Gunsmith
 		if (++NPC->act_wait > 100)
 		{
 			NPC->act_wait = 0;
-			createCaret(NPC->x, NPC->y - 1024, effect_ZzZ, 0);
+			createCaret(NPC->x, NPC->y - 1024, effect_ZzZ);
 		}
 	}
 doRects:

@@ -213,6 +213,8 @@
     <ClCompile Include="hud.cpp" />
     <ClCompile Include="inventory.cpp" />
     <ClCompile Include="loadConfig.cpp" />
+    <ClCompile Include="missile.cpp" />
+    <ClCompile Include="missileLaunch.cpp" />
     <ClCompile Include="npc080.cpp" />
     <ClCompile Include="npc100.cpp" />
     <ClCompile Include="npc120.cpp" />
@@ -275,6 +277,7 @@
     <ClInclude Include="flags.h" />
     <ClInclude Include="game.h" />
     <ClInclude Include="loadConfig.h" />
+    <ClInclude Include="missile.h" />
     <ClInclude Include="npc080.h" />
     <ClInclude Include="npc100.h" />
     <ClInclude Include="npc120.h" />

@@ -213,6 +213,12 @@
     <ClCompile Include="npc260.cpp">
       <Filter>Source Files\classes\npc\act</Filter>
     </ClCompile>
+    <ClCompile Include="missileLaunch.cpp">
+      <Filter>Source Files\classes\weapons\shoot</Filter>
+    </ClCompile>
+    <ClCompile Include="missile.cpp">
+      <Filter>Source Files\classes\bullet\act</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="level.h">
@@ -358,6 +364,9 @@
     </ClInclude>
     <ClInclude Include="npc160.h">
       <Filter>Source Files\classes\npc\act</Filter>
+    </ClInclude>
+    <ClInclude Include="missile.h">
+      <Filter>Source Files\classes\bullet\act</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -305,7 +305,7 @@ void npcAct061(npc *NPC) //King
 		break;
 
 	case 20: //Create blade
-		createNpc(NPC_KingStruckByLightning, 0, 0, 0, 0, 2, NPC);
+		createNpc(NPC_KingStruckByLightning, 0, 0, 0, 0, dirRight, NPC);
 		NPC->ani_no = 0;
 		NPC->act_no = 0;
 		break;
@@ -358,7 +358,7 @@ void npcAct061(npc *NPC) //King
 		{
 			//Create smoke
 			for (int i = 0; i <= 3; ++i)
-				createNpc(NPC_Smoke, NPC->x + (random(-12, 12) << 9), NPC->y + (random(-12, 12) << 9), random(-0x155, 0x155), random(-0x600, 0), 0, nullptr);
+				createNpc(NPC_Smoke, NPC->x + (random(-12, 12) << 9), NPC->y + (random(-12, 12) << 9), random(-0x155, 0x155), random(-0x600, 0));
 
 			NPC->act_no = 50;
 			NPC->surf = 20;
@@ -953,7 +953,7 @@ void npcAct067(npc *NPC) //Misery floating
 		if (++NPC->act_wait == 30)
 		{
 			playSound(21);
-			createNpc(66, NPC->x, NPC->y - 0x2000, 0, 0, 0, NPC);
+			createNpc(66, NPC->x, NPC->y - 0x2000);
 		}
 		if (NPC->act_wait >= 50)
 			NPC->act_no = 14;
@@ -1461,8 +1461,8 @@ void npcAct072(npc *NPC) // Sprinkler
 		        && currentPlayer.y > NPC->y - 0x1E000)
 		{
 			if (++NPC->act_no % 2)
-				createNpc(NPC_Waterdrop, NPC->x, NPC->y, 2 * random(-0x200, 0x200), 3 * random(-0x200, 0x80), dirLeft, nullptr);
-			createNpc(NPC_Waterdrop, NPC->x, NPC->y, 2 * random(-0x200, 0x200), 3 * random(-0x200, 0x80), dirLeft, nullptr);
+				createNpc(NPC_Waterdrop, NPC->x, NPC->y, 2 * random(-0x200, 0x200), 3 * random(-0x200, 0x80));
+			createNpc(NPC_Waterdrop, NPC->x, NPC->y, 2 * random(-0x200, 0x200), 3 * random(-0x200, 0x80));
 		}
 	}
 
@@ -1497,7 +1497,7 @@ void npcAct073(npc *NPC) //Water drop
 			NPC->cond = 0;
 	}
 
-	if (NPC->y > tileToCoord(levelHeight))
+	if (NPC->y > tilesToUnits(levelHeight))
 		NPC->cond = 0;
 }
 

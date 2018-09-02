@@ -11,8 +11,8 @@ void putLittleStar(const RECT *rcHit, const player *me)
 	if (!(me->cond & player_removed) && me->ym < -0x200)
 	{
 		playSound(SFX_QuoteBumpHead);
-		createCaret(me->x, me->y - rcHit->top, effect_HeadbumpSparks, 0);
-		createCaret(me->x, me->y - rcHit->top, effect_HeadbumpSparks, 0);
+		createCaret(me->x, me->y - rcHit->top, effect_HeadbumpSparks);
+		createCaret(me->x, me->y - rcHit->top, effect_HeadbumpSparks);
 	}
 }
 
@@ -24,7 +24,7 @@ int playerJudgeBlock(const RECT *rcHit, player *me, int tx, int ty)
 	if (me->y - rcHit->top < (2 * (2 * ty + 1) - 1) << 11
 	        && rcHit->bottom + me->y > (2 * (2 * ty - 1) + 1) << 11
 	        && me->x - rcHit->left < (2 * tx + 1) << 12
-	        && me->x - rcHit->left > tileToCoord(tx))
+	        && me->x - rcHit->left > tilesToUnits(tx))
 	{
 		me->x = ((2 * tx + 1) << 12) + rcHit->left;
 
@@ -40,7 +40,7 @@ int playerJudgeBlock(const RECT *rcHit, player *me, int tx, int ty)
 	if (me->y - rcHit->top < (2 * (2 * ty + 1) - 1) << 11
 	        && rcHit->bottom + me->y > (2 * (2 * ty - 1) + 1) << 11
 	        && rcHit->right + me->x > (2 * tx - 1) << 12
-	        && rcHit->right + me->x < tileToCoord(tx))
+	        && rcHit->right + me->x < tilesToUnits(tx))
 	{
 		me->x = ((2 * tx - 1) << 12) - rcHit->right;
 
@@ -56,7 +56,7 @@ int playerJudgeBlock(const RECT *rcHit, player *me, int tx, int ty)
 	if (me->x - rcHit->left < ((2 * tx + 1) << 12) - 0x600
 	        && rcHit->right + me->x > ((2 * tx - 1) << 12) + 0x600
 	        && me->y - rcHit->top < (2 * ty + 1) << 12
-	        && me->y - rcHit->top > tileToCoord(ty))
+	        && me->y - rcHit->top > tilesToUnits(ty))
 	{
 		me->y = ((2 * ty + 1) << 12) + rcHit->top;
 
@@ -71,7 +71,7 @@ int playerJudgeBlock(const RECT *rcHit, player *me, int tx, int ty)
 	if (me->x - rcHit->left < ((2 * tx + 1) << 12) - 0x600
 	        && rcHit->right + me->x > ((2 * tx - 1) << 12) + 0x600
 	        && rcHit->bottom + me->y > (2 * ty - 1) << 12
-	        && rcHit->bottom + me->y < tileToCoord(ty))
+	        && rcHit->bottom + me->y < tilesToUnits(ty))
 	{
 		me->y = ((2 * ty - 1) << 12) - rcHit->bottom;
 
@@ -94,7 +94,7 @@ int playerJudgeTriangleA(const RECT *rcHit, player *me, int tx, int ty)
 
 	if (me->x > (2 * tx - 1) << 12
 	        && me->x < (2 * tx + 1) << 12
-	        && me->y - rcHit->top < tileToCoord(ty) - (-0x2000 * tx + me->x) / 2 + 0x800
+	        && me->y - rcHit->top < tilesToUnits(ty) - (-0x2000 * tx + me->x) / 2 + 0x800
 	        && me->y + rcHit->bottom > (2 * ty - 1) << 12)
 	{
 		if (!(me->cond & player_removed) && me->ym < -0x200)
@@ -102,7 +102,7 @@ int playerJudgeTriangleA(const RECT *rcHit, player *me, int tx, int ty)
 		if (me->ym < 0)
 			me->ym = 0;
 
-		me->y = tileToCoord(ty) - (-0x2000 * tx + me->x) / 2 + 0x800 + rcHit->top;
+		me->y = tilesToUnits(ty) - (-0x2000 * tx + me->x) / 2 + 0x800 + rcHit->top;
 
 		hit = ceiling;
 	}
@@ -116,7 +116,7 @@ int playerJudgeTriangleB(const RECT *rcHit, player *me, int tx, int ty)
 
 	if (me->x > (2 * tx - 1) << 12
 	        && me->x < (2 * tx + 1) << 12
-	        && me->y - rcHit->top < tileToCoord(ty) - (-0x2000 * tx + me->x) / 2 - 0x800
+	        && me->y - rcHit->top < tilesToUnits(ty) - (-0x2000 * tx + me->x) / 2 - 0x800
 	        && me->y + rcHit->bottom >(2 * ty - 1) << 12)
 	{
 		if (!(me->cond & player_removed) && me->ym < -0x200)
@@ -124,7 +124,7 @@ int playerJudgeTriangleB(const RECT *rcHit, player *me, int tx, int ty)
 		if (me->ym < 0)
 			me->ym = 0;
 
-		me->y = tileToCoord(ty) - (-0x2000 * tx + me->x) / 2 - 0x800 + rcHit->top;
+		me->y = tilesToUnits(ty) - (-0x2000 * tx + me->x) / 2 - 0x800 + rcHit->top;
 
 		hit = ceiling;
 	}
@@ -138,7 +138,7 @@ int playerJudgeTriangleC(const RECT *rcHit, player *me, int tx, int ty)
 
 	if (me->x > (2 * tx - 1) << 12
 	        && me->x < (2 * tx + 1) << 12
-	        && me->y - rcHit->top < tileToCoord(ty) + (-0x2000 * tx + me->x) / 2 - 0x800
+	        && me->y - rcHit->top < tilesToUnits(ty) + (-0x2000 * tx + me->x) / 2 - 0x800
 	        && me->y + rcHit->bottom >(2 * ty - 1) << 12)
 	{
 		if (!(me->cond & player_removed) && me->ym < -0x200)
@@ -146,7 +146,7 @@ int playerJudgeTriangleC(const RECT *rcHit, player *me, int tx, int ty)
 		if (me->ym < 0)
 			me->ym = 0;
 
-		me->y = tileToCoord(ty) + (-0x2000 * tx + me->x) / 2 - 0x800 + rcHit->top;
+		me->y = tilesToUnits(ty) + (-0x2000 * tx + me->x) / 2 - 0x800 + rcHit->top;
 
 		hit = ceiling;
 	}
@@ -160,7 +160,7 @@ int playerJudgeTriangleD(const RECT *rcHit, player *me, int tx, int ty)
 
 	if (me->x > (2 * tx - 1) << 12
 	        && me->x < (2 * tx + 1) << 12
-	        && me->y - rcHit->top < tileToCoord(ty) + (-0x2000 * tx + me->x) / 2 + 0x800
+	        && me->y - rcHit->top < tilesToUnits(ty) + (-0x2000 * tx + me->x) / 2 + 0x800
 	        && me->y + rcHit->bottom >(2 * ty - 1) << 12)
 	{
 		if (!(me->cond & player_removed) && me->ym < -0x200)
@@ -168,7 +168,7 @@ int playerJudgeTriangleD(const RECT *rcHit, player *me, int tx, int ty)
 		if (me->ym < 0)
 			me->ym = 0;
 
-		me->y = tileToCoord(ty) + (-0x2000 * tx + me->x) / 2 + 0x800 + rcHit->top;
+		me->y = tilesToUnits(ty) + (-0x2000 * tx + me->x) / 2 + 0x800 + rcHit->top;
 
 		hit = ceiling;
 	}
@@ -181,10 +181,10 @@ int playerJudgeTriangleE(const RECT *rcHit, player *me, int tx, int ty)
 {
 	if (me->x > (2 * tx - 1) << 12
 	        && me->x < (2 * tx + 1) << 12
-	        && me->y + rcHit->bottom > tileToCoord(ty) + (-0x2000 * tx + me->x) / 2 - 0x800
+	        && me->y + rcHit->bottom > tilesToUnits(ty) + (-0x2000 * tx + me->x) / 2 - 0x800
 	        && me->y - rcHit->top < (2 * ty + 1) << 12)
 	{
-		me->y = tileToCoord(ty) + (-0x2000 * tx + me->x) / 2 - 0x800 - rcHit->bottom;
+		me->y = tilesToUnits(ty) + (-0x2000 * tx + me->x) / 2 - 0x800 - rcHit->bottom;
 
 		if (me->ym > 0x400)
 			playSound(SFX_QuoteHitGround);
@@ -202,10 +202,10 @@ int playerJudgeTriangleF(const RECT *rcHit, player *me, int tx, int ty)
 {
 	if (me->x < (2 * tx + 1) << 12
 	        && me->x >(2 * tx - 1) << 12
-	        && me->y + rcHit->bottom > tileToCoord(ty) + (-0x2000 * tx + me->x) / 2 + 0x800
+	        && me->y + rcHit->bottom > tilesToUnits(ty) + (-0x2000 * tx + me->x) / 2 + 0x800
 	        && me->y - rcHit->top < (2 * ty + 1) << 12)
 	{
-		me->y = tileToCoord(ty) + (-0x2000 * tx + me->x) / 2 + 0x800 - rcHit->bottom;
+		me->y = tilesToUnits(ty) + (-0x2000 * tx + me->x) / 2 + 0x800 - rcHit->bottom;
 
 		if (me->ym > 0x400)
 			playSound(SFX_QuoteHitGround);
@@ -223,10 +223,10 @@ int playerJudgeTriangleG(const RECT *rcHit, player *me, int tx, int ty)
 {
 	if (me->x > (2 * tx - 1) << 12
 	        && me->x < (2 * tx + 1) << 12
-	        && me->y + rcHit->bottom > tileToCoord(ty) - (-0x2000 * tx + me->x) / 2 + 0x800
+	        && me->y + rcHit->bottom > tilesToUnits(ty) - (-0x2000 * tx + me->x) / 2 + 0x800
 	        && me->y - rcHit->top < (2 * ty + 1) << 12)
 	{
-		me->y = tileToCoord(ty) - (-0x2000 * tx + me->x) / 2 + 0x800 - rcHit->bottom;
+		me->y = tilesToUnits(ty) - (-0x2000 * tx + me->x) / 2 + 0x800 - rcHit->bottom;
 
 		if (me->ym > 0x400)
 			playSound(SFX_QuoteHitGround);
@@ -244,10 +244,10 @@ int playerJudgeTriangleH(const RECT *rcHit, player *me, int tx, int ty)
 {
 	if (me->x > (2 * tx - 1) << 12
 	        && me->x < (2 * tx + 1) << 12
-	        && me->y + rcHit->bottom > tileToCoord(ty) - (-0x2000 * tx + me->x) / 2 - 0x800
+	        && me->y + rcHit->bottom > tilesToUnits(ty) - (-0x2000 * tx + me->x) / 2 - 0x800
 	        && me->y - rcHit->top < (2 * ty + 1) << 12)
 	{
-		me->y = tileToCoord(ty) - (-0x2000 * tx + me->x) / 2 - 0x800 - rcHit->bottom;
+		me->y = tilesToUnits(ty) - (-0x2000 * tx + me->x) / 2 - 0x800 - rcHit->bottom;
 
 		if (me->ym > 0x400)
 			playSound(SFX_QuoteHitGround);
@@ -270,7 +270,7 @@ int playerJudgeWater(const RECT *rcHit, const player *me, int tx, int ty)
 	if (me->x - rcHit->left < ((2 * tx + 1) << 12) - 0x600
 	        && me->x + rcHit->right > ((2 * tx - 1) << 12) + 0x600
 	        && me->y - rcHit->top < ((2 * ty + 1) << 12) - 0x600
-	        && me->y + rcHit->bottom > tileToCoord(ty))
+	        && me->y + rcHit->bottom > tilesToUnits(ty))
 	{
 		hit = water;
 	}
@@ -284,8 +284,8 @@ int playerJudgeSpike(const RECT * /*rcHit*/, const player *me, int tx, int ty)
 {
 	if (me->x - 0x800 < (4 * tx + 1) << 11
 	        && me->x + 0x800 > (4 * tx - 1) << 11
-	        && me->y - 0x800 < tileToCoord(ty) + 0x600
-	        && me->y + 0x800 > tileToCoord(ty) - 0x600)
+	        && me->y - 0x800 < tilesToUnits(ty) + 0x600
+	        && me->y + 0x800 > tilesToUnits(ty) - 0x600)
 	{
 		return spike;
 	}
@@ -299,8 +299,8 @@ int playerJudgeWaterSpike(const RECT * /*rcHit*/, const player *me, int tx, int 
 {
 	if (me->x - 0x800 < (4 * tx + 1) << 11
 	        && me->x + 0x800 > (4 * tx - 1) << 11
-	        && me->y - 0x800 < tileToCoord(ty) + 0x600
-	        && me->y + 0x800 > tileToCoord(ty) - 0x600)
+	        && me->y - 0x800 < tilesToUnits(ty) + 0x600
+	        && me->y + 0x800 > tilesToUnits(ty) - 0x600)
 	{
 		return (spike | water | bloodWater);
 	}
@@ -377,10 +377,10 @@ void playerHitMap()
 
 	me->flag = 0;
 
-	const int fromX = coordToTile(me->x - rcHit->left + 0x1000);
-	const int fromY = coordToTile(me->y - rcHit->top + 0x1000);
-	const int toX = coordToTile(me->x + rcHit->right + 0x1000);
-	const int toY = coordToTile(me->y + rcHit->bottom + 0x1000);
+	const int fromX = unitsToTiles(me->x - rcHit->left + 0x1000);
+	const int fromY = unitsToTiles(me->y - rcHit->top + 0x1000);
+	const int toX = unitsToTiles(me->x + rcHit->right + 0x1000);
+	const int toY = unitsToTiles(me->y + rcHit->bottom + 0x1000);
 
 	for (int currentX = fromX; currentX <= toX; currentX++)
 	{
@@ -758,24 +758,22 @@ void playerHitNpcs()
 					me->flag |= hit;
 				}
 				else
-				{
 					hit = playerHitNpcNonSolid(rcHit, me, &npcs[i]);
-				}
 
-				if (hit && npcs[i].code_char == 1)
+				if (hit && npcs[i].code_char == NPC_WeaponEnergy)
 				{
 					playSound(SFX_GetEXP);
 					giveWeaponExperience(npcs[i].exp);
 					npcs[i].cond = 0;
 				}
-				if (hit && npcs[i].code_char == 86)
+				if (hit && npcs[i].code_char == NPC_Missile)
 				{
 					playSound(SFX_QuoteMissileGet);
-					//AddBulletMyChar(gNPC[i].code_event, gNPC[i].exp);
+					giveAmmo(npcs[i].code_event, npcs[i].exp);
 					npcs[i].cond = 0;
 				}
 
-				if (hit && npcs[i].code_char == 87)
+				if (hit && npcs[i].code_char == NPC_Heart)
 				{
 					playSound(SFX_QuoteHeal);
 					me->life += npcs[i].exp;
