@@ -106,6 +106,14 @@ void npcAct200(npc *NPC) // Dragon Zombie (enemy)
 		NPC->rect = rcLeft[NPC->ani_no];
 }
 
+void npcAct201(npc * NPC) // Dragon Zombie, dead
+{
+	if (NPC->direct != dirLeft)
+		NPC->rect = { 200, 40, 240, 80 };
+	else
+		NPC->rect = { 200, 0, 240, 40 };
+}
+
 void npcAct202(npc * NPC) // Dragon Zombie fire (projectile)
 {
 	if (NPC->flag & 0xFF)
@@ -128,6 +136,94 @@ void npcAct202(npc * NPC) // Dragon Zombie fire (projectile)
 		NPC->cond = 0;
 		createCaret(NPC->x, NPC->y, effect_RisingDisc);
 	}
+}
+
+void npcAct203(npc * NPC) // Critter, Hopping Aqua (enemy)
+{
+	constexpr RECT rcLeft[3] = { {0, 80, 16, 96}, {16, 80, 32, 96}, {32, 80, 48, 96} };
+	constexpr RECT rcRight[3] = { {0, 96, 16, 112}, {16, 96, 32, 112}, {32, 96, 48, 112} };
+
+	enum
+	{
+		init = 0,
+		waitForAttack = 1,
+		startJump = 2,
+		jumping = 3,
+	};
+
+	switch (NPC->act_no)
+	{
+	case init:
+		NPC->y += 0x600;
+		NPC->act_no = waitForAttack;
+		// Fallthrough
+	case waitForAttack:
+		NPC->facePlayer();
+
+		if (NPC->act_no < 8 || NPC->isPlayerAligned(0xE000, 0xA000))
+		{
+			if (NPC->act_wait < 8)
+				++NPC->act_wait;
+			NPC->ani_no = 0;
+		}
+		else
+			NPC->ani_no = 1;
+
+		if (NPC->shock)
+		{
+			NPC->act_no = startJump;
+			NPC->ani_no = 0;
+			NPC->act_wait = 0;
+		}
+
+		if (NPC->act_wait >= 8 && NPC->isPlayerWithinDistance(0x6000, 0xA000, 0x6000))
+		{
+			NPC->act_no = startJump;
+			NPC->ani_no = 0;
+			NPC->act_wait = 0;
+		}
+		break;
+
+	case startJump:
+		if (++NPC->act_wait > 8)
+		{
+			NPC->act_no = jumping;
+			NPC->ani_no = 2;
+			NPC->ym = -0x5FF;
+			if (!(currentPlayer.cond & player_removed))
+				playSound(SFX_CritterHop);
+
+			NPC->moveTowardsPlayer(0x100);
+		}
+		break;
+
+	case jumping:
+		if (NPC->flag & ground)
+		{
+			NPC->xm = 0;
+			NPC->act_wait = 0;
+			NPC->ani_no = 0;
+			NPC->act_no = waitForAttack;
+			if (!(currentPlayer.cond & player_removed))
+				playSound(SFX_QuoteHitGround);
+		}
+		break;
+
+	default:
+		break;
+	}
+
+	NPC->ym += 0x40;
+	if (NPC->ym > 0x5FF)
+		NPC->ym = 0x5FF;
+
+	NPC->x += NPC->xm;
+	NPC->y += NPC->ym;
+
+	if (NPC->direct != dirLeft)
+		NPC->rect = rcRight[NPC->ani_no];
+	else
+		NPC->rect = rcLeft[NPC->ani_no];
 }
 
 void npcAct211(npc *NPC) //Spikes
@@ -158,3 +254,4 @@ void npcAct216(npc *NPC) // Debug cat
 {
 	NPC->rect = { 256, 192, 272, 216 };
 }
+

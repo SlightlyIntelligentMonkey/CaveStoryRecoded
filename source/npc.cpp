@@ -362,6 +362,22 @@ void npc::moveTowardsPlayer(int vel)
 		this->xm = -vel;
 }
 
+bool npc::isPlayerWithinDistance(int xDist, int yDistHigh, int yDistLow)
+{
+	return (this->x - xDist < currentPlayer.x
+		&& this->x + xDist > currentPlayer.x
+		&& this->y - yDistHigh < currentPlayer.y
+		&& this->y + yDistLow > currentPlayer.y);
+}
+
+bool npc::isPlayerAligned(int xRay, int yRayHigh, int yRayLow)
+{
+	return (this->x - xRay >= currentPlayer.x
+		|| this->x + xRay <= currentPlayer.x
+		|| this->y - yRayHigh >= currentPlayer.y
+		|| this->y + yRayLow <= currentPlayer.y);
+}
+
 void npc::init(int setCode, int setX, int setY, int setXm, int setYm, int setDir, npc *parentNpc) noexcept
 {
 	memset(this, 0, sizeof(*this));
@@ -458,4 +474,5 @@ void npc::draw()
 		}
 	}
 }
+
 

@@ -99,6 +99,17 @@ public:
 	void animate(int aniWait, int aniStart, int aniMax);
 	void facePlayer();
 	void moveTowardsPlayer(int vel);
+	bool isPlayerWithinDistance(int xDist, int yDistHigh, int yDistLow);
+	inline bool isPlayerWithinDistance(int xDist, int yDist)
+	{
+		return isPlayerWithinDistance(xDist, yDist, yDist);
+	}
+
+	bool isPlayerAligned(int xRay, int yRayHigh, int yRayLow);
+	inline bool isPlayerAligned(int xRay, int yRay)
+	{
+		return isPlayerAligned(xRay, yRay, yRay);
+	}
 
 	void init(int setCode, int setX, int setY, int setXm, int setYm, int setDir, npc *parentNpc) noexcept;
 
