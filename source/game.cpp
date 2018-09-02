@@ -31,6 +31,8 @@ int gameMode = 1;
 
 VIEW viewport;
 
+BOSSLIFE bossLife;
+
 //Init game function
 void initGame()
 {
@@ -39,6 +41,7 @@ void initGame()
 	memset(mapFlags, 0, sizeof(mapFlags));
 
 	//Clear other stuff
+	init2();
 	initWeapons();
 	memset(permitStage, 0, sizeof(permitStage));
 	memset(items, 0, sizeof(items));
@@ -54,9 +57,15 @@ void initGame()
 	startTscEvent(200);
 }
 
+//Init other important things
+void init2()
+{
+	memset(&bossLife, 0, sizeof(bossLife));
+}
+
+//Keep view inside the level
 void viewBounds() noexcept
 {
-	//Keep view in level
 	if ((levelWidth - 1) << 4 > screenWidth)
 		viewport.x = clamp(viewport.x, 0, tilesToUnits(levelWidth - 1) - (screenWidth << 9));
 	else
@@ -273,6 +282,8 @@ int gameUpdatePlay()
 {
 	int tscResult = 0;
 
+	init2();
+
 	while (true)
 	{
 		//Handle events
@@ -487,6 +498,8 @@ int gameUpdateMenu()
 
 int gameUpdateIntro()
 {
+	init2();
+
 	uint32_t frame = 0;
 	loadLevel(72);
 	startTscEvent(100);
