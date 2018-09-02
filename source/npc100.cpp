@@ -3,6 +3,17 @@
 #include "player.h"
 #include "sound.h"
 
+void npcAct100(npc * NPC) // Grate
+{
+	if (NPC->act_no == 0)
+	{
+		NPC->act_no = 1;
+		NPC->y += 0x2000;
+	}
+
+	NPC->rect = { 272, 48, 288, 64 };
+}
+
 void npcAct106(npc *NPC) // Speech balloon 'Hey' high
 {
 	if (NPC->act_no == 0)
@@ -369,3 +380,4 @@ void npcAct119(npc *NPC) // Table & Chair
 {
 	NPC->rect = { 248, 184, 272, 200 };
 }
+
