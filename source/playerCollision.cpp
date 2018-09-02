@@ -758,24 +758,22 @@ void playerHitNpcs()
 					me->flag |= hit;
 				}
 				else
-				{
 					hit = playerHitNpcNonSolid(rcHit, me, &npcs[i]);
-				}
 
-				if (hit && npcs[i].code_char == 1)
+				if (hit && npcs[i].code_char == NPC_WeaponEnergy)
 				{
 					playSound(SFX_GetEXP);
 					giveWeaponExperience(npcs[i].exp);
 					npcs[i].cond = 0;
 				}
-				if (hit && npcs[i].code_char == 86)
+				if (hit && npcs[i].code_char == NPC_Missile)
 				{
 					playSound(SFX_QuoteMissileGet);
 					giveAmmo(npcs[i].code_event, npcs[i].exp);
 					npcs[i].cond = 0;
 				}
 
-				if (hit && npcs[i].code_char == 87)
+				if (hit && npcs[i].code_char == NPC_Heart)
 				{
 					playSound(SFX_QuoteHeal);
 					me->life += npcs[i].exp;
