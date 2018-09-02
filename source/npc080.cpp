@@ -942,7 +942,7 @@ void npcAct088(npc * NPC) // Igor (boss)
 	case walk:
 		++NPC->act_wait;
 		NPC->animate(3, 2, 5);
-		NPC->move(&NPC->xm, 0x200);
+		NPC->moveTowardsPlayer(0x200);
 
 		if (NPC->count2)
 		{

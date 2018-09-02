@@ -354,12 +354,12 @@ void npc::facePlayer()
 		this->direct = dirLeft;
 }
 
-void npc::move(int * pVel, int vel)
+void npc::moveTowardsPlayer(int vel)
 {
 	if (this->direct != dirLeft)
-		*pVel = vel;
+		this->xm = vel;
 	else
-		*pVel = -vel;
+		this->xm = -vel;
 }
 
 void npc::init(int setCode, int setX, int setY, int setXm, int setYm, int setDir, npc *parentNpc) noexcept
