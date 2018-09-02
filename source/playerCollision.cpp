@@ -771,7 +771,7 @@ void playerHitNpcs()
 				if (hit && npcs[i].code_char == 86)
 				{
 					playSound(SFX_QuoteMissileGet);
-					//AddBulletMyChar(gNPC[i].code_event, gNPC[i].exp);
+					giveAmmo(npcs[i].code_event, npcs[i].exp);
 					npcs[i].cond = 0;
 				}
 

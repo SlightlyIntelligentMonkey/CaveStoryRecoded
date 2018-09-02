@@ -119,8 +119,8 @@ public:
 
 void loadNpcTable();
 
-
 void createSmoke(int x, int y, int w, size_t num);
+void createExplosion(int x, int y, int w, int num);
 
 void createNpc(int setCode, int setX = 0, int setY = 0, int setXm = 0, int setYm = 0, int setDir = dirLeft, npc *parentNpc = nullptr);
 void changeNpc(int code_event, int code_char, int dir = dirLeft);

@@ -193,8 +193,12 @@ void bullet::init(int setCode, int setX, int setY, uint8_t setDir) noexcept
 }
 
 //Act functions
+
 #include "polarStar.h"
 #include "fireball.h"
+
+#include "missile.h"
+
 #include "spur.h"
 
 bulletAct bulletActs[46] =
@@ -212,12 +216,12 @@ bulletAct bulletActs[46] =
 	static_cast<bulletAct>(nullptr),
 	static_cast<bulletAct>(nullptr),
 	static_cast<bulletAct>(nullptr),
-	static_cast<bulletAct>(nullptr),
-	static_cast<bulletAct>(nullptr),
-	static_cast<bulletAct>(nullptr),
-	static_cast<bulletAct>(nullptr),
-	static_cast<bulletAct>(nullptr),
-	static_cast<bulletAct>(nullptr),
+	&actBulletMissileLauncher1,
+	&actBulletMissileLauncher2,
+	&actBulletMissileLauncher3,
+	&actBulletBoom1,
+	&actBulletBoom2,
+	&actBulletBoom3,
 	static_cast<bulletAct>(nullptr),
 	static_cast<bulletAct>(nullptr),
 	static_cast<bulletAct>(nullptr),

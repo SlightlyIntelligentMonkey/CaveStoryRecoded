@@ -38,6 +38,20 @@ void createSmoke(int x, int y, int w, size_t num)
 	}
 }
 
+void createExplosion(int x, int y, int w, int num)
+{
+	int offset_x = 0;
+	int offset_y = 0;
+	int wa = w / 512;
+	for (int i = 0; i < num; ++i)
+	{
+		offset_x = random(-wa, wa) << 9;
+		offset_y = random(-wa, wa) << 9;
+		createNpc(NPC_Smoke, x + offset_x, offset_y + y, 0, 0, 0, nullptr);
+	}
+	createCaret(x, y, 12, 0);
+}
+
 void createNpc(int setCode, int setX, int setY, int setXm, int setYm, int setDir, npc *parentNpc)
 {
 	size_t n;
@@ -474,5 +488,3 @@ void npc::draw()
 		}
 	}
 }
-
-
