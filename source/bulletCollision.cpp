@@ -3,6 +3,7 @@
 #include "sound.h"
 #include "caret.h"
 #include "level.h"
+#include "game.h"
 #include "mathUtils.h"
 #include "player.h"
 #include "script.h"
@@ -475,6 +476,10 @@ void bulletHitNpcs()
 							{
 								//Keep life at 0 rather than some negative number (although this doesn't matter)
 								npcs[n].life = 0;
+
+								//Hide boss healthbar if it's focused on this npc
+								if (bossLife.flag && bossLife.pLife == &npcs[n].life)
+									bossLife.flag = 0;
 
 								//Add to valueview damage
 								if (npcs[n].bits & npc_showdamage)
