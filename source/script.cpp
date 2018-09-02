@@ -795,8 +795,8 @@ int updateTsc()
 				tscCleanup(2);
 				break;
 			case('<FOM'):
-				viewport.lookX = &currentPlayer.x;
-				viewport.lookY = &currentPlayer.y;
+				viewport.lookX = &currentPlayer.tgt_x;
+				viewport.lookY = &currentPlayer.tgt_y;
 				viewport.speed = getTSCNumber(tsc.p_read + 4);
 				tscCleanup(1);
 				break;

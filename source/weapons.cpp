@@ -22,7 +22,7 @@ weaponShoot shootFunctions[14] =
 	&shootPolarStar,
 	&shootFireball,
 	static_cast<weaponShoot>(nullptr),
-	static_cast<weaponShoot>(nullptr),
+	&launchMissile,
 	static_cast<weaponShoot>(nullptr),
 	static_cast<weaponShoot>(nullptr),
 	static_cast<weaponShoot>(nullptr),
