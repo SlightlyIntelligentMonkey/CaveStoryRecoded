@@ -104,8 +104,8 @@ void mixSounds(int16_t *stream, int len)
 
 					const auto val = (int)(sample1 + (sample2 - sample1) * ((double)(sound.pos & 0xFFF) / 4096.0));
 
-					tempSampleL += val * 1.333333333333333;
-					tempSampleR += val * 1.333333333333333;
+					tempSampleL += val * 2;
+					tempSampleR += val * 2;
 				}
 			}
 		}

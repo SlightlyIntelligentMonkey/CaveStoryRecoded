@@ -126,8 +126,8 @@ void mixOrg(int16_t *stream, int len)
 				
 				const auto val = (int)(sample1 + (sample2 - sample1) * ((double)(orgWaves[wave].pos & 0xFFF) / 4096.0));
 
-				tempSampleL += (int32_t)((long double)val * orgWaves[wave].volume * orgWaves[wave].volume_l / 1.5);
-				tempSampleR += (int32_t)((long double)val * orgWaves[wave].volume * orgWaves[wave].volume_r / 1.5);
+				tempSampleL += (int32_t)((long double)val * orgWaves[wave].volume * orgWaves[wave].volume_l);
+				tempSampleR += (int32_t)((long double)val * orgWaves[wave].volume * orgWaves[wave].volume_r);
 			}
 		}
 
@@ -185,8 +185,8 @@ void mixOrg(int16_t *stream, int len)
 
 						const auto val = (int)(sample1 + (sample2 - sample1) * ((double)(orgDrums[wave].pos & 0xFFF) / 4096.0));
 
-						tempSampleL += (int32_t)((long double)val * orgDrums[wave].volume * orgDrums[wave].volume_l / 1.5);
-						tempSampleR += (int32_t)((long double)val * orgDrums[wave].volume * orgDrums[wave].volume_r / 1.5);
+						tempSampleL += (int32_t)((long double)val * orgDrums[wave].volume * orgDrums[wave].volume_l);
+						tempSampleR += (int32_t)((long double)val * orgDrums[wave].volume * orgDrums[wave].volume_r);
 					}
 				}
 			}
