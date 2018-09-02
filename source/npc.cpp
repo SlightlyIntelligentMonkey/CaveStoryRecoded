@@ -93,6 +93,7 @@ void changeNpc(int code_event, int code_char, int dir)
 			if (npcs[i].code_event == code_event)
 			{
 				const int code_flag = npcs[i].code_flag;
+				const short life = npcs[i].life;
 				int bits = npcs[i].bits;
 
 				bits &= 0x7F00; //Only bits that seem to determine interactability and other stuff
@@ -101,6 +102,7 @@ void changeNpc(int code_event, int code_char, int dir)
 				npcs[i].bits |= bits;
 				npcs[i].code_flag = code_flag;
 				npcs[i].code_event = code_event;
+				npcs[i].life = life;
 
 				if (dir != 5)
 				{

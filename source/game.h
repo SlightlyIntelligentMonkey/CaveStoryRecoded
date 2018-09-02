@@ -41,6 +41,15 @@ struct VIEW
 	int quake2;
 };
 
+struct BOSSLIFE
+{
+	int flag;
+	int *pLife;
+	int max;
+	int br;
+	int count;
+};
+
 //Game variables
 constexpr auto ITEMS = 32;
 constexpr auto PERMITSTAGES = 8;
@@ -48,6 +57,8 @@ constexpr auto PERMITSTAGES = 8;
 extern PERMIT_STAGE permitStage[PERMITSTAGES];
 extern ITEM items[ITEMS];
 extern int selectedItem;
+
+extern BOSSLIFE bossLife;
 
 extern VIEW viewport;
 

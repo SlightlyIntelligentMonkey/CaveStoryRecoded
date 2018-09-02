@@ -31,6 +31,14 @@ int gameMode = 1;
 
 VIEW viewport;
 
+BOSSLIFE bossLife;
+
+//Init other important things
+void init2()
+{
+	memset(&bossLife, 0, sizeof(bossLife));
+}
+
 //Init game function
 void initGame()
 {
@@ -487,6 +495,8 @@ int gameUpdateMenu()
 
 int gameUpdateIntro()
 {
+	init2();
+
 	uint32_t frame = 0;
 	loadLevel(72);
 	startTscEvent(100);

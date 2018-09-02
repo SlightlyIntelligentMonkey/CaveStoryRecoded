@@ -520,7 +520,6 @@ int updateTsc()
 		else
 		{
 			static bool notifiedAboutBOA = false;
-			static bool notifiedAboutBSL = false;
 			static bool notifiedAboutCIL = false;
 			static bool notifiedAboutCPS = false;
 			static bool notifiedAboutCRE = false;
@@ -595,12 +594,20 @@ int updateTsc()
 				tscCleanup(1);
 				break;
 			case('<BSL'):
-				if (!notifiedAboutBSL && debugFlags & notifyOnNotImplemented)
+				if (getTSCNumber(tsc.p_read + 4))
 				{
-					notifiedAboutBSL = true;
-					showTSCNotImplementedWarning("<BSL is not implemented");
+					for (size_t i = 0; i < npcs.size(); i++)
+					{
+						if (npcs[i].code_event == getTSCNumber(tsc.p_read + 4))
+						{
+							bossLife.flag = 1;
+							bossLife.max = npcs[i].life;
+							bossLife.br = npcs[i].life;
+							bossLife.pLife = &npcs[i].life;
+							break;
+						}
+					}
 				}
-
 				tscCleanup(1);
 				break;
 			case('<CAT'):

@@ -2,6 +2,7 @@
 #include "level.h"
 #include "weapons.h"
 #include "render.h"
+#include "game.h"
 #include "player.h"
 #include "caret.h"
 #include "bullet.h"
@@ -37,6 +38,66 @@ void drawMapName(bool bMini)
 
 		if (++mapName.wait > 160)
 			mapName.flag = 0;
+	}
+}
+
+//Boss health bar
+void drawBossHealth()
+{
+	RECT rcBr;
+	RECT rcLife;
+	RECT rcBox2;
+	RECT rcBox1;
+	RECT rcText;
+
+	rcText.left = 0;
+	rcText.top = 48;
+	rcText.right = 32;
+	rcText.bottom = 56;
+	rcBox1.left = 0;
+	rcBox1.top = 0;
+	rcBox1.right = 244;
+	rcBox1.bottom = 8;
+	rcBox2.left = 0;
+	rcBox2.top = 16;
+	rcBox2.right = 244;
+	rcBox2.bottom = 24;
+	rcLife.left = 0;
+	rcLife.top = 24;
+	rcLife.right = 0;
+	rcLife.bottom = 32;
+	rcBr.left = 0;
+	rcBr.top = 32;
+	rcBr.right = 232;
+	rcBr.bottom = 40;
+
+	if (bossLife.flag)
+	{
+		if (*bossLife.pLife > 0)
+		{
+			rcLife.right = 198 * *bossLife.pLife / bossLife.max;
+
+			if (bossLife.br <= *bossLife.pLife)
+			{
+				bossLife.count = 0;
+			}
+			else if (++bossLife.count > 30)
+			{
+				--bossLife.br;
+			}
+
+			rcBr.right = 198 * bossLife.br / bossLife.max;
+
+			drawTexture(sprites[TEX_TEXTBOX], &rcBox1, 32, 220);
+			drawTexture(sprites[TEX_TEXTBOX], &rcBox2, 32, 228);
+			drawTexture(sprites[TEX_TEXTBOX], &rcBr, 72, 224);
+			drawTexture(sprites[TEX_TEXTBOX], &rcLife, 72, 224);
+			drawTexture(sprites[TEX_TEXTBOX], &rcText, 40, 224);
+		}
+		else
+		{
+			bossLife.flag = 0;
+		}
 	}
 }
 
@@ -213,8 +274,11 @@ void drawPlayerAir()
 
 void drawHud(bool hide)
 {
+	drawBossHealth();
+
 	if (hide)
 		return;
+
 	drawWeaponStats();
 	drawPlayerHealth();
 	drawPlayerAir();
