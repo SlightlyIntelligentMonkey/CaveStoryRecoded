@@ -481,7 +481,7 @@ void bulletHitNpcs()
 									npcs[n].damage_view -= bul->damage;
 
 								//Either run event if the run event on death flag's set, or die
-								if (currentPlayer.cond & 0x80u && npcs[n].bits & npc_eventdie)
+								if (currentPlayer.cond & 0x80 && npcs[n].bits & npc_eventdie)
 									startTscEvent(npcs[n].code_event);
 								else
 									npcs[n].cond |= 8u;

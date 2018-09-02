@@ -88,6 +88,9 @@ void mixOrg(int16_t *stream, int len)
 	if (stream == nullptr)
 		doCustomError("stream was nullptr in mixOrg");
 
+	int32_t tempSampleL;
+	int32_t tempSampleR;
+
 	for (int i = 0; i < len; i++)
 	{
 		//Update
@@ -97,6 +100,10 @@ void mixOrg(int16_t *stream, int len)
 			organyaPlayStep();
 			org.samples = 0;
 		}
+
+		//Put current stream sample into temp samples (org's done first so this is typically 0 anyways)
+		tempSampleL = (int32_t)stream[2 * i];
+		tempSampleR = (int32_t)stream[2 * i + 1];
 
 		//Play waves
 		for (int wave = 0; wave < 8; wave++)
@@ -119,8 +126,8 @@ void mixOrg(int16_t *stream, int len)
 				
 				const auto val = (int)(sample1 + (sample2 - sample1) * ((double)(orgWaves[wave].pos & 0xFFF) / 4096.0));
 
-				stream[2 * i] += (int16_t)((long double)val * orgWaves[wave].volume * orgWaves[wave].volume_l / 1.5);
-				stream[2 * i + 1] += (int16_t)((long double)val * orgWaves[wave].volume * orgWaves[wave].volume_r / 1.5);
+				tempSampleL += (int32_t)((long double)val * orgWaves[wave].volume * orgWaves[wave].volume_l / 1.5);
+				tempSampleR += (int32_t)((long double)val * orgWaves[wave].volume * orgWaves[wave].volume_r / 1.5);
 			}
 		}
 
@@ -178,12 +185,20 @@ void mixOrg(int16_t *stream, int len)
 
 						const auto val = (int)(sample1 + (sample2 - sample1) * ((double)(orgDrums[wave].pos & 0xFFF) / 4096.0));
 
-						stream[2 * i] += (int16_t)((long double)val * orgDrums[wave].volume * orgDrums[wave].volume_l / 1.5);
-						stream[2 * i + 1] += (int16_t)((long double)val * orgDrums[wave].volume * orgDrums[wave].volume_r / 1.5);
+						tempSampleL += (int32_t)((long double)val * orgDrums[wave].volume * orgDrums[wave].volume_l / 1.5);
+						tempSampleR += (int32_t)((long double)val * orgDrums[wave].volume * orgDrums[wave].volume_r / 1.5);
 					}
 				}
 			}
 		}
+
+		//Clip buffer
+		tempSampleL = clamp(tempSampleL, -0x7FFF, 0x7FFF);
+		tempSampleR = clamp(tempSampleR, -0x7FFF, 0x7FFF);
+
+		//Put into main stream
+		stream[2 * i] = tempSampleL;
+		stream[2 * i + 1] = tempSampleR;
 	}
 }
 
