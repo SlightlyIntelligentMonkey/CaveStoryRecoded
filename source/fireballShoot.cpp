@@ -10,23 +10,20 @@ void shootFireball(int level)
 	//Get the type of bullet, and limit how many on screen at once
 	int bul_no;
 
+	if (weaponBullets(3) > 1)
+		return;
+
 	switch (level)
 	{
 	case 1:
-		if (weaponBullets(bullet_FireballLevel1) > 1)
-			return;
 		bul_no = bullet_FireballLevel1;
 		break;
 
 	case 2:
-		if (weaponBullets(bullet_FireballLevel1) > 2)
-			return;
 		bul_no = bullet_FireballLevel2;
 		break;
 
 	case 3:
-		if (weaponBullets(bullet_FireballLevel1) > 3)
-			return;
 		bul_no = bullet_FireballLevel3;
 		break;
 	default:

@@ -8,7 +8,10 @@
 
 void shootPolarStar(int level)
 {
-	if (weaponBullets(bullet_PolarStarLevel1) < 2 && isKeyPressed(keyShoot))
+	if (weaponBullets(2) > 1)
+		return;
+
+	if (isKeyPressed(keyShoot))
 	{
 		if (useWeaponAmmo(1) ^ 1)
 		{
