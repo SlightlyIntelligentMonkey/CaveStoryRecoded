@@ -1497,7 +1497,7 @@ void npcAct073(npc *NPC) //Water drop
 			NPC->cond = 0;
 	}
 
-	if (NPC->y > tileToCoord(levelHeight))
+	if (NPC->y > tilesToUnits(levelHeight))
 		NPC->cond = 0;
 }
 

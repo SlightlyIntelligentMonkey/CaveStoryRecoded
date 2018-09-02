@@ -43,7 +43,7 @@ int bulletJudgeBlock(int x, int y, bullet *bul) //For judging breakable blocks
 		playSound(SFX_DestroyBreakableBlock);
 
 		for (int i = 0; i < 4; ++i)
-			createNpc(NPC_Smoke, tileToCoord(x), tileToCoord(y), random(-512, 512), random(-512, 512));
+			createNpc(NPC_Smoke, tilesToUnits(x), tilesToUnits(y), random(-512, 512), random(-512, 512));
 
 		//Shift tile -1
 		shiftTile(x, y);
@@ -171,11 +171,11 @@ int bulletJudgeTriangleA(int x, int y, bullet *bul)
 
 	if (bul->x < (2 * x + 1) << 12
 	        && bul->x > (2 * x - 1) << 12
-	        && bul->y - 0x400 < tileToCoord(y) - (-0x2000 * x + bul->x) / 2 + 0x800
+	        && bul->y - 0x400 < tilesToUnits(y) - (-0x2000 * x + bul->x) / 2 + 0x800
 	        && bul->y + 0x400 > (2 * y - 1) << 12)
 	{
 		if (bul->bbits & bullet_goThroughWalls)
-			bul->y = tileToCoord(y) - (-0x2000 * x + bul->x) / 2 + 0xC00;
+			bul->y = tilesToUnits(y) - (-0x2000 * x + bul->x) / 2 + 0xC00;
 		else
 			bulletVanish(bul);
 
@@ -191,11 +191,11 @@ int bulletJudgeTriangleB(int x, int y, bullet *bul)
 
 	if (bul->x < (2 * x + 1) << 12
 	        && bul->x > (2 * x - 1) << 12
-	        && bul->y - 0x400 < tileToCoord(y) - (-0x2000 * x + bul->x) / 2 - 0x800
+	        && bul->y - 0x400 < tilesToUnits(y) - (-0x2000 * x + bul->x) / 2 - 0x800
 	        && bul->y + 0x400 > (2 * y - 1) << 12)
 	{
 		if (bul->bbits & bullet_goThroughWalls)
-			bul->y = tileToCoord(y) - (-0x2000 * x + bul->x) / 2 - 0x400;
+			bul->y = tilesToUnits(y) - (-0x2000 * x + bul->x) / 2 - 0x400;
 		else
 			bulletVanish(bul);
 
@@ -211,11 +211,11 @@ int bulletJudgeTriangleC(int x, int y, bullet *bul)
 
 	if (bul->x < (2 * x + 1) << 12
 	        && bul->x > (2 * x - 1) << 12
-	        && bul->y - 0x400 < tileToCoord(y) + (-0x2000 * x + bul->x) / 2 - 0x800
+	        && bul->y - 0x400 < tilesToUnits(y) + (-0x2000 * x + bul->x) / 2 - 0x800
 	        && bul->y + 0x400 > (2 * y - 1) << 12)
 	{
 		if (bul->bbits & bullet_goThroughWalls)
-			bul->y = tileToCoord(y) + (-8192 * x + bul->x) / 2 - 0x400;
+			bul->y = tilesToUnits(y) + (-8192 * x + bul->x) / 2 - 0x400;
 		else
 			bulletVanish(bul);
 
@@ -231,11 +231,11 @@ int bulletJudgeTriangleD(int x, int y, bullet *bul)
 
 	if (bul->x < (2 * x + 1) << 12
 	        && bul->x > (2 * x - 1) << 12
-	        && bul->y - 0x400 < tileToCoord(y) + (-0x2000 * x + bul->x) / 2 + 0x800
+	        && bul->y - 0x400 < tilesToUnits(y) + (-0x2000 * x + bul->x) / 2 + 0x800
 	        && bul->y + 0x400 > (2 * y - 1) << 12)
 	{
 		if (bul->bbits & bullet_goThroughWalls)
-			bul->y = tileToCoord(y) + (-8192 * x + bul->x) / 2 + 0xC00;
+			bul->y = tilesToUnits(y) + (-8192 * x + bul->x) / 2 + 0xC00;
 		else
 			bulletVanish(bul);
 
@@ -251,11 +251,11 @@ int bulletJudgeTriangleE(int x, int y, bullet *bul)
 
 	if (bul->x < (2 * x + 1) << 12
 	        && bul->x - 0x200 >(2 * x - 1) << 12
-	        && bul->y + 0x400 > tileToCoord(y) + (-0x2000 * x + bul->x) / 2 - 0x800
+	        && bul->y + 0x400 > tilesToUnits(y) + (-0x2000 * x + bul->x) / 2 - 0x800
 	        && bul->y - 0x400 < (2 * y + 1) << 12)
 	{
 		if (bul->bbits & bullet_goThroughWalls)
-			bul->y = tileToCoord(y) + (-0x2000 * x + bul->x) / 2 - 0xC00;
+			bul->y = tilesToUnits(y) + (-0x2000 * x + bul->x) / 2 - 0xC00;
 		else
 			bulletVanish(bul);
 
@@ -271,11 +271,11 @@ int bulletJudgeTriangleF(int x, int y, bullet *bul)
 
 	if (bul->x < (2 * x + 1) << 12
 	        && bul->x - 0x200 >(2 * x - 1) << 12
-	        && bul->y + 0x400 > tileToCoord(y) + (-0x2000 * x + bul->x) / 2 + 0x800
+	        && bul->y + 0x400 > tilesToUnits(y) + (-0x2000 * x + bul->x) / 2 + 0x800
 	        && bul->y - 0x400 < (2 * y + 1) << 12)
 	{
 		if (bul->bbits & bullet_goThroughWalls)
-			bul->y = tileToCoord(y) + (-0x2000 * x + bul->x) / 2 + 0x400;
+			bul->y = tilesToUnits(y) + (-0x2000 * x + bul->x) / 2 + 0x400;
 		else
 			bulletVanish(bul);
 
@@ -291,11 +291,11 @@ int bulletJudgeTriangleG(int x, int y, bullet *bul)
 
 	if (bul->x < (2 * x + 1) << 12
 	        && bul->x - 0x200 >(2 * x - 1) << 12
-	        && bul->y + 0x400 > tileToCoord(y) - (-0x2000 * x + bul->x) / 2 + 0x800
+	        && bul->y + 0x400 > tilesToUnits(y) - (-0x2000 * x + bul->x) / 2 + 0x800
 	        && bul->y - 0x400 < (2 * y + 1) << 12)
 	{
 		if (bul->bbits & bullet_goThroughWalls)
-			bul->y = tileToCoord(y) - (-0x2000 * x + bul->x) / 2 + 0x400;
+			bul->y = tilesToUnits(y) - (-0x2000 * x + bul->x) / 2 + 0x400;
 		else
 			bulletVanish(bul);
 
@@ -311,11 +311,11 @@ int bulletJudgeTriangleH(int x, int y, bullet *bul)
 
 	if (bul->x < (2 * x + 1) << 12
 	        && bul->x - 0x200 >(2 * x - 1) << 12
-	        && bul->y + 0x400 > tileToCoord(y) - (-0x2000 * x + bul->x) / 2 - 0x800
+	        && bul->y + 0x400 > tilesToUnits(y) - (-0x2000 * x + bul->x) / 2 - 0x800
 	        && bul->y - 0x400 < (2 * y + 1) << 12)
 	{
 		if (bul->bbits & bullet_goThroughWalls)
-			bul->y = tileToCoord(y) - (-0x2000 * x + bul->x) / 2 - 0xC00;
+			bul->y = tilesToUnits(y) - (-0x2000 * x + bul->x) / 2 - 0xC00;
 		else
 			bulletVanish(bul);
 
@@ -335,8 +335,8 @@ void bulletHitMap()
 		if (bul->cond & 0x80)
 		{
 			//Get offset positions for tile checking
-			const int x = coordToTile(bul->x);
-			const int y = coordToTile(bul->y);
+			const int x = unitsToTiles(bul->x);
+			const int y = unitsToTiles(bul->y);
 
 			uint8_t atrb[4];
 

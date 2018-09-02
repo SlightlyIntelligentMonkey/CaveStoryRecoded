@@ -49,7 +49,7 @@ void initGame()
 
 	//Load stage
 	currentPlayer.init();
-	currentPlayer.setPos(tileToCoord(10), tileToCoord(8));
+	currentPlayer.setPos(tilesToUnits(10), tilesToUnits(8));
 	loadLevel(13);
 	startTscEvent(200);
 }
@@ -58,12 +58,12 @@ void viewBounds() noexcept
 {
 	//Keep view in level
 	if ((levelWidth - 1) << 4 > screenWidth)
-		viewport.x = clamp(viewport.x, 0, tileToCoord(levelWidth - 1) - (screenWidth << 9));
+		viewport.x = clamp(viewport.x, 0, tilesToUnits(levelWidth - 1) - (screenWidth << 9));
 	else
 		viewport.x = ((levelWidth - 1) << 12) - (screenWidth << 8);
 
 	if ((levelHeight - 1) << 4 > screenHeight)
-		viewport.y = clamp(viewport.y, 0, tileToCoord(levelHeight - 1) - (screenHeight << 9));
+		viewport.y = clamp(viewport.y, 0, tilesToUnits(levelHeight - 1) - (screenHeight << 9));
 	else
 		viewport.y = ((levelHeight - 1) << 12) - (screenHeight << 8);
 }
@@ -96,70 +96,70 @@ void debugLevels()
 	if (isKeyPressed(SDL_SCANCODE_1))
 	{
 		loadLevel(13);
-		currentPlayer.setPos(tileToCoord(10), tileToCoord(8));
+		currentPlayer.setPos(tilesToUnits(10), tilesToUnits(8));
 
 		changeOrg(mus_Gestation);
 	}
 	else if (isKeyPressed(SDL_SCANCODE_2))
 	{
 		loadLevel(12);
-		currentPlayer.setPos(tileToCoord(37), tileToCoord(11));
+		currentPlayer.setPos(tilesToUnits(37), tilesToUnits(11));
 
 		changeOrg(mus_Gestation);
 	}
 	else if (isKeyPressed(SDL_SCANCODE_3))
 	{
 		loadLevel(2);
-		currentPlayer.setPos(tileToCoord(5), tileToCoord(6));
+		currentPlayer.setPos(tilesToUnits(5), tilesToUnits(6));
 
 		changeOrg(mus_MischievousRobot);
 	}
 	else if (isKeyPressed(SDL_SCANCODE_4))
 	{
 		loadLevel(11);
-		currentPlayer.setPos(tileToCoord(13), tileToCoord(34));
+		currentPlayer.setPos(tilesToUnits(13), tilesToUnits(34));
 
 		changeOrg(mus_MimigaTown);
 	}
 	else if (isKeyPressed(SDL_SCANCODE_5))
 	{
 		loadLevel(49);
-		currentPlayer.setPos(tileToCoord(7), tileToCoord(6));
+		currentPlayer.setPos(tilesToUnits(7), tilesToUnits(6));
 
 		changeOrg(mus_ScorchingBack);
 	}
 	else if (isKeyPressed(SDL_SCANCODE_6))
 	{
 		loadLevel(67);
-		currentPlayer.setPos(tileToCoord(7), tileToCoord(52));
+		currentPlayer.setPos(tilesToUnits(7), tilesToUnits(52));
 
 		changeOrg(mus_FinalCave);
 	}
 	else if (isKeyPressed(SDL_SCANCODE_7))
 	{
 		loadLevel(48);
-		currentPlayer.setPos(tileToCoord(155), tileToCoord(1));
+		currentPlayer.setPos(tilesToUnits(155), tilesToUnits(1));
 
 		changeOrg(mus_LivingWaterway);
 	}
 	else if (isKeyPressed(SDL_SCANCODE_8))
 	{
 		loadLevel(53);
-		currentPlayer.setPos(tileToCoord(4), tileToCoord(165));
+		currentPlayer.setPos(tilesToUnits(4), tilesToUnits(165));
 
 		changeOrg(mus_Moonsong);
 	}
 	else if (isKeyPressed(SDL_SCANCODE_9))
 	{
 		loadLevel(6);
-		currentPlayer.setPos(tileToCoord(4), tileToCoord(18));
+		currentPlayer.setPos(tilesToUnits(4), tilesToUnits(18));
 
 		changeOrg(mus_OnToGrasstown);
 	}
 	else if (isKeyPressed(SDL_SCANCODE_0))
 	{
 		loadLevel(62);
-		currentPlayer.setPos(tileToCoord(10), tileToCoord(18));
+		currentPlayer.setPos(tilesToUnits(10), tilesToUnits(18));
 
 		changeOrg(mus_Balcony);
 	}
