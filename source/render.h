@@ -54,7 +54,7 @@ inline T pixelsToUnits(T x) noexcept
 }
 
 template <typename T>
-inline T unitsToPixel(T x) noexcept
+inline T unitsToPixels(T x) noexcept
 {
 	return x >> 9;
 }
