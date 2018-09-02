@@ -26,14 +26,14 @@ void drawMapName(bool bMini)
 	{
 		SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
 		drawRect(0, 7, screenWidth, 17);
-		drawString(x, 10, mapName.name, nullptr);
+		drawString(x, 10, mapName.name);
 	}
 	else if (mapName.flag)
 	{
 		SDL_SetTextureColorMod(sprites[0x26], 17, 0, 34);
-		drawString(x, y + 1, mapName.name, nullptr);
+		drawString(x, y + 1, mapName.name);
 		SDL_SetTextureColorMod(sprites[0x26], 255, 255, 255);
-		drawString(x, y, mapName.name, nullptr);
+		drawString(x, y, mapName.name);
 
 		if (++mapName.wait > 160)
 			mapName.flag = 0;

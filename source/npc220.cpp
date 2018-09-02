@@ -64,7 +64,7 @@ void npcAct231(npc *NPC) //Momorin's rocket
 
 		for (int i = 0; i < 10; ++i)
 		{
-			createNpc(NPC_Smoke, NPC->x + (random(-16, 16) << 9), NPC->y + (random(-8, 8) << 9), 0, 0, 0, nullptr);
+			createNpc(NPC_Smoke, NPC->x + (random(-16, 16) << 9), NPC->y + (random(-8, 8) << 9));
 			playSound(SFX_DestroyBreakableBlock);
 		}
 	// fallthrough
@@ -72,10 +72,10 @@ void npcAct231(npc *NPC) //Momorin's rocket
 		NPC->ym -= 8;
 
 		if (!(++NPC->act_wait & 1))
-			createCaret(NPC->x - 0x1400, NPC->y + 0x1000, effect_BoosterSmoke, 3);
+			createCaret(NPC->x - 0x1400, NPC->y + 0x1000, effect_BoosterSmoke, dirDown);
 
 		if (NPC->act_wait % 2 == 1)
-			createCaret(NPC->x + 0x1400, NPC->y + 0x1000, effect_BoosterSmoke, 3);
+			createCaret(NPC->x + 0x1400, NPC->y + 0x1000, effect_BoosterSmoke, dirDown);
 
 		if (NPC->act_wait % 4 == 1)
 			playSound(SFX_FireballBounce);
@@ -89,7 +89,7 @@ void npcAct231(npc *NPC) //Momorin's rocket
 
 			for (int i = 0; i < 6; ++i)
 			{
-				createNpc(NPC_Smoke, NPC->x + (random(-16, 16) << 9), NPC->y + (random(-8, 8) << 9), 0, 0, 0, nullptr);
+				createNpc(NPC_Smoke, NPC->x + (random(-16, 16) << 9), NPC->y + (random(-8, 8) << 9));
 				playSound(SFX_DestroyBreakableBlock);
 			}
 		}
@@ -102,10 +102,10 @@ void npcAct231(npc *NPC) //Momorin's rocket
 		if (NPC->ym < 0)
 		{
 			if (!(NPC->act_wait & 7))
-				createCaret(NPC->x - 0x1400, NPC->y + 0x1000, effect_BoosterSmoke, 3);
+				createCaret(NPC->x - 0x1400, NPC->y + 0x1000, effect_BoosterSmoke, dirDown);
 
 			if (NPC->act_wait % 8 == 4)
-				createCaret(NPC->x + 0x1400, NPC->y + 0x1000, effect_BoosterSmoke, 3);
+				createCaret(NPC->x + 0x1400, NPC->y + 0x1000, effect_BoosterSmoke, dirDown);
 
 			if (NPC->act_wait % 16 == 1)
 				playSound(SFX_FireballBounce);
@@ -133,7 +133,7 @@ void npcAct231(npc *NPC) //Momorin's rocket
 	NPC->rect = rc[NPC->ani_no];
 }
 
-void npcAct234(npc * NPC)
+void npcAct234(npc * NPC) // Red Flowers, picked
 {
 	if (!NPC->act_no)
 	{
@@ -198,7 +198,7 @@ void npcAct238(npc *NPC) //Killer press
 
 			for (int i = 0; i < 4; ++i)
 			{
-				createNpc(NPC_Smoke, NPC->x + (random(-16, 16) << 9), NPC->y + (random(-8, 8) << 9), 0, 0, 0, nullptr);
+				createNpc(NPC_Smoke, NPC->x + (random(-16, 16) << 9), NPC->y + (random(-8, 8) << 9));
 				playSound(SFX_DestroyBreakableBlock);
 			}
 		}

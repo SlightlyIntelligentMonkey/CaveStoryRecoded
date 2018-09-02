@@ -7,7 +7,7 @@ void npcAct106(npc *NPC) // Speech balloon 'Hey' high
 {
 	if (NPC->act_no == 0)
 	{
-		createNpc(NPC_BalloonHeyLow, NPC->x, NPC->y - 0x1000, 0, 0, dirLeft, nullptr);
+		createNpc(NPC_BalloonHeyLow, NPC->x, NPC->y - 0x1000);
 		NPC->act_no = 1;
 	}
 }

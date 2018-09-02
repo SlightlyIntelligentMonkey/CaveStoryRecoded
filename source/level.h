@@ -49,16 +49,16 @@ void loadStageTable();
 void loadLevel(int levelIndex);
 void drawLevel(bool foreground);
 
-constexpr inline int tileToCoord(int x) noexcept attrConst;
+constexpr inline int tilesToUnits(int x) noexcept attrConst;
 
-constexpr inline int tileToCoord(int x) noexcept
+constexpr inline int tilesToUnits(int x) noexcept
 {
 	return x << 13;
 }
 
-constexpr inline int coordToTile(int x) noexcept attrConst;
+constexpr inline int unitsToTiles(int x) noexcept attrConst;
 
-constexpr inline int coordToTile(int x) noexcept
+constexpr inline int unitsToTiles(int x) noexcept
 {
 	return x >> 13;
 }

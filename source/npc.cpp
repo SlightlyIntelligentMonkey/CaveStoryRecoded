@@ -8,7 +8,6 @@
 #include "sound.h"
 #include "flags.h"
 #include "game.h"
-#include "caret.h"
 
 #include <deque>
 #include <string>
@@ -26,17 +25,31 @@ int superXPos = 0;	// Used by undead core related NPCs ?
 int superYPos = 0;
 
 //NPC Functions
-void createSmoke(int x, int y, int w, int num)
+void createSmoke(int x, int y, int w, size_t num)
 {
 	const int wa = w / 0x200;
 
-	for (int i = 0; i < num; i++)
+	for (size_t i = 0; i < num; i++)
 	{
 		const int offsetX = random(-wa, wa) << 9;
 		const int offsetY = random(-wa, wa) << 9;
 
-		createNpc(NPC_Smoke, x + offsetX, offsetY + y, 0, 0, 0, nullptr);
+		createNpc(NPC_Smoke, x + offsetX, offsetY + y);
 	}
+}
+
+void createExplosion(int x, int y, int w, int num)
+{
+	int offset_x = 0;
+	int offset_y = 0;
+	int wa = w / 512;
+	for (int i = 0; i < num; ++i)
+	{
+		offset_x = random(-wa, wa) << 9;
+		offset_y = random(-wa, wa) << 9;
+		createNpc(NPC_Smoke, x + offset_x, offset_y + y, 0, 0, 0, nullptr);
+	}
+	createCaret(x, y, 12, 0);
 }
 
 void createNpc(int setCode, int setX, int setY, int setXm, int setYm, int setDir, npc *parentNpc)
@@ -237,9 +250,7 @@ void killNpc(npc *NPC, bool bVanish)
 			createValueView(&NPC->x, &NPC->y, NPC->damage_view);
 
 		if (bVanish)
-		{
-			NPC->init(3, NPC->x, NPC->y, 0, 0, 0, nullptr);
-		}
+			NPC->init(NPC_DeletesItself, NPC->x, NPC->y, 0, 0, 0, nullptr);
 	}
 
 	//Play sound
@@ -336,6 +347,51 @@ void loadNpcTable()
 		tblStream->read(tblStream, &npcTable[i].view, 4, 1);
 }
 
+void npc::animate(int aniWait, int aniStart, int aniMax)
+{
+	{
+		if (++this->ani_wait > aniWait)
+		{
+			this->ani_wait = 0;
+			++this->ani_no;
+		}
+		if (this->ani_no > aniMax)
+			this->ani_no = aniStart;
+	}
+}
+
+void npc::facePlayer()
+{
+	if (currentPlayer.x >= this->x)
+		this->direct = dirRight;
+	else
+		this->direct = dirLeft;
+}
+
+void npc::moveTowardsPlayer(int vel)
+{
+	if (this->direct != dirLeft)
+		this->xm = vel;
+	else
+		this->xm = -vel;
+}
+
+bool npc::isPlayerWithinDistance(int xDist, int yDistHigh, int yDistLow)
+{
+	return (this->x - xDist < currentPlayer.x
+		&& this->x + xDist > currentPlayer.x
+		&& this->y - yDistHigh < currentPlayer.y
+		&& this->y + yDistLow > currentPlayer.y);
+}
+
+bool npc::isPlayerAligned(int xRay, int yRayHigh, int yRayLow)
+{
+	return (this->x - xRay >= currentPlayer.x
+		|| this->x + xRay <= currentPlayer.x
+		|| this->y - yRayHigh >= currentPlayer.y
+		|| this->y + yRayLow <= currentPlayer.y);
+}
+
 void npc::init(int setCode, int setX, int setY, int setXm, int setYm, int setDir, npc *parentNpc) noexcept
 {
 	memset(this, 0, sizeof(*this));
@@ -419,7 +475,7 @@ void npc::draw()
 				}
 			}
 
-			drawString((x - side) / 0x200 - viewport.x / 0x200 + xOffset, (y - view.top) / 0x200 - viewport.y / 0x200 - 16, to_string(index).c_str(), nullptr);
+			drawString((x - side) / 0x200 - viewport.x / 0x200 + xOffset, (y - view.top) / 0x200 - viewport.y / 0x200 - 16, to_string(index).c_str());
 		}
 
 		if (debugFlags & showNPCHealth && life)
@@ -431,18 +487,4 @@ void npc::draw()
 			drawNumber(npcTable[code_char].life, (x - side) / 0x200 - viewport.x / 0x200 + xOffset + 40, (y - view.top) / 0x200 - viewport.y / 0x200 - 24, true);
 		}
 	}
-}
-
-void createExplosion(int x, int y, int w, int num)
-{
-	int offset_x = 0;
-	int offset_y = 0;
-	int wa = w / 512;
-	for (int i = 0; i < num; ++i)
-	{
-		offset_x = random(-wa, wa) << 9;
-		offset_y = random(-wa, wa) << 9;
-		createNpc(NPC_Smoke, x + offset_x, offset_y + y, 0, 0, 0, nullptr);
-	}
-	createCaret(x, y, 12, 0);
 }

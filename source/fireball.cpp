@@ -25,7 +25,7 @@ void actBulletFireball1(bullet *bul)
 		if (bBreak)
 		{
 			bul->cond = 0;
-			createCaret(bul->x, bul->y, effect_RisingDisc, 0);
+			createCaret(bul->x, bul->y, effect_RisingDisc);
 			playSound(SFX_ShotHitWall);
 		}
 		else
@@ -136,7 +136,7 @@ void actBulletFireball1(bullet *bul)
 	else
 	{
 		bul->cond = 0;
-		createCaret(bul->x, bul->y, effect_Star, 0);
+		createCaret(bul->x, bul->y, effect_Star);
 	}
 }
 
@@ -161,7 +161,7 @@ void actBulletFireball2(bullet *bul)
 		if (bBreak)
 		{
 			bul->cond = 0;
-			createCaret(bul->x, bul->y, effect_RisingDisc, 0);
+			createCaret(bul->x, bul->y, effect_RisingDisc);
 			playSound(SFX_ShotHitWall);
 		}
 		else
@@ -268,13 +268,13 @@ void actBulletFireball2(bullet *bul)
 			else
 				bul->rect = rect_left2[bul->ani_no];
 
-			createNpc(NPC_ProjectileFireballSnakeTrail, bul->x, bul->y, 0, -512, bul->ani_no, nullptr);
+			createNpc(NPC_ProjectileFireballSnakeTrail, bul->x, bul->y, 0, -512, bul->ani_no);
 		}
 	}
 	else
 	{
 		bul->cond = 0;
-		createCaret(bul->x, bul->y, effect_Star, 0);
+		createCaret(bul->x, bul->y, effect_Star);
 	}
 }
 
@@ -299,7 +299,7 @@ void actBulletFireball3(bullet *bul)
 		if (bBreak)
 		{
 			bul->cond = 0;
-			createCaret(bul->x, bul->y, effect_RisingDisc, 0);
+			createCaret(bul->x, bul->y, effect_RisingDisc);
 			playSound(SFX_ShotHitWall);
 		}
 		else
@@ -406,12 +406,12 @@ void actBulletFireball3(bullet *bul)
 			else
 				bul->rect = rect_left2[bul->ani_no];
 
-			createNpc(NPC_ProjectileFireballSnakeTrail, bul->x, bul->y, 0, -512, bul->ani_no + 3, nullptr);
+			createNpc(NPC_ProjectileFireballSnakeTrail, bul->x, bul->y, 0, -512, bul->ani_no + 3);
 		}
 	}
 	else
 	{
 		bul->cond = 0;
-		createCaret(bul->x, bul->y, effect_Star, 0);
+		createCaret(bul->x, bul->y, effect_Star);
 	}
 }

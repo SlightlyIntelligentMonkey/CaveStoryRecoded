@@ -237,7 +237,7 @@ void giveWeaponExperience(int x)
 				if (weapons[selectedWeapon].code != 13)
 				{
 					playSound(SFX_LevelUp);
-					createCaret(currentPlayer.x, currentPlayer.y, effect_LevelUpOrDown, 0);
+					createCaret(currentPlayer.x, currentPlayer.y, effect_LevelUpOrDown);
 				}
 			}
 
