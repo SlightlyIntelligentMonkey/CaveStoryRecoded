@@ -48,13 +48,13 @@ void drawString(int x, int y, const char *str, const uint8_t *flag = nullptr);
 void drawRect(int x, int y, int w, int h) noexcept;
 
 template <typename T>
-inline T pixelToCoord(T x) noexcept
+inline T pixelsToUnits(T x) noexcept
 {
 	return x << 9;
 }
 
 template <typename T>
-inline T coordToPixel(T x) noexcept
+inline T unitsToPixel(T x) noexcept
 {
 	return x >> 9;
 }
