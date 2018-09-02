@@ -88,11 +88,11 @@ void drawBossHealth()
 
 			rcBr.right = 198 * bossLife.br / bossLife.max;
 
-			drawTexture(sprites[TEX_TEXTBOX], &rcBox1, 32, 220);
-			drawTexture(sprites[TEX_TEXTBOX], &rcBox2, 32, 228);
-			drawTexture(sprites[TEX_TEXTBOX], &rcBr, 72, 224);
-			drawTexture(sprites[TEX_TEXTBOX], &rcLife, 72, 224);
-			drawTexture(sprites[TEX_TEXTBOX], &rcText, 40, 224);
+			drawTexture(sprites[TEX_TEXTBOX], &rcBox1, screenWidth / 2 - 128, 220);
+			drawTexture(sprites[TEX_TEXTBOX], &rcBox2, screenWidth / 2 - 128, 228);
+			drawTexture(sprites[TEX_TEXTBOX], &rcBr, screenWidth / 2 - 88, 224);
+			drawTexture(sprites[TEX_TEXTBOX], &rcLife, screenWidth / 2 - 88, 224);
+			drawTexture(sprites[TEX_TEXTBOX], &rcText, screenWidth / 2 - 120, 224);
 		}
 		else
 		{
@@ -188,12 +188,12 @@ void drawHudWeapons()
 	size_t weaponNo;
 	for (weaponNo = 0; weaponNo < WEAPONS && weapons[weaponNo].code != 0; ++weaponNo);
 
+	int x;
 	if (weaponNo)
 	{
 		for (size_t a = 0; a < weaponNo; ++a)
 		{
-			//Get position to draw at
-			size_t x = 16 * (a - selectedWeapon) + weaponShiftX;
+			x = 16 * (a - selectedWeapon) + weaponShiftX;
 
 			if (x >= 8)
 			{
@@ -207,6 +207,7 @@ void drawHudWeapons()
 
 			if (8 * (2 * (weaponNo + 3) + 1) <= x)
 				x += 16 * (-3 - weaponNo);
+
 			if (x < 72 && x >= 24)
 				x -= 48;
 

@@ -68,6 +68,7 @@ extern int debugFlags;
 //Functions
 void viewBounds() noexcept;
 void initGame();
+void init2();
 
 int escapeMenu();
 
