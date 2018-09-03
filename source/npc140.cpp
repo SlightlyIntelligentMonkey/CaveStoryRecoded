@@ -81,7 +81,7 @@ void npcAct146(npc *NPC) //Lightning
 
 		if (NPC->ani_no > 4)
 		{
-			createSmoke(NPC->x, NPC->y, 0x1000, 8);
+			createSmokeLeft(NPC->x, NPC->y, 0x1000, 8);
 			NPC->cond = 0;
 		}
 

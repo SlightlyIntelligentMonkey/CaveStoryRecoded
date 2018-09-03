@@ -307,7 +307,7 @@ void npcAct035(npc * NPC) // Manann (enemy)
 	if (NPC->act_no < dead && NPC->life < 90)
 	{
 		playSound(SFX_QuoteSmashIntoGround);
-		createSmoke(NPC->x, NPC->y, NPC->view.right, 8);
+		createSmokeLeft(NPC->x, NPC->y, NPC->view.right, 8);
 		dropExperience(NPC->x, NPC->y, NPC->exp);
 		NPC->act_no = dead;
 		NPC->act_wait = 0;
@@ -400,7 +400,7 @@ void npcAct038(npc * NPC)
 		if (NPC->act_no == 10)
 		{
 			NPC->act_no = 11;
-			createSmoke(NPC->x, NPC->y, NPC->view.bottom, 8);
+			createSmokeLeft(NPC->x, NPC->y, NPC->view.bottom, 8);
 		}
 		else if (NPC->act_no != 11)
 			return;
@@ -443,5 +443,3 @@ void npcAct039(npc *NPC) //Save Sign
 
 	NPC->rect = { setRect->left, setRect->top, setRect->right, setRect->bottom };
 }
-
-

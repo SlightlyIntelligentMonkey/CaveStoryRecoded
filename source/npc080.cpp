@@ -1208,6 +1208,7 @@ void npcAct089(npc * NPC) // Igor, dying
 	NPC->ym += 0x40;
 	if (NPC->ym > 0x5FF)
 		NPC->ym = 0x5FF;
+  
 	NPC->x += NPC->xm;
 	NPC->y += NPC->ym;
 }

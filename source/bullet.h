@@ -61,7 +61,7 @@ public:
 	RECT view;
 
 	int weapon;
-
+  
 public:
 	void init(int setCode, int setX, int setY, uint8_t setDir) noexcept;
 
@@ -69,7 +69,9 @@ public:
 	void draw();
 };
 
-void createBullet(int setCode, int setX, int setY, uint8_t setDir);
+extern int _empty;
+
+void createBullet(int setCode, int setX, int setY, uint8_t setDir, int weapon = -1);
 void updateBullets();
 void drawBullets();
 

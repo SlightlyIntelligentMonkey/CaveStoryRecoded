@@ -257,7 +257,7 @@ void npcAct117(npc *NPC)
 	case 5: //Hit ground with poof
 		NPC->act_no = 6;
 		NPC->ani_no = 5;
-		createSmoke(NPC->x, NPC->y, NPC->view.right, 8);
+		createSmokeLeft(NPC->x, NPC->y, NPC->view.right, 8);
 		break;
 
 	case 6: //Lay on ground

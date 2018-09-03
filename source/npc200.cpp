@@ -24,7 +24,7 @@ void npcAct200(npc *NPC) // Dragon Zombie (enemy)
 	if (NPC->act_no < dead && NPC->life < 950)
 	{
 		playSound(SFX_Explosion);
-		createSmoke(NPC->x, NPC->y, NPC->view.right, 8);
+		createSmokeLeft(NPC->x, NPC->y, NPC->view.right, 8);
 		dropExperience(NPC->x, NPC->y, NPC->exp);
 
 		NPC->act_no = dead;

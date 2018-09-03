@@ -188,8 +188,8 @@ void debugFunction()
 		static int debugMode = 0;
 		if (debugMode == 0 && isKeyDown(SDL_SCANCODE_RSHIFT) && isKeyDown(SDL_SCANCODE_BACKSPACE))
 		{
-			if (isKeyPressed(SDL_SCANCODE_M))
-				debugMode = 1;
+			//if (isKeyPressed(SDL_SCANCODE_M))
+			//	debugMode = 1;
 			if (isKeyPressed(SDL_SCANCODE_K))
 				debugFlags ^= showSlots;
 			if (isKeyPressed(SDL_SCANCODE_C))
@@ -198,6 +198,8 @@ void debugFunction()
 				debugFlags ^= showBULId;
 			if (isKeyPressed(SDL_SCANCODE_N))
 				debugFlags ^= showNPCId;
+			if (isKeyPressed(SDL_SCANCODE_KP_PLUS))
+				giveWeapon(4, 100);
 		}
 
 		switch (debugMode)
