@@ -219,6 +219,9 @@
     <ClCompile Include="missile.cpp">
       <Filter>Source Files\classes\bullet\act</Filter>
     </ClCompile>
+    <ClCompile Include="mapSystem.cpp">
+      <Filter>Source Files\states</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="level.h">

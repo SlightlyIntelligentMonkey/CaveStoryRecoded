@@ -104,7 +104,7 @@ void drawWindow()
 				timePrev += framerate;
 			else
 				timePrev = timeNow;	// If the timer is freakishly out of sync, panic and reset it, instead of spamming frames for who-knows how long
-
+									// clownancy that's nice 
 			break;
 		}
 
@@ -124,12 +124,21 @@ void captureScreen(enum TextureNums texture_id)
 	SDL_GetRendererOutputSize(renderer, &width, &height);
 
 	// The depth parameter here is unused. Be aware, it will be removed in SDL 2.1.
-	SDL_Surface *surface = SDL_CreateRGBSurfaceWithFormat(0, width, height, 0, SDL_PIXELFORMAT_RGB888);
+	SDL_Surface *surface = SDL_CreateRGBSurfaceWithFormat(SDL_TEXTUREACCESS_TARGET, width, height, 0, SDL_PIXELFORMAT_RGB888);
 	SDL_RenderReadPixels(renderer, nullptr, SDL_PIXELFORMAT_RGB888, surface->pixels, surface->pitch);
 
 	sprites[texture_id] = SDL_CreateTextureFromSurface(renderer, surface);
 
 	SDL_FreeSurface(surface);
+}
+
+void createTextureBuffer(enum TextureNums texture_id, int width, int height)
+{
+	//Destroy previously existing texture and load new one
+	if (sprites[texture_id] != nullptr)
+		SDL_DestroyTexture(sprites[texture_id]);
+	
+	sprites[texture_id] = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_RGB888, SDL_TEXTUREACCESS_TARGET, width, height);//SDL_CreateTextureFromSurface(renderer, surface);
 }
 
 //Texture and drawing stuff
@@ -171,17 +180,65 @@ void setCliprect(const RECT *rect) noexcept
 void drawTexture(SDL_Texture *texture, const RECT *rect, int x, int y)
 {
 	//Set framerect
-	ImageRect = { rect->left, rect->top, rect->right - rect->left, rect->bottom - rect->top };
+	if (rect)
+	{
+		ImageRect = { rect->left, rect->top, rect->right - rect->left, rect->bottom - rect->top };
 
-	//Set drawrect, with defined width and height
-	DrawRect.x = x * screenScale;
-	DrawRect.y = y * screenScale;
-	DrawRect.w = ImageRect.w * screenScale;
-	DrawRect.h = ImageRect.h * screenScale;
+		//Set drawrect, with defined width and height
+		DrawRect.x = x * screenScale;
+		DrawRect.y = y * screenScale;
+		DrawRect.w = ImageRect.w * screenScale;
+		DrawRect.h = ImageRect.h * screenScale;
 
-	//Draw to screen, error if failed
-	if (SDL_RenderCopy(renderer, texture, &ImageRect, &DrawRect) != 0)
-		doError();
+		//Draw to screen, error if failed
+		if (SDL_RenderCopy(renderer, texture, &ImageRect, &DrawRect) != 0)
+			doError();
+	}
+	else
+	{
+		int w, h;
+		SDL_QueryTexture(texture, NULL, NULL, &w, &h);
+
+		DrawRect.x = x * screenScale;
+		DrawRect.y = y * screenScale;
+		DrawRect.w = w * screenScale;
+		DrawRect.h = h * screenScale;
+
+		if (SDL_RenderCopy(renderer, texture, nullptr, &DrawRect) != 0)
+			doError();
+	}
+}
+
+void drawTextureNoScale(SDL_Texture *texture, const RECT *rect, int x, int y)
+{
+	//Set framerect
+	if (rect)
+	{
+		ImageRect = { rect->left, rect->top, rect->right - rect->left, rect->bottom - rect->top };
+
+		//Set drawrect, with defined width and height
+		DrawRect.x = x;
+		DrawRect.y = y;
+		DrawRect.w = ImageRect.w;
+		DrawRect.h = ImageRect.h;
+
+		//Draw to screen, error if failed
+		if (SDL_RenderCopy(renderer, texture, &ImageRect, &DrawRect) != 0)
+			doError();
+	}
+	else
+	{
+		int w, h;
+		SDL_QueryTexture(texture, NULL, NULL, &w, &h);
+
+		DrawRect.x = x;
+		DrawRect.y = y;
+		DrawRect.w = w;
+		DrawRect.h = h;
+
+		if (SDL_RenderCopy(renderer, texture, nullptr, &DrawRect) != 0)
+			doError();
+	}
 }
 
 void drawTextureSize(SDL_Texture *texture, const RECT *rect, int x, int y, int w, int h)
