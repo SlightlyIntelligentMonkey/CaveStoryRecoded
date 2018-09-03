@@ -5,7 +5,7 @@
 #include "input.h"
 #include "caret.h"
 
-void launchMissile(int level)
+void shootMissile(int level)
 {
 	int bulletId = 0;
 	int shootDirect = 0;

@@ -3,6 +3,7 @@
 #include "mathUtils.h"
 #include "caret.h"
 #include "player.h"
+#include "sound.h"
 
 void npcAct020(npc *NPC) // Computer
 {
@@ -293,6 +294,83 @@ void npcAct034(npc * NPC)
 		NPC->rect = { 192, 184, 224, 200 };
 }
 
+void npcAct035(npc * NPC)
+{
+	enum
+	{
+		init = 0,
+		wait = 1,
+		shooting = 2,
+		dead = 3,
+	};
+
+	if (NPC->act_no < dead && NPC->life < 90)
+	{
+		playSound(SFX_QuoteSmashIntoGround);
+		createSmoke(NPC->x, NPC->y, NPC->view.right, 8);
+		dropExperience(NPC->x, NPC->y, NPC->exp);
+		NPC->act_no = dead;
+		NPC->act_wait = 0;
+		NPC->ani_no = 2;
+		NPC->bits &= ~npc_shootable;
+		NPC->damage = 0;
+	}
+
+	switch (NPC->act_no)
+	{
+	case init:
+	case wait:
+		if (NPC->shock)
+		{
+			const int xDist = (NPC->direct != dirLeft) ? 0x1000 : -0x1000;
+
+			createNpc(NPC_ProjectileMannan, NPC->x + xDist, NPC->y + 0x1000, 0, 0, NPC->direct);
+			NPC->ani_no = 1;
+			NPC->act_no = shooting;
+			NPC->act_wait = 0;
+		}
+		break;
+
+	case shooting:
+		if (++NPC->act_wait > 20)
+		{
+			NPC->act_wait = 0;
+			NPC->act_no = wait;
+			NPC->ani_no = 0;
+		}
+		break;
+
+	case dead:
+		switch (++NPC->act_wait)
+		{
+		case 50:
+		case 60:
+			NPC->ani_no = 3;
+			break;
+		case 53:
+		case 63:
+			NPC->ani_no = 2;
+			break;
+		default:
+			break;
+		}
+		if (NPC->act_wait > 100)
+			NPC->act_no = dead + 1;
+		break;
+
+	default:
+		break;
+	}
+
+	constexpr RECT rcLeft[4] = { {96, 64, 120, 96}, {120, 64, 144, 96}, {144, 64, 168, 98}, {168, 64, 192, 96} };
+	constexpr RECT rcRight[4] = { {96, 96, 120, 128}, {120, 96, 144, 128}, {144, 96, 168, 128}, {168, 96, 192, 128} };
+
+	if (NPC->direct == dirLeft)
+		NPC->rect = rcLeft[NPC->ani_no];
+	else
+		NPC->rect = rcRight[NPC->ani_no];
+}
+
 void npcAct037(npc *NPC) //Sign
 {
 	RECT rect[2];
@@ -365,4 +443,5 @@ void npcAct039(npc *NPC) //Save Sign
 
 	NPC->rect = { setRect->left, setRect->top, setRect->right, setRect->bottom };
 }
+
 
