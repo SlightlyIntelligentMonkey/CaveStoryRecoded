@@ -852,7 +852,7 @@ void npcAct009(npc *NPC) //Balrog drop in
 		{
 			//Create smoke
 			for (int i = 0; i < 4; ++i)
-				createNpc(NPC_Smoke, NPC->x + (random(-12, 12) << 9), NPC->y + (random(-12, 12) << 9), random(-0x155, 0x155), random(-0x600, 0), 0, nullptr);
+				createNpc(NPC_Smoke, NPC->x + (random(-12, 12) << 9), NPC->y + (random(-12, 12) << 9), random(-0x155, 0x155), random(-0x600, 0));
 
 			//Go into landed state
 			NPC->act_no = 2;
@@ -905,7 +905,7 @@ void npcAct011(npc *NPC) //Bubble
 	if (NPC->flag & 0xFF)
 	{
 		NPC->cond = 0;
-		createCaret(NPC->x, NPC->y, effect_RisingDisc, 0);
+		createCaret(NPC->x, NPC->y, effect_RisingDisc);
 	}
 
 	NPC->x += NPC->xm;
@@ -923,7 +923,7 @@ void npcAct011(npc *NPC) //Bubble
 
 	if (++NPC->count1 > 150)
 	{
-		createCaret(NPC->x, NPC->y, effect_RisingDisc, 0);
+		createCaret(NPC->x, NPC->y, effect_RisingDisc);
 		NPC->cond = 0;
 	}
 }
@@ -1049,7 +1049,7 @@ void npcAct012(npc *NPC) //Balrog cutscene
 		NPC->count1 = 0;
 
 		for (int i = 0; i < 4; ++i)
-			createNpc(NPC_Smoke, NPC->x + (random(-12, 12) << 9), NPC->y + (random(-12, 12) << 9), random(-0x155, 0x155), random(-0x600, 0), 0, nullptr);
+			createNpc(NPC_Smoke, NPC->x + (random(-12, 12) << 9), NPC->y + (random(-12, 12) << 9), random(-0x155, 0x155), random(-0x600, 0));
 
 		playSound(SFX_Explosion);
 	// Fallthrough
@@ -1198,8 +1198,8 @@ void npcAct012(npc *NPC) //Balrog cutscene
 			NPC->ym = -2048;
 			NPC->bits |= 8U;
 
-			createNpc(NPC_BalrogCrashingThroughWall, 0, 0, 0, 0, 0, NPC);
-			createNpc(NPC_BalrogCrashingThroughWall, 0, 0, 0, 0, 1, NPC);
+			createNpc(NPC_BalrogCrashingThroughWall, 0, 0, 0, 0, dirLeft, NPC);
+			createNpc(NPC_BalrogCrashingThroughWall, 0, 0, 0, 0, dirUp, NPC);
 		}
 		break;
 
@@ -1227,9 +1227,9 @@ void npcAct012(npc *NPC) //Balrog cutscene
 		break;
 	}
 
-	const int createSmoke = NPC->tgt_x && !random(0, 10);
-	if (createSmoke)
-		createNpc(NPC_Smoke, NPC->x + (random(-12, 12) << 9), NPC->y + (random(-12, 12) << 9), random(-0x155, 0x155), random(-0x600, 0), 0, nullptr);
+	const int createSmokeLeft = NPC->tgt_x && !random(0, 10);
+	if (createSmokeLeft)
+		createNpc(NPC_Smoke, NPC->x + (random(-12, 12) << 9), NPC->y + (random(-12, 12) << 9), random(-0x155, 0x155), random(-0x600, 0));
 
 	if (NPC->ym > 0x5FF)
 		NPC->ym = 0x5FF;
@@ -1283,7 +1283,7 @@ void npcAct015(npc *NPC) //Closed chest
 			NPC->ym = -0x200;
 
 			for (int i = 0; i < 4; ++i)
-				createNpc(NPC_Smoke, NPC->x + (random(-12, 12) << 9), NPC->y + (random(-12, 12) << 9), random(-0x155, 0x155), random(-0x600, 0), 0, nullptr);
+				createNpc(NPC_Smoke, NPC->x + (random(-12, 12) << 9), NPC->y + (random(-12, 12) << 9), random(-0x155, 0x155), random(-0x600, 0));
 		}
 
 		if (random(0, 30) == 0)
@@ -1346,7 +1346,7 @@ void npcAct016(npc *NPC) //Save point
 			NPC->bits &= ~npc_interact;
 
 			for (int i = 0; i < 4; ++i)
-				createNpc(NPC_Smoke, NPC->x + (random(-12, 12) << 9), NPC->y + (random(-12, 12) << 9), random(-0x155, 0x155), random(-0x600, 0), 0, nullptr);
+				createNpc(NPC_Smoke, NPC->x + (random(-12, 12) << 9), NPC->y + (random(-12, 12) << 9), random(-0x155, 0x155), random(-0x600, 0));
 		}
 	}
 
@@ -1389,7 +1389,8 @@ void npcAct017(npc *NPC) //Health refill
 			NPC->ym = -0x200;
 
 			for (int i = 0; i < 4; ++i)
-				createNpc(NPC_Smoke, NPC->x + (random(-12, 12) << 9), NPC->y + (random(-12, 12) << 9), random(-0x155, 0x155), random(-0x600, 0), 0, nullptr);
+				createNpc(NPC_Smoke, NPC->x + (random(-12, 12) << 9), NPC->y + (random(-12, 12) << 9), random(-0x155, 0x155), random(-0x600, 0)
+				);
 		}
 	// Fallthrough
 	case 1:
@@ -1497,7 +1498,7 @@ void npcAct019(npc *NPC) //Balrog burst
 	{
 	case 0:
 		for (int i = 0; i <= 15; ++i)
-			createNpc(4, NPC->x + (random(-12, 12) << 9), NPC->y + (random(-12, 12) << 9), random(-0x155, 0x155), random(-0x600, 0), 0, nullptr);
+			createNpc(NPC_Smoke, NPC->x + (random(-12, 12) << 9), NPC->y + (random(-12, 12) << 9), random(-0x155, 0x155), random(-0x600, 0));
 
 		NPC->y += 0x1400;
 		NPC->act_no = 1;

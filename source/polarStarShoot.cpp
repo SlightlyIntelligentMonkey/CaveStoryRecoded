@@ -8,7 +8,7 @@
 
 void shootPolarStar(int level)
 {
-	if (weaponBullets(bullet_PolarStarLevel1) < 2 && isKeyPressed(keyShoot))
+	if (weaponBullets(2) < 2 && isKeyPressed(keyShoot))
 	{
 		if (useWeaponAmmo(1) ^ 1)
 		{
@@ -45,8 +45,8 @@ void shootPolarStar(int level)
 			}
 
 			//Create bullet
-			createBullet(level + bullet_PolarStarLevel1 - 1, currentPlayer.x + shootX, currentPlayer.y + shootY, shootDirect);
-			createCaret(currentPlayer.x + caretX, currentPlayer.y + shootY, effect_Star, 0);
+			createBullet(level + bullet_PolarStarLevel1 - 1, currentPlayer.x + shootX, currentPlayer.y + shootY, shootDirect, 2);
+			createCaret(currentPlayer.x + caretX, currentPlayer.y + shootY, effect_Star);
 
 			//Play sound
 			if (level == 3)

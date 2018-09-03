@@ -1,12 +1,12 @@
 #pragma once
 #include "common.h"
 
-/**
+/*
 
 	Yet to be implemented :
 
-    BOA, BSL, CIL, CLR, CPS, CRE, CSS, FLA, FMU, FOB, INP, MLP, NCJ, NUM,
-    SIL, SMP, SPS, SSS, STC and XX1
+    BOA, BSL, CIL, CLR, CPS, CRE, CSS, FLA, FOB, INP, MLP, NCJ, NUM, SIL,
+    SMP, SPS, SSS, STC and XX1
 
 */
 

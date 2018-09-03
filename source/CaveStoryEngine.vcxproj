@@ -213,6 +213,8 @@
     <ClCompile Include="hud.cpp" />
     <ClCompile Include="inventory.cpp" />
     <ClCompile Include="loadConfig.cpp" />
+    <ClCompile Include="machineGun.cpp" />
+    <ClCompile Include="machineGunShoot.cpp" />
     <ClCompile Include="missile.cpp" />
     <ClCompile Include="missileLaunch.cpp" />
     <ClCompile Include="npc080.cpp" />
@@ -259,6 +261,8 @@
     <ClCompile Include="polarStarShoot.cpp" />
     <ClCompile Include="render.cpp" />
     <ClCompile Include="script.cpp" />
+    <ClCompile Include="snake.cpp" />
+    <ClCompile Include="snakeShoot.cpp" />
     <ClCompile Include="sound.cpp" />
     <ClCompile Include="spur.cpp" />
     <ClCompile Include="fireball.cpp" />
@@ -277,6 +281,7 @@
     <ClInclude Include="flags.h" />
     <ClInclude Include="game.h" />
     <ClInclude Include="loadConfig.h" />
+    <ClInclude Include="machineGun.h" />
     <ClInclude Include="missile.h" />
     <ClInclude Include="npc080.h" />
     <ClInclude Include="npc100.h" />
@@ -294,6 +299,7 @@
     <ClInclude Include="polarStar.h" />
     <ClInclude Include="script.h" />
     <ClInclude Include="shootFunctions.h" />
+    <ClInclude Include="snake.h" />
     <ClInclude Include="spur.h" />
     <ClInclude Include="stdUtils.h" />
     <ClInclude Include="valueview.h" />

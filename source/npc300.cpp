@@ -13,9 +13,7 @@ void npcAct300(npc *NPC) //Demon crown
 	}
 
 	if (++NPC->ani_wait % 8 == 1)
-	{
-		createCaret(NPC->x + (random(-8, 8) << 9), NPC->y + 4096, effect_HeadbumpSparks, 1);
-	}
+		createCaret(NPC->x + (random(-8, 8) << 9), NPC->y + 4096, effect_HeadbumpSparks, dirUp);
 
 	NPC->rect = { 192, 80, 208, 96 };
 }

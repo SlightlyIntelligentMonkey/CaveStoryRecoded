@@ -81,7 +81,7 @@ void npcAct146(npc *NPC) //Lightning
 
 		if (NPC->ani_no > 4)
 		{
-			createSmoke(NPC->x, NPC->y, 0x1000, 8);
+			createSmokeLeft(NPC->x, NPC->y, 0x1000, 8);
 			NPC->cond = 0;
 		}
 
@@ -151,7 +151,7 @@ void npcAct150(npc *NPC) // Quote
 		NPC->act_no = 11;
 
 		for (size_t i = 0; i < 4; i++)
-			createNpc(NPC_Smoke, NPC->x, NPC->y, random(-0x155, 0x155), random(-0x600, 0), 0, nullptr);
+			createNpc(NPC_Smoke, NPC->x, NPC->y, random(-0x155, 0x155), random(-0x600, 0));
 
 		playSound(SFX_QuoteSmashIntoGround);
 	// Fallthrough

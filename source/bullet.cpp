@@ -105,8 +105,10 @@ BULLETSTATS bulletTable[] =
 	{ 1, 1, 1, 36, 1, 1, 1, 1, { 1, 1, 1, 1 } }
 };
 
+int _empty = 0;
+
 //Bullet functions
-void createBullet(int setCode, int setX, int setY, uint8_t setDir)
+void createBullet(int setCode, int setX, int setY, uint8_t setDir, int weapon)
 {
 	bullet *repBullet = nullptr;
 
@@ -128,6 +130,7 @@ void createBullet(int setCode, int setX, int setY, uint8_t setDir)
 	{
 		bullet newBullet;
 		newBullet.init(setCode, setX, setY, setDir);
+		newBullet.weapon = weapon;
 		bullets.push_back(newBullet);
 	}
 }
@@ -190,13 +193,15 @@ void bullet::init(int setCode, int setX, int setY, uint8_t setDir) noexcept
 	view.left = bulletTable[setCode].view.left << 9;
 	view.top = bulletTable[setCode].view.top << 9;
 	view.bottom = bulletTable[setCode].view.bottom << 9;
+
+	weapon = weapons[selectedWeapon].code;
 }
 
 //Act functions
-
+#include "snake.h"
 #include "polarStar.h"
 #include "fireball.h"
-
+#include "machineGun.h"
 #include "missile.h"
 
 #include "spur.h"
@@ -204,18 +209,18 @@ void bullet::init(int setCode, int setX, int setY, uint8_t setDir) noexcept
 bulletAct bulletActs[46] =
 {
 	static_cast<bulletAct>(nullptr),	// There isn't a 0th bullet
-	static_cast<bulletAct>(nullptr),	// Snake
-	static_cast<bulletAct>(nullptr),
-	static_cast<bulletAct>(nullptr),
+	&actBulletSnake1,	// Snake
+	&actBulletSnake2,
+	&actBulletSnake3,
 	&actBulletPolarStar1,				// Polar Star
 	&actBulletPolarStar2,
 	&actBulletPolarStar3,
 	&actBulletFireball1,				// Fireball
 	&actBulletFireball2,
 	&actBulletFireball3,
-	static_cast<bulletAct>(nullptr),
-	static_cast<bulletAct>(nullptr),
-	static_cast<bulletAct>(nullptr),
+	&actBulletMachineGun1,
+	&actBulletMachineGun2,
+	&actBulletMachineGun3,
 	&actBulletMissileLauncher1,
 	&actBulletMissileLauncher2,
 	&actBulletMissileLauncher3,
@@ -320,6 +325,6 @@ void bullet::draw()
 			}
 		}
 
-		drawString(drawX / 0x200 - viewport.x / 0x200, drawY / 0x200 - viewport.y / 0x200 - 16, std::to_string(index).c_str(), nullptr);
+		drawString(drawX / 0x200 - viewport.x / 0x200, drawY / 0x200 - viewport.y / 0x200 - 16, std::to_string(index).c_str());
 	}
 }

@@ -380,7 +380,7 @@ void actBulletBoom1(bullet *bul)
 
 	if (!(bul->act_wait % 3))
 	{
-		createExplosion(bul->x + (random(-16, 16) << 9), bul->y + (random(-16, 16) << 9), bul->enemyXL, 2);
+		createSmokeLeft(bul->x + (random(-16, 16) << 9), bul->y + (random(-16, 16) << 9), bul->enemyXL, 2);
 	}
 
 	if (--bul->act_wait < 0)
@@ -404,7 +404,7 @@ void actBulletBoom2(bullet *bul)
 
 	if (!(bul->act_wait % 3))
 	{
-		createExplosion(bul->x + (random(-32, 32) << 9), bul->y + (random(-32, 32) << 9), bul->enemyXL, 2);
+		createSmokeLeft(bul->x + (random(-32, 32) << 9), bul->y + (random(-32, 32) << 9), bul->enemyXL, 2);
 	}
 
 	if (--bul->act_wait < 0)
@@ -428,7 +428,7 @@ void actBulletBoom3(bullet *bul)
 
 	if (!(bul->act_wait % 3))
 	{
-		createExplosion(bul->x + (random(-40, 40) << 9), bul->y + (random(-40, 40) << 9), bul->enemyXL, 2);
+		createSmokeLeft(bul->x + (random(-40, 40) << 9), bul->y + (random(-40, 40) << 9), bul->enemyXL, 2);
 	}
 
 	if (--bul->act_wait < 0)

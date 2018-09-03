@@ -520,13 +520,11 @@ int updateTsc()
 		else
 		{
 			static bool notifiedAboutBOA = false;
-			static bool notifiedAboutBSL = false;
 			static bool notifiedAboutCIL = false;
 			static bool notifiedAboutCPS = false;
 			static bool notifiedAboutCRE = false;
 			static bool notifiedAboutCSS = false;
 			static bool notifiedAboutFLA = false;
-			static bool notifiedAboutFMU = false;
 			static bool notifiedAboutFOB = false;
 			static bool notifiedAboutINP = false;
 			static bool notifiedAboutMLP = false;
@@ -595,12 +593,20 @@ int updateTsc()
 				tscCleanup(1);
 				break;
 			case('<BSL'):
-				if (!notifiedAboutBSL && debugFlags & notifyOnNotImplemented)
+				if (getTSCNumber(tsc.p_read + 4))
 				{
-					notifiedAboutBSL = true;
-					showTSCNotImplementedWarning("<BSL is not implemented");
+					for (size_t i = 0; i < npcs.size(); i++)
+					{
+						if (npcs[i].code_event == getTSCNumber(tsc.p_read + 4))
+						{
+							bossLife.flag = 1;
+							bossLife.max = npcs[i].life;
+							bossLife.br = npcs[i].life;
+							bossLife.pLife = &npcs[i].life;
+							break;
+						}
+					}
 				}
-
 				tscCleanup(1);
 				break;
 			case('<CAT'):
@@ -776,12 +782,7 @@ int updateTsc()
 					tscCleanup(2);
 				break;
 			case('<FMU'):
-				if (!notifiedAboutFMU && debugFlags & notifyOnNotImplemented)
-				{
-					notifiedAboutFMU = true;
-					showTSCNotImplementedWarning("<FMU is not implemented");
-				}
-
+				orgFadeout = true;
 				tscCleanup(0);
 				break;
 			case('<FOB'):
@@ -916,8 +917,8 @@ int updateTsc()
 				{
 					if ((npcs[i].cond & npccond_alive) && npcs[i].code_event == getTSCNumber(tsc.p_read + 4))
 					{
-						npcs[i].x = tileToCoord(getTSCNumber(tsc.p_read + 9));
-						npcs[i].y = tileToCoord(getTSCNumber(tsc.p_read + 14));
+						npcs[i].x = tilesToUnits(getTSCNumber(tsc.p_read + 9));
+						npcs[i].y = tilesToUnits(getTSCNumber(tsc.p_read + 14));
 
 						if (getTSCNumber(tsc.p_read + 19) != 5)
 						{
@@ -938,7 +939,7 @@ int updateTsc()
 				tscCleanup(4);
 				break;
 			case('<MOV'):
-				currentPlayer.setPos(tileToCoord(getTSCNumber(tsc.p_read + 4)), tileToCoord(getTSCNumber(tsc.p_read + 9)));
+				currentPlayer.setPos(tilesToUnits(getTSCNumber(tsc.p_read + 4)), tilesToUnits(getTSCNumber(tsc.p_read + 9)));
 				tscCleanup(2);
 				break;
 			case('<MPJ'):
@@ -1118,12 +1119,11 @@ int updateTsc()
 
 				createNpc(
 				    getTSCNumber(tsc.p_read + 4),
-				    tileToCoord(getTSCNumber(tsc.p_read + 9)),
-				    tileToCoord(getTSCNumber(tsc.p_read + 14)),
+				    tilesToUnits(getTSCNumber(tsc.p_read + 9)),
+				    tilesToUnits(getTSCNumber(tsc.p_read + 14)),
 				    0,
 				    0,
-				    getTSCNumber(tsc.p_read + 19),
-				    nullptr);
+				    getTSCNumber(tsc.p_read + 19));
 				tscCleanup(4);
 				break;
 			case('<SOU'):
@@ -1168,8 +1168,8 @@ int updateTsc()
 			case('<TRA'):
 				xt = getTSCNumber(tsc.p_read + 9);
 				currentPlayer.setPos(
-				    tileToCoord(getTSCNumber(tsc.p_read + 14)),
-				    tileToCoord(getTSCNumber(tsc.p_read + 19)));
+				    tilesToUnits(getTSCNumber(tsc.p_read + 14)),
+				    tilesToUnits(getTSCNumber(tsc.p_read + 19)));
 				loadLevel(getTSCNumber(tsc.p_read + 4));
 				startTscEvent(xt);
 				return 1;

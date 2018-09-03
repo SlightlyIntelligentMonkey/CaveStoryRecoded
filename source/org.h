@@ -67,6 +67,7 @@ void loadOrganya(const char *name);
 void organyaPlayStep();
 
 extern uint32_t currentOrg;
+extern bool orgFadeout;
 
 void changeOrg(const uint32_t num);
 void resumeOrg();
