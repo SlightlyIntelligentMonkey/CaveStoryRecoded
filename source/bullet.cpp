@@ -147,10 +147,10 @@ void updateBullets()
 
 		while (bullets.size() && !(bullets[bullets.size() - 1].cond & 0x80))
 			bullets.erase(bullets.begin() + bullets.size() - 1);
-
-		bulletHitMap();
-		bulletHitNpcs();
 	}
+
+	bulletHitMap();
+	bulletHitNpcs();
 }
 
 void drawBullets()
