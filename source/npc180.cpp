@@ -120,9 +120,9 @@ void npcAct180(npc * NPC) // Curly, AI
 			NPC->ani_no = 0;
 			createNpc(NPC_CurlyAirTankBubble, 0, 0, 0, 0, dirLeft, NPC);
 			if (getFlag(563))
-				createNpc(NPC_CurlyAIPolarStar, 0, 0, 0, 0, dirLeft, NPC);
-			else
 				createNpc(NPC_CurlyAIMachineGun, 0, 0, 0, 0, dirLeft, NPC);
+			else
+				createNpc(NPC_CurlyAIPolarStar, 0, 0, 0, 0, dirLeft, NPC);
 			break;
 
 		case knockedOut:
@@ -142,9 +142,9 @@ void npcAct180(npc * NPC) // Curly, AI
 				NPC->ani_no = 0;
 				createNpc(NPC_CurlyAirTankBubble, 0, 0, 0, 0, dirLeft, NPC);
 				if (getFlag(563))
-					createNpc(NPC_CurlyAIPolarStar, 0, 0, 0, 0, dirLeft, NPC);
-				else
 					createNpc(NPC_CurlyAIMachineGun, 0, 0, 0, 0, dirLeft, NPC);
+				else
+					createNpc(NPC_CurlyAIPolarStar, 0, 0, 0, 0, dirLeft, NPC);
 			}
 			break;
 
@@ -346,8 +346,8 @@ void curlyNPCCommonBulletSpawn(const npc *NPC, int bulletCode)
 
 void npcAct181(npc *NPC) // Curly Machine Gun bullet spawner (projectile)
 {
-	constexpr RECT rcLeft[2] = { {184, 152, 200, 168}, {200, 152, 216, 168} };
-	constexpr RECT rcRight[2] = { {184, 168, 200, 184}, {200, 168, 216, 184} };
+	constexpr RECT rcLeft[2] = { { 184, 152, 200, 168 },{ 200, 152, 216, 168 } };
+	constexpr RECT rcRight[2] = { { 184, 168, 200, 184 },{ 200, 168, 216, 184 } };
 
 	if (NPC->pNpc)
 	{
@@ -378,8 +378,8 @@ void npcAct181(npc *NPC) // Curly Machine Gun bullet spawner (projectile)
 
 void npcAct182(npc * NPC) // Curly Polar Star bullet spawner (projectile)
 {
-	constexpr RECT rcLeft[2] = { {184, 152, 200, 168}, {200, 152, 216, 168} };
-	constexpr RECT rcRight[2] = { {184, 168, 200, 184}, {200, 168, 216, 184} };
+	constexpr RECT rcLeft[2] = { { 184, 152, 200, 168 },{ 200, 152, 216, 168 } };
+	constexpr RECT rcRight[2] = { { 184, 168, 200, 184 },{ 200, 168, 216, 184 } };
 
 	if (NPC->pNpc)
 	{
