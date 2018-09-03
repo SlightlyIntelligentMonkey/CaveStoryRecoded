@@ -135,6 +135,10 @@ extern std::deque<npc> npcs;
 extern int superXPos;
 extern int superYPos;
 
+extern int curlyShootWait;
+extern int curlyShootX;
+extern int curlyShootY;
+
 enum NPC_cond
 {
 	npccond_alive = 0x80, //Determines if an npc is alive

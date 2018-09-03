@@ -51,6 +51,8 @@ void drawRect(int x, int y, int w, int h) noexcept;
 
 void createTextureBuffer(enum TextureNums texture_id, int width, int height);
 
+// 1 pixel is 0x200 units
+
 template <typename T>
 inline T pixelsToUnits(T x) noexcept
 {
