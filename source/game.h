@@ -66,7 +66,7 @@ extern VIEW viewport;
 extern int debugFlags;
 
 //Functions
-void viewBounds() noexcept;
+void viewBounds() ;
 void initGame();
 void init2();
 

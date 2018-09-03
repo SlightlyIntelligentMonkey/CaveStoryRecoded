@@ -478,13 +478,13 @@ void loadSounds()
 	}
 }
 
-void freeSounds() noexcept
+void freeSounds() 
 {
 	for (auto& sound : sounds)
 		free(sound.wave);
 }
 
-void playSound(size_t sound_no, int soundMode) noexcept
+void playSound(size_t sound_no, int soundMode) 
 {
 	sounds[sound_no].pos = 0;
 	sounds[sound_no].playing = true;

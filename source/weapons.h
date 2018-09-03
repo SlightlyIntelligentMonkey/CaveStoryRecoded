@@ -27,24 +27,24 @@ extern int selectedWeapon;
 extern int weaponShiftX;
 extern int weaponExpFlash;
 
-void initWeapons() noexcept;
+void initWeapons() ;
 
 void actWeapon();
 
-int useWeaponAmmo(int num) noexcept;
+int useWeaponAmmo(int num) ;
 void giveAmmo(int amount, int ammoToRefill);
-bool weaponMaxExp() noexcept attrPure;
+bool weaponMaxExp()  attrPure;
 int weaponBullets(int arms_code) attrPure;
 
-int giveWeapon(int code, int max_num) noexcept;
-int removeWeapon(int code) noexcept;
-int tradeWeapons(int code1, int code2, int max_num) noexcept;
-void clearWeaponExperience() noexcept;
-void maxWeaponAmmo() noexcept;
-bool checkWeapon(int code) noexcept attrPure;
-void giveWeaponAmmo(int num) noexcept;
+int giveWeapon(int code, int max_num) ;
+int removeWeapon(int code) ;
+int tradeWeapons(int code1, int code2, int max_num) ;
+void clearWeaponExperience() ;
+void maxWeaponAmmo() ;
+bool checkWeapon(int code)  attrPure;
+void giveWeaponAmmo(int num) ;
 
 void giveWeaponExperience(int x);
 
-int rotateWeaponRight() noexcept;
-int rotateWeaponLeft() noexcept;
+int rotateWeaponRight() ;
+int rotateWeaponLeft() ;

@@ -5,15 +5,15 @@ extern uint8_t tscFlags[1000]; //game flags
 extern uint8_t skipFlags[64]; //skip flags
 extern uint8_t mapFlags[128]; //Map flags
 
-void initFlags() noexcept;
+void initFlags() ;
 
-void setFlag(int a) noexcept;
-void clearFlag(int a) noexcept;
-bool getFlag(int a) noexcept attrPure;
+void setFlag(int a) ;
+void clearFlag(int a) ;
+bool getFlag(int a)  attrPure;
 
-void setSkipFlag(int a) noexcept;
-void clearSkipFlag(int a) noexcept;
-bool getSkipFlag(int a) noexcept attrPure;
+void setSkipFlag(int a) ;
+void clearSkipFlag(int a) ;
+bool getSkipFlag(int a)  attrPure;
 
-void setMapFlag(int a) noexcept;
-bool getMapFlag(int a) noexcept attrPure;
+void setMapFlag(int a) ;
+bool getMapFlag(int a)  attrPure;

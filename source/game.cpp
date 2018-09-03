@@ -64,7 +64,7 @@ void init2()
 }
 
 //Keep view inside the level
-void viewBounds() noexcept
+void viewBounds() 
 {
 	if ((levelWidth - 1) << 4 > screenWidth)
 		viewport.x = clamp(viewport.x, 0, tilesToUnits(levelWidth - 1) - (screenWidth << 9));

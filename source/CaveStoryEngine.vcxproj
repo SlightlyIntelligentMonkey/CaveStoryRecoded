@@ -217,7 +217,7 @@
     <ClCompile Include="machineGunShoot.cpp" />
     <ClCompile Include="mapSystem.cpp" />
     <ClCompile Include="missile.cpp" />
-    <ClCompile Include="missileLaunch.cpp" />
+    <ClCompile Include="missileShoot.cpp" />
     <ClCompile Include="npc080.cpp" />
     <ClCompile Include="npc100.cpp" />
     <ClCompile Include="npc120.cpp" />

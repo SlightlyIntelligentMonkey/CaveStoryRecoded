@@ -37,14 +37,14 @@ struct TSC
 extern TSC tsc;
 
 //Functions
-bool initTsc() noexcept;
+bool initTsc() ;
 
 void loadStageTsc(const char *name);
 void loadTsc2(const char *name);
 
-int startTscEvent(int no) noexcept;
-int jumpTscEvent(int no) noexcept;
-void stopTsc() noexcept;
+int startTscEvent(int no) ;
+int jumpTscEvent(int no) ;
+void stopTsc() ;
 
 int updateTsc();
 void drawTsc();

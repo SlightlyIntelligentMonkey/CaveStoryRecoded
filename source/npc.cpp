@@ -11,6 +11,7 @@
 #include "caret.h"
 
 #include <deque>
+#include <vector>
 #include <string>
 #include <cstring>
 #include <SDL_rwops.h>
@@ -18,6 +19,7 @@
 using std::memset;
 using std::string;
 using std::to_string;
+using std::vector;
 using std::deque;
 
 deque<npc> npcs(0);
@@ -367,6 +369,19 @@ void npc::animate(int aniWait, int aniStart, int aniMax)
 	}
 }
 
+void npc::doRects(const std::vector<RECT>& rcLeft, const std::vector<RECT>& rcRight)
+{
+	if (!rcRight.empty())
+	{
+		if (this->direct != dirLeft)
+			this->rect = rcRight.at(this->ani_no);
+		else
+			this->rect = rcLeft.at(this->ani_no);
+	}
+	else
+		this->rect = rcLeft.at(this->ani_no);
+}
+
 void npc::facePlayer()
 {
 	if (currentPlayer.x >= this->x)
@@ -399,7 +414,7 @@ bool npc::isPlayerAligned(int xRay, int yRayHigh, int yRayLow)
 		|| this->y + yRayLow <= currentPlayer.y);
 }
 
-void npc::init(int setCode, int setX, int setY, int setXm, int setYm, int setDir, npc *parentNpc) noexcept
+void npc::init(int setCode, int setX, int setY, int setXm, int setYm, int setDir, npc *parentNpc) 
 {
 	memset(this, 0, sizeof(*this));
 
@@ -435,7 +450,7 @@ void npc::init(int setCode, int setX, int setY, int setXm, int setYm, int setDir
 	view.bottom = npcTable[code_char].view.bottom << 9;
 }
 
-void npc::update() noexcept
+void npc::update() 
 {
 	npcActs[code_char](this);
 

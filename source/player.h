@@ -63,9 +63,9 @@ public:
 	int boost_cnt;
 
 public:
-	void init() noexcept;
+	void init() ;
 
-	void setPos(int setX, int setY) noexcept;
+	void setPos(int setX, int setY) ;
 	void setDir(int setDirect);
 
 	void damage(int16_t damage);
@@ -73,7 +73,7 @@ public:
 	void actNormal(bool bKey);
 	void actStream(bool bKey);
 
-	void animate(bool bKey) noexcept;
+	void animate(bool bKey) ;
 
 	void update(bool bKey);
 	void draw();

@@ -3,9 +3,9 @@
 
 void initAudio();
 void loadSounds();
-void freeSounds() noexcept;
+void freeSounds() ;
 
-void playSound(size_t sound_no, int soundMode = 1) noexcept;
+void playSound(size_t sound_no, int soundMode = 1) ;
 
 //Sound struct
 struct SOUND {

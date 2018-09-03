@@ -22,7 +22,7 @@ int charHeight = 24;
 int charScale = 2;
 
 //Create window
-int createWindow(int width, int height, int scale, bool fullscreen) noexcept // TBD : Handle fullscreen parameter
+int createWindow(int width, int height, int scale, bool fullscreen)  // TBD : Handle fullscreen parameter
 {
 	const int createWidth = width * scale;
 	const int createHeight = height * scale;
@@ -164,7 +164,7 @@ void loadImage(const char *file, SDL_Texture **tex)
 }
 
 //Drawing functions
-void setCliprect(const RECT *rect) noexcept
+void setCliprect(const RECT *rect) 
 {
 	//All of this code should be pretty self explanatory
 	if (rect != nullptr)
@@ -296,9 +296,9 @@ void drawNumber(int value, int x, int y, bool bZero)
 	}
 }
 
-bool isMultibyte(uint8_t c) noexcept attrConst;
+bool isMultibyte(uint8_t c)  attrConst;
 
-bool isMultibyte(uint8_t c) noexcept //Shift-JIS
+bool isMultibyte(uint8_t c)  //Shift-JIS
 {
 	if (c > 0x80u && c <= 0x9Fu)
 		return true;
@@ -358,7 +358,7 @@ void drawString(int x, int y, const char *str, const uint8_t *flag)
 	}
 }
 
-void drawRect(int x, int y, int w, int h) noexcept
+void drawRect(int x, int y, int w, int h) 
 {
 	//Map this onto an SDL_Rect
 	drawRectangle.x = x * screenScale;
