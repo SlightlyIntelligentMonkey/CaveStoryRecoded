@@ -338,7 +338,7 @@ void npcAct061(npc *NPC) //King
 
 			playSound(SFX_QuoteSmashIntoGround);
 
-			createSmoke(NPC->x, NPC->y, 2048, 4);
+			createSmokeLeft(NPC->x, NPC->y, 2048, 4);
 		}
 		break;
 

@@ -1228,7 +1228,7 @@ void npcAct012(npc *NPC) //Balrog cutscene
 		break;
 	}
 
-	const int createSmoke = NPC->tgt_x && !random(0, 10);
+	const bool createSmoke = NPC->tgt_x && !random(0, 10);
 	if (createSmoke)
 		createNpc(NPC_Smoke, NPC->x + (random(-12, 12) << 9), NPC->y + (random(-12, 12) << 9), random(-0x155, 0x155), random(-0x600, 0));
 

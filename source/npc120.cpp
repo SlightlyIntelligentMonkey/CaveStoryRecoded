@@ -6,7 +6,7 @@ void npcAct125(npc *NPC) //Hidden item
 {
 	if (NPC->life <= 989)
 	{
-		createSmoke(NPC->x, NPC->y, NPC->view.right, 8);
+		createSmokeLeft(NPC->x, NPC->y, NPC->view.right, 8);
 		playSound(70);
 		if (NPC->direct)
 			createNpc(NPC_Missile, NPC->x, NPC->y, 0, 0, dirRight);
@@ -29,6 +29,85 @@ void npcAct125(npc *NPC) //Hidden item
 	}
 
 	NPC->rect.bottom = 112;
+}
+
+void npcAct127(npc *NPC)
+{
+	if (++NPC->ani_wait > 0)
+	{
+		NPC->ani_wait = 0;
+		if (++NPC->ani_no > 2)
+			NPC->cond = 0;
+	}
+
+	if (NPC->direct)
+	{
+		NPC->rect.left = 112;
+		NPC->rect.top = 48 + (NPC->ani_no * 16);
+	}
+	else
+	{
+		NPC->rect.left = 64 + (NPC->ani_no * 16);
+		NPC->rect.top = 80;
+	}
+
+	NPC->rect.right = NPC->rect.left + 16;
+	NPC->rect.bottom = NPC->rect.top + 16;
+
+	return;
+}
+
+void npcAct128(npc *NPC)
+{
+	if (!NPC->act_no)
+	{
+		NPC->act_no = 1;
+		if (NPC->direct && NPC->direct != 2)
+		{
+			NPC->view.left = 4096;
+			NPC->view.top = 2048;
+		}
+		else
+		{
+			NPC->view.left = 2048;
+			NPC->view.top = 4096;
+		}
+	}
+	if (++NPC->ani_no > 4)
+	{
+		NPC->cond = 0;
+		return;
+	}
+
+	switch (NPC->direct)
+	{
+	case(dirLeft):
+		NPC->rect.left = 176 + (8 * (NPC->ani_no - 1));
+		NPC->rect.top = 16;
+		NPC->rect.right = NPC->rect.left + 8;
+		NPC->rect.bottom = NPC->rect.top + 16;
+		break;
+	case(dirUp):
+		NPC->rect.left = 176 + (16 * ((NPC->ani_no - 1) / 2));
+		NPC->rect.top = 32 + (8 * ((NPC->ani_no - 1) % 2));
+		NPC->rect.right = NPC->rect.left + 16;
+		NPC->rect.bottom = NPC->rect.top + 8;
+		break;
+	case(dirRight):
+		NPC->rect.left = 232 - (8 * (NPC->ani_no - 1));
+		NPC->rect.top = 16;
+		NPC->rect.right = NPC->rect.left + 8;
+		NPC->rect.bottom = NPC->rect.top + 16;
+		break;
+	case(dirDown):
+		NPC->rect.left = 208 + (16 * ((NPC->ani_no - 1) / 2));
+		NPC->rect.top = 32 + (8 * ((NPC->ani_no - 1) % 2));
+		NPC->rect.right = NPC->rect.left + 16;
+		NPC->rect.bottom = NPC->rect.top + 8;
+		break;
+	}
+
+	return;
 }
 
 void npcAct129(npc *NPC) //Fireball Level 1/2 trail

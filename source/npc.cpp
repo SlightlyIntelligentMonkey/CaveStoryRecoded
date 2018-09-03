@@ -26,7 +26,7 @@ int superXPos = 0;	// Used by undead core related NPCs ?
 int superYPos = 0;
 
 //NPC Functions
-void createSmoke(int x, int y, int w, size_t num)
+void createSmokeLeft(int x, int y, int w, size_t num)
 {
 	const int wa = w / 0x200;
 
@@ -40,7 +40,7 @@ void createSmoke(int x, int y, int w, size_t num)
 	createCaret(x, y, effect_BigExplosion);
 }
 
-void createExplosion(int x, int y, int w, int num)
+void createSmokeUp(int x, int y, int w, int num)
 {
 	int wa = w / 512;
 
@@ -263,13 +263,13 @@ void killNpc(npc *NPC, bool bVanish)
 	switch (size)
 	{
 	case 1:
-		createSmoke(x, y, explodeWidth, 3);
+		createSmokeLeft(x, y, explodeWidth, 3);
 		break;
 	case 2:
-		createSmoke(x, y, explodeWidth, 7);
+		createSmokeLeft(x, y, explodeWidth, 7);
 		break;
 	case 3:
-		createSmoke(x, y, explodeWidth, 12);
+		createSmokeLeft(x, y, explodeWidth, 12);
 		break;
 	}
 

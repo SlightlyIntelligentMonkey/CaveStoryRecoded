@@ -443,5 +443,3 @@ void npcAct039(npc *NPC) //Save Sign
 
 	NPC->rect = { setRect->left, setRect->top, setRect->right, setRect->bottom };
 }
-
-

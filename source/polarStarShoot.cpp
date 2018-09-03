@@ -48,7 +48,7 @@ void shootPolarStar(int level)
 			}
 
 			//Create bullet
-			createBullet(level + bullet_PolarStarLevel1 - 1, currentPlayer.x + shootX, currentPlayer.y + shootY, shootDirect);
+			createBullet(level + bullet_PolarStarLevel1 - 1, currentPlayer.x + shootX, currentPlayer.y + shootY, shootDirect, 2);
 			createCaret(currentPlayer.x + caretX, currentPlayer.y + shootY, effect_Star);
 
 			//Play sound

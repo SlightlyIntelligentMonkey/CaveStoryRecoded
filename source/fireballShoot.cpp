@@ -14,16 +14,22 @@ void shootFireball(int level)
 	switch (level)
 	{
 	case 1:
+		if (weaponBullets(3) > 1)
+			return;
 		bul_no = bullet_FireballLevel1;
 		max_bul = 2;
 		break;
 
 	case 2:
+		if (weaponBullets(3) > 2)
+			return;
 		bul_no = bullet_FireballLevel2;
 		max_bul = 3;
 		break;
 
 	case 3:
+		if (weaponBullets(3) > 3)
+			return;
 		bul_no = bullet_FireballLevel3;
 		max_bul = 4;
 		break;
@@ -73,7 +79,7 @@ void shootFireball(int level)
 			}
 
 			//Create bullet
-			createBullet(bul_no, currentPlayer.x + shootX, currentPlayer.y + shootY, shootDirect);
+			createBullet(bul_no, currentPlayer.x + shootX, currentPlayer.y + shootY, shootDirect, 3);
 			createCaret(currentPlayer.x + caretX, currentPlayer.y + shootY, effect_Star);
 
 			playSound(SFX_FireballBounce);

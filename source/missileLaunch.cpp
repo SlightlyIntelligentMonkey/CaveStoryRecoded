@@ -13,27 +13,31 @@ void shootMissile(int level)
 	int shootY = 0;
 	int caretX = 0;
 
-	if (isKeyPressed(keyShoot))
+	if (isKeyPressed(keyShoot) && weaponBullets(5) < 1)
 	{
-		if (weaponBullets(5) > 1)
-			return;
-
 		if (useWeaponAmmo(1) ^ 1)
 		{
 			playSound(SFX_NoAmmo);
-			createCaret(currentPlayer.x, currentPlayer.y, 16, 0);
+			if (!_empty)
+			{
+				createCaret(currentPlayer.x, currentPlayer.y, 16, 0);
+				_empty = 50;
+			}
 			return;
 		}
 
 		switch (level)
 		{
 		case(1):
+			if (weaponBullets(5) >= 1) { return; }
 			bulletId = bullet_MissileLauncherLevel1;
 			break;
 		case(2):
+			if (weaponBullets(5) >= 1) { return; }
 			bulletId = bullet_MissileLauncherLevel2;
 			break;
 		case(3):
+			if (weaponBullets(5) >= 3) { return; }
 			bulletId = bullet_MissileLauncherLevel3;
 			break;
 		}
@@ -63,24 +67,24 @@ void shootMissile(int level)
 		playSound(SFX_PolarStarShootLevel12);
 		if (level < 3)
 		{
-			createBullet(bulletId, currentPlayer.x + shootX, currentPlayer.y + shootY, shootDirect);
+			createBullet(bulletId, currentPlayer.x + shootX, currentPlayer.y + shootY, shootDirect, 5);
 		}
 		else
 		{
-			createBullet(bulletId, currentPlayer.x + shootX, currentPlayer.y + shootY, shootDirect);
+			createBullet(bulletId, currentPlayer.x + shootX, currentPlayer.y + shootY, shootDirect, 5);
 			if (shootDirect == dirLeft || shootDirect == dirRight)
 			{
-				createBullet(bulletId, currentPlayer.x + 1536, currentPlayer.y, shootDirect);
-				createBullet(bulletId, currentPlayer.x - 1536, currentPlayer.y, shootDirect);
+				createBullet(bulletId, currentPlayer.x + 1536, currentPlayer.y, shootDirect, 5);
+				createBullet(bulletId, currentPlayer.x - 1536, currentPlayer.y, shootDirect, 5);
 			}
 			else if (shootDirect == dirUp || shootDirect == dirDown)
 			{
-				createBullet(bulletId, currentPlayer.x, currentPlayer.y + 1536, shootDirect);
-				createBullet(bulletId, currentPlayer.x, currentPlayer.y - 1536, shootDirect);
+				createBullet(bulletId, currentPlayer.x, currentPlayer.y + 1536, shootDirect, 5);
+				createBullet(bulletId, currentPlayer.x, currentPlayer.y - 1536, shootDirect, 5);
 			}
 
 		}
-		createCaret(currentPlayer.x + caretX, currentPlayer.y + shootY, effect_Star, 0);
+		createCaret(currentPlayer.x + caretX, currentPlayer.y + shootY, effect_Star);
 	}
 
 	return;

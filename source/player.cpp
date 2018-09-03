@@ -132,7 +132,7 @@ void player::damage(int16_t damage)
 			playSound(SFX_QuoteDie);
 			cond = 0;
 
-			createSmoke(x, y, 5120, 64);
+			createSmokeLeft(x, y, 5120, 64);
 			createCaret(x, y, effect_BigExplosion);
 			startTscEvent(40);
 		}

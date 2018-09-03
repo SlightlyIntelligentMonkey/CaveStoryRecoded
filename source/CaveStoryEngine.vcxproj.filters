@@ -219,6 +219,18 @@
     <ClCompile Include="missile.cpp">
       <Filter>Source Files\classes\bullet\act</Filter>
     </ClCompile>
+    <ClCompile Include="snakeShoot.cpp">
+      <Filter>Source Files\classes\weapons\shoot</Filter>
+    </ClCompile>
+    <ClCompile Include="snake.cpp">
+      <Filter>Source Files\classes\bullet\act</Filter>
+    </ClCompile>
+    <ClCompile Include="machineGunShoot.cpp">
+      <Filter>Source Files\classes\weapons\shoot</Filter>
+    </ClCompile>
+    <ClCompile Include="machineGun.cpp">
+      <Filter>Source Files\classes\bullet\act</Filter>
+    </ClCompile>
     <ClCompile Include="mapSystem.cpp">
       <Filter>Source Files\states</Filter>
     </ClCompile>
@@ -369,6 +381,12 @@
       <Filter>Source Files\classes\npc\act</Filter>
     </ClInclude>
     <ClInclude Include="missile.h">
+      <Filter>Source Files\classes\bullet\act</Filter>
+    </ClInclude>
+    <ClInclude Include="snake.h">
+      <Filter>Source Files\classes\bullet\act</Filter>
+    </ClInclude>
+    <ClInclude Include="machineGun.h">
       <Filter>Source Files\classes\bullet\act</Filter>
     </ClInclude>
   </ItemGroup>
