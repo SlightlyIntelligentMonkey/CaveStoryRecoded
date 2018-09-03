@@ -419,10 +419,8 @@ void npcAct183(npc * NPC) // Curly Air Bubble
 			NPC->y = NPC->pNpc->y;
 			NPC->act_no = 1;
 		}
-		int64_t wtf1 = NPC->pNpc->x - NPC->x;
-		int64_t wtf2 = NPC->pNpc->y - NPC->y;
-		NPC->x += (static_cast<int>(wtf1) - (*((unsigned int *)&(wtf1)+1))) >> 1;
-		NPC->y += (static_cast<int>(wtf2) - (*((unsigned int *)&(wtf2)+1))) >> 1;
+		NPC->x += (NPC->pNpc->x - NPC->x) / 2;
+		NPC->y += (NPC->pNpc->y - NPC->y) / 2;
 
 		NPC->animate(1, 0, 1);
 
@@ -431,6 +429,19 @@ void npcAct183(npc * NPC) // Curly Air Bubble
 		else
 			NPC->rect.right = 0;
 	}
+}
+
+void npcAct192(npc * NPC)
+{
+	enum
+	{
+		parked = 0,
+		startEngine = 20,
+		takeOff = 30,
+		outOfControl = 40,
+	};
+
+	//sw
 }
 
 void npcAct194(npc *NPC) // Blue Robot, destroyed
