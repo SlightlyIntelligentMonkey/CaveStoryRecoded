@@ -2,6 +2,7 @@
 
 #include "sound.h"
 #include "player.h"
+#include "caret.h"
 #include "mathUtils.h"
 
 void npcAct145(npc *NPC) //King's blade
@@ -90,6 +91,255 @@ void npcAct146(npc *NPC) //Lightning
 	}
 
 	NPC->rect = rect[NPC->ani_no];
+}
+
+void npcAct147(npc *NPC)
+{
+	RECT rcLeft[6];
+	RECT rcRight[6];
+	uint8_t deg;
+
+	rcLeft[0].left = 0;
+	rcLeft[0].top = 96;
+	rcLeft[0].right = 16;
+	rcLeft[0].bottom = 112;
+	rcLeft[1].left = 16;
+	rcLeft[1].top = 96;
+	rcLeft[1].right = 32;
+	rcLeft[1].bottom = 112;
+	rcLeft[2].left = 32;
+	rcLeft[2].top = 96;
+	rcLeft[2].right = 48;
+	rcLeft[2].bottom = 112;
+	rcLeft[3].left = 48;
+	rcLeft[3].top = 96;
+	rcLeft[3].right = 64;
+	rcLeft[3].bottom = 112;
+	rcLeft[4].left = 64;
+	rcLeft[4].top = 96;
+	rcLeft[4].right = 80;
+	rcLeft[4].bottom = 112;
+	rcLeft[5].left = 80;
+	rcLeft[5].top = 96;
+	rcLeft[5].right = 96;
+	rcLeft[5].bottom = 112;
+
+	rcRight[0].left = 0;
+	rcRight[0].top = 112;
+	rcRight[0].right = 16;
+	rcRight[0].bottom = 128;
+	rcRight[1].left = 16;
+	rcRight[1].top = 112;
+	rcRight[1].right = 32;
+	rcRight[1].bottom = 128;
+	rcRight[2].left = 32;
+	rcRight[2].top = 112;
+	rcRight[2].right = 48;
+	rcRight[2].bottom = 128;
+	rcRight[3].left = 48;
+	rcRight[3].top = 112;
+	rcRight[3].right = 64;
+	rcRight[3].bottom = 128;
+	rcRight[4].left = 64;
+	rcRight[4].top = 112;
+	rcRight[4].right = 80;
+	rcRight[4].bottom = 128;
+	rcRight[5].left = 80;
+	rcRight[5].top = 112;
+	rcRight[5].right = 96;
+	rcRight[5].bottom = 128;
+
+	switch (NPC->act_no)
+	{
+	case 0:
+		NPC->y += 0x600;
+		NPC->act_no = 1;
+//Fallthrough
+	case 1:
+		if (NPC->act_wait <= 7
+			|| NPC->x - 49152 >= currentPlayer.x
+			|| NPC->x + 49152 <= currentPlayer.x
+			|| NPC->y - 49152 >= currentPlayer.y
+			|| NPC->y + 0x4000 <= currentPlayer.y)
+		{
+			if (NPC->act_wait < 8)
+				++NPC->act_wait;
+
+			NPC->ani_no = 0;
+		}
+		else
+		{
+			if (NPC->x <= currentPlayer.x)
+				NPC->direct = 2;
+			else
+				NPC->direct = 0;
+			NPC->ani_no = 1;
+		}
+
+		if (NPC->shock)
+		{
+			NPC->act_no = 2;
+			NPC->ani_no = 0;
+			NPC->act_wait = 0;
+		}
+
+		if (NPC->act_wait > 7 && NPC->x - 24576 < currentPlayer.x && NPC->x + 24576 > currentPlayer.x && NPC->y - 49152 < currentPlayer.y && NPC->y + 0x4000 > currentPlayer.y)
+		{
+			NPC->act_no = 2;
+			NPC->ani_no = 0;
+			NPC->act_wait = 0;
+		}
+		break;
+
+	case 2:
+		if (++NPC->act_wait > 8)
+		{
+			NPC->act_no = 3;
+			NPC->ani_no = 2;
+			NPC->ym = -0x5FF;
+
+			playSound(30);
+
+			if (NPC->x <= currentPlayer.x)
+				NPC->direct = 2;
+			else
+				NPC->direct = 0;
+		}
+		break;
+
+	case 3:
+		if (NPC->ym > 0x100)
+		{
+			NPC->tgt_y = NPC->y;
+			NPC->act_no = 4;
+			NPC->ani_no = 3;
+			NPC->act_wait = 0;
+			NPC->act_wait = 0;
+		}
+		break;
+
+	case 4:
+		if (NPC->x >= currentPlayer.x)
+			NPC->direct = 0;
+		else
+			NPC->direct = 2;
+
+		++NPC->act_wait;
+
+		if (NPC->flag & (leftWall | ceiling | rightWall) || NPC->act_wait > 60)
+		{
+			NPC->damage = 3;
+			NPC->act_no = 5;
+			NPC->ani_no = 2;
+		}
+		else
+		{
+			if (NPC->act_wait % 4 == 1)
+				playSound(109);
+
+			if (NPC->flag & ground)
+				NPC->ym = -0x200;
+
+			if (NPC->act_wait % 30 == 6)
+			{
+				deg = getAtan(NPC->x - currentPlayer.x, NPC->y - currentPlayer.y);
+				deg += random(-6, 6);
+				createNpc(148, NPC->x, NPC->y, 3 * getCos(deg), 3 * getSin(deg), 0, nullptr);
+				playSound(39);
+			}
+
+			if (++NPC->ani_wait > 0)
+			{
+				NPC->ani_wait = 0;
+				++NPC->ani_no;
+			}
+
+			if (NPC->ani_no > 5)
+				NPC->ani_no = 3;
+		}
+		break;
+
+	case 5:
+		if (NPC->flag & ground)
+		{
+			NPC->damage = 2;
+			NPC->xm = 0;
+			NPC->act_wait = 0;
+			NPC->ani_no = 0;
+			NPC->act_no = 1;
+
+			playSound(23);
+		}
+		break;
+
+	default:
+		break;
+	}
+
+	if (NPC->act_no == 4)
+	{
+		if (NPC->y <= NPC->tgt_y)
+			NPC->ym += 0x10;
+		else
+			NPC->ym -= 0x10;
+		
+		if (NPC->ym > 0x200)
+			NPC->ym = 0x200;
+		if (NPC->ym < -0x200)
+			NPC->ym = -0x200;
+		if (NPC->xm > 0x200)
+			NPC->xm = 0x200;
+		if (NPC->xm < -0x200)
+			NPC->xm = -0x200;
+	}
+	else
+	{
+		NPC->ym += 0x20;
+		if (NPC->ym > 0x5FF)
+			NPC->ym = 0x5FF;
+	}
+
+	NPC->x += NPC->xm;
+	NPC->y += NPC->ym;
+
+	if (NPC->direct)
+		NPC->rect = rcRight[NPC->ani_no];
+	else
+		NPC->rect = rcLeft[NPC->ani_no];
+}
+
+void npcAct148(npc *NPC)
+{
+	RECT rect[2];
+
+	if (NPC->flag & 0xFF)
+	{
+		createCaret(NPC->x, NPC->y, 2, 0);
+		NPC->cond = 0;
+	}
+
+	NPC->y += NPC->ym;
+	NPC->x += NPC->xm;
+
+	rect[0].left = 96;
+	rect[0].top = 96;
+	rect[0].right = 104;
+	rect[0].bottom = 104;
+	rect[1].left = 104;
+	rect[1].top = 96;
+	rect[1].right = 112;
+	rect[1].bottom = 104;
+
+	if (++NPC->ani_no > 1)
+		NPC->ani_no = 0;
+	
+	NPC->rect = rect[NPC->ani_no];
+
+	if (++NPC->count1 > 300)
+	{
+		createCaret(NPC->x, NPC->y, 2, 0);
+		NPC->cond = 0;
+	}
 }
 
 void npcAct150(npc *NPC) // Quote
