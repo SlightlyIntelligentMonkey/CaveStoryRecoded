@@ -29,6 +29,8 @@ void player::init() noexcept
 
 	viewport.speed = 16;
 
+	air = 1000;
+
 	life = 3;
 	max_life = 3;
 }
