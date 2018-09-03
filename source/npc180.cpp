@@ -376,8 +376,8 @@ void npcAct181(npc *NPC) // Curly Machine Gun bullet spawner (projectile)
 
 void npcAct182(npc * NPC) // Curly Polar Star bullet spawner (projectile)
 {
-	constexpr RECT rcLeft[2] = { {216, 152, 232, 168}, {232, 152, 248, 168} };
-	constexpr RECT rcRight[2] = { {216, 168, 232, 184}, {232, 168, 248, 184} };
+	constexpr RECT rcLeft[2] = { {184, 152, 200, 168}, {200, 152, 216, 168} };
+	constexpr RECT rcRight[2] = { {184, 168, 200, 184}, {200, 168, 216, 184} };
 
 	if (NPC->pNpc)
 	{
