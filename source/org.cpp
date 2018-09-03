@@ -97,7 +97,7 @@ void mixOrg(int16_t *stream, int len)
 	for (int i = 0; i < len; i++)
 	{
 		//Update
-		const int samplesPerBeat = (sampleRate / 1000) * org.wait;
+		const int samplesPerBeat = sampleRate * org.wait / 1000;
 		if (++org.samples > samplesPerBeat)
 		{
 			organyaPlayStep();

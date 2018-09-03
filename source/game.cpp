@@ -348,6 +348,7 @@ int gameUpdatePlay()
 		{
 			if (isKeyPressed(keyMenu))
 			{
+				changeOrg(mus_Pulse);
 				captureScreen(TEX_SCREENSHOT);
 				const int inventoryRet = openInventory();
 

@@ -56,7 +56,7 @@ BULLETSTATS bulletTable[] =
 	{ 2, 1, 20, 8, 2, 2, 2, 2, { 4, 4, 4, 4 }, 7 },
 	{ 2, 1, 20, 8, 4, 4, 4, 4, { 4, 4, 4, 4 }, 7 },
 
-	//bubber pop projectile
+	//bubbler pop projectile
 	{ 3, 1, 32, 32, 2, 2, 2, 2, { 4, 4, 4, 4 }, 8 },
 
 	//blade slashes
