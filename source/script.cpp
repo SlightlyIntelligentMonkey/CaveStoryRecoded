@@ -27,7 +27,8 @@ using std::strcat;
 //Variables
 TSC tsc;
 char tscText[0x100];
-uint8_t *tscTextFlag = new uint8_t[0x100];
+int tscNumber[4];
+uint8_t *tscTextFlag = static_cast<uint8_t*>(malloc(0x100));
 
 //Mode enum
 enum TSC_mode
@@ -277,7 +278,44 @@ void tscCleanup(int numargs)  //Function to shift the current read position afte
 		tsc.p_read += (numargs - 1);
 }
 
-static inline void showTSCNotImplementedWarning(const char *message) 
+void tscPutNumber(int index)
+{
+	int table[3];
+	char str[5];
+	bool bZero;
+	int offset;
+	table[0] = 1000;
+	table[1] = 100;
+	table[2] = 10;
+	int a = tscNumber[index];
+	bZero = 0;
+	offset = 0;
+	for (int i = 0; i <= 2; ++i)
+	{
+		if (a / table[i] || bZero)
+		{
+			int b = a / table[i];
+			str[offset] = b + 48;
+			bZero = 1;
+			a -= b * table[i];
+			++offset;
+		}
+	}
+	str[offset] = a + 48;
+	str[offset + 1] = 0;
+	strcat(tscText + (tsc.line % 4 << 6), str);
+	playSound(2);
+	tsc.wait_beam = 0;
+	tsc.p_write += strlen(str);
+	if (tsc.p_write > 34)
+	{
+		tsc.p_write = 0;
+		++tsc.line;
+		checkNewLine();
+	}
+}
+
+static inline void showTSCNotImplementedWarning(const char *message) noexcept
 {
 	SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_WARNING, "Unimplemented command", message, nullptr);
 }
@@ -528,7 +566,6 @@ int updateTsc()
 			static bool notifiedAboutFOB = false;
 			static bool notifiedAboutINP = false;
 			static bool notifiedAboutNCJ = false;
-			static bool notifiedAboutNUM = false;
 			static bool notifiedAboutSIL = false;
 			static bool notifiedAboutSPS = false;
 			static bool notifiedAboutSSS = false;
@@ -542,6 +579,8 @@ int updateTsc()
 				tscCleanup(0);
 				break;
 			case('<AM+'):
+				tscNumber[0] = getTSCNumber(tsc.p_read + 9);
+				tscNumber[1] = 0;
 				giveWeapon(getTSCNumber(tsc.p_read + 4), getTSCNumber(tsc.p_read + 9));
 				tscCleanup(2);
 				break;
@@ -1033,12 +1072,7 @@ int updateTsc()
 				tscCleanup(0);
 				return 1;
 			case('<NUM'):
-				if (!notifiedAboutNUM && debugFlags & notifyOnNotImplemented)
-				{
-					notifiedAboutNUM = true;
-					showTSCNotImplementedWarning("<NUM is not implemented");
-				}
-
+				tscPutNumber(getTSCNumber(tsc.p_read + 4));
 				tscCleanup(1);
 				break;
 			case('<PRI'):
