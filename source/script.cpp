@@ -278,6 +278,43 @@ void tscCleanup(int numargs)  //Function to shift the current read position afte
 		tsc.p_read += (numargs - 1);
 }
 
+void tscPutNumber(int index)
+{
+	int table[3];
+	char str[5];
+	bool bZero;
+	int offset;
+	table[0] = 1000;
+	table[1] = 100;
+	table[2] = 10;
+	int a = tscNumber[index];
+	bZero = 0;
+	offset = 0;
+	for (int i = 0; i <= 2; ++i)
+	{
+		if (a / table[i] || bZero)
+		{
+			int b = a / table[i];
+			str[offset] = b + 48;
+			bZero = 1;
+			a -= b * table[i];
+			++offset;
+		}
+	}
+	str[offset] = a + 48;
+	str[offset + 1] = 0;
+	strcat(tscText + (tsc.line % 4 << 6), str);
+	playSound(2);
+	tsc.wait_beam = 0;
+	tsc.p_write += strlen(str);
+	if (tsc.p_write > 34)
+	{
+		tsc.p_write = 0;
+		++tsc.line;
+		checkNewLine();
+	}
+}
+
 static inline void showTSCNotImplementedWarning(const char *message) noexcept
 {
 	SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_WARNING, "Unimplemented command", message, nullptr);
