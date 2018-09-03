@@ -369,6 +369,11 @@ void npcAct117(npc *NPC)
 
 	NPC->x += NPC->xm;
 	NPC->y += NPC->ym;
+
+	if (NPC->direct)
+		NPC->rect = rcRight[NPC->ani_no];
+	else
+		NPC->rect = rcLeft[NPC->ani_no];
 }
 
 void npcAct116(npc *NPC) // Red flowers petals
