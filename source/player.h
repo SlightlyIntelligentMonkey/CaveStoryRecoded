@@ -95,8 +95,8 @@ enum equipItems
 {
 	equip_booster08 = 0x01,
 	equip_mapSystem = 0x02,
-	equip_turboCharge = 0x04,
-	equip_armsBarrier = 0x08,
+	equip_armsBarrier = 0x04,
+	equip_turboCharge = 0x08,
 	equip_airTank = 0x10,
 	equip_booster20 = 0x20,
 	equip_mimigaMask = 0x40,
