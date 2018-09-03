@@ -69,6 +69,9 @@ void initWeapons()
 //Functions for shooting
 void actWeapon()
 {
+	if (_empty)
+		--_empty;
+
 	if (!(currentPlayer.cond & player_removed))
 	{
 		if (weapons[selectedWeapon].code)

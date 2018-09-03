@@ -10,7 +10,11 @@ void shootSnake(int level)
 	if (weaponBullets(1) <= 3 && isKeyPressed(keyShoot))
 	{
 		if (useWeaponAmmo(1) ^ 1)
-			playSound(SFX_NoAmmo);
+		{
+			selectedWeapon = 0;
+			weaponShiftX = 32;
+			playSound(SFX_SwitchWeapon);
+		}
 
 		int bulletId = 0;
 		switch (level)
