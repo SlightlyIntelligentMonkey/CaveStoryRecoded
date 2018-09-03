@@ -172,11 +172,8 @@ void drawWeaponStats()
 		}
 
 		//Draw the flashing
-		if (currentPlayer.exp_wait)
-		{
-			if ((addFlash++ >> 1) & 1)
-				drawTexture(sprites[TEX_TEXTBOX], &rcExpFlash, weaponShiftX + 24, 32);
-		}
+		if (currentPlayer.exp_wait && (addFlash++ >> 1) & 1)
+			drawTexture(sprites[TEX_TEXTBOX], &rcExpFlash, weaponShiftX + 24, 32);
 	}
 }
 
@@ -188,12 +185,11 @@ void drawHudWeapons()
 	size_t weaponNo;
 	for (weaponNo = 0; weaponNo < WEAPONS && weapons[weaponNo].code != 0; ++weaponNo);
 
-	int x;
 	if (weaponNo)
 	{
 		for (size_t a = 0; a < weaponNo; ++a)
 		{
-			x = 16 * (a - selectedWeapon) + weaponShiftX;
+			int x = 16 * (a - selectedWeapon) + weaponShiftX;
 
 			if (x >= 8)
 			{
@@ -205,7 +201,7 @@ void drawHudWeapons()
 				x += 16 * (weaponNo + 3);
 			}
 
-			if (8 * (2 * (weaponNo + 3) + 1) <= x)
+			if (8 * (2 * (static_cast<int>(weaponNo) + 3) + 1) <= x)
 				x += 16 * (-3 - weaponNo);
 
 			if (x < 72 && x >= 24)

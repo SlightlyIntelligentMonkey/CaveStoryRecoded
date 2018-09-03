@@ -769,7 +769,7 @@ void playerHitNpcs()
 				if (hit && npcs[i].code_char == NPC_Missile)
 				{
 					playSound(SFX_QuoteMissileGet);
-					giveAmmo(npcs[i].code_event, npcs[i].exp);
+					giveAmmo(npcs[i].exp);
 					npcs[i].cond = 0;
 				}
 

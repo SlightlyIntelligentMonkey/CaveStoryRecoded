@@ -22,19 +22,19 @@ uint8_t key_prev[SDL_NUM_SCANCODES] = { 0 };
 uint8_t key[SDL_NUM_SCANCODES] = { 0 };
 int key_array_size = 0;
 
-void getKeys(SDL_Event *event) noexcept
+void getKeys(SDL_Event *event) 
 {
 	SDL_PollEvent(event);
 	memcpy(&key_prev, key, key_array_size);
 	memcpy(&key, SDL_GetKeyboardState(&key_array_size), SDL_NUM_SCANCODES);
 }
 
-bool isKeyDown(int keynum) noexcept
+bool isKeyDown(int keynum) 
 {
 	return (key[keynum] == 1);
 }
 
-bool isKeyPressed(int keynum) noexcept
+bool isKeyPressed(int keynum) 
 {
 	return (key_prev[keynum] == 0 && key[keynum] == 1);
 }

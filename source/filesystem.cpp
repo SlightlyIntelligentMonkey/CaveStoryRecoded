@@ -65,7 +65,7 @@ void writeLElong(uint8_t *data, uint32_t input, size_t offset)
 }
 
 //Loading and writing functions
-bool fileExists(const string& name) noexcept
+bool fileExists(const string& name) 
 {
 	struct stat buffer;
 	return (stat(name.c_str(), &buffer) == 0);
@@ -87,7 +87,7 @@ int loadFile(const char *name, uint8_t **data)
 	fseek(file, 0, 0);
 
 	//Load data
-	*data = static_cast<uint8_t *>(malloc(filesize));
+	*data = new uint8_t[filesize];
 	if (fread(*data, 1, filesize, file) == 0)
 	{
 		fclose(file);
@@ -100,7 +100,7 @@ int loadFile(const char *name, uint8_t **data)
 	return filesize;
 }
 
-int writeFile(const char *name, const void *data, size_t amount) noexcept
+int writeFile(const char *name, const void *data, size_t amount) 
 {
 	FILE *file;
 	if ((file = fopen(name, "wb")) == nullptr)

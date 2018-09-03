@@ -74,8 +74,8 @@ void npcAct200(npc *NPC) // Dragon Zombie (enemy)
 			uint8_t angle = (NPC->direct != dirLeft) ? getAtan(NPC->x + 0x1C00 - NPC->tgt_x, NPC->y - NPC->tgt_y)
 				: getAtan(NPC->x - 0x1C00 - NPC->tgt_x, NPC->y - NPC->tgt_y);
 			angle += random(-6, 6);
-			int yVel = 3 * getSin(angle);
-			int xVel = 3 * getCos(angle);
+			const int yVel = 3 * getSin(angle);
+			const int xVel = 3 * getCos(angle);
 			if (NPC->direct != dirLeft)
 				createNpc(NPC_ProjectileDragonZombie, NPC->x + 0x1C00, NPC->y, xVel, yVel);
 			else

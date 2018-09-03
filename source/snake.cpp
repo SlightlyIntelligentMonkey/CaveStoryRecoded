@@ -58,7 +58,6 @@ void actBulletSnake1(bullet *bul)
 	bul->rect.bottom = bul->rect.top + 16;
 	if (bul->rect.left == 136 && bul->rect.top == 80)
 		bul->rect.bottom = 80;
-	return; 
 }
 
 uint8_t snakeNextWiggle = 0;
@@ -164,7 +163,6 @@ void actBulletSnake2(bullet *bul)
 	bul->rect.bottom = bul->rect.top + 16;
 
 	createNpc(NPC_ProjectileFireballSnakeTrail, bul->x, bul->y, 0, -512, bul->ani_no);
-	return;
 }
 
 void actBulletSnake3(bullet *bul)
@@ -269,5 +267,4 @@ void actBulletSnake3(bullet *bul)
 	bul->rect.bottom = bul->rect.top + 16;
 
 	createNpc(NPC_ProjectileFireballSnakeTrail, bul->x, bul->y, 0, -512, bul->ani_no + 3);
-	return;
 }

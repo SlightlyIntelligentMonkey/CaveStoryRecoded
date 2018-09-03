@@ -9,3 +9,5 @@ void shootMachineGun(int level);
 void shootMissile(int level);
 
 void shootSpur(int level);
+
+extern int spurCharge;

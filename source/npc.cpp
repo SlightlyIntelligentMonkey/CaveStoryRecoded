@@ -1,4 +1,4 @@
-#include "npc.h"
+﻿#include "npc.h"
 #include "npcAct.h"
 #include "weapons.h"
 #include "mathUtils.h"
@@ -11,6 +11,7 @@
 #include "caret.h"
 
 #include <deque>
+#include <vector>
 #include <string>
 #include <cstring>
 #include <SDL_rwops.h>
@@ -18,6 +19,7 @@
 using std::memset;
 using std::string;
 using std::to_string;
+using std::vector;
 using std::deque;
 
 deque<npc> npcs(0);
@@ -46,7 +48,7 @@ void createSmokeLeft(int x, int y, int w, size_t num)
 
 void createSmokeUp(int x, int y, int w, int num)
 {
-	int wa = w / 512;
+	const int wa = w / 512;
 
 	for (int i = 0; i < num; ++i)
 	{
@@ -109,37 +111,27 @@ void changeNpc(int code_event, int code_char, int dir)
 {
 	for (size_t i = 0; i < npcs.size(); ++i)
 	{
-		if (npcs[i].cond & npccond_alive)
+		if (npcs[i].cond & npccond_alive && npcs[i].code_event == code_event)
 		{
-			if (npcs[i].code_event == code_event)
+			const int code_flag = npcs[i].code_flag;
+			int bits = npcs[i].bits;
+
+			bits &= 0x7F00; //Only bits that seem to determine interactability and other stuff
+
+			npcs[i].init(code_char, npcs[i].x, npcs[i].y, 0, 0, npcs[i].direct, npcs[i].pNpc);
+			npcs[i].bits |= bits;
+			npcs[i].code_flag = code_flag;
+			npcs[i].code_event = code_event;
+
+			if (dir != 5)
 			{
-				const int code_flag = npcs[i].code_flag;
-				int bits = npcs[i].bits;
-
-				bits &= 0x7F00; //Only bits that seem to determine interactability and other stuff
-
-				npcs[i].init(code_char, npcs[i].x, npcs[i].y, 0, 0, npcs[i].direct, npcs[i].pNpc);
-				npcs[i].bits |= bits;
-				npcs[i].code_flag = code_flag;
-				npcs[i].code_event = code_event;
-
-				if (dir != 5)
-				{
-					if (dir == 4)
-					{
-						if (npcs[i].x >= currentPlayer.x)
-							npcs[i].direct = dirLeft;
-						else
-							npcs[i].direct = dirRight;
-					}
-					else
-					{
-						npcs[i].direct = dir;
-					}
-				}
-
-				npcActs[code_char](&npcs[i]);
+				if (dir == 4)
+					npcs[i].facePlayer();
+				else
+					npcs[i].direct = dir;
 			}
+
+			npcActs[code_char](&npcs[i]);
 		}
 	}
 }
@@ -325,10 +317,7 @@ void loadNpcTable()
 	const auto tblSize = static_cast<int>(SDL_RWsize(tblStream));
 
 	const int npcCount = tblSize / 0x18;
-	npcTable = static_cast<NPC_TABLE *>(malloc(0x18 * npcCount));
-
-	if (npcTable == nullptr)
-		doCustomError("Could not allocate memory for NPC table");
+	npcTable = new NPC_TABLE[npcCount];
 
 	int i;
 
@@ -367,6 +356,19 @@ void npc::animate(int aniWait, int aniStart, int aniMax)
 	}
 }
 
+void npc::doRects(const std::vector<RECT>& rcLeft, const std::vector<RECT>& rcRight)
+{
+	if (!rcRight.empty())
+	{
+		if (this->direct != dirLeft)
+			this->rect = rcRight.at(this->ani_no);
+		else
+			this->rect = rcLeft.at(this->ani_no);
+	}
+	else
+		this->rect = rcLeft.at(this->ani_no);
+}
+
 void npc::facePlayer()
 {
 	if (currentPlayer.x >= this->x)
@@ -399,7 +401,7 @@ bool npc::isPlayerAligned(int xRay, int yRayHigh, int yRayLow)
 		|| this->y + yRayLow <= currentPlayer.y);
 }
 
-void npc::init(int setCode, int setX, int setY, int setXm, int setYm, int setDir, npc *parentNpc) noexcept
+void npc::init(int setCode, int setX, int setY, int setXm, int setYm, int setDir, npc *parentNpc) 
 {
 	memset(this, 0, sizeof(*this));
 
@@ -435,7 +437,7 @@ void npc::init(int setCode, int setX, int setY, int setXm, int setYm, int setDir
 	view.bottom = npcTable[code_char].view.bottom << 9;
 }
 
-void npc::update() noexcept
+void npc::update() 
 {
 	npcActs[code_char](this);
 

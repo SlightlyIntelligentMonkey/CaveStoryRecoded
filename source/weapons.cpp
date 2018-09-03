@@ -59,7 +59,7 @@ int selectedWeapon;
 int weaponShiftX;
 int weaponExpFlash;
 
-void initWeapons() noexcept
+void initWeapons() 
 {
 	memset(weapons, 0, sizeof(weapons));
 	selectedWeapon = 0;
@@ -93,14 +93,14 @@ void actWeapon()
 	}
 }
 
-void giveWeaponAmmo(int num) noexcept
+void giveWeaponAmmo(int num) 
 {
 	weapons[selectedWeapon].num += num;
 	if (weapons[selectedWeapon].num > weapons[selectedWeapon].max_num)
 		weapons[selectedWeapon].num = weapons[selectedWeapon].max_num;
 }
 
-int useWeaponAmmo(int num) noexcept
+int useWeaponAmmo(int num) 
 {
 	//Some checks
 	if (!weapons[selectedWeapon].max_num)
@@ -115,10 +115,10 @@ int useWeaponAmmo(int num) noexcept
 	return 1;
 }
 
-void giveAmmo(int amount, int ammoToRefill)
+void giveAmmo(int ammoToRefill)
 {
 	int i;
-	for (i = 0; i < 8 && weapons[i].code != 5 && weapons[i].code != 10; ++i);
+	for (i = 0; i < 8 && weapons[i].code != weapon_MissileLauncher && weapons[i].code != weapon_SuperMissileLauncher; ++i);
 	if (i != 8)
 	{
 		weapons[i].num += ammoToRefill;
@@ -127,7 +127,7 @@ void giveAmmo(int amount, int ammoToRefill)
 	}
 }
 
-bool weaponMaxExp() noexcept
+bool weaponMaxExp() 
 {
 	return weapons[selectedWeapon].level == 3
 	       && weapons[selectedWeapon].exp >= weaponLevels[weapons[selectedWeapon].code].exp[2];
@@ -145,7 +145,7 @@ int weaponBullets(int arms_code)
 }
 
 //TSC functions
-int tradeWeapons(int code1, int code2, int max_num) noexcept
+int tradeWeapons(int code1, int code2, int max_num) 
 {
 	int i;
 	for (i = 0; i < WEAPONS && weapons[i].code != code1; ++i);
@@ -160,7 +160,7 @@ int tradeWeapons(int code1, int code2, int max_num) noexcept
 	return 1;
 }
 
-int giveWeapon(int code, int max_num) noexcept
+int giveWeapon(int code, int max_num) 
 {
 	int i;
 	for (i = 0; i < WEAPONS && weapons[i].code != code && weapons[i].code; ++i);
@@ -184,7 +184,7 @@ int giveWeapon(int code, int max_num) noexcept
 	return 1;
 }
 
-int removeWeapon(int code) noexcept
+int removeWeapon(int code) 
 {
 	int i;
 	for (i = 0; i < WEAPONS && weapons[i].code != code; ++i);
@@ -202,7 +202,7 @@ int removeWeapon(int code) noexcept
 	return 1;
 }
 
-void clearWeaponExperience() noexcept
+void clearWeaponExperience() 
 {
 	for (auto& i : weapons)
 	{
@@ -211,13 +211,13 @@ void clearWeaponExperience() noexcept
 	}
 }
 
-void maxWeaponAmmo() noexcept
+void maxWeaponAmmo() 
 {
 	for (auto& i : weapons)
 		i.num = i.max_num;
 }
 
-bool checkWeapon(int code) noexcept
+bool checkWeapon(int code) 
 {
 	for (const auto& i : weapons)
 	{
@@ -278,8 +278,21 @@ void giveWeaponExperience(int x)
 	}
 }
 
+void resetSelectedWeaponLevel()
+{
+	weapons[selectedWeapon].level = 1;
+	weapons[selectedWeapon].exp = 0;
+}
+
+void resetSpurCharge()
+{
+	spurCharge = 0;
+	if (weapons[selectedWeapon].code == weapon_Spur)
+		resetSelectedWeaponLevel();
+}
+
 //Rotate weapon functions
-int rotateWeaponRight() noexcept
+int rotateWeaponRight() 
 {
 	int weaponNo;
 
@@ -287,7 +300,7 @@ int rotateWeaponRight() noexcept
 	if (!weaponNo)
 		return 0;
 
-	//ResetSpurCharge();
+	resetSpurCharge();
 
 	//Rotate to the right, wrap around
 	++selectedWeapon;
@@ -303,7 +316,7 @@ int rotateWeaponRight() noexcept
 	return weapons[weaponNo].code;
 }
 
-int rotateWeaponLeft() noexcept
+int rotateWeaponLeft() 
 {
 	int weaponNo;
 
@@ -311,7 +324,7 @@ int rotateWeaponLeft() noexcept
 	if (!weaponNo)
 		return 0;
 
-	//ResetSpurCharge();
+	resetSpurCharge();
 
 	//Rotate to the left, wrap around
 	--selectedWeapon;

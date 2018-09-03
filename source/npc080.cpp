@@ -5,6 +5,9 @@
 #include "caret.h"
 #include "sound.h"
 #include "game.h"
+#include "render.h"
+
+using std::vector;
 
 void npcAct080(npc *NPC) //Gravekeeper
 {
@@ -92,10 +95,7 @@ void npcAct080(npc *NPC) //Gravekeeper
 			NPC->bits &= ~npc_shootable;
 		}
 
-		if (currentPlayer.x >= NPC->x)
-			NPC->direct = 2;
-		else
-			NPC->direct = 0;
+		NPC->facePlayer();
 		break;
 
 	case 2:
@@ -115,10 +115,7 @@ void npcAct080(npc *NPC) //Gravekeeper
 			NPC->act_no = 3;
 			NPC->bits |= npc_shootable;
 
-			if (NPC->direct)
-				NPC->xm = 0x400;
-			else
-				NPC->xm = -0x400;
+			NPC->moveTowardsPlayer(pixelsToUnits(2));
 		}
 
 		if (currentPlayer.x >= NPC->x)
@@ -1229,7 +1226,7 @@ void npcAct091(npc *NPC) // Cage
 	NPC->rect = { 96, 88, 128, 112 };
 }
 
-void npcAct092(npc * NPC)
+void npcAct092(npc * NPC) // Sue (Computer)
 {
 	constexpr RECT rcNPC[3] = { {272, 216, 288, 240}, {288, 216, 304, 240}, {304, 216, 320, 240} };
 
@@ -1289,6 +1286,92 @@ void npcAct092(npc * NPC)
 	}
 
 	NPC->rect = rcNPC[NPC->ani_no];
+}
+
+void npcAct093(npc * NPC)
+{
+	vector<RECT> rcLeft(7);
+	vector<RECT> rcRight(7);
+
+	rcLeft[0] = { 128, 0, 144, 16 };
+	rcLeft[1] = { 144, 0, 160, 16 };
+	rcLeft[2] = { 160, 0, 176, 16 };
+	rcLeft[3] = rcLeft[0];
+	rcLeft[4] = { 176, 0, 192, 16 };
+	rcLeft[5] = rcLeft[0];
+	rcLeft[6] = { 32, 32, 48, 48 };
+
+	rcRight[0] = { 128, 16, 144, 32 };
+	rcRight[1] = { 144, 16, 160, 32 };
+	rcRight[2] = { 160, 16, 176, 32 };
+	rcRight[3] = rcRight[0];
+	rcRight[4] = { 176, 16, 192, 32 };
+	rcRight[5] = rcRight[0];
+	rcRight[6] = { 32, 32, 48, 48 };
+
+	enum
+	{
+		init = 0,
+		stand = 1,
+		waitBlink = 2,
+		startWalk = 3,
+		walking = 4,
+		sleeping = 10,
+	};
+
+	switch (NPC->act_no)
+	{
+	case init:
+		NPC->act_no = stand;
+		NPC->ani_no = 0;
+		NPC->ani_wait = 0;
+		// Fallthrough
+	case stand:
+		if (!random(0, 120))
+		{
+			NPC->act_no = waitBlink;
+			NPC->act_wait = 0;
+			NPC->ani_no = 1;
+		}
+		if (NPC->isPlayerWithinDistance(tilesToUnits(2), tilesToUnits(2), tilesToUnits(1)))
+			NPC->facePlayer();
+		break;
+
+	case waitBlink:
+		if (++NPC->act_wait > 8)
+		{
+			NPC->act_no = stand;
+			NPC->ani_no = 0;
+		}
+		break;
+
+	case startWalk:
+		NPC->act_no = walking;
+		NPC->ani_no = 2;
+		NPC->ani_wait = 0;
+		// Fallthrough
+	case walking:
+		NPC->animate(4, 2, 5);
+		if (NPC->direct != dirLeft)
+			NPC->x += 0x200;
+		else
+			NPC->x -= 0x200;
+		break;
+
+	case sleeping:
+		NPC->ani_no = 6;
+		if (++NPC->act_wait > 200)
+		{
+			NPC->act_wait = 0;
+			createCaret(NPC->x, NPC->y, effect_ZzZ);
+		}
+		break;
+
+	default:
+		break;
+	}
+
+	NPC->doRects(rcLeft, rcRight);
 }
 
 void npcAct096(npc *NPC) //Fan left
