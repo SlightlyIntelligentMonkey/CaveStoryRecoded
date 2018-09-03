@@ -104,7 +104,7 @@ void player::damage(int16_t damage)
 			--star;
 
 		//Lose experience
-		if (equip & equip_turboCharge)
+		if (equip & equip_armsBarrier)
 			weapons[selectedWeapon].exp -= damage;
 		else
 			weapons[selectedWeapon].exp -= damage * 2;
