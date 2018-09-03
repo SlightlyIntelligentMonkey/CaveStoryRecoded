@@ -166,7 +166,7 @@ void drawBullets()
 }
 
 //CLASS
-void bullet::init(int setCode, int setX, int setY, uint8_t setDir) noexcept
+void bullet::init(int setCode, int setX, int setY, uint8_t setDir) 
 {
 	memset(this, 0, sizeof(*this));
 

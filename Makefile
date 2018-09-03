@@ -34,4 +34,4 @@ obj/%.o: source/%.cpp
 # cleanup
 
 clean:
-	rm obj/*
+	rm -rf obj bin

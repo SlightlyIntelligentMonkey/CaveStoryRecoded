@@ -32,7 +32,7 @@ bool exitGame = false;
 
 // Some global functions
 
-static void doQuit() noexcept
+static void doQuit() 
 {
 	//sound::quit(); // TBD : Make a sound quit method, make the quit method a global destructor or remove this
 	SDL_Quit();
@@ -40,7 +40,7 @@ static void doQuit() noexcept
 	freeSounds();
 }
 
-void doError() noexcept
+void doError() 
 {
 	SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Critical Error", SDL_GetError(), nullptr);
 	SDL_ClearError();
@@ -48,7 +48,7 @@ void doError() noexcept
 	exit(EXIT_FAILURE);
 }
 
-void doCustomError(const string& msg) noexcept
+void doCustomError(const string& msg) 
 {
 	SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Critical Error", msg.c_str(), nullptr);
 	doQuit();

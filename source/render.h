@@ -32,7 +32,7 @@ enum TextureNums
 };
 
 //Functions for handling the window
-int createWindow(int width, int height, int scale, bool fullscreen) noexcept;
+int createWindow(int width, int height, int scale, bool fullscreen);
 void switchScreenMode();
 void drawWindow();
 void captureScreen(enum TextureNums texture_id);
@@ -41,26 +41,26 @@ void captureScreen(enum TextureNums texture_id);
 void loadImage(const char *file, SDL_Texture **tex);
 
 //Drawing functions
-void setCliprect(const RECT *rect) noexcept;
+void setCliprect(const RECT *rect);
 void drawTexture(SDL_Texture *texture, const RECT *rect, int x, int y);
 void drawTextureNoScale(SDL_Texture *texture, const RECT *rect, int x, int y);
 void drawTextureSize(SDL_Texture *texture, const RECT *rect, int x, int y, int w, int h);
 void drawNumber(int value, int x, int y, bool bZero);
 void drawString(int x, int y, const char *str, const uint8_t *flag = nullptr);
-void drawRect(int x, int y, int w, int h) noexcept;
+void drawRect(int x, int y, int w, int h);
 
 void createTextureBuffer(enum TextureNums texture_id, int width, int height);
 
 // 1 pixel is 0x200 units
 
 template <typename T>
-inline T pixelsToUnits(T x) noexcept
+inline T pixelsToUnits(T x) 
 {
 	return x << 9;
 }
 
 template <typename T>
-inline T unitsToPixels(T x) noexcept
+inline T unitsToPixels(T x) 
 {
 	return x >> 9;
 }

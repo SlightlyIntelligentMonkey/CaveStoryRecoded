@@ -235,7 +235,6 @@ void drawInventory()
 		rcItem.bottom = rcItem.top + 16;
 
 		drawTexture(sprites[TEX_ITEMIMAGE], &rcItem, 32 * (i % 6) + screenWidth / 2 - 112, 16 * (i / 6) + 76);
-		//PutBitmap3(&rcView, 32 * (i % 6) + 48, 16 * (i / 6) + 76, &rcItem, 8);
 	}
 }
 
@@ -298,15 +297,12 @@ int openInventory()
 		drawTsc();
 
 		//Check to close
-		if (!inventoryActive)
+		if (!inventoryActive && (isKeyPressed(keyMenu) || isKeyPressed(keyJump) || isKeyPressed(keyShoot)))
 		{
-			if (isKeyPressed(keyMenu) || isKeyPressed(keyJump) || isKeyPressed(keyShoot))
-			{
-				stopTsc();
-				loadStageTsc(oldScript.c_str());
-				weaponShiftX = 32;
-				return 1;
-			}
+			stopTsc();
+			loadStageTsc(oldScript.c_str());
+			weaponShiftX = 32;
+			return 1;
 		}
 
 		if (gameFlags & 2 && (isKeyPressed(keyMenu) || isKeyPressed(keyShoot)))

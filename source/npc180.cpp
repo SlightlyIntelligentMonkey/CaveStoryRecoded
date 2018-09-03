@@ -192,8 +192,8 @@ void npcAct180(npc * NPC) // Curly, AI
 			NPC->act_no = 210;
 	}
 
-	auto xDistToTarget = abs(NPC->x - NPC->tgt_x);
-	auto yDistToTarget = NPC->y - NPC->tgt_y;
+	const auto xDistToTarget = abs(NPC->x - NPC->tgt_x);
+	const auto yDistToTarget = NPC->y - NPC->tgt_y;
 
 	if (NPC->act_no == 100)
 	{
@@ -257,10 +257,12 @@ void npcAct180(npc * NPC) // Curly, AI
 	NPC->y += NPC->ym;
 
 	if (NPC->act_no >= 100 && !(NPC->flag & ground) && NPC->ani_no != 1000)
+	{
 		if (xDistToTarget + pixelsToUnits(2) >= yDistToTarget)
 			NPC->ani_no = 1;
 		else
 			NPC->ani_no = 6;
+	}
 
 	if (NPC->direct != dirLeft)
 		NPC->rect = rcRight[NPC->ani_no];
@@ -315,7 +317,7 @@ void curlyNPCCommonStart(npc *NPC)
 	}
 }
 
-void curlyNPCCommonBulletSpawn(npc *NPC, int bulletCode)
+void curlyNPCCommonBulletSpawn(const npc *NPC, int bulletCode)
 {
 	if (NPC->ani_no)
 	{

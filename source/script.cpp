@@ -27,7 +27,7 @@ using std::strcat;
 //Variables
 TSC tsc;
 char tscText[0x100];
-uint8_t *tscTextFlag = static_cast<uint8_t*>(malloc(0x100));
+uint8_t *tscTextFlag = new uint8_t[0x100];
 
 //Mode enum
 enum TSC_mode
@@ -43,7 +43,7 @@ enum TSC_mode
 };
 
 //Init function
-bool initTsc() noexcept
+bool initTsc()
 {
 	tsc.mode = 0;
 	gameFlags &= ~4;
@@ -51,7 +51,7 @@ bool initTsc() noexcept
 	memset(tscText, 0, 0x100);
 	memset(tscTextFlag, 0, 0x100);
 
-	tsc.data = static_cast<uint8_t*>(malloc(0x5000u));
+	tsc.data = new uint8_t[0x5000];
 	return tsc.data != nullptr;
 }
 
@@ -104,7 +104,7 @@ void loadStageTsc(const char *name)
 
 	//Finish off by setting some stuff in the tsc struct
 	tsc.size = static_cast<int>(headSize + bodySize);
-	strcpy(tsc.path, name);
+	tsc.path = name;
 }
 
 void loadTsc2(const char *name)
@@ -123,13 +123,13 @@ void loadTsc2(const char *name)
 	bodyRW->close(bodyRW);
 
 	//Finish off by setting some stuff in the tsc struct
-	strcpy(tsc.path, name);
+	tsc.path = name;
 }
 
 //Get number function
-int getTSCNumber(int a) noexcept attrPure;
+int getTSCNumber(int a)  attrPure;
 
-int getTSCNumber(int a) noexcept
+int getTSCNumber(int a) 
 {
 	return			(static_cast<char>(tsc.data[a + 3]) - 0x30) +
 	                10 *	(static_cast<char>(tsc.data[a + 2]) - 0x30) +
@@ -137,7 +137,7 @@ int getTSCNumber(int a) noexcept
 	                1000 *	(static_cast<char>(tsc.data[a]) - 0x30);
 }
 
-void tscClearText() noexcept
+void tscClearText() 
 {
 	for (int i = 0; i < 4; ++i)
 	{
@@ -149,7 +149,7 @@ void tscClearText() noexcept
 }
 
 //TSC run event functions
-int startTscEvent(int no) noexcept
+int startTscEvent(int no) 
 {
 	tsc.mode = 1;
 	gameFlags |= 5;
@@ -187,7 +187,7 @@ int startTscEvent(int no) noexcept
 	return 1;
 }
 
-int jumpTscEvent(int no) noexcept
+int jumpTscEvent(int no) 
 {
 	tsc.mode = 1;
 	gameFlags |= 4;
@@ -220,7 +220,7 @@ int jumpTscEvent(int no) noexcept
 	return 1;
 }
 
-void stopTsc() noexcept
+void stopTsc() 
 {
 	tsc.mode = 0;
 	gameFlags &= ~4;
@@ -229,7 +229,7 @@ void stopTsc() noexcept
 }
 
 //Check new line
-void checkNewLine() noexcept
+void checkNewLine() 
 {
 	if (tsc.ypos_line[tsc.line % 4] == 48)
 	{
@@ -240,7 +240,7 @@ void checkNewLine() noexcept
 	}
 }
 
-void clearTextLine() noexcept
+void clearTextLine() 
 {
 	//Reset current writing position
 	tsc.line = 0;
@@ -258,7 +258,7 @@ void clearTextLine() noexcept
 }
 
 //TSC Update
-int tscCheck() noexcept
+int tscCheck() 
 {
 	//End tsc if in END state, continue if not
 	if (tsc.mode)
@@ -269,7 +269,7 @@ int tscCheck() noexcept
 	return 1;
 }
 
-void tscCleanup(int numargs) noexcept //Function to shift the current read position after a command
+void tscCleanup(int numargs)  //Function to shift the current read position after a command
 {
 	tsc.p_read += 4 + (numargs * 4);
 
@@ -277,7 +277,7 @@ void tscCleanup(int numargs) noexcept //Function to shift the current read posit
 		tsc.p_read += (numargs - 1);
 }
 
-static inline void showTSCNotImplementedWarning(const char *message) noexcept
+static inline void showTSCNotImplementedWarning(const char *message) 
 {
 	SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_WARNING, "Unimplemented command", message, nullptr);
 }
@@ -527,11 +527,9 @@ int updateTsc()
 			static bool notifiedAboutFLA = false;
 			static bool notifiedAboutFOB = false;
 			static bool notifiedAboutINP = false;
-			static bool notifiedAboutMLP = false;
 			static bool notifiedAboutNCJ = false;
 			static bool notifiedAboutNUM = false;
 			static bool notifiedAboutSIL = false;
-			static bool notifiedAboutSMP = false;
 			static bool notifiedAboutSPS = false;
 			static bool notifiedAboutSSS = false;
 			static bool notifiedAboutSTC = false;
@@ -896,7 +894,7 @@ int updateTsc()
 				break;
 			case('<MLP'):
 				tscCleanup(0);
-				bExit = 1;
+				bExit = true;
 				xt = openMapSystem();
 				if (!xt)
 					return 0;
@@ -1066,7 +1064,7 @@ int updateTsc()
 				tscCleanup(0);
 				break;
 			case('<SAT'):
-				tsc.flags |= 0x40u;
+				tsc.flags |= 0x40u;	// <SAT is same as <CAT
 				tscCleanup(0);
 				break;
 			case('<SIL'):

@@ -143,15 +143,10 @@ int openMapSystem()
 		for (int i = 0; i < 2; i++)
 		{
 			if (line >= levelHeight)
-			{
 				break;
-			}
-			else
-			{
-				for (int x = 0; x < levelWidth; x++)
-					drawTextureNoScale(sprites[TEX_TEXTBOX], &rcLevel[tileTypes[getTileAttribute(x, line)]], x, line);
-				line++;
-			}
+			for (int x = 0; x < levelWidth; x++)
+				drawTextureNoScale(sprites[TEX_TEXTBOX], &rcLevel[tileTypes[getTileAttribute(x, line)]], x, line);
+			line++;
 		}
 
 		if (SDL_SetRenderTarget(renderer, nullptr) < 0)

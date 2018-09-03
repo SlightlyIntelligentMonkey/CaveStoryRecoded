@@ -100,6 +100,9 @@ void actBulletFireball1(bullet *bul)
 
 					bul->ym = 0x5FF;
 					break;
+
+				default:
+					break;
 				}
 			}
 
@@ -235,6 +238,9 @@ void actBulletFireball2(bullet *bul)
 						bul->direct = dirLeft;
 
 					bul->ym = 0x5FF;
+					break;
+
+				default:
 					break;
 				}
 			}
@@ -373,6 +379,9 @@ void actBulletFireball3(bullet *bul)
 						bul->direct = dirLeft;
 
 					bul->ym = 0x5FF;
+					break;
+
+				default:
 					break;
 				}
 			}
