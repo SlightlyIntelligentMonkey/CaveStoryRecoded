@@ -25,6 +25,10 @@ deque<npc> npcs(0);
 int superXPos = 0;	// Used by undead core related NPCs ?
 int superYPos = 0;
 
+int curlyShootWait = 0;
+int curlyShootX = 0;
+int curlyShootY = 0;
+
 //NPC Functions
 void createSmokeLeft(int x, int y, int w, size_t num)
 {

@@ -49,6 +49,8 @@ void loadStageTable();
 void loadLevel(int levelIndex);
 void drawLevel(bool foreground);
 
+// Note : 1 tile is 0x2000 units
+
 constexpr inline int tilesToUnits(int x) noexcept attrConst;
 
 constexpr inline int tilesToUnits(int x) noexcept
