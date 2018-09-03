@@ -17,7 +17,9 @@ void shootSnake(int level)
 	{
 		if (useWeaponAmmo(1) ^ 1)
 		{
-			playSound(SFX_NoAmmo);
+			selectedWeapon = 0;
+			weaponShiftX = 32;
+			playSound(SFX_SwitchWeapon);
 		}
 		switch (level)
 		{
