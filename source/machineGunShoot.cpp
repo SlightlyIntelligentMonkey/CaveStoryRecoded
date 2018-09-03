@@ -96,13 +96,13 @@ void shootMachineGun(int level)
 			if (machinegunRechargeWait > 1)
 			{
 				machinegunRechargeWait = 0;
-				chargeArmsEnergy(1);
+				giveWeaponAmmo(1);
 			}
 		}
 		else if (machinegunRechargeWait > 4)
 		{
 			machinegunRechargeWait = 0;
-			chargeArmsEnergy(1);
+			giveWeaponAmmo(1);
 		}
 	}
 

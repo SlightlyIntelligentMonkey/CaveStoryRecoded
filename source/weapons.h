@@ -42,6 +42,7 @@ int tradeWeapons(int code1, int code2, int max_num) noexcept;
 void clearWeaponExperience() noexcept;
 void maxWeaponAmmo() noexcept;
 bool checkWeapon(int code) noexcept attrPure;
+void giveWeaponAmmo(int num) noexcept;
 
 void giveWeaponExperience(int x);
 

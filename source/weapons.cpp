@@ -18,10 +18,10 @@ using std::to_string;
 weaponShoot shootFunctions[14] =
 {
 	static_cast<weaponShoot>(nullptr),
-	static_cast<weaponShoot>(nullptr),
+	&shootSnake,
 	&shootPolarStar,
 	&shootFireball,
-	static_cast<weaponShoot>(nullptr),
+	&shootMachineGun,
 	&shootMissile,
 	static_cast<weaponShoot>(nullptr),
 	static_cast<weaponShoot>(nullptr),
@@ -88,6 +88,13 @@ void actWeapon()
 			}
 		}
 	}
+}
+
+void giveWeaponAmmo(int num) noexcept
+{
+	weapons[selectedWeapon].num += num;
+	if (weapons[selectedWeapon].num > weapons[selectedWeapon].max_num)
+		weapons[selectedWeapon].num = weapons[selectedWeapon].max_num;
 }
 
 int useWeaponAmmo(int num) noexcept
