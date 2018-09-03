@@ -5,6 +5,6 @@
 void shootPolarStar(int level);
 void shootFireball(int level);
 
-void launchMissile(int level);
+void shootMissile(int level);
 
 void shootSpur(int level);

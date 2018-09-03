@@ -9,6 +9,7 @@
 
 #include <string>
 #include <SDL_messagebox.h>
+#include "render.h"
 using std::string;
 using std::to_string;
 
@@ -1266,6 +1267,38 @@ void npcAct013(npc *NPC) // Forcefield
 	NPC->rect = rcNPC[NPC->ani_no];
 }
 
+void npcAct014(npc * NPC) // Santa's Key
+{
+	constexpr RECT rcNPC[3] = { {192, 0, 208, 16}, {208, 0, 224, 16}, {224, 0, 240, 16} };
+
+	if (!NPC->act_no)
+	{
+		NPC->act_no = 1;
+		if (NPC->direct == dirRight)
+		{
+			NPC->ym = -0x200;
+
+			for (int i = 0; i < 4; ++i)
+			{
+				int childYVel = random(-0x600, 0);
+				int childXVel = random(-0x155, 0x155);
+				int childYPos = NPC->y + pixelsToUnits(random(-12, 12));
+				int childXPos = NPC->x + pixelsToUnits(random(-12, 12));
+				createNpc(NPC_Smoke, childXPos, childYPos, childXVel, childYVel);
+			}
+		}
+	}
+	NPC->animate(1, 0, 2);
+
+	NPC->ym += 0x40;
+	if (NPC->ym > 0x5FF)
+		NPC->ym = 0x5FF;
+	
+	NPC->y += NPC->ym;
+
+	NPC->rect = rcNPC[NPC->ani_no];
+}
+
 void npcAct015(npc *NPC) //Closed chest
 {
 	const int act_no = NPC->act_no;
@@ -1564,3 +1597,4 @@ void npcAct019(npc *NPC) //Balrog burst
 	else
 		NPC->rect = rcLeft[NPC->ani_no];
 }
+
