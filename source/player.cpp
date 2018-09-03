@@ -29,6 +29,8 @@ void player::init() noexcept
 
 	viewport.speed = 16;
 
+	air = 1000;
+
 	life = 3;
 	max_life = 3;
 }
@@ -102,7 +104,7 @@ void player::damage(int16_t damage)
 			--star;
 
 		//Lose experience
-		if (equip & equip_turboCharge)
+		if (equip & equip_armsBarrier)
 			weapons[selectedWeapon].exp -= damage;
 		else
 			weapons[selectedWeapon].exp -= damage * 2;

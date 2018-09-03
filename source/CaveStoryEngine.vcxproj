@@ -215,6 +215,7 @@
     <ClCompile Include="loadConfig.cpp" />
     <ClCompile Include="machineGun.cpp" />
     <ClCompile Include="machineGunShoot.cpp" />
+    <ClCompile Include="mapSystem.cpp" />
     <ClCompile Include="missile.cpp" />
     <ClCompile Include="missileLaunch.cpp" />
     <ClCompile Include="npc080.cpp" />
@@ -250,12 +251,7 @@
     <ClCompile Include="npc200.cpp" />
     <ClCompile Include="npcAct.cpp" />
     <ClCompile Include="org.cpp" />
-    <ClCompile Include="player.cpp">
-      <Optimization Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Disabled</Optimization>
-      <Optimization Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Disabled</Optimization>
-      <Optimization Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Disabled</Optimization>
-      <Optimization Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Disabled</Optimization>
-    </ClCompile>
+    <ClCompile Include="player.cpp" />
     <ClCompile Include="playerCollision.cpp" />
     <ClCompile Include="polarStar.cpp" />
     <ClCompile Include="polarStarShoot.cpp" />

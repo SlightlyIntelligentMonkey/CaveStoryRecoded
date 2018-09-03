@@ -1,7 +1,7 @@
 {
   "debugFlags": {
     "showSlots": false,
-    "showNPCId ": false,
+    "showNPCId": false,
     "showBULId": false,
     "showCARId": false,
     "notifyOnNotImplemented": true,

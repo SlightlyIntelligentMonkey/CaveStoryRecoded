@@ -1083,52 +1083,78 @@ void npcAct088(npc * NPC) // Igor (boss)
 
 void npcAct089(npc * NPC) // Igor, dying
 {
-	constexpr RECT rcLeft[4] = { {80, 80, 120, 120}, {240, 80, 264, 104}, {264, 80, 288, 104}, {288, 80, 312, 104} };
-	constexpr RECT rcRight[4] = { {200, 80, 240, 120}, {240, 104, 264, 128}, {264, 104, 288, 128}, {288, 104, 312, 128} };
+	RECT rcLeft[4];
+	RECT rcRight[4];
 
-	enum
-	{
-		init = 0,
-		smokeLoop = 1,
-		flashBigSmall = 2,
-		fallDown = 3,
-	};
+	rcLeft[0].left = 80;
+	rcLeft[0].top = 80;
+	rcLeft[0].right = 120;
+	rcLeft[0].bottom = 120;
+	rcLeft[1].left = 240;
+	rcLeft[1].top = 80;
+	rcLeft[1].right = 264;
+	rcLeft[1].bottom = 104;
+	rcLeft[2].left = 264;
+	rcLeft[2].top = 80;
+	rcLeft[2].right = 288;
+	rcLeft[2].bottom = 104;
+	rcLeft[3].left = 288;
+	rcLeft[3].top = 80;
+	rcLeft[3].right = 312;
+	rcLeft[3].bottom = 104;
+	rcRight[0].left = 200;
+	rcRight[0].top = 80;
+	rcRight[0].right = 240;
+	rcRight[0].bottom = 120;
+	rcRight[1].left = 240;
+	rcRight[1].top = 104;
+	rcRight[1].right = 264;
+	rcRight[1].bottom = 128;
+	rcRight[2].left = 264;
+	rcRight[2].top = 104;
+	rcRight[2].right = 288;
+	rcRight[2].bottom = 128;
+	rcRight[3].left = 288;
+	rcRight[3].top = 104;
+	rcRight[3].right = 312;
+	rcRight[3].bottom = 128;
 
 	switch (NPC->act_no)
 	{
-	case init:
-		playSound(SFX_Explosion);
-		NPC->facePlayer();
+	case 0:
+		playSound(72);
 
-		for (size_t i = 0; i < 8; ++i)
-			createNpc(NPC_Smoke,
-				NPC->x + (random(-12, 12) << 9), NPC->y + (random(-12, 12) << 9),
-				random(-0x155, 0x155), random(-0x600, 0));
-		NPC->act_no = smokeLoop;
-		// Fallthrough
-	case smokeLoop:
+		if (NPC->x <= currentPlayer.x)
+			NPC->direct = 2;
+		else
+			NPC->direct = 0;
+
+		for (int i = 0; i < 8; ++i)
+			createNpc(4, NPC->x + (random(-12, 12) << 9), NPC->y + (random(-12, 12) << 9), random(-0x155, 0x155), random(-0x600, 0), 0, nullptr);
+
+		NPC->act_no = 1;
+//Fallthrough
+	case 1:
 		if (++NPC->act_wait > 100)
 		{
 			NPC->act_wait = 0;
-			NPC->act_no = flashBigSmall;
+			NPC->act_no = 2;
 		}
 
 		if (!(NPC->act_wait % 5))
-			createNpc(NPC_Smoke,
-				NPC->x + (random(-12, 12) << 9), NPC->y + (random(-12, 12) << 9),
-				random(-0x155, 0x155), random(-0x600, 0));
+			createNpc(4, NPC->x + (random(-12, 12) << 9), NPC->y + (random(-12, 12) << 9), random(-0x155, 0x155), random(-0x600, 0), 0, nullptr);
 
-		if (NPC->direct != dirLeft)
+		if (NPC->direct)
 			NPC->rect = rcRight[0];
 		else
 			NPC->rect = rcLeft[0];
-		
-		if (NPC->act_wait / 2 % 2)
+
+		if (NPC->act_wait / 2 & 1)
 			--NPC->rect.left;
 		break;
 
-	case flashBigSmall:
-		if (++NPC->act_wait / 2 % 2 && NPC->act_wait < 100)
+	case 2:
+		if (++NPC->act_wait / 2 & 1 && NPC->act_wait <= 99)
 		{
 			NPC->ani_no = 0;
 			NPC->view.right = 0x2800;
@@ -1137,7 +1163,7 @@ void npcAct089(npc * NPC) // Igor, dying
 		}
 		else
 		{
-			NPC->ani_no = 0;
+			NPC->ani_no = 1;
 			NPC->view.right = 0x1800;
 			NPC->view.left = 0x1800;
 			NPC->view.top = 0x1000;
@@ -1146,33 +1172,33 @@ void npcAct089(npc * NPC) // Igor, dying
 		if (NPC->act_wait > 150)
 		{
 			NPC->act_wait = 0;
-			NPC->act_no = fallDown;
+			NPC->act_no = 3;
 			NPC->ani_no = 1;
 		}
-		if (!(NPC->act_wait % 9))
-			createNpc(NPC_Smoke,
-				NPC->x + (random(-12, 12) << 9), NPC->y + (random(-12, 12) << 9),
-				random(-0x155, 0x155), random(-0x600, 0));
 
-		if (NPC->direct == dirLeft)
-			NPC->rect = rcLeft[NPC->ani_no];
-		else
+		if (!(NPC->act_wait % 9))
+			createNpc(4, NPC->x + (random(-12, 12) << 9), NPC->y + (random(-12, 12) << 9), random(-0x155, 0x155), random(-0x600, 0), 0, nullptr);
+
+		if (NPC->direct)
 			NPC->rect = rcRight[NPC->ani_no];
+		else
+			NPC->rect = rcLeft[NPC->ani_no];
 		break;
 
-	case fallDown:
+	case 3:
 		if (++NPC->ani_wait > 50)
 		{
 			NPC->ani_wait = 0;
 			++NPC->ani_no;
 		}
+
 		if (NPC->ani_no == 3)
 			NPC->act_no = 4;
 
-		if (NPC->direct == dirLeft)
-			NPC->rect = rcLeft[NPC->ani_no];
-		else
+		if (NPC->direct)
 			NPC->rect = rcRight[NPC->ani_no];
+		else
+			NPC->rect = rcLeft[NPC->ani_no];
 		break;
 
 	default:
@@ -1182,7 +1208,7 @@ void npcAct089(npc * NPC) // Igor, dying
 	NPC->ym += 0x40;
 	if (NPC->ym > 0x5FF)
 		NPC->ym = 0x5FF;
-
+  
 	NPC->x += NPC->xm;
 	NPC->y += NPC->ym;
 }

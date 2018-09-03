@@ -350,15 +350,22 @@ int gameUpdatePlay()
 		{
 			if (isKeyPressed(keyMenu))
 			{
-				captureScreen(TEX_SCREENSHOT);
+				//captureScreen(TEX_SCREENSHOT); //Redundant
 				const int inventoryRet = openInventory();
-
 				if (!inventoryRet)
 					return 0;
 				if (inventoryRet == 2)
 					return 1;
-
 				currentPlayer.cond &= ~player_interact;
+			}
+			else if (currentPlayer.equip & equip_mapSystem && isKeyPressed(keyMap))
+			{
+				captureScreen(TEX_SCREENSHOT);
+				const int mapRet = openMapSystem();
+				if (!mapRet)
+					return 0;
+				if (mapRet == 2)
+					return 1;
 			}
 		}
 
@@ -380,13 +387,9 @@ int gameUpdatePlay()
 			return 1;
 
 		drawMapName(false);
-
 		drawHud(!(gameFlags & 2));
-
 		drawTsc();
-
 		debugFunction();
-
 		drawWindow();
 	}
 

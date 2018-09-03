@@ -13,6 +13,7 @@ enum TextureNums
 	TEX_TILESET = 2,
 	TEX_FADE = 6,
 	TEX_ITEMIMAGE = 8,
+	TEX_MAPSYSTEM = 9,
 	TEX_SCREENSHOT = 10,
 	TEX_ARMS = 11,
 	TEX_ARMSIMAGE = 12,
@@ -42,10 +43,13 @@ void loadImage(const char *file, SDL_Texture **tex);
 //Drawing functions
 void setCliprect(const RECT *rect) noexcept;
 void drawTexture(SDL_Texture *texture, const RECT *rect, int x, int y);
+void drawTextureNoScale(SDL_Texture *texture, const RECT *rect, int x, int y);
 void drawTextureSize(SDL_Texture *texture, const RECT *rect, int x, int y, int w, int h);
 void drawNumber(int value, int x, int y, bool bZero);
 void drawString(int x, int y, const char *str, const uint8_t *flag = nullptr);
 void drawRect(int x, int y, int w, int h) noexcept;
+
+void createTextureBuffer(enum TextureNums texture_id, int width, int height);
 
 template <typename T>
 inline T pixelsToUnits(T x) noexcept

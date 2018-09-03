@@ -5,8 +5,7 @@
 
 	Yet to be implemented :
 
-    BOA, BSL, CIL, CLR, CPS, CRE, CSS, FLA, FOB, INP, MLP, NCJ, NUM, SIL,
-    SMP, SPS, SSS, STC and XX1
+    BOA, CIL, CLR, CPS, CRE, CSS, FLA, FOB, INP, NCJ, NUM, SIL, SPS, SSS, STC and XX1
 
 */
 

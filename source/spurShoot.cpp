@@ -130,7 +130,7 @@ void shootSpur(int level)
 
 			//Create bullet
 			createBullet(bul_no, currentPlayer.x + shootX, currentPlayer.y + shootY, shootDirect);
-			createCaret(currentPlayer.x + caretX, currentPlayer.y + shootY, 3, 0);
+			createCaret(currentPlayer.x + caretX, currentPlayer.y + shootY, effect_Star);
 
 			//Play sound
 			switch (bul_no)

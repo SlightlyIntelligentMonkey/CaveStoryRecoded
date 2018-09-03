@@ -795,8 +795,8 @@ int updateTsc()
 				tscCleanup(2);
 				break;
 			case('<FOM'):
-				viewport.lookX = &currentPlayer.x;
-				viewport.lookY = &currentPlayer.y;
+				viewport.lookX = &currentPlayer.tgt_x;
+				viewport.lookY = &currentPlayer.tgt_y;
 				viewport.speed = getTSCNumber(tsc.p_read + 4);
 				tscCleanup(1);
 				break;
@@ -895,13 +895,13 @@ int updateTsc()
 				tscCleanup(1);
 				break;
 			case('<MLP'):
-				if (!notifiedAboutMLP && debugFlags & notifyOnNotImplemented)
-				{
-					notifiedAboutMLP = true;
-					showTSCNotImplementedWarning("<MLP is not implemented");
-				}
-
 				tscCleanup(0);
+				bExit = 1;
+				xt = openMapSystem();
+				if (!xt)
+					return 0;
+				if (xt == 2)
+					return 2;
 				break;
 			case('<MM0'):
 				currentPlayer.xm = 0;
@@ -1107,12 +1107,7 @@ int updateTsc()
 				tscCleanup(0);
 				break;
 			case('<SMP'):
-				if (!notifiedAboutSMP && debugFlags & notifyOnNotImplemented)
-				{
-					notifiedAboutSMP = true;
-					showTSCNotImplementedWarning("<SMP is not implemented");
-				}
-
+				shiftTile(getTSCNumber(tsc.p_read + 4), getTSCNumber(tsc.p_read + 9));
 				tscCleanup(2);
 				break;
 			case('<SNP'):

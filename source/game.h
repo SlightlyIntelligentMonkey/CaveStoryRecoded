@@ -72,6 +72,7 @@ void init2();
 
 int escapeMenu();
 
+int openMapSystem();
 int openInventory();
 int stageSelect(int *runEvent);
 int mainGameLoop();
