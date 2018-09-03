@@ -9,9 +9,10 @@ LINK_CPP := $(CXX) -m32 $(OPTIMISATIONS) $(WARNINGS) -static -static-libstdc++ -
 LINK_C := $(CC) -m32 $(OPTIMISATIONS) $(WARNINGS) -static -static-libstdc++ -static-libgcc -mwindows
 # Remove -mwindows for Unix build
 
-MAIN := bullet bulletCollision caret fade filesystem fireball fireballShoot flags game hud input inventory level loadConfig main mathUtils
+MAIN := bullet bulletCollision caret fade filesystem fireball fireballShoot flags game hud 
+MAIN += input inventory level loadConfig machineGun machineGunShoot main mapSystem mathUtils missile missileShoot
 MAIN += npc npcAct npcCollision org player playerCollision polarStar polarStarShoot
-MAIN += render script sound spur spurShoot stageSelect stdUtils valueview weapons
+MAIN += render script snake snakeShoot sound spur spurShoot stageSelect stdUtils valueview weapons
 
 MAIN += npc000 npc020 npc040 npc060 npc080 npc100 npc120 npc140 npc160 npc180 npc200 npc220 npc240 npc260 npc280 npc300 npc320 npc340
 
