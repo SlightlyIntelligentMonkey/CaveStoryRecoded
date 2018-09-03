@@ -27,6 +27,7 @@ using std::strcat;
 //Variables
 TSC tsc;
 char tscText[0x100];
+int tscNumber[4];
 uint8_t *tscTextFlag = static_cast<uint8_t*>(malloc(0x100));
 
 //Mode enum
@@ -275,6 +276,48 @@ void tscCleanup(int numargs) noexcept //Function to shift the current read posit
 
 	if (numargs > 1)
 		tsc.p_read += (numargs - 1);
+}
+
+void tscPutNumber(int index)
+{
+	int table[3];
+	char str[5];
+	
+	table[0] = 1000;
+	table[1] = 100;
+	table[2] = 10;
+	int a = tscNumber[index];
+
+	bool bZero = false;
+	int offset = 0;
+
+	for (int i = 0; i < 3; ++i)
+	{
+		if (a / table[i] || bZero)
+		{
+			int b = a / table[i];
+			str[offset] = b + 48;
+			bZero = 1;
+			a -= b * table[i];
+			++offset;
+		}
+	}
+
+	str[offset] = a + 48;
+	str[offset + 1] = 0;
+
+	strcat(tscText + (0x40 * (tsc.line % 4)), str);
+
+	playSound(2, 1);
+	tsc.wait_beam = 0;
+	tsc.p_write += strlen(str);
+
+	if (tsc.p_write > 34)
+	{
+		tsc.p_write = 0;
+		++tsc.line;
+		checkNewLine();
+	}
 }
 
 static inline void showTSCNotImplementedWarning(const char *message) noexcept
@@ -529,7 +572,6 @@ int updateTsc()
 			static bool notifiedAboutINP = false;
 			static bool notifiedAboutMLP = false;
 			static bool notifiedAboutNCJ = false;
-			static bool notifiedAboutNUM = false;
 			static bool notifiedAboutSIL = false;
 			static bool notifiedAboutSMP = false;
 			static bool notifiedAboutSPS = false;
@@ -544,6 +586,8 @@ int updateTsc()
 				tscCleanup(0);
 				break;
 			case('<AM+'):
+				tscNumber[0] = getTSCNumber(tsc.p_read + 9);
+				tscNumber[1] = 0;
 				giveWeapon(getTSCNumber(tsc.p_read + 4), getTSCNumber(tsc.p_read + 9));
 				tscCleanup(2);
 				break;
@@ -1035,12 +1079,7 @@ int updateTsc()
 				tscCleanup(0);
 				return 1;
 			case('<NUM'):
-				if (!notifiedAboutNUM && debugFlags & notifyOnNotImplemented)
-				{
-					notifiedAboutNUM = true;
-					showTSCNotImplementedWarning("<NUM is not implemented");
-				}
-
+				tscPutNumber(getTSCNumber(tsc.p_read + 4));
 				tscCleanup(1);
 				break;
 			case('<PRI'):
