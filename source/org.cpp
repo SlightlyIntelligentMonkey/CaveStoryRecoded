@@ -91,9 +91,6 @@ void mixOrg(int16_t *stream, int len)
 	if (stream == nullptr)
 		doCustomError("stream was nullptr in mixOrg");
 
-	int32_t tempSampleL;
-	int32_t tempSampleR;
-
 	for (int i = 0; i < len; i++)
 	{
 		//Update
@@ -105,8 +102,8 @@ void mixOrg(int16_t *stream, int len)
 		}
 
 		//Put current stream sample into temp samples (org's done first so this is typically 0 anyways)
-		tempSampleL = (int32_t)stream[2 * i];
-		tempSampleR = (int32_t)stream[2 * i + 1];
+		auto tempSampleL = (int32_t)stream[2 * i];
+		auto tempSampleR = (int32_t)stream[2 * i + 1];
 
 		//Play waves
 		for (int wave = 0; wave < 8; wave++)
@@ -137,7 +134,7 @@ void mixOrg(int16_t *stream, int len)
 		//Play Drums
 		for (int wave = 0; wave < 8; wave++)
 		{
-			const auto waveSamples = (unsigned int)((long double)(800 * orgDrums[wave].key + 100) / (double)sampleRate * 4096.0);
+			const size_t waveSamples = ((long double)(800 * orgDrums[wave].key + 100) / (double)sampleRate * 4096.0);
 
 			int id;
 
@@ -173,9 +170,7 @@ void mixOrg(int16_t *stream, int len)
 					orgDrums[wave].pos += waveSamples;
 
 					if ((orgDrums[wave].pos >> 12) >= sounds[id].length)
-					{
 						orgDrums[wave].playing = false;
-					}
 					else
 					{
 						const size_t s_offset_1 = orgDrums[wave].pos >> 12;
@@ -549,6 +544,7 @@ void loadOrganya(const char *name)
 
 		memset(orgWaves, 0, sizeof(orgWaves));
 		
+		
 		for (int wave = 0; wave < 8; wave++)
 		{
 			SDL_RWseek(rawWave100, 0x100 * org.tdata[wave].wave_no, 0);
@@ -565,9 +561,7 @@ void loadOrganya(const char *name)
 		organyaSetPlayPosition(0);
 	}
 	else
-	{
 		doCustomError("File given either isn't a .org or isn't a valid version.");
-	}
 
 	SDL_PauseAudioDevice(soundDev, 0);
 }

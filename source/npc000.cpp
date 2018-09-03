@@ -1280,10 +1280,10 @@ void npcAct014(npc * NPC) // Santa's Key
 
 			for (int i = 0; i < 4; ++i)
 			{
-				int childYVel = random(-0x600, 0);
-				int childXVel = random(-0x155, 0x155);
-				int childYPos = NPC->y + pixelsToUnits(random(-12, 12));
-				int childXPos = NPC->x + pixelsToUnits(random(-12, 12));
+				const int childYVel = random(-0x600, 0);
+				const int childXVel = random(-0x155, 0x155);
+				const int childYPos = NPC->y + pixelsToUnits(random(-12, 12));
+				const int childXPos = NPC->x + pixelsToUnits(random(-12, 12));
 				createNpc(NPC_Smoke, childXPos, childYPos, childXVel, childYVel);
 			}
 		}

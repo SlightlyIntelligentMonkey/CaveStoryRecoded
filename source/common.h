@@ -72,8 +72,8 @@ extern bool exitGame;
 extern int gameFlags;
 
 //Functions
-[[noreturn]] void doError() ;
-[[noreturn]] void doCustomError(const std::string& msg) ;
+[[noreturn]] void doError();
+[[noreturn]] void doCustomError(const std::string& msg);
 
 //Macros
 #ifdef __GNUC__

@@ -10,12 +10,6 @@ void shootMachineGun(int level)
 	static int machinegunShootWait = 0;
 	static int machinegunRechargeWait = 0;
 
-	int bulletId = 0;
-	int shootDirect = 0;
-	int shootX = 0;
-	int shootY = 0;
-	int caretX = 0;
-
 	if (isKeyDown(keyShoot))
 	{
 		if (++machinegunShootWait > 5)
@@ -35,6 +29,8 @@ void shootMachineGun(int level)
 			return;
 		}
 
+		int bulletId = 0;
+
 		switch (level)
 		{
 		case(1):
@@ -50,6 +46,11 @@ void shootMachineGun(int level)
 			playSound(SFX_PolarStarShootLevel3);
 			break;
 		}
+
+		int shootDirect = 0;
+		int shootX = 0;
+		int shootY = 0;
+		int caretX = 0;
 
 		if (currentPlayer.up)
 		{
@@ -105,6 +106,4 @@ void shootMachineGun(int level)
 			giveWeaponAmmo(1);
 		}
 	}
-
-	return;
 }

@@ -70,7 +70,7 @@ void loadStageTable()
 uint8_t getTileAttribute(int x, int y) 
 {
 	if (x >= 0 && x < levelWidth && y >= 0 && y < levelHeight)
-		return levelTileAttributes[levelMap[(x + y * levelWidth)]];
+		return levelTileAttributes[levelMap[x + y * levelWidth]];
 
 	return 0;
 }
@@ -140,7 +140,7 @@ void loadLevel(int levelIndex)
 	memcpy(levelMap, pxm + 8, pxmSize - 8);
 
 	//DONE WITH PXM
-	free(pxm);
+	delete[] pxm;
 
 	//Load pxa
 	const string pxaPath = string("data/Stage/") + stageTable[levelIndex].tileset + ".pxa";
@@ -160,7 +160,7 @@ void loadLevel(int levelIndex)
 	memcpy(levelTileAttributes, pxa, pxaSize);
 
 	//DONE WITH PXA
-	free(pxa);
+	delete[] pxa;
 
 	//Load pxe
 	const string pxePath = string("data/Stage/") + stageTable[levelIndex].filename + ".pxe";
@@ -202,7 +202,7 @@ void loadLevel(int levelIndex)
 		npcs.push_back(newNPC);
 	}
 
-	free(pxe);
+	delete[] pxe;
 
 	//Load tileset
 	const string tileImagePath = string("data/Stage/Prt") + stageTable[levelIndex].tileset + ".png";

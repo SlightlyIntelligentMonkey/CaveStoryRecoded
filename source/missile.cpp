@@ -110,7 +110,6 @@ void actBulletMissileLauncher1(bullet *bul)
 	bul->rect.top = 0;
 	bul->rect.right = bul->rect.left + 16;
 	bul->rect.bottom = bul->rect.top + 16;
-	return;
 }
 
 void actBulletMissileLauncher2(bullet *bul)
@@ -217,7 +216,6 @@ void actBulletMissileLauncher2(bullet *bul)
 	bul->rect.top = 16;
 	bul->rect.right = bul->rect.left + 16;
 	bul->rect.bottom = bul->rect.top + 16;
-	return;
 }
 
 void actBulletMissileLauncher3(bullet *bul)
@@ -274,6 +272,9 @@ void actBulletMissileLauncher3(bullet *bul)
 			bul->ym = 256;
 			bul->xm = random(-512, 512);
 			bul->tgt_x = bul->x;
+			break;
+
+		default:
 			break;
 		}
 	}
@@ -360,7 +361,6 @@ void actBulletMissileLauncher3(bullet *bul)
 	bul->rect.top = 32;
 	bul->rect.right = bul->rect.left + 16;
 	bul->rect.bottom = bul->rect.top + 16;
-	return;
 }
 
 void actBulletBoom1(bullet *bul)
@@ -385,7 +385,6 @@ void actBulletBoom1(bullet *bul)
 
 	if (--bul->act_wait < 0)
 		bul->cond = 0;
-	return;
 }
 
 void actBulletBoom2(bullet *bul)
@@ -409,7 +408,6 @@ void actBulletBoom2(bullet *bul)
 
 	if (--bul->act_wait < 0)
 		bul->cond = 0;
-	return;
 }
 
 void actBulletBoom3(bullet *bul)
@@ -433,5 +431,4 @@ void actBulletBoom3(bullet *bul)
 
 	if (--bul->act_wait < 0)
 		bul->cond = 0;
-	return;
 }

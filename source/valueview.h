@@ -15,10 +15,10 @@ public: //Variables
 	RECT rect;
 
 public: //Functions
-	void init(int *px, int *py, int value) ;
-	void add(int value) ;
+	void init(int *setPx, int *setPy, int value);
+	void add(int addVal);
 
-	void update() ;
+	void update();
 	void draw();
 };
 

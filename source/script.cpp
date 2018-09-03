@@ -27,7 +27,7 @@ using std::strcat;
 //Variables
 TSC tsc;
 char tscText[0x100];
-uint8_t *tscTextFlag = static_cast<uint8_t*>(malloc(0x100));
+uint8_t *tscTextFlag = new uint8_t[0x100];
 
 //Mode enum
 enum TSC_mode
@@ -43,7 +43,7 @@ enum TSC_mode
 };
 
 //Init function
-bool initTsc() 
+bool initTsc()
 {
 	tsc.mode = 0;
 	gameFlags &= ~4;
@@ -51,7 +51,7 @@ bool initTsc()
 	memset(tscText, 0, 0x100);
 	memset(tscTextFlag, 0, 0x100);
 
-	tsc.data = static_cast<uint8_t*>(malloc(0x5000u));
+	tsc.data = new uint8_t[0x5000];
 	return tsc.data != nullptr;
 }
 
@@ -104,7 +104,7 @@ void loadStageTsc(const char *name)
 
 	//Finish off by setting some stuff in the tsc struct
 	tsc.size = static_cast<int>(headSize + bodySize);
-	strcpy(tsc.path, name);
+	tsc.path = name;
 }
 
 void loadTsc2(const char *name)
@@ -123,7 +123,7 @@ void loadTsc2(const char *name)
 	bodyRW->close(bodyRW);
 
 	//Finish off by setting some stuff in the tsc struct
-	strcpy(tsc.path, name);
+	tsc.path = name;
 }
 
 //Get number function
@@ -527,11 +527,9 @@ int updateTsc()
 			static bool notifiedAboutFLA = false;
 			static bool notifiedAboutFOB = false;
 			static bool notifiedAboutINP = false;
-			static bool notifiedAboutMLP = false;
 			static bool notifiedAboutNCJ = false;
 			static bool notifiedAboutNUM = false;
 			static bool notifiedAboutSIL = false;
-			static bool notifiedAboutSMP = false;
 			static bool notifiedAboutSPS = false;
 			static bool notifiedAboutSSS = false;
 			static bool notifiedAboutSTC = false;
@@ -896,7 +894,7 @@ int updateTsc()
 				break;
 			case('<MLP'):
 				tscCleanup(0);
-				bExit = 1;
+				bExit = true;
 				xt = openMapSystem();
 				if (!xt)
 					return 0;
@@ -1066,7 +1064,7 @@ int updateTsc()
 				tscCleanup(0);
 				break;
 			case('<SAT'):
-				tsc.flags |= 0x40u;
+				tsc.flags |= 0x40u;	// <SAT is same as <CAT
 				tscCleanup(0);
 				break;
 			case('<SIL'):

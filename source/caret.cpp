@@ -181,6 +181,9 @@ void caretAct002(caret *CARET) //Rising Disc / Exploding Diamond
 
 		CARET->rect = rcRight[CARET->ani_no];
 		break;
+
+	default:
+		break;
 	}
 }
 

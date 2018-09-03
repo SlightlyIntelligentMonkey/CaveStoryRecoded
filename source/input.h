@@ -13,7 +13,7 @@ extern int keyMap;
 extern int keyRotLeft;
 extern int keyRotRight;
 
-void getKeys(SDL_Event *event) ;
+void getKeys(SDL_Event *event);
 
 bool isKeyDown(int keynum)  attrPure;
 bool isKeyPressed(int keynum)  attrPure;

@@ -112,10 +112,10 @@ int useWeaponAmmo(int num)
 	return 1;
 }
 
-void giveAmmo(int amount, int ammoToRefill)
+void giveAmmo(int ammoToRefill)
 {
 	int i;
-	for (i = 0; i < 8 && weapons[i].code != 5 && weapons[i].code != 10; ++i);
+	for (i = 0; i < 8 && weapons[i].code != weapon_MissileLauncher && weapons[i].code != weapon_SuperMissileLauncher; ++i);
 	if (i != 8)
 	{
 		weapons[i].num += ammoToRefill;
@@ -275,6 +275,19 @@ void giveWeaponExperience(int x)
 	}
 }
 
+void resetSelectedWeaponLevel()
+{
+	weapons[selectedWeapon].level = 1;
+	weapons[selectedWeapon].exp = 0;
+}
+
+void resetSpurCharge()
+{
+	spurCharge = 0;
+	if (weapons[selectedWeapon].code == weapon_Spur)
+		resetSelectedWeaponLevel();
+}
+
 //Rotate weapon functions
 int rotateWeaponRight() 
 {
@@ -284,7 +297,7 @@ int rotateWeaponRight()
 	if (!weaponNo)
 		return 0;
 
-	//ResetSpurCharge();
+	resetSpurCharge();
 
 	//Rotate to the right, wrap around
 	++selectedWeapon;
@@ -308,7 +321,7 @@ int rotateWeaponLeft()
 	if (!weaponNo)
 		return 0;
 
-	//ResetSpurCharge();
+	resetSpurCharge();
 
 	//Rotate to the left, wrap around
 	--selectedWeapon;

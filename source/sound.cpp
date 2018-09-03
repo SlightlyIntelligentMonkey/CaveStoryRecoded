@@ -1,4 +1,4 @@
-#include "sound.h"
+﻿#include "sound.h"
 #include "org.h"
 #include "input.h"
 #include "filesystem.h"
@@ -13,11 +13,6 @@
 #include <cstdlib>
 #include <cstdio>
 #include <SDL.h>
-
-// M_PI is not Standard C++
-#ifndef M_PI
-#define M_PI		3.14159265358979323846
-#endif
 
 using std::string;
 
@@ -71,27 +66,23 @@ void makeWaveTables()
 //Audio callback and things
 void mixSounds(int16_t *stream, int len)
 {
-	int32_t tempSampleL;
-	int32_t tempSampleR;
 
 	for (int i = 0; i < len; i++)
 	{
 		//Put current stream sample into temp samples
-		tempSampleL = (int32_t)stream[i * 2];
-		tempSampleR = (int32_t)stream[i * 2 + 1];
+		auto tempSampleL = (int32_t)stream[i * 2];
+		auto tempSampleR = (int32_t)stream[i * 2 + 1];
 
 		for (auto& sound : sounds)
 		{
 			const auto waveSamples = (size_t)(22050.0 / (double)sampleRate * 4096.0);
 
-			if (sound.playing == true)
+			if (sound.playing)
 			{
 				sound.pos += waveSamples;
 
 				if ((sound.pos >> 12) >= sound.length)
-				{
 					sound.playing = false;
-				}
 				else
 				{
 					const size_t s_offset_1 = sound.pos >> 12;
@@ -124,8 +115,8 @@ void audio_callback(void *userdata, Uint8 *stream, int len) // TBD : Handle user
 {
 	memset(stream, 0, len);
 
-	mixSounds((int16_t*)stream, len / 4);
-	mixOrg((int16_t*)stream, len / 4);
+	mixSounds(reinterpret_cast<int16_t*>(stream), len / 4);
+	mixOrg(reinterpret_cast<int16_t*>(stream), len / 4);
 }
 
 void initAudio()
@@ -228,7 +219,7 @@ std::vector<long double> getNumbersFromString(const string& str)
 	return numbers;
 }
 
-int makePixelWaveData(std::vector<long double> pxtData, uint8_t *data)
+int makePixelWaveData(const std::vector<long double>& pxtData, uint8_t *data)
 {
 	long double currentEnvelope;
 	long double currentEnvelopea;
@@ -238,7 +229,6 @@ int makePixelWaveData(std::vector<long double> pxtData, uint8_t *data)
 	
 	//Get some envelope stuff
 	memset(envelopeTable, 0, 0x100u);
-	currentEnvelope = pxtData[14];
 
 	size_t i = 0;
 
@@ -312,8 +302,8 @@ int makePixelWaveData(std::vector<long double> pxtData, uint8_t *data)
 
 	for (i = 0; i < pxtData[1]; ++i)
 	{
-		int a = (int)(uint64_t)mainOffset % 256;
-		int v2 = (int)(uint64_t)pitchOffset % 256;
+		const int a = (int)(uint64_t)mainOffset % 256;
+		const int v2 = (int)(uint64_t)pitchOffset % 256;
 
 		//Input data
 		data[i] = envelopeTable[(unsigned __int64)((long double)(i << 8) / pxtData[1])]
@@ -437,12 +427,9 @@ int loadSound(const char *path, size_t id)
 
 			return 1;
 		}
-		else
-		{
-			free(dest);
-			free(pBlock);
-			return -1;
-		}
+		free(dest);
+		free(pBlock);
+		return -1;
 	}
 	else
 	{

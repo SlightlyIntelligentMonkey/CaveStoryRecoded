@@ -32,25 +32,27 @@ void actBulletMachineGun1(bullet *bul)
 
 		switch (bul->direct)
 		{
-		case(dirLeft):
+		case dirLeft:
 			bul->xm = -move;
 			bul->ym = random(-170, 170);
 			break;
-		case(dirUp):
+		case dirUp:
 			bul->ym = -move;
 			bul->xm = random(-170, 170);
 			break;
-		case(dirRight):
+		case dirRight:
 			bul->xm = move;
 			bul->ym = random(-170, 170);
 			break;
-		case(dirDown):
+		case dirDown:
 			bul->ym = move;
 			bul->xm = random(-170, 170);
 			break;
+
+		default:
+			break;
 		}
 	}
-	return;
 }
 
 void actBulletMachineGun2(bullet *bul)
@@ -101,8 +103,6 @@ void actBulletMachineGun2(bullet *bul)
 			break;
 		}
 	}
-
-	return;
 }
 
 void actBulletMachineGun3(bullet *bul)
@@ -151,6 +151,4 @@ void actBulletMachineGun3(bullet *bul)
 			break;
 		}
 	}
-
-	return;
 }

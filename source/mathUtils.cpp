@@ -95,7 +95,7 @@ double sinc(double x)
 	return (sin(M_PI*static_cast<float>(x)) / (M_PI*static_cast<float>(x)));
 }
 
-//returns greatest common denominator a and b
+//returns greatest common denominator x and y
 int getGCD(int x, int y) 
 {
 	if (x < y)

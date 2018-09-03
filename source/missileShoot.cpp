@@ -7,11 +7,6 @@
 
 void shootMissile(int level)
 {
-	int bulletId = 0;
-	int shootDirect = 0;
-	int shootX = 0;
-	int shootY = 0;
-	int caretX = 0;
 
 	if (isKeyPressed(keyShoot) && weaponBullets(5) < 1)
 	{
@@ -26,6 +21,7 @@ void shootMissile(int level)
 			return;
 		}
 
+		int bulletId = 0;
 		switch (level)
 		{
 		case(1):
@@ -41,6 +37,11 @@ void shootMissile(int level)
 			bulletId = bullet_MissileLauncherLevel3;
 			break;
 		}
+
+		int shootDirect = 0;
+		int shootX = 0;
+		int shootY = 0;
+		int caretX = 0;
 
 		if (currentPlayer.up)
 		{
@@ -86,17 +87,10 @@ void shootMissile(int level)
 		}
 		createCaret(currentPlayer.x + caretX, currentPlayer.y + shootY, effect_Star);
 	}
-
-	return;
 }
 
 void superMissileLaunch(int level)
 {
-	int bulletId = 0;
-	int shootDirect = 0;
-	int shootX = 0;
-	int shootY = 0;
-	int caretX = 0;
 
 	if (isKeyPressed(keyShoot))
 	{
@@ -106,6 +100,8 @@ void superMissileLaunch(int level)
 			createCaret(currentPlayer.x, currentPlayer.y, 16, 0);
 			return;
 		}
+
+		int bulletId = 0;
 		switch (level)
 		{
 		case(1):
@@ -121,6 +117,11 @@ void superMissileLaunch(int level)
 			bulletId = bullet_SuperMissileLauncherLevel3;
 			break;
 		}
+
+		int shootDirect = 0;
+		int shootX = 0;
+		int shootY = 0;
+		int caretX = 0;
 
 		if (currentPlayer.up)
 		{
@@ -148,5 +149,4 @@ void superMissileLaunch(int level)
 		createBullet(bulletId, currentPlayer.x + shootX, currentPlayer.y + shootY, shootDirect);
 		createCaret(currentPlayer.x + caretX, currentPlayer.y + shootY, effect_Star, 0);
 	}
-	return;
 }

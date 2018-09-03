@@ -62,10 +62,7 @@ void shootSpur(int level)
 
 	//Clear experience when shoot button released
 	if (!isKeyDown(keyShoot))
-	{
-		weapons[selectedWeapon].level = 1;
-		weapons[selectedWeapon].exp = 0;
-	}
+		resetSelectedWeaponLevel();
 
 	//Determine bullet to use
 	int bul_no;

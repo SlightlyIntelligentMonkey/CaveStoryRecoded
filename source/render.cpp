@@ -197,7 +197,7 @@ void drawTexture(SDL_Texture *texture, const RECT *rect, int x, int y)
 	else
 	{
 		int w, h;
-		SDL_QueryTexture(texture, NULL, NULL, &w, &h);
+		SDL_QueryTexture(texture, nullptr, nullptr, &w, &h);
 
 		DrawRect.x = x * screenScale;
 		DrawRect.y = y * screenScale;
@@ -229,7 +229,7 @@ void drawTextureNoScale(SDL_Texture *texture, const RECT *rect, int x, int y)
 	else
 	{
 		int w, h;
-		SDL_QueryTexture(texture, NULL, NULL, &w, &h);
+		SDL_QueryTexture(texture, nullptr, nullptr, &w, &h);
 
 		DrawRect.x = x;
 		DrawRect.y = y;

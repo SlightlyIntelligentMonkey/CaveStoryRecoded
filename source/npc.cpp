@@ -1,4 +1,4 @@
-#include "npc.h"
+﻿#include "npc.h"
 #include "npcAct.h"
 #include "weapons.h"
 #include "mathUtils.h"
@@ -48,7 +48,7 @@ void createSmokeLeft(int x, int y, int w, size_t num)
 
 void createSmokeUp(int x, int y, int w, int num)
 {
-	int wa = w / 512;
+	const int wa = w / 512;
 
 	for (int i = 0; i < num; ++i)
 	{
@@ -111,37 +111,27 @@ void changeNpc(int code_event, int code_char, int dir)
 {
 	for (size_t i = 0; i < npcs.size(); ++i)
 	{
-		if (npcs[i].cond & npccond_alive)
+		if (npcs[i].cond & npccond_alive && npcs[i].code_event == code_event)
 		{
-			if (npcs[i].code_event == code_event)
+			const int code_flag = npcs[i].code_flag;
+			int bits = npcs[i].bits;
+
+			bits &= 0x7F00; //Only bits that seem to determine interactability and other stuff
+
+			npcs[i].init(code_char, npcs[i].x, npcs[i].y, 0, 0, npcs[i].direct, npcs[i].pNpc);
+			npcs[i].bits |= bits;
+			npcs[i].code_flag = code_flag;
+			npcs[i].code_event = code_event;
+
+			if (dir != 5)
 			{
-				const int code_flag = npcs[i].code_flag;
-				int bits = npcs[i].bits;
-
-				bits &= 0x7F00; //Only bits that seem to determine interactability and other stuff
-
-				npcs[i].init(code_char, npcs[i].x, npcs[i].y, 0, 0, npcs[i].direct, npcs[i].pNpc);
-				npcs[i].bits |= bits;
-				npcs[i].code_flag = code_flag;
-				npcs[i].code_event = code_event;
-
-				if (dir != 5)
-				{
-					if (dir == 4)
-					{
-						if (npcs[i].x >= currentPlayer.x)
-							npcs[i].direct = dirLeft;
-						else
-							npcs[i].direct = dirRight;
-					}
-					else
-					{
-						npcs[i].direct = dir;
-					}
-				}
-
-				npcActs[code_char](&npcs[i]);
+				if (dir == 4)
+					npcs[i].facePlayer();
+				else
+					npcs[i].direct = dir;
 			}
+
+			npcActs[code_char](&npcs[i]);
 		}
 	}
 }
@@ -327,10 +317,7 @@ void loadNpcTable()
 	const auto tblSize = static_cast<int>(SDL_RWsize(tblStream));
 
 	const int npcCount = tblSize / 0x18;
-	npcTable = static_cast<NPC_TABLE *>(malloc(0x18 * npcCount));
-
-	if (npcTable == nullptr)
-		doCustomError("Could not allocate memory for NPC table");
+	npcTable = new NPC_TABLE[npcCount];
 
 	int i;
 

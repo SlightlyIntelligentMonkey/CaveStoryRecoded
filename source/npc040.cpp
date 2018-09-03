@@ -474,7 +474,7 @@ void npcAct058(npc *NPC) //Basu 1
 			}
 		}
 	}
-	else if (action)
+	else
 	{
 		if (action == 1)
 		{

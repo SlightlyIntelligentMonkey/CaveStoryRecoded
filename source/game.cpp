@@ -41,7 +41,7 @@ void initGame()
 	memset(mapFlags, 0, sizeof(mapFlags));
 
 	//Clear other stuff
-	init2();
+	clearBossLife();
 	initWeapons();
 	memset(permitStage, 0, sizeof(permitStage));
 	memset(items, 0, sizeof(items));
@@ -58,7 +58,7 @@ void initGame()
 }
 
 //Init other important things
-void init2()
+void clearBossLife()
 {
 	memset(&bossLife, 0, sizeof(bossLife));
 }
@@ -282,9 +282,7 @@ int escapeMenu()
 //Main States
 int gameUpdatePlay()
 {
-	int tscResult = 0;
-
-	init2();
+	clearBossLife();
 
 	while (true)
 	{
@@ -379,7 +377,7 @@ int gameUpdatePlay()
 		}
 
 		//Do TSC stuff
-		tscResult = updateTsc();
+		const int tscResult = updateTsc();
 
 		if (!tscResult)
 			return 0;
@@ -503,7 +501,7 @@ int gameUpdateMenu()
 
 int gameUpdateIntro()
 {
-	init2();
+	clearBossLife();
 
 	uint32_t frame = 0;
 	loadLevel(72);

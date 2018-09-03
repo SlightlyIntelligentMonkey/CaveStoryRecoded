@@ -13,5 +13,5 @@ int random(int32_t mi, int32_t ma);
 int sign(int x)  attrConst;
 int clamp(int x, int mi, int ma)  attrConst;
 
-double sinc(double x)  attrConst;
-int getGCD(int a, int b)  attrConst;
+double sinc(double x) attrConst;
+int getGCD(int x, int y) attrConst;

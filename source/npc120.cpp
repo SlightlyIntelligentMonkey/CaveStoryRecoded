@@ -53,8 +53,6 @@ void npcAct127(npc *NPC)
 
 	NPC->rect.right = NPC->rect.left + 16;
 	NPC->rect.bottom = NPC->rect.top + 16;
-
-	return;
 }
 
 void npcAct128(npc *NPC)
@@ -106,8 +104,6 @@ void npcAct128(npc *NPC)
 		NPC->rect.bottom = NPC->rect.top + 8;
 		break;
 	}
-
-	return;
 }
 
 void npcAct129(npc *NPC) //Fireball Level 1/2 trail

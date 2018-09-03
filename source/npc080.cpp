@@ -1316,7 +1316,7 @@ void npcAct093(npc * NPC)
 		waitBlink = 2,
 		startWalk = 3,
 		walking = 4,
-		sleeping = 10
+		sleeping = 10,
 	};
 
 	switch (NPC->act_no)

@@ -87,7 +87,7 @@ int loadFile(const char *name, uint8_t **data)
 	fseek(file, 0, 0);
 
 	//Load data
-	*data = static_cast<uint8_t *>(malloc(filesize));
+	*data = new uint8_t[filesize];
 	if (fread(*data, 1, filesize, file) == 0)
 	{
 		fclose(file);

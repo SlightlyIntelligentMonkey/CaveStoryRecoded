@@ -7,18 +7,12 @@
 
 void shootSnake(int level)
 {
-	int bulletId = 0;
-	int shootDirect = 0;
-	int shootX = 0;
-	int shootY = 0;
-	int caretX = 0;
-
 	if (weaponBullets(1) <= 3 && isKeyPressed(keyShoot))
 	{
 		if (useWeaponAmmo(1) ^ 1)
-		{
 			playSound(SFX_NoAmmo);
-		}
+
+		int bulletId = 0;
 		switch (level)
 		{
 		case(1):
@@ -31,6 +25,11 @@ void shootSnake(int level)
 			bulletId = bullet_SnakeLevel3;
 			break;
 		}
+
+		int shootDirect = 0;
+		int shootX = 0;
+		int shootY = 0;
+		int caretX = 0;
 
 		if (currentPlayer.up)
 		{
@@ -59,6 +58,4 @@ void shootSnake(int level)
 		createCaret(currentPlayer.x + caretX, currentPlayer.y + shootY, effect_Star);
 		playSound(SFX_FireballShoot);
 	}
-
-	return;
 }

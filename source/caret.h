@@ -33,9 +33,9 @@ public:
 	RECT rect;
 
 public:
-	void init(int setX, int setY, int setType, int setDir) ;
+	void init(int setX, int setY, int setType, int setDir);
 
-	void update() ;
+	void update();
 	void draw();
 };
 
