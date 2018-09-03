@@ -436,12 +436,93 @@ void npcAct192(npc * NPC)
 	enum
 	{
 		parked = 0,
+		mounted = 10,
 		startEngine = 20,
 		takeOff = 30,
 		outOfControl = 40,
 	};
 
-	//sw
+	switch (NPC->act_no)
+	{
+	case parked:
+		NPC->act_no = parked + 1;
+		NPC->view = { 0x2000, 0x1000, 0x2000, 0x1000 };
+		break;
+
+	case mounted:
+		NPC->act_no = mounted + 1;
+		NPC->ani_no = 1;
+		NPC->view.top = 0x2000;
+		NPC->view.bottom = 0x2000;
+		NPC->y -= 0xA00;
+		break;
+
+	case startEngine:
+		NPC->act_no = startEngine + 1;
+		NPC->act_wait = 1;
+		NPC->tgt_x = NPC->x;
+		NPC->tgt_y = NPC->y;
+		// Fallthrough
+	case startEngine + 1:
+		NPC->x = NPC->tgt_x + pixelsToUnits(random(-1, 1));
+		NPC->y = NPC->tgt_y + pixelsToUnits(random(-1, 1));
+		if (++NPC->act_wait > 30)
+			NPC->act_no = 30;
+		break;
+
+	case takeOff:
+		NPC->act_no = takeOff + 1;
+		NPC->act_wait = 1;
+		NPC->xm = -0x800;
+		NPC->x = NPC->tgt_x;
+		NPC->y = NPC->tgt_y;
+		playSound(SFX_MissileImpact);
+		// Fallthrough
+	case takeOff + 1:
+		NPC->xm += 0x20;
+		NPC->x += NPC->xm;
+		++NPC->act_wait;
+		NPC->y = NPC->tgt_y + pixelsToUnits(random(-1, 1));
+		if (NPC->act_wait > 10)
+			NPC->direct = dirRight;
+		if (NPC->act_wait > 200)
+			NPC->act_no = outOfControl;
+		break;
+
+	case outOfControl:
+		NPC->act_no = outOfControl + 1;
+		NPC->act_wait = 2;
+		NPC->direct = dirLeft;
+		NPC->y = -0x6000;
+		NPC->xm = -0x1000;
+		// Fallthrough
+	case outOfControl + 1:
+		NPC->x += NPC->xm;
+		NPC->y += NPC->ym;
+		NPC->act_wait += 2;
+		if (NPC->act_wait > 1200)
+			NPC->cond = 0;
+		break;
+
+	default:
+		break;
+	}
+	if (!(NPC->act_wait % 4) && NPC->act_no >= startEngine)
+	{
+		playSound(SFX_FireballBounce);
+		if (NPC->direct != dirLeft)
+			createCaret(NPC->x - 0x1400, NPC->y + 0x1400, effect_BoosterSmoke, dirLeft);
+		else
+			createCaret(NPC->x + 0x1400, NPC->y + 0x1400, effect_BoosterSmoke, dirRight);
+	}
+
+	constexpr RECT rcLeft[2] = { {224, 64, 256, 80}, {256, 64, 288, 96} };
+	constexpr RECT rcRight[2] = { {224, 80, 256, 96}, {288, 64, 320, 96} };
+
+	if (NPC->direct != dirLeft)
+		NPC->rect = rcRight[NPC->ani_no];
+	else
+		NPC->rect = rcLeft[NPC->ani_no];
 }
 
 void npcAct194(npc *NPC) // Blue Robot, destroyed

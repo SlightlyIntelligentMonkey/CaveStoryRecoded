@@ -4,6 +4,51 @@
 #include "sound.h"
 #include "mathUtils.h"
 
+void npcAct040(npc * NPC) // Santa
+{
+	RECT rcLeft[7];
+	RECT rcRight[7];
+
+	rcLeft[0] = { 0, 32, 16, 48 };
+	rcLeft[1] = { 16, 32, 32, 48 };
+	rcLeft[2] = { 32, 32, 48, 48 };
+	rcLeft[3] = rcLeft[0];
+	rcLeft[4] = { 48, 32, 64, 48 };
+	rcLeft[5] = rcLeft[0];
+	rcLeft[6] = { 64, 32, 80, 48 };
+
+	rcRight[0] = { 0, 48, 16, 64 };
+	rcRight[1] = { 16, 48, 32, 64 };
+	rcRight[2] = { 32, 48, 48, 64 };
+	rcRight[3] = rcRight[0];
+	rcRight[4] = { 48, 48, 64, 64 };
+	rcRight[5] = rcRight[0];
+	rcRight[6] = { 64, 48, 80, 64 };
+
+	enum
+	{
+		stand = 0,
+		blinkWait = 2,
+		walk = 3,
+		faceAway = 5,
+	};
+
+	switch (NPC->act_no)
+	{
+	case stand:
+		NPC->act_no = stand + 1;
+		NPC->ani_no = 1;
+		NPC->act_wait = 0;
+		// Fallthrough
+	case stand + 1:
+		if (!random(0, 120))
+		{
+			NPC->act_no = blinkWait;
+			NPC->ani_no;
+		}
+	}
+}
+
 void npcAct041(npc * NPC) // Busted doorway
 {
 	if (!NPC->act_no)
@@ -622,4 +667,5 @@ void npcAct059(npc *NPC) //Eye door
 
 	NPC->rect = { setRect->left, setRect->top, setRect->right, setRect->bottom };
 }
+
 

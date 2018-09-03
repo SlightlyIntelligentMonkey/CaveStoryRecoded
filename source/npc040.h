@@ -3,6 +3,7 @@
 
 #include "npc.h"
 
+void npcAct040(npc *NPC);
 void npcAct041(npc *NPC);
 void npcAct042(npc *NPC);
 void npcAct043(npc *NPC);
