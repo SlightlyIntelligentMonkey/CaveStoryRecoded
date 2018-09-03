@@ -15,36 +15,25 @@ void shootMissile(int level)
 
 	if (isKeyPressed(keyShoot))
 	{
+		if (weaponBullets(5) > 1)
+			return;
+
+		if (useWeaponAmmo(1) ^ 1)
+		{
+			playSound(SFX_NoAmmo);
+			createCaret(currentPlayer.x, currentPlayer.y, 16, 0);
+			return;
+		}
+
 		switch (level)
 		{
 		case(1):
-			if (weaponBullets(bullet_MissileLauncherLevel1) >= 1) { return; }
-			else if (useWeaponAmmo(1) ^ 1)
-			{
-				playSound(SFX_NoAmmo);
-				createCaret(currentPlayer.x, currentPlayer.y, 16, 0);
-				return;
-			}
 			bulletId = bullet_MissileLauncherLevel1;
 			break;
 		case(2):
-			if (weaponBullets(bullet_MissileLauncherLevel1) >= 1) { return; }
-			else if (useWeaponAmmo(1) ^ 1)
-			{
-				playSound(SFX_NoAmmo);
-				createCaret(currentPlayer.x, currentPlayer.y, 16, 0);
-				return;
-			}
 			bulletId = bullet_MissileLauncherLevel2;
 			break;
 		case(3):
-			if (weaponBullets(bullet_MissileLauncherLevel1) >= 3) { return; }
-			else if (useWeaponAmmo(1) ^ 1)
-			{
-				playSound(SFX_NoAmmo);
-				createCaret(currentPlayer.x, currentPlayer.y, 16, 0);
-				return;
-			}
 			bulletId = bullet_MissileLauncherLevel3;
 			break;
 		}

@@ -249,6 +249,8 @@ int openInventory()
 	inventoryActive = false;
 	selectedItem = 0;
 
+	captureScreen(TEX_SCREENSHOT);
+
 	//Load stage select tsc
 	loadTsc2("data/ArmsItem.tsc");
 

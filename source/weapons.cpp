@@ -108,8 +108,7 @@ int useWeaponAmmo(int num) noexcept
 void giveAmmo(int amount, int ammoToRefill)
 {
 	int i;
-	for (i = 0; i < 8 && weapons[i].code != 5 && weapons[i].code != 10; ++i)
-		;
+	for (i = 0; i < 8 && weapons[i].code != 5 && weapons[i].code != 10; ++i);
 	if (i != 8)
 	{
 		weapons[i].num += ammoToRefill;
@@ -129,7 +128,7 @@ int weaponBullets(int arms_code)
 	int count = 0;
 	for (size_t i = 0; i < bullets.size(); ++i)
 	{
-		if (bullets[i].cond & 0x80 && (bullets[i].code_bullet + 2) / 3 == arms_code)
+		if (bullets[i].cond & 0x80 && bullets[i].weapon == arms_code)
 			++count;
 	}
 	return count;

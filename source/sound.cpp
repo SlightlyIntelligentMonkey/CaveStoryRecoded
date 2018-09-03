@@ -71,8 +71,15 @@ void makeWaveTables()
 //Audio callback and things
 void mixSounds(int16_t *stream, int len)
 {
+	int32_t tempSampleL;
+	int32_t tempSampleR;
+
 	for (int i = 0; i < len; i++)
 	{
+		//Put current stream sample into temp samples
+		tempSampleL = (int32_t)stream[i * 2];
+		tempSampleR = (int32_t)stream[i * 2 + 1];
+
 		for (auto& sound : sounds)
 		{
 			const auto waveSamples = (size_t)(22050.0 / (double)sampleRate * 4096.0);
@@ -97,11 +104,19 @@ void mixSounds(int16_t *stream, int len)
 
 					const auto val = (int)(sample1 + (sample2 - sample1) * ((double)(sound.pos & 0xFFF) / 4096.0));
 
-					stream[2 * i] += val * 1.333333333333333;
-					stream[2 * i + 1] += val * 1.333333333333333;
+					tempSampleL += val * 2;
+					tempSampleR += val * 2;
 				}
 			}
 		}
+
+		//Clip buffer
+		tempSampleL = clamp(tempSampleL, -0x7FFF, 0x7FFF);
+		tempSampleR = clamp(tempSampleR, -0x7FFF, 0x7FFF);
+
+		//Put into main stream
+		stream[2 * i] = tempSampleL;
+		stream[2 * i + 1] = tempSampleR;
 	}
 }
 

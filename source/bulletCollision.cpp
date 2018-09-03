@@ -3,6 +3,7 @@
 #include "sound.h"
 #include "caret.h"
 #include "level.h"
+#include "game.h"
 #include "mathUtils.h"
 #include "player.h"
 #include "script.h"
@@ -353,54 +354,57 @@ void bulletHitMap()
 			{
 				for (int j = 0; j < 4; ++j) //Go through each tile
 				{
-					constexpr int offx[4] = { 0, 1, 0, 1 };
-					constexpr int offy[4] = { 0, 0, 1, 1 };
-
-					switch (atrb[j])
+					if (bullets[i].cond & 0x80)
 					{
-					case 0x41:
-					case 0x43:
-					case 0x44:
-					case 0x61:
-					case 0x64:
-						bul->flag |= bulletJudgeBlock(x + offx[j], y + offy[j], bul);
-						break;
+						constexpr int offx[4] = { 0, 1, 0, 1 };
+						constexpr int offy[4] = { 0, 0, 1, 1 };
 
-					case 0x50u:
-					case 0x70u:
-						bul->flag |= bulletJudgeTriangleA(x + offx[j], y + offy[j], bul);
-						break;
-					case 0x51u:
-					case 0x71u:
-						bul->flag |= bulletJudgeTriangleB(x + offx[j], y + offy[j], bul);
-						break;
-					case 0x52u:
-					case 0x72u:
-						bul->flag |= bulletJudgeTriangleC(x + offx[j], y + offy[j], bul);
-						break;
-					case 0x53u:
-					case 0x73u:
-						bul->flag |= bulletJudgeTriangleD(x + offx[j], y + offy[j], bul);
-						break;
-					case 0x54u:
-					case 0x74u:
-						bul->flag |= bulletJudgeTriangleE(x + offx[j], y + offy[j], bul);
-						break;
-					case 0x55u:
-					case 0x75u:
-						bul->flag |= bulletJudgeTriangleF(x + offx[j], y + offy[j], bul);
-						break;
-					case 0x56u:
-					case 0x76u:
-						bul->flag |= bulletJudgeTriangleG(x + offx[j], y + offy[j], bul);
-						break;
-					case 0x57u:
-					case 0x77u:
-						bul->flag |= bulletJudgeTriangleH(x + offx[j], y + offy[j], bul);
-						break;
+						switch (atrb[j])
+						{
+						case 0x41:
+						case 0x43:
+						case 0x44:
+						case 0x61:
+						case 0x64:
+							bul->flag |= bulletJudgeBlock(x + offx[j], y + offy[j], bul);
+							break;
 
-					default:
-						break;
+						case 0x50u:
+						case 0x70u:
+							bul->flag |= bulletJudgeTriangleA(x + offx[j], y + offy[j], bul);
+							break;
+						case 0x51u:
+						case 0x71u:
+							bul->flag |= bulletJudgeTriangleB(x + offx[j], y + offy[j], bul);
+							break;
+						case 0x52u:
+						case 0x72u:
+							bul->flag |= bulletJudgeTriangleC(x + offx[j], y + offy[j], bul);
+							break;
+						case 0x53u:
+						case 0x73u:
+							bul->flag |= bulletJudgeTriangleD(x + offx[j], y + offy[j], bul);
+							break;
+						case 0x54u:
+						case 0x74u:
+							bul->flag |= bulletJudgeTriangleE(x + offx[j], y + offy[j], bul);
+							break;
+						case 0x55u:
+						case 0x75u:
+							bul->flag |= bulletJudgeTriangleF(x + offx[j], y + offy[j], bul);
+							break;
+						case 0x56u:
+						case 0x76u:
+							bul->flag |= bulletJudgeTriangleG(x + offx[j], y + offy[j], bul);
+							break;
+						case 0x57u:
+						case 0x77u:
+							bul->flag |= bulletJudgeTriangleH(x + offx[j], y + offy[j], bul);
+							break;
+
+						default:
+							break;
+						}
 					}
 				}
 
@@ -476,12 +480,16 @@ void bulletHitNpcs()
 								//Keep life at 0 rather than some negative number (although this doesn't matter)
 								npcs[n].life = 0;
 
+								//Hide boss healthbar if it's focused on this npc
+								if (bossLife.flag && bossLife.pLife == &npcs[n].life)
+									bossLife.flag = 0;
+
 								//Add to valueview damage
 								if (npcs[n].bits & npc_showdamage)
 									npcs[n].damage_view -= bul->damage;
 
 								//Either run event if the run event on death flag's set, or die
-								if (currentPlayer.cond & 0x80u && npcs[n].bits & npc_eventdie)
+								if (currentPlayer.cond & 0x80 && npcs[n].bits & npc_eventdie)
 									startTscEvent(npcs[n].code_event);
 								else
 									npcs[n].cond |= 8u;

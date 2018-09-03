@@ -27,7 +27,10 @@ Uint32 currentOrg = 0;
 Uint32 prevOrg = 0;
 Uint32 prevOrgPos = 0;
 
-bool disableOrg = true;
+uint8_t orgVolume = 100;
+bool orgFadeout = false;
+
+bool disableOrg = false;
 
 void organyaAllocNote(uint16_t alloc)
 {
@@ -88,15 +91,22 @@ void mixOrg(int16_t *stream, int len)
 	if (stream == nullptr)
 		doCustomError("stream was nullptr in mixOrg");
 
+	int32_t tempSampleL;
+	int32_t tempSampleR;
+
 	for (int i = 0; i < len; i++)
 	{
 		//Update
-		const int samplesPerBeat = (sampleRate / 1000) * org.wait;
+		const int samplesPerBeat = sampleRate * org.wait / 1000;
 		if (++org.samples > samplesPerBeat)
 		{
 			organyaPlayStep();
 			org.samples = 0;
 		}
+
+		//Put current stream sample into temp samples (org's done first so this is typically 0 anyways)
+		tempSampleL = (int32_t)stream[2 * i];
+		tempSampleR = (int32_t)stream[2 * i + 1];
 
 		//Play waves
 		for (int wave = 0; wave < 8; wave++)
@@ -119,8 +129,8 @@ void mixOrg(int16_t *stream, int len)
 				
 				const auto val = (int)(sample1 + (sample2 - sample1) * ((double)(orgWaves[wave].pos & 0xFFF) / 4096.0));
 
-				stream[2 * i] += (int16_t)((long double)val * orgWaves[wave].volume * orgWaves[wave].volume_l / 1.5);
-				stream[2 * i + 1] += (int16_t)((long double)val * orgWaves[wave].volume * orgWaves[wave].volume_r / 1.5);
+				tempSampleL += (int32_t)((long double)val * orgWaves[wave].volume * orgWaves[wave].volume_l * (long double)orgVolume / 100.0);
+				tempSampleR += (int32_t)((long double)val * orgWaves[wave].volume * orgWaves[wave].volume_r * (long double)orgVolume / 100.0);
 			}
 		}
 
@@ -178,12 +188,20 @@ void mixOrg(int16_t *stream, int len)
 
 						const auto val = (int)(sample1 + (sample2 - sample1) * ((double)(orgDrums[wave].pos & 0xFFF) / 4096.0));
 
-						stream[2 * i] += (int16_t)((long double)val * orgDrums[wave].volume * orgDrums[wave].volume_l / 1.5);
-						stream[2 * i + 1] += (int16_t)((long double)val * orgDrums[wave].volume * orgDrums[wave].volume_r / 1.5);
+						tempSampleL += (int32_t)((long double)val * orgDrums[wave].volume * orgDrums[wave].volume_l * (long double)orgVolume / 100.0);
+						tempSampleR += (int32_t)((long double)val * orgDrums[wave].volume * orgDrums[wave].volume_r * (long double)orgVolume / 100.0);
 					}
 				}
 			}
 		}
+
+		//Clip buffer
+		tempSampleL = clamp(tempSampleL, -0x7FFF, 0x7FFF);
+		tempSampleR = clamp(tempSampleR, -0x7FFF, 0x7FFF);
+
+		//Put into main stream
+		stream[2 * i] = tempSampleL;
+		stream[2 * i + 1] = tempSampleR;
 	}
 }
 
@@ -360,9 +378,9 @@ void organyaSetPlayPosition(int32_t x)
 
 void organyaPlayStep()
 {
-	//char str[10];
-	//char oldstr[10];
-	//char end_cnt = 16;
+	//Handle fading out
+	if (orgFadeout && orgVolume > 0)
+		orgVolume -= 2;
 
 	//Melody playback
 	for (int i = 0; i < 8; i++)
@@ -422,6 +440,9 @@ void loadOrganya(const char *name)
 	NOTELIST *np;
 
 	//Init some things
+	orgVolume = 100;
+	orgFadeout = false;
+
 	organyaReleaseNote();
 	organyaAllocNote(10000);
 
