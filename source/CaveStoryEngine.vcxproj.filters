@@ -213,9 +213,6 @@
     <ClCompile Include="npc260.cpp">
       <Filter>Source Files\classes\npc\act</Filter>
     </ClCompile>
-    <ClCompile Include="missileLaunch.cpp">
-      <Filter>Source Files\classes\weapons\shoot</Filter>
-    </ClCompile>
     <ClCompile Include="missile.cpp">
       <Filter>Source Files\classes\bullet\act</Filter>
     </ClCompile>
@@ -233,6 +230,9 @@
     </ClCompile>
     <ClCompile Include="mapSystem.cpp">
       <Filter>Source Files\states</Filter>
+    </ClCompile>
+    <ClCompile Include="missileShoot.cpp">
+      <Filter>Source Files\classes\weapons\shoot</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
