@@ -1,9 +1,13 @@
 #include "npc200.h"
 
+#include <vector>
 #include "sound.h"
 #include "player.h"
 #include "mathUtils.h"
 #include "caret.h"
+#include "render.h"
+
+using std::vector;
 
 void npcAct200(npc *NPC) // Dragon Zombie (enemy)
 {
@@ -224,6 +228,62 @@ void npcAct203(npc * NPC) // Critter, Hopping Aqua (enemy)
 		NPC->rect = rcRight[NPC->ani_no];
 	else
 		NPC->rect = rcLeft[NPC->ani_no];
+}
+
+void npcAct204(npc * NPC) // Falling Spike, small
+{
+	vector<RECT> rcNPC = { {240, 80, 256, 96}, {240, 144, 256, 160} };
+
+	enum
+	{
+		init = 0,
+		normal = 1,
+		shaky = 2,
+		falling = 3,
+	};
+
+	switch (NPC->act_no)
+	{
+	case init:
+		NPC->act_no = normal;
+		NPC->tgt_x = NPC->x;
+		// Fallthrough
+	case normal:
+		if (currentPlayer.x > NPC->x - pixelsToUnits(12) && currentPlayer.x < NPC->x + pixelsToUnits(12) && currentPlayer.y > NPC->y)
+			NPC->act_no = shaky;
+		break;
+
+	case shaky:
+		if (++NPC->act_wait / 6 % 2)
+			NPC->x = NPC->tgt_x - 0x200;
+		else
+			NPC->x = NPC->tgt_x;
+		
+		if (NPC->act_wait > 30)
+		{
+			NPC->act_no = falling;
+			NPC->ani_no = 1;
+		}
+		break;
+
+	case falling:
+		NPC->ym += 0x20;
+		if (!(NPC->flag & 0xFF))
+			break;
+		if (!(currentPlayer.cond & player_removed))
+			playSound(SFX_DestroyBreakableBlock);
+		createSmokeLeft(NPC->x, NPC->y, NPC->view.right, 4);
+		NPC->cond = 0;
+		return;
+
+	default:
+		break;
+	}
+
+	NPC->doGravity(0, 0xC00);
+	NPC->y += NPC->ym;
+
+	NPC->doRects(rcNPC);
 }
 
 void npcAct211(npc *NPC) //Spikes

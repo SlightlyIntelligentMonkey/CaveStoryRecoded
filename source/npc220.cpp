@@ -1,9 +1,57 @@
 #include "npc220.h"
 
+#include <vector>
 #include "player.h"
 #include "sound.h"
 #include "mathUtils.h"
 #include "caret.h"
+
+using std::vector;
+
+void npcAct220(npc *NPC) // Shovel Brigade, standing
+{
+	vector<RECT> rcLeft = { {0, 64, 16, 80}, {16, 64, 32, 80} };
+	vector<RECT> rcRight = { {0, 80, 16, 96}, {16, 80, 32, 96} };
+
+	enum
+	{
+		aniStanding = 0,
+		aniBlinking = 1,
+	};
+
+	enum
+	{
+		init = 0,
+		standing = 1,
+		blinking = 2,
+	};
+
+	switch (NPC->act_no)
+	{
+	case init:
+		NPC->act_no = standing;
+		NPC->ani_no = aniStanding;
+		NPC->ani_wait = 0;
+		// Fallthrough
+	case standing:
+		if (!random(0, 120))
+		{
+			NPC->act_no = blinking;
+			NPC->act_wait = 0;
+			NPC->ani_no = aniBlinking;
+		}
+		break;
+
+	case blinking:
+		if (++NPC->act_wait > 8)
+		{
+			NPC->act_no = standing;
+			NPC->ani_no = aniStanding;
+		}
+	}
+
+	NPC->doRects(rcLeft, rcRight);
+}
 
 void npcAct222(npc *NPC) // Prison bars
 {

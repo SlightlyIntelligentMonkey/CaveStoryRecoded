@@ -363,7 +363,7 @@ void npc::doGravity(int gravity, int maxYVel)
 		this->ym = maxYVel;
 }
 
-void npc::doRects(const std::vector<RECT>& rcLeft, const std::vector<RECT>& rcRight)
+void npc::doRects(const vector<RECT>& rcLeft, const vector<RECT>& rcRight)
 {
 	if (!rcRight.empty())
 	{
