@@ -30,7 +30,7 @@ using std::fclose;
 uint16_t readLEshort(const uint8_t * data, size_t offset)
 {
 	if (data == nullptr)
-		doCustomError("data was nullptr in readLEshort");
+		throw std::invalid_argument("data was nullptr in readLEshort");
 
 	return ((data[offset + 1] << 8) + data[offset]);
 }
@@ -38,7 +38,7 @@ uint16_t readLEshort(const uint8_t * data, size_t offset)
 uint32_t readLElong(const uint8_t * data, size_t offset)
 {
 	if (data == nullptr)
-		doCustomError("data was nullptr in readLEshort");
+		throw std::invalid_argument("data was nullptr in readLEshort");
 
 	return ((data[offset + 3] << 24) + (data[offset + 2] << 16) + (data[offset + 1] << 8) + data[offset]);
 }
@@ -47,7 +47,7 @@ uint32_t readLElong(const uint8_t * data, size_t offset)
 void writeLEshort(uint8_t *data, uint16_t input, size_t offset)
 {
 	if (data == nullptr)
-		doCustomError("data was nullptr in writeLEshort");
+		throw std::invalid_argument("data was nullptr in writeLEshort");
 
 	data[offset] = static_cast<uint8_t>(input);
 	data[offset + 1] = static_cast<uint8_t>(input >> 8);
@@ -56,7 +56,7 @@ void writeLEshort(uint8_t *data, uint16_t input, size_t offset)
 void writeLElong(uint8_t *data, uint32_t input, size_t offset)
 {
 	if (data == nullptr)
-		doCustomError("data was nullptr in writeLElong");
+		throw std::invalid_argument("data was nullptr in writeLElong");
 
 	data[offset] = static_cast<uint8_t>(input);
 	data[offset + 1] = static_cast<uint8_t>(input >> 8);
@@ -71,66 +71,74 @@ bool fileExists(const string& name)
 	return (stat(name.c_str(), &buffer) == 0);
 }
 
-int loadFile(const char *name, uint8_t **data)
+int loadFile(const string& name, uint8_t **data)
 {
 	if (data == nullptr)
-		doCustomError("data was nullptr in loadFile");
+		throw std::invalid_argument("data was nullptr in loadFile");
 
 	//Open file
-	FILE *file = fopen(name, "rb");
+	FILE *file = fopen(name.c_str(), "rb");
 	if (file == nullptr)
-		return -1;
+		throw std::runtime_error("Could not open " + name);
 
 	//Get filesize
-	fseek(file, 0, SEEK_END);
+	if (fseek(file, 0, SEEK_END) == -1)
+		throw std::runtime_error("Could not seek in " + name);
 	const size_t filesize = ftell(file);
-	fseek(file, 0, 0);
+	if (filesize == -1L)
+		throw std::runtime_error("Could not find size of " + name);
+
+	if (fseek(file, 0, SEEK_SET) == -1)
+		throw std::runtime_error("Could not seek in " + name);
 
 	//Load data
 	*data = new uint8_t[filesize];
-	if (fread(*data, 1, filesize, file) == 0)
+	if (fread(*data, 1, filesize, file) < filesize)
 	{
-		fclose(file);
-		return -1;
+		if (fclose(file) == EOF)
+			throw std::runtime_error("Could not close " + name);
+		throw std::runtime_error("Could not read from " + name);
 	}
 
 	//Close file
-	fclose(file);
+	if (fclose(file) == EOF)
+		throw std::runtime_error("Could not close " + name);
 
 	return filesize;
 }
 
-int writeFile(const char *name, const void *data, size_t amount) 
+void writeFile(const string& name, const void *data, size_t amount) 
 {
 	FILE *file;
-	if ((file = fopen(name, "wb")) == nullptr)
-		return -1;
+	if ((file = fopen(name.c_str(), "wb")) == nullptr)
+		throw std::runtime_error("Could not open " + name);
 
 	if (fwrite(data, 1, amount, file) == 0)
 	{
-		fclose(file);
-		return -1;
+		if (fclose(file) == EOF)
+			throw std::runtime_error("Could not close " + name);
+		throw std::runtime_error("Could not write to " + name);
 	}
 
-	fclose(file);
-	return 0;
+	if (fclose(file) == EOF)
+		throw std::runtime_error("Could not close " + name);
 }
 
 //Profile code
-const char *profileName = "Profile.dat";
-const char *profileCode = "Do041220";
+string profileName = "Profile.dat";
+string profileCode = "Do041220";
 
 void loadProfile()
 {
 	if (fileExists(profileName))
 	{
-		SDL_RWops *profile = SDL_RWFromFile(profileName, "rb");
+		SDL_RWops *profile = SDL_RWFromFile(profileName.c_str(), "rb");
 
 		if (profile == nullptr)
 			return;
 
 		const uint64_t code = SDL_ReadLE64(profile); //Code
-		if (memcmp(&code, profileCode, sizeof(code)) != 0)
+		if (memcmp(&code, profileCode.c_str(), sizeof(code)) != 0)
 		{
 			const string errorMsg(string("Invalid profile (first 8 bytes aren't \"") + profileCode + "\"");
 			doCustomError(errorMsg.c_str());
@@ -204,7 +212,7 @@ void saveProfile()
 	uint8_t profile[0x604] = { 0 };
 
 	//Set data
-	memcpy(profile, profileCode, 0x08);
+	memcpy(profile, profileCode.c_str(), 0x08);
 
 	writeLElong(profile, currentLevel, 0x08); //Level
 	writeLElong(profile, currentOrg, 0xC); //song

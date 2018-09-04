@@ -28,7 +28,7 @@ using std::strcat;
 TSC tsc;
 char tscText[0x100];
 int tscNumber[4];
-uint8_t *tscTextFlag = static_cast<uint8_t*>(malloc(0x100));
+uint8_t *tscTextFlag = new uint8_t[0x100];
 
 //Mode enum
 enum TSC_mode
@@ -879,6 +879,7 @@ int updateTsc()
 				tscCleanup(3);
 				break;
 			case('<IT+'):
+				playSound(SFX_ItemGet);
 				for (xt = 0; xt < ITEMS && items[xt].code != getTSCNumber(tsc.p_read + 4) && items[xt].code; ++xt);
 				if (xt == ITEMS)
 				{

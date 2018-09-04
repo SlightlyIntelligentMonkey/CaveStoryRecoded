@@ -1,7 +1,11 @@
 #include "npc100.h"
 
+#include <vector>
 #include "player.h"
 #include "sound.h"
+#include "mathUtils.h"
+
+using std::vector;
 
 void npcAct100(npc * NPC) // Grate
 {
@@ -12,6 +16,127 @@ void npcAct100(npc * NPC) // Grate
 	}
 
 	NPC->rect = { 272, 48, 288, 64 };
+}
+
+void npcAct104(npc *NPC)
+{
+	vector<RECT> rcLeft(3);
+	vector<RECT> rcRight(3);
+
+	rcLeft = { {0, 112, 32, 144}, {32, 112, 64, 144}, {64, 112, 96, 144} };
+	rcRight = { {0, 144, 32, 176}, {32, 144, 64, 176}, {64, 155, 96, 176} };
+
+	enum
+	{
+		init = 0,
+		standing = 1,
+		mouthTwitch = 2,
+		fallingFromCeiling = 3,
+		startJump = 10,
+		jumping = 11,
+	};
+
+	switch (NPC->act_no)
+	{
+	case init:
+		NPC->act_no = standing;
+		NPC->act_wait = 0;
+		NPC->xm = 0;
+		NPC->ym = 0;
+		if (NPC->direct == 4)	// Spawned by Balfrog
+		{
+			if (random(0, 1))
+				NPC->direct = dirLeft;
+			else
+				NPC->direct = dirRight;
+			NPC->bits |= npc_ignoresolid;
+			NPC->ani_no = 2;
+			NPC->act_no = fallingFromCeiling;
+			break;
+		}
+		NPC->act_no &= ~npc_ignoresolid;
+		// Fallthrough
+	case standing:
+		++NPC->act_wait;
+		if (!random(0, 50))
+		{
+			NPC->act_no = mouthTwitch;
+			NPC->act_wait = 0;
+			NPC->ani_no = 0;
+			NPC->ani_wait = 0;
+		}
+		break;
+
+	case mouthTwitch:
+		NPC->animate(2, 0, 1);
+
+		if (++NPC->act_wait > 18)
+			NPC->act_no = standing;
+		break;
+
+	case fallingFromCeiling:
+		if (++NPC->act_wait > 40)
+			NPC->bits &= ~npc_ignoresolid;
+
+		if (NPC->flag & ground)
+		{
+			NPC->act_no = init;
+			NPC->ani_no = 0;
+			NPC->act_wait = 0;
+		}
+		break;
+
+	case startJump:
+	case jumping:
+		if (NPC->flag & leftWall && NPC->xm < 0)
+		{
+			NPC->xm = -NPC->xm;
+			NPC->direct = dirRight;
+		}
+		if (NPC->flag & rightWall && NPC->xm > 0)
+		{
+			NPC->xm = -NPC->xm;
+			NPC->direct = dirLeft;
+		}
+
+		if (NPC->flag & ground)
+		{
+			NPC->act_no = init;
+			NPC->ani_no = 0;
+			NPC->act_wait = 0;
+		}
+		break;
+
+	default:
+		break;
+	}
+
+	bool doJump = false;
+	if (NPC->act_no < startJump && NPC->act_no != fallingFromCeiling && NPC->act_wait > 10)
+	{
+		if (NPC->shock)
+			doJump = true;
+		if (NPC->x >= currentPlayer.x - 0x14000
+			&& NPC->x <= currentPlayer.x + 0x14000
+			&& NPC->y >= currentPlayer.y - 0x8000
+			&& NPC->y <= currentPlayer.y + 0x8000
+			&& !random(0, 50))
+			doJump = true;
+	}
+	if (doJump)
+	{
+		NPC->facePlayer();
+		NPC->act_no = startJump;
+		NPC->ani_no = 2;
+		NPC->ym = -0x5FF;
+		if (!(currentPlayer.cond & player_removed))
+			playSound(SFX_CritterHop);
+
+		NPC->moveTowardsPlayer(0x200);
+	}
+
+	NPC->doGravity(0x80, 0x5FF);
+	NPC->doRects(rcLeft, rcRight);
 }
 
 void npcAct106(npc *NPC) // Speech balloon 'Hey' high

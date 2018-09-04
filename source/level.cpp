@@ -125,12 +125,6 @@ void loadLevel(int levelIndex)
 	uint8_t *pxm = nullptr;
 	const int pxmSize = loadFile(pxmPath.c_str(), &pxm);
 
-	if (pxmSize < 0)
-	{
-		const string errorMessage = "Couldn't read " + pxmPath;
-		doCustomError(errorMessage.c_str());
-	}
-
 	levelWidth = readLEshort(pxm, 4);
 	levelHeight = readLEshort(pxm, 6);
 
@@ -148,12 +142,6 @@ void loadLevel(int levelIndex)
 	uint8_t *pxa = nullptr;
 	const int pxaSize = loadFile(pxaPath.c_str(), &pxa);
 
-	if (pxaSize < 0)
-	{
-		const string errorMessage = "Couldn't read " + pxaPath;
-		doCustomError(errorMessage.c_str());
-	}
-
 	delete[] levelTileAttributes;
 
 	levelTileAttributes = new uint8_t[pxaSize];
@@ -166,11 +154,7 @@ void loadLevel(int levelIndex)
 	const string pxePath = string("data/Stage/") + stageTable[levelIndex].filename + ".pxe";
 
 	uint8_t *pxe = nullptr;
-	if (loadFile(pxePath.c_str(), &pxe) < 0)
-	{
-		const string errorMessage = "Couldn't read " + pxePath;
-		doCustomError(errorMessage.c_str());
-	}
+	loadFile(pxePath.c_str(), &pxe);
 
 	//Clear old npcs
 	npcs.clear();

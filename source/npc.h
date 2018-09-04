@@ -87,18 +87,19 @@ public:
 	//offset
 	RECT view;
 
-	//damage
+	// Damage
 	uint8_t shock;
 	int damage_view;
 	int damage;
 
-	//parent
+	/// Parent NPC
 	npc *pNpc;
 
 public:
-	/// These are kinda supposed to be internal, but I can't put them as protected/private
+	// These are kinda supposed to be internal, but I can't put them as protected/private
 	void animate(int aniWait, int aniStart, int aniMax);
-	// If only one argument is passed it will just not check for direction and just use the first argument
+	void doGravity(int gravity, int maxYVel);
+	/// If only one argument is passed it will just not check for direction and just use the first argument
 	void doRects(const std::vector<RECT>& rcLeft, const std::vector<RECT>& rcRight = std::vector<RECT>());
 	void facePlayer();
 	void moveTowardsPlayer(int vel);
