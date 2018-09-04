@@ -739,7 +739,7 @@ void npcAct086(npc *NPC) //Dropped missiles
 
 	rcMissile1[0] = { 0, 80, 16, 96 };
 	rcMissile1[1] = { 16, 80, 32, 96 };
-	rcMissile3[0] = { 0, 122, 16, 128 };
+	rcMissile3[0] = { 0, 112, 16, 128 };
 	rcMissile3[1] = { 16, 112, 32, 128 };
 	rcLast = { 16, 0, 32, 16 };
 	
