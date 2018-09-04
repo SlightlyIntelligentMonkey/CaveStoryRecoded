@@ -14,9 +14,9 @@ void npcAct180(npc * NPC) // Curly, AI
 	RECT rcRight[11];
 
 	rcLeft[0] = { 0, 96, 16, 112 };
-	rcLeft[1] = { 16, 96, 32, 112 };
+	rcLeft[1] = { 16, 96, 0x20, 112 };
 	rcLeft[2] = rcLeft[0];
-	rcLeft[3] = { 32, 96, 48, 112 };
+	rcLeft[3] = { 0x20, 96, 48, 112 };
 	rcLeft[4] = rcLeft[0];
 	rcLeft[5] = { 48, 96, 64, 112 };
 	rcLeft[6] = { 64, 96, 80, 112 };
@@ -26,9 +26,9 @@ void npcAct180(npc * NPC) // Curly, AI
 	rcLeft[10] = { 144, 96, 160, 112 };
 
 	rcRight[0] = { 0, 112, 16, 128 };
-	rcRight[1] = { 16, 112, 32, 126 };
+	rcRight[1] = { 16, 112, 0x20, 126 };
 	rcRight[2] = rcRight[0];
-	rcRight[3] = { 32, 112, 48, 128 };
+	rcRight[3] = { 0x20, 112, 48, 128 };
 	rcRight[4] = rcRight[0];
 	rcRight[5] = { 48, 112, 64, 128 };
 	rcRight[6] = { 64, 112, 80, 128 };
@@ -120,9 +120,9 @@ void npcAct180(npc * NPC) // Curly, AI
 			NPC->ani_no = 0;
 			createNpc(NPC_CurlyAirTankBubble, 0, 0, 0, 0, dirLeft, NPC);
 			if (getFlag(563))
-				createNpc(NPC_CurlyAIPolarStar, 0, 0, 0, 0, dirLeft, NPC);
-			else
 				createNpc(NPC_CurlyAIMachineGun, 0, 0, 0, 0, dirLeft, NPC);
+			else
+				createNpc(NPC_CurlyAIPolarStar, 0, 0, 0, 0, dirLeft, NPC);
 			break;
 
 		case knockedOut:
@@ -142,9 +142,9 @@ void npcAct180(npc * NPC) // Curly, AI
 				NPC->ani_no = 0;
 				createNpc(NPC_CurlyAirTankBubble, 0, 0, 0, 0, dirLeft, NPC);
 				if (getFlag(563))
-					createNpc(NPC_CurlyAIPolarStar, 0, 0, 0, 0, dirLeft, NPC);
-				else
 					createNpc(NPC_CurlyAIMachineGun, 0, 0, 0, 0, dirLeft, NPC);
+				else
+					createNpc(NPC_CurlyAIPolarStar, 0, 0, 0, 0, dirLeft, NPC);
 			}
 			break;
 
@@ -346,8 +346,8 @@ void curlyNPCCommonBulletSpawn(const npc *NPC, int bulletCode)
 
 void npcAct181(npc *NPC) // Curly Machine Gun bullet spawner (projectile)
 {
-	constexpr RECT rcLeft[2] = { {184, 152, 200, 168}, {200, 152, 216, 168} };
-	constexpr RECT rcRight[2] = { {184, 168, 200, 184}, {200, 168, 216, 184} };
+	constexpr RECT rcLeft[2] = { { 184, 152, 200, 168 },{ 200, 152, 216, 168 } };
+	constexpr RECT rcRight[2] = { { 184, 168, 200, 184 },{ 200, 168, 216, 184 } };
 
 	if (NPC->pNpc)
 	{
@@ -378,8 +378,8 @@ void npcAct181(npc *NPC) // Curly Machine Gun bullet spawner (projectile)
 
 void npcAct182(npc * NPC) // Curly Polar Star bullet spawner (projectile)
 {
-	constexpr RECT rcLeft[2] = { {184, 152, 200, 168}, {200, 152, 216, 168} };
-	constexpr RECT rcRight[2] = { {184, 168, 200, 184}, {200, 168, 216, 184} };
+	constexpr RECT rcLeft[2] = { { 184, 152, 200, 168 },{ 200, 152, 216, 168 } };
+	constexpr RECT rcRight[2] = { { 184, 168, 200, 184 },{ 200, 168, 216, 184 } };
 
 	if (NPC->pNpc)
 	{
@@ -431,6 +431,185 @@ void npcAct183(npc * NPC) // Curly Air Bubble
 		else
 			NPC->rect.right = 0;
 	}
+}
+
+void npcAct187(npc *NPC) //Fuzz
+{
+	RECT rcLeft[2];
+	RECT rcRight[2];
+
+	rcLeft[0].left = 224;
+	rcLeft[0].top = 104;
+	rcLeft[0].right = 256;
+	rcLeft[0].bottom = 136;
+	rcLeft[1].left = 256;
+	rcLeft[1].top = 104;
+	rcLeft[1].right = 288;
+	rcLeft[1].bottom = 136;
+
+	rcRight[0].left = 224;
+	rcRight[0].top = 136;
+	rcRight[0].right = 256;
+	rcRight[0].bottom = 168;
+	rcRight[1].left = 256;
+	rcRight[1].top = 136;
+	rcRight[1].right = 288;
+	rcRight[1].bottom = 168;
+
+	switch (NPC->act_no)
+	{
+	case 0:
+		NPC->act_no = 1;
+		NPC->tgt_x = NPC->x;
+		NPC->tgt_y = NPC->y;
+		NPC->count1 = 120;
+		NPC->act_wait = random(0, 50);
+
+		for (int i = 0; i < 5; ++i)
+			createNpc(188, 0, 0, 0, 0, 51 * i, NPC);
+//Fallthrough
+	case 1:
+		if (++NPC->act_wait >= 50)
+		{
+			NPC->act_wait = 0;
+			NPC->act_no = 2;
+			NPC->ym = 0x300;
+		}
+		break;
+
+	case 2:
+		NPC->count1 += 4;
+
+		if (currentPlayer.x >= NPC->x)
+			NPC->direct = 2;
+		else
+			NPC->direct = 0;
+
+		if (NPC->tgt_y < NPC->y)
+			NPC->ym -= 0x10;
+		if (NPC->tgt_y > NPC->y)
+			NPC->ym += 0x10;
+
+		if (NPC->ym > 0x355)
+			NPC->ym = 0x355;
+		if (NPC->ym < -0x355)
+			NPC->ym = -0x355;
+		break;
+
+	default:
+		break;
+	}
+
+	NPC->x += NPC->xm;
+	NPC->y += NPC->ym;
+
+	if (++NPC->ani_wait > 2)
+	{
+		NPC->ani_wait = 0;
+		++NPC->ani_no;
+	}
+
+	if (NPC->ani_no > 1)
+		NPC->ani_no = 0;
+
+	if (NPC->direct)
+		NPC->rect = rcRight[NPC->ani_no];
+	else
+		NPC->rect = rcLeft[NPC->ani_no];
+}
+
+void npcAct188(npc *NPC) //Baby Fuzz
+{
+	uint8_t deg;
+	RECT rcLeft[2];
+	RECT rcRight[2];
+
+	rcLeft[0].left = 288;
+	rcLeft[0].top = 104;
+	rcLeft[0].right = 304;
+	rcLeft[0].bottom = 120;
+	rcLeft[1].left = 304;
+	rcLeft[1].top = 104;
+	rcLeft[1].right = 320;
+	rcLeft[1].bottom = 120;
+
+	rcRight[0].left = 288;
+	rcRight[0].top = 120;
+	rcRight[0].right = 304;
+	rcRight[0].bottom = 136;
+	rcRight[1].left = 304;
+	rcRight[1].top = 120;
+	rcRight[1].right = 320;
+	rcRight[1].bottom = 136;
+
+	switch (NPC->act_no)
+	{
+	case 0:
+		NPC->act_no = 1;
+		NPC->count1 = NPC->direct;
+//Fallthrough
+	case 1:
+		if (NPC->pNpc->code_char != 187 || (NPC->pNpc->cond & 0x80u) == 0)
+		{
+			NPC->xm = random(-0x200, 0x200);
+			NPC->ym = random(-0x200, 0x200);
+			NPC->act_no = 10;
+		}
+		else
+		{
+			deg = (NPC->count1 & 0xFF) + (NPC->pNpc->count1 & 0xFF);
+			
+			NPC->x = NPC->pNpc->x + 20 * getSin(deg);
+			NPC->y = NPC->pNpc->y + 0x20 * getCos(deg);
+		}
+		break;
+
+	case 10:
+		if (currentPlayer.x >= NPC->x)
+			NPC->xm += 0x20;
+		else
+			NPC->xm -= 0x20;
+		
+		if (currentPlayer.y >= NPC->y)
+			NPC->ym += 0x20;
+		else
+			NPC->ym -= 0x20;
+
+		if (NPC->xm > 0x800)
+			NPC->xm = 0x800;
+		if (NPC->xm < -0x800)
+			NPC->xm = -0x800;
+		if (NPC->ym > 0x200)
+			NPC->ym = 0x200;
+		if (NPC->ym < -0x200)
+			NPC->ym = -0x200;
+
+		NPC->x += NPC->xm;
+		NPC->y += NPC->ym;
+		break;
+
+	default:
+		break;
+	}
+
+	if (currentPlayer.x >= NPC->x)
+		NPC->direct = 2;
+	else
+		NPC->direct = 0;
+
+	if (++NPC->ani_wait > 2)
+	{
+		NPC->ani_wait = 0;
+		++NPC->ani_no;
+	}
+
+	if (NPC->ani_no > 1)
+		NPC->ani_no = 0;
+
+	if (NPC->direct)
+		NPC->rect = rcRight[NPC->ani_no];
+	else
+		NPC->rect = rcLeft[NPC->ani_no];
 }
 
 void npcAct192(npc * NPC)
@@ -519,7 +698,7 @@ void npcAct192(npc * NPC)
 	}
 
 	constexpr RECT rcLeft[2] = { {224, 64, 256, 80}, {256, 64, 288, 96} };
-	constexpr RECT rcRight[2] = { {224, 80, 256, 96}, {288, 64, 320, 96} };
+	constexpr RECT rcRight[2] = { {224, 80, 256, 96}, {288, 64, 0x200, 96} };
 
 	if (NPC->direct != dirLeft)
 		NPC->rect = rcRight[NPC->ani_no];
