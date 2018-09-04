@@ -21,6 +21,19 @@ void npcAct227(npc *NPC) // Bucket
 	NPC->rect = { 208, 32, 224, 48 };
 }
 
+void npcAct229(npc *NPC) // Red Flowers, small
+{
+	if (!NPC->act_no)
+	{
+		NPC->act_no = 1;
+		NPC->y -= 0x2000;
+	}
+	if (NPC->direct)
+		NPC->rect = { 0, 112, 59, 129 };
+	else
+		NPC->rect = { 0, 96, 48, 112 };
+}
+
 void npcAct231(npc *NPC) //Momorin's rocket
 {
 	RECT rc[2];
@@ -249,4 +262,5 @@ void npcAct238(npc *NPC) //Killer press
 
 	NPC->rect = rc[NPC->ani_no];
 }
+
 

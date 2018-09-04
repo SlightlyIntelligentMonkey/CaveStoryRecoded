@@ -18,7 +18,7 @@ void npcAct100(npc * NPC) // Grate
 	NPC->rect = { 272, 48, 288, 64 };
 }
 
-void npcAct104(npc *NPC)
+void npcAct104(npc *NPC) // Frog (enemy)
 {
 	vector<RECT> rcLeft(3);
 	vector<RECT> rcRight(3);
