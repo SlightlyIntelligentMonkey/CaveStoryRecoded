@@ -3,6 +3,80 @@
 #include "player.h"
 #include "sound.h"
 #include "mathUtils.h"
+#include "render.h"
+
+using std::vector;
+
+void npcAct040(npc * NPC) // Santa
+{
+	vector<RECT> rcLeft(7);
+	vector<RECT> rcRight(7);
+
+	rcLeft[0] = { 0, 32, 16, 48 };
+	rcLeft[1] = { 16, 32, 32, 48 };
+	rcLeft[2] = { 32, 32, 48, 48 };
+	rcLeft[3] = rcLeft[0];
+	rcLeft[4] = { 48, 32, 64, 48 };
+	rcLeft[5] = rcLeft[0];
+	rcLeft[6] = { 64, 32, 80, 48 };
+
+	rcRight[0] = { 0, 48, 16, 64 };
+	rcRight[1] = { 16, 48, 32, 64 };
+	rcRight[2] = { 32, 48, 48, 64 };
+	rcRight[3] = rcRight[0];
+	rcRight[4] = { 48, 48, 64, 64 };
+	rcRight[5] = rcRight[0];
+	rcRight[6] = { 64, 48, 80, 64 };
+
+	enum
+	{
+		init = 0,
+		stand = 1,
+		blinkWait = 2,
+		walk = 3,
+		faceAway = 5,
+	};
+
+	switch (NPC->act_no)
+	{
+	case init:
+		NPC->act_no = stand;
+		NPC->ani_no = 1;
+		NPC->act_wait = 0;
+		// Fallthrough
+	case stand:
+		if (!random(0, 120))
+		{
+			NPC->act_no = blinkWait;
+			NPC->ani_no = 0;
+			NPC->act_wait = 0;
+		}
+		if (NPC->isPlayerWithinDistance(0x4000, 0x4000, 0x2000))
+			NPC->facePlayer();
+		break;
+
+	case blinkWait:
+		if (++NPC->act_wait > 8)
+		{
+			NPC->act_no = stand;
+			NPC->ani_no = 0;
+		}
+		break;
+
+	case walk:
+		NPC->animate(4, 2, 5);
+		if (NPC->direct == dirLeft)
+			NPC->x -= 0x200;
+		else
+			NPC->x += 0x200;
+		break;
+
+	default:
+		break;
+	}
+	
+	NPC->doRects(rcLeft, rcRight);
+}
 
 void npcAct041(npc * NPC) // Busted doorway
 {
@@ -17,8 +91,8 @@ void npcAct041(npc * NPC) // Busted doorway
 
 void npcAct042(npc *NPC) // Sue
 {
-	RECT rcLeft[13];
-	RECT rcRight[13];
+	vector<RECT> rcLeft(13);
+	vector<RECT> rcRight(13);
 
 	rcLeft[0] = { 0, 0, 16, 16 };
 	rcLeft[1] = { 16, 0, 32, 16 };
@@ -47,9 +121,6 @@ void npcAct042(npc *NPC) // Sue
 	rcRight[10] = { 0, 16, 16, 32 };
 	rcRight[11] = { 112, 48, 128, 64 };
 	rcRight[12] = { 160, 48, 176, 64 };
-
-
-
 
 	enum // Sue's states
 	{
@@ -98,17 +169,8 @@ void npcAct042(npc *NPC) // Sue
 		NPC->ani_wait = 0;
 	// Fallthrough
 	case 4:
-		if (++NPC->ani_wait > 4)
-		{
-			NPC->ani_wait = 0;
-			++NPC->ani_no;
-		}
-		if (NPC->ani_no > 5)
-			NPC->ani_no = 2;
-		if (NPC->direct != dirLeft)
-			NPC->xm = 0x200;
-		else
-			NPC->xm = -0x200;
+		NPC->animate(4, 2, 5);
+		NPC->moveTowardsPlayer(pixelsToUnits(1));
 		break;
 
 	case 5:
@@ -133,10 +195,7 @@ void npcAct042(npc *NPC) // Sue
 		NPC->act_no = 9;
 		NPC->ani_no = 7;
 		NPC->ym = -0x200;
-		if (NPC->direct != dirLeft)
-			NPC->xm = -0x400;
-		else
-			NPC->xm = 0x400;
+		NPC->moveTowardsPlayer(pixelsToUnits(2));
 	// Fallthrough
 	case 9:
 		if (++NPC->act_wait > 3 && NPC->flag & ground)
@@ -162,15 +221,9 @@ void npcAct042(npc *NPC) // Sue
 		NPC->xm = 0;
 	// Fallthrough
 	case 12:
-		if (++NPC->ani_wait > 8)
-		{
-			NPC->ani_wait = 0;
-			++NPC->ani_no;
-		}
-
-		if (NPC->ani_no > 10)
-			NPC->ani_no = 9;
+		NPC->animate(8, 9, 10);
 		break;
+
 	case carriedByIgor:
 		NPC->ani_no = 11;
 		NPC->xm = 0;
@@ -226,18 +279,9 @@ void npcAct042(npc *NPC) // Sue
 		NPC->ani_wait = 0;
 	// Fallthrough
 	case 21:
-		if (++NPC->ani_wait > 2)
-		{
-			NPC->ani_wait = 0;
-			++NPC->ani_no;
-		}
-		if (NPC->ani_no > 5)
-			NPC->ani_no = 2;
+		NPC->animate(2, 2, 5);
+		NPC->moveTowardsPlayer(pixelsToUnits(2));
 
-		if (NPC->direct != dirLeft)
-			NPC->xm = 0x400;
-		else
-			NPC->xm = -0x400;
 		if (NPC->x < currentPlayer.x - 0x1000)
 		{
 			NPC->direct = dirRight;
@@ -251,18 +295,8 @@ void npcAct042(npc *NPC) // Sue
 		NPC->ani_wait = 0;
 	// Fallthrough
 	case 31:
-		if (++NPC->ani_wait > 2)
-		{
-			NPC->ani_wait = 0;
-			++NPC->ani_no;
-		}
-		if (NPC->ani_no > 5)
-			NPC->ani_no = 2;
-
-		if (NPC->direct != dirLeft)
-			NPC->xm = 0x400;
-		else
-			NPC->xm = -0x400;
+		NPC->animate(2, 2, 5);
+		NPC->moveTowardsPlayer(pixelsToUnits(2));
 		break;
 	case jumpOffIsland:
 		NPC->act_no = 41;
@@ -287,10 +321,7 @@ void npcAct042(npc *NPC) // Sue
 		NPC->y += NPC->ym;
 	}
 
-	if (NPC->direct == dirLeft)
-		NPC->rect = rcLeft[NPC->ani_no];
-	else
-		NPC->rect = rcRight[NPC->ani_no];
+	NPC->doRects(rcLeft, rcRight);
 }
 
 void npcAct043(npc * NPC) // Blackboard
@@ -443,7 +474,7 @@ void npcAct058(npc *NPC) //Basu 1
 			}
 		}
 	}
-	else if (action)
+	else
 	{
 		if (action == 1)
 		{
@@ -622,4 +653,5 @@ void npcAct059(npc *NPC) //Eye door
 
 	NPC->rect = { setRect->left, setRect->top, setRect->right, setRect->bottom };
 }
+
 

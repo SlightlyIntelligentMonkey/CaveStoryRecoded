@@ -4,6 +4,7 @@
 #include "level.h"
 
 #include <deque>
+#include <vector>
 
 struct NPC_RECT
 {
@@ -97,23 +98,25 @@ public:
 public:
 	/// These are kinda supposed to be internal, but I can't put them as protected/private
 	void animate(int aniWait, int aniStart, int aniMax);
+	// If only one argument is passed it will just not check for direction and just use the first argument
+	void doRects(const std::vector<RECT>& rcLeft, const std::vector<RECT>& rcRight = std::vector<RECT>());
 	void facePlayer();
 	void moveTowardsPlayer(int vel);
-	bool isPlayerWithinDistance(int xDist, int yDistHigh, int yDistLow);
-	inline bool isPlayerWithinDistance(int xDist, int yDist)
+	bool isPlayerWithinDistance(int xDist, int yDistHigh, int yDistLow) attrPure;
+	inline bool isPlayerWithinDistance(int xDist, int yDist) attrPure
 	{
 		return isPlayerWithinDistance(xDist, yDist, yDist);
 	}
 
-	bool isPlayerAligned(int xRay, int yRayHigh, int yRayLow);
-	inline bool isPlayerAligned(int xRay, int yRay)
+	bool isPlayerAligned(int xRay, int yRayHigh, int yRayLow) attrPure;
+	inline bool isPlayerAligned(int xRay, int yRay) attrPure
 	{
 		return isPlayerAligned(xRay, yRay, yRay);
 	}
 
-	void init(int setCode, int setX, int setY, int setXm, int setYm, int setDir, npc *parentNpc) noexcept;
+	void init(int setCode, int setX, int setY, int setXm, int setYm, int setDir, npc *parentNpc);
 
-	void update() noexcept;
+	void update();
 	void draw();
 };
 
@@ -134,6 +137,10 @@ extern std::deque<npc> npcs;
 
 extern int superXPos;
 extern int superYPos;
+
+extern int curlyShootWait;
+extern int curlyShootX;
+extern int curlyShootY;
 
 enum NPC_cond
 {

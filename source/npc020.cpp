@@ -87,60 +87,10 @@ void npcAct025(npc *NPC) //egg corridor lift thing
 		NPC->ani_no = 0;
 		NPC->ani_wait = 0;
 		NPC->x += 4096;
+		// Fallthrough
 	case 1:
-		if (++NPC->act_wait > 150)
-		{
-			NPC->act_wait = 0;
-			++NPC->act_no;
-		}
-		break;
-	case 2:
-		if (++NPC->act_wait > 64)
-		{
-			NPC->act_wait = 0;
-			++NPC->act_no;
-		}
-		else
-		{
-			NPC->y -= 512;
-		}
-		break;
 	case 3:
-		if (++NPC->act_wait > 150)
-		{
-			NPC->act_wait = 0;
-			++NPC->act_no;
-		}
-		break;
-	case 4:
-		if (++NPC->act_wait > 64)
-		{
-			NPC->act_wait = 0;
-			++NPC->act_no;
-		}
-		else
-		{
-			NPC->y -= 512;
-		}
-		break;
 	case 5:
-		if (++NPC->act_wait > 150)
-		{
-			NPC->act_wait = 0;
-			++NPC->act_no;
-		}
-		break;
-	case 6:
-		if (++NPC->act_wait > 64)
-		{
-			NPC->act_wait = 0;
-			++NPC->act_no;
-		}
-		else
-		{
-			NPC->y += 512;
-		}
-		break;
 	case 7:
 		if (++NPC->act_wait > 150)
 		{
@@ -148,16 +98,17 @@ void npcAct025(npc *NPC) //egg corridor lift thing
 			++NPC->act_no;
 		}
 		break;
+	case 2:
+	case 4:
+	case 6:
 	case 8:
 		if (++NPC->act_wait > 64)
 		{
 			NPC->act_wait = 0;
-			NPC->act_no = 1;
+			++NPC->act_no;
 		}
 		else
-		{
-			NPC->y += 512;
-		}
+			NPC->y -= 512;
 		break;
 	default:
 		break;
@@ -307,7 +258,7 @@ void npcAct035(npc * NPC) // Manann (enemy)
 	if (NPC->act_no < dead && NPC->life < 90)
 	{
 		playSound(SFX_QuoteSmashIntoGround);
-		createSmoke(NPC->x, NPC->y, NPC->view.right, 8);
+		createSmokeLeft(NPC->x, NPC->y, NPC->view.right, 8);
 		dropExperience(NPC->x, NPC->y, NPC->exp);
 		NPC->act_no = dead;
 		NPC->act_wait = 0;
@@ -400,7 +351,7 @@ void npcAct038(npc * NPC)
 		if (NPC->act_no == 10)
 		{
 			NPC->act_no = 11;
-			createSmoke(NPC->x, NPC->y, NPC->view.bottom, 8);
+			createSmokeLeft(NPC->x, NPC->y, NPC->view.bottom, 8);
 		}
 		else if (NPC->act_no != 11)
 			return;

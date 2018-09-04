@@ -11,7 +11,7 @@ struct FADE_STATE
 
 extern FADE_STATE fade;
 
-void initFade() noexcept;
+void initFade();
 
-void updateFade() noexcept;
+void updateFade();
 void drawFade();

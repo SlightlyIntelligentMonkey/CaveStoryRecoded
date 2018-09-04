@@ -67,7 +67,7 @@ void drawCarets()
 }
 
 //Action code
-void caretAct000(caret *CARET) noexcept //Inexistente
+void caretAct000(caret *CARET)  //Inexistente
 {
 	CARET->cond = 0;
 }
@@ -181,6 +181,9 @@ void caretAct002(caret *CARET) //Rising Disc / Exploding Diamond
 
 		CARET->rect = rcRight[CARET->ani_no];
 		break;
+
+	default:
+		break;
 	}
 }
 
@@ -268,7 +271,7 @@ void caretAct005(caret *CARET) //Zzz...
 	CARET->rect = rcLeft[CARET->ani_no];
 }
 
-void caretAct007(caret *CARET) noexcept //Booster particles
+void caretAct007(caret *CARET)  //Booster particles
 {
 	//Animate and set framerect
 	if (++CARET->ani_wait > 1)
@@ -531,7 +534,7 @@ caretAct caretActs[] =
 };
 
 //Init
-void caret::init(int setX, int setY, int setType, int setDir) noexcept
+void caret::init(int setX, int setY, int setType, int setDir) 
 {
 	memset(this, 0, sizeof(*this));
 
@@ -548,7 +551,7 @@ void caret::init(int setX, int setY, int setType, int setDir) noexcept
 }
 
 //Update code
-void caret::update() noexcept
+void caret::update() 
 {
 	caretActs[code](this);
 }

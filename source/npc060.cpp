@@ -754,14 +754,11 @@ void npcAct065(npc *NPC) //First Cave Bat
 			NPC->ym = -0x300;
 	}
 
-	if (action == 1)
+	if (action == 1 && ++NPC->act_wait >= 50)
 	{
-		if (++NPC->act_wait >= 50)
-		{
-			NPC->act_wait = 0;
-			NPC->act_no = 2;
-			NPC->ym = 0x300;
-		}
+		NPC->act_wait = 0;
+		NPC->act_no = 2;
+		NPC->ym = 0x300;
 	}
 
 	//Move bat

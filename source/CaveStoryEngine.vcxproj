@@ -204,6 +204,10 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="blade.cpp" />
+    <ClCompile Include="bladeThrow.cpp" />
+    <ClCompile Include="bubblePew.cpp" />
+    <ClCompile Include="bubbler.cpp" />
     <ClCompile Include="bullet.cpp" />
     <ClCompile Include="bulletCollision.cpp" />
     <ClCompile Include="caret.cpp" />
@@ -216,8 +220,11 @@
     <ClCompile Include="machineGun.cpp" />
     <ClCompile Include="machineGunShoot.cpp" />
     <ClCompile Include="mapSystem.cpp" />
+    <ClCompile Include="misc.cpp" />
     <ClCompile Include="missile.cpp" />
     <ClCompile Include="missileLaunch.cpp" />
+    <ClCompile Include="nemesis.cpp" />
+    <ClCompile Include="nemesisShoot.cpp" />
     <ClCompile Include="npc080.cpp" />
     <ClCompile Include="npc100.cpp" />
     <ClCompile Include="npc120.cpp" />
@@ -269,6 +276,8 @@
     <ClCompile Include="weapons.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="blade.h" />
+    <ClInclude Include="bubbler.h" />
     <ClInclude Include="bullet.h" />
     <ClInclude Include="bulletCollision.h" />
     <ClInclude Include="caret.h" />
@@ -278,7 +287,9 @@
     <ClInclude Include="game.h" />
     <ClInclude Include="loadConfig.h" />
     <ClInclude Include="machineGun.h" />
+    <ClInclude Include="misc.h" />
     <ClInclude Include="missile.h" />
+    <ClInclude Include="nemesis.h" />
     <ClInclude Include="npc080.h" />
     <ClInclude Include="npc100.h" />
     <ClInclude Include="npc120.h" />

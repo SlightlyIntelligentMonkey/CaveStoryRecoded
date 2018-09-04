@@ -16,8 +16,6 @@ struct BULLETSTATS
 	int blockYL;
 
 	RECT view;
-
-	int weapon;
 };
 
 class bullet
