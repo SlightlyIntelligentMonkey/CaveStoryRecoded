@@ -55,8 +55,14 @@ void loadOrgJson()
 		disableOrg = true;
 }
 
+void loadFilesystemJson()
+{
+	
+}
+
 void loadConfigFiles()
 {
 	loadGameJson();
 	loadOrgJson();
+	loadFilesystemJson();
 }
