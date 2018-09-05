@@ -149,11 +149,11 @@ void npcAct234(npc * NPC) // Red Flowers, picked
 
 void npcAct238(npc *NPC) //Killer press
 {
-	RECT rc[3];
+	RECT rcNPC[3];
 
-	rc[0] = { 184, 200, 208, 216 };
-	rc[1] = { 208, 200, 232, 216 };
-	rc[2] = { 232, 200, 256, 216 };
+	rcNPC[0] = { 184, 200, 208, 216 };
+	rcNPC[1] = { 208, 200, 232, 216 };
+	rcNPC[2] = { 232, 200, 256, 216 };
 
 	if (!NPC->act_no)
 	{
@@ -247,6 +247,26 @@ void npcAct238(npc *NPC) //Killer press
 	else
 		NPC->hit.right = 0x2000;
 
-	NPC->rect = rc[NPC->ani_no];
+	NPC->rect = rcNPC[NPC->ani_no];
 }
 
+void npcAct239(npc *NPC) // Cage bars
+{
+    if (!NPC->act_no)
+    {
+        NPC->act_no = 1;
+        if (NPC->direct != dirLeft)
+        {
+            NPC->view.left = 0x3000;
+            NPC->view.right = 0x3000;
+            NPC->view.top = 0x1000;
+        }
+        else
+        {
+            NPC->x += 0x1000;
+            NPC->y += 0x2000;
+        }
+    }
+
+    NPC->doRects({{192, 48, 256, 80}}, {{96, 112, 144, 144}});
+}
