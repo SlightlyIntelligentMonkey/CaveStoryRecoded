@@ -1,7 +1,11 @@
 #include "npc100.h"
 
+#include <vector>
 #include "player.h"
 #include "sound.h"
+#include "render.h"
+
+using std::vector;
 
 void npcAct100(npc * NPC) // Grate
 {
@@ -12,6 +16,18 @@ void npcAct100(npc * NPC) // Grate
 	}
 
 	NPC->rect = { 272, 48, 288, 64 };
+}
+
+void npcAct105(npc *NPC) // Speech balloon 'Hey' low
+{
+    vector<RECT> rcNPC = {{128, 32, 144, 48}, {128, 38, 128, 32}};
+
+    if (++NPC->act_wait > 30)
+        NPC->cond = 0;
+    if (NPC->act_wait < 5)
+        NPC->y -= pixelsToUnits(1);
+
+    NPC->doRects(rcNPC);
 }
 
 void npcAct106(npc *NPC) // Speech balloon 'Hey' high
