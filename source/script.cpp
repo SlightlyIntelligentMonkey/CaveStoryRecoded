@@ -130,7 +130,7 @@ void loadTsc2(const char *name)
 //Get number function
 int getTSCNumber(int a)  attrPure;
 
-int getTSCNumber(int a) 
+int getTSCNumber(int a)
 {
 	return			(static_cast<char>(tsc.data[a + 3]) - 0x30) +
 	                10 *	(static_cast<char>(tsc.data[a + 2]) - 0x30) +
@@ -138,7 +138,7 @@ int getTSCNumber(int a)
 	                1000 *	(static_cast<char>(tsc.data[a]) - 0x30);
 }
 
-void tscClearText() 
+void tscClearText()
 {
 	for (int i = 0; i < 4; ++i)
 	{
@@ -150,7 +150,7 @@ void tscClearText()
 }
 
 //TSC run event functions
-int startTscEvent(int no) 
+int startTscEvent(int no)
 {
 	tsc.mode = 1;
 	gameFlags |= 5;
@@ -188,7 +188,7 @@ int startTscEvent(int no)
 	return 1;
 }
 
-int jumpTscEvent(int no) 
+int jumpTscEvent(int no)
 {
 	tsc.mode = 1;
 	gameFlags |= 4;
@@ -221,7 +221,7 @@ int jumpTscEvent(int no)
 	return 1;
 }
 
-void stopTsc() 
+void stopTsc()
 {
 	tsc.mode = 0;
 	gameFlags &= ~4;
@@ -230,7 +230,7 @@ void stopTsc()
 }
 
 //Check new line
-void checkNewLine() 
+void checkNewLine()
 {
 	if (tsc.ypos_line[tsc.line % 4] == 48)
 	{
@@ -241,7 +241,7 @@ void checkNewLine()
 	}
 }
 
-void clearTextLine() 
+void clearTextLine()
 {
 	//Reset current writing position
 	tsc.line = 0;
@@ -259,7 +259,7 @@ void clearTextLine()
 }
 
 //TSC Update
-int tscCheck() 
+int tscCheck()
 {
 	//End tsc if in END state, continue if not
 	if (tsc.mode)
@@ -565,7 +565,6 @@ int updateTsc()
 			static bool notifiedAboutFLA = false;
 			static bool notifiedAboutFOB = false;
 			static bool notifiedAboutINP = false;
-			static bool notifiedAboutNCJ = false;
 			static bool notifiedAboutSIL = false;
 			static bool notifiedAboutSPS = false;
 			static bool notifiedAboutSSS = false;
@@ -1060,12 +1059,13 @@ int updateTsc()
 				tscCleanup(1);
 				break;
 			case('<NCJ'):
-				if (!notifiedAboutNCJ && debugFlags & notifyOnNotImplemented)
-				{
-					notifiedAboutNCJ = true;
-					showTSCNotImplementedWarning("<NCJ is not implemented");
-				}
-				tscCleanup(2);
+				xt = getTSCNumber(tsc.p_read + 4);
+                yt = getTSCNumber(tsc.p_read + 9);
+
+                if (findEntityByType(xt) != -1)
+                    jumpTscEvent(yt);
+                else
+                    tscCleanup(2);
 				break;
 			case('<NOD'):
 				tsc.mode = NOD;

@@ -136,6 +136,14 @@ void changeNpc(int code_event, int code_char, int dir)
 	}
 }
 
+int findEntityByType(int entityType)
+{
+    for (size_t i = 0; i < npcs.size(); ++i)
+        if (npcs[i].cond & npccond_alive && npcs[i].code_char == entityType)
+            return i;
+    return -1;
+}
+
 void updateNPC()
 {
 	if (npcs.size())
@@ -401,7 +409,7 @@ bool npc::isPlayerAligned(int xRay, int yRayHigh, int yRayLow)
 		|| this->y + yRayLow <= currentPlayer.y);
 }
 
-void npc::init(int setCode, int setX, int setY, int setXm, int setYm, int setDir, npc *parentNpc) 
+void npc::init(int setCode, int setX, int setY, int setXm, int setYm, int setDir, npc *parentNpc)
 {
 	memset(this, 0, sizeof(*this));
 
@@ -437,7 +445,7 @@ void npc::init(int setCode, int setX, int setY, int setXm, int setYm, int setDir
 	view.bottom = npcTable[code_char].view.bottom << 9;
 }
 
-void npc::update() 
+void npc::update()
 {
 	npcActs[code_char](this);
 
