@@ -97,6 +97,7 @@ public:
 
 public:
 	// These are kinda supposed to be internal, but I can't put them as protected/private
+	void accelerateTowardsPlayer(int vel);
 	void animate(int aniWait, int aniStart, int aniMax);
 	void doGravity(int gravity, int maxYVel);
 	/// If only one argument is passed it will just not check for direction and just use the first argument
@@ -128,6 +129,7 @@ void createSmokeUp(int x, int y, int w, int num);
 
 void createNpc(int setCode, int setX = 0, int setY = 0, int setXm = 0, int setYm = 0, int setDir = dirLeft, npc *parentNpc = nullptr);
 void changeNpc(int code_event, int code_char, int dir = dirLeft);
+int findEntityByType(int entityType);
 
 void updateNPC();
 void drawNPC();

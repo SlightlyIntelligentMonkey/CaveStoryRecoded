@@ -64,6 +64,49 @@ void npcAct222(npc *NPC) // Prison bars
 	NPC->rect = { 96, 168, 112, 200 };
 }
 
+void npcAct223(npc *NPC) // Momorin
+{
+    vector<RECT> rcLeft = {{80, 192, 96, 216}, {96, 192, 112, 216}, {112, 192, 128, 216}};
+    vector<RECT> rcRight = {{80, 216, 96, 240}, {96, 216, 112, 240}, {112, 216, 128, 240}};
+
+    switch (NPC->act_no)
+    {
+    case 0:
+        NPC->act_no = 1;
+        NPC->ani_no = 0;
+        NPC->ani_wait = 0;
+        // Fallthrough
+    case 1:
+        if (!random(0, 160))
+        {
+            NPC->act_no = 2;
+            NPC->act_wait = 0;
+            NPC->ani_no = 1;
+        }
+        break;
+
+    case 2:
+        if (++NPC->act_wait > 12)
+        {
+            NPC->act_no = 1;
+            NPC->ani_no = 0;
+        }
+        break;
+
+    case 3:
+        NPC->ani_no = 2;
+        break;
+
+    default:
+        break;
+    }
+
+    if (NPC->act_no < 2 && currentPlayer.y < NPC->y + 0x2000 && currentPlayer.y > NPC->y - 0x2000)
+        NPC->facePlayer();
+
+    NPC->doRects(rcLeft, rcRight);
+}
+
 void npcAct227(npc *NPC) // Bucket
 {
 	NPC->rect = { 208, 32, 224, 48 };
@@ -84,10 +127,10 @@ void npcAct229(npc *NPC) // Red Flowers, small
 
 void npcAct231(npc *NPC) //Momorin's rocket
 {
-	RECT rc[2];
+	RECT rcNPC[2];
 
-	rc[0] = { 176, 32, 208, 48 };
-	rc[1] = { 176, 48, 208, 64 };
+	rcNPC[0] = { 176, 32, 208, 48 };
+	rcNPC[1] = { 176, 48, 208, 64 };
 
 	switch (NPC->act_no)
 	{
@@ -191,7 +234,7 @@ void npcAct231(npc *NPC) //Momorin's rocket
 
 	NPC->y += NPC->ym;
 
-	NPC->rect = rc[NPC->ani_no];
+	NPC->rect = rcNPC[NPC->ani_no];
 }
 
 void npcAct234(npc * NPC) // Red Flowers, picked
@@ -210,11 +253,11 @@ void npcAct234(npc * NPC) // Red Flowers, picked
 
 void npcAct238(npc *NPC) //Killer press
 {
-	RECT rc[3];
+	RECT rcNPC[3];
 
-	rc[0] = { 184, 200, 208, 216 };
-	rc[1] = { 208, 200, 232, 216 };
-	rc[2] = { 232, 200, 256, 216 };
+	rcNPC[0] = { 184, 200, 208, 216 };
+	rcNPC[1] = { 208, 200, 232, 216 };
+	rcNPC[2] = { 232, 200, 256, 216 };
 
 	if (!NPC->act_no)
 	{
@@ -308,7 +351,26 @@ void npcAct238(npc *NPC) //Killer press
 	else
 		NPC->hit.right = 0x2000;
 
-	NPC->rect = rc[NPC->ani_no];
+	NPC->rect = rcNPC[NPC->ani_no];
 }
 
+void npcAct239(npc *NPC) // Cage bars
+{
+    if (!NPC->act_no)
+    {
+        NPC->act_no = 1;
+        if (NPC->direct != dirLeft)
+        {
+            NPC->view.left = 0x3000;
+            NPC->view.right = 0x3000;
+            NPC->view.top = 0x1000;
+        }
+        else
+        {
+            NPC->x += 0x1000;
+            NPC->y += 0x2000;
+        }
+    }
 
+    NPC->doRects({{192, 48, 256, 80}}, {{96, 112, 144, 144}});
+}
