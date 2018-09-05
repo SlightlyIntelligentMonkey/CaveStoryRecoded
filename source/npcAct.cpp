@@ -381,5 +381,5 @@ npcAct npcActs[361] =
 	&npcActNone,
 	&npcActNone,
 	&npcAct359,
-	&npcActNone
+	&npcActNone,
 };
