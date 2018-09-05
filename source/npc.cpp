@@ -351,6 +351,14 @@ void loadNpcTable()
 		tblStream->read(tblStream, &npcTable[i].view, 4, 1);
 }
 
+void npc::accelerateTowardsPlayer(int vel)
+{
+    if (this->direct != dirLeft)
+        this->xm += 0x20;
+    else
+        this->xm -= 0x20;
+}
+
 void npc::animate(int aniWait, int aniStart, int aniMax)
 {
 	{

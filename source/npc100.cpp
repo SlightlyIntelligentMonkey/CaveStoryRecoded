@@ -25,6 +25,42 @@ void npcAct101(npc *NPC) // Power Controls, screen
     NPC->doRects(rcNPC);
 }
 
+void npcAct102(npc *NPC) // Power Controls, power flow
+{
+    vector<RECT> rcNPC = {{208, 120, 224, 136}, {224, 120, 240, 136}, {240, 120, 256, 136}, {256, 120, 272, 136}};
+
+    if (!NPC->act_no)
+    {
+        NPC->act_no = 1;
+        NPC->y += 0x1000;
+    }
+
+    NPC->animate(0, 0, 3);
+    NPC->doRects(rcNPC);
+}
+
+void npcAct103(npc *NPC) // Manann red blast (projectile)
+{
+    vector<RECT> rcLeft = {{192, 96, 208, 120}, {208, 96, 224, 120}, {224, 96, 240, 120}};
+    vector<RECT> rcRight = {{192, 120, 208, 144}, {208, 120, 224, 144}, {224, 120, 240, 144}};
+
+    if (NPC->act_no == 1 || !NPC->act_no)
+    {
+        if (!NPC->act_no)
+            NPC->act_no = 1;
+        NPC->accelerateTowardsPlayer(0x20);
+        NPC->animate(0, 0, 2);
+    }
+
+    NPC->x += NPC->xm;
+    NPC->doRects(rcLeft, rcRight);
+
+    if (++NPC->count1 > 100)
+        NPC->cond = 0;
+    if (NPC->count1 % 4 == 1)
+        playSound(SFX_IronHeadShot);
+}
+
 void npcAct105(npc *NPC) // Speech balloon 'Hey' low
 {
     vector<RECT> rcNPC = {{128, 32, 144, 48}, {128, 38, 128, 32}};

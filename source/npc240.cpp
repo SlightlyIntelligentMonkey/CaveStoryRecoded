@@ -133,6 +133,59 @@ void npcAct254(npc *NPC) // Helicopter
     NPC->doRects(rcLeft, rcRight);
 }
 
+void npcAct255(npc *NPC) // Helicopter Blades
+{
+    vector<RECT> rcLeft = {{128, 0, 240, 16}, {128, 16, 240, 32}, {128, 32, 240, 48}, {128, 16, 240, 32}};
+    vector<RECT> rcRight = {{240, 0, 320, 16}, {240, 16, 320, 32}, {240, 32, 320, 48}, {240, 16, 320, 32}};
+
+    switch (NPC->act_no)
+    {
+    case 0:
+        NPC->act_no = 1;
+        if (NPC->direct != dirLeft)
+        {
+            NPC->view.left = 0x5000;
+            NPC->view.right = 0x5000;
+        }
+        else
+        {
+            NPC->view.left = 0x7000;
+            NPC->view.right = 0x7000;
+        }
+        // Fallthrough
+    case 1:
+        if (NPC->pNpc && NPC->pNpc->act_no >= 20)
+            NPC->act_no = 10;
+        break;
+
+    case 10:
+        NPC->act_no = 11;
+        // Fallthrough
+    case 11:
+        NPC->animate(0, 0, 3);
+        break;
+
+    default:
+        break;
+    }
+
+    if (NPC->pNpc)
+    {
+        if (NPC->direct != dirLeft)
+        {
+            NPC->x = NPC->pNpc->x - tilesToUnits(2);
+            NPC->y = NPC->pNpc->y - pixelsToUnits(52);
+        }
+        else
+        {
+            NPC->x = NPC->pNpc->x + pixelsToUnits(18);
+            NPC->y = NPC->pNpc->y - pixelsToUnits(59);
+        }
+    }
+
+    NPC->doRects(rcLeft, rcRight);
+}
+
 void npcAct259(npc *NPC) // Sleeping mimiga
 {
 	NPC->rect = { 48, 32, 64, 48 };

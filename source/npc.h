@@ -97,6 +97,7 @@ public:
 
 public:
 	/// These are kinda supposed to be internal, but I can't put them as protected/private
+	void accelerateTowardsPlayer(int vel);
 	void animate(int aniWait, int aniStart, int aniMax);
 	// If only one argument is passed it will just not check for direction and just use the first argument
 	void doRects(const std::vector<RECT>& rcLeft, const std::vector<RECT>& rcRight = std::vector<RECT>());
