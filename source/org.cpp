@@ -32,6 +32,9 @@ bool orgFadeout = false;
 
 bool disableOrg = false;
 
+const int filterWidth = 128;
+double filter[filterWidth] = { 0 };
+
 void organyaAllocNote(uint16_t alloc)
 {
 	for (auto& j : org.tdata) {
@@ -85,6 +88,30 @@ OCTWAVE oct_wave[8] = {
 
 double freq_tbl[12] = { 261.62556530060, 277.18263097687, 293.66476791741, 311.12698372208, 329.62755691287, 349.22823143300, 369.99442271163, 391.99543598175, 415.30469757995, 440.00000000000, 466.16376151809, 493.88330125612 };
 */
+
+//simply generates an array to approximate rather then do it in real time
+void genFilter()
+{
+	int halfWidth = filterWidth / 2;
+	double window = 0;
+	for (int i = 0; i < filterWidth; i++)
+	{
+		window = sinc(i - halfWidth) / sinc((i - halfWidth));
+		filter[i] = sinc(i - halfWidth)*window;
+	}
+	return;
+}
+ 
+//multiplies it all out
+int16_t lowPassFilter(int16_t *stream, int len)
+{
+	for (int s = 0; s < len; s++)
+	{
+		for (int i = 0; i < filterWidth; i++)
+			stream[s] += (stream[s - ((filterWidth-i)/2)] * filter[i]);
+	}
+	return 1;
+}
 
 void mixOrg(int16_t *stream, int len)
 {
@@ -190,13 +217,9 @@ void mixOrg(int16_t *stream, int len)
 			}
 		}
 
-		//Clip buffer
-		tempSampleL = clamp(tempSampleL, -0x7FFF, 0x7FFF);
-		tempSampleR = clamp(tempSampleR, -0x7FFF, 0x7FFF);
-
-		//Put into main stream
-		stream[2 * i] = tempSampleL;
-		stream[2 * i + 1] = tempSampleR;
+		//Put into main stream and clip
+		stream[2 * i] = clamp(tempSampleL, -0x7FFF, 0x7FFF);
+		stream[2 * i + 1] = clamp(tempSampleR, -0x7FFF, 0x7FFF);
 	}
 }
 
@@ -210,6 +233,7 @@ void initOrganya()
 {
 	//Load music list
 	loadMusicList("data/Org/musicList.txt");
+	genFilter();
 }
 
 ///////////////////////////

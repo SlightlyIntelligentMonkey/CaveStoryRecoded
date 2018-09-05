@@ -129,7 +129,10 @@ void shootSpur(int level)
 			}
 
 			//Create bullet
-			createBullet(bul_no, currentPlayer.x + shootX, currentPlayer.y + shootY, shootDirect);
+			if(bul_no == bullet_PolarStarLevel3)
+				createBullet(bul_no, currentPlayer.x + shootX, currentPlayer.y + shootY, shootDirect);
+			else
+				createBullet(bul_no, currentPlayer.x + shootX, currentPlayer.y + shootY, shootDirect, 13);
 			createCaret(currentPlayer.x + caretX, currentPlayer.y + shootY, effect_Star);
 
 			//Play sound

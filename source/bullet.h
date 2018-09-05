@@ -61,7 +61,7 @@ public:
 	int weapon;
   
 public:
-	void init(int setCode, int setX, int setY, uint8_t setDir) noexcept;
+	void init(int setCode, int setX, int setY, uint8_t setDir, int weaponId) noexcept;
 
 	void update();
 	void draw();

@@ -125,12 +125,12 @@ void createBullet(int setCode, int setX, int setY, uint8_t setDir, int weapon)
 	}
 
 	if (repBullet != nullptr)
-		repBullet->init(setCode, setX, setY, setDir);
+		repBullet->init(setCode, setX, setY, setDir, weapon);
+
 	else
 	{
 		bullet newBullet;
-		newBullet.init(setCode, setX, setY, setDir);
-		newBullet.weapon = weapon;
+		newBullet.init(setCode, setX, setY, setDir, weapon);
 		bullets.push_back(newBullet);
 	}
 }
@@ -166,7 +166,7 @@ void drawBullets()
 }
 
 //CLASS
-void bullet::init(int setCode, int setX, int setY, uint8_t setDir) noexcept
+void bullet::init(int setCode, int setX, int setY, uint8_t setDir, int weaponId) noexcept
 {
 	memset(this, 0, sizeof(*this));
 
@@ -193,6 +193,8 @@ void bullet::init(int setCode, int setX, int setY, uint8_t setDir) noexcept
 	view.left = bulletTable[setCode].view.left << 9;
 	view.top = bulletTable[setCode].view.top << 9;
 	view.bottom = bulletTable[setCode].view.bottom << 9;
+
+	weapon = weaponId;
 }
 
 //Act functions
@@ -213,46 +215,56 @@ bulletAct bulletActs[46] =
 	&actBulletSnake1,	// Snake
 	&actBulletSnake2,
 	&actBulletSnake3,
+
 	&actBulletPolarStar1,				// Polar Star
 	&actBulletPolarStar2,
 	&actBulletPolarStar3,
+
 	&actBulletFireball1,				// Fireball
 	&actBulletFireball2,
 	&actBulletFireball3,
+
 	&actBulletMachineGun1,
 	&actBulletMachineGun2,
 	&actBulletMachineGun3,
+
 	&actBulletMissileLauncher1,
 	&actBulletMissileLauncher2,
 	&actBulletMissileLauncher3,
 	&actBulletBoom1,
 	&actBulletBoom2,
 	&actBulletBoom3,
+
 	&actBulletBubbler1,
 	&actBulletBubbler2,
 	&actBulletBubbler3,
 	&actBulletBubblerSpur,
+
 	&actBulletSlash,
 	&actBulletDrop,
+
 	&actBulletBlade1,
 	&actBulletBlade2,
 	&actBulletBlade3,
+
 	&actBulletSuperMissileLauncher1,
 	&actBulletSuperMissileLauncher2,
 	&actBulletSuperMissileLauncher3,
 	&actBulletSuperBoom1,
 	&actBulletSuperBoom2,
 	&actBulletSuperBoom3,
+
 	&actBulletNemesis1,
 	&actBulletNemesis2,
 	&actBulletNemesis3,
+
 	&actBulletSpur1,
 	&actBulletSpur2,
 	&actBulletSpur3,
 	&actBulletSpurTrail1,
 	&actBulletSpurTrail2,
 	&actBulletSpurTrail3,
-	static_cast<bulletAct>(nullptr),
+	&actBulletNemesis3,
 	&actBulletEnemyClear,
 	&actBulletStar
 };

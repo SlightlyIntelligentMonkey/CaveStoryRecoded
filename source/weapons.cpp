@@ -18,18 +18,18 @@ using std::to_string;
 weaponShoot shootFunctions[14] =
 {
 	static_cast<weaponShoot>(nullptr),
-	static_cast<weaponShoot>(nullptr),
+	&shootSnake,
 	&shootPolarStar,
 	&shootFireball,
-	static_cast<weaponShoot>(nullptr),
+	&shootMachineGun,
 	&shootMissile,
 	static_cast<weaponShoot>(nullptr),
+	&pewBubble,
 	static_cast<weaponShoot>(nullptr),
+	&throwBlade,
+	&launchSuperMissile,
 	static_cast<weaponShoot>(nullptr),
-	static_cast<weaponShoot>(nullptr),
-	static_cast<weaponShoot>(nullptr),
-	static_cast<weaponShoot>(nullptr),
-	static_cast<weaponShoot>(nullptr),
+	&shootNemesis,
 	&shootSpur,
 };
 
@@ -115,6 +115,12 @@ void giveAmmo(int amount, int ammoToRefill)
 		if (weapons[i].num > weapons[i].max_num)
 			weapons[i].num = weapons[i].max_num;
 	}
+}
+
+void giveWeaponAmmo(int amount)
+{
+	weapons[selectedWeapon].num += amount;
+	return;
 }
 
 bool weaponMaxExp() noexcept
