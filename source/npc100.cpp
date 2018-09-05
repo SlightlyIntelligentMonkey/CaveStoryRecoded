@@ -18,6 +18,13 @@ void npcAct100(npc * NPC) // Grate
 	NPC->rect = { 272, 48, 288, 64 };
 }
 
+void npcAct101(npc *NPC) // Power Controls, screen
+{
+    vector<RECT> rcNPC = {{240, 136, 256, 152}, {240, 136, 256, 152}, {256, 136, 272, 152}};
+    NPC->animate(3, 0, 2);
+    NPC->doRects(rcNPC);
+}
+
 void npcAct105(npc *NPC) // Speech balloon 'Hey' low
 {
     vector<RECT> rcNPC = {{128, 32, 144, 48}, {128, 38, 128, 32}};
