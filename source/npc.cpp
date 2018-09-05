@@ -372,6 +372,13 @@ void npc::animate(int aniWait, int aniStart, int aniMax)
 	}
 }
 
+void npc::doGravity(int gravity, int maxYVel)
+{
+	this->ym += gravity;
+	if (this->ym > maxYVel)
+		this->ym = maxYVel;
+}
+
 void npc::doRects(const std::vector<RECT>& rcLeft, const std::vector<RECT>& rcRight)
 {
 	if (!rcRight.empty())
