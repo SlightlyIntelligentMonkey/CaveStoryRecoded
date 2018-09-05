@@ -1,8 +1,41 @@
 #include "npc240.h"
 
 #include <vector>
+#include "render.h"
+#include "player.h"
+#include "level.h"
+#include "caret.h"
+#include "sound.h"
 
 using std::vector;
+
+void npcAct244(npc *NPC)
+{
+	NPC->ym += 0x40;
+	bool die = false;
+	if (NPC->flag & 0xFF || (NPC->act_wait > 10 && NPC->flag & 0x100))
+		die = true;
+
+	if (die)
+	{
+		for (int i = 0; i < 3; ++i)
+			createCaret(NPC->x, NPC->y + pixelsToUnits(4), effect_fountainDisk, dirRight);
+		if (NPC->x > currentPlayer.x - tilesToUnits(16)
+		        && NPC->x < currentPlayer.x + tilesToUnits(16)
+		        && NPC->y > currentPlayer.y - tilesToUnits(10)
+		        && NPC->y < currentPlayer.y + tilesToUnits(10))
+			playSound(SFX_Bubble);
+        NPC->cond = 0;
+	}
+	else
+    {
+        if (NPC->ym > 0x5FF)
+            NPC->ym = 0x5FF;
+        NPC->y += NPC->ym;
+
+        NPC->rect = {96, 0, 104, 16};
+    }
+}
 
 void npcAct245(npc *NPC) // Generator - Lava Drop
 {
