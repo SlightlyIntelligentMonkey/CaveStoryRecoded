@@ -125,6 +125,18 @@ void npcAct229(npc *NPC) // Red Flowers, small
 		NPC->rect = { 0, 96, 48, 112 };
 }
 
+void npcAct230(npc *NPC) // Red Flowers, large
+{
+    if (!NPC->act_no)
+    {
+        NPC->act_no = 1;
+        NPC->x -= tilesToUnits(1);
+        NPC->y -= tilesToUnits(1);
+    }
+
+    NPC->doRects({{48, 96, 96, 128}}, {{96, 96, 144, 128}});
+}
+
 void npcAct231(npc *NPC) //Momorin's rocket
 {
 	RECT rcNPC[2];
@@ -199,7 +211,7 @@ void npcAct231(npc *NPC) //Momorin's rocket
 		}
 		break;
 
-	case 0xF:
+	case 15:
 		NPC->ym += 8;
 		++NPC->act_wait;
 
