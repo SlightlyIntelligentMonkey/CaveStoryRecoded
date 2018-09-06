@@ -168,10 +168,11 @@ void setCliprect(const RECT *rect)
 	{
 		cliprect = { rect->left * screenScale, rect->top * screenScale, (rect->right - rect->left) * screenScale, (rect->bottom - rect->top) * screenScale };
 		SDL_RenderSetClipRect(renderer, &cliprect);
-		return;
 	}
-
-	SDL_RenderSetClipRect(renderer, nullptr);
+	else
+	{
+		SDL_RenderSetClipRect(renderer, nullptr);
+	}
 }
 
 void drawTexture(SDL_Texture *texture, const RECT *rect, int x, int y)

@@ -289,8 +289,7 @@ int openInventory()
 			return 2;
 
 		// Draw screenshot
-		if (SDL_RenderCopy(renderer, sprites[TEX_SCREENSHOT], nullptr, nullptr) != 0)
-			doError();
+		drawTextureNoScale(sprites[TEX_SCREENSHOT], nullptr, 0, 0);
 
 		//Draw menu
 		drawInventory();

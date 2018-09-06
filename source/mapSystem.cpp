@@ -75,8 +75,7 @@ int openMapSystem()
 		}
 
 		// Draw screenshot
-		if (SDL_RenderCopy(renderer, sprites[TEX_SCREENSHOT], nullptr, nullptr) != 0)
-			doError();
+		drawTextureNoScale(sprites[TEX_SCREENSHOT], nullptr, 0, 0);
 
 		//Draw opening box and name
 		SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
@@ -108,8 +107,7 @@ int openMapSystem()
 		}
 
 		// Draw screenshot
-		if (SDL_RenderCopy(renderer, sprites[TEX_SCREENSHOT], nullptr, nullptr) != 0)
-			doError();
+		drawTextureNoScale(sprites[TEX_SCREENSHOT], nullptr, 0, 0);
 
 		//Draw box
 		SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
@@ -184,8 +182,7 @@ int openMapSystem()
 		}
 
 		// Draw screenshot
-		if (SDL_RenderCopy(renderer, sprites[TEX_SCREENSHOT], nullptr, nullptr) != 0)
-			doError();
+		drawTextureNoScale(sprites[TEX_SCREENSHOT], nullptr, 0, 0);
 
 		//Draw closing box and name
 		SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
