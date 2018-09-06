@@ -265,8 +265,8 @@ int openInventory()
 	while (true)
 	{
 		//Handle events
-		getKeys(&events);
-		if (events.type == SDL_QUIT || exitGame) { return 0; }
+		getKeys();
+		if (exitGame) { return 0; }
 
 		if (isKeyDown(SDL_SCANCODE_ESCAPE))
 		{

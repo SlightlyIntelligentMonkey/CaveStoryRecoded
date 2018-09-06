@@ -61,8 +61,8 @@ int openMapSystem()
 	for (int f = 0; f <= 8; ++f)
 	{
 		//Handle events
-		getKeys(&events);
-		if (events.type == SDL_QUIT || exitGame) { return 0; }
+		getKeys();
+		if (exitGame) { return 0; }
 
 		if (isKeyDown(SDL_SCANCODE_ESCAPE))
 		{
@@ -90,8 +90,8 @@ int openMapSystem()
 	while (true)
 	{
 		//Handle events
-		getKeys(&events);
-		if (events.type == SDL_QUIT || exitGame) { return 0; }
+		getKeys();
+		if (exitGame) { return 0; }
 
 		//Exit if Z or X pressed
 		if (isKeyPressed(keyJump) || isKeyPressed(keyShoot))
@@ -170,8 +170,8 @@ int openMapSystem()
 	for (int f = 8; f > 0; --f)
 	{
 		//Handle events
-		getKeys(&events);
-		if (events.type == SDL_QUIT || exitGame) { return 0; }
+		getKeys();
+		if (exitGame) { return 0; }
 
 		if (isKeyDown(SDL_SCANCODE_ESCAPE))
 		{
