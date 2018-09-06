@@ -299,8 +299,8 @@ void npcAct205(npc *NPC) // Falling Spike, large
         NPC->y += pixelsToUnits(4);
         // Fallthrough
     case 1:
-        if (currentPlayer.x > NPC->x - pixelsToUnits(15) && currentPlayer.x < NPC->y + pixelsToUnits(15)
-            && currentPlayer.y < NPC->y)
+        if (currentPlayer.x > NPC->x - pixelsToUnits(12) && currentPlayer.x < NPC->y + pixelsToUnits(12)
+            && currentPlayer.y > NPC->y)
             NPC->act_no = 2;
         break;
 
