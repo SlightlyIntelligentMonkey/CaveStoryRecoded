@@ -38,7 +38,7 @@ extern SDL_Texture *levelTileset;
 extern uint8_t backgroundScroll;
 extern SDL_Texture *levelBackground;
 
-uint8_t getTileAttribute(int x, int y)  attrPure;
+uint8_t getTileAttribute(int x, int y) attrPure;
 
 void deleteTile(int x, int y);
 void shiftTile(int x, int y);
@@ -53,14 +53,14 @@ void drawLevel(bool foreground);
 
 constexpr inline int tilesToUnits(int x)  attrConst;
 
-constexpr inline int tilesToUnits(int x) 
+constexpr inline int tilesToUnits(int x)
 {
 	return x << 13;
 }
 
 constexpr inline int unitsToTiles(int x)  attrConst;
 
-constexpr inline int unitsToTiles(int x) 
+constexpr inline int unitsToTiles(int x)
 {
 	return x >> 13;
 }

@@ -13,6 +13,56 @@
 
 using std::vector;
 
+void npcAct242(npc *NPC) // Bat, Red Wave (enemy)
+{
+    if (NPC->x < 0 || NPC->x > tilesToUnits(levelWidth))
+    {
+        killNpc(NPC, true);
+        return;
+    }
+
+    switch(NPC->act_no)
+    {
+    case 0:
+        NPC->act_no = 1;
+        NPC->tgt_x = NPC->x;
+        NPC->tgt_y = NPC->y;
+        NPC->act_wait = random(0, 50);
+        // Fallthrough
+    case 1:
+        if (NPC->act_wait--)
+            break;
+        NPC->act_no = 2;
+        NPC->ym = pixelsToUnits(2);
+        // Fallthrough
+    case 2:
+        NPC->moveTowardsPlayer(0x100);
+
+        if (NPC->tgt_y < NPC->y)
+            NPC->ym -= 0x10;
+        else
+            NPC->ym += 0x10;
+
+        if (NPC->ym > 0x300)
+            NPC->ym = 0x300;
+        else if (NPC->ym < -0x300)
+            NPC->ym = -0x300;
+        break;
+
+    default:
+        break;
+    }
+
+    NPC->x += NPC->xm;
+    NPC->y += NPC->ym;
+
+    vector<RECT> rcLeft = {{32, 32, 48, 48}, {48, 32, 64, 48}, {64, 32, 80, 48}, {80, 32, 96, 48}};
+    vector<RECT> rcRight = {{32, 48, 48, 64}, {48, 48, 64, 64}, {64, 48, 80, 64}, {80, 48, 96, 64}};
+
+    NPC->animate(1, 0, 2);
+    NPC->doRects(rcLeft, rcRight);
+}
+
 void npcAct243(npc *NPC) // Generator - Red Bat
 {
 	if (NPC->act_no)

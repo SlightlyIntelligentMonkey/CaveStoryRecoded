@@ -67,11 +67,12 @@ void loadStageTable()
 	}
 }
 
-uint8_t getTileAttribute(int x, int y)
+uint8_t getTileAttribute(int xTile, int yTile)
 {
-	if (x >= 0 && x < levelWidth && y >= 0 && y < levelHeight)
-		return levelTileAttributes[levelMap[x + y * levelWidth]];
+	if (xTile >= 0 && xTile < levelWidth && yTile >= 0 && yTile < levelHeight)  // Make sure coordinates are valid
+		return levelTileAttributes[levelMap[xTile + yTile * levelWidth]];
 
+    // Coordinates are invalid
 	return 0;
 }
 
