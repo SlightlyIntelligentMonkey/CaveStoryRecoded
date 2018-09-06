@@ -99,8 +99,12 @@ public:
 	// These are kinda supposed to be internal, but I can't put them as protected/private
 	void accelerateTowardsPlayer(int vel);
 	void animate(int aniWait, int aniStart, int aniMax);
+<<<<<<< HEAD
 	void doGravity(int gravity, int maxYVel);
 	/// If only one argument is passed it will just not check for direction and just use the first argument
+=======
+	// If only one argument is passed it will just not check for direction and just use the first argument
+>>>>>>> df147f1649af7f054772842b62e5d59cb39542a7
 	void doRects(const std::vector<RECT>& rcLeft, const std::vector<RECT>& rcRight = std::vector<RECT>());
 	void facePlayer();
 	void moveTowardsPlayer(int vel);
