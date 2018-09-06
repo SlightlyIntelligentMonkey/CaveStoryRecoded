@@ -74,7 +74,7 @@ void npcAct040(npc * NPC) // Santa
 	default:
 		break;
 	}
-	
+
 	NPC->doRects(rcLeft, rcRight);
 }
 
@@ -339,7 +339,7 @@ void npcAct043(npc * NPC) // Blackboard
 
 void npcAct046(npc *NPC) //H/V trigger
 {
-	NPC->bits |= npc_eventtouch;
+	NPC->bits |= npc_eventTouch;
 
 	if (NPC->direct != dirLeft)
 	{

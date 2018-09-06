@@ -1,9 +1,14 @@
 #include "npc200.h"
 
+#include <vector>
 #include "sound.h"
 #include "player.h"
 #include "mathUtils.h"
 #include "caret.h"
+#include "render.h"
+#include "bullet.h"
+
+using std::vector;
 
 void npcAct200(npc *NPC) // Dragon Zombie (enemy)
 {
@@ -121,7 +126,7 @@ void npcAct202(npc * NPC) // Dragon Zombie fire (projectile)
 		NPC->cond = 0;
 		createCaret(NPC->x, NPC->y, effect_RisingDisc);
 	}
-	
+
 	NPC->x += NPC->xm;
 	NPC->y += NPC->ym;
 
@@ -224,6 +229,217 @@ void npcAct203(npc * NPC) // Critter, Hopping Aqua (enemy)
 		NPC->rect = rcRight[NPC->ani_no];
 	else
 		NPC->rect = rcLeft[NPC->ani_no];
+}
+
+void npcAct204(npc * NPC) // Falling Spike, small
+{
+	vector<RECT> rcNPC = { {240, 80, 256, 96}, {240, 144, 256, 160} };
+
+	enum
+	{
+		init = 0,
+		normal = 1,
+		shaky = 2,
+		falling = 3,
+	};
+
+	switch (NPC->act_no)
+	{
+	case init:
+		NPC->act_no = normal;
+		NPC->tgt_x = NPC->x;
+		// Fallthrough
+	case normal:
+		if (currentPlayer.x > NPC->x - pixelsToUnits(12) && currentPlayer.x < NPC->x + pixelsToUnits(12) && currentPlayer.y > NPC->y)
+			NPC->act_no = shaky;
+		break;
+
+	case shaky:
+		if (++NPC->act_wait / 6 % 2)
+			NPC->x = NPC->tgt_x - 0x200;
+		else
+			NPC->x = NPC->tgt_x;
+
+		if (NPC->act_wait > 30)
+		{
+			NPC->act_no = falling;
+			NPC->ani_no = 1;
+		}
+		break;
+
+	case falling:
+		NPC->ym += 0x20;
+		if (!(NPC->flag & 0xFF))
+			break;
+		if (!(currentPlayer.cond & player_removed))
+			playSound(SFX_DestroyBreakableBlock);
+		createSmokeLeft(NPC->x, NPC->y, NPC->view.right, 4);
+		NPC->cond = 0;
+		return;
+
+	default:
+		break;
+	}
+
+	NPC->doGravity(0, 0xC00);
+	NPC->y += NPC->ym;
+
+	NPC->doRects(rcNPC);
+}
+
+void npcAct205(npc *NPC) // Falling Spike, large
+{
+	vector<RECT> rcNPC = {{112, 80, 128, 112}, {128, 80, 144, 112}};
+
+	switch (NPC->act_no)
+	{
+	case 0:
+		NPC->act_no = 1;
+		NPC->tgt_x = NPC->x;
+		NPC->y += pixelsToUnits(4);
+	// Fallthrough
+	case 1:
+		if (currentPlayer.x > NPC->x - pixelsToUnits(12) && currentPlayer.x < NPC->x + pixelsToUnits(12)
+		        && currentPlayer.y > NPC->y)
+			NPC->act_no = 2;
+		break;
+
+	case 2:
+		if (++NPC->act_wait / 6 % 2)
+			NPC->x = NPC->tgt_x - pixelsToUnits(1);
+		else
+			NPC->x = NPC->tgt_x;
+
+		if (NPC->act_wait > 30)
+		{
+			NPC->act_no = 3;
+			NPC->ani_no = 1;
+			NPC->act_wait = 0;
+		}
+		break;
+
+	case 3:
+		NPC->ym += 0x20;
+		if (currentPlayer.y <= NPC->y)
+		{
+			NPC->bits |= npc_solidHard;
+			NPC->damage = 0;
+		}
+		else
+		{
+			NPC->bits &= ~npc_solidHard;
+			NPC->damage = 127;
+		}
+
+		if (++NPC->act_wait <= 8 || !(NPC->flag & 0xFF))
+			break;
+
+		NPC->bits |= npc_solidHard;
+		NPC->act_no = 4;
+		NPC->act_wait = 0;
+		NPC->ym = 0;
+		NPC->damage = 0;
+		playSound(SFX_DestroyBreakableBlock);
+		createSmokeLeft(NPC->x, NPC->y, NPC->view.right, 4);
+		createBullet(bullet_Unused, NPC->x, NPC->y, dirLeft, 0);
+		return;
+
+	case 4:
+		if (++NPC->act_wait > 4)
+		{
+			NPC->act_no = 5;
+			NPC->bits |= npc_shootable;
+		}
+		break;
+
+	default:
+		break;
+	}
+
+	NPC->doGravity(0, 0xC00);
+	NPC->y += NPC->ym;
+
+	NPC->doRects(rcNPC);
+}
+
+void npcAct210(npc *NPC) // Beetle, Follow Aqua (enemy)
+{
+    vector<RECT> rcLeft = {{0, 112, 16, 128}, {16, 112, 32, 128}};
+    vector<RECT> rcRight = {{32, 112, 48, 128}, {48, 112, 64, 128}};
+
+    switch (NPC->act_no)
+    {
+    case 0:
+        if (currentPlayer.x >= NPC->x + tilesToUnits(1) || currentPlayer.x <= NPC->x - tilesToUnits(1))
+        {
+            NPC->bits &= ~npc_shootable;
+            NPC->rect.right = 0;
+            NPC->damage = 0;
+            NPC->xm = 0;
+            NPC->ym = 0;
+            return;
+        }
+
+        NPC->bits |= npc_shootable;
+        NPC->ym = -0x200;
+        NPC->tgt_y = NPC->y;
+        NPC->act_no = 1;
+        NPC->damage = 2;
+
+        if (NPC->direct != dirLeft)
+        {
+            NPC->x = currentPlayer.x - tilesToUnits(16);
+            NPC->xm = 0x2FF;
+        }
+        else
+        {
+            NPC->x = currentPlayer.x + tilesToUnits(16);
+            NPC->xm = -0x2FF;
+        }
+        break;
+
+    case 1:
+        if (NPC->x <= currentPlayer.x)
+        {
+            NPC->direct = dirRight;
+            NPC->xm += 0x10;
+        }
+        else
+        {
+            NPC->direct = dirLeft;
+            NPC->xm -= 0x10;
+        }
+
+        if (NPC->xm > 0x2FF)
+            NPC->xm = 0x2FF;
+        else if (NPC->xm < -0x2FF)
+            NPC->xm = -0x2FF;
+
+        if (NPC->y >= NPC->tgt_y)
+            NPC->ym -= 8;
+        else
+            NPC->ym += 8;
+
+        if (NPC->ym > 0x200)
+            NPC->ym = 0x200;
+        if (NPC->ym < -0x200)
+            NPC->ym = -0x200;
+
+        if (NPC->shock)
+        {
+            NPC->x += NPC->xm / 2;
+            NPC->y += NPC->ym / 2;
+        }
+        else
+        {
+            NPC->x += NPC->xm;
+            NPC->y += NPC->ym;
+        }
+    }
+
+    NPC->animate(1, 0, 1);
+
+    NPC->doRects(rcLeft, rcRight);
 }
 
 void npcAct211(npc *NPC) //Spikes

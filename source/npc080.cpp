@@ -424,7 +424,7 @@ void npcAct082(npc *NPC) //Misery standing
 		NPC->act_no = 21;
 		NPC->ani_no = 0;
 		NPC->ym = 0;
-		NPC->bits |= npc_ignoresolid;
+		NPC->bits |= npc_ignoreSolid;
 	// Fallthrough
 	case 21:
 		NPC->ym -= 0x20;
@@ -742,7 +742,7 @@ void npcAct086(npc *NPC) //Dropped missiles
 	rcMissile3[0] = { 0, 112, 16, 128 };
 	rcMissile3[1] = { 16, 112, 32, 128 };
 	rcLast = { 16, 0, 32, 16 };
-	
+
 	if (!NPC->direct)
 	{
 		if (++NPC->ani_wait > 2)
@@ -804,7 +804,7 @@ void npcAct087(npc *NPC) //Health refill
 	constexpr RECT rcHealth2[2] = { {32, 80, 48, 96}, { 48, 80, 64, 96 } };
 	constexpr RECT rcHealth6[2] = { {64, 80, 80, 96}, { 80, 80, 96, 96 } };
 	constexpr RECT rcLast = { 16, 0, 32, 16 };
-	
+
 	if (NPC->direct == dirLeft)
 	{
 		if(++NPC->ani_wait > 2)
@@ -831,11 +831,11 @@ void npcAct087(npc *NPC) //Health refill
 			NPC->cond = 0;
 		if (NPC->x < -0x600)
 			NPC->x = -0x600;
-		if (NPC->flag & npc_solidsoft)
+		if (NPC->flag & npc_solidSoft)
 			NPC->xm = 0x100;
 		if (NPC->flag & npc_ignore44)
 			NPC->ym = 0x40;
-		if (NPC->flag & npc_ignoresolid)
+		if (NPC->flag & npc_ignoreSolid)
 			NPC->ym = -0x40;
 
 		NPC->x += NPC->xm;
@@ -905,7 +905,7 @@ void npcAct088(npc * NPC) // Igor (boss)
 		startMouthBlast = 9,
 		mouthBlast = 10,
 	};
-	
+
 	switch (NPC->act_no)
 	{
 	case init:
@@ -1009,7 +1009,7 @@ void npcAct088(npc * NPC) // Igor (boss)
 			playSound(SFX_LargeObjectHitGround);
 			viewport.quake = 30;
 			NPC->damage = 0;
-			
+
 			for (size_t i = 0; i < 4; ++i)
 				createNpc(NPC_Smoke,
 					NPC->x + (random(-12, 12) << 9),
@@ -1052,7 +1052,7 @@ void npcAct088(npc * NPC) // Igor (boss)
 			NPC->ani_no = 11;
 		else
 			NPC->ani_no = 10;
-		
+
 		if (NPC->act_wait > 132)	// After having fired 6 shots
 		{
 			NPC->act_no = init;
@@ -1205,7 +1205,7 @@ void npcAct089(npc * NPC) // Igor, dying
 	NPC->ym += 0x40;
 	if (NPC->ym > 0x5FF)
 		NPC->ym = 0x5FF;
-  
+
 	NPC->x += NPC->xm;
 	NPC->y += NPC->ym;
 }

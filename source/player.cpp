@@ -16,7 +16,7 @@ using std::memset;
 
 player currentPlayer;
 
-void player::init() 
+void player::init()
 {
 	memset(this, 0, sizeof(*this));
 	cond = player_visible;
@@ -35,7 +35,7 @@ void player::init()
 	max_life = 3;
 }
 
-void player::setPos(int setX, int setY) 
+void player::setPos(int setX, int setY)
 {
 	x = setX;
 	y = setY;
@@ -83,6 +83,44 @@ void player::setDir(int setDirect)
 			this->animate(false);
 			return;
 		}
+	}
+}
+
+void player::backStep(int entityEventNum)
+{
+	this->cond &= ~player_interact;
+	this->ym = -0x200;
+
+	switch (entityEventNum)
+	{
+	case 0:
+		this->direct = dirLeft;
+		this->xm = 0x200;
+		break;
+
+	case 2:
+		this->direct = dirRight;
+		this->xm = -0x200;
+		break;
+
+	default:
+		for (size_t i = 0; i < npcs.size(); i++)
+		{
+			if (npcs[i].cond & npccond_alive && npcs[i].code_event == entityEventNum)
+			{
+				if (npcs[i].x >= this->x)
+				{
+					this->direct = dirRight;
+					this->xm = -0x200;
+				}
+				else
+				{
+					this->direct = dirLeft;
+					this->xm = 0x200;
+				}
+			}
+		}
+		break;
 	}
 }
 
@@ -141,8 +179,6 @@ void player::damage(int16_t damage)
 
 void player::actNormal(bool bKey)
 {
-
-
 	if (!(cond & player_removed))
 	{
 		int max_dash;
@@ -184,12 +220,7 @@ void player::actNormal(bool bKey)
 			boost_sw = 0;
 
 			//Fuel booster
-			if (equip & equip_booster08)
-				boost_cnt = 50;
-			else if (equip & equip_booster20)
-				boost_cnt = 50;
-			else
-				boost_cnt = 0;
+			this->boost_cnt = this->getBoostCount();
 
 			if (bKey)
 			{
@@ -216,78 +247,13 @@ void player::actNormal(bool bKey)
 				}
 			}
 
-			if (!(cond & player_noFriction)) //Friction
-			{
-				if (xm < 0)
-				{
-					if (xm <= -resist)
-						xm += resist;
-					else
-						xm = 0;
-				}
-				if (xm > 0)
-				{
-					if (xm >= resist)
-						xm -= resist;
-					else
-						xm = 0;
-				}
-			}
+            this->doFriction(resist);
 		}
 		else
 		{
 			if (bKey)
 			{
-				//Boosting
-				if (equip & (equip_booster08 | equip_booster20) && isKeyPressed(keyJump) && boost_cnt)
-				{
-					if (equip & equip_booster08)
-					{
-						boost_sw = 1;
-
-						if (ym > 0x100)
-							ym /= 2;
-					}
-
-					if (equip & equip_booster20)
-					{
-						if (isKeyDown(keyUp))
-						{
-							boost_sw = 2;
-
-							xm = 0;
-							ym = -0x5FF;
-						}
-						else if (isKeyDown(keyLeft))
-						{
-							boost_sw = 1;
-
-							xm = -0x5FF;
-							ym = 0;
-						}
-						else if (isKeyDown(keyRight))
-						{
-							boost_sw = 1;
-
-							xm = 0x5FF;
-							ym = 0;
-						}
-						else if (isKeyDown(keyDown))
-						{
-							boost_sw = 3;
-
-							xm = 0;
-							ym = 0x5FF;
-						}
-						else
-						{
-							boost_sw = 2;	// same as with keyUp
-
-							xm = 0;
-							ym = -0x5FF;
-						}
-					}
-				}
+				this->doBooster();
 
 				//Move left and right
 				if (isKeyDown(keyLeft) && xm > -max_dash)
@@ -371,9 +337,9 @@ void player::actNormal(bool bKey)
 				if (isKeyPressed(keyJump) || boost_cnt % 3 == 1)
 				{
 					if (direct == dirLeft)
-						createCaret(x + 0x400, y + 0x400, effect_BoosterSmoke, dirRight);
+						createCaret(x + pixelsToUnits(2), y + pixelsToUnits(2), effect_BoosterSmoke, dirRight);
 					if (direct == dirRight)
-						createCaret(x - 0x400, y + 0x400, effect_BoosterSmoke, dirLeft);
+						createCaret(x - pixelsToUnits(2), y + pixelsToUnits(2), effect_BoosterSmoke, dirLeft);
 
 					playSound(SFX_Booster);
 				}
@@ -385,13 +351,13 @@ void player::actNormal(bool bKey)
 
 				if (isKeyPressed(keyJump) || boost_cnt % 3 == 1)
 				{
-					createCaret(x, y + 0xC00, effect_BoosterSmoke, dirDown);
+					createCaret(x, y + pixelsToUnits(6), effect_BoosterSmoke, dirDown);
 					playSound(SFX_Booster);
 				}
 			}
 			else if (boost_sw == 3 && (isKeyPressed(keyJump) || boost_cnt % 3 == 1))
 			{
-				createCaret(x, y - 0xC00, effect_BoosterSmoke, dirUp);
+				createCaret(x, y - pixelsToUnits(6), effect_BoosterSmoke, dirUp);
 				playSound(SFX_Booster);
 			}
 		}
@@ -399,7 +365,7 @@ void player::actNormal(bool bKey)
 		{
 			ym += gravity1;
 		}
-		else if (equip & equip_booster08 && boost_sw && ym > -0x400) //Booster 8.0
+		else if (equip & equip_booster08 && boost_sw && ym > pixelsToUnits(-2)) //Booster 8.0
 		{
 			ym -= 0x20;
 
@@ -410,7 +376,7 @@ void player::actNormal(bool bKey)
 			}
 
 			if (flag & ceiling) //Bounce of ceilings
-				ym = 0x200;
+				ym = pixelsToUnits(1);
 		}
 		else if (ym < 0 && bKey && isKeyDown(keyJump)) //Hold gravity
 		{
@@ -430,38 +396,15 @@ void player::actNormal(bool bKey)
 				ym = xm;
 
 			if (flag & ground && flag & slopeH && xm < 0)
-				ym = 0x400;
+				ym = pixelsToUnits(2);
 			if (flag & ground && flag & slopeE && xm > 0)
-				ym = 0x400;
+				ym = pixelsToUnits(2);
 			if (flag & ground && flag & slopeF && flag & slopeG)
-				ym = 0x400;
+				ym = pixelsToUnits(2);
 		}
 
 		//Limit speed
-		if (!(flag & water) || flag & (windLeft | windUp | windRight | windDown)) //Out of water or in wind
-		{
-			if (xm < -0x5FF)
-				xm = -0x5FF;
-			if (xm > 0x5FF)
-				xm = 0x5FF;
-
-			if (ym < -0x5FF)
-				ym = -0x5FF;
-			if (ym > 0x5FF)
-				ym = 0x5FF;
-		}
-		else //Water and not in wind
-		{
-			if (xm < -0x2FF)
-				xm = -0x2FF;
-			if (xm > 0x2FF)
-				xm = 0x2FF;
-
-			if (ym < -0x2FF)
-				ym = -0x2FF;
-			if (ym > 0x2FF)
-				ym = 0x2FF;
-		}
+		this->limitSpeed();
 
 		//Splashing
 		if (!sprash && flag & water)
@@ -473,12 +416,13 @@ void player::actNormal(bool bKey)
 				dir = 2;
 
 			//Splash stuff
-			if (flag & ground || ym <= 0x200)
+			if (flag & ground || ym <= pixelsToUnits(2))
 			{
-				if (xm > 0x200 || xm < -0x200)
+				if (xm > pixelsToUnits(2) || xm < pixelsToUnits(-2))
 				{
 					for (int i = 0; i < 8; ++i)
-						createNpc(NPC_Waterdrop, x + pixelsToUnits(random(-8, 8)), y, xm + random(-512, 512), random(-0x200, 0x80), dir);
+						createNpc(NPC_Waterdrop, x + pixelsToUnits(random(-8, 8)), y,
+						          xm + random(pixelsToUnits(-1), pixelsToUnits(1)), random(pixelsToUnits(-1), 0x80), dir);
 
 					playSound(SFX_WaterSplash);
 				}
@@ -486,7 +430,8 @@ void player::actNormal(bool bKey)
 			else
 			{
 				for (int i = 0; i < 8; ++i)
-					createNpc(NPC_Waterdrop, x + pixelsToUnits(random(-8, 8)), y, xm + random(-512, 512), random(-0x200, 0x80) - ym / 2, dir);
+					createNpc(NPC_Waterdrop, x + pixelsToUnits(random(-8, 8)), y, xm + random(pixelsToUnits(-1),
+                              pixelsToUnits(1)), random(pixelsToUnits(-1), 0x80) - ym / 2, dir);
 
 				playSound(SFX_WaterSplash);
 			}
@@ -505,44 +450,44 @@ void player::actNormal(bool bKey)
 		if (direct != dirLeft)
 		{
 			//Move to the right
-			index_x += 0x200;
+			index_x += pixelsToUnits(1);
 
-			if (index_x > 0x8000)
-				index_x = 0x8000;
+			if (index_x > tilesToUnits(4))
+				index_x = tilesToUnits(4);
 		}
 		else
 		{
 			//Move to the left
-			index_x -= 0x200;
+			index_x -= pixelsToUnits(1);
 
-			if (index_x < -0x8000)
-				index_x = -0x8000;
+			if (index_x < tilesToUnits(-4))
+				index_x = tilesToUnits(-4);
 		}
 
 		if (bKey && isKeyDown(keyUp))
 		{
 			//Move up
-			index_y -= 0x200;
+			index_y -= pixelsToUnits(1);
 
-			if (index_y < -0x8000)
-				index_y = -0x8000;
+			if (index_y < tilesToUnits(-4))
+				index_y = tilesToUnits(-4);
 		}
 		else if (bKey && isKeyDown(keyDown))
 		{
 			//Move down
-			index_y += 0x200;
+			index_y += pixelsToUnits(1);
 
-			if (index_y > 0x8000)
-				index_y = 0x8000;
+			if (index_y > tilesToUnits(4))
+				index_y = tilesToUnits(4);
 		}
 		else
 		{
 			//Move to neutral position
-			if (index_y > 0x200)
-				index_y -= 0x200;
+			if (index_y > pixelsToUnits(1))
+				index_y -= pixelsToUnits(1);
 
-			if (index_y < -0x200)
-				index_y += 0x200;
+			if (index_y < pixelsToUnits(-1))
+				index_y += pixelsToUnits(1);
 		}
 
 		tgt_x = x + index_x;
@@ -623,20 +568,20 @@ void player::actStream(bool bKey)
 	}
 
 	//Bump effect (this code doesn't work because pixel forgot about how ym is set to 0)
-	if (ym < -0x200 && flag & ceiling)
+	if (ym < pixelsToUnits(-1) && flag & ceiling)
 		createCaret(x, y - hit.top, effect_HeadbumpSparks, 5);
-	if (ym > 0x200 && flag & ground)
+	if (ym > pixelsToUnits(1) && flag & ground)
 		createCaret(x, y + hit.bottom, effect_HeadbumpSparks, 5);
 
 	//Limit speed
-	if (xm > 0x400)
-		xm = 0x400;
-	if (xm < -0x400)
-		xm = -0x400;
-	if (ym > 0x400)
-		ym = 0x400;
-	if (ym < -0x400)
-		ym = -0x400;
+    if (xm > pixelsToUnits(2))
+		xm = pixelsToUnits(2);
+	if (xm < pixelsToUnits(-2))
+		xm = pixelsToUnits(-2);
+	if (ym > pixelsToUnits(2))
+		ym = pixelsToUnits(2);
+	if (ym < pixelsToUnits(-2))
+		ym = pixelsToUnits(-2);
 
 	//Diagonal speed
 	if (isKeyDown(keyLeft) && isKeyDown(keyUp))
@@ -668,11 +613,11 @@ void player::actStream(bool bKey)
 			ym = 0x30C;
 	}
 
-	x += xm;
+    x += xm;
 	y += ym;
 }
 
-void player::animate(bool bKey) 
+void player::animate(bool bKey)
 {
 	RECT rcLeft[12];
 	RECT rcRight[12];
@@ -723,7 +668,7 @@ void player::animate(bool bKey)
 						playSound(SFX_QuoteWalk);
 				}
 
-				if (ani_no > 9 || ani_no <= 5)
+				if (ani_no > 9 || ani_no < 6)
 					ani_no = 6;
 			}
 			else if (bKey && (isKeyDown(keyLeft) || isKeyDown(keyRight))) //Walk
@@ -738,7 +683,7 @@ void player::animate(bool bKey)
 						playSound(SFX_QuoteWalk);
 				}
 
-				if (ani_no > 4 || ani_no <= 0)
+				if (ani_no > 4 || ani_no < 1)
 					ani_no = 1;
 			}
 			else if (bKey && isKeyDown(keyUp)) //Look up
@@ -906,5 +851,115 @@ void player::draw()
 			if (equip & equip_airTank && flag & water)
 				drawTexture(sprites[TEX_CARET], &rcBubble[(bubble >> 1) & 1], x / 0x200 - 12 - viewport.x / 0x200, y / 0x200 - 12 - viewport.y / 0x200);
 		}
+	}
+}
+
+void player::doBooster()
+{
+	//Boosting
+	if (this->equip & (equip_booster08 | equip_booster20) && isKeyPressed(keyJump) && this->boost_cnt)
+	{
+		if (this->equip & equip_booster08)
+		{
+			this->boost_sw = 1;
+
+			if (this->ym > 0x100)
+				this->ym /= 2;
+		}
+
+		if (this->equip & equip_booster20)
+		{
+			if (isKeyDown(keyUp))
+			{
+				this->boost_sw = 2;
+
+				this->xm = 0;
+				this->ym = -0x5FF;
+			}
+			else if (isKeyDown(keyLeft))
+			{
+				this->boost_sw = 1;
+
+				this->xm = -0x5FF;
+				this->ym = 0;
+			}
+			else if (isKeyDown(keyRight))
+			{
+				this->boost_sw = 1;
+
+				this->xm = 0x5FF;
+				this->ym = 0;
+			}
+			else if (isKeyDown(keyDown))
+			{
+				this->boost_sw = 3;
+
+				this->xm = 0;
+				this->ym = 0x5FF;
+			}
+			else
+			{
+				this->boost_sw = 2;	// same as with keyUp
+
+				this->xm = 0;
+				this->ym = -0x5FF;
+			}
+		}
+	}
+}
+
+void player::doFriction(int resist)
+{
+	if (!(this->cond & player_noFriction)) //Friction
+	{
+		if (this->xm < 0)
+		{
+			if (this->xm <= -resist)
+				this->xm += resist;
+			else
+				this->xm = 0;
+		}
+		if (this->xm > 0)
+		{
+			if (this->xm >= resist)
+				this->xm -= resist;
+			else
+				this->xm = 0;
+		}
+	}
+}
+
+int player::getBoostCount()
+{
+	if (this->equip & (equip_booster08 | equip_booster20))
+		return 50;
+    return 0;
+}
+
+void player::limitSpeed()
+{
+	if (!(this->flag & water) || this->flag & (windLeft | windUp | windRight | windDown)) //Out of water or in wind
+	{
+		if (this->xm < -0x5FF)
+			this->xm = -0x5FF;
+		if (this->xm > 0x5FF)
+			this->xm = 0x5FF;
+
+		if (this->ym < -0x5FF)
+			this->ym = -0x5FF;
+		if (this->ym > 0x5FF)
+			this->ym = 0x5FF;
+	}
+	else // Water and not in wind
+	{
+		if (this->xm < -0x2FF)
+			this->xm = -0x2FF;
+		if (this->xm > 0x2FF)
+			this->xm = 0x2FF;
+
+		if (this->ym < -0x2FF)
+			this->ym = -0x2FF;
+		if (this->ym > 0x2FF)
+			this->ym = 0x2FF;
 	}
 }

@@ -745,13 +745,13 @@ void playerHitNpcs()
 			if (npcs[i].cond & npccond_alive)
 			{
 				int hit = 0;
-				if (npcs[i].bits & npc_solidsoft)
+				if (npcs[i].bits & npc_solidSoft)
 				{
 					hit = playerHitNpcSoftSolid(rcHit, me, &npcs[i]);
 
 					me->flag |= hit;
 				}
-				else if (npcs[i].bits & npc_solidhard)
+				else if (npcs[i].bits & npc_solidHard)
 				{
 					hit = playerHitNpcHardSolid(rcHit, me, &npcs[i]);
 
@@ -782,12 +782,12 @@ void playerHitNpcs()
 					npcs[i].cond = 0;
 				}
 
-				if (!(gameFlags & 4) && hit && npcs[i].bits & npc_eventtouch)
+				if (!(gameFlags & 4) && hit && npcs[i].bits & npc_eventTouch)
 					startTscEvent(npcs[i].code_event);
 
 				if (gameFlags & 2 && !(npcs[i].bits & npc_interact))
 				{
-					if (npcs[i].bits & npc_reartop)
+					if (npcs[i].bits & npc_rearTop)
 					{
 						if (hit & rightWall && npcs[i].xm < 0)
 							me->damage(npcs[i].damage);

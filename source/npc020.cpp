@@ -1,9 +1,12 @@
 #include "npc020.h"
 
+#include <vector>
 #include "mathUtils.h"
 #include "caret.h"
 #include "player.h"
 #include "sound.h"
+
+using std::vector;
 
 void npcAct020(npc *NPC) // Computer
 {
@@ -128,6 +131,109 @@ void npcAct025(npc *NPC) //egg corridor lift thing
 	NPC->rect.top = 64 + (16 * NPC->ani_no);
 	NPC->rect.right = 288;
 	NPC->rect.bottom = 80 + (16 * NPC->ani_no);
+}
+
+void npcAct026(npc * NPC) // Bat, Black Circling (enemy)
+{
+	enum
+	{
+		init = 0,
+		circleAroundTarget = 1,
+		diveAttack = 3,
+	};
+
+	uint8_t angle;
+	switch (NPC->act_no)
+	{
+	case init:
+		angle = random(0, 255);
+		NPC->xm = getCos(angle);
+		NPC->tgt_x = NPC->x + 8 * getCos(angle + 64);
+
+		angle = random(0, 255);
+		NPC->ym = getSin(angle);
+		NPC->tgt_y = NPC->y + 8 * getSin(angle + 64);
+
+		NPC->act_no = circleAroundTarget;
+		NPC->count1 = 128;
+		break;
+
+	case circleAroundTarget:
+		NPC->facePlayer();
+
+		if (NPC->tgt_x < NPC->x)
+			NPC->xm -= 0x10;
+		else if (NPC->tgt_x > NPC->x)
+			NPC->xm += 0x10;
+
+		if (NPC->tgt_y < NPC->y)
+			NPC->ym -= 0x10;
+		else if (NPC->tgt_y > NPC->y)
+			NPC->ym += 0x10;
+
+		if (NPC->xm > 0x200)
+			NPC->xm = 0x200;
+		else if (NPC->xm < -0x200)
+			NPC->xm = -0x200;
+
+		if (NPC->ym > 0x200)
+			NPC->ym = 0x200;
+		else if (NPC->ym < -0x200)
+			NPC->ym = -0x200;
+
+		if (NPC->count1 >= 120)
+		{
+			if (NPC->isPlayerWithinDistance(0x1000, 0, 0xC0000))
+			{
+				NPC->xm /= 2;
+				NPC->ym = 0;
+				NPC->act_no = diveAttack;
+				NPC->bits &= ~npc_ignoreSolid;
+			}
+		}
+		else
+			++NPC->count1;
+		break;
+
+	case diveAttack:
+		NPC->doGravity(0x40, 0x5FF);
+
+		if (NPC->flag & ground)
+		{
+			NPC->ym = 0;
+			NPC->xm *= 2;
+			NPC->count1 = 0;
+			NPC->act_no = circleAroundTarget;
+			NPC->bits |= npc_ignoreSolid;
+		}
+		break;
+
+	default:
+		break;
+	}
+
+	NPC->x += NPC->xm;
+	NPC->y += NPC->ym;
+
+	vector<RECT> rcLeft(4);
+	vector<RECT> rcRight(4);
+
+	rcLeft[0] = { 32, 80, 48, 96 };
+	rcLeft[1] = { 48, 80, 64, 96 };
+	rcLeft[2] = { 64, 80, 80, 96 };
+	rcLeft[3] = { 80, 80, 96, 96 };
+
+	rcRight[0] = { 32, 96, 48, 112 };
+	rcRight[1] = { 48, 96, 64, 112 };
+	rcRight[2] = { 64, 96, 80, 112 };
+	rcRight[3] = { 80, 96, 96, 112 };
+
+	if (NPC->act_no == diveAttack)
+		NPC->ani_no = 3;
+	else
+		NPC->animate(1, 0, 2);
+
+	NPC->doRects(rcLeft, rcRight);
 }
 
 void npcAct027(npc *NPC) // Death Spikes
@@ -367,7 +473,7 @@ void npcAct038(npc * NPC)
 	}
 	if (NPC->ani_no > 3)
 		NPC->ani_no = 0;
-	
+
 	NPC->rect = rcNPC[NPC->ani_no];
 }
 

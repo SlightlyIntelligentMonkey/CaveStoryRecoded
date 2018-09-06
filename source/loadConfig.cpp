@@ -41,7 +41,7 @@ void loadGameJson()
 	if (jDbgFlgs["showNPCHealth"] == true)
 		debugFlags |= showNPCHealth;
 
-	if (jGame.count("millisecondsPerFrame"))
+	if (jGame["millisecondsPerFrame"].is_string())
 		framerate = jGame["millisecondsPerFrame"];
 }
 
@@ -55,8 +55,20 @@ void loadOrgJson()
 		disableOrg = true;
 }
 
+void loadFilesystemJson()
+{
+	auto jFilesystem = loadJsonFromFile(baseJsonFolder + "filesystem.json");
+
+	if (jFilesystem["profileName"].is_string())
+		profileName = jFilesystem["profileName"];
+
+	if (jFilesystem["profileCode"].is_string())
+		profileCode = jFilesystem["profileCode"];
+}
+
 void loadConfigFiles()
 {
 	loadGameJson();
 	loadOrgJson();
+	loadFilesystemJson();
 }

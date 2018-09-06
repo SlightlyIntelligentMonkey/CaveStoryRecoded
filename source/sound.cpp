@@ -101,13 +101,9 @@ void mixSounds(int16_t *stream, int len)
 			}
 		}
 
-		//Clip buffer
-		tempSampleL = clamp(tempSampleL, -0x7FFF, 0x7FFF);
-		tempSampleR = clamp(tempSampleR, -0x7FFF, 0x7FFF);
-
-		//Put into main stream
-		stream[2 * i] = tempSampleL;
-		stream[2 * i + 1] = tempSampleR;
+		//Put into main stream and clip buffer
+		stream[2 * i] = clamp(tempSampleL, -0x7FFF, 0x7FFF);
+		stream[2 * i + 1] = clamp(tempSampleR, -0x7FFF, 0x7FFF);
 	}
 }
 

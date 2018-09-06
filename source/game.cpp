@@ -199,7 +199,7 @@ void debugFunction()
 			if (isKeyPressed(SDL_SCANCODE_N))
 				debugFlags ^= showNPCId;
 			if (isKeyPressed(SDL_SCANCODE_KP_PLUS))
-				giveWeapon(4, 100);
+				giveWeapon(13, 0);
 		}
 
 		switch (debugMode)

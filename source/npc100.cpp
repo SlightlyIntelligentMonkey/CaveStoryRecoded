@@ -1,7 +1,13 @@
 #include "npc100.h"
 
+#include <vector>
 #include "player.h"
 #include "sound.h"
+#include "render.h"
+#include "mathUtils.h"
+#include "game.h"
+
+using std::vector;
 
 void npcAct100(npc * NPC) // Grate
 {
@@ -12,6 +18,183 @@ void npcAct100(npc * NPC) // Grate
 	}
 
 	NPC->rect = { 272, 48, 288, 64 };
+}
+
+void npcAct101(npc *NPC) // Power Controls, screen
+{
+    vector<RECT> rcNPC = {{240, 136, 256, 152}, {240, 136, 256, 152}, {256, 136, 272, 152}};
+    NPC->animate(3, 0, 2);
+    NPC->doRects(rcNPC);
+}
+
+void npcAct102(npc *NPC) // Power Controls, power flow
+{
+    vector<RECT> rcNPC = {{208, 120, 224, 136}, {224, 120, 240, 136}, {240, 120, 256, 136}, {256, 120, 272, 136}};
+
+    if (!NPC->act_no)
+    {
+        NPC->act_no = 1;
+        NPC->y += 0x1000;
+    }
+
+    NPC->animate(0, 0, 3);
+    NPC->doRects(rcNPC);
+}
+
+void npcAct103(npc *NPC) // Manann red blast (projectile)
+{
+    vector<RECT> rcLeft = {{192, 96, 208, 120}, {208, 96, 224, 120}, {224, 96, 240, 120}};
+    vector<RECT> rcRight = {{192, 120, 208, 144}, {208, 120, 224, 144}, {224, 120, 240, 144}};
+
+    if (NPC->act_no == 1 || !NPC->act_no)
+    {
+        if (!NPC->act_no)
+            NPC->act_no = 1;
+        NPC->accelerateTowardsPlayer(0x20);
+        NPC->animate(0, 0, 2);
+    }
+
+    NPC->x += NPC->xm;
+    NPC->doRects(rcLeft, rcRight);
+
+    if (++NPC->count1 > 100)
+        NPC->cond = 0;
+    if (NPC->count1 % 4 == 1)
+        playSound(SFX_IronHeadShot);
+}
+
+void npcAct104(npc *NPC) // Frog (enemy)
+{
+	vector<RECT> rcLeft(3);
+	vector<RECT> rcRight(3);
+
+	rcLeft = { {0, 112, 32, 144}, {32, 112, 64, 144}, {64, 112, 96, 144} };
+	rcRight = { {0, 144, 32, 176}, {32, 144, 64, 176}, {64, 155, 96, 176} };
+
+	enum
+	{
+		init = 0,
+		standing = 1,
+		mouthTwitch = 2,
+		fallingFromCeiling = 3,
+		startJump = 10,
+		jumping = 11,
+	};
+
+	switch (NPC->act_no)
+	{
+	case init:
+		NPC->act_no = standing;
+		NPC->act_wait = 0;
+		NPC->xm = 0;
+		NPC->ym = 0;
+		if (NPC->direct == 4)	// Spawned by Balfrog
+		{
+			if (random(0, 1))
+				NPC->direct = dirLeft;
+			else
+				NPC->direct = dirRight;
+			NPC->bits |= npc_ignoreSolid;
+			NPC->ani_no = 2;
+			NPC->act_no = fallingFromCeiling;
+			break;
+		}
+		NPC->act_no &= ~npc_ignoreSolid;
+		// Fallthrough
+	case standing:
+		++NPC->act_wait;
+		if (!random(0, 50))
+		{
+			NPC->act_no = mouthTwitch;
+			NPC->act_wait = 0;
+			NPC->ani_no = 0;
+			NPC->ani_wait = 0;
+		}
+		break;
+
+	case mouthTwitch:
+		NPC->animate(2, 0, 1);
+
+		if (++NPC->act_wait > 18)
+			NPC->act_no = standing;
+		break;
+
+	case fallingFromCeiling:
+		if (++NPC->act_wait > 40)
+			NPC->bits &= ~npc_ignoreSolid;
+
+		if (NPC->flag & ground)
+		{
+			NPC->act_no = init;
+			NPC->ani_no = 0;
+			NPC->act_wait = 0;
+		}
+		break;
+
+	case startJump:
+	case jumping:
+		if (NPC->flag & leftWall && NPC->xm < 0)
+		{
+			NPC->xm = -NPC->xm;
+			NPC->direct = dirRight;
+		}
+		if (NPC->flag & rightWall && NPC->xm > 0)
+		{
+			NPC->xm = -NPC->xm;
+			NPC->direct = dirLeft;
+		}
+
+		if (NPC->flag & ground)
+		{
+			NPC->act_no = init;
+			NPC->ani_no = 0;
+			NPC->act_wait = 0;
+		}
+		break;
+
+	default:
+		break;
+	}
+
+	bool doJump = false;
+	if (NPC->act_no < startJump && NPC->act_no != fallingFromCeiling && NPC->act_wait > 10)
+	{
+		if (NPC->shock)
+			doJump = true;
+		if (NPC->x >= currentPlayer.x - 0x14000
+			&& NPC->x <= currentPlayer.x + 0x14000
+			&& NPC->y >= currentPlayer.y - 0x8000
+			&& NPC->y <= currentPlayer.y + 0x8000
+			&& !random(0, 50))
+			doJump = true;
+	}
+	if (doJump)
+	{
+		NPC->facePlayer();
+		NPC->act_no = startJump;
+		NPC->ani_no = 2;
+		NPC->ym = -0x5FF;
+		if (!(currentPlayer.cond & player_removed))
+			playSound(SFX_CritterHop);
+
+		NPC->moveTowardsPlayer(0x200);
+	}
+
+	NPC->doGravity(0x80, 0x5FF);
+	NPC->doRects(rcLeft, rcRight);
+}
+
+
+void npcAct105(npc *NPC) // Speech balloon 'Hey' low
+{
+    vector<RECT> rcNPC = {{128, 32, 144, 48}, {128, 38, 128, 32}};
+
+    if (++NPC->act_wait > 30)
+        NPC->cond = 0;
+    if (NPC->act_wait < 5)
+        NPC->y -= pixelsToUnits(1);
+
+    NPC->doRects(rcNPC);
 }
 
 void npcAct106(npc *NPC) // Speech balloon 'Hey' high
@@ -177,6 +360,67 @@ void npcAct112(npc *NPC) //Quote teleport in
 		if (NPC->act_wait / 2 & 1)
 			++NPC->rect.left;
 	}
+}
+
+void npcAct114(npc *NPC) // Press (enemy)
+{
+    vector<RECT> rcNPC = {{144, 112, 160, 136}, {160, 112, 176, 136}, {176, 112, 192, 136}};
+
+    switch (NPC->act_no)
+    {
+    case 0:
+        NPC->act_no = 1;
+        NPC->y -= pixelsToUnits(4);
+        // Fallthrough
+    case 1:
+        if (!(NPC->flag & ground))
+        {
+            NPC->act_no = 10;
+            NPC->act_wait = 8;
+            NPC->ani_no = 1;
+        }
+        break;
+
+    case 10:
+        NPC->animate(2, 2, 2);
+
+        if (currentPlayer.y <= NPC->y)
+        {
+            NPC->bits |= npc_solidHard;
+            NPC->damage = 0;
+        }
+        else
+        {
+            NPC->bits &= ~npc_solidHard;
+            NPC->damage = 127;
+        }
+        if (NPC->flag & ground)
+        {
+            if (NPC->ani_no > 1)
+            {
+                for (int i = 0; i < 4; ++i)
+                {
+                    auto xVel = random(-0x600, 0);
+                    auto yVel = random(-0x155, 0x155);
+                    createNpc(NPC_Smoke, NPC->x, NPC->y, xVel, yVel);
+                }
+                playSound(SFX_LargeObjectHitGround);
+                viewport.quake = 10;
+            }
+            NPC->act_no = 1;
+            NPC->ani_no = 0;
+            NPC->damage = 0;
+            NPC->bits |= npc_solidHard;
+        }
+
+    default:
+        break;
+    }
+
+    NPC->doGravity(0x20, 0x5FF);
+    NPC->y += NPC->ym;
+
+    NPC->doRects(rcNPC);
 }
 
 void npcAct117(npc *NPC)

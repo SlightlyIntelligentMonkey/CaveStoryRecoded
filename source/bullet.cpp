@@ -19,90 +19,90 @@ deque<bullet> bullets(0);
 BULLETSTATS bulletTable[] =
 {
 	//null bullet
-	{ 0, 0, 0, 0, 0, 0, 0, 0, { 0, 0, 0, 0 }, 0 },
+	{ 0, 0, 0, 0, 0, 0, 0, 0, { 0, 0, 0, 0 }},
 
 	//snake
-	{ 4, 1, 20, 36, 4, 4, 2, 2, { 8, 8, 8, 8 }, 1 },
-	{ 6, 1, 23, 36, 4, 4, 2, 2, { 8, 8, 8, 8 }, 1 },
-	{ 8, 1, 30, 36, 4, 4, 2, 2, { 8, 8, 8, 8 }, 1 },
+	{ 4, 1, 20, 36, 4, 4, 2, 2, { 8, 8, 8, 8 }},
+	{ 6, 1, 23, 36, 4, 4, 2, 2, { 8, 8, 8, 8 }},
+	{ 8, 1, 30, 36, 4, 4, 2, 2, { 8, 8, 8, 8 }},
 
 	//polarstar
-	{ 1, 1, 8, 32, 6, 6, 2, 2, { 8, 8, 8, 8 }, 2 },
-	{ 2, 1, 12, 32, 6, 6, 2, 2, { 8, 8, 8, 8 }, 2 },
-	{ 4, 1, 16, 32, 6, 6, 2, 2, { 8, 8, 8, 8 }, 2 },
+	{ 1, 1, 8, 32, 6, 6, 2, 2, { 8, 8, 8, 8 }},
+	{ 2, 1, 12, 32, 6, 6, 2, 2, { 8, 8, 8, 8 }},
+	{ 4, 1, 16, 32, 6, 6, 2, 2, { 8, 8, 8, 8 }},
 
 	//fireball
-	{ 2, 2, 100, 8, 8, 16, 4, 2, { 8, 8, 8, 8 }, 3 },
-	{ 3, 2, 100, 8, 4, 4, 4, 2, { 8, 8, 8, 8 }, 3 },
-	{ 3, 2, 100, 8, 4, 4, 4, 2, { 8, 8, 8, 8 }, 3 },
+	{ 2, 2, 100, 8, 8, 16, 4, 2, { 8, 8, 8, 8 }},
+	{ 3, 2, 100, 8, 4, 4, 4, 2, { 8, 8, 8, 8 }},
+	{ 3, 2, 100, 8, 4, 4, 4, 2, { 8, 8, 8, 8 }},
 
 	//machine gun
-	{ 2, 1, 20, 32, 2, 2, 2, 2, { 8, 8, 8, 8 }, 4 },
-	{ 4, 1, 20, 32, 2, 2, 2, 2, { 8, 8, 8, 8 }, 4 },
-	{ 6, 1, 20, 32, 2, 2, 2, 2, { 8, 8, 8, 8 }, 4 },
+	{ 2, 1, 20, 32, 2, 2, 2, 2, { 8, 8, 8, 8 }},
+	{ 4, 1, 20, 32, 2, 2, 2, 2, { 8, 8, 8, 8 }},
+	{ 6, 1, 20, 32, 2, 2, 2, 2, { 8, 8, 8, 8 }},
 
 	//missile
-	{ 0, 10, 50, 40, 2, 2, 2, 2, { 8, 8, 8, 8 }, 5 },
-	{ 0, 10, 70, 40, 4, 4, 4, 4, { 8, 8, 8, 8 }, 5 },
-	{ 0, 10, 90, 40, 4, 4, 0, 0, { 8, 8, 8, 8 }, 5 },
+	{ 0, 10, 50, 40, 2, 2, 2, 2, { 8, 8, 8, 8 }},
+	{ 0, 10, 70, 40, 4, 4, 4, 4, { 8, 8, 8, 8 }},
+	{ 0, 10, 90, 40, 4, 4, 0, 0, { 8, 8, 8, 8 }},
 
 	//missile explosion
-	{ 1, 100, 100, 20, 16, 16, 0, 0, { 0, 0, 0, 0 }, 6 },
-	{ 1, 100, 100, 20, 16, 16, 0, 0, { 0, 0, 0, 0 }, 6 },
-	{ 1, 100, 100, 20, 16, 16, 0, 0, { 0, 0, 0, 0 }, 6 },
+	{ 1, 100, 100, 20, 16, 16, 0, 0, { 0, 0, 0, 0 }},
+	{ 1, 100, 100, 20, 16, 16, 0, 0, { 0, 0, 0, 0 }},
+	{ 1, 100, 100, 20, 16, 16, 0, 0, { 0, 0, 0, 0 }},
 
 	//bubbler
-	{ 1, 1, 20, 8, 2, 2, 2, 2, { 4, 4, 4, 4 }, 7 },
-	{ 2, 1, 20, 8, 2, 2, 2, 2, { 4, 4, 4, 4 }, 7 },
-	{ 2, 1, 20, 8, 4, 4, 4, 4, { 4, 4, 4, 4 }, 7 },
+	{ 1, 1, 20, 8, 2, 2, 2, 2, { 4, 4, 4, 4 }},
+	{ 2, 1, 20, 8, 2, 2, 2, 2, { 4, 4, 4, 4 }},
+	{ 2, 1, 20, 8, 4, 4, 4, 4, { 4, 4, 4, 4 }},
 
 	//bubbler pop projectile
-	{ 3, 1, 32, 32, 2, 2, 2, 2, { 4, 4, 4, 4 }, 8 },
+	{ 3, 1, 32, 32, 2, 2, 2, 2, { 4, 4, 4, 4 }},
 
 	//blade slashes
-	{ 0, 100, 0, 36, 8, 8, 8, 8, { 12, 12, 12, 12 }, 8 },
+	{ 0, 100, 0, 36, 8, 8, 8, 8, { 12, 12, 12, 12 }},
 
 	//egg corridor spike (FUCK YOU PIXEL)
-	{ 127, 1, 2, 4, 8, 4, 8, 4, { 0, 0, 0, 0 }, 8 },
+	{ 127, 1, 2, 4, 8, 4, 8, 4, { 0, 0, 0, 0 }},
 
 	//blade
-	{ 15, 1, 30, 36, 8, 8, 4, 2, { 8, 8, 8, 8 }, 9 },
-	{ 6, 3, 18, 36, 10, 10, 4, 2, { 12, 12, 12, 12 }, 9 },
-	{ 1, 100, 30, 36, 6, 6, 4, 4, { 12, 12, 12, 12 }, 9 },
+	{ 15, 1, 30, 36, 8, 8, 4, 2, { 8, 8, 8, 8 }},
+	{ 6, 3, 18, 36, 10, 10, 4, 2, { 12, 12, 12, 12 }},
+	{ 1, 100, 30, 36, 6, 6, 4, 4, { 12, 12, 12, 12 }},
 
 	//super missile
-	{ 0, 10, 30, 40, 2, 2, 2, 2, { 8, 8, 8, 8 }, 10 },
-	{ 0, 10, 40, 40, 4, 4, 4, 4, { 8, 8, 8, 8 }, 10 },
-	{ 0, 10, 40, 40, 4, 4, 0, 0, { 8, 8, 8, 8 }, 10 },
+	{ 0, 10, 30, 40, 2, 2, 2, 2, { 8, 8, 8, 8 }},
+	{ 0, 10, 40, 40, 4, 4, 4, 4, { 8, 8, 8, 8 }},
+	{ 0, 10, 40, 40, 4, 4, 0, 0, { 8, 8, 8, 8 }},
 
 	//super missile explosion
-	{ 2, 100, 100, 20, 12, 12, 0, 0, { 0, 0, 0, 0 }, 11 },
-	{ 2, 100, 100, 20, 12, 12, 0, 0, { 0, 0, 0, 0 }, 11 },
-	{ 2, 100, 100, 20, 12, 12, 0, 0, { 0, 0, 0, 0 }, 11 },
+	{ 2, 100, 100, 20, 12, 12, 0, 0, { 0, 0, 0, 0 }},
+	{ 2, 100, 100, 20, 12, 12, 0, 0, { 0, 0, 0, 0 }},
+	{ 2, 100, 100, 20, 12, 12, 0, 0, { 0, 0, 0, 0 }},
 
 	//nemesis
-	{ 4, 4, 20, 32, 4, 4, 3, 3, { 8, 8, 24, 8 }, 12 },
-	{ 4, 2, 20, 32, 2, 2, 2, 2, { 8, 8, 24, 8 }, 12 },
-	{ 1, 1, 20, 32, 2, 2, 2, 2, { 8, 8, 24, 8 }, 12 },
+	{ 4, 4, 20, 32, 4, 4, 3, 3, { 8, 8, 24, 8 }},
+	{ 4, 2, 20, 32, 2, 2, 2, 2, { 8, 8, 24, 8 }},
+	{ 1, 1, 20, 32, 2, 2, 2, 2, { 8, 8, 24, 8 }},
 
 	//spur
-	{ 4, 4, 30, 64, 6, 6, 3, 3, { 8, 8, 8, 8 }, 13 },
-	{ 8, 8, 30, 64, 6, 6, 3, 3, { 8, 8, 8, 8 }, 13 },
-	{ 12, 12, 30, 64, 6, 6, 3, 3, { 8, 8, 8, 8 }, 13 },
+	{ 4, 4, 30, 64, 6, 6, 3, 3, { 8, 8, 8, 8 }},
+	{ 8, 8, 30, 64, 6, 6, 3, 3, { 8, 8, 8, 8 }},
+	{ 12, 12, 30, 64, 6, 6, 3, 3, { 8, 8, 8, 8 }},
 
 	//spur trail
-	{ 3, 100, 30, 32, 6, 6, 3, 3, { 4, 4, 4, 4 }, 14 },
-	{ 6, 100, 30, 32, 6, 6, 3, 3, { 4, 4, 4, 4 }, 14 },
-	{ 11, 100, 30, 32, 6, 6, 3, 3, { 4, 4, 4, 4 }, 14 },
+	{ 3, 100, 30, 32, 6, 6, 3, 3, { 4, 4, 4, 4 }},
+	{ 6, 100, 30, 32, 6, 6, 3, 3, { 4, 4, 4, 4 }},
+	{ 11, 100, 30, 32, 6, 6, 3, 3, { 4, 4, 4, 4 }},
 
 	//curly nemesis
-	{ 4, 4, 20, 32, 4, 4, 3, 3, { 8, 8, 24, 8 }, 15 },
+	{ 4, 4, 20, 32, 4, 4, 3, 3, { 8, 8, 24, 8 }},
 
 	//clear all
-	{ 0, 4, 4, 4, 0, 0, 0, 0, { 0, 0, 0, 0 }, 15 },
+	{ 0, 4, 4, 4, 0, 0, 0, 0, { 0, 0, 0, 0 }},
 
 	//whimsical star
-	{ 1, 1, 1, 36, 1, 1, 1, 1, { 1, 1, 1, 1 }, 15 }
+	{ 1, 1, 1, 36, 1, 1, 1, 1, { 1, 1, 1, 1 }}
 };
 
 int _empty = 0;
@@ -125,12 +125,12 @@ void createBullet(int setCode, int setX, int setY, uint8_t setDir, int weapon)
 	}
 
 	if (repBullet != nullptr)
-		repBullet->init(setCode, setX, setY, setDir);
+		repBullet->init(setCode, setX, setY, setDir, weapon);
+
 	else
 	{
 		bullet newBullet;
-		newBullet.init(setCode, setX, setY, setDir);
-		newBullet.weapon = weapon;
+		newBullet.init(setCode, setX, setY, setDir, weapon);
 		bullets.push_back(newBullet);
 	}
 }
@@ -166,7 +166,7 @@ void drawBullets()
 }
 
 //CLASS
-void bullet::init(int setCode, int setX, int setY, uint8_t setDir) 
+void bullet::init(int setCode, int setX, int setY, uint8_t setDir, int weaponId)
 {
 	memset(this, 0, sizeof(*this));
 
@@ -193,8 +193,8 @@ void bullet::init(int setCode, int setX, int setY, uint8_t setDir)
 	view.left = bulletTable[setCode].view.left << 9;
 	view.top = bulletTable[setCode].view.top << 9;
 	view.bottom = bulletTable[setCode].view.bottom << 9;
-  
-	weapon = bulletTable[setCode].weapon;
+
+	weapon = weaponId;
 }
 
 //Act functions
@@ -203,7 +203,10 @@ void bullet::init(int setCode, int setX, int setY, uint8_t setDir)
 #include "fireball.h"
 #include "machineGun.h"
 #include "missile.h"
-
+#include "bubbler.h"
+#include "misc.h"
+#include "blade.h"
+#include "nemesis.h"
 #include "spur.h"
 
 bulletAct bulletActs[46] =
@@ -212,48 +215,58 @@ bulletAct bulletActs[46] =
 	&actBulletSnake1,	// Snake
 	&actBulletSnake2,
 	&actBulletSnake3,
+
 	&actBulletPolarStar1,				// Polar Star
 	&actBulletPolarStar2,
 	&actBulletPolarStar3,
+
 	&actBulletFireball1,				// Fireball
 	&actBulletFireball2,
 	&actBulletFireball3,
+
 	&actBulletMachineGun1,
 	&actBulletMachineGun2,
 	&actBulletMachineGun3,
+
 	&actBulletMissileLauncher1,
 	&actBulletMissileLauncher2,
 	&actBulletMissileLauncher3,
 	&actBulletBoom1,
 	&actBulletBoom2,
 	&actBulletBoom3,
-	static_cast<bulletAct>(nullptr),
-	static_cast<bulletAct>(nullptr),
-	static_cast<bulletAct>(nullptr),
-	static_cast<bulletAct>(nullptr),
-	static_cast<bulletAct>(nullptr),
-	static_cast<bulletAct>(nullptr),
-	static_cast<bulletAct>(nullptr),
-	static_cast<bulletAct>(nullptr),
-	static_cast<bulletAct>(nullptr),
-	static_cast<bulletAct>(nullptr),
-	static_cast<bulletAct>(nullptr),
-	static_cast<bulletAct>(nullptr),
-	static_cast<bulletAct>(nullptr),
-	static_cast<bulletAct>(nullptr),
-	static_cast<bulletAct>(nullptr),
-	static_cast<bulletAct>(nullptr),
-	static_cast<bulletAct>(nullptr),
-	static_cast<bulletAct>(nullptr),
-	static_cast<bulletAct>(nullptr),
-	static_cast<bulletAct>(nullptr),
-	static_cast<bulletAct>(nullptr),
-	static_cast<bulletAct>(nullptr),
-	static_cast<bulletAct>(nullptr),
-	static_cast<bulletAct>(nullptr),
-	static_cast<bulletAct>(nullptr),
-	static_cast<bulletAct>(nullptr),
-	static_cast<bulletAct>(nullptr),
+
+	&actBulletBubbler1,
+	&actBulletBubbler2,
+	&actBulletBubbler3,
+	&actBulletBubblerSpur,
+
+	&actBulletSlash,
+	&actBulletDrop,
+
+	&actBulletBlade1,
+	&actBulletBlade2,
+	&actBulletBlade3,
+
+	&actBulletSuperMissileLauncher1,
+	&actBulletSuperMissileLauncher2,
+	&actBulletSuperMissileLauncher3,
+	&actBulletSuperBoom1,
+	&actBulletSuperBoom2,
+	&actBulletSuperBoom3,
+
+	&actBulletNemesis1,
+	&actBulletNemesis2,
+	&actBulletNemesis3,
+
+	&actBulletSpur1,
+	&actBulletSpur2,
+	&actBulletSpur3,
+	&actBulletSpurTrail1,
+	&actBulletSpurTrail2,
+	&actBulletSpurTrail3,
+	&actBulletNemesis3,
+	&actBulletEnemyClear,
+	&actBulletStar
 };
 
 //Update and draw
