@@ -67,6 +67,7 @@ public:
 
 	void setPos(int setX, int setY);
 	void setDir(int setDirect);
+	void backStep(int entityEventNum);
 
 	void damage(int16_t damage);
 
@@ -77,6 +78,12 @@ public:
 
 	void update(bool bKey);
 	void draw();
+
+private:
+    void doBooster();
+    void doFriction(int resist);
+    int getBoostCount() attrPure;
+    void limitSpeed();
 };
 
 extern player currentPlayer;

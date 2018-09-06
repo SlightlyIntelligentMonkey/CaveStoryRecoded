@@ -299,7 +299,7 @@ void npcAct205(npc *NPC) // Falling Spike, large
 		NPC->y += pixelsToUnits(4);
 	// Fallthrough
 	case 1:
-		if (currentPlayer.x > NPC->x - pixelsToUnits(12) && currentPlayer.x < NPC->y + pixelsToUnits(12)
+		if (currentPlayer.x > NPC->x - pixelsToUnits(12) && currentPlayer.x < NPC->x + pixelsToUnits(12)
 		        && currentPlayer.y > NPC->y)
 			NPC->act_no = 2;
 		break;
@@ -364,7 +364,82 @@ void npcAct205(npc *NPC) // Falling Spike, large
 
 void npcAct210(npc *NPC) // Beetle, Follow Aqua (enemy)
 {
+    vector<RECT> rcLeft = {{0, 112, 16, 128}, {16, 112, 32, 128}};
+    vector<RECT> rcRight = {{32, 112, 48, 128}, {48, 112, 64, 128}};
 
+    switch (NPC->act_no)
+    {
+    case 0:
+        if (currentPlayer.x >= NPC->x + tilesToUnits(1) || currentPlayer.x <= NPC->x - tilesToUnits(1))
+        {
+            NPC->bits &= ~npc_shootable;
+            NPC->rect.right = 0;
+            NPC->damage = 0;
+            NPC->xm = 0;
+            NPC->ym = 0;
+            return;
+        }
+
+        NPC->bits |= npc_shootable;
+        NPC->ym = -0x200;
+        NPC->tgt_y = NPC->y;
+        NPC->act_no = 1;
+        NPC->damage = 2;
+
+        if (NPC->direct != dirLeft)
+        {
+            NPC->x = currentPlayer.x - tilesToUnits(16);
+            NPC->xm = 0x2FF;
+        }
+        else
+        {
+            NPC->x = currentPlayer.x + tilesToUnits(16);
+            NPC->xm = -0x2FF;
+        }
+        break;
+
+    case 1:
+        if (NPC->x <= currentPlayer.x)
+        {
+            NPC->direct = dirRight;
+            NPC->xm += 0x10;
+        }
+        else
+        {
+            NPC->direct = dirLeft;
+            NPC->xm -= 0x10;
+        }
+
+        if (NPC->xm > 0x2FF)
+            NPC->xm = 0x2FF;
+        else if (NPC->xm < -0x2FF)
+            NPC->xm = -0x2FF;
+
+        if (NPC->y >= NPC->tgt_y)
+            NPC->ym -= 8;
+        else
+            NPC->ym += 8;
+
+        if (NPC->ym > 0x200)
+            NPC->ym = 0x200;
+        if (NPC->ym < -0x200)
+            NPC->ym = -0x200;
+
+        if (NPC->shock)
+        {
+            NPC->x += NPC->xm / 2;
+            NPC->y += NPC->ym / 2;
+        }
+        else
+        {
+            NPC->x += NPC->xm;
+            NPC->y += NPC->ym;
+        }
+    }
+
+    NPC->animate(1, 0, 1);
+
+    NPC->doRects(rcLeft, rcRight);
 }
 
 void npcAct211(npc *NPC) //Spikes

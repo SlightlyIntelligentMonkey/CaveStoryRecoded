@@ -19,7 +19,7 @@
 #include "npc320.h"
 #include "npc340.h"
 
-npcAct npcActs[361] =
+const npcAct npcActs[361] =
 {
 	&npcAct000,
 	&npcAct001,
@@ -231,7 +231,7 @@ npcAct npcActs[361] =
 	&npcActNone,
 	&npcActNone,
 	&npcActNone,
-	&npcActNone,
+	&npcAct210,
 	&npcAct211,
 	&npcActNone,
 	&npcActNone,

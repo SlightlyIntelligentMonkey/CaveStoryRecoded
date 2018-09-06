@@ -144,6 +144,45 @@ int findEntityByType(int entityType)
     return -1;
 }
 
+void setNPCState(int entityEventNumber, int newNPCState, int direction)
+{
+	for (size_t i = 0; i < npcs.size(); i++)
+	{
+		if ((npcs[i].cond & npccond_alive) && npcs[i].code_event == entityEventNumber)
+		{
+			npcs[i].act_no = newNPCState;
+
+			if (direction != 5)
+			{
+				if (direction == 4)
+                    npcs[i].facePlayer();
+				else
+					npcs[i].direct = direction;
+			}
+		}
+	}
+}
+
+void moveNPC(int entityEventNum, int xPos, int yPos, int direction)
+{
+	for (size_t i = 0; i < npcs.size(); i++)
+	{
+		if ((npcs[i].cond & npccond_alive) && npcs[i].code_event == entityEventNum)
+		{
+			npcs[i].x = xPos;
+			npcs[i].y = yPos;
+
+			if (direction != 5)
+			{
+				if (direction == 4)
+					npcs[i].facePlayer();
+				else
+					npcs[i].direct = direction;
+			}
+		}
+	}
+}
+
 void updateNPC()
 {
 	if (npcs.size())
