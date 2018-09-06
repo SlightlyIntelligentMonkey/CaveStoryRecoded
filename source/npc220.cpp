@@ -107,6 +107,106 @@ void npcAct223(npc *NPC) // Momorin
     NPC->doRects(rcLeft, rcRight);
 }
 
+void npcAct224(npc *NPC) // Chie
+{
+	vector<RECT> rcLeft = {{112, 32, 128, 48}, {128, 32, 144, 48}};
+	vector<RECT> rcRight = {{112, 48, 128, 64}, {128, 48, 144, 64}};
+
+	enum
+	{
+		aniNormal = 0,
+		aniBlink = 1,
+	};
+
+	enum
+	{
+		init = 0,
+		normal = 1,
+		blinking = 2,
+	};
+
+	switch (NPC->act_no)
+	{
+    case init:
+        NPC->act_no = normal;
+        NPC->ani_no = aniNormal;
+        // Fallthrough
+    case normal:
+        if (!random(0, 160))
+        {
+            NPC->act_no = blinking;
+            NPC->act_wait = 0;
+            NPC->ani_no = aniBlink;
+        }
+        break;
+
+    case blinking:
+        if (++NPC->act_wait > 12)
+        {
+            NPC->act_no = normal;
+            NPC->ani_no = aniNormal;
+        }
+        break;
+
+    default:
+        break;
+	}
+
+	if (NPC->act_no < blinking && currentPlayer.y < NPC->y + 0x2000 && currentPlayer.y > NPC->y - 0x2000)
+        NPC->facePlayer();
+
+    NPC->doRects(rcLeft, rcRight);
+}
+
+void npcAct225(npc *NPC)
+{
+	vector<RECT> rcLeft = {{64, 64, 80, 80}, {80, 64, 96, 80}};
+	vector<RECT> rcRight = {{64, 80, 80, 96}, {80, 80, 96, 96}};
+
+	enum
+	{
+		aniNormal = 0,
+		aniBlink = 1,
+	};
+
+	enum
+	{
+		init = 0,
+		normal = 1,
+		blinking = 2,
+	};
+
+	switch (NPC->act_no)
+	{
+	case init:
+		NPC->act_no = 1;
+		NPC->ani_no = aniNormal;
+		NPC->ani_wait = 0;
+	// Fallthrough
+	case normal:
+		if (!random(0, 160))
+		{
+			NPC->act_no = blinking;
+			NPC->act_wait = 0;
+			NPC->ani_no = aniBlink;
+		}
+		break;
+
+	case blinking:
+		if (++NPC->act_wait > 12)
+		{
+			NPC->act_no = normal;
+			NPC->ani_no = aniNormal;
+		}
+		break;
+
+	default:
+		break;
+	}
+
+	NPC->doRects(rcLeft, rcRight);
+}
+
 void npcAct227(npc *NPC) // Bucket
 {
 	NPC->rect = { 208, 32, 224, 48 };
