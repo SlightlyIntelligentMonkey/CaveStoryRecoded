@@ -9,6 +9,7 @@
 #include "mathUtils.h"
 #include "render.h"
 #include "sound.h"
+#include "game.h"
 
 using std::vector;
 
@@ -108,6 +109,81 @@ endOfAI:
         NPC->x = NPC->tgt_x;
     else
         NPC->x = NPC->tgt_x + 0x200;
+
+    NPC->doRects(rcNPC);
+}
+
+void npcAct246(npc *NPC) // Press, Proximity (enemy)
+{
+    vector<RECT> rcNPC = {{144, 112, 160, 136}, {160, 112, 176, 136}, {176, 112, 196, 136}};
+
+    switch (NPC->act_no)
+    {
+    case 0:
+        NPC->act_no = 1;
+        NPC->y -= pixelsToUnits(4);
+        // Fallthrough
+    case 1:
+		if (currentPlayer.x < NPC->x + pixelsToUnits(8)
+      && currentPlayer.x > NPC->x - pixelsToUnits(8)
+      && currentPlayer.y > NPC->y + pixelsToUnits(8)
+      && currentPlayer.y < NPC->y + tilesToUnits(8))
+            NPC->act_no = 5;
+        break;
+
+    case 5:
+        if (!(NPC->flag & ground))
+        {
+            NPC->act_no = 10;
+            NPC->ani_wait = 0;
+            NPC->ani_no = 1;
+        }
+        break;
+
+    case 10:
+        NPC->animate(2, 2, 2);
+
+        if (currentPlayer.y <= NPC->y)
+        {
+            NPC->bits |= npc_solidHard;
+            NPC->damage = 0;
+        }
+        else
+        {
+            NPC->bits &= ~npc_solidHard;
+            NPC->damage = 127;
+        }
+
+        if (NPC->flag & ground)
+        {
+            if (NPC->ani_no > 1)
+            {
+                for (size_t i = 0; i < 4; ++i)
+                {
+                    auto yVel = random(-0x600, 0);
+                    auto xVel = random(-0x155, 0x155);
+                    createNpc(NPC_Smoke, NPC->x, NPC->y, xVel, yVel);
+                }
+                playSound(SFX_LargeObjectHitGround);
+                viewport.quake = 10;
+            }
+            NPC->act_no = 20;
+            NPC->ani_no = 0;
+            NPC->ani_wait = 0;
+            NPC->bits |= npc_solidHard;
+            NPC->damage = 0;
+        }
+        break;
+
+    default:
+        break;
+    }
+
+    if (NPC->act_no >= 5)
+    {
+        NPC->doGravity(0x80, 0x5FF);
+        NPC->y += NPC->ym;
+    }
 
     NPC->doRects(rcNPC);
 }
