@@ -92,23 +92,20 @@ void switchScreenMode()
 void drawWindow()
 {
 	//Framerate limiter
-	while (true)
+	static uint32_t timePrev;
+	const uint32_t timeNow = SDL_GetTicks();
+	const uint32_t timeNext = timePrev + framerate;
+
+	if (timeNow >= timePrev + 100)
 	{
-		static uint32_t timePrev;
-		const uint32_t timeNow = SDL_GetTicks();
-		const uint32_t timeNext = timePrev + framerate;
+		timePrev = timeNow;	// If the timer is freakishly out of sync, panic and reset it, instead of spamming frames for who-knows how long
+	}
+	else
+	{
+		if (timeNow < timeNext)
+			SDL_Delay(timeNext - timeNow);
 
-		if (timeNow >= timeNext)
-		{
-			if (timeNow < timePrev + 100)
-				timePrev += framerate;
-			else
-				timePrev = timeNow;	// If the timer is freakishly out of sync, panic and reset it, instead of spamming frames for who-knows how long
-									// clownancy that's nice 
-			break;
-		}
-
-		SDL_Delay(timeNext - timeNow);
+		timePrev += framerate;
 	}
 
 	SDL_RenderPresent(renderer);
