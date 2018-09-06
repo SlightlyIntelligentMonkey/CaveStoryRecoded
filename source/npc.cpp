@@ -372,7 +372,6 @@ void npc::animate(int aniWait, int aniStart, int aniMax)
 	}
 }
 
-<<<<<<< HEAD
 void npc::doGravity(int gravity, int maxYVel)
 {
 	this->ym += gravity;
@@ -381,9 +380,6 @@ void npc::doGravity(int gravity, int maxYVel)
 }
 
 void npc::doRects(const vector<RECT>& rcLeft, const vector<RECT>& rcRight)
-=======
-void npc::doRects(const std::vector<RECT>& rcLeft, const std::vector<RECT>& rcRight)
->>>>>>> df147f1649af7f054772842b62e5d59cb39542a7
 {
 	if (!rcRight.empty())
 	{
@@ -428,11 +424,7 @@ bool npc::isPlayerAligned(int xRay, int yRayHigh, int yRayLow)
 		|| this->y + yRayLow <= currentPlayer.y);
 }
 
-<<<<<<< HEAD
-void npc::init(int setCode, int setX, int setY, int setXm, int setYm, int setDir, npc *parentNpc)
-=======
 void npc::init(int setCode, int setX, int setY, int setXm, int setYm, int setDir, npc *parentNpc) 
->>>>>>> df147f1649af7f054772842b62e5d59cb39542a7
 {
 	memset(this, 0, sizeof(*this));
 
@@ -468,11 +460,7 @@ void npc::init(int setCode, int setX, int setY, int setXm, int setYm, int setDir
 	view.bottom = npcTable[code_char].view.bottom << 9;
 }
 
-<<<<<<< HEAD
 void npc::update()
-=======
-void npc::update() 
->>>>>>> df147f1649af7f054772842b62e5d59cb39542a7
 {
 	npcActs[code_char](this);
 

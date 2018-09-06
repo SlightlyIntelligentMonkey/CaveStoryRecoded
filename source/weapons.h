@@ -32,7 +32,7 @@ void initWeapons();
 void actWeapon();
 
 int useWeaponAmmo(int num);
-void giveAmmo(int amount, int ammoToRefill);
+void giveAmmo(int ammoToRefill);
 void giveWeaponAmmo(int amount);
 bool weaponMaxExp() attrPure;
 int weaponBullets(int arms_code) attrPure;

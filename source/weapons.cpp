@@ -127,12 +127,6 @@ void giveAmmo(int ammoToRefill)
 	}
 }
 
-void giveWeaponAmmo(int amount)
-{
-	weapons[selectedWeapon].num += amount;
-	return;
-}
-
 bool weaponMaxExp()
 {
 	return weapons[selectedWeapon].level == 3
