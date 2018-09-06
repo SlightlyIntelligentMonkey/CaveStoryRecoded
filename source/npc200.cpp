@@ -6,6 +6,7 @@
 #include "mathUtils.h"
 #include "caret.h"
 #include "render.h"
+#include "bullet.h"
 
 using std::vector;
 
@@ -125,7 +126,7 @@ void npcAct202(npc * NPC) // Dragon Zombie fire (projectile)
 		NPC->cond = 0;
 		createCaret(NPC->x, NPC->y, effect_RisingDisc);
 	}
-	
+
 	NPC->x += NPC->xm;
 	NPC->y += NPC->ym;
 
@@ -258,7 +259,7 @@ void npcAct204(npc * NPC) // Falling Spike, small
 			NPC->x = NPC->tgt_x - 0x200;
 		else
 			NPC->x = NPC->tgt_x;
-		
+
 		if (NPC->act_wait > 30)
 		{
 			NPC->act_no = falling;
@@ -284,6 +285,81 @@ void npcAct204(npc * NPC) // Falling Spike, small
 	NPC->y += NPC->ym;
 
 	NPC->doRects(rcNPC);
+}
+
+void npcAct205(npc *NPC) // Falling Spike, large
+{
+    vector<RECT> rcNPC = {{112, 80, 128, 112}, {128, 80, 144, 112}};
+
+    switch (NPC->act_no)
+    {
+    case 0:
+        NPC->act_no = 1;
+        NPC->tgt_x = NPC->x;
+        NPC->y += pixelsToUnits(4);
+        // Fallthrough
+    case 1:
+        if (currentPlayer.x > NPC->x - pixelsToUnits(15) && currentPlayer.x < NPC->y + pixelsToUnits(15)
+            && currentPlayer.y < NPC->y)
+            NPC->act_no = 2;
+        break;
+
+    case 2:
+        if (++NPC->act_wait / 6 % 2)
+            NPC->x = NPC->tgt_x - pixelsToUnits(1);
+        else
+            NPC->x = NPC->tgt_x;
+
+        if (NPC->act_wait > 30)
+        {
+            NPC->act_no = 3;
+            NPC->ani_no = 1;
+            NPC->act_wait = 0;
+        }
+        break;
+
+    case 3:
+        NPC->ym += 0x20;
+        if (currentPlayer.y <= NPC->y)
+        {
+            NPC->bits |= npc_solidHard;
+            NPC->damage = 0;
+        }
+        else
+        {
+            NPC->bits &= ~npc_solidHard;
+            NPC->damage = 127;
+        }
+
+        if (++NPC->act_wait <= 8 || !(NPC->flag & 0xFF))
+            break;
+
+        NPC->bits |= npc_solidHard;
+        NPC->act_no = 4;
+        NPC->act_wait = 0;
+        NPC->ym = 0;
+        NPC->damage = 0;
+        playSound(SFX_DestroyBreakableBlock);
+        createSmokeLeft(NPC->x, NPC->y, NPC->view.right, 4);
+        createBullet(bullet_Unused, NPC->x, NPC->y, dirLeft, 0);
+        return;
+
+    case 4:
+        if (++NPC->act_wait > 4)
+        {
+            NPC->act_no = 5;
+            NPC->bits |= npc_shootable;
+        }
+        break;
+
+    default:
+        break;
+    }
+
+    NPC->doGravity(0, 0xC00);
+    NPC->y += NPC->ym;
+
+    NPC->doRects(rcNPC);
 }
 
 void npcAct211(npc *NPC) //Spikes

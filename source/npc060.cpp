@@ -513,7 +513,7 @@ void npcAct063(npc *NPC) // Toroko, panicking
 	// Fallthrough
 	case 1:
 		if (NPC->ym > 0)
-			NPC->bits &= ~npc_ignoresolid;
+			NPC->bits &= ~npc_ignoreSolid;
 
 		if (++NPC->ani_wait > 2)
 		{
@@ -872,7 +872,7 @@ void npcAct067(npc *NPC) //Misery floating
 {
 	RECT rcLeft[8];
 	RECT rcRight[8];
-	
+
 	rcLeft[0] = { 0x50, 0x00, 0x60, 0x10 };
 	rcLeft[1] = { 0x60, 0x00, 0x70, 0x10 };
 	rcLeft[2] = { 0x70, 0x00, 0x80, 0x10 };
@@ -936,7 +936,7 @@ void npcAct067(npc *NPC) //Misery floating
 			playSound(23);
 			NPC->ym = 0;
 			NPC->act_no = 14;
-			NPC->bits |= npc_ignoresolid;
+			NPC->bits |= npc_ignoreSolid;
 			NPC->ani_no = 2;
 		}
 		break;
@@ -960,7 +960,7 @@ void npcAct067(npc *NPC) //Misery floating
 		NPC->act_no = 21;
 		NPC->ani_no = 0;
 		NPC->ym = 0;
-		NPC->bits |= npc_ignoresolid;
+		NPC->bits |= npc_ignoreSolid;
 		//Fallthrough
 	case 21:
 		NPC->ym -= 0x20;

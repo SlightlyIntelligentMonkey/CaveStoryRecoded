@@ -203,7 +203,7 @@ void npcHitMap(size_t NPCid)
 	const int toX = unitsToTiles(NPC->x + rcHit->right + 0x1000);
 	const int toY = unitsToTiles(NPC->y + rcHit->bottom + 0x1000);
 
-	if (!(NPC->bits & npc_ignoresolid))
+	if (!(NPC->bits & npc_ignoreSolid))
 	{
 		for (int currentX = fromX; currentX <= toX; currentX++)
 		{

@@ -5,6 +5,7 @@
 #include "sound.h"
 #include "render.h"
 #include "mathUtils.h"
+#include "game.h"
 
 using std::vector;
 
@@ -93,12 +94,12 @@ void npcAct104(npc *NPC) // Frog (enemy)
 				NPC->direct = dirLeft;
 			else
 				NPC->direct = dirRight;
-			NPC->bits |= npc_ignoresolid;
+			NPC->bits |= npc_ignoreSolid;
 			NPC->ani_no = 2;
 			NPC->act_no = fallingFromCeiling;
 			break;
 		}
-		NPC->act_no &= ~npc_ignoresolid;
+		NPC->act_no &= ~npc_ignoreSolid;
 		// Fallthrough
 	case standing:
 		++NPC->act_wait;
@@ -120,7 +121,7 @@ void npcAct104(npc *NPC) // Frog (enemy)
 
 	case fallingFromCeiling:
 		if (++NPC->act_wait > 40)
-			NPC->bits &= ~npc_ignoresolid;
+			NPC->bits &= ~npc_ignoreSolid;
 
 		if (NPC->flag & ground)
 		{
@@ -359,6 +360,67 @@ void npcAct112(npc *NPC) //Quote teleport in
 		if (NPC->act_wait / 2 & 1)
 			++NPC->rect.left;
 	}
+}
+
+void npcAct114(npc *NPC) // Press (enemy)
+{
+    vector<RECT> rcNPC = {{144, 112, 160, 136}, {160, 112, 176, 136}, {176, 112, 192, 136}};
+
+    switch (NPC->act_no)
+    {
+    case 0:
+        NPC->act_no = 1;
+        NPC->y -= pixelsToUnits(4);
+        // Fallthrough
+    case 1:
+        if (!(NPC->flag & ground))
+        {
+            NPC->act_no = 10;
+            NPC->act_wait = 8;
+            NPC->ani_no = 1;
+        }
+        break;
+
+    case 10:
+        NPC->animate(2, 2, 2);
+
+        if (currentPlayer.y <= NPC->y)
+        {
+            NPC->bits |= npc_solidHard;
+            NPC->damage = 0;
+        }
+        else
+        {
+            NPC->bits &= ~npc_solidHard;
+            NPC->damage = 127;
+        }
+        if (NPC->flag & ground)
+        {
+            if (NPC->ani_no > 1)
+            {
+                for (int i = 0; i < 4; ++i)
+                {
+                    auto xVel = random(-0x600, 0);
+                    auto yVel = random(-0x155, 0x155);
+                    createNpc(NPC_Smoke, NPC->x, NPC->y, xVel, yVel);
+                }
+                playSound(SFX_LargeObjectHitGround);
+                viewport.quake = 10;
+            }
+            NPC->act_no = 1;
+            NPC->ani_no = 0;
+            NPC->damage = 0;
+            NPC->bits |= npc_solidHard;
+        }
+
+    default:
+        break;
+    }
+
+    NPC->doGravity(0x20, 0x5FF);
+    NPC->y += NPC->ym;
+
+    NPC->doRects(rcNPC);
 }
 
 void npcAct117(npc *NPC)

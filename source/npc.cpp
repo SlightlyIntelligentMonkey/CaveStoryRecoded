@@ -247,7 +247,7 @@ void killNpc(npc *NPC, bool bVanish)
 	const int exp = NPC->exp;
 
 	//Destroy npc
-	if (!(NPC->bits & npc_showdamage))
+	if (!(NPC->bits & npc_showDamage))
 	{
 		NPC->cond = 0;
 	}
@@ -424,7 +424,7 @@ bool npc::isPlayerAligned(int xRay, int yRayHigh, int yRayLow)
 		|| this->y + yRayLow <= currentPlayer.y);
 }
 
-void npc::init(int setCode, int setX, int setY, int setXm, int setYm, int setDir, npc *parentNpc) 
+void npc::init(int setCode, int setX, int setY, int setXm, int setYm, int setDir, npc *parentNpc)
 {
 	memset(this, 0, sizeof(*this));
 
@@ -480,7 +480,7 @@ void npc::draw()
 		}
 		else
 		{
-			if ((bits & npc_showdamage) != 0 && damage_view)
+			if ((bits & npc_showDamage) != 0 && damage_view)
 			{
 				createValueView(&x, &y, damage_view);
 				damage_view = 0;

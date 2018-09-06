@@ -17,7 +17,7 @@ void npcActNone(npc *NPC)
 {
 	NPC->surf = 0x27;
 	NPC->rect = { 0, 0, NPC->view.left >> 8, NPC->view.top >> 8 };
-  
+
 	if (debugFlags & notifyOnNotImplemented)
 	{
 		static bool wasNotifiedAbout[_countof(npcActs)] = { 0 };
@@ -842,8 +842,8 @@ void npcAct009(npc *NPC) //Balrog drop in
 		//Go through ceiling for the first 40 frames of existing, then become solid
 		if (NPC->count1 >= 40)
 		{
-			NPC->bits &= ~npc_ignoresolid;
-			NPC->bits |= npc_solidsoft;
+			NPC->bits &= ~npc_ignoreSolid;
+			NPC->bits |= npc_solidSoft;
 		}
 		else
 			++NPC->count1;
@@ -1019,7 +1019,7 @@ void npcAct012(npc *NPC) //Balrog cutscene
 			NPC->act_wait = 0;
 			NPC->ani_no = 3;
 			NPC->ym = -0x800;
-			NPC->bits |= npc_ignoresolid;
+			NPC->bits |= npc_ignoreSolid;
 		}
 		break;
 
@@ -1293,7 +1293,7 @@ void npcAct014(npc * NPC) // Santa's Key
 	NPC->ym += 0x40;
 	if (NPC->ym > 0x5FF)
 		NPC->ym = 0x5FF;
-	
+
 	NPC->y += NPC->ym;
 
 	NPC->rect = rcNPC[NPC->ani_no];

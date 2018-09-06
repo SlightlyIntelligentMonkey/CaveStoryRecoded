@@ -472,7 +472,7 @@ void bulletHitNpcs()
 								}
 
 								//Add to valueview damage
-								if (npcs[n].bits & npc_showdamage)
+								if (npcs[n].bits & npc_showDamage)
 									npcs[n].damage_view -= bul->damage;
 							}
 							else
@@ -485,11 +485,11 @@ void bulletHitNpcs()
 									bossLife.flag = 0;
 
 								//Add to valueview damage
-								if (npcs[n].bits & npc_showdamage)
+								if (npcs[n].bits & npc_showDamage)
 									npcs[n].damage_view -= bul->damage;
 
 								//Either run event if the run event on death flag's set, or die
-								if (currentPlayer.cond & 0x80 && npcs[n].bits & npc_eventdie)
+								if (currentPlayer.cond & 0x80 && npcs[n].bits & npc_eventDie)
 									startTscEvent(npcs[n].code_event);
 								else
 									npcs[n].cond |= 8u;

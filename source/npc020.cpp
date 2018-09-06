@@ -188,7 +188,7 @@ void npcAct026(npc * NPC) // Bat, Black Circling (enemy)
 				NPC->xm /= 2;
 				NPC->ym = 0;
 				NPC->act_no = diveAttack;
-				NPC->bits &= ~npc_ignoresolid;
+				NPC->bits &= ~npc_ignoreSolid;
 			}
 		}
 		else
@@ -204,7 +204,7 @@ void npcAct026(npc * NPC) // Bat, Black Circling (enemy)
 			NPC->xm *= 2;
 			NPC->count1 = 0;
 			NPC->act_no = circleAroundTarget;
-			NPC->bits |= npc_ignoresolid;
+			NPC->bits |= npc_ignoreSolid;
 		}
 		break;
 
@@ -473,7 +473,7 @@ void npcAct038(npc * NPC)
 	}
 	if (NPC->ani_no > 3)
 		NPC->ani_no = 0;
-	
+
 	NPC->rect = rcNPC[NPC->ani_no];
 }
 

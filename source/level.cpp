@@ -67,7 +67,7 @@ void loadStageTable()
 	}
 }
 
-uint8_t getTileAttribute(int x, int y) 
+uint8_t getTileAttribute(int x, int y)
 {
 	if (x >= 0 && x < levelWidth && y >= 0 && y < levelHeight)
 		return levelTileAttributes[levelMap[x + y * levelWidth]];
@@ -75,12 +75,12 @@ uint8_t getTileAttribute(int x, int y)
 	return 0;
 }
 
-void deleteTile(int x, int y) 
+void deleteTile(int x, int y)
 {
 	levelMap[x + y * levelWidth] = 0;
 }
 
-void shiftTile(int x, int y) 
+void shiftTile(int x, int y)
 {
 	--levelMap[x + y * levelWidth];
 }
@@ -167,10 +167,10 @@ void loadLevel(int levelIndex)
 	{
 		const int offset = (i * 12) + 8;
 
-		if (readLEshort(pxe, offset + 10) & npc_appearset && !(getFlag(readLEshort(pxe, offset + 4))))
+		if (readLEshort(pxe, offset + 10) & npc_appearSet && !(getFlag(readLEshort(pxe, offset + 4))))
 			continue;
 
-		if (readLEshort(pxe, offset + 10) & npc_hideset && getFlag(readLEshort(pxe, offset + 4)))
+		if (readLEshort(pxe, offset + 10) & npc_hideSet && getFlag(readLEshort(pxe, offset + 4)))
 			continue;
 
 		npc newNPC;
@@ -180,7 +180,7 @@ void loadLevel(int levelIndex)
 		newNPC.code_flag = readLEshort(pxe, offset + 4);
 		newNPC.bits |= readLEshort(pxe, offset + 10);
 
-		if (readLEshort(pxe, offset + 10) & npc_altdir)
+		if (readLEshort(pxe, offset + 10) & npc_altDir)
 			newNPC.direct = dirRight;
 
 		npcs.push_back(newNPC);
@@ -280,7 +280,7 @@ void drawLevel(bool foreground)
 			}
 
 			break;
-        
+
 			case 5:
 				for (int x = -(backgroundEffect / 0x200 % w); x < screenWidth; x += w)
 				{
@@ -290,7 +290,7 @@ void drawLevel(bool foreground)
 
 				break;
 
-			case 6: 
+			case 6:
       case 7:
 				//Draw sky
 				rect = { 0, 0, w / 2, 88 };

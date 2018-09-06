@@ -158,7 +158,7 @@ void npcAct224(npc *NPC) // Chie
     NPC->doRects(rcLeft, rcRight);
 }
 
-void npcAct225(npc *NPC)
+void npcAct225(npc *NPC) // Megane
 {
 	vector<RECT> rcLeft = {{64, 64, 80, 80}, {80, 64, 96, 80}};
 	vector<RECT> rcRight = {{64, 80, 80, 96}, {80, 80, 96, 96}};
@@ -205,6 +205,79 @@ void npcAct225(npc *NPC)
 	}
 
 	NPC->doRects(rcLeft, rcRight);
+}
+
+void npcAct226(npc *NPC) // Kanpachi, standing
+{
+    vector<RECT> rcNPC(7);
+
+    rcNPC[0] = {256, 56, 272, 80};
+    rcNPC[1] = {272, 56, 288, 80};
+    rcNPC[2] = {288, 56, 304, 80};
+    rcNPC[3] = rcNPC[0];
+    rcNPC[4] = {304, 56, 320, 80};
+    rcNPC[5] = rcNPC[0];
+    rcNPC[6] = {240, 56, 256, 80};
+
+    enum
+    {
+        init = 0,
+        stand = 1,
+        blinking = 2,
+        startWalk = 10,
+        walking = 11,
+        enterDoor = 20,
+    };
+
+    switch (NPC->act_no)
+    {
+    case init:
+        NPC->act_no = stand;
+        NPC->ani_no = 0;
+        NPC->ani_wait = 0;
+        NPC->xm = 0;
+        // Fallthrough
+    case stand:
+        if (!random(0, 60))
+        {
+            NPC->act_no = blinking;
+            NPC->act_wait = 0;
+            NPC->ani_no = 1;
+        }
+        break;
+
+    case blinking:
+        if (++NPC->act_wait > 8)
+        {
+            NPC->act_no = 1;
+            NPC->ani_no = 0;
+        }
+        break;
+
+    case startWalk:
+        NPC->act_no = walking;
+        NPC->ani_no = 2;
+        NPC->ani_wait = 0;
+        // Fallthrough
+    case walking:
+        NPC->xm = 0x200;
+        NPC->animate(4, 2, 5);
+        ++NPC->act_wait;
+        break;
+
+    case enterDoor:
+        NPC->xm = 0;
+        NPC->ani_no = 6;
+        break;
+
+    default:
+        break;
+    }
+    NPC->doGravity(0x20, 0x5FF);
+    NPC->x += NPC->xm;
+    NPC->y += NPC->ym;
+
+    NPC->doRects(rcNPC);
 }
 
 void npcAct227(npc *NPC) // Bucket
@@ -347,6 +420,51 @@ void npcAct231(npc *NPC) //Momorin's rocket
 	NPC->y += NPC->ym;
 
 	NPC->rect = rcNPC[NPC->ani_no];
+}
+
+void npcAct232(npc *NPC) // Orangebell (enemy)
+{
+    switch (NPC->act_no)
+    {
+    case 0:
+        NPC->act_no = 1;
+        NPC->tgt_x = NPC->x;
+        NPC->tgt_y = NPC->y;
+        NPC->ym = 0x200;
+        for (size_t i = 0; i < 8; i++)
+            createNpc(NPC_EnemyOrangeBellBat, NPC->x, NPC->y, 0, 0, NPC->direct, NPC);
+        // Fallthrough
+    case 1:
+        if (NPC->xm < 0 && NPC->flag & leftWall)
+            NPC->direct = dirRight;
+        else if (NPC->xm > 0 && NPC->flag & rightWall)
+            NPC->direct = dirLeft;
+
+        NPC->moveTowardsPlayer(0x100);
+
+        if (NPC->y >= NPC->tgt_y)
+            NPC->ym -= 8;
+        else
+            NPC->ym += 8;
+
+        if (NPC->ym > 0x200)
+            NPC->ym = 0x200;
+        else if (NPC->ym < -0x200)
+            NPC->ym = -0x200;
+
+        NPC->animate(5, 0, 2);
+        break;
+
+    default:
+        break;
+    }
+
+    NPC->x += NPC->xm;
+    NPC->y += NPC->ym;
+
+    vector<RECT> rcLeft = {{128, 0, 160, 32}, {160, 0, 192, 32}, {192, 0, 224, 32}};
+    vector<RECT> rcRight = {{128, 32, 160, 64}, {160, 32, 192, 64}, {192, 32, 224, 64}};
+    NPC->doRects(rcLeft, rcRight);
 }
 
 void npcAct234(npc * NPC) // Red Flowers, picked
