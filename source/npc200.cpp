@@ -362,6 +362,11 @@ void npcAct205(npc *NPC) // Falling Spike, large
 	NPC->doRects(rcNPC);
 }
 
+void npcAct210(npc *NPC) // Beetle, Follow Aqua (enemy)
+{
+
+}
+
 void npcAct211(npc *NPC) //Spikes
 {
 	RECT rcNPC[4];

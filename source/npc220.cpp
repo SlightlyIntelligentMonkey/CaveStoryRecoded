@@ -5,6 +5,7 @@
 #include "sound.h"
 #include "mathUtils.h"
 #include "caret.h"
+#include "render.h"
 
 using std::vector;
 
@@ -283,6 +284,78 @@ void npcAct226(npc *NPC) // Kanpachi, standing
 void npcAct227(npc *NPC) // Bucket
 {
 	NPC->rect = { 208, 32, 224, 48 };
+}
+
+void npcAct228(npc *NPC) // Droll, guarding
+{
+    vector<RECT> rcLeft = {{0, 0, 32, 40}, {32, 0, 64, 40}, {64, 0, 96, 40}, {96, 0, 128, 40}};
+    vector<RECT> rcRight = {{0, 40, 32, 80}, {32, 40, 64, 80}, {64, 40, 96, 80}, {96, 40, 128, 80}};
+
+    enum
+    {
+        init = 0,
+        startCrouch = 10,
+        crouching = 11,
+        jumping = 12,
+        landed = 13,
+    };
+
+    switch (NPC->act_no)
+    {
+    case init:
+        NPC->act_no = 1;
+        NPC->y -= pixelsToUnits(8);
+        // Fallthrough
+    case 1:
+        NPC->xm = 0;
+        NPC->act_no = 2;
+        NPC->ani_no = 0;
+        // Fallthrough
+    case 2:
+        NPC->facePlayer();
+        NPC->animate(50, 0, 1);
+        break;
+
+    case startCrouch:
+        NPC->act_no = crouching;
+        NPC->ani_no = 2;
+        NPC->act_wait = 0;
+        // Fallthrough
+    case crouching:
+        if (++NPC->act_wait > 10)
+        {
+            NPC->act_no = jumping;
+            NPC->ani_no = 3;
+            NPC->ym = -0x600;
+            NPC->moveInDir(0x200);
+        }
+        break;
+
+    case jumping:
+        if (NPC->flag & ground)
+        {
+            NPC->ani_no = 2;
+            NPC->act_no = landed;
+            NPC->act_wait = 0;
+        }
+        break;
+
+    case landed:
+        NPC->xm /= 2;
+        if (++NPC->act_wait > 10)
+            NPC->act_no = 1;
+        break;
+
+    default:
+        break;
+    }
+
+    NPC->doGravity(0x40, 0x5FF);
+
+    NPC->x += NPC->xm;
+    NPC->y += NPC->ym;
+
+    NPC->doRects(rcLeft, rcRight);
 }
 
 void npcAct229(npc *NPC) // Red Flowers, small

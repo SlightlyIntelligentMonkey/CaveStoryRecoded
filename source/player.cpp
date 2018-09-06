@@ -16,7 +16,7 @@ using std::memset;
 
 player currentPlayer;
 
-void player::init() 
+void player::init()
 {
 	memset(this, 0, sizeof(*this));
 	cond = player_visible;
@@ -35,7 +35,7 @@ void player::init()
 	max_life = 3;
 }
 
-void player::setPos(int setX, int setY) 
+void player::setPos(int setX, int setY)
 {
 	x = setX;
 	y = setY;
@@ -672,7 +672,7 @@ void player::actStream(bool bKey)
 	y += ym;
 }
 
-void player::animate(bool bKey) 
+void player::animate(bool bKey)
 {
 	RECT rcLeft[12];
 	RECT rcRight[12];

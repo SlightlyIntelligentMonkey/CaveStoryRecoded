@@ -249,7 +249,7 @@ npcAct npcActs[361] =
 	&npcAct225,
 	&npcAct226,
 	&npcAct227,
-	&npcActNone,
+	&npcAct228,
 	&npcAct229,
 	&npcAct230,
 	&npcAct231,
