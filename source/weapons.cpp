@@ -24,12 +24,12 @@ weaponShoot shootFunctions[14] =
 	&shootMachineGun,
 	&shootMissile,
 	static_cast<weaponShoot>(nullptr),
+	&pewBubble,
 	static_cast<weaponShoot>(nullptr),
+	&throwBlade,
+	&launchSuperMissile,
 	static_cast<weaponShoot>(nullptr),
-	static_cast<weaponShoot>(nullptr),
-	static_cast<weaponShoot>(nullptr),
-	static_cast<weaponShoot>(nullptr),
-	static_cast<weaponShoot>(nullptr),
+	&shootNemesis,
 	&shootSpur,
 };
 
@@ -127,7 +127,7 @@ void giveAmmo(int ammoToRefill)
 	}
 }
 
-bool weaponMaxExp() 
+bool weaponMaxExp()
 {
 	return weapons[selectedWeapon].level == 3
 	       && weapons[selectedWeapon].exp >= weaponLevels[weapons[selectedWeapon].code].exp[2];

@@ -16,8 +16,6 @@ struct BULLETSTATS
 	int blockYL;
 
 	RECT view;
-
-	int weapon;
 };
 
 class bullet
@@ -63,7 +61,7 @@ public:
 	int weapon;
   
 public:
-	void init(int setCode, int setX, int setY, uint8_t setDir);
+	void init(int setCode, int setX, int setY, uint8_t setDir, int weaponId);
 
 	void update();
 	void draw();

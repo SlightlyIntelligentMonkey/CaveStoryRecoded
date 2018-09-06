@@ -9,12 +9,25 @@ LINK_CPP := $(CXX) -m32 $(OPTIMISATIONS) $(WARNINGS) -static -static-libstdc++ -
 LINK_C := $(CC) -m32 $(OPTIMISATIONS) $(WARNINGS) -static -static-libstdc++ -static-libgcc -mwindows
 # Remove -mwindows for Unix build
 
-MAIN := bullet bulletCollision caret fade filesystem fireball fireballShoot flags game hud 
-MAIN += input inventory level loadConfig machineGun machineGunShoot main mapSystem mathUtils missile missileShoot
-MAIN += npc npcAct npcCollision org player playerCollision polarStar polarStarShoot
-MAIN += render script snake snakeShoot sound spur spurShoot stageSelect stdUtils valueview weapons
-
-MAIN += npc000 npc020 npc040 npc060 npc080 npc100 npc120 npc140 npc160 npc180 npc200 npc220 npc240 npc260 npc280 npc300 npc320 npc340
+MAIN := main
+# states
+MAIN += game
+# modules
+MAIN += filesystem flags input inventory level loadConfig mapSystem mathUtils script stageSelect stdUtils
+# collision
+MAIN += bulletCollision npcCollision playerCollision
+# drawing
+MAIN += fade hud render
+# sound
+MAIN +=	org sound
+# classes
+MAIN += bullet caret npc player weapons valueview
+# weapon acts
+MAIN += bladeThrow bubblePew fireballShoot machineGunShoot missileShoot nemesisShoot polarStarShoot snakeShoot spurShoot
+# bullet acts
+MAIN += blade bubbler fireball missile polarStar machineGun misc nemesis snake spur
+# npc acts
+MAIN += npcAct npc000 npc020 npc040 npc060 npc080 npc100 npc120 npc140 npc160 npc180 npc200 npc220 npc240 npc260 npc280 npc300 npc320 npc340
 
 OBJS := $(addprefix obj/, $(addsuffix .o, $(MAIN)))
 
@@ -34,4 +47,4 @@ obj/%.o: source/%.cpp
 # cleanup
 
 clean:
-	rm -rf obj bin
+	rm -rf obj bin/CaveStoryRemake

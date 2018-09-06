@@ -231,7 +231,28 @@
     <ClCompile Include="mapSystem.cpp">
       <Filter>Source Files\states</Filter>
     </ClCompile>
+    <ClCompile Include="misc.cpp">
+      <Filter>Source Files\classes\bullet\act</Filter>
+    </ClCompile>
+    <ClCompile Include="nemesis.cpp">
+      <Filter>Source Files\classes\bullet\act</Filter>
+    </ClCompile>
+    <ClCompile Include="bladeThrow.cpp">
+      <Filter>Source Files\classes\weapons\shoot</Filter>
+    </ClCompile>
+    <ClCompile Include="bubblePew.cpp">
+      <Filter>Source Files\classes\weapons\shoot</Filter>
+    </ClCompile>
     <ClCompile Include="missileShoot.cpp">
+      <Filter>Source Files\classes\weapons\shoot</Filter>
+    </ClCompile>
+    <ClCompile Include="blade.cpp">
+      <Filter>Source Files\classes\bullet\act</Filter>
+    </ClCompile>
+    <ClCompile Include="bubbler.cpp">
+      <Filter>Source Files\classes\bullet\act</Filter>
+    </ClCompile>
+    <ClCompile Include="nemesisShoot.cpp">
       <Filter>Source Files\classes\weapons\shoot</Filter>
     </ClCompile>
   </ItemGroup>
@@ -387,6 +408,18 @@
       <Filter>Source Files\classes\bullet\act</Filter>
     </ClInclude>
     <ClInclude Include="machineGun.h">
+      <Filter>Source Files\classes\bullet\act</Filter>
+    </ClInclude>
+    <ClInclude Include="misc.h">
+      <Filter>Source Files\classes\bullet\act</Filter>
+    </ClInclude>
+    <ClInclude Include="nemesis.h">
+      <Filter>Source Files\classes\bullet\act</Filter>
+    </ClInclude>
+    <ClInclude Include="blade.h">
+      <Filter>Source Files\classes\bullet\act</Filter>
+    </ClInclude>
+    <ClInclude Include="bubbler.h">
       <Filter>Source Files\classes\bullet\act</Filter>
     </ClInclude>
   </ItemGroup>

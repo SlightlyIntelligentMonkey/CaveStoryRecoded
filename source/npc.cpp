@@ -424,7 +424,7 @@ bool npc::isPlayerAligned(int xRay, int yRayHigh, int yRayLow)
 		|| this->y + yRayLow <= currentPlayer.y);
 }
 
-void npc::init(int setCode, int setX, int setY, int setXm, int setYm, int setDir, npc *parentNpc)
+void npc::init(int setCode, int setX, int setY, int setXm, int setYm, int setDir, npc *parentNpc) 
 {
 	memset(this, 0, sizeof(*this));
 
