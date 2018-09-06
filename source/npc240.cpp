@@ -228,6 +228,11 @@ void npcAct255(npc *NPC) // Helicopter Blades
     NPC->doRects(rcLeft, rcRight);
 }
 
+void npcAct258(npc *NPC) // Mimiga, sleeping
+{
+    NPC->doRects({{48, 32, 64, 48}});
+}
+
 void npcAct259(npc *NPC) // Sleeping mimiga
 {
 	NPC->rect = { 48, 32, 64, 48 };
