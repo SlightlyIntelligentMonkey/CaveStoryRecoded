@@ -466,6 +466,107 @@ void npcAct211(npc *NPC) //Spikes
 	NPC->rect = rcNPC[NPC->code_event];
 }
 
+void npcAct215(npc *NPC) // Sandcroc, White (enemy)
+{
+    enum
+    {
+        init = 0,
+        waitInSand = 1,
+        startAttack = 15,
+        attacking = 20,
+        waitOutOfSand = 30,
+        goBackIntoSand = 40,
+        wait2SecsInSand = 50,
+    };
+
+    switch (NPC->act_no)
+    {
+    case init:
+        NPC->ani_no = 0;
+        NPC->act_no = waitInSand;
+        NPC->act_wait = 0;
+        NPC->tgt_y = NPC->y;
+        NPC->bits &= ~npc_shootable;
+        NPC->bits &= ~npc_invulnerable;
+        NPC->bits &= ~npc_solidSoft;
+        NPC->bits &= ~npc_ignoreSolid;
+        // Fallthrough
+    case waitInSand:
+        if (NPC->isPlayerWithinDistance(0x1800, 0, 0x1000))
+        {
+            NPC->act_no = startAttack;
+            NPC->act_wait = 0;
+        }
+        break;
+
+    case startAttack:
+        if (++NPC->act_wait > 10)
+        {
+            playSound(SFX_SandCroc);
+            NPC->act_no = attacking;
+        }
+        break;
+
+    case attacking:
+        if (++NPC->ani_wait > 3)
+        {
+            ++NPC->ani_no;
+            NPC->ani_wait = 0;
+        }
+        if (NPC->ani_no == 3)
+            NPC->damage = 15;
+        if (NPC->ani_no == 4)
+        {
+            NPC->bits |= npc_shootable;
+            NPC->act_no = waitOutOfSand;
+            NPC->act_wait = 0;
+        }
+        break;
+
+    case waitOutOfSand:
+        NPC->bits |= npc_solidSoft;
+        NPC->damage = 0;
+        ++NPC->act_wait;
+
+        if (NPC->shock)
+        {
+            NPC->act_no = goBackIntoSand;
+            NPC->act_wait = 0;
+        }
+        break;
+
+    case goBackIntoSand:
+        NPC->bits |= npc_ignoreSolid;
+        NPC->y += pixelsToUnits(1);
+        if (++NPC->act_wait == 0x20)
+        {
+            NPC->bits &= ~npc_solidSoft;
+            NPC->bits &= ~npc_shootable;
+            NPC->act_no = wait2SecsInSand;
+            NPC->act_wait = 0;
+        }
+        break;
+
+    case wait2SecsInSand:
+        if (NPC->act_wait >= 100)
+        {
+            NPC->y = NPC->tgt_y;
+            NPC->ani_no = 0;
+            NPC->act_no = init;
+        }
+        else
+            ++NPC->act_wait;
+        break;
+
+    default:
+        break;
+    }
+
+    vector<RECT> rcNPC = {{0, 0, 0, 0}, {0, 96, 48, 128}, {48, 96, 96, 128}, {96, 96, 144, 128}, {144, 96, 192, 128}};
+
+    NPC->doRects(rcNPC);
+}
+
 void npcAct216(npc *NPC) // Debug cat
 {
 	NPC->rect = { 256, 192, 272, 216 };
