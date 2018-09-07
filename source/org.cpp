@@ -211,15 +211,15 @@ void noteAlloc(uint16_t alloc)
 {
 	for (int j = 0; j < 16; j++) {
 		org.tdata[j].wave_no = 0;
-		org.tdata[j].note_list = NULL;
+		org.tdata[j].note_list = nullptr;
 		org.tdata[j].note_p = new NOTELIST[alloc];
 
-		if (org.tdata[j].note_p == NULL)
+		if (org.tdata[j].note_p == nullptr)
 			return;
 
 		for (int i = 0; i < alloc; i++) {
-			(org.tdata[j].note_p + i)->from = NULL;
-			(org.tdata[j].note_p + i)->to = NULL;
+			(org.tdata[j].note_p + i)->from = nullptr;
+			(org.tdata[j].note_p + i)->to = nullptr;
 			(org.tdata[j].note_p + i)->length = 0;
 			(org.tdata[j].note_p + i)->pan = 0xFF;
 			(org.tdata[j].note_p + i)->volume = 0xFF;
@@ -232,22 +232,22 @@ void noteAlloc(uint16_t alloc)
 void releaseNote(void)
 {
 	for (int i = 0; i < 16; i++) {
-		if (org.tdata[i].note_p != NULL)
+		if (org.tdata[i].note_p != nullptr)
 			delete org.tdata[i].note_p;
 	}
 }
 
 //Load wave100
-char *wave_data = NULL;
+char *wave_data = nullptr;
 
 bool loadWave100()
 {
 	//Allocate data
-	if (wave_data == NULL)
+	if (wave_data == nullptr)
 		wave_data = (char *)malloc(0x100 * 100);
 
 	FILE *fp;
-	if ((fp = fopen("data/Wave100.dat", "rb")) == NULL)
+	if ((fp = fopen("data/Wave100.dat", "rb")) == nullptr)
 		return false;
 
 	fread(wave_data, sizeof(char), 0x100 * 100, fp);
@@ -262,7 +262,7 @@ bool deleteWave100()
 }
 
 //Make Organya Wave
-void releaseOrganyaObject(char track) {
+void releaseOrganyaObject(uint8_t track) {
 	for (int i = 0; i < 8; i++) {
 		for (int j = 0; j < 2; j++)
 		{
@@ -275,7 +275,7 @@ void releaseOrganyaObject(char track) {
 	memset(orgWaves[track], 0, sizeof(orgWaves[track]));
 }
 
-bool makeSoundObject8(char *wavep, char track, char pipi)
+bool makeSoundObject8(char *wavep, uint8_t track, char pipi)
 {
 	size_t i, j, k;
 	size_t wave_size;
@@ -313,7 +313,7 @@ bool makeSoundObject8(char *wavep, char track, char pipi)
 	return true;
 }
 
-bool makeOrganyaWave(char track, char wave_no, char pipi)
+bool makeOrganyaWave(uint8_t track, uint8_t wave_no, char pipi)
 {
 	if (wave_no >= 100)
 		return false;
@@ -324,7 +324,7 @@ bool makeOrganyaWave(char track, char wave_no, char pipi)
 
 
 //Init drum object
-void releaseDrumObject(char track) {
+void releaseDrumObject(uint8_t track) {
 	if (orgDrums[track].wave)
 		free(orgDrums[track].wave);
 	memset(&orgDrums[track], 0, sizeof(DRUM));
@@ -369,7 +369,7 @@ void initOrganya()
 //Play melody functions
 double freq_tbl[12] = { 261.62556530060, 277.18263097687, 293.66476791741, 311.12698372208, 329.62755691287, 349.22823143300, 369.99442271163, 391.99543598175, 415.30469757995, 440.00000000000, 466.16376151809, 493.88330125612 };
 
-void changeOrganFrequency(unsigned char key, char track, int32_t a)
+void changeOrganFrequency(unsigned char key, uint8_t track, int32_t a)
 {
 	double tmpDouble;
 	for (int j = 0; j < 8; j++)
@@ -386,7 +386,7 @@ unsigned char old_key[16] = { 255,255,255,255,255,255,255,255 };
 unsigned char key_on[16] = { 0 };
 unsigned char key_twin[16] = { 0 };
 
-void changeOrganPan(unsigned char key, unsigned char pan, char track)
+void changeOrganPan(unsigned char key, unsigned char pan, uint8_t track)
 {
 	if (old_key[track] != 0xFF)
 	{
@@ -404,13 +404,13 @@ void changeOrganPan(unsigned char key, unsigned char pan, char track)
 }
 
 constexpr long double orgVolumeMin = 0.04;
-void changeOrganVolume(int no, long volume, char track)
+void changeOrganVolume(int no, long volume, uint8_t track)
 {
 	if (old_key[track] != 0xFF)
 		orgWaves[track][old_key[track] / 12][key_twin[track]].volume = orgVolumeMin + ((long double)volume / 255.0f * (1.0 - orgVolumeMin));
 }
 
-void playOrganObject(unsigned char key, int play_mode, char track, int32_t freq)
+void playOrganObject(unsigned char key, int play_mode, uint8_t track, int32_t freq)
 {
 	switch (play_mode) {
 	case 0: //Stop
@@ -462,7 +462,7 @@ void playOrganObject(unsigned char key, int play_mode, char track, int32_t freq)
 	}
 }
 
-void playOrganObject2(unsigned char key, int play_mode, char track, int32_t freq)
+void playOrganObject2(unsigned char key, int play_mode, uint8_t track, int32_t freq)
 {
 	switch (play_mode) {
 	case 0: //Stop
@@ -510,12 +510,12 @@ void playOrganObject2(unsigned char key, int play_mode, char track, int32_t freq
 }
 
 //Play drum functions
-void changeDrumFrequency(unsigned char key, char track)
+void changeDrumFrequency(unsigned char key, uint8_t track)
 {
 	orgDrums[track].freq = key * 800 + 100;
 }
 
-void changeDrumPan(unsigned char pan, char track)
+void changeDrumPan(unsigned char pan, uint8_t track)
 {
 	orgDrums[track].volume_l = 1.0f;
 	orgDrums[track].volume_r = 1.0f;
@@ -529,12 +529,12 @@ void changeDrumPan(unsigned char pan, char track)
 	if (orgDrums[track].volume_r > 1.0f) orgDrums[track].volume_r = 1.0f;
 }
 
-void changeDrumVolume(long volume, char track)
+void changeDrumVolume(long volume, uint8_t track)
 {
 	orgDrums[track].volume = orgVolumeMin + ((long double)volume / 255.0f * (1.0 - orgVolumeMin));
 }
 
-void playDrumObject(uint8_t key, int play_mode, char track)
+void playDrumObject(uint8_t key, int play_mode, uint8_t track)
 {
 	switch (play_mode) {
 	case 0: //Stop
@@ -556,14 +556,14 @@ void playDrumObject(uint8_t key, int play_mode, char track)
 //Playing functions
 long play_p; //Current playback position
 NOTELIST *play_np[16]; //Currently ready to play notes
-long now_leng[8] = { NULL };
+long now_leng[8] = { 0 };
 
 void setPlayPointer(int32_t x)
 {
 	for (int i = 0; i < 16; i++) {
 		play_np[i] = org.tdata[i].note_list;
 
-		while (play_np[i] != NULL && play_np[i]->x < x)
+		while (play_np[i] != nullptr && play_np[i]->x < x)
 			play_np[i] = play_np[i]->to; //Set notes to watch	
 	}
 
@@ -575,7 +575,7 @@ void playData()
 	//Melody
 	for (int i = 0; i < 8; i++)
 	{
-		if (play_np[i] != NULL && play_p == play_np[i]->x)
+		if (play_np[i] != nullptr && play_p == play_np[i]->x)
 		{
 			if (play_np[i]->y != 0xFF) {
 				if (org.tdata[i].pipi)
@@ -597,9 +597,9 @@ void playData()
 		if (now_leng[i] == 0)
 		{
 			if (org.tdata[i].pipi)
-				playOrganObject2(NULL, 2, i, org.tdata[i].freq);
+				playOrganObject2(0, 2, i, org.tdata[i].freq);
 			else
-				playOrganObject(NULL, 2, i, org.tdata[i].freq);
+				playOrganObject(0, 2, i, org.tdata[i].freq);
 		}
 
 		if (now_leng[i] > 0)
@@ -609,7 +609,7 @@ void playData()
 	//Drums
 	for (int i = 8; i < 16; i++)
 	{
-		if (play_np[i] != NULL && play_p == play_np[i]->x)
+		if (play_np[i] != nullptr && play_p == play_np[i]->x)
 		{
 			if (play_np[i]->y != 0xFF)
 				playDrumObject(play_np[i]->y, 1, i - 8);
@@ -692,14 +692,14 @@ void loadOrganya(const char *name)
 	for (int j = 0; j < 16; j++) {
 		//The first note from is NULL
 		if (org.tdata[j].note_num == 0) {
-			org.tdata[j].note_list = NULL;
+			org.tdata[j].note_list = nullptr;
 			continue;
 		}
 
 		//Make note list
 		np = org.tdata[j].note_p;
 		org.tdata[j].note_list = org.tdata[j].note_p;
-		np->from = NULL;
+		np->from = nullptr;
 		np->to = (np + 1);
 		np++;
 
@@ -711,7 +711,7 @@ void loadOrganya(const char *name)
 
 		//The last note to is NULL
 		np--;
-		np->to = NULL;
+		np->to = nullptr;
 
 		//Set note properties
 		np = org.tdata[j].note_p; //X position

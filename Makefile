@@ -20,7 +20,7 @@ MAIN += bulletCollision npcCollision playerCollision
 # drawing
 MAIN += fade hud render
 # sound
-MAIN +=	org sound
+MAIN +=	org pxt sound
 # classes
 MAIN += bullet caret npc player weapons valueview
 # weapon acts
