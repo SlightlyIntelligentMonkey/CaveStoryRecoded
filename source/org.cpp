@@ -93,13 +93,12 @@ double freq_tbl[12] = { 261.62556530060, 277.18263097687, 293.66476791741, 311.1
 void genFilter()
 {
 	int halfWidth = filterWidth / 2;
-	double window = 0;
+	double windowApprox = 0;
 	for (int i = 0; i < filterWidth; i++)
 	{
-		window = sinc(i - halfWidth) / sinc((i - halfWidth));
-		filter[i] = sinc(i - halfWidth)*window;
+		windowApprox = sinc(i - halfWidth) / sinc(i - halfWidth);
+		filter[i] = sinc(i - halfWidth)*windowApprox;
 	}
-	return;
 }
  
 //multiplies it all out
@@ -245,7 +244,7 @@ NOTELIST *play_np[16]; //Currently ready to play notes
 int32_t now_leng[16] = { 0 }; //Length of notes during playback
 
 //Change frequency
-void changeNoteFrequency(int key, size_t track, int32_t a)
+void changeNoteFrequency(int key, size_t track, int32_t /*a*/)
 {
 	if (key != 0xFF)
 		orgWaves[track].key = key;

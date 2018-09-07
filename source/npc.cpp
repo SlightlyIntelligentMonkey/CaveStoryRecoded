@@ -401,15 +401,13 @@ void npc::accelerateTowardsPlayer(int vel)
 
 void npc::animate(int aniWait, int aniStart, int aniMax)
 {
+	if (++this->ani_wait > aniWait)
 	{
-		if (++this->ani_wait > aniWait)
-		{
-			this->ani_wait = 0;
-			++this->ani_no;
-		}
-		if (this->ani_no > aniMax)
-			this->ani_no = aniStart;
+		this->ani_wait = 0;
+		++this->ani_no;
 	}
+	if (this->ani_no > aniMax)
+		this->ani_no = aniStart;
 }
 
 void npc::doGravity(int gravity, int maxYVel)
