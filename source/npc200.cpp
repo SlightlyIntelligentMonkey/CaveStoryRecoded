@@ -210,7 +210,7 @@ void npcAct203(npc * NPC) // Critter, Hopping Aqua (enemy)
 			NPC->ani_no = 0;
 			NPC->act_no = waitForAttack;
 			if (!(currentPlayer.cond & player_removed))
-				playSound(SFX_QuoteHitGround);
+				playSound(SFX_HitGround);
 		}
 		break;
 
@@ -464,6 +464,86 @@ void npcAct211(npc *NPC) //Spikes
 	rcNPC[3].bottom = 216;
 
 	NPC->rect = rcNPC[NPC->code_event];
+}
+
+void npcAct212(npc *NPC) // Sky Dragon
+{
+    vector<RECT> rcNPC = {{160, 152, 200, 192}, {200, 152, 240, 192}, {240, 112, 280, 152}, {280, 112, 320, 152}};
+
+    enum
+    {
+        init = 0,
+        stand = 1,
+        startHover = 10,
+        hovering = 11,
+        startFlight = 20,
+        flying = 21,
+        normalEndingState = 30,
+    };
+
+    switch (NPC->act_no)
+    {
+    case init:
+        NPC->act_no = stand;
+        NPC->y -= pixelsToUnits(4);
+        // Fallthrough
+    case stand:
+        NPC->animate(30, 0, 1);
+        break;
+
+    case startHover:
+        NPC->act_no = hovering;
+        NPC->ani_no = 2;
+        NPC->ani_wait = 0;
+        NPC->tgt_x = NPC->x - pixelsToUnits(6);
+        NPC->tgt_y = NPC->y - tilesToUnits(1);
+        NPC->ym = 0;
+        NPC->bits |= npc_ignoreSolid;
+        // Fallthrough
+    case hovering:
+        NPC->accelerateTowardsXTarget(8);
+        NPC->accelerateTowardsYTarget(8);
+
+        NPC->x += NPC->xm;
+        NPC->y += NPC->ym;
+
+        NPC->animate(5, 2, 3);
+        break;
+
+    case startFlight:
+        NPC->act_no = flying;
+        NPC->flag |= npc_ignoreSolid;
+        // Fallthrough
+    case flying:
+        NPC->accelerateTowardsYTarget(0x10);
+        NPC->xm += 0x20;
+        NPC->limitXVel(0x600);
+
+        NPC->x += NPC->xm;
+        NPC->y += NPC->ym;
+
+        NPC->animate(2, 2, 3);
+        break;
+
+    case normalEndingState:
+        NPC->act_no = normalEndingState + 1;
+        createNpc(NPC_SueOnSkyDragon, 0, 0, 0, 0, dirLeft, NPC);
+        break;
+
+    default:
+        break;
+    }
+
+    NPC->doRects(rcNPC);
+
+    if (currentPlayer.equip & equip_mimigaMask)
+    {
+        if (NPC->ani_no > 1)
+        {
+            NPC->rect.top += 40;
+            NPC->rect.bottom += 40;
+        }
+    }
 }
 
 void npcAct215(npc *NPC) // Sandcroc, White (enemy)

@@ -103,8 +103,13 @@ public:
 	/// If only one argument is passed it will just not check for direction and just use the first argument
 	void doRects(const std::vector<RECT>& rcLeft, const std::vector<RECT>& rcRight = std::vector<RECT>());
 	void facePlayer();
+    int getXDistToPlayer() attrPure;
+	void limitXVel(int maxVel);
+	void limitYVel(int maxVel);
 	void moveInDir(int vel);
 	void moveTowardsPlayer(int vel);
+	void accelerateTowardsXTarget(int vel);
+	void accelerateTowardsYTarget(int vel);
 	bool isPlayerWithinDistance(int xDist, int yDistHigh, int yDistLow) attrPure;
 	inline bool isPlayerWithinDistance(int xDist, int yDist) attrPure
 	{

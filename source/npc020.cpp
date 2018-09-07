@@ -5,6 +5,8 @@
 #include "caret.h"
 #include "player.h"
 #include "sound.h"
+#include "render.h"
+#include "game.h"
 
 using std::vector;
 
@@ -81,6 +83,136 @@ void npcAct023(npc *NPC) //Teleporter lights
 	NPC->rect = { 264, 16 + (NPC->ani_no * 4), 288, 20 + (NPC->ani_no * 4) };
 }
 
+void npcAct024(npc *NPC) // Power Critter (enemy)
+{
+    vector<RECT> rcLeft(6);
+    vector<RECT> rcRight(6);
+
+    rcLeft[0] = {0, 0, 24, 24};
+    rcLeft[1] = {24, 0, 48, 24};
+    rcLeft[2] = {48, 0, 72, 24};
+    rcLeft[3] = {72, 0, 96, 24};
+    rcLeft[4] = {96, 0, 120, 24};
+    rcLeft[5] = {120, 0, 144, 24};
+
+    rcRight[0] = {0, 24, 24, 48};
+    rcRight[1] = {24, 24, 48, 48};
+    rcRight[2] = {48, 24, 72, 48};
+    rcRight[3] = {72, 24, 96, 48};
+    rcRight[4] = {96, 24, 120, 48};
+	rcRight[5] = {120, 24, 144, 48};
+
+	enum
+	{
+		init = 0,
+		normal = 1,
+		startJump = 2,
+		jumping = 3,
+		flying = 4,
+		goingDownFromFlight = 5,
+	};
+
+	switch (NPC->act_no)
+	{
+	case init:
+		NPC->y += pixelsToUnits(3);
+		NPC->act_no = normal;
+	// Fallthrough
+	case normal:
+		if (NPC->act_wait < 8 || NPC->isPlayerAligned(tilesToUnits(8), tilesToUnits(8), tilesToUnits(3)))
+		{
+			if (NPC->act_wait < 8)
+				++NPC->act_wait;
+			NPC->ani_no = 0;
+		}
+		else
+        {
+            NPC->facePlayer();
+            NPC->ani_no = 1;
+        }
+
+        if (NPC->shock || (NPC->act_wait >= 8 && NPC->isPlayerWithinDistance(tilesToUnits(6), tilesToUnits(6), tilesToUnits(3))))
+        {
+            NPC->act_no = startJump;
+            NPC->ani_no = 0;
+            NPC->act_wait = 0;
+        }
+        break;
+
+    case startJump:
+        if (++NPC->act_wait > 8)
+        {
+            NPC->act_no = jumping;
+            NPC->ani_no = 2;
+            NPC->ym = -0x5FF;
+            playSound(SFX_PowerCritterLargeEnemyJump);
+            NPC->facePlayer();
+            NPC->moveInDir(0x100);
+        }
+        break;
+
+    case jumping:
+        if (NPC->ym > pixelsToUnits(1))
+        {
+            NPC->tgt_y = NPC->y;
+            NPC->act_no = flying;
+            NPC->ani_no = 3;
+            NPC->act_wait = 0;
+        }
+        break;
+
+    case flying:
+        NPC->facePlayer();
+        ++NPC->act_wait;
+
+        if (NPC->flag & (leftWall | rightWall | ceiling) || NPC->act_wait > 100)
+        {
+            NPC->damage = 12;
+            NPC->act_no = goingDownFromFlight;
+            NPC->ani_no = 2;
+            NPC->xm /= 2;
+        }
+        else
+        {
+            if (NPC->act_wait % 4 == 1)
+                playSound(SFX_PowerCritterFlys);
+            NPC->animate(0, 3, 5);
+        }
+        break;
+
+    case goingDownFromFlight:
+        if (NPC->flag & ground)
+        {
+            NPC->damage = 2;
+            NPC->xm = 0;
+            NPC->act_wait = 0;
+            NPC->ani_no = 0;
+            NPC->act_no = normal;
+            playSound(SFX_LargeObjectHitGround);
+            viewport.quake = 30;
+        }
+        break;
+
+    default:
+        break;
+	}
+
+	if (NPC->act_no == flying)
+    {
+        NPC->accelerateTowardsPlayer(0x20);
+        NPC->accelerateTowardsYTarget(0x10);
+        NPC->limitYVel(0x200);
+        NPC->limitXVel(0x200);
+    }
+    else
+        NPC->doGravity(0x20, 0x5FF);
+
+    NPC->x += NPC->xm;
+    NPC->y += NPC->ym;
+
+    NPC->doRects(rcLeft, rcRight);
+}
+
 void npcAct025(npc *NPC) //egg corridor lift thing
 {
 	switch (NPC->act_no)
@@ -90,7 +222,7 @@ void npcAct025(npc *NPC) //egg corridor lift thing
 		NPC->ani_no = 0;
 		NPC->ani_wait = 0;
 		NPC->x += 4096;
-		// Fallthrough
+	// Fallthrough
 	case 1:
 	case 3:
 	case 5:
@@ -314,6 +446,98 @@ void npcAct030(npc *NPC) // Hermit Gunsmith
 	}
 doRects:
 	NPC->rect = rcNPC[NPC->ani_no];
+}
+
+void npcAct031(npc *NPC) // Bat, Black Hanging (enemy)
+{
+    vector<RECT> rcLeft = {{0, 80, 16, 96}, {16, 80, 32, 96}, {32, 80, 48, 96}, {48, 80, 65, 96}, {64, 80, 80, 96}};
+    vector<RECT> rcRight = {{0, 96, 16, 112}, {16, 96, 32, 112}, {32, 96, 48, 112}, {48, 96, 64, 112}, {64, 96, 80, 112}};
+
+    enum
+    {
+        init = 0,
+        hangAndWait = 1,
+        blinking = 2,
+        payingAttention = 3,
+        falling = 4,
+        flying = 5,
+    };
+
+    switch (NPC->act_no)
+    {
+    case init:
+        NPC->act_no = hangAndWait;
+        // Fallthrough
+    case hangAndWait:
+        if (!random(0, 120))
+        {
+            NPC->act_no = blinking;
+            NPC->act_wait = 0;
+            NPC->ani_no = 1;
+        }
+        if (NPC->isPlayerWithinDistance(pixelsToUnits(8), pixelsToUnits(8), tilesToUnits(6)))
+        {
+            NPC->ani_no = 0;
+            NPC->act_no = payingAttention;
+        }
+        break;
+
+    case blinking:
+        if (++NPC->act_wait > 8)
+        {
+            NPC->act_no = hangAndWait;
+            NPC->ani_no = 0;
+        }
+        break;
+
+    case payingAttention:
+        NPC->ani_no = 0;
+        if (NPC->shock || NPC->getXDistToPlayer() < pixelsToUnits(20))
+        {
+            NPC->ani_no = 1;
+            NPC->ani_wait = 0;
+            NPC->act_no = falling;
+            NPC->act_wait = 0;
+        }
+        break;
+
+    case falling:
+        NPC->doGravity(0x20, 0x5FF);
+
+        if ((++NPC->act_wait >= 20 && NPC->y > currentPlayer.y - 0x2000) || NPC->flag & ground)
+        {
+            NPC->ani_wait = 0;
+            NPC->ani_no = 2;
+            NPC->act_no = flying;
+            NPC->tgt_y = NPC->y;
+            if (NPC->flag & ground)
+                NPC->xm = pixelsToUnits(-1);
+        }
+        break;
+
+    case flying:
+        NPC->animate(1, 2, 4);
+
+        NPC->facePlayer();
+        NPC->accelerateTowardsPlayer(0x10);
+        NPC->accelerateTowardsYTarget(0x10);
+        NPC->limitXVel(pixelsToUnits(1));
+        NPC->limitYVel(pixelsToUnits(1));
+
+        if (NPC->flag & ground)
+            NPC->ym = pixelsToUnits(-1);
+        if (NPC->flag & ceiling)
+            NPC->ym = pixelsToUnits(1);
+        break;
+
+    default:
+        break;
+    }
+
+    NPC->x += NPC->xm;
+    NPC->y += NPC->ym;
+
+    NPC->doRects(rcLeft, rcRight);
 }
 
 void npcAct032(npc *NPC) //Life Capsule

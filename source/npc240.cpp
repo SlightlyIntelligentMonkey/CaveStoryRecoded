@@ -13,6 +13,78 @@
 
 using std::vector;
 
+void npcAct241(npc *NPC) // Critter, Hopping Red (enemy)
+{
+    vector<RECT> rcLeft = {{0, 0, 16, 16}, {16, 0, 32, 16}, {32, 0, 48, 16}};
+    vector<RECT> rcRight = {{0, 16, 16, 32}, {16, 16, 32, 32}, {32, 16, 48, 32}};
+
+    enum
+    {
+        init = 0,
+        normal = 1,
+        startHop = 2,
+        jumping = 3,
+    };
+
+    switch (NPC->act_no)
+    {
+    case init:
+        NPC->y += pixelsToUnits(3);
+        NPC->act_no = normal;
+        // Fallthrough
+    case normal:
+        NPC->facePlayer();
+        if (NPC->act_wait < 8 || NPC->isPlayerAligned(tilesToUnits(9), tilesToUnits(5)))
+        {
+            if (NPC->act_wait < 8)
+                ++NPC->act_wait;
+            NPC->ani_no = 0;
+        }
+        else
+            NPC->ani_no = 1;
+
+        if (NPC->shock || (NPC->act_wait >= 8 && NPC->isPlayerWithinDistance(0xC000, 0xA000, 0xC000)))
+        {
+            NPC->act_no = startHop;
+            NPC->ani_no = 0;
+            NPC->act_wait = 0;
+        }
+        break;
+
+    case startHop:
+        if (++NPC->act_wait > 8)
+        {
+            NPC->act_no = jumping;
+            NPC->ani_no = 2;
+            NPC->ym = -0x5FF;
+            playSound(SFX_CritterHop);
+            NPC->moveInDir(0x200);
+        }
+        break;
+
+    case jumping:
+        if (NPC->flag & ground)
+        {
+            NPC->xm = 0;
+            NPC->act_wait = 0;
+            NPC->ani_no = 0;
+            NPC->act_no = normal;
+            playSound(SFX_HitGround);
+        }
+        break;
+
+    default:
+        break;
+    }
+
+    NPC->doGravity(0x55, 0x5FF);
+
+    NPC->x += NPC->xm;
+    NPC->y += NPC->ym;
+
+    NPC->doRects(rcLeft, rcRight);
+}
+
 void npcAct242(npc *NPC) // Bat, Red Wave (enemy)
 {
     if (NPC->x < 0 || NPC->x > tilesToUnits(levelWidth))

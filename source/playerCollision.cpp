@@ -76,7 +76,7 @@ int playerJudgeBlock(const RECT *rcHit, player *me, int tx, int ty)
 		me->y = ((2 * ty - 1) << 12) - rcHit->bottom;
 
 		if (me->ym > 0x400)
-			playSound(SFX_QuoteHitGround);
+			playSound(SFX_HitGround);
 
 		if (me->ym > 0)
 			me->ym = 0;
@@ -187,7 +187,7 @@ int playerJudgeTriangleE(const RECT *rcHit, player *me, int tx, int ty)
 		me->y = tilesToUnits(ty) + (-0x2000 * tx + me->x) / 2 - 0x800 - rcHit->bottom;
 
 		if (me->ym > 0x400)
-			playSound(SFX_QuoteHitGround);
+			playSound(SFX_HitGround);
 
 		if (me->ym > 0)
 			me->ym = 0;
@@ -208,7 +208,7 @@ int playerJudgeTriangleF(const RECT *rcHit, player *me, int tx, int ty)
 		me->y = tilesToUnits(ty) + (-0x2000 * tx + me->x) / 2 + 0x800 - rcHit->bottom;
 
 		if (me->ym > 0x400)
-			playSound(SFX_QuoteHitGround);
+			playSound(SFX_HitGround);
 
 		if (me->ym > 0)
 			me->ym = 0;
@@ -229,7 +229,7 @@ int playerJudgeTriangleG(const RECT *rcHit, player *me, int tx, int ty)
 		me->y = tilesToUnits(ty) - (-0x2000 * tx + me->x) / 2 + 0x800 - rcHit->bottom;
 
 		if (me->ym > 0x400)
-			playSound(SFX_QuoteHitGround);
+			playSound(SFX_HitGround);
 
 		if (me->ym > 0)
 			me->ym = 0;
@@ -250,7 +250,7 @@ int playerJudgeTriangleH(const RECT *rcHit, player *me, int tx, int ty)
 		me->y = tilesToUnits(ty) - (-0x2000 * tx + me->x) / 2 - 0x800 - rcHit->bottom;
 
 		if (me->ym > 0x400)
-			playSound(SFX_QuoteHitGround);
+			playSound(SFX_HitGround);
 
 		if (me->ym > 0)
 			me->ym = 0;
@@ -679,7 +679,7 @@ int playerHitNpcHardSolid(const RECT *rcHit, player *me, const npc *NPC)
 		if (me->y + rcHit->bottom > NPC->y - NPC->hit.top && me->y + rcHit->bottom < NPC->y + 0x600)
 		{
 			if (me->ym - NPC->ym > 1024)
-				playSound(SFX_QuoteHitGround);
+				playSound(SFX_HitGround);
 
 			if (me->unit == 1)
 			{

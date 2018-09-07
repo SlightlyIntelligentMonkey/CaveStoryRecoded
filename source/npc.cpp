@@ -13,6 +13,7 @@
 #include <deque>
 #include <vector>
 #include <string>
+#include <cmath>
 #include <cstring>
 #include <SDL_rwops.h>
 
@@ -393,9 +394,9 @@ void loadNpcTable()
 void npc::accelerateTowardsPlayer(int vel)
 {
     if (this->direct != dirLeft)
-        this->xm += 0x20;
+        this->xm += vel;
     else
-        this->xm -= 0x20;
+        this->xm -= vel;
 }
 
 void npc::animate(int aniWait, int aniStart, int aniMax)
@@ -439,6 +440,27 @@ void npc::facePlayer()
 		this->direct = dirLeft;
 }
 
+int npc::getXDistToPlayer()
+{
+    return abs(this->x - currentPlayer.x);
+}
+
+void npc::limitXVel(int maxVel)
+{
+    if (this->xm > maxVel)
+        this->xm = maxVel;
+    else if (this->xm < -maxVel)
+        this->xm = -maxVel;
+}
+
+void npc::limitYVel(int maxVel)
+{
+    if (this->ym > maxVel)
+        this->ym = maxVel;
+    else if (this->ym < -maxVel)
+        this->ym = -maxVel;
+}
+
 void npc::moveInDir(int vel)
 {
     if (this->direct != dirLeft)
@@ -453,6 +475,22 @@ void npc::moveTowardsPlayer(int vel)
 		this->xm = vel;
 	else
 		this->xm = -vel;
+}
+
+void npc::accelerateTowardsXTarget(int vel)
+{
+    if (this->x >= this->tgt_x)
+        this->xm -= vel;
+    else
+        this->xm += vel;
+}
+
+void npc::accelerateTowardsYTarget(int vel)
+{
+    if (this->y >= this->tgt_y)
+        this->ym -= vel;
+    else
+        this->ym += vel;
 }
 
 bool npc::isPlayerWithinDistance(int xDist, int yDistHigh, int yDistLow)
