@@ -373,6 +373,11 @@ void npcAct027(npc *NPC) // Death Spikes
 	NPC->rect = { 96, 64, 128, 88 };
 }
 
+void npcAct028(npc *NPC)
+{
+    vector<RECT> rcLeft(6);
+}
+
 void npcAct029(npc *NPC) // Cthulhu
 {
 	constexpr RECT rcLeft[2] = { {0, 192, 16, 216}, {16, 192, 32, 216} };
