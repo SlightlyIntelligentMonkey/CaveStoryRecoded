@@ -330,22 +330,20 @@ void releaseDrumObject(char track) {
 	memset(&orgDrums[track], 0, sizeof(DRUM));
 }
 
-const char *drumLookup[10] = {
+const char *drumLookup[8] = {
 	"data/Sound/96.pxt",
-	nullptr,
 	"data/Sound/97.pxt",
-	nullptr,
-	"data/Sound/9A.pxt",
 	"data/Sound/98.pxt",
 	"data/Sound/99.pxt",
-	nullptr,
-	nullptr,
-	"data/Sound/9B.pxt"
+	"data/Sound/9A.pxt",
+	"data/Sound/9B.pxt",
+	"data/Sound/96.pxt",
+	"data/Sound/96.pxt",
 };
 
 bool initDrumObject(int no)
 {
-	int wave_no = org.tdata[no + 8].wave_no;
+	int wave_no = no;
 	if (wave_no >= _countof(drumLookup) || drumLookup[wave_no] == nullptr)
 		return false;
 	releaseDrumObject(no); //Unload previous drum
@@ -643,6 +641,11 @@ void loadOrganya(const char *name)
 	//Unload previous things
 	releaseNote();
 	noteAlloc(0xFFFF);
+
+	//Stop currently playing notes
+	memset(old_key, 0xFF, sizeof(old_key));
+	memset(key_on, 0, sizeof(key_on));
+	memset(key_twin, 0, sizeof(key_twin));
 
 	//Load
 	SDL_RWops *fp = SDL_RWFromFile(name, "rb");
