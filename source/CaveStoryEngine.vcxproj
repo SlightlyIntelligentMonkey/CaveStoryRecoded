@@ -258,10 +258,17 @@
     <ClCompile Include="npc200.cpp" />
     <ClCompile Include="npcAct.cpp" />
     <ClCompile Include="org.cpp" />
+    <ClCompile Include="ORIG_org.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="player.cpp" />
     <ClCompile Include="playerCollision.cpp" />
     <ClCompile Include="polarStar.cpp" />
     <ClCompile Include="polarStarShoot.cpp" />
+    <ClCompile Include="pxt.cpp" />
     <ClCompile Include="render.cpp" />
     <ClCompile Include="script.cpp" />
     <ClCompile Include="snake.cpp" />
@@ -285,6 +292,7 @@
     <ClInclude Include="fireball.h" />
     <ClInclude Include="flags.h" />
     <ClInclude Include="game.h" />
+    <ClInclude Include="org.h" />
     <ClInclude Include="loadConfig.h" />
     <ClInclude Include="machineGun.h" />
     <ClInclude Include="misc.h" />
@@ -302,8 +310,14 @@
     <ClInclude Include="npc280.h" />
     <ClInclude Include="npc300.h" />
     <ClInclude Include="npc320.h" />
-    <ClInclude Include="org.h" />
+    <ClInclude Include="ORIG_org.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClInclude>
     <ClInclude Include="polarStar.h" />
+    <ClInclude Include="pxt.h" />
     <ClInclude Include="script.h" />
     <ClInclude Include="shootFunctions.h" />
     <ClInclude Include="snake.h" />

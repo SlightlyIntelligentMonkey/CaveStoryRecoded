@@ -1,13 +1,6 @@
 #pragma once
 #include "common.h"
 
-#include <string>
-#include <iostream>
-#include <algorithm>
-#include <fstream>
-#include <iostream>
-#include <vector>
-
 //Below are Organya song data structures
 struct NOTELIST {
 	NOTELIST *from; //Previous address
@@ -21,11 +14,11 @@ struct NOTELIST {
 };
 
 //Track data * 8
-struct TRACKDATA {
+struct TRACKDATA{
 	uint16_t freq; //Frequency (1000 is default)
-	uint8_t wave_no; //Waveform No.
-	uint8_t pipi;
+	unsigned char wave_no; //Waveform No.
 	uint16_t note_num; //Number of notes
+	char pipi;
 
 	NOTELIST *note_p;
 	NOTELIST *note_list;
@@ -34,25 +27,20 @@ struct TRACKDATA {
 //Unique information held in songs
 struct MUSICINFO {
 	uint16_t wait;
-	bool loaded;
-	bool playing;
 	unsigned char line; //Number of lines in one measure
 	unsigned char dot; //Number of dots per line
 	uint16_t alloc_note; //Number of allocated notes
 	int32_t repeat_x; //Repeat
 	int32_t end_x; //End of song (Return to repeat)
 	int samples;
-	int samplesForFrame;
 	TRACKDATA tdata[16];
 };
 
 //Wave struct
 struct WAVE {
-	int8_t *wave;
-	size_t freq;
-	size_t length;
+	int8_t wave[0x100];
+	int key;
 	bool playing;
-	bool loops;
 	unsigned int pos;
 	long double volume;
 	long double volume_l;
@@ -63,7 +51,7 @@ struct WAVE {
 struct DRUM {
 	uint8_t *wave; //Dynamic size
 	size_t length;
-	size_t freq;
+	int key;
 	bool playing;
 	size_t pos;
 	long double volume;
@@ -76,9 +64,7 @@ void mixOrg(int16_t *stream, int len);
 void initOrganya();
 void loadOrganya(const char *name);
 
-bool makeOrganyaWave(char track, char wave_no, char pipi);
-
-void playData();
+void organyaPlayStep();
 
 extern uint32_t currentOrg;
 extern bool orgFadeout;
