@@ -87,20 +87,23 @@ public:
 	//offset
 	RECT view;
 
-	//damage
+	// Damage
 	uint8_t shock;
 	int damage_view;
 	int damage;
 
-	//parent
+	/// Parent NPC
 	npc *pNpc;
 
 public:
-	/// These are kinda supposed to be internal, but I can't put them as protected/private
+	// These are kinda supposed to be internal, but I can't put them as protected/private
+	void accelerateTowardsPlayer(int vel);
 	void animate(int aniWait, int aniStart, int aniMax);
-	// If only one argument is passed it will just not check for direction and just use the first argument
+	void doGravity(int gravity, int maxYVel);
+	/// If only one argument is passed it will just not check for direction and just use the first argument
 	void doRects(const std::vector<RECT>& rcLeft, const std::vector<RECT>& rcRight = std::vector<RECT>());
 	void facePlayer();
+	void moveInDir(int vel);
 	void moveTowardsPlayer(int vel);
 	bool isPlayerWithinDistance(int xDist, int yDistHigh, int yDistLow) attrPure;
 	inline bool isPlayerWithinDistance(int xDist, int yDist) attrPure
@@ -127,6 +130,9 @@ void createSmokeUp(int x, int y, int w, int num);
 
 void createNpc(int setCode, int setX = 0, int setY = 0, int setXm = 0, int setYm = 0, int setDir = dirLeft, npc *parentNpc = nullptr);
 void changeNpc(int code_event, int code_char, int dir = dirLeft);
+int findEntityByType(int entityType) attrPure;
+void setNPCState(int entityEventNum, int newNPCState, int direction);
+void moveNPC(int entityEventNum, int xPos, int yPos, int direction);
 
 void updateNPC();
 void drawNPC();
@@ -149,21 +155,21 @@ enum NPC_cond
 
 enum NPC_flags
 {
-	npc_solidsoft = 0x1, //Pushes quote out
+	npc_solidSoft = 0x1, //Pushes quote out
 	npc_ignore44 = 0x2, //Ignores tile 44 (No NPC)
 	npc_invulnerable = 0x4, //Can't get hit
-	npc_ignoresolid = 0x8, //Doesn't collide with anything
+	npc_ignoreSolid = 0x8, //Doesn't collide with anything
 	npc_bouncy = 0x10, //Quote bounces on the top
 	npc_shootable = 0x20, //Can be shot
-	npc_solidhard = 0x40, //Essentially acts as level tiles
-	npc_reartop = 0x80, //Rear and top don't hurt
-	npc_eventtouch = 0x100, //Run event when touched
-	npc_eventdie = 0x200, //Run event when killed
-	npc_appearset = 0x800, //Only appear when flag is set
-	npc_altdir = 0x1000, //Spawn facing to the right (or however the npc interprets the direction as)
+	npc_solidHard = 0x40, //Essentially acts as level tiles
+	npc_rearTop = 0x80, //Rear and top don't hurt
+	npc_eventTouch = 0x100, //Run event when touched
+	npc_eventDie = 0x200, //Run event when killed
+	npc_appearSet = 0x800, //Only appear when flag is set
+	npc_altDir = 0x1000, //Spawn facing to the right (or however the npc interprets the direction as)
 	npc_interact = 0x2000, //Run event when interacted with
-	npc_hideset = 0x4000, //Hide when flag is set
-	npc_showdamage = 0x8000, //Show #Damage taken
+	npc_hideSet = 0x4000, //Hide when flag is set
+	npc_showDamage = 0x8000, //Show #Damage taken
 };
 
 enum NPCNames

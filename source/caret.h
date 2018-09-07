@@ -47,9 +47,7 @@ extern std::deque<caret> carets;
 void updateCarets();
 void drawCarets();
 
-void 
-
-createCaret(int setX, int setY, int setType, int setDir = dirLeft);
+void createCaret(int setX, int setY, int setType, int setDir = dirLeft);
 
 enum EffectNames
 {

@@ -4,4 +4,4 @@
 #include "npc.h"
 
 using npcAct = void(*)(npc *);
-extern npcAct npcActs[361];
+extern const npcAct npcActs[361];

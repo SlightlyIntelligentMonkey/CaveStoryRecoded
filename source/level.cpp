@@ -67,20 +67,21 @@ void loadStageTable()
 	}
 }
 
-uint8_t getTileAttribute(int x, int y) 
+uint8_t getTileAttribute(int xTile, int yTile)
 {
-	if (x >= 0 && x < levelWidth && y >= 0 && y < levelHeight)
-		return levelTileAttributes[levelMap[x + y * levelWidth]];
+	if (xTile >= 0 && xTile < levelWidth && yTile >= 0 && yTile < levelHeight)  // Make sure coordinates are valid
+		return levelTileAttributes[levelMap[xTile + yTile * levelWidth]];
 
+    // Coordinates are invalid
 	return 0;
 }
 
-void deleteTile(int x, int y) 
+void deleteTile(int x, int y)
 {
 	levelMap[x + y * levelWidth] = 0;
 }
 
-void shiftTile(int x, int y) 
+void shiftTile(int x, int y)
 {
 	--levelMap[x + y * levelWidth];
 }
@@ -125,12 +126,6 @@ void loadLevel(int levelIndex)
 	uint8_t *pxm = nullptr;
 	const int pxmSize = loadFile(pxmPath.c_str(), &pxm);
 
-	if (pxmSize < 0)
-	{
-		const string errorMessage = "Couldn't read " + pxmPath;
-		doCustomError(errorMessage.c_str());
-	}
-
 	levelWidth = readLEshort(pxm, 4);
 	levelHeight = readLEshort(pxm, 6);
 
@@ -148,12 +143,6 @@ void loadLevel(int levelIndex)
 	uint8_t *pxa = nullptr;
 	const int pxaSize = loadFile(pxaPath.c_str(), &pxa);
 
-	if (pxaSize < 0)
-	{
-		const string errorMessage = "Couldn't read " + pxaPath;
-		doCustomError(errorMessage.c_str());
-	}
-
 	delete[] levelTileAttributes;
 
 	levelTileAttributes = new uint8_t[pxaSize];
@@ -166,11 +155,7 @@ void loadLevel(int levelIndex)
 	const string pxePath = string("data/Stage/") + stageTable[levelIndex].filename + ".pxe";
 
 	uint8_t *pxe = nullptr;
-	if (loadFile(pxePath.c_str(), &pxe) < 0)
-	{
-		const string errorMessage = "Couldn't read " + pxePath;
-		doCustomError(errorMessage.c_str());
-	}
+	loadFile(pxePath.c_str(), &pxe);
 
 	//Clear old npcs
 	npcs.clear();
@@ -183,10 +168,10 @@ void loadLevel(int levelIndex)
 	{
 		const int offset = (i * 12) + 8;
 
-		if (readLEshort(pxe, offset + 10) & npc_appearset && !(getFlag(readLEshort(pxe, offset + 4))))
+		if (readLEshort(pxe, offset + 10) & npc_appearSet && !(getFlag(readLEshort(pxe, offset + 4))))
 			continue;
 
-		if (readLEshort(pxe, offset + 10) & npc_hideset && getFlag(readLEshort(pxe, offset + 4)))
+		if (readLEshort(pxe, offset + 10) & npc_hideSet && getFlag(readLEshort(pxe, offset + 4)))
 			continue;
 
 		npc newNPC;
@@ -196,7 +181,7 @@ void loadLevel(int levelIndex)
 		newNPC.code_flag = readLEshort(pxe, offset + 4);
 		newNPC.bits |= readLEshort(pxe, offset + 10);
 
-		if (readLEshort(pxe, offset + 10) & npc_altdir)
+		if (readLEshort(pxe, offset + 10) & npc_altDir)
 			newNPC.direct = dirRight;
 
 		npcs.push_back(newNPC);
@@ -296,7 +281,7 @@ void drawLevel(bool foreground)
 			}
 
 			break;
-        
+
 			case 5:
 				for (int x = -(backgroundEffect / 0x200 % w); x < screenWidth; x += w)
 				{
@@ -306,7 +291,7 @@ void drawLevel(bool foreground)
 
 				break;
 
-			case 6: 
+			case 6:
       case 7:
 				//Draw sky
 				rect = { 0, 0, w / 2, 88 };

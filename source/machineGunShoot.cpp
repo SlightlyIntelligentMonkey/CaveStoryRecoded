@@ -7,7 +7,7 @@
 
 void shootMachineGun(int level)
 {
-	static int machinegunRechargeWait = 0;
+	static int rechargeWait = 0;
 
 	if (isKeyDown(keyShoot))
 	{
@@ -89,18 +89,18 @@ void shootMachineGun(int level)
 	else
 	{
 		currentPlayer.rensha = 6;
-		machinegunRechargeWait++;
+		rechargeWait++;
 		if (currentPlayer.equip & equip_turboCharge)
 		{
-			if (machinegunRechargeWait > 1)
+			if (rechargeWait > 1)
 			{
-				machinegunRechargeWait = 0;
+				rechargeWait = 0;
 				giveWeaponAmmo(1);
 			}
 		}
-		else if (machinegunRechargeWait > 4)
+		else if (rechargeWait > 4)
 		{
-			machinegunRechargeWait = 0;
+			rechargeWait = 0;
 			giveWeaponAmmo(1);
 		}
 	}

@@ -136,6 +136,53 @@ void changeNpc(int code_event, int code_char, int dir)
 	}
 }
 
+int findEntityByType(int entityType)
+{
+    for (size_t i = 0; i < npcs.size(); ++i)
+        if (npcs[i].cond & npccond_alive && npcs[i].code_char == entityType)
+            return i;
+    return -1;
+}
+
+void setNPCState(int entityEventNumber, int newNPCState, int direction)
+{
+	for (size_t i = 0; i < npcs.size(); i++)
+	{
+		if ((npcs[i].cond & npccond_alive) && npcs[i].code_event == entityEventNumber)
+		{
+			npcs[i].act_no = newNPCState;
+
+			if (direction != 5)
+			{
+				if (direction == 4)
+                    npcs[i].facePlayer();
+				else
+					npcs[i].direct = direction;
+			}
+		}
+	}
+}
+
+void moveNPC(int entityEventNum, int xPos, int yPos, int direction)
+{
+	for (size_t i = 0; i < npcs.size(); i++)
+	{
+		if ((npcs[i].cond & npccond_alive) && npcs[i].code_event == entityEventNum)
+		{
+			npcs[i].x = xPos;
+			npcs[i].y = yPos;
+
+			if (direction != 5)
+			{
+				if (direction == 4)
+					npcs[i].facePlayer();
+				else
+					npcs[i].direct = direction;
+			}
+		}
+	}
+}
+
 void updateNPC()
 {
 	if (npcs.size())
@@ -239,7 +286,7 @@ void killNpc(npc *NPC, bool bVanish)
 	const int exp = NPC->exp;
 
 	//Destroy npc
-	if (!(NPC->bits & npc_showdamage))
+	if (!(NPC->bits & npc_showDamage))
 	{
 		NPC->cond = 0;
 	}
@@ -343,6 +390,14 @@ void loadNpcTable()
 		tblStream->read(tblStream, &npcTable[i].view, 4, 1);
 }
 
+void npc::accelerateTowardsPlayer(int vel)
+{
+    if (this->direct != dirLeft)
+        this->xm += 0x20;
+    else
+        this->xm -= 0x20;
+}
+
 void npc::animate(int aniWait, int aniStart, int aniMax)
 {
 	{
@@ -356,7 +411,14 @@ void npc::animate(int aniWait, int aniStart, int aniMax)
 	}
 }
 
-void npc::doRects(const std::vector<RECT>& rcLeft, const std::vector<RECT>& rcRight)
+void npc::doGravity(int gravity, int maxYVel)
+{
+	this->ym += gravity;
+	if (this->ym > maxYVel)
+		this->ym = maxYVel;
+}
+
+void npc::doRects(const vector<RECT>& rcLeft, const vector<RECT>& rcRight)
 {
 	if (!rcRight.empty())
 	{
@@ -375,6 +437,14 @@ void npc::facePlayer()
 		this->direct = dirRight;
 	else
 		this->direct = dirLeft;
+}
+
+void npc::moveInDir(int vel)
+{
+    if (this->direct != dirLeft)
+        this->xm = vel;
+    else
+        this->xm = -vel;
 }
 
 void npc::moveTowardsPlayer(int vel)
@@ -401,7 +471,7 @@ bool npc::isPlayerAligned(int xRay, int yRayHigh, int yRayLow)
 		|| this->y + yRayLow <= currentPlayer.y);
 }
 
-void npc::init(int setCode, int setX, int setY, int setXm, int setYm, int setDir, npc *parentNpc) 
+void npc::init(int setCode, int setX, int setY, int setXm, int setYm, int setDir, npc *parentNpc)
 {
 	memset(this, 0, sizeof(*this));
 
@@ -437,7 +507,7 @@ void npc::init(int setCode, int setX, int setY, int setXm, int setYm, int setDir
 	view.bottom = npcTable[code_char].view.bottom << 9;
 }
 
-void npc::update() 
+void npc::update()
 {
 	npcActs[code_char](this);
 
@@ -457,7 +527,7 @@ void npc::draw()
 		}
 		else
 		{
-			if ((bits & npc_showdamage) != 0 && damage_view)
+			if ((bits & npc_showDamage) != 0 && damage_view)
 			{
 				createValueView(&x, &y, damage_view);
 				damage_view = 0;

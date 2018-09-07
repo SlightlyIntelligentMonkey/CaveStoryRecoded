@@ -282,7 +282,7 @@ void npcAct147(npc *NPC)
 			NPC->ym += 0x10;
 		else
 			NPC->ym -= 0x10;
-		
+
 		if (NPC->ym > 0x200)
 			NPC->ym = 0x200;
 		if (NPC->ym < -0x200)
@@ -332,7 +332,7 @@ void npcAct148(npc *NPC)
 
 	if (++NPC->ani_no > 1)
 		NPC->ani_no = 0;
-	
+
 	NPC->rect = rect[NPC->ani_no];
 
 	if (++NPC->count1 > 300)
@@ -846,7 +846,7 @@ void npcAct154(npc *NPC)
 	{
 	case 0:
 		NPC->bits &= ~npc_shootable;
-		NPC->bits &= ~npc_ignoresolid;
+		NPC->bits &= ~npc_ignoreSolid;
 		NPC->damage = 0;
 		NPC->act_no = 1;
 		NPC->ani_no = 9;

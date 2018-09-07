@@ -45,6 +45,36 @@ bool orgFadeout = false;
 
 bool disableOrg = false;
 
+void organyaAllocNote(uint16_t alloc)
+{
+	for (auto& j : org.tdata) {
+		j.wave_no = 0;
+		j.note_list = nullptr; //I want to make the constructor
+		j.note_p = static_cast<NOTELIST*>(calloc(alloc, sizeof(NOTELIST))); //new NOTELIST[alloc];
+
+		if (j.note_p == nullptr)
+			return;
+
+		for (int i = 0; i < alloc; i++) {
+			(j.note_p + i)->from = nullptr;
+			(j.note_p + i)->to = nullptr;
+			(j.note_p + i)->length = 0;
+			(j.note_p + i)->pan = 0xFF;
+			(j.note_p + i)->volume = 0xFF;
+			(j.note_p + i)->y = 0xFF;
+		}
+	}
+}
+
+void organyaReleaseNote()
+{
+	for (auto& i : org.tdata)
+		free(i.note_p); //delete org.tdata[i].note_p;
+
+	for (auto& i : orgDrums)
+		free(i.wave);
+}
+
 //sound function things
 typedef struct {
 	short wave_size;
@@ -62,6 +92,9 @@ OCTWAVE oct_wave[8] = {
 { 16, 64, 28 }, //6 Oct
 { 8,128, 32 }, //7 Oct
 };
+
+double freq_tbl[12] = { 261.62556530060, 277.18263097687, 293.66476791741, 311.12698372208, 329.62755691287, 349.22823143300, 369.99442271163, 391.99543598175, 415.30469757995, 440.00000000000, 466.16376151809, 493.88330125612 };
+*/
 
 void mixOrg(int16_t *stream, int len)
 {
@@ -165,14 +198,13 @@ void mixOrg(int16_t *stream, int len)
 				}
 			}
 
-			//Clip buffer
-			tempSampleL = clamp(tempSampleL, -0x7FFF, 0x7FFF);
-			tempSampleR = clamp(tempSampleR, -0x7FFF, 0x7FFF);
+		//Clip buffer
+		tempSampleL = clamp(tempSampleL, -0x7FFF, 0x7FFF);
+		tempSampleR = clamp(tempSampleR, -0x7FFF, 0x7FFF);
 
-			//Put into main stream
-			stream[2 * i] = tempSampleL;
-			stream[2 * i + 1] = tempSampleR;
-		}
+		//Put into main stream
+		stream[2 * i] = tempSampleL;
+		stream[2 * i + 1] = tempSampleR;
 	}
 }
 
@@ -334,6 +366,7 @@ void initOrganya()
 	if (!loadWave100())
 		doCustomError("Couldn't open data/Wave100.dat");
 	loadMusicList("data/Org/musicList.txt");
+	genFilter();
 }
 
 //Play melody functions
