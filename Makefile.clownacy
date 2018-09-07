@@ -1,6 +1,6 @@
 WARNINGS = -pedantic -Wall -Wextra -Wno-multichar -Wno-unused-parameter
 
-OPTIMISATIONS = -Ofast -flto -frename-registers -funroll-loops
+OPTIMISATIONS = -O3
 
 CXXFLAGS = $(OPTIMISATIONS) $(WARNINGS)
 ALL_CXXFLAGS = -std=c++17 `sdl2-config --cflags` -m32 -IJson_Modern_Cpp $(CXXFLAGS)
