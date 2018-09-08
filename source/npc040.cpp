@@ -195,7 +195,10 @@ void npcAct042(npc *NPC) // Sue
 		NPC->act_no = 9;
 		NPC->ani_no = 7;
 		NPC->ym = -0x200;
-		NPC->moveTowardsPlayer(pixelsToUnits(2));
+		if (NPC->direct)
+			NPC->xm = -0x400;
+		else
+			NPC->xm = 0x400;
 	// Fallthrough
 	case 9:
 		if (++NPC->act_wait > 3 && NPC->flag & ground)
