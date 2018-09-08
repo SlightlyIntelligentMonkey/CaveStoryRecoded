@@ -110,7 +110,7 @@ void mixOrg(int16_t *stream, int len)
 					const int samplesPerBeat = sampleRate * org.wait / 1000;
 					const int samplesPerFrame = sampleRate * framerate / 1000;
 
-					if (++org.samples > samplesPerBeat)
+					if (++org.samples > samplesPerBeat && org.loaded)
 					{
 						playData();
 						org.samples = 0;
@@ -561,10 +561,11 @@ long now_leng[8] = { NULL };
 
 void clearPlayNp()
 {
-	memset(play_np, 0, sizeof(play_np));
-
 	for (int i = 0; i < 16; i++)
+	{
 		play_np[i] = (NOTELIST*)malloc(sizeof(NOTELIST));
+		memset(play_np[i], 0, sizeof(*play_np[i]));
+	}
 }
 
 void setPlayPointer(int32_t x)
@@ -582,6 +583,9 @@ void setPlayPointer(int32_t x)
 
 void playData()
 {
+	if (org.loaded == false)
+		return;
+
 	//Melody
 	for (int i = 0; i < 8; i++)
 	{
@@ -650,6 +654,9 @@ void loadOrganya(const char *name)
 	//SDL_PauseAudioDevice(soundDev, -1);
 	
 	//Unload previous things
+	org.loaded = false;
+	org.playing = false;
+
 	releaseNote();
 	memset(&org, 0, sizeof(org));
 	noteAlloc(0xFFFF);
