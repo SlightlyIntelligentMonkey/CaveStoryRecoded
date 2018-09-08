@@ -98,6 +98,8 @@ void mixOrg(int16_t *stream, int len)
 	if (stream == nullptr)
 		doCustomError("stream was nullptr in mixOrg");
 
+	org.playing = SDL_GetWindowFlags(window) & SDL_WINDOW_INPUT_FOCUS;
+
 	if (org.loaded)
 	{
 		for (int i = 0; i < len; i++)
@@ -120,9 +122,22 @@ void mixOrg(int16_t *stream, int len)
 					{
 						if (orgFadeout && orgVolume > 0.0)
 							orgVolume -= 0.02;
-						if (orgVolume < 0)
-							orgVolume = 0;
+						if (orgVolume < 0.0)
+							orgVolume = 0.0;
 						org.samplesForFrame = 0;
+					}
+				}
+				else
+				{
+					for (int j = 0; j < 8; j++)
+					{
+						for (int k = 0; k < 8; k++)
+						{
+							for (int m = 0; m < 2; m++)
+							{
+								orgWaves[j][k][m].playing = false;
+							}
+						}
 					}
 				}
 
@@ -804,6 +819,7 @@ void changeOrg(const uint32_t num)
 	currentOrg = num;
 	string path(orgFolder + musicList[num]);
 	orgVolume = 1.0;
+	orgFadeout = false;
 	loadOrganya(path.c_str());
 }
 
@@ -816,6 +832,7 @@ void resumeOrg()
 	string path(orgFolder + musicList[currentOrg]);
 	temp = play_p;
 	orgVolume = 1.0;
+	orgFadeout = false;
 	loadOrganya(path.c_str());
 	setPlayPointer(prevOrgPos);
 	prevOrgPos = temp;
