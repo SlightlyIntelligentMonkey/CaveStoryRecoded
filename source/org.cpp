@@ -102,106 +102,109 @@ void mixOrg(int16_t *stream, int len)
 	{
 		for (int i = 0; i < len; i++)
 		{
-			if (org.playing)
+			if (org.loaded)
 			{
-				//Update
-				const int samplesPerBeat = sampleRate * org.wait / 1000;
-				const int samplesPerFrame = sampleRate * framerate / 1000;
-
-				if (++org.samples > samplesPerBeat)
+				if (org.playing)
 				{
-					playData();
-					org.samples = 0;
-				}
+					//Update
+					const int samplesPerBeat = sampleRate * org.wait / 1000;
+					const int samplesPerFrame = sampleRate * framerate / 1000;
 
-				if (++org.samplesForFrame > samplesPerFrame)
-				{
-					if (orgFadeout && orgVolume > 0.0)
-						orgVolume -= 0.02;
-					if (orgVolume < 0)
-						orgVolume = 0;
-					org.samplesForFrame = 0;
-				}
-			}
-
-			//Put current stream sample into temp samples (org's done first so this is typically 0 anyways)
-			auto tempSampleL = (int32_t)stream[2 * i];
-			auto tempSampleR = (int32_t)stream[2 * i + 1];
-
-			//Play waves
-			for (int wave = 0; wave < 8; wave++)
-			{
-				for (int j = 0; j < 8; j++)
-				{
-					for (int k = 0; k < 2; k++)
+					if (++org.samples > samplesPerBeat)
 					{
-						const int waveSamples = (int)((long double)orgWaves[wave][j][k].freq / (long double)sampleRate * 4096.0);
+						playData();
+						org.samples = 0;
+					}
 
-						if (orgWaves[wave][j][k].playing)
+					if (++org.samplesForFrame > samplesPerFrame)
+					{
+						if (orgFadeout && orgVolume > 0.0)
+							orgVolume -= 0.02;
+						if (orgVolume < 0)
+							orgVolume = 0;
+						org.samplesForFrame = 0;
+					}
+				}
+
+				//Put current stream sample into temp samples (org's done first so this is typically 0 anyways)
+				auto tempSampleL = (int32_t)stream[2 * i];
+				auto tempSampleR = (int32_t)stream[2 * i + 1];
+
+				//Play waves
+				for (int wave = 0; wave < 8; wave++)
+				{
+					for (int j = 0; j < 8; j++)
+					{
+						for (int k = 0; k < 2; k++)
 						{
-							orgWaves[wave][j][k].pos = (orgWaves[wave][j][k].pos + waveSamples);
+							const int waveSamples = (int)((long double)orgWaves[wave][j][k].freq / (long double)sampleRate * 4096.0);
 
-							if (orgWaves[wave][j][k].loops)
-								orgWaves[wave][j][k].pos %= (orgWaves[wave][j][k].length << 12);
-
-							if (orgWaves[wave][j][k].loops == false && orgWaves[wave][j][k].pos >= (orgWaves[wave][j][k].length << 12))
-								orgWaves[wave][j][k].playing = false;
-							else
+							if (orgWaves[wave][j][k].playing)
 							{
-								const size_t s_offset_1 = orgWaves[wave][j][k].pos >> 12;
+								orgWaves[wave][j][k].pos = (orgWaves[wave][j][k].pos + waveSamples);
 
-								const int sample1 = orgWaves[wave][j][k].wave[s_offset_1 % orgWaves[wave][j][k].length] << 7;
-								int sample2 = 0;
+								if (orgWaves[wave][j][k].loops)
+									orgWaves[wave][j][k].pos %= (orgWaves[wave][j][k].length << 12);
 
-								if (orgWaves[wave][j][k].loops || s_offset_1 < orgWaves[wave][j][k].length - 1)
-									sample2 = orgWaves[wave][j][k].wave[(s_offset_1 + 1) % orgWaves[wave][j][k].length] << 7;
+								if (orgWaves[wave][j][k].loops == false && orgWaves[wave][j][k].pos >= (orgWaves[wave][j][k].length << 12))
+									orgWaves[wave][j][k].playing = false;
+								else
+								{
+									const size_t s_offset_1 = orgWaves[wave][j][k].pos >> 12;
 
-								const auto val = (int)(sample1 + (sample2 - sample1) * ((double)(orgWaves[wave][j][k].pos & 0xFFF) / 4096.0));
+									const int sample1 = orgWaves[wave][j][k].wave[s_offset_1 % orgWaves[wave][j][k].length] << 7;
+									int sample2 = 0;
 
-								tempSampleL += (int32_t)((long double)val * orgWaves[wave][j][k].volume * orgWaves[wave][j][k].volume_l * orgVolume);
-								tempSampleR += (int32_t)((long double)val * orgWaves[wave][j][k].volume * orgWaves[wave][j][k].volume_r * orgVolume);
+									if (orgWaves[wave][j][k].loops || s_offset_1 < orgWaves[wave][j][k].length - 1)
+										sample2 = orgWaves[wave][j][k].wave[(s_offset_1 + 1) % orgWaves[wave][j][k].length] << 7;
+
+									const auto val = (int)(sample1 + (sample2 - sample1) * ((double)(orgWaves[wave][j][k].pos & 0xFFF) / 4096.0));
+
+									tempSampleL += (int32_t)((long double)val * orgWaves[wave][j][k].volume * orgWaves[wave][j][k].volume_l * orgVolume);
+									tempSampleR += (int32_t)((long double)val * orgWaves[wave][j][k].volume * orgWaves[wave][j][k].volume_r * orgVolume);
+								}
 							}
 						}
 					}
 				}
-			}
 
-			//Play drums
-			for (int wave = 0; wave < 8; wave++)
-			{
-				const int waveSamples = (int)((long double)orgDrums[wave].freq / (long double)sampleRate * 4096.0);
-
-				if (orgDrums[wave].playing)
+				//Play drums
+				for (int wave = 0; wave < 8; wave++)
 				{
-					orgDrums[wave].pos = (orgDrums[wave].pos + waveSamples);
+					const int waveSamples = (int)((long double)orgDrums[wave].freq / (long double)sampleRate * 4096.0);
 
-					if (orgDrums[wave].pos >= (orgDrums[wave].length << 12))
-						orgDrums[wave].playing = false;
-					else
+					if (orgDrums[wave].playing)
 					{
-						const size_t s_offset_1 = orgDrums[wave].pos >> 12;
+						orgDrums[wave].pos = (orgDrums[wave].pos + waveSamples);
 
-						const int sample1 = (orgDrums[wave].wave[s_offset_1] - 0x80) << 7;
-						int sample2 = 0;
+						if (orgDrums[wave].pos >= (orgDrums[wave].length << 12))
+							orgDrums[wave].playing = false;
+						else
+						{
+							const size_t s_offset_1 = orgDrums[wave].pos >> 12;
 
-						if (s_offset_1 < orgDrums[wave].length - 1)
-							sample2 = (orgDrums[wave].wave[s_offset_1 + 1] - 0x80) << 7;
+							const int sample1 = (orgDrums[wave].wave[s_offset_1] - 0x80) << 7;
+							int sample2 = 0;
 
-						const auto val = (int)(sample1 + (sample2 - sample1) * ((double)(orgDrums[wave].pos & 0xFFF) / 4096.0));
+							if (s_offset_1 < orgDrums[wave].length - 1)
+								sample2 = (orgDrums[wave].wave[s_offset_1 + 1] - 0x80) << 7;
 
-						tempSampleL += (int32_t)((long double)val * orgDrums[wave].volume * orgDrums[wave].volume_l * orgVolume);
-						tempSampleR += (int32_t)((long double)val * orgDrums[wave].volume * orgDrums[wave].volume_r * orgVolume);
+							const auto val = (int)(sample1 + (sample2 - sample1) * ((double)(orgDrums[wave].pos & 0xFFF) / 4096.0));
+
+							tempSampleL += (int32_t)((long double)val * orgDrums[wave].volume * orgDrums[wave].volume_l * orgVolume);
+							tempSampleR += (int32_t)((long double)val * orgDrums[wave].volume * orgDrums[wave].volume_r * orgVolume);
+						}
 					}
 				}
+
+				//Clip buffer
+				tempSampleL = clamp(tempSampleL, -0x7FFF, 0x7FFF);
+				tempSampleR = clamp(tempSampleR, -0x7FFF, 0x7FFF);
+
+				//Put into main stream
+				stream[2 * i] = tempSampleL;
+				stream[2 * i + 1] = tempSampleR;
 			}
-
-			//Clip buffer
-			tempSampleL = clamp(tempSampleL, -0x7FFF, 0x7FFF);
-			tempSampleR = clamp(tempSampleR, -0x7FFF, 0x7FFF);
-
-			//Put into main stream
-			stream[2 * i] = tempSampleL;
-			stream[2 * i + 1] = tempSampleR;
 		}
 	}
 }
@@ -556,9 +559,18 @@ long play_p; //Current playback position
 NOTELIST *play_np[16]; //Currently ready to play notes
 long now_leng[8] = { NULL };
 
+void clearPlayNp()
+{
+	memset(play_np, 0, sizeof(play_np));
+
+	for (int i = 0; i < 16; i++)
+		play_np[i] = (NOTELIST*)malloc(sizeof(NOTELIST));
+}
+
 void setPlayPointer(int32_t x)
 {
-	for (int i = 0; i < 16; i++) {
+	for (int i = 0; i < 16; i++)
+	{
 		play_np[i] = org.tdata[i].note_list;
 
 		while (play_np[i] != NULL && play_np[i]->x < x)
@@ -573,7 +585,7 @@ void playData()
 	//Melody
 	for (int i = 0; i < 8; i++)
 	{
-		if (play_np[i] != NULL && play_p == play_np[i]->x)
+		if (org.loaded && play_np[i] != nullptr && play_p == play_np[i]->x)
 		{
 			if (play_np[i]->y != 0xFF) {
 				if (org.tdata[i].pipi)
@@ -585,7 +597,6 @@ void playData()
 
 			if (play_np[i]->pan < 0xFF)
 				changeOrganPan(play_np[i]->y, play_np[i]->pan, i);
-
 			if (play_np[i]->volume < 0xFF)
 				changeOrganVolume(play_np[i]->y, play_np[i]->volume, i);
 
@@ -607,7 +618,7 @@ void playData()
 	//Drums
 	for (int i = 8; i < 16; i++)
 	{
-		if (play_np[i] != NULL && play_p == play_np[i]->x)
+		if (org.loaded && play_np[i] != nullptr && play_p == play_np[i]->x)
 		{
 			if (play_np[i]->y != 0xFF)
 				playDrumObject(play_np[i]->y, 1, i - 8);
@@ -636,16 +647,19 @@ char pass3[7] = "Org-03"; //New drums
 void loadOrganya(const char *name)
 {
 	//Pause sound device
-	SDL_PauseAudioDevice(soundDev, -1);
-
+	//SDL_PauseAudioDevice(soundDev, -1);
+	
 	//Unload previous things
 	releaseNote();
+	memset(&org, 0, sizeof(org));
 	noteAlloc(0xFFFF);
 
 	//Stop currently playing notes
+	clearPlayNp();
 	memset(old_key, 0xFF, sizeof(old_key));
 	memset(key_on, 0, sizeof(key_on));
 	memset(key_twin, 0, sizeof(key_twin));
+	memset(now_leng, 0, sizeof(now_leng));
 
 	//Load
 	SDL_RWops *fp = SDL_RWFromFile(name, "rb");
@@ -695,14 +709,14 @@ void loadOrganya(const char *name)
 	for (int j = 0; j < 16; j++) {
 		//The first note from is NULL
 		if (org.tdata[j].note_num == 0) {
-			org.tdata[j].note_list = NULL;
+			org.tdata[j].note_list = nullptr;
 			continue;
 		}
 
 		//Make note list
 		np = org.tdata[j].note_p;
 		org.tdata[j].note_list = org.tdata[j].note_p;
-		np->from = NULL;
+		np->from = nullptr;
 		np->to = (np + 1);
 		np++;
 
@@ -714,7 +728,7 @@ void loadOrganya(const char *name)
 
 		//The last note to is NULL
 		np--;
-		np->to = NULL;
+		np->to = nullptr;
 
 		//Set note properties
 		np = org.tdata[j].note_p; //X position
@@ -765,7 +779,7 @@ void loadOrganya(const char *name)
 	org.playing = true;
 
 	//Start up sound device again
-	SDL_PauseAudioDevice(soundDev, 0);
+	//SDL_PauseAudioDevice(soundDev, 0);
 }
 
 //Other functions
