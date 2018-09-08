@@ -221,12 +221,9 @@ void npcAct025(npc *NPC) //egg corridor lift thing
 		NPC->act_no = 1;
 		NPC->ani_no = 0;
 		NPC->ani_wait = 0;
-		NPC->x += 4096;
-	// Fallthrough
+		NPC->x += 0x1000;
+//Fallthrough
 	case 1:
-	case 3:
-	case 5:
-	case 7:
 		if (++NPC->act_wait > 150)
 		{
 			NPC->act_wait = 0;
@@ -234,20 +231,74 @@ void npcAct025(npc *NPC) //egg corridor lift thing
 		}
 		break;
 	case 2:
-	case 4:
-	case 6:
-	case 8:
 		if (++NPC->act_wait > 64)
 		{
 			NPC->act_wait = 0;
 			++NPC->act_no;
 		}
 		else
-			NPC->y -= 512;
+		{
+			NPC->y -= 0x200;
+		}
+		break;
+	case 3:
+		if (++NPC->act_wait > 150)
+		{
+			NPC->act_wait = 0;
+			++NPC->act_no;
+		}
+		break;
+	case 4:
+		if (++NPC->act_wait > 64)
+		{
+			NPC->act_wait = 0;
+			++NPC->act_no;
+		}
+		else
+		{
+			NPC->y -= 0x200;
+		}
+		break;
+	case 5:
+		if (++NPC->act_wait > 150)
+		{
+			NPC->act_wait = 0;
+			++NPC->act_no;
+		}
+		break;
+	case 6:
+		if (++NPC->act_wait > 64)
+		{
+			NPC->act_wait = 0;
+			++NPC->act_no;
+		}
+		else
+		{
+			NPC->y += 512;
+		}
+		break;
+	case 7:
+		if (++NPC->act_wait > 150)
+		{
+			NPC->act_wait = 0;
+			++NPC->act_no;
+		}
+		break;
+	case 8:
+		if (++NPC->act_wait > 64)
+		{
+			NPC->act_wait = 0;
+			NPC->act_no = 1;
+		}
+		else
+		{
+			NPC->y += 0x200;
+		}
 		break;
 	default:
 		break;
 	}
+
 	if (NPC->act_no <= 8 && (1 << NPC->act_no) & 0x154)
 	{
 		if (++NPC->ani_wait > 1)
@@ -479,10 +530,29 @@ void npcAct028(npc *NPC)
 			NPC->xm = 0;
 			NPC->act_wait = 0;
 			NPC->ani_no = 0;
-			NPC->act_no = 1;
+			NPC->act_no = normal;
 			playSound(SFX_HitGround);
 		}
+		break;
+
+	default:
+		break;
 	}
+
+	if (NPC->act_no == flying)
+	{
+		NPC->accelerateTowardsPlayer(0x20);
+		NPC->accelerateTowardsYTarget(0x10);
+		NPC->limitYVel(0x200);
+		NPC->limitXVel(0x200);
+	}
+	else
+		NPC->doGravity(0x40, 0x5FF);
+
+	NPC->x += NPC->xm;
+	NPC->y += NPC->ym;
+
+	NPC->doRects(rcLeft, rcRight);
 }
 
 void npcAct029(npc *NPC) // Cthulhu

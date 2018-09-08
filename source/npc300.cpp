@@ -58,7 +58,7 @@ void npcAct302(npc *NPC) //Camera Helper NPC
 			}
 			else
 			{
-				//npc->pNpc = gBoss;
+				//NPC->pNpc = gBoss;
 			}
 		}
 		else if (NPC->act_no != 101)
