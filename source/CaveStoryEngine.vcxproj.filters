@@ -58,6 +58,12 @@
     <Filter Include="Source Files\classes\bullet\act">
       <UniqueIdentifier>{754df458-b380-47d1-a7ca-725b1365a1b9}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\classes\npc\map boss">
+      <UniqueIdentifier>{5692f79f-3de2-446f-bf0c-cf5b4a77cbad}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\classes\npc\map boss\boss acts">
+      <UniqueIdentifier>{ab7ce094-7eac-46b9-86cd-43a3285082f7}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -255,6 +261,9 @@
     <ClCompile Include="nemesisShoot.cpp">
       <Filter>Source Files\classes\weapons\shoot</Filter>
     </ClCompile>
+    <ClCompile Include="mapBoss.cpp">
+      <Filter>Source Files\classes\npc\map boss</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="level.h">
@@ -421,6 +430,9 @@
     </ClInclude>
     <ClInclude Include="bubbler.h">
       <Filter>Source Files\classes\bullet\act</Filter>
+    </ClInclude>
+    <ClInclude Include="mapBoss.h">
+      <Filter>Source Files\classes\npc\map boss</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

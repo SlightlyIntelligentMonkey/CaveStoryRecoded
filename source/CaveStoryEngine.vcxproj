@@ -219,6 +219,7 @@
     <ClCompile Include="loadConfig.cpp" />
     <ClCompile Include="machineGun.cpp" />
     <ClCompile Include="machineGunShoot.cpp" />
+    <ClCompile Include="mapBoss.cpp" />
     <ClCompile Include="mapSystem.cpp" />
     <ClCompile Include="misc.cpp" />
     <ClCompile Include="missile.cpp" />
@@ -287,6 +288,7 @@
     <ClInclude Include="game.h" />
     <ClInclude Include="loadConfig.h" />
     <ClInclude Include="machineGun.h" />
+    <ClInclude Include="mapBoss.h" />
     <ClInclude Include="misc.h" />
     <ClInclude Include="missile.h" />
     <ClInclude Include="nemesis.h" />
