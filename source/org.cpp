@@ -83,14 +83,14 @@ typedef struct {
 }OCTWAVE;
 
 OCTWAVE oct_wave[8] = {
-	{ 256,  1, 4 }, //0 Oct
-{ 256,  2, 8 }, //1 Oct
-{ 128,  4, 12 }, //2 Oct
-{ 128,  8, 16 }, //3 Oct
-{ 64, 16, 20 }, //4 Oct
-{ 32, 32, 24 }, //5 Oct
-{ 16, 64, 28 }, //6 Oct
-{ 8,128, 32 }, //7 Oct
+	{ 256,  1,  4 }, //0 Oct
+	{ 256,  2,  8 }, //1 Oct
+	{ 128,  4, 12 }, //2 Oct
+	{ 128,  8, 16 }, //3 Oct
+	{  64, 16, 20 }, //4 Oct
+	{  32, 32, 24 }, //5 Oct
+	{  16, 64, 28 }, //6 Oct
+	{   8,128, 32 }, //7 Oct
 };
 
 void mixOrg(int16_t *stream, int len)
@@ -110,7 +110,7 @@ void mixOrg(int16_t *stream, int len)
 					const int samplesPerBeat = sampleRate * org.wait / 1000;
 					const int samplesPerFrame = sampleRate * framerate / 1000;
 
-					if (++org.samples > samplesPerBeat && org.loaded)
+					if (++org.samples > samplesPerBeat)
 					{
 						playData();
 						org.samples = 0;
@@ -214,15 +214,15 @@ void noteAlloc(uint16_t alloc)
 {
 	for (int j = 0; j < 16; j++) {
 		org.tdata[j].wave_no = 0;
-		org.tdata[j].note_list = NULL;
+		org.tdata[j].note_list = nullptr;
 		org.tdata[j].note_p = new NOTELIST[alloc];
 
-		if (org.tdata[j].note_p == NULL)
+		if (org.tdata[j].note_p == nullptr)
 			return;
 
 		for (int i = 0; i < alloc; i++) {
-			(org.tdata[j].note_p + i)->from = NULL;
-			(org.tdata[j].note_p + i)->to = NULL;
+			(org.tdata[j].note_p + i)->from = nullptr;
+			(org.tdata[j].note_p + i)->to = nullptr;
 			(org.tdata[j].note_p + i)->length = 0;
 			(org.tdata[j].note_p + i)->pan = 0xFF;
 			(org.tdata[j].note_p + i)->volume = 0xFF;
@@ -235,22 +235,22 @@ void noteAlloc(uint16_t alloc)
 void releaseNote(void)
 {
 	for (int i = 0; i < 16; i++) {
-		if (org.tdata[i].note_p != NULL)
+		if (org.tdata[i].note_p != nullptr)
 			delete org.tdata[i].note_p;
 	}
 }
 
 //Load wave100
-char *wave_data = NULL;
+char *wave_data = nullptr;
 
 bool loadWave100()
 {
 	//Allocate data
-	if (wave_data == NULL)
+	if (wave_data == nullptr)
 		wave_data = (char *)malloc(0x100 * 100);
 
 	FILE *fp;
-	if ((fp = fopen("data/Wave100.dat", "rb")) == NULL)
+	if ((fp = fopen("data/Wave100.dat", "rb")) == nullptr)
 		return false;
 
 	fread(wave_data, sizeof(char), 0x100 * 100, fp);
@@ -265,7 +265,7 @@ bool deleteWave100()
 }
 
 //Make Organya Wave
-void releaseOrganyaObject(char track) {
+void releaseOrganyaObject(uint8_t track) {
 	for (int i = 0; i < 8; i++) {
 		for (int j = 0; j < 2; j++)
 		{
@@ -278,7 +278,7 @@ void releaseOrganyaObject(char track) {
 	memset(orgWaves[track], 0, sizeof(orgWaves[track]));
 }
 
-bool makeSoundObject8(char *wavep, char track, char pipi)
+bool makeSoundObject8(char *wavep, uint8_t track, bool pipi)
 {
 	size_t i, j, k;
 	size_t wave_size;
@@ -316,7 +316,7 @@ bool makeSoundObject8(char *wavep, char track, char pipi)
 	return true;
 }
 
-bool makeOrganyaWave(char track, char wave_no, char pipi)
+bool makeOrganyaWave(uint8_t track, uint8_t wave_no, bool pipi)
 {
 	if (wave_no >= 100)
 		return false;
@@ -327,7 +327,7 @@ bool makeOrganyaWave(char track, char wave_no, char pipi)
 
 
 //Init drum object
-void releaseDrumObject(char track) {
+void releaseDrumObject(uint8_t track) {
 	if (orgDrums[track].wave)
 		free(orgDrums[track].wave);
 	memset(&orgDrums[track], 0, sizeof(DRUM));
@@ -344,13 +344,12 @@ const char *drumLookup[8] = {
 	"data/Sound/96.pxt",
 };
 
-bool initDrumObject(int no)
+bool initDrumObject(unsigned int wave_no)
 {
-	int wave_no = no;
 	if (wave_no >= _countof(drumLookup) || drumLookup[wave_no] == nullptr)
 		return false;
-	releaseDrumObject(no); //Unload previous drum
-	loadSound(drumLookup[wave_no], &orgDrums[no].wave, &orgDrums[no].length);
+	releaseDrumObject(wave_no); //Unload previous drum
+	loadSound(drumLookup[wave_no], &orgDrums[wave_no].wave, &orgDrums[wave_no].length);
 	return true;
 }
 
@@ -370,7 +369,7 @@ void initOrganya()
 //Play melody functions
 double freq_tbl[12] = { 261.62556530060, 277.18263097687, 293.66476791741, 311.12698372208, 329.62755691287, 349.22823143300, 369.99442271163, 391.99543598175, 415.30469757995, 440.00000000000, 466.16376151809, 493.88330125612 };
 
-void changeOrganFrequency(unsigned char key, char track, int32_t a)
+void changeOrganFrequency(unsigned char key, uint8_t track, int32_t a)
 {
 	double tmpDouble;
 	for (int j = 0; j < 8; j++)
@@ -387,7 +386,7 @@ unsigned char old_key[16] = { 255,255,255,255,255,255,255,255 };
 unsigned char key_on[16] = { 0 };
 unsigned char key_twin[16] = { 0 };
 
-void changeOrganPan(unsigned char key, unsigned char pan, char track)
+void changeOrganPan(unsigned char key, unsigned char pan, uint8_t track)
 {
 	if (old_key[track] != 0xFF)
 	{
@@ -405,13 +404,14 @@ void changeOrganPan(unsigned char key, unsigned char pan, char track)
 }
 
 constexpr long double orgVolumeMin = 0.04;
-void changeOrganVolume(int no, long volume, char track)
+
+void changeOrganVolume(int no, long volume, uint8_t track)
 {
 	if (old_key[track] != 0xFF)
 		orgWaves[track][old_key[track] / 12][key_twin[track]].volume = orgVolumeMin + ((long double)volume / 255.0f * (1.0 - orgVolumeMin));
 }
 
-void playOrganObject(unsigned char key, int play_mode, char track, int32_t freq)
+void playOrganObject(unsigned char key, int play_mode, uint8_t track, int32_t freq)
 {
 	switch (play_mode) {
 	case 0: //Stop
@@ -462,8 +462,7 @@ void playOrganObject(unsigned char key, int play_mode, char track, int32_t freq)
 		break;
 	}
 }
-
-void playOrganObject2(unsigned char key, int play_mode, char track, int32_t freq)
+void playOrganObject2(unsigned char key, int play_mode, uint8_t track, int32_t freq)
 {
 	switch (play_mode) {
 	case 0: //Stop
@@ -511,12 +510,12 @@ void playOrganObject2(unsigned char key, int play_mode, char track, int32_t freq
 }
 
 //Play drum functions
-void changeDrumFrequency(unsigned char key, char track)
+void changeDrumFrequency(unsigned char key, uint8_t track)
 {
 	orgDrums[track].freq = key * 800 + 100;
 }
 
-void changeDrumPan(unsigned char pan, char track)
+void changeDrumPan(unsigned char pan, uint8_t track)
 {
 	orgDrums[track].volume_l = 1.0f;
 	orgDrums[track].volume_r = 1.0f;
@@ -530,12 +529,12 @@ void changeDrumPan(unsigned char pan, char track)
 	if (orgDrums[track].volume_r > 1.0f) orgDrums[track].volume_r = 1.0f;
 }
 
-void changeDrumVolume(long volume, char track)
+void changeDrumVolume(long volume, uint8_t track)
 {
 	orgDrums[track].volume = orgVolumeMin + ((long double)volume / 255.0f * (1.0 - orgVolumeMin));
 }
 
-void playDrumObject(uint8_t key, int play_mode, char track)
+void playDrumObject(uint8_t key, int play_mode, uint8_t track)
 {
 	switch (play_mode) {
 	case 0: //Stop
@@ -557,15 +556,14 @@ void playDrumObject(uint8_t key, int play_mode, char track)
 //Playing functions
 long play_p; //Current playback position
 NOTELIST *play_np[16]; //Currently ready to play notes
-long now_leng[8] = { NULL };
+long now_leng[8] = { 0 };
 
 void clearPlayNp()
 {
+	memset(play_np, 0, sizeof(play_np));
+
 	for (int i = 0; i < 16; i++)
-	{
 		play_np[i] = (NOTELIST*)malloc(sizeof(NOTELIST));
-		memset(play_np[i], 0, sizeof(*play_np[i]));
-	}
 }
 
 void setPlayPointer(int32_t x)
@@ -574,8 +572,8 @@ void setPlayPointer(int32_t x)
 	{
 		play_np[i] = org.tdata[i].note_list;
 
-		while (play_np[i] != NULL && play_np[i]->x < x)
-			play_np[i] = play_np[i]->to; //Set notes to watch	
+		while (play_np[i] != nullptr && play_np[i]->x < x)
+			play_np[i] = play_np[i]->to; //Set notes to watch
 	}
 
 	play_p = x;
@@ -583,12 +581,10 @@ void setPlayPointer(int32_t x)
 
 void playData()
 {
-	if (org.loaded == false)
-		return;
-
 	//Melody
 	for (int i = 0; i < 8; i++)
 	{
+		if (play_np[i] != nullptr && play_p == play_np[i]->x)
 		if (org.loaded && play_np[i] != nullptr && play_p == play_np[i]->x)
 		{
 			if (play_np[i]->y != 0xFF) {
@@ -610,9 +606,9 @@ void playData()
 		if (now_leng[i] == 0)
 		{
 			if (org.tdata[i].pipi)
-				playOrganObject2(NULL, 2, i, org.tdata[i].freq);
+				playOrganObject2(0, 2, i, org.tdata[i].freq);
 			else
-				playOrganObject(NULL, 2, i, org.tdata[i].freq);
+				playOrganObject(0, 2, i, org.tdata[i].freq);
 		}
 
 		if (now_leng[i] > 0)
@@ -650,14 +646,13 @@ char pass3[7] = "Org-03"; //New drums
 
 void loadOrganya(const char *name)
 {
+    if (disableOrg)
+        return;
 	//Pause sound device
 	//SDL_PauseAudioDevice(soundDev, -1);
-	
-	//Unload previous things
-	org.loaded = false;
-	org.playing = false;
 
-	releaseNote();
+	//Unload previous things
+    releaseNote();
 	memset(&org, 0, sizeof(org));
 	noteAlloc(0xFFFF);
 
@@ -706,7 +701,7 @@ void loadOrganya(const char *name)
 		org.tdata[i].wave_no = SDL_ReadU8(fp);
 		org.tdata[i].pipi = SDL_ReadU8(fp);
 		if (ver == 1)
-			org.tdata[i].pipi = 0;
+			org.tdata[i].pipi = false;
 		org.tdata[i].note_num = SDL_ReadLE16(fp);
 	}
 
@@ -775,7 +770,7 @@ void loadOrganya(const char *name)
 	for (int j = 0; j < 8; j++)
 		makeOrganyaWave(j, org.tdata[j].wave_no, org.tdata[j].pipi);
 
-	for (int j = 8; j < 16; j++)
+	for (unsigned int j = 8; j < 16; j++)
 		initDrumObject(j - 8);
 
 	//Reset position

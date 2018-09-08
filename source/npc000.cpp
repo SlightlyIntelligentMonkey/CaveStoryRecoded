@@ -1147,7 +1147,7 @@ void npcAct012(npc *NPC) //Balrog cutscene
 			NPC->ani_wait = 0;
 
 			if (++NPC->ani_no == 10 || NPC->ani_no == 11)
-				playSound(SFX_QuoteHitGround);
+				playSound(SFX_HitGround);
 		}
 
 		if (NPC->ani_no > 12)

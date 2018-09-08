@@ -76,7 +76,7 @@ void mixOrg(int16_t *stream, int len);
 void initOrganya();
 void loadOrganya(const char *name);
 
-bool makeOrganyaWave(char track, char wave_no, char pipi);
+bool makeOrganyaWave(uint8_t track, uint8_t wave_no, bool pipi);
 
 void playData();
 

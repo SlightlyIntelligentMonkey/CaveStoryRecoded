@@ -255,6 +255,12 @@
     <ClCompile Include="nemesisShoot.cpp">
       <Filter>Source Files\classes\weapons\shoot</Filter>
     </ClCompile>
+    <ClCompile Include="ORIG_org.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="pxt.cpp">
+      <Filter>Source Files\modules\sound</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="level.h">
@@ -421,6 +427,12 @@
     </ClInclude>
     <ClInclude Include="bubbler.h">
       <Filter>Source Files\classes\bullet\act</Filter>
+    </ClInclude>
+    <ClInclude Include="ORIG_org.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="pxt.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

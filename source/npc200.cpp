@@ -210,7 +210,7 @@ void npcAct203(npc * NPC) // Critter, Hopping Aqua (enemy)
 			NPC->ani_no = 0;
 			NPC->act_no = waitForAttack;
 			if (!(currentPlayer.cond & player_removed))
-				playSound(SFX_QuoteHitGround);
+				playSound(SFX_HitGround);
 		}
 		break;
 
@@ -464,6 +464,187 @@ void npcAct211(npc *NPC) //Spikes
 	rcNPC[3].bottom = 216;
 
 	NPC->rect = rcNPC[NPC->code_event];
+}
+
+void npcAct212(npc *NPC) // Sky Dragon
+{
+    vector<RECT> rcNPC = {{160, 152, 200, 192}, {200, 152, 240, 192}, {240, 112, 280, 152}, {280, 112, 320, 152}};
+
+    enum
+    {
+        init = 0,
+        stand = 1,
+        startHover = 10,
+        hovering = 11,
+        startFlight = 20,
+        flying = 21,
+        normalEndingState = 30,
+    };
+
+    switch (NPC->act_no)
+    {
+    case init:
+        NPC->act_no = stand;
+        NPC->y -= pixelsToUnits(4);
+        // Fallthrough
+    case stand:
+        NPC->animate(30, 0, 1);
+        break;
+
+    case startHover:
+        NPC->act_no = hovering;
+        NPC->ani_no = 2;
+        NPC->ani_wait = 0;
+        NPC->tgt_x = NPC->x - pixelsToUnits(6);
+        NPC->tgt_y = NPC->y - tilesToUnits(1);
+        NPC->ym = 0;
+        NPC->bits |= npc_ignoreSolid;
+        // Fallthrough
+    case hovering:
+        NPC->accelerateTowardsXTarget(8);
+        NPC->accelerateTowardsYTarget(8);
+
+        NPC->x += NPC->xm;
+        NPC->y += NPC->ym;
+
+        NPC->animate(5, 2, 3);
+        break;
+
+    case startFlight:
+        NPC->act_no = flying;
+        NPC->flag |= npc_ignoreSolid;
+        // Fallthrough
+    case flying:
+        NPC->accelerateTowardsYTarget(0x10);
+        NPC->xm += 0x20;
+        NPC->limitXVel(0x600);
+
+        NPC->x += NPC->xm;
+        NPC->y += NPC->ym;
+
+        NPC->animate(2, 2, 3);
+        break;
+
+    case normalEndingState:
+        NPC->act_no = normalEndingState + 1;
+        createNpc(NPC_SueOnSkyDragon, 0, 0, 0, 0, dirLeft, NPC);
+        break;
+
+    default:
+        break;
+    }
+
+    NPC->doRects(rcNPC);
+
+    if (currentPlayer.equip & equip_mimigaMask)
+    {
+        if (NPC->ani_no > 1)
+        {
+            NPC->rect.top += 40;
+            NPC->rect.bottom += 40;
+        }
+    }
+}
+
+void npcAct215(npc *NPC) // Sandcroc, White (enemy)
+{
+    enum
+    {
+        init = 0,
+        waitInSand = 1,
+        startAttack = 15,
+        attacking = 20,
+        waitOutOfSand = 30,
+        goBackIntoSand = 40,
+        wait2SecsInSand = 50,
+    };
+
+    switch (NPC->act_no)
+    {
+    case init:
+        NPC->ani_no = 0;
+        NPC->act_no = waitInSand;
+        NPC->act_wait = 0;
+        NPC->tgt_y = NPC->y;
+        NPC->bits &= ~npc_shootable;
+        NPC->bits &= ~npc_invulnerable;
+        NPC->bits &= ~npc_solidSoft;
+        NPC->bits &= ~npc_ignoreSolid;
+        // Fallthrough
+    case waitInSand:
+        if (NPC->isPlayerWithinDistance(0x1800, 0, 0x1000))
+        {
+            NPC->act_no = startAttack;
+            NPC->act_wait = 0;
+        }
+        break;
+
+    case startAttack:
+        if (++NPC->act_wait > 10)
+        {
+            playSound(SFX_SandCroc);
+            NPC->act_no = attacking;
+        }
+        break;
+
+    case attacking:
+        if (++NPC->ani_wait > 3)
+        {
+            ++NPC->ani_no;
+            NPC->ani_wait = 0;
+        }
+        if (NPC->ani_no == 3)
+            NPC->damage = 15;
+        if (NPC->ani_no == 4)
+        {
+            NPC->bits |= npc_shootable;
+            NPC->act_no = waitOutOfSand;
+            NPC->act_wait = 0;
+        }
+        break;
+
+    case waitOutOfSand:
+        NPC->bits |= npc_solidSoft;
+        NPC->damage = 0;
+        ++NPC->act_wait;
+
+        if (NPC->shock)
+        {
+            NPC->act_no = goBackIntoSand;
+            NPC->act_wait = 0;
+        }
+        break;
+
+    case goBackIntoSand:
+        NPC->bits |= npc_ignoreSolid;
+        NPC->y += pixelsToUnits(1);
+        if (++NPC->act_wait == 0x20)
+        {
+            NPC->bits &= ~npc_solidSoft;
+            NPC->bits &= ~npc_shootable;
+            NPC->act_no = wait2SecsInSand;
+            NPC->act_wait = 0;
+        }
+        break;
+
+    case wait2SecsInSand:
+        if (NPC->act_wait >= 100)
+        {
+            NPC->y = NPC->tgt_y;
+            NPC->ani_no = 0;
+            NPC->act_no = init;
+        }
+        else
+            ++NPC->act_wait;
+        break;
+
+    default:
+        break;
+    }
+
+    vector<RECT> rcNPC = {{0, 0, 0, 0}, {0, 96, 48, 128}, {48, 96, 96, 128}, {96, 96, 144, 128}, {144, 96, 192, 128}};
+
+    NPC->doRects(rcNPC);
 }
 
 void npcAct216(npc *NPC) // Debug cat

@@ -1,10 +1,8 @@
 WARNINGS = -pedantic -Wall -Wextra -Wno-multichar -Wno-unused-parameter
 
-OPTIMISATIONS = -Ofast -flto -frename-registers -funroll-loops
-
-CXXFLAGS = $(OPTIMISATIONS) $(WARNINGS)
-ALL_CXXFLAGS = -std=c++17 `sdl2-config --cflags` -m32 -IJson_Modern_Cpp $(CXXFLAGS)
-LDFLAGS = -s -mwindows
+CXXFLAGS = -O3 $(WARNINGS)
+ALL_CXXFLAGS = -std=c++17 `sdl2-config --cflags` -IJson_Modern_Cpp $(CXXFLAGS)
+LDFLAGS = -s
 ALL_LDFLAGS = -static `sdl2-config --static-libs` $(LDFLAGS)
 LIBS = 
 ALL_LIBS = -lSDL2_image -ljpeg -lpng -lwebp -lz -ltiff -llzma $(LIBS)
@@ -19,11 +17,11 @@ MAIN += bulletCollision npcCollision playerCollision
 # drawing
 MAIN += fade hud render
 # sound
-MAIN +=	org sound
+MAIN +=	org pxt sound
 # classes
 MAIN += bullet caret npc player weapons valueview
 # weapon acts
-MAIN += bladeThrow bubblePew fireballShoot machineGunShoot missileShoot nemesisShoot polarStarShoot snakeShoot
+MAIN += bladeThrow bubblePew fireballShoot machineGunShoot missileShoot nemesisShoot polarStarShoot snakeShoot spurShoot
 # bullet acts
 MAIN += blade bubbler fireball missile polarStar machineGun misc nemesis snake spur
 # npc acts
