@@ -581,10 +581,12 @@ void setPlayPointer(int32_t x)
 
 void playData()
 {
+	if (!org.loaded)
+		return;
+
 	//Melody
 	for (int i = 0; i < 8; i++)
 	{
-		if (play_np[i] != nullptr && play_p == play_np[i]->x)
 		if (org.loaded && play_np[i] != nullptr && play_p == play_np[i]->x)
 		{
 			if (play_np[i]->y != 0xFF) 
@@ -653,9 +655,15 @@ void loadOrganya(const char *name)
 	//SDL_PauseAudioDevice(soundDev, -1);
 
 	//Unload previous things
+	org.loaded = false;
+	org.playing = false;
+
     releaseNote();
 	memset(&org, 0, sizeof(org));
 	noteAlloc(0xFFFF);
+
+	org.loaded = false;
+	org.playing = false;
 
 	//Stop currently playing notes
 	clearPlayNp();
