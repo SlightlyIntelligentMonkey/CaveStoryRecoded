@@ -574,7 +574,7 @@ void setPlayPointer(int32_t x)
 		play_np[i] = org.tdata[i].note_list;
 
 		while (play_np[i] != nullptr && play_np[i]->x < x)
-			play_np[i] = play_np[i]->to; //Set notes to watch	
+			play_np[i] = play_np[i]->to; //Set notes to watch
 	}
 
 	play_p = x;
@@ -647,11 +647,13 @@ char pass3[7] = "Org-03"; //New drums
 
 void loadOrganya(const char *name)
 {
+    if (disableOrg)
+        return;
 	//Pause sound device
 	//SDL_PauseAudioDevice(soundDev, -1);
-	
+
 	//Unload previous things
-	releaseNote();
+    releaseNote();
 	memset(&org, 0, sizeof(org));
 	noteAlloc(0xFFFF);
 

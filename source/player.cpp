@@ -16,6 +16,8 @@ using std::memset;
 
 player currentPlayer;
 
+bool disableDamage = false;
+
 void player::init()
 {
 	memset(this, 0, sizeof(*this));
@@ -126,7 +128,10 @@ void player::backStep(int entityEventNum)
 
 void player::damage(int16_t damage)
 {
-	if (!shock)
+    if (disableDamage)
+        return;
+
+    if (!shock)
 	{
 		playSound(SFX_QuoteHurt);
 

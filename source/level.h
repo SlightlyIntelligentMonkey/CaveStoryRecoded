@@ -51,14 +51,12 @@ void drawLevel(bool foreground);
 
 // Note : 1 tile is 0x2000 units
 
-template <typename T>
-constexpr inline T tilesToUnits(T x)
+constexpr inline int tilesToUnits(int x)
 {
 	return x << 13;
 }
 
-template <typename T>
-constexpr inline T unitsToTiles(T x)
+constexpr inline int unitsToTiles(int x)
 {
 	return x >> 13;
 }
