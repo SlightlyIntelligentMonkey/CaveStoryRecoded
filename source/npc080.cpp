@@ -1374,6 +1374,129 @@ void npcAct093(npc * NPC)
 	NPC->doRects(rcLeft, rcRight);
 }
 
+void npcAct094(npc * NPC)
+{
+	vector<RECT> rcNPC = { {272, 0, 320, 24}, {272, 24, 320, 48}, {272, 48, 320, 73}, {272, 72, 320, 96}, {272, 96, 320, 120} };
+
+	enum
+	{
+		waitingForShoot = 0,
+		falling = 10,
+		animateThrust = 11,
+		thrusting = 12,
+		gotShot = 20,
+	};
+
+	switch (NPC->act_no)
+	{
+	case waitingForShoot:
+		NPC->ani_no = 4;
+		if (NPC->shock)
+		{
+			NPC->ani_no = 0;
+			NPC->act_no = falling;
+			NPC->act_wait = 0;
+		}
+		break;
+
+	case falling:
+		NPC->bits |= npc_shootable;
+		NPC->bits &= ~npc_invulnerable;
+		if (++NPC->act_wait > 40)
+		{
+			NPC->act_wait = 0;
+			NPC->ani_wait = 0;
+			NPC->act_no = animateThrust;
+		}
+		break;
+
+	case animateThrust:
+		if (++NPC->ani_wait > 5)
+		{
+			NPC->ani_wait = 0;
+			++NPC->ani_no;
+		}
+		if (NPC->ani_no > 2)
+		{
+			NPC->act_no = thrusting;
+			NPC->ani_no = 3;
+		}
+		break;
+
+	case thrusting:
+		NPC->ym = -0x155;
+		if (++NPC->act_wait > 20)
+		{
+			NPC->act_wait = 0;
+			NPC->act_no = falling;
+			NPC->ani_no = 0;
+		}
+		break;
+
+	case gotShot:
+		NPC->xm /= 2;
+		NPC->ym += 0x20;
+		if (!NPC->shock)
+		{
+			NPC->act_wait = 30;
+			NPC->act_no = falling;
+			NPC->ani_no = 0;
+		}
+		break;
+
+	default:
+		break;
+	}
+
+	if (NPC->shock)
+	{
+		if (++NPC->count2 > 12)
+		{
+			NPC->act_no = 20;
+			NPC->ani_no = 4;
+			NPC->bits &= ~npc_shootable;
+			NPC->bits |= npc_invulnerable;
+		}
+	}
+	else
+		NPC->count2 = 0;
+
+	if (NPC->act_no >= falling)
+	{
+		if (NPC->flag & leftWall)
+		{
+			NPC->count1 = 50;
+			NPC->direct = dirRight;
+		}
+		if (NPC->flag & rightWall)
+		{
+			NPC->count1 = 50;
+			NPC->direct = 0;
+		}
+
+		if (NPC->count1)
+		{
+			--NPC->count1;
+			NPC->moveInDir(0x80);
+		}
+		else
+		{
+			NPC->count1 = 50;
+			NPC->facePlayer();
+		}
+		NPC->ym += 0x10;
+		if (NPC->flag & ground)
+			NPC->ym = -0x400;
+	}
+
+	NPC->limitXVel(0x100);
+	NPC->limitYVel(0x300);
+	NPC->x += NPC->xm;
+	NPC->y += NPC->ym;
+
+	NPC->doRects(rcNPC);
+}
+
 void npcAct096(npc *NPC) //Fan left
 {
 	const int action = NPC->act_no;

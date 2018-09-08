@@ -3,6 +3,7 @@
 #include "game.h"
 #include "org.h"
 #include "filesystem.h"
+#include "player.h"
 
 #include <string>
 #include <fstream>
@@ -66,9 +67,18 @@ void loadFilesystemJson()
 		profileCode = jFilesystem["profileCode"];
 }
 
+void loadPlayerJson()
+{
+    auto jPlayer = loadJsonFromFile(baseJsonFolder + "player.json");
+
+    if (jPlayer["disableDamage"] == true)
+        disableDamage = true;
+}
+
 void loadConfigFiles()
 {
 	loadGameJson();
 	loadOrgJson();
 	loadFilesystemJson();
+	loadPlayerJson();
 }
