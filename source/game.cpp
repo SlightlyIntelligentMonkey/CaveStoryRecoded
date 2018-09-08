@@ -41,7 +41,7 @@ void initGame()
 	memset(mapFlags, 0, sizeof(mapFlags));
 
 	//Clear other stuff
-	clearBossLife();
+	init2();
 	initWeapons();
 	memset(permitStage, 0, sizeof(permitStage));
 	memset(items, 0, sizeof(items));
@@ -58,7 +58,7 @@ void initGame()
 }
 
 //Init other important things
-void clearBossLife()
+void init2()
 {
 	memset(&bossLife, 0, sizeof(bossLife));
 }
@@ -243,8 +243,8 @@ int escapeMenu()
 	while (true)
 	{
 		//Handle events
-		getKeys(&events);
-		if (events.type == SDL_QUIT || exitGame)
+		getKeys();
+		if (exitGame)
 			return 0;
 
 		if (isKeyPressed(SDL_SCANCODE_ESCAPE))
@@ -282,14 +282,14 @@ int escapeMenu()
 //Main States
 int gameUpdatePlay()
 {
-	clearBossLife();
+	init2();
 
 	while (true)
 	{
 		//Handle events
-		getKeys(&events);
+		getKeys();
 
-		if (events.type == SDL_QUIT || exitGame)
+		if (exitGame)
 			return 0;
 
 		if (isKeyDown(SDL_SCANCODE_ESCAPE))
@@ -422,9 +422,9 @@ int gameUpdateMenu()
 	while (true)
 	{
 		//Handle events
-		getKeys(&events);
+		getKeys();
 
-		if (events.type == SDL_QUIT || exitGame)
+		if (exitGame)
 			return 0;
 
 		if (isKeyDown(SDL_SCANCODE_ESCAPE))
@@ -485,7 +485,7 @@ int gameUpdateMenu()
 	frame = SDL_GetTicks();
 	while (SDL_GetTicks() < frame + 1000)
 	{
-		getKeys(&events);
+		getKeys();
 		SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
 		SDL_RenderClear(renderer);
 		drawWindow();
@@ -501,7 +501,7 @@ int gameUpdateMenu()
 
 int gameUpdateIntro()
 {
-	clearBossLife();
+	init2();
 
 	uint32_t frame = 0;
 	loadLevel(72);
@@ -517,9 +517,9 @@ int gameUpdateIntro()
 		frame++;
 
 		//Handle events
-		getKeys(&events);
+		getKeys();
 
-		if (events.type == SDL_QUIT || exitGame)
+		if (exitGame)
 			return 0;
 
 		if (isKeyDown(SDL_SCANCODE_ESCAPE))
@@ -572,7 +572,7 @@ int gameUpdateIntro()
 	frame = SDL_GetTicks();
 	while (SDL_GetTicks() < frame + 500)
 	{
-		getKeys(&events);
+		getKeys();
 		SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
 		SDL_RenderClear(renderer);
 		drawWindow();

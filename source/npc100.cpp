@@ -69,7 +69,7 @@ void npcAct104(npc *NPC) // Frog (enemy)
 	vector<RECT> rcRight(3);
 
 	rcLeft = { {0, 112, 32, 144}, {32, 112, 64, 144}, {64, 112, 96, 144} };
-	rcRight = { {0, 144, 32, 176}, {32, 144, 64, 176}, {64, 155, 96, 176} };
+	rcRight = { {0, 144, 32, 176}, {32, 144, 64, 176}, {64, 144, 96, 176} };
 
 	enum
 	{
@@ -132,6 +132,8 @@ void npcAct104(npc *NPC) // Frog (enemy)
 		break;
 
 	case startJump:
+	    NPC->act_no = jumping;
+	    // Fallthrough
 	case jumping:
 		if (NPC->flag & leftWall && NPC->xm < 0)
 		{
@@ -177,10 +179,13 @@ void npcAct104(npc *NPC) // Frog (enemy)
 		if (!(currentPlayer.cond & player_removed))
 			playSound(SFX_CritterHop);
 
-		NPC->moveTowardsPlayer(0x200);
+		NPC->moveInDir(0x200);
 	}
 
 	NPC->doGravity(0x80, 0x5FF);
+	NPC->x += NPC->xm;
+	NPC->y += NPC->ym;
+
 	NPC->doRects(rcLeft, rcRight);
 }
 

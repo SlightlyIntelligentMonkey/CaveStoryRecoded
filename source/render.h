@@ -54,13 +54,13 @@ void createTextureBuffer(enum TextureNums texture_id, int width, int height);
 // 1 pixel is 0x200 units
 
 template <typename T>
-inline T pixelsToUnits(T x) 
+constexpr inline T pixelsToUnits(T x) 
 {
 	return x << 9;
 }
 
 template <typename T>
-inline T unitsToPixels(T x) 
+constexpr inline T unitsToPixels(T x) 
 {
 	return x >> 9;
 }

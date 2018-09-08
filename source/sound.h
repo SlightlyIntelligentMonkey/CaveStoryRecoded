@@ -46,7 +46,7 @@ enum soundEffects
 	SFX_QuoteHeal = 0x14,
 	SFX_Bubble = 0x15,
 	SFX_ChestOpen = 0x16,
-	SFX_QuoteHitGround = 0x17,
+	SFX_HitGround = 0x17,
 	SFX_QuoteWalk = 0x18,
 	SFX_SillyExplosion = 0x19,
 	SFX_LargeObjectHitGround = 0x1A,

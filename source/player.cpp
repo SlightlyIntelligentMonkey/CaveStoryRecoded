@@ -16,6 +16,8 @@ using std::memset;
 
 player currentPlayer;
 
+bool disableDamage = false;
+
 void player::init()
 {
 	memset(this, 0, sizeof(*this));
@@ -126,7 +128,10 @@ void player::backStep(int entityEventNum)
 
 void player::damage(int16_t damage)
 {
-	if (!shock)
+    if (disableDamage)
+        return;
+
+    if (!shock)
 	{
 		playSound(SFX_QuoteHurt);
 
@@ -416,9 +421,9 @@ void player::actNormal(bool bKey)
 				dir = 2;
 
 			//Splash stuff
-			if (flag & ground || ym <= pixelsToUnits(2))
+			if (flag & ground || ym <= 0x200)
 			{
-				if (xm > pixelsToUnits(2) || xm < pixelsToUnits(-2))
+				if (xm > 0x200 || xm < 0x200)
 				{
 					for (int i = 0; i < 8; ++i)
 						createNpc(NPC_Waterdrop, x + pixelsToUnits(random(-8, 8)), y,

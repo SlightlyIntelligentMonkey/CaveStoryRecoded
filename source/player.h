@@ -88,6 +88,8 @@ private:
 
 extern player currentPlayer;
 
+extern bool disableDamage;
+
 enum player_flag
 {
 	player_interact = 0x1, //Inspecting
