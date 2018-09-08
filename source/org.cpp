@@ -588,7 +588,8 @@ void playData()
 		if (play_np[i] != nullptr && play_p == play_np[i]->x)
 		if (org.loaded && play_np[i] != nullptr && play_p == play_np[i]->x)
 		{
-			if (play_np[i]->y != 0xFF) {
+			if (play_np[i]->y != 0xFF) 
+			{
 				if (org.tdata[i].pipi)
 					playOrganObject2(play_np[i]->y, -1, i, org.tdata[i].freq);
 				else

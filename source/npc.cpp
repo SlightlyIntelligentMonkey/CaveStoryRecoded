@@ -406,8 +406,17 @@ void npc::animate(int aniWait, int aniStart, int aniMax)
 		this->ani_wait = 0;
 		++this->ani_no;
 	}
+	if (aniStart == -1 || aniMax == -1)
+		return;
+
 	if (this->ani_no > aniMax)
 		this->ani_no = aniStart;
+}
+
+void npc::createSmokeWithVel(size_t num, int xVel, int yVel)
+{
+	for (size_t i = 0; i < num; ++i)
+		createNpc(NPC_Smoke, this->x, this->y, xVel, yVel);
 }
 
 void npc::doGravity(int gravity, int maxYVel)
