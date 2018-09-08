@@ -23,8 +23,6 @@ int charScale = 2;
 
 static bool handleEvents()
 {
-	SDL_PumpEvents();
-
 	static bool focusGained = true;
 
 	while (SDL_PollEvent(NULL) || !focusGained)
