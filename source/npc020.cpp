@@ -376,6 +376,113 @@ void npcAct027(npc *NPC) // Death Spikes
 void npcAct028(npc *NPC)
 {
     vector<RECT> rcLeft(6);
+	vector<RECT> rcRight(6);
+
+	rcLeft[0] = { 0, 48, 16, 64 };
+	rcLeft[1] = { 16, 48, 32, 64 };
+	rcLeft[2] = { 32, 48, 48, 64 };
+	rcLeft[3] = { 48, 48, 64, 64 };
+	rcLeft[4] = { 64, 48, 80, 64 };
+	rcLeft[5] = { 80, 48, 96, 64 };
+
+	rcRight[0] = { 0, 64, 16, 80 };
+	rcRight[1] = { 16, 64, 32, 80 };
+	rcRight[2] = { 32, 64, 48, 80 };
+	rcRight[3] = { 48, 64, 64, 80 };
+	rcRight[4] = { 64, 64, 80, 80 };
+	rcRight[5] = { 80, 64, 96, 80 };
+
+	enum
+	{
+		init = 0,
+		normal = 1,
+		startJump = 2,
+		jumping = 3,
+		flying = 4,
+		goingDownFromFlight = 5,
+	};
+
+	switch (NPC->act_no)
+	{
+	case init:
+		NPC->y += pixelsToUnits(3);
+		NPC->act_no = normal;
+		// Fallthrough
+	case normal:
+		if (NPC->act_wait < 8 || NPC->isPlayerWithinDistance(tilesToUnits(8), tilesToUnits(8), tilesToUnits(3)))
+		{
+			if (NPC->act_wait < 8)
+				++NPC->act_wait;
+			NPC->ani_no = 0;
+		}
+		else
+		{
+			NPC->facePlayer();
+			NPC->ani_no = 1;
+		}
+
+		if (NPC->shock || (NPC->isPlayerWithinDistance(tilesToUnits(6), tilesToUnits(6), tilesToUnits(3))))
+		{
+			NPC->act_no = startJump;
+			NPC->ani_no = 0;
+			NPC->act_wait = 0;
+		}
+		break;
+
+	case startJump:
+		if (++NPC->act_wait > 8)
+		{
+			NPC->act_no = jumping;
+			NPC->ani_no = 2;
+
+			NPC->ym = -0x4CC;
+			playSound(SFX_CritterHop);
+			NPC->facePlayer();
+			NPC->moveInDir(0x100);
+		}
+		break;
+
+	case jumping:
+		if (NPC->ym > 0x100)
+		{
+			NPC->tgt_y = NPC->y;
+			NPC->act_no = flying;
+			NPC->ani_no = 3;
+			NPC->act_wait = 0;
+		}
+		break;
+
+	case flying:
+		NPC->facePlayer();
+		++NPC->act_wait;
+		if (NPC->flag & (leftWall | rightWall | ceiling) || NPC->act_wait > 100)
+		{
+			NPC->damage = 3;
+			NPC->act_no = goingDownFromFlight;
+			NPC->ani_no = 2;
+			NPC->xm /= 2;
+		}
+		else
+		{
+			if (NPC->act_wait % 4 == 1)
+				playSound(SFX_CritterFly);
+			if (NPC->flag & ground)
+				NPC->ym = pixelsToUnits(-1);
+			NPC->animate(0, 3, 5);
+		}
+		break;
+
+	case goingDownFromFlight:
+		if (NPC->flag & ground)
+		{
+			NPC->damage = 2;
+			NPC->xm = 0;
+			NPC->act_wait = 0;
+			NPC->ani_no = 0;
+			NPC->act_no = 1;
+			playSound(SFX_HitGround);
+		}
+	}
 }
 
 void npcAct029(npc *NPC) // Cthulhu
