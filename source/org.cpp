@@ -83,14 +83,14 @@ typedef struct {
 }OCTWAVE;
 
 OCTWAVE oct_wave[8] = {
-	{ 256,  1, 4 }, //0 Oct
-{ 256,  2, 8 }, //1 Oct
-{ 128,  4, 12 }, //2 Oct
-{ 128,  8, 16 }, //3 Oct
-{ 64, 16, 20 }, //4 Oct
-{ 32, 32, 24 }, //5 Oct
-{ 16, 64, 28 }, //6 Oct
-{ 8,128, 32 }, //7 Oct
+	{ 256,  1,  4 }, //0 Oct
+	{ 256,  2,  8 }, //1 Oct
+	{ 128,  4, 12 }, //2 Oct
+	{ 128,  8, 16 }, //3 Oct
+	{  64, 16, 20 }, //4 Oct
+	{  32, 32, 24 }, //5 Oct
+	{  16, 64, 28 }, //6 Oct
+	{   8,128, 32 }, //7 Oct
 };
 
 void mixOrg(int16_t *stream, int len)
@@ -278,7 +278,7 @@ void releaseOrganyaObject(uint8_t track) {
 	memset(orgWaves[track], 0, sizeof(orgWaves[track]));
 }
 
-bool makeSoundObject8(char *wavep, uint8_t track, char pipi)
+bool makeSoundObject8(char *wavep, uint8_t track, bool pipi)
 {
 	size_t i, j, k;
 	size_t wave_size;
@@ -316,7 +316,7 @@ bool makeSoundObject8(char *wavep, uint8_t track, char pipi)
 	return true;
 }
 
-bool makeOrganyaWave(uint8_t track, uint8_t wave_no, char pipi)
+bool makeOrganyaWave(uint8_t track, uint8_t wave_no, bool pipi)
 {
 	if (wave_no >= 100)
 		return false;
@@ -344,13 +344,12 @@ const char *drumLookup[8] = {
 	"data/Sound/96.pxt",
 };
 
-bool initDrumObject(int no)
+bool initDrumObject(unsigned int wave_no)
 {
-	int wave_no = no;
 	if (wave_no >= _countof(drumLookup) || drumLookup[wave_no] == nullptr)
 		return false;
-	releaseDrumObject(no); //Unload previous drum
-	loadSound(drumLookup[wave_no], &orgDrums[no].wave, &orgDrums[no].length);
+	releaseDrumObject(wave_no); //Unload previous drum
+	loadSound(drumLookup[wave_no], &orgDrums[wave_no].wave, &orgDrums[wave_no].length);
 	return true;
 }
 
@@ -405,6 +404,7 @@ void changeOrganPan(unsigned char key, unsigned char pan, uint8_t track)
 }
 
 constexpr long double orgVolumeMin = 0.04;
+
 void changeOrganVolume(int no, long volume, uint8_t track)
 {
 	if (old_key[track] != 0xFF)
@@ -462,7 +462,6 @@ void playOrganObject(unsigned char key, int play_mode, uint8_t track, int32_t fr
 		break;
 	}
 }
-
 void playOrganObject2(unsigned char key, int play_mode, uint8_t track, int32_t freq)
 {
 	switch (play_mode) {
@@ -702,7 +701,7 @@ void loadOrganya(const char *name)
 		org.tdata[i].wave_no = SDL_ReadU8(fp);
 		org.tdata[i].pipi = SDL_ReadU8(fp);
 		if (ver == 1)
-			org.tdata[i].pipi = 0;
+			org.tdata[i].pipi = false;
 		org.tdata[i].note_num = SDL_ReadLE16(fp);
 	}
 
@@ -771,7 +770,7 @@ void loadOrganya(const char *name)
 	for (int j = 0; j < 8; j++)
 		makeOrganyaWave(j, org.tdata[j].wave_no, org.tdata[j].pipi);
 
-	for (int j = 8; j < 16; j++)
+	for (unsigned int j = 8; j < 16; j++)
 		initDrumObject(j - 8);
 
 	//Reset position

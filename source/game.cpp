@@ -243,8 +243,8 @@ int escapeMenu()
 	while (true)
 	{
 		//Handle events
-		getKeys(&events);
-		if (events.type == SDL_QUIT || exitGame)
+		getKeys();
+		if (exitGame)
 			return 0;
 
 		if (isKeyPressed(SDL_SCANCODE_ESCAPE))
@@ -287,9 +287,9 @@ int gameUpdatePlay()
 	while (true)
 	{
 		//Handle events
-		getKeys(&events);
+		getKeys();
 
-		if (events.type == SDL_QUIT || exitGame)
+		if (exitGame)
 			return 0;
 
 		if (isKeyDown(SDL_SCANCODE_ESCAPE))
@@ -422,9 +422,9 @@ int gameUpdateMenu()
 	while (true)
 	{
 		//Handle events
-		getKeys(&events);
+		getKeys();
 
-		if (events.type == SDL_QUIT || exitGame)
+		if (exitGame)
 			return 0;
 
 		if (isKeyDown(SDL_SCANCODE_ESCAPE))
@@ -485,7 +485,7 @@ int gameUpdateMenu()
 	frame = SDL_GetTicks();
 	while (SDL_GetTicks() < frame + 1000)
 	{
-		getKeys(&events);
+		getKeys();
 		SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
 		SDL_RenderClear(renderer);
 		drawWindow();
@@ -517,9 +517,9 @@ int gameUpdateIntro()
 		frame++;
 
 		//Handle events
-		getKeys(&events);
+		getKeys();
 
-		if (events.type == SDL_QUIT || exitGame)
+		if (exitGame)
 			return 0;
 
 		if (isKeyDown(SDL_SCANCODE_ESCAPE))
@@ -572,7 +572,7 @@ int gameUpdateIntro()
 	frame = SDL_GetTicks();
 	while (SDL_GetTicks() < frame + 500)
 	{
-		getKeys(&events);
+		getKeys();
 		SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
 		SDL_RenderClear(renderer);
 		drawWindow();
