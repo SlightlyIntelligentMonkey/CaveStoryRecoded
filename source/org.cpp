@@ -663,8 +663,8 @@ char pass3[7] = "Org-03"; //New drums
 
 void loadOrganya(const char *name)
 {
-    if (disableOrg)
-        return;
+	if (disableOrg)
+		return;
 	//Pause sound device
 	//SDL_PauseAudioDevice(soundDev, -1);
 
@@ -672,7 +672,7 @@ void loadOrganya(const char *name)
 	org.loaded = false;
 	org.playing = false;
 
-    releaseNote();
+	releaseNote();
 	memset(&org, 0, sizeof(org));
 	noteAlloc(0xFFFF);
 
