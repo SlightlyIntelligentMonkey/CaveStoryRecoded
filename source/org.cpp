@@ -344,9 +344,9 @@ const char *drumLookup[8] = {
 	"data/Sound/96.pxt",
 };
 
-bool initDrumObject(int no)
+bool initDrumObject(uint8_t no)
 {
-	int wave_no = no;
+	auto wave_no = no;
 	if (wave_no >= _countof(drumLookup) || drumLookup[wave_no] == nullptr)
 		return false;
 	releaseDrumObject(no); //Unload previous drum
