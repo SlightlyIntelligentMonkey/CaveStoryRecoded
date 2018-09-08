@@ -62,7 +62,6 @@ int openMapSystem()
 	{
 		//Handle events
 		getKeys();
-		if (exitGame) { return 0; }
 
 		if (isKeyDown(SDL_SCANCODE_ESCAPE))
 		{
@@ -83,14 +82,14 @@ int openMapSystem()
 		drawMapName(true);
 
 		//Present
-		drawWindow();
+		if (!drawWindow())
+			return 0;
 	}
 
 	while (true)
 	{
 		//Handle events
 		getKeys();
-		if (exitGame) { return 0; }
 
 		//Exit if Z or X pressed
 		if (isKeyPressed(keyJump) || isKeyPressed(keyShoot))
@@ -161,7 +160,8 @@ int openMapSystem()
 		drawMapName(true);
 
 		//Present
-		drawWindow();
+		if (!drawWindow())
+			return 0;
 	}
 
 	//Do closing animation
@@ -169,7 +169,6 @@ int openMapSystem()
 	{
 		//Handle events
 		getKeys();
-		if (exitGame) { return 0; }
 
 		if (isKeyDown(SDL_SCANCODE_ESCAPE))
 		{
@@ -190,7 +189,8 @@ int openMapSystem()
 		drawMapName(true);
 
 		//Present
-		drawWindow();
+		if (!drawWindow())
+			return 0;
 	}
 
 	return 1;

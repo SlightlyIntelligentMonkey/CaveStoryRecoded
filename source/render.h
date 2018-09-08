@@ -34,7 +34,7 @@ enum TextureNums
 //Functions for handling the window
 int createWindow(int width, int height, int scale, bool fullscreen);
 void switchScreenMode();
-void drawWindow();
+bool drawWindow();
 void captureScreen(enum TextureNums texture_id);
 
 //Load texture function

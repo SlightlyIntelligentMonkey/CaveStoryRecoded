@@ -240,12 +240,10 @@ RECT rcEscape = { 0, 128, 208, 144 };
 
 int escapeMenu()
 {
-	while (true)
+	do
 	{
 		//Handle events
 		getKeys();
-		if (exitGame)
-			return 0;
 
 		if (isKeyPressed(SDL_SCANCODE_ESCAPE))
 		{
@@ -272,9 +270,7 @@ int escapeMenu()
 		drawTexture(sprites[0x1A], &rcEscape,
 		            (screenWidth >> 1) - 104,
 		            (screenHeight >> 1) - 8);
-
-		drawWindow();
-	}
+	} while (drawWindow());
 
 	return 0;
 }
@@ -288,9 +284,6 @@ int gameUpdatePlay()
 	{
 		//Handle events
 		getKeys();
-
-		if (exitGame)
-			return 0;
 
 		if (isKeyDown(SDL_SCANCODE_ESCAPE))
 		{
@@ -388,7 +381,8 @@ int gameUpdatePlay()
 		drawHud(!(gameFlags & 2));
 		drawTsc();
 		debugFunction();
-		drawWindow();
+		if (!drawWindow())
+			return 0;
 	}
 
 	return 0;
@@ -423,9 +417,6 @@ int gameUpdateMenu()
 	{
 		//Handle events
 		getKeys();
-
-		if (exitGame)
-			return 0;
 
 		if (isKeyDown(SDL_SCANCODE_ESCAPE))
 		{
@@ -477,7 +468,8 @@ int gameUpdateMenu()
 		RECT rcChar = { 0 + (frameOrder[(anime / 10) % 4] << 4), 16, 16 + (frameOrder[(anime / 10) % 4] << 4), 32 };
 		drawTexture(sprites[0x10], &rcChar, (screenWidth >> 1) - 44, 127 + (20 * select));
 
-		drawWindow();
+		if (!drawWindow())
+			return 0;
 	}
 
 	changeOrg(0);
@@ -488,7 +480,8 @@ int gameUpdateMenu()
 		getKeys();
 		SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
 		SDL_RenderClear(renderer);
-		drawWindow();
+		if (!drawWindow())
+			return 0;
 	}
 
 	if (select == 0)
@@ -518,9 +511,6 @@ int gameUpdateIntro()
 
 		//Handle events
 		getKeys();
-
-		if (exitGame)
-			return 0;
 
 		if (isKeyDown(SDL_SCANCODE_ESCAPE))
 		{
@@ -565,7 +555,8 @@ int gameUpdateIntro()
 
 		drawMapName(false);
 
-		drawWindow();
+		if (!drawWindow())
+			return 0;
 	}
 
 	//wait 500 ms
@@ -575,7 +566,8 @@ int gameUpdateIntro()
 		getKeys();
 		SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
 		SDL_RenderClear(renderer);
-		drawWindow();
+		if (!drawWindow())
+			return 0;
 	}
 
 	return MENU;
