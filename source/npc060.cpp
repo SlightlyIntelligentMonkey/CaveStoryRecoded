@@ -1084,7 +1084,7 @@ void npcAct068(npc * NPC) // Balrog, Running (boss)
 		{
 			NPC->ani_wait = 0;
 			if (++NPC->ani_no == 2 || NPC->ani_no == 4)
-				playSound(SFX_QuoteHitGround);
+				playSound(SFX_HitGround);
 		}
 		if (NPC->ani_no > 4)
 			NPC->ani_no = 1;
