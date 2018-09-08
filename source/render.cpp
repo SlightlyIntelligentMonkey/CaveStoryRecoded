@@ -126,9 +126,8 @@ bool drawWindow()
 		//Framerate limiter
 		static uint32_t timePrev;
 		const uint32_t timeNow = SDL_GetTicks();
-		const uint32_t timeNext = timePrev + framerate;
 
-		if (timeNow >= timeNext)
+		if (timeNow >= timePrev + framerate)
 		{
 			if (timeNow >= timePrev + 100)
 				timePrev = timeNow;	// If the timer is freakishly out of sync, panic and reset it, instead of spamming frames for who-knows how long
