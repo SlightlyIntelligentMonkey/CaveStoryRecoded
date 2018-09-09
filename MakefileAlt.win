@@ -42,8 +42,8 @@ obj/%.o: source/%.cpp
 	@mkdir -p $(@D)
 	@$(CXX) $(ALL_CXXFLAGS) $^ -o $@ -c
 
-obj/icon.o: res/icon.rc res/icon.ico
+obj/icon.o: res/icon.rc res/icon_mini.ico
 	@windres $< $@
 
 clean:
-	@rm -rf obj bin
+	@rm -rf obj bin/CaveStoryRemake

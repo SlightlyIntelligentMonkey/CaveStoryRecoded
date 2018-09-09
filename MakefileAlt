@@ -46,4 +46,4 @@ obj/icon_mini.o: res/icon_mini.bmp
 	@$(LD) -r -b binary -o $@ $<
 
 clean:
-	@rm -rf obj bin
+	@rm -rf obj bin/CaveStoryRemake
