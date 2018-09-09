@@ -43,7 +43,7 @@ void loadGameJson()
 	if (jDbgFlgs["showNPCHealth"] == true)
 		debugFlags |= showNPCHealth;
 
-	if (jGame["millisecondsPerFrame"].is_string())
+	if (jGame["millisecondsPerFrame"].is_number_integer())
 		framerate = jGame["millisecondsPerFrame"];
 
 	if (jGame["screenWidth"].is_number_integer() && jGame["screenHeight"].is_number_integer() && jGame["screenScale"].is_number_integer())
