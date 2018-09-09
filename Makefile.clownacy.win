@@ -1,6 +1,6 @@
 WARNINGS = -pedantic -Wall -Wextra -Wno-multichar -Wno-unused-parameter
 
-CXXFLAGS = -O3 $(WARNINGS) -DUSE_ICONS_SDL2
+CXXFLAGS = -O3 $(WARNINGS) -DUSE_ICONS_WINDOWS
 ALL_CXXFLAGS = -std=c++17 `sdl2-config --cflags` -IJson_Modern_Cpp $(CXXFLAGS)
 LDFLAGS = -s
 ALL_LDFLAGS = -static `sdl2-config --static-libs` $(LDFLAGS)
@@ -29,8 +29,8 @@ MAIN += npcAct npc000 npc020 npc040 npc060 npc080 npc100 npc120 npc140 npc160 np
 
 OBJS := $(addprefix obj/, $(addsuffix .o, $(MAIN)))
 
-# Embed a bitmap in the binary, and load it with SDL
-OBJS += obj/icon_mini.o
+# Embed icons as resources, and load them natively
+OBJS += obj/icon.o
 
 all: bin/CaveStoryRemake
 
@@ -42,8 +42,8 @@ obj/%.o: source/%.cpp
 	@mkdir -p $(@D)
 	@$(CXX) $(ALL_CXXFLAGS) $^ -o $@ -c
 
-obj/icon_mini.o: res/icon_mini.bmp
-	@$(LD) -r -b binary -o $@ $<
+obj/icon.o: res/icon.rc res/icon.ico
+	@windres $< $@
 
 clean:
 	@rm -rf obj bin

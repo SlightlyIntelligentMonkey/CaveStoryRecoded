@@ -21,6 +21,11 @@ int charWidth = 24;
 int charHeight = 24;
 int charScale = 2;
 
+#ifdef USE_ICONS_SDL2
+extern const char binary_res_icon_mini_bmp_start[];
+extern const char binary_res_icon_mini_bmp_end[];
+#endif
+
 static bool handleEvents()
 {
 	static bool focusGained = true;
@@ -60,12 +65,25 @@ int createWindow(int width, int height, int scale, bool fullscreen)  // TBD : Ha
 
 	//Set window
 	if (!window)
+	{
 		window = SDL_CreateWindow("Cave Story Engine",
 		                          SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
 		                          createWidth, createHeight,
 		                          0);
+
+#ifdef USE_ICONS_SDL2
+		// Set the window icon.
+		// Note that we skip this on Windows since we do it natively.
+		SDL_RWops *icon_rw = SDL_RWFromConstMem(binary_res_icon_mini_bmp_start, binary_res_icon_mini_bmp_end-binary_res_icon_mini_bmp_start);
+		SDL_Surface *surface = SDL_LoadBMP_RW(icon_rw, 1);
+		SDL_SetWindowIcon(window, surface);
+		SDL_FreeSurface(surface);
+#endif
+	}
 	else
+	{
 		SDL_SetWindowSize(window, createWidth, createHeight);
+	}
 
 	//Set renderer
 	if (!renderer)
