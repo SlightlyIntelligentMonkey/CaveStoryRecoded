@@ -1,3 +1,5 @@
+#include <cstring>
+
 #include "boss.h"
 
 #include <string>
