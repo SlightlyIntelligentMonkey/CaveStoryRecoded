@@ -26,8 +26,6 @@ int framerate = 20; //17 for 60-ish fps
 
 int mode;
 
-bool exitGame = false;
-
 // Some global functions
 
 static void doQuit() 

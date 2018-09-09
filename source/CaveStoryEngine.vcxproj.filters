@@ -269,7 +269,11 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="pxt.cpp">
+<<<<<<< HEAD
       <Filter>Source Files\modules\sound</Filter>
+>>>>>>> upstream/master
+=======
+      <Filter>Source Files</Filter>
 >>>>>>> upstream/master
     </ClCompile>
   </ItemGroup>
@@ -450,11 +454,6 @@
       <Filter>Header Files</Filter>
 >>>>>>> upstream/master
     </ClInclude>
-  </ItemGroup>
-  <ItemGroup>
-    <ResourceCompile Include="CaveStoryEngine.rc">
-      <Filter>Resource Files</Filter>
-    </ResourceCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="CS_RuleSet.ruleset" />

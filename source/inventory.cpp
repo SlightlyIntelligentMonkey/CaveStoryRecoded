@@ -266,7 +266,6 @@ int openInventory()
 	{
 		//Handle events
 		getKeys();
-		if (exitGame) { return 0; }
 
 		if (isKeyDown(SDL_SCANCODE_ESCAPE))
 		{
@@ -313,7 +312,8 @@ int openInventory()
 		}
 
 		//Present
-		drawWindow();
+		if (!drawWindow())
+			return 0;
 	}
 }
 
