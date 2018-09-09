@@ -151,6 +151,7 @@ void updateBullets()
 
 	bulletHitMap();
 	bulletHitNpcs();
+	bulletHitBoss();
 }
 
 void drawBullets()

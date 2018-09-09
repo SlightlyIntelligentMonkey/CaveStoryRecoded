@@ -58,6 +58,9 @@
     <Filter Include="Source Files\classes\bullet\act">
       <UniqueIdentifier>{754df458-b380-47d1-a7ca-725b1365a1b9}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\classes\boss">
+      <UniqueIdentifier>{0fbb2a6d-eecd-4fe5-9249-47168aab44b9}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -261,6 +264,9 @@
     <ClCompile Include="pxt.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="boss.cpp">
+      <Filter>Source Files\classes\boss</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="level.h">
@@ -433,6 +439,9 @@
     </ClInclude>
     <ClInclude Include="pxt.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="boss.h">
+      <Filter>Source Files\classes\boss</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

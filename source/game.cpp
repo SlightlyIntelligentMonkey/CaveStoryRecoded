@@ -4,6 +4,7 @@
 #include "hud.h"
 #include "script.h"
 #include "fade.h"
+#include "boss.h"
 #include "input.h"
 #include "filesystem.h"
 #include "caret.h"
@@ -306,6 +307,7 @@ int gameUpdatePlay()
 			else
 				currentPlayer.update(false);
 			updateNPC();
+			updateBoss();
 			playerHitMap();
 			playerHitNpcs();
 			if (gameFlags & 2)
@@ -328,6 +330,7 @@ int gameUpdatePlay()
 		SDL_RenderClear(renderer);
 
 		drawLevel(false);
+		drawBoss();
 		drawNPC();
 		drawBullets();
 		currentPlayer.draw();
