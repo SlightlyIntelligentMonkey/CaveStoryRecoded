@@ -112,8 +112,6 @@ int init()
 
 	currentPlayer.init();
 
-	createWindow(320, 240, 2, true);
-
 	//Load assets
 	loadNpcTable();
 	loadStageTable();
