@@ -845,7 +845,7 @@ bool doTscCommand(int *retVal, bool *bExit)
 		tscCleanup(0);
 		break;
 	case('<MNP'):
-        moveNPC(getTSCNumber(tsc.p_read + 4), getTSCNumber(tsc.p_read + 9), getTSCNumber(tsc.p_read + 14),
+        moveNPC(getTSCNumber(tsc.p_read + 4), getTSCNumber(tsc.p_read + 9) << 9, getTSCNumber(tsc.p_read + 14) << 9,
                 getTSCNumber(tsc.p_read + 19));
 		tscCleanup(4);
 		break;
