@@ -937,7 +937,6 @@ bool doTscCommand(int *retVal, bool *bExit)
 		break;
 	case('<RMU'):
 		resumeOrg();
-
 		tscCleanup(0);
 		break;
 	case('<SAT'):
