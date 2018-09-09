@@ -447,4 +447,9 @@
   <ItemGroup>
     <None Include="CS_RuleSet.ruleset" />
   </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="..\res\icon.rc">
+      <Filter>Resource Files</Filter>
+    </ResourceCompile>
+  </ItemGroup>
 </Project>

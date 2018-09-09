@@ -91,7 +91,7 @@
       <WarningLevel>Level4</WarningLevel>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
-      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>USE_ICONS_WINDOWS;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <FavorSizeOrSpeed>Neither</FavorSizeOrSpeed>
       <Optimization>Disabled</Optimization>
       <UndefinePreprocessorDefinitions>_DEBUG</UndefinePreprocessorDefinitions>
@@ -119,7 +119,7 @@
       <WarningLevel>Level4</WarningLevel>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
-      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>USE_ICONS_WINDOWS;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <Optimization>Disabled</Optimization>
       <FavorSizeOrSpeed>Neither</FavorSizeOrSpeed>
       <UndefinePreprocessorDefinitions>_DEBUG</UndefinePreprocessorDefinitions>
@@ -146,7 +146,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
-      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>USE_ICONS_WINDOWS;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <Optimization>MaxSpeed</Optimization>
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
       <UndefinePreprocessorDefinitions>_DEBUG</UndefinePreprocessorDefinitions>
@@ -180,7 +180,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
-      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>USE_ICONS_WINDOWS;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <Optimization>MaxSpeed</Optimization>
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
       <UndefinePreprocessorDefinitions>_DEBUG</UndefinePreprocessorDefinitions>
@@ -350,6 +350,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="CS_RuleSet.ruleset" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="..\res\icon.rc" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
