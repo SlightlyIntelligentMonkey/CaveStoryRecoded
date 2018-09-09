@@ -152,28 +152,28 @@ void mixOrg(int16_t *stream, int len)
 					{
 						for (int k = 0; k < 2; k++)
 						{
-							const int waveSamples = (int)((long double)orgWaves[wave][j][k].freq / (long double)sampleRate * 4096.0);
+							const long double waveSamples = (long double)orgWaves[wave][j][k].freq / (long double)sampleRate;
 
 							if (orgWaves[wave][j][k].playing)
 							{
 								orgWaves[wave][j][k].pos = (orgWaves[wave][j][k].pos + waveSamples);
 
 								if (orgWaves[wave][j][k].loops)
-									orgWaves[wave][j][k].pos %= (orgWaves[wave][j][k].length << 12);
+									orgWaves[wave][j][k].pos = fmod(orgWaves[wave][j][k].pos, (long double)orgWaves[wave][j][k].length);
 
-								if (orgWaves[wave][j][k].loops == false && orgWaves[wave][j][k].pos >= (orgWaves[wave][j][k].length << 12))
+								if (orgWaves[wave][j][k].loops == false && orgWaves[wave][j][k].pos >= orgWaves[wave][j][k].length)
 									orgWaves[wave][j][k].playing = false;
 								else
 								{
-									const size_t s_offset_1 = orgWaves[wave][j][k].pos >> 12;
+									const size_t s_offset_1 = (size_t)floor(orgWaves[wave][j][k].pos);
 
-									const int sample1 = orgWaves[wave][j][k].wave[s_offset_1 % orgWaves[wave][j][k].length] << 7;
+									const int sample1 = orgWaves[wave][j][k].wave[s_offset_1] << 7;
 									int sample2 = 0;
 
 									if (orgWaves[wave][j][k].loops || s_offset_1 < orgWaves[wave][j][k].length - 1)
 										sample2 = orgWaves[wave][j][k].wave[(s_offset_1 + 1) % orgWaves[wave][j][k].length] << 7;
 
-									const auto val = (int)(sample1 + (sample2 - sample1) * ((double)(orgWaves[wave][j][k].pos & 0xFFF) / 4096.0));
+									const auto val = (int)(sample1 + (sample2 - sample1) * fmod(orgWaves[wave][j][k].pos, 1.0f));
 
 									tempSampleL += (int32_t)((long double)val * orgWaves[wave][j][k].volume * orgWaves[wave][j][k].volume_l * orgVolume);
 									tempSampleR += (int32_t)((long double)val * orgWaves[wave][j][k].volume * orgWaves[wave][j][k].volume_r * orgVolume);
@@ -186,17 +186,17 @@ void mixOrg(int16_t *stream, int len)
 				//Play drums
 				for (int wave = 0; wave < 8; wave++)
 				{
-					const int waveSamples = (int)((long double)orgDrums[wave].freq / (long double)sampleRate * 4096.0);
+					const long double waveSamples = (long double)orgDrums[wave].freq / (long double)sampleRate;
 
 					if (orgDrums[wave].playing)
 					{
 						orgDrums[wave].pos = (orgDrums[wave].pos + waveSamples);
 
-						if (orgDrums[wave].pos >= (orgDrums[wave].length << 12))
+						if (orgDrums[wave].pos >= orgDrums[wave].length)
 							orgDrums[wave].playing = false;
 						else
 						{
-							const size_t s_offset_1 = orgDrums[wave].pos >> 12;
+							const size_t s_offset_1 = (size_t)floor(orgDrums[wave].pos);
 
 							const int sample1 = (orgDrums[wave].wave[s_offset_1] - 0x80) << 7;
 							int sample2 = 0;
@@ -204,7 +204,7 @@ void mixOrg(int16_t *stream, int len)
 							if (s_offset_1 < orgDrums[wave].length - 1)
 								sample2 = (orgDrums[wave].wave[s_offset_1 + 1] - 0x80) << 7;
 
-							const auto val = (int)(sample1 + (sample2 - sample1) * ((double)(orgDrums[wave].pos & 0xFFF) / 4096.0));
+							const auto val = (int)(sample1 + (sample2 - sample1) * fmod(orgDrums[wave].pos, 1.0f));
 
 							tempSampleL += (int32_t)((long double)val * orgDrums[wave].volume * orgDrums[wave].volume_l * orgVolume);
 							tempSampleR += (int32_t)((long double)val * orgDrums[wave].volume * orgDrums[wave].volume_r * orgVolume);
@@ -604,7 +604,8 @@ void playData()
 	{
 		if (org.loaded && play_np[i] != nullptr && play_p == play_np[i]->x)
 		{
-			if (play_np[i]->y != 0xFF) {
+			if (play_np[i]->y != 0xFF) 
+			{
 				if (org.tdata[i].pipi)
 					playOrganObject2(play_np[i]->y, -1, i, org.tdata[i].freq);
 				else

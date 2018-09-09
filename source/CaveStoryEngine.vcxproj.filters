@@ -58,11 +58,16 @@
     <Filter Include="Source Files\classes\bullet\act">
       <UniqueIdentifier>{754df458-b380-47d1-a7ca-725b1365a1b9}</UniqueIdentifier>
     </Filter>
+<<<<<<< HEAD
     <Filter Include="Source Files\classes\npc\map boss">
       <UniqueIdentifier>{db663093-c0b9-41fd-a811-16afaa51fe9b}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source Files\classes\npc\map boss\act">
       <UniqueIdentifier>{caaec28d-3ffc-4c5a-bc2d-1eafc4f45ebf}</UniqueIdentifier>
+=======
+    <Filter Include="Source Files\classes\boss">
+      <UniqueIdentifier>{0fbb2a6d-eecd-4fe5-9249-47168aab44b9}</UniqueIdentifier>
+>>>>>>> upstream/master
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -267,6 +272,9 @@
     <ClCompile Include="balfrog.cpp">
       <Filter>Source Files\classes\npc\map boss\act</Filter>
     </ClCompile>
+    <ClCompile Include="boss.cpp">
+      <Filter>Source Files\classes\boss</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="level.h">
@@ -440,8 +448,13 @@
     <ClInclude Include="pxt.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+<<<<<<< HEAD
     <ClInclude Include="mapBoss.h">
       <Filter>Source Files\classes\npc\map boss</Filter>
+=======
+    <ClInclude Include="boss.h">
+      <Filter>Source Files\classes\boss</Filter>
+>>>>>>> upstream/master
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

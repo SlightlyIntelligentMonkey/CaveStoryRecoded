@@ -4,6 +4,7 @@
 #include "org.h"
 #include "filesystem.h"
 #include "player.h"
+#include "render.h"
 
 #include <string>
 #include <fstream>
@@ -13,7 +14,7 @@ using std::string;
 using std::ifstream;
 using nlohmann::json;
 
-const string baseJsonFolder = "data/Config/";
+const string baseJsonFolder = "Config/";
 
 json loadJsonFromFile(const string& path)
 {
@@ -44,6 +45,11 @@ void loadGameJson()
 
 	if (jGame["millisecondsPerFrame"].is_string())
 		framerate = jGame["millisecondsPerFrame"];
+
+	if (jGame["screenWidth"].is_number_integer() && jGame["screenHeight"].is_number_integer() && jGame["screenScale"].is_number_integer())
+		createWindow(jGame["screenWidth"], jGame["screenHeight"], jGame["screenScale"], true);
+	else
+		doCustomError("Screen related variables in game.json aren't defined");
 }
 
 void loadOrgJson()

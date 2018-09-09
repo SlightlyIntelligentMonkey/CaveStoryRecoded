@@ -207,6 +207,7 @@
     <ClCompile Include="balfrog.cpp" />
     <ClCompile Include="blade.cpp" />
     <ClCompile Include="bladeThrow.cpp" />
+    <ClCompile Include="boss.cpp" />
     <ClCompile Include="bubblePew.cpp" />
     <ClCompile Include="bubbler.cpp" />
     <ClCompile Include="bullet.cpp" />
@@ -279,6 +280,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="blade.h" />
+    <ClInclude Include="boss.h" />
     <ClInclude Include="bubbler.h" />
     <ClInclude Include="bullet.h" />
     <ClInclude Include="bulletCollision.h" />

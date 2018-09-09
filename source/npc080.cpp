@@ -1352,10 +1352,7 @@ void npcAct093(npc * NPC)
 		// Fallthrough
 	case walking:
 		NPC->animate(4, 2, 5);
-		if (NPC->direct != dirLeft)
-			NPC->x += 0x200;
-		else
-			NPC->x -= 0x200;
+		NPC->moveInDir(pixelsToUnits(1));
 		break;
 
 	case sleeping:
@@ -1495,6 +1492,101 @@ void npcAct094(npc * NPC)
 	NPC->y += NPC->ym;
 
 	NPC->doRects(rcNPC);
+}
+
+void npcAct095(npc * NPC)
+{
+	vector<RECT> rcLeft = { {208, 64, 224, 80}, {224, 64, 240, 80}, {240, 64, 256, 80}, {256, 64, 272, 80} };
+	vector<RECT> rcRight = { {208, 80, 224, 96}, {224, 80, 240, 96}, {240, 80, 256, 96}, {256, 80, 272, 96} };
+
+	switch (NPC->act_no)
+	{
+	case 0:
+		NPC->act_no = 1;
+		NPC->act_wait = random(0, 50);
+		NPC->tgt_x = NPC->x;
+		NPC->tgt_y = NPC->y;
+		NPC->moveInDir(pixelsToUnits(1));
+		// Fallthrough
+	case 1:
+		if (--NPC->act_wait > 0)
+			break;
+		NPC->act_no = 10;
+		// Fallthrough
+	case 10:
+		if (++NPC->act_wait > 10)
+		{
+			NPC->act_wait = 0;
+			NPC->ani_wait = 0;
+			NPC->act_no = 11;
+		}
+		break;
+
+	case 11:
+		NPC->animate(5);
+		
+		if (NPC->ani_no == 2)
+		{
+			NPC->moveInDir(0x100);
+			NPC->ym -= pixelsToUnits(1);
+		}
+		else if (NPC->ani_no > 2)
+		{
+			NPC->act_no = 12;
+			NPC->ani_no = 3;
+		}
+		break;
+
+	case 12:
+		++NPC->act_wait;
+		if (NPC->y > NPC->tgt_y && NPC->act_wait > 10)
+		{
+			NPC->act_wait = 0;
+			NPC->act_no = 10;
+			NPC->ani_no = 0;
+		}
+		break;
+
+	default:
+		break;
+	}
+
+	if (NPC->x <= NPC->tgt_x)
+		NPC->direct = dirRight;
+	else
+		NPC->direct = dirLeft;
+
+	if (NPC->flag & leftWall)
+	{
+		NPC->count1 = 50;
+		NPC->direct = dirRight;
+	}
+	if (NPC->flag & rightWall)
+	{
+		NPC->count1 = 50;
+		NPC->direct = dirLeft;
+	}
+
+	NPC->ym += 0x20;
+
+	if (NPC->flag & ground)
+		NPC->ym = pixelsToUnits(-2);
+
+	NPC->limitXVel(0x100);
+	NPC->limitYVel(pixelsToUnits(1));
+
+	if (NPC->shock)
+	{
+		NPC->x += NPC->xm / 2;
+		NPC->y += NPC->ym / 2;
+	}
+	else
+	{
+		NPC->x += NPC->xm;
+		NPC->y += NPC->ym;
+	}
+	
+	NPC->doRects(rcLeft, rcRight);
 }
 
 void npcAct096(npc *NPC) //Fan left

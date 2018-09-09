@@ -12,7 +12,7 @@ struct SOUND {
 	uint8_t *wave; //Dynamic size
 	size_t length;
 	bool playing;
-	size_t pos;
+	long double pos;
 };
 
 extern SOUND sounds[0x100];

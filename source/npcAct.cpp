@@ -116,7 +116,7 @@ const npcAct npcActs[361] =
 	&npcAct092,
 	&npcAct093,
 	&npcAct094,
-	&npcActNone,
+	&npcAct095,
 	&npcAct096,
 	&npcAct097,
 	&npcAct098,
@@ -129,9 +129,15 @@ const npcAct npcActs[361] =
 	&npcAct105,
 	&npcAct106,
 	&npcAct107,
+<<<<<<< HEAD
 	&npcAct108,
 	&npcAct109,
 	&npcAct110,
+=======
+	&npcActNone,
+	&npcActNone,
+	&npcActNone,
+>>>>>>> upstream/master
 	&npcAct111,
 	&npcAct112,
 	&npcActNone,
