@@ -970,7 +970,7 @@ void npcAct012(npc *NPC) //Balrog cutscene
 	switch (NPC->act_no)
 	{
 	case 0: //Stand and blink
-		if (NPC->direct == dirCenter)
+		if (NPC->direct == dirAuto)
 		{
 			if (NPC->x <= currentPlayer.x)
 				NPC->direct = dirRight;
@@ -999,7 +999,7 @@ void npcAct012(npc *NPC) //Balrog cutscene
 		break;
 
 	case 10: //Jump up
-		if (NPC->direct == dirCenter)
+		if (NPC->direct == dirAuto)
 		{
 			if (NPC->x <= currentPlayer.x)
 				NPC->direct = dirRight;
@@ -1036,7 +1036,7 @@ void npcAct012(npc *NPC) //Balrog cutscene
 		break;
 
 	case 20: //Defeated?
-		if (NPC->direct == dirCenter)
+		if (NPC->direct == dirAuto)
 		{
 			if (NPC->x <= currentPlayer.x)
 				NPC->direct = dirRight;
@@ -1090,7 +1090,7 @@ void npcAct012(npc *NPC) //Balrog cutscene
 		break;
 
 	case 40: //"Super panic"
-		if (NPC->direct == dirCenter)
+		if (NPC->direct == dirAuto)
 		{
 			if (NPC->x <= currentPlayer.x)
 				NPC->direct = dirRight;
@@ -1111,7 +1111,7 @@ void npcAct012(npc *NPC) //Balrog cutscene
 		break;
 
 	case 42: //"Uh oh! Image blinks"
-		if (NPC->direct == dirCenter)
+		if (NPC->direct == dirAuto)
 		{
 			if (NPC->x <= currentPlayer.x)
 				NPC->direct = dirRight;
