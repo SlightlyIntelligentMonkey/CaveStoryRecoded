@@ -28,6 +28,11 @@ void initBoss(int code)
 	boss[0].code_char = code;
 }
 
+void setBossAction(int a)
+{
+	boss[0].act_no = a;
+}
+
 void updateBoss()
 {
 	if ((boss[0].cond & npccond_alive) && bossActs[boss[0].code_char] != nullptr)
