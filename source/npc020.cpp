@@ -749,6 +749,41 @@ void npcAct032(npc *NPC) //Life Capsule
 	NPC->rect = { setRect->left, setRect->top, setRect->right, setRect->bottom };
 }
 
+void npcAct033(npc *NPC) //balrog bouncy balls
+{
+	if (NPC->flag & 5)
+	{
+		createCaret(NPC->x, NPC->y, 2, 0);
+		NPC->cond = 0;
+	}
+	else if (NPC->flag & 8)
+	{
+		NPC->ym = -1024;
+	}
+
+	NPC->ym += 42;
+	NPC->y += NPC->ym;
+	NPC->x += NPC->xm;
+
+	if (++NPC->ani_wait > 2)
+	{
+		NPC->ani_wait = 0;
+		if (++NPC->ani_no > 1)
+			NPC->ani_no = 0;
+	}
+
+	NPC->rect.left = 240;
+	NPC->rect.top = 64 + (NPC->ani_no*16);
+	NPC->rect.right = 256;
+	NPC->rect.bottom = NPC->rect.top + 16;
+
+	if (++NPC->act_wait > 250)
+	{
+		createCaret(NPC->x, NPC->y, 2, 0);
+		NPC->cond = 0;
+	}
+}
+
 void npcAct034(npc * NPC) // Bed
 {
 	if (NPC->direct == dirLeft)
@@ -832,6 +867,154 @@ void npcAct035(npc * NPC) // Manann (enemy)
 		NPC->rect = rcLeft[NPC->ani_no];
 	else
 		NPC->rect = rcRight[NPC->ani_no];
+}
+
+void npcAct036(npc *NPC) //Boss - Balrog (hovering)
+{
+	uint8_t deg;
+	int xm;
+	int ym;
+
+	switch (NPC->act_no)
+	{
+	case 0:
+		NPC->act_no = 1;
+	case 1:
+		if (++NPC->act_wait > 12)
+		{
+			NPC->act_no = 2;
+			NPC->act_wait = 0;
+			NPC->count1 = 3;
+			NPC->ani_no = 1;
+		}
+		break;
+	case 2:
+		if (++NPC->act_wait > 16)
+		{
+			--NPC->count1;
+			NPC->act_wait = 0;
+			deg = getAtan(NPC->x - currentPlayer.x, NPC->y + 2048 - currentPlayer.y);
+			deg += random(-16, 16);
+			ym = getSin(deg);
+			xm = getCos(deg);
+			createNpc(11, NPC->x, NPC->y + 2048, xm, ym);
+			playSound(39);
+			if (!NPC->count1)
+			{
+				NPC->act_no = 3;
+				NPC->act_wait = 0;
+			}
+		}
+		break;
+	case 3:
+		if (++NPC->act_wait > 3)
+		{
+			NPC->act_no = 4;
+			NPC->act_wait = 0;
+			NPC->xm = (currentPlayer.x - NPC->x) / 100;
+			NPC->ym = -1536;
+			NPC->ani_no = 3;
+		}
+		break;
+	case 4:
+		if (NPC->ym >= -511)
+		{
+			if (NPC->life <= 60)
+			{
+				NPC->act_no = 6;
+			}
+			else
+			{
+				NPC->act_no = 5;
+				NPC->ani_no = 4;
+				NPC->ani_wait = 0;
+				NPC->act_wait = 0;
+				NPC->tgt_y = NPC->y;
+			}
+		}
+		break;
+	case 5:
+		if (++NPC->ani_wait > 1)
+		{
+			NPC->ani_wait = 0;
+			++NPC->ani_no;
+		}
+		if (NPC->ani_no > 5)
+		{
+			NPC->ani_no = 4;
+			playSound(47);
+		}
+		if (++NPC->act_wait > 100)
+		{
+			NPC->act_no = 6;
+			NPC->ani_no = 3;
+		}
+		if (NPC->y >= NPC->tgt_y)
+			NPC->ym -= 64;
+		else
+			NPC->ym += 64;
+
+		if (NPC->ym < -512)
+			NPC->ym = -512;
+		if (NPC->ym > 512)
+			NPC->ym = 512;
+		break;
+	case 6:
+		if (NPC->y + 0x2000 >= currentPlayer.y)
+			NPC->damage = 0;
+		else
+			NPC->damage = 10;
+		if (NPC->flag & 8)
+		{
+			NPC->act_no = 7;
+			NPC->act_wait = 0;
+			NPC->ani_no = 2;
+			playSound(26);
+			playSound(25);
+			viewport.quake = 30;
+			NPC->damage = 0;
+			for (int i = 0; i <= 7; ++i)
+			{
+				createNpc(4, 
+					NPC->x + (random(-12, 12) << 9), 
+					NPC->y + (random(-12, 12) << 9), random(-341, 341), 
+					random(-1536, 0));
+			}
+			for (int i = 0; i <= 7; ++i)
+			{
+				createNpc(33, 
+					NPC->x + (random(-12, 12) << 9), 
+					NPC->y + (random(-12, 12) << 9),
+					random(-1024, 1024), random(-1024, 0));
+			}
+		}
+		break;
+	case 7:
+		NPC->xm = 0;
+		if (++NPC->act_wait > 3)
+		{
+			NPC->act_no = 1;
+			NPC->act_wait = 0;
+		}
+		break;
+	default:
+		break;
+	}
+
+	if (NPC->act_no != 5)
+	{
+		NPC->ym += 51;
+		NPC->facePlayer();
+	}
+	if (NPC->ym > 1535)
+		NPC->ym = 1535;
+	NPC->x += NPC->xm;
+	NPC->y += NPC->ym;
+
+	NPC->rect.left = NPC->ani_no * 40;
+	NPC->rect.top = ((NPC->ani_no/4)*48) + (NPC->direct / 2) * 24;
+	NPC->rect.right = NPC->rect.left + 40;
+	NPC->rect.bottom = NPC->rect.top + 24;
 }
 
 void npcAct037(npc *NPC) //Sign
