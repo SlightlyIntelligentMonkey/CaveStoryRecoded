@@ -1,6 +1,6 @@
 WARNINGS = -pedantic -Wall -Wextra -Wno-multichar -Wno-unused-parameter
 
-CXXFLAGS = -O3 $(WARNINGS)
+CXXFLAGS = -O3 $(WARNINGS) -DUSE_ICONS_WINDOWS
 ALL_CXXFLAGS = -std=c++17 `sdl2-config --cflags` -IJson_Modern_Cpp $(CXXFLAGS)
 LDFLAGS = -s
 ALL_LDFLAGS = -static `sdl2-config --static-libs` $(LDFLAGS)
@@ -29,6 +29,9 @@ MAIN += npcAct npc000 npc020 npc040 npc060 npc080 npc100 npc120 npc140 npc160 np
 
 OBJS := $(addprefix obj/, $(addsuffix .o, $(MAIN)))
 
+# Embed icons as resources, and load them natively
+OBJS += obj/icon.o
+
 all: bin/CaveStoryRemake
 
 bin/CaveStoryRemake: $(OBJS)
@@ -39,5 +42,8 @@ obj/%.o: source/%.cpp
 	@mkdir -p $(@D)
 	@$(CXX) $(ALL_CXXFLAGS) $^ -o $@ -c
 
+obj/icon.o: res/icon.rc res/icon_mini.ico
+	@windres $< $@
+
 clean:
-	rm -rf obj bin
+	@rm -rf obj bin/CaveStoryRemake

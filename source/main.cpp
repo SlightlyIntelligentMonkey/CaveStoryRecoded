@@ -90,6 +90,12 @@ constexpr bool useExperimentalJsonLoading = true;
 
 int init()
 {
+#ifdef USE_ICONS_WINDOWS
+	// Set the window icons. See icon.rc.
+	SDL_SetHint(SDL_HINT_WINDOWS_INTRESOURCE_ICON, "101");
+	SDL_SetHint(SDL_HINT_WINDOWS_INTRESOURCE_ICON_SMALL, "102");
+#endif
+
 	//Initiate SDL and window stuff
 	if (SDL_Init(SDL_INIT_TIMER | SDL_INIT_AUDIO | SDL_INIT_VIDEO) < 0)
 		doCustomError("Couldn't initiate SDL");
