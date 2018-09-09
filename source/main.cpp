@@ -20,15 +20,11 @@ SDL_Rect DrawRect;
 SDL_Rect ImageRect;
 
 //Game variables
-SDL_Event events;
-
 int gameFlags = 0;
 
 int framerate = 20; //17 for 60-ish fps
 
 int mode;
-
-bool exitGame = false;
 
 // Some global functions
 

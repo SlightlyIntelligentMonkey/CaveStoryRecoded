@@ -347,9 +347,6 @@
     <ClInclude Include="sound.h" />
   </ItemGroup>
   <ItemGroup>
-    <ResourceCompile Include="CaveStoryEngine.rc" />
-  </ItemGroup>
-  <ItemGroup>
     <None Include="CS_RuleSet.ruleset" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

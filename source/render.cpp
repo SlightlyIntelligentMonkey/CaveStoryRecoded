@@ -21,6 +21,33 @@ int charWidth = 24;
 int charHeight = 24;
 int charScale = 2;
 
+static bool handleEvents()
+{
+	static bool focusGained = true;
+
+	while (SDL_PollEvent(NULL) || !focusGained)
+	{
+		SDL_Event event;
+		SDL_WaitEvent(&event);
+
+		switch (event.type)
+		{
+		case SDL_QUIT:
+			return false;
+
+		case SDL_WINDOWEVENT:
+			if (event.window.event == SDL_WINDOWEVENT_FOCUS_GAINED)
+				focusGained = true;
+			else if (event.window.event == SDL_WINDOWEVENT_FOCUS_LOST)
+				focusGained = false;
+
+			break;
+		}
+	}
+
+	return true;
+}
+
 //Create window
 int createWindow(int width, int height, int scale, bool fullscreen)  // TBD : Handle fullscreen parameter
 {
@@ -89,29 +116,33 @@ void switchScreenMode()
 	SDL_SetWindowFullscreen(window, windowFlags);
 }
 
-void drawWindow()
+bool drawWindow()
 {
-	//Framerate limiter
 	while (true)
 	{
+		if (!handleEvents())
+			return false;
+
+		//Framerate limiter
 		static uint32_t timePrev;
 		const uint32_t timeNow = SDL_GetTicks();
-		const uint32_t timeNext = timePrev + framerate;
 
-		if (timeNow >= timeNext)
+		if (timeNow >= timePrev + framerate)
 		{
-			if (timeNow < timePrev + 100)
-				timePrev += framerate;
-			else
+			if (timeNow >= timePrev + 100)
 				timePrev = timeNow;	// If the timer is freakishly out of sync, panic and reset it, instead of spamming frames for who-knows how long
-									// clownancy that's nice 
+			else
+				timePrev += framerate;
+
 			break;
 		}
 
-		SDL_Delay(timeNext - timeNow);
+		SDL_Delay(1);
 	}
-
+	
 	SDL_RenderPresent(renderer);
+
+	return true;
 }
 
 void captureScreen(enum TextureNums texture_id)
@@ -171,10 +202,11 @@ void setCliprect(const RECT *rect)
 	{
 		cliprect = { rect->left * screenScale, rect->top * screenScale, (rect->right - rect->left) * screenScale, (rect->bottom - rect->top) * screenScale };
 		SDL_RenderSetClipRect(renderer, &cliprect);
-		return;
 	}
-
-	SDL_RenderSetClipRect(renderer, nullptr);
+	else
+	{
+		SDL_RenderSetClipRect(renderer, nullptr);
+	}
 }
 
 void drawTexture(SDL_Texture *texture, const RECT *rect, int x, int y)

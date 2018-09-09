@@ -1258,8 +1258,8 @@ void drawTsc()
 		}
 		else
 		{
-			tsc.rcText.top = 184;
-			tsc.rcText.bottom = 232;
+			tsc.rcText.top = screenHeight - 56;
+			tsc.rcText.bottom = screenHeight - 8;
 		}
 
 		//Draw message box background (if not MS2)

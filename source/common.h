@@ -48,7 +48,6 @@ struct SDL_Window;
 struct SDL_Renderer;
 struct SDL_Rect;
 struct SDL_Texture;
-union SDL_Event;
 
 //Drawing related variables
 extern SDL_Window *window;
@@ -59,15 +58,10 @@ extern SDL_Rect ImageRect;
 
 extern SDL_Texture* sprites[40];
 
-//Event variable
-extern SDL_Event events;
-
 //Some game variables
 extern int framerate;
 
 extern int mode;
-
-extern bool exitGame;
 
 extern int gameFlags;
 

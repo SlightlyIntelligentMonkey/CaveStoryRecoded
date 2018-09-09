@@ -61,8 +61,7 @@ int openMapSystem()
 	for (int f = 0; f <= 8; ++f)
 	{
 		//Handle events
-		getKeys(&events);
-		if (events.type == SDL_QUIT || exitGame) { return 0; }
+		getKeys();
 
 		if (isKeyDown(SDL_SCANCODE_ESCAPE))
 		{
@@ -75,8 +74,7 @@ int openMapSystem()
 		}
 
 		// Draw screenshot
-		if (SDL_RenderCopy(renderer, sprites[TEX_SCREENSHOT], nullptr, nullptr) != 0)
-			doError();
+		drawTextureNoScale(sprites[TEX_SCREENSHOT], nullptr, 0, 0);
 
 		//Draw opening box and name
 		SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
@@ -84,14 +82,14 @@ int openMapSystem()
 		drawMapName(true);
 
 		//Present
-		drawWindow();
+		if (!drawWindow())
+			return 0;
 	}
 
 	while (true)
 	{
 		//Handle events
-		getKeys(&events);
-		if (events.type == SDL_QUIT || exitGame) { return 0; }
+		getKeys();
 
 		//Exit if Z or X pressed
 		if (isKeyPressed(keyJump) || isKeyPressed(keyShoot))
@@ -108,8 +106,7 @@ int openMapSystem()
 		}
 
 		// Draw screenshot
-		if (SDL_RenderCopy(renderer, sprites[TEX_SCREENSHOT], nullptr, nullptr) != 0)
-			doError();
+		drawTextureNoScale(sprites[TEX_SCREENSHOT], nullptr, 0, 0);
 
 		//Draw box
 		SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
@@ -163,15 +160,15 @@ int openMapSystem()
 		drawMapName(true);
 
 		//Present
-		drawWindow();
+		if (!drawWindow())
+			return 0;
 	}
 
 	//Do closing animation
 	for (int f = 8; f > 0; --f)
 	{
 		//Handle events
-		getKeys(&events);
-		if (events.type == SDL_QUIT || exitGame) { return 0; }
+		getKeys();
 
 		if (isKeyDown(SDL_SCANCODE_ESCAPE))
 		{
@@ -184,8 +181,7 @@ int openMapSystem()
 		}
 
 		// Draw screenshot
-		if (SDL_RenderCopy(renderer, sprites[TEX_SCREENSHOT], nullptr, nullptr) != 0)
-			doError();
+		drawTextureNoScale(sprites[TEX_SCREENSHOT], nullptr, 0, 0);
 
 		//Draw closing box and name
 		SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
@@ -193,7 +189,8 @@ int openMapSystem()
 		drawMapName(true);
 
 		//Present
-		drawWindow();
+		if (!drawWindow())
+			return 0;
 	}
 
 	return 1;

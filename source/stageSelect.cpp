@@ -110,8 +110,7 @@ int stageSelect(int *runEvent)
 	while (true)
 	{
 		//Handle events
-		getKeys(&events);
-		if (events.type == SDL_QUIT || exitGame) { return 0; }
+		getKeys();
 
 		if (isKeyDown(SDL_SCANCODE_ESCAPE))
 		{
@@ -133,8 +132,7 @@ int stageSelect(int *runEvent)
 			return 2;
 
 		// Draw screenshot
-		if (SDL_RenderCopy(renderer, sprites[TEX_SCREENSHOT], nullptr, nullptr) != 0)
-			doError();
+		drawTextureNoScale(sprites[TEX_SCREENSHOT], nullptr, 0, 0);
 
 		//Draw menu
 		drawStageSelect();
@@ -159,7 +157,8 @@ int stageSelect(int *runEvent)
 		}
 
 		//Present
-		drawWindow();
+		if (!drawWindow())
+			return 0;
 	}
 }
 
