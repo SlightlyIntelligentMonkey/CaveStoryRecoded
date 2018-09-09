@@ -204,6 +204,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="balfrog.cpp" />
     <ClCompile Include="blade.cpp" />
     <ClCompile Include="bladeThrow.cpp" />
     <ClCompile Include="bubblePew.cpp" />
@@ -259,17 +260,10 @@
     <ClCompile Include="npc200.cpp" />
     <ClCompile Include="npcAct.cpp" />
     <ClCompile Include="org.cpp" />
-    <ClCompile Include="ORIG_org.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
-    </ClCompile>
     <ClCompile Include="player.cpp" />
     <ClCompile Include="playerCollision.cpp" />
     <ClCompile Include="polarStar.cpp" />
     <ClCompile Include="polarStarShoot.cpp" />
-    <ClCompile Include="pxt.cpp" />
     <ClCompile Include="render.cpp" />
     <ClCompile Include="script.cpp" />
     <ClCompile Include="snake.cpp" />

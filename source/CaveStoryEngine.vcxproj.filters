@@ -59,10 +59,10 @@
       <UniqueIdentifier>{754df458-b380-47d1-a7ca-725b1365a1b9}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source Files\classes\npc\map boss">
-      <UniqueIdentifier>{5692f79f-3de2-446f-bf0c-cf5b4a77cbad}</UniqueIdentifier>
+      <UniqueIdentifier>{db663093-c0b9-41fd-a811-16afaa51fe9b}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\classes\npc\map boss\boss acts">
-      <UniqueIdentifier>{ab7ce094-7eac-46b9-86cd-43a3285082f7}</UniqueIdentifier>
+    <Filter Include="Source Files\classes\npc\map boss\act">
+      <UniqueIdentifier>{caaec28d-3ffc-4c5a-bc2d-1eafc4f45ebf}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -261,20 +261,11 @@
     <ClCompile Include="nemesisShoot.cpp">
       <Filter>Source Files\classes\weapons\shoot</Filter>
     </ClCompile>
-<<<<<<< HEAD
     <ClCompile Include="mapBoss.cpp">
       <Filter>Source Files\classes\npc\map boss</Filter>
-=======
-    <ClCompile Include="ORIG_org.cpp">
-      <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="pxt.cpp">
-<<<<<<< HEAD
-      <Filter>Source Files\modules\sound</Filter>
->>>>>>> upstream/master
-=======
-      <Filter>Source Files</Filter>
->>>>>>> upstream/master
+    <ClCompile Include="balfrog.cpp">
+      <Filter>Source Files\classes\npc\map boss\act</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -443,16 +434,14 @@
     <ClInclude Include="bubbler.h">
       <Filter>Source Files\classes\bullet\act</Filter>
     </ClInclude>
-<<<<<<< HEAD
-    <ClInclude Include="mapBoss.h">
-      <Filter>Source Files\classes\npc\map boss</Filter>
-=======
     <ClInclude Include="ORIG_org.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="pxt.h">
       <Filter>Header Files</Filter>
->>>>>>> upstream/master
+    </ClInclude>
+    <ClInclude Include="mapBoss.h">
+      <Filter>Source Files\classes\npc\map boss</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

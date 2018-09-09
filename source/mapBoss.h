@@ -1,13 +1,20 @@
 #pragma once
 #include "npc.h"
 
-void ActBossChar_0();
-//void ActBossChar_Omega();
-//void ActBossChar_Frog();
-//void ActBossChar_MonstX();
-//void ActBossChar_Core();
-//void ActBossChar_Ironhead();
-//void ActBossChar_Twin();
-//void ActBossChar_Undead();
-//void ActBossChar_Press();
-//void ActBossChar_Ballos();
+struct BOSS : public npc
+{
+	npc bossObj[20];
+};
+
+extern npc bossObj[20];
+
+void actBoss_0(BOSS *boss);
+//void actBoss_Omega();
+//void actBoss_Frog();
+//void actBoss_MonstX();
+//void actBoss_Core();
+//void actBoss_Ironhead();
+//void actBoss_Twin();
+//void actBoss_Undead();
+//void actBoss_Press();
+//void actBoss_Ballos();
