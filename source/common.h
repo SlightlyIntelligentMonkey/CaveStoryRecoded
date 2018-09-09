@@ -63,8 +63,6 @@ extern int framerate;
 
 extern int mode;
 
-extern bool exitGame;
-
 extern int gameFlags;
 
 //Functions
