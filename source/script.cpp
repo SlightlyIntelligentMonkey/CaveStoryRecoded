@@ -482,6 +482,7 @@ bool doTscCommand(int *retVal, bool *bExit)
 	case('<AM+'):
 		tscNumber[0] = getTSCNumber(tsc.p_read + 9);
 		tscNumber[1] = 0;
+		playSound(SFX_ItemGet);
 		giveWeapon(getTSCNumber(tsc.p_read + 4), getTSCNumber(tsc.p_read + 9));
 		tscCleanup(2);
 		break;
