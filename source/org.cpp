@@ -1,4 +1,4 @@
-#include "org.h"
+﻿#include "org.h"
 #include "pxt.h"
 #include "sound.h"
 #include "filesystem.h"
@@ -250,8 +250,7 @@ void noteAlloc(uint16_t alloc)
 void releaseNote(void)
 {
 	for (int i = 0; i < 16; i++) {
-		if (org.tdata[i].note_p != nullptr)
-			delete org.tdata[i].note_p;
+		delete org.tdata[i].note_p;
 	}
 }
 
@@ -284,10 +283,7 @@ void releaseOrganyaObject(uint8_t track) {
 	for (int i = 0; i < 8; i++) {
 		for (int j = 0; j < 2; j++)
 		{
-			if (orgWaves[track][i][j].wave)
-			{
-				free(orgWaves[track][i][j].wave);
-			}
+			free(orgWaves[track][i][j].wave);
 		}
 	}
 	memset(orgWaves[track], 0, sizeof(orgWaves[track]));
@@ -343,8 +339,7 @@ bool makeOrganyaWave(uint8_t track, uint8_t wave_no, bool pipi)
 
 //Init drum object
 void releaseDrumObject(uint8_t track) {
-	if (orgDrums[track].wave)
-		free(orgDrums[track].wave);
+	free(orgDrums[track].wave);
 	memset(&orgDrums[track], 0, sizeof(DRUM));
 }
 

@@ -5,6 +5,7 @@
 #include "sound.h"
 #include "player.h"
 #include "input.h"
+#include "boss.h"
 
 void putLittleStar(const RECT *rcHit, const player *me)
 {
@@ -814,4 +815,58 @@ void playerHitNpcs()
 		if (me->ques)
 			createCaret(me->x, me->y, effect_ExclamationMark, 0);
 	}
+}
+
+void playerHitBosses()
+{
+    player *me = &currentPlayer;
+    const RECT *rcHit = &me->rect;
+
+    if (currentPlayer.cond & player_visible && !(currentPlayer.cond & player_removed))
+    {
+        for (size_t i = 0; i < _countof(boss); ++i)
+        {
+            int hit = 0;
+            if (boss[i].cond & 0x80)
+            {
+                if (boss[i].bits & npc_solidSoft)
+                {
+                    hit = playerHitNpcSoftSolid(rcHit, me, &boss[i]);
+                    currentPlayer.flag |= hit;
+                }
+                else if (boss[i].bits & npc_solidHard)
+                {
+                    hit = playerHitNpcHardSolid(rcHit, me, &boss[i]);
+                    currentPlayer.flag |= hit;
+                }
+                else
+                    hit = playerHitNpcNonSolid(rcHit, me, &boss[i]);
+
+                if (!(gameFlags & 4) && hit && boss[i].bits & npc_eventTouch)
+                {
+                    startTscEvent(boss[i].code_event);
+                    currentPlayer.ques = 0;
+                }
+
+                if (hit & rightWall && boss[i].xm < 0)
+                    currentPlayer.damage(boss[i].damage);
+                if (hit & leftWall && boss[i].xm > 0)
+                    currentPlayer.damage(boss[i].damage);
+            }
+            else if (hit && boss[i].damage && !(gameFlags & 4))
+                currentPlayer.damage(boss[i].damage);
+
+            if (!(gameFlags & 4) && hit && currentPlayer.cond & player_interact)
+            {
+                if (boss[i].bits & npc_interact)
+                {
+                    startTscEvent(boss[i].code_event);
+                    currentPlayer.xm = 0;
+                    currentPlayer.ques = 0;
+                }
+            }
+        }
+        if (currentPlayer.ques)
+            createCaret(currentPlayer.x, currentPlayer.y, effect_ExclamationMark);
+    }
 }

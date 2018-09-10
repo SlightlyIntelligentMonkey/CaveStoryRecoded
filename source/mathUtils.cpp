@@ -55,12 +55,12 @@ thread_local mt19937 engine(seededRandomEngine());
 uniform_int_distribution<int32_t> distrInt;
 
 //Not the original code, because it's better
-int getSin(uint8_t deg) 
+int getSin(uint8_t deg)
 {
 	return static_cast<int>(sin(deg * (M_PI / 0x80)) * 512.0);
 }
 
-int getCos(uint8_t deg) 
+int getCos(uint8_t deg)
 {
 	return static_cast<int>(cos(deg * (M_PI / 0x80)) * 512.0);
 }
@@ -70,13 +70,14 @@ uint8_t getAtan(int x, int y)
 	return static_cast<uint8_t>(atan2(-y, -x) * 0x80 / M_PI);
 }
 
-//these are good functions
-int random(int32_t mi, int32_t ma)
+// return random number between mi and ma
+int random(int32_t minimum, int32_t maximum)
 {
-	return (mi + (distrInt(engine) % (ma - mi + 1)));
+	return (minimum + (distrInt(engine) % (maximum - minimum + 1)));
 }
+// minimum + (rand()[maximum - minimum + 1])
 
-int sign(int x) 
+int sign(int x)
 {
 	if (x != 0)
 		return x / std::abs(x);
@@ -84,19 +85,19 @@ int sign(int x)
 	return 0;
 }
 
-int clamp(int x, int mi, int ma) 
+int clamp(int x, int mi, int ma)
 {
 	return std::max(std::min(ma, x), mi);
 }
 
 //returns result of normalized sinc
-double sinc(double x) 
+double sinc(double x)
 {
 	return (sin(M_PI*static_cast<float>(x)) / (M_PI*static_cast<float>(x)));
 }
 
 //returns greatest common denominator x and y
-int getGCD(int x, int y) 
+int getGCD(int x, int y)
 {
 	if (x < y)
 		std::swap(x, y);

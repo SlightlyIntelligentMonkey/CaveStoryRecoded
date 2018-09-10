@@ -419,7 +419,7 @@ void loadNpcTable()
 
 void npc::accelerateTowardsPlayer(int vel)
 {
-    if (this->direct != dirLeft)
+    if (this->x < currentPlayer.x)
         this->xm += vel;
     else
         this->xm -= vel;
@@ -504,7 +504,7 @@ void npc::moveInDir(int vel)
 
 void npc::moveTowardsPlayer(int vel)
 {
-	if (this->direct != dirLeft)
+	if (this->x < currentPlayer.x)
 		this->xm = vel;
 	else
 		this->xm = -vel;
