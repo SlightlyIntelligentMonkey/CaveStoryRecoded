@@ -25,7 +25,7 @@ static bool handleEvents()
 {
 	static bool focusGained = true;
 
-	while (SDL_PollEvent(NULL) || !focusGained)
+	while (SDL_PollEvent(nullptr) || !focusGained)
 	{
 		SDL_Event event;
 		SDL_WaitEvent(&event);
@@ -139,7 +139,7 @@ bool drawWindow()
 
 		SDL_Delay(1);
 	}
-	
+
 	SDL_RenderPresent(renderer);
 
 	return true;
@@ -168,7 +168,7 @@ void createTextureBuffer(enum TextureNums texture_id, int width, int height)
 	//Destroy previously existing texture and load new one
 	if (sprites[texture_id] != nullptr)
 		SDL_DestroyTexture(sprites[texture_id]);
-	
+
 	sprites[texture_id] = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_RGB888, SDL_TEXTUREACCESS_TARGET, width, height);//SDL_CreateTextureFromSurface(renderer, surface);
 }
 
@@ -195,7 +195,7 @@ void loadImage(const char *file, SDL_Texture **tex)
 }
 
 //Drawing functions
-void setCliprect(const RECT *rect) 
+void setCliprect(const RECT *rect)
 {
 	//All of this code should be pretty self explanatory
 	if (rect != nullptr)
@@ -390,7 +390,7 @@ void drawString(int x, int y, const char *str, const uint8_t *flag)
 	}
 }
 
-void drawRect(int x, int y, int w, int h) 
+void drawRect(int x, int y, int w, int h)
 {
 	//Map this onto an SDL_Rect
 	drawRectangle.x = x * screenScale;
