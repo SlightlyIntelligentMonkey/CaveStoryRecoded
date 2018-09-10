@@ -83,7 +83,7 @@ void createSmokeUp(int x, int y, int w, int num)
 	createCaret(x, y, effect_BigExplosion);
 }
 
-void createNpc(int setCode, int setX, int setY, int setXm, int setYm, int setDir, npc *parentNpc)
+void createNpc(int setCode, int setX, int setY, int setXm, int setYm, int setDir, npc *parentNpc, bool setPriority)
 {
 	size_t n;
 	for (n = 0; ; ++n)
@@ -95,11 +95,13 @@ void createNpc(int setCode, int setX, int setY, int setXm, int setYm, int setDir
 	if (n != npcs.size())
 	{
 		npcs[n].init(setCode, setX, setY, setXm, setYm, setDir, parentNpc);
+		npcs[n].priority = setPriority;
 	}
 	else
 	{
 		npc newNpc;
 		newNpc.init(setCode, setX, setY, setXm, setYm, setDir, parentNpc);
+		newNpc.priority = setPriority;
 		npcs.push_back(newNpc);
 	}
 }
@@ -117,6 +119,7 @@ void createNpcExp(int setCode, int setX, int setY, int setXm, int setYm, int set
 	{
 		npcs[n].init(setCode, setX, setY, setXm, setYm, setDir, parentNpc);
 		npcs[n].code_event = setEvent;
+		npcs[n].priority = true;
 		npcs[n].exp = exp;
 	}
 	else
@@ -125,6 +128,7 @@ void createNpcExp(int setCode, int setX, int setY, int setXm, int setYm, int set
 		newNpc.init(setCode, setX, setY, setXm, setYm, setDir, parentNpc);
 		newNpc.code_event = setEvent;
 		newNpc.exp = exp;
+		newNpc.priority = true;
 		npcs.push_back(newNpc);
 	}
 }
@@ -217,7 +221,16 @@ void updateNPC()
 		//Update
 		for (size_t i = 0; i < npcs.size(); i++)
 		{
-			if (npcs[i].cond & npccond_alive)
+			if (npcs[i].priority == false && npcs[i].cond & npccond_alive)
+			{
+				npcs[i].update();
+				npcHitMap(i);
+			}
+		}
+
+		for (size_t i = 0; i < npcs.size(); i++)
+		{
+			if (npcs[i].priority == true && npcs[i].cond & npccond_alive)
 			{
 				npcs[i].update();
 				npcHitMap(i);

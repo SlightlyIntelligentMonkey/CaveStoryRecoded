@@ -299,7 +299,11 @@ void npcAct042(npc *NPC) // Sue
 	// Fallthrough
 	case 31:
 		NPC->animate(2, 2, 5);
-		NPC->moveTowardsPlayer(pixelsToUnits(2));
+		if (NPC->direct)
+			NPC->xm = pixelsToUnits(2);
+		else
+			NPC->xm = pixelsToUnits(-2);
+		//NPC->moveTowardsPlayer(pixelsToUnits(2));
 		break;
 	case jumpOffIsland:
 		NPC->act_no = 41;

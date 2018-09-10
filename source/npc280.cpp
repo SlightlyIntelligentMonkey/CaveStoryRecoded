@@ -7,6 +7,16 @@ void npcAct292(npc * /*NPC*/) //Quake
 	viewport.quake = 10;
 }
 
+void npcAct297(npc *NPC) //Sue on sky dragon
+{
+	NPC->x = NPC->pNpc->x + 0x2000;
+	NPC->y = NPC->pNpc->y + 0x1000;
+	NPC->rect.left = 112;
+	NPC->rect.top = 48;
+	NPC->rect.right = 128;
+	NPC->rect.bottom = 64;
+}
+
 void npcAct298(npc *NPC) //Doctor without crown (intro)
 {
 	RECT rc[8];

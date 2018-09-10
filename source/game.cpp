@@ -419,7 +419,6 @@ int gameUpdateMenu()
 	else
 		select = 0;
 
-	/*
 	while (true)
 	{
 		//Handle events
@@ -478,11 +477,11 @@ int gameUpdateMenu()
 		if (!drawWindow())
 			return 0;
 	}
-	*/
 
 	changeOrg(0);
 
 	frame = SDL_GetTicks();
+
 	while (SDL_GetTicks() < frame + 1000)
 	{
 		getKeys();
