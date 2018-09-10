@@ -13,6 +13,18 @@
 				<Option compiler="null" />
 			</Target>
 		</Build>
+		<Unit filename="source/ORIG_org.cpp" />
+		<Unit filename="source/ORIG_org.h" />
+		<Unit filename="source/blade.cpp" />
+		<Unit filename="source/blade.h" />
+		<Unit filename="source/bladeThrow.cpp" />
+		<Unit filename="source/boss.cpp" />
+		<Unit filename="source/boss.h" />
+		<Unit filename="source/bossCollision.cpp" />
+		<Unit filename="source/bossCollision.h" />
+		<Unit filename="source/bubblePew.cpp" />
+		<Unit filename="source/bubbler.cpp" />
+		<Unit filename="source/bubbler.h" />
 		<Unit filename="source/bullet.cpp" />
 		<Unit filename="source/bullet.h" />
 		<Unit filename="source/bulletCollision.cpp" />
@@ -47,9 +59,14 @@
 		<Unit filename="source/mapSystem.cpp" />
 		<Unit filename="source/mathUtils.cpp" />
 		<Unit filename="source/mathUtils.h" />
+		<Unit filename="source/misc.cpp" />
+		<Unit filename="source/misc.h" />
 		<Unit filename="source/missile.cpp" />
 		<Unit filename="source/missile.h" />
 		<Unit filename="source/missileShoot.cpp" />
+		<Unit filename="source/nemesis.cpp" />
+		<Unit filename="source/nemesis.h" />
+		<Unit filename="source/nemesisShoot.cpp" />
 		<Unit filename="source/npc.cpp" />
 		<Unit filename="source/npc.h" />
 		<Unit filename="source/npc000.cpp" />
@@ -101,6 +118,8 @@
 		<Unit filename="source/polarStar.cpp" />
 		<Unit filename="source/polarStar.h" />
 		<Unit filename="source/polarStarShoot.cpp" />
+		<Unit filename="source/pxt.cpp" />
+		<Unit filename="source/pxt.h" />
 		<Unit filename="source/render.cpp" />
 		<Unit filename="source/render.h" />
 		<Unit filename="source/resource.h" />

@@ -1,4 +1,4 @@
-#include "npc140.h"
+﻿#include "npc140.h"
 
 #include "sound.h"
 #include "player.h"
@@ -213,7 +213,6 @@ void npcAct147(npc *NPC)
 			NPC->tgt_y = NPC->y;
 			NPC->act_no = 4;
 			NPC->ani_no = 3;
-			NPC->act_wait = 0;
 			NPC->act_wait = 0;
 		}
 		break;

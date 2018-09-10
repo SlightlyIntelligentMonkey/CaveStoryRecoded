@@ -1,8 +1,17 @@
 #include "boss.h"
+
+#include <string>
+#include <cstring>
+#include <SDL_messagebox.h>
 #include "valueview.h"
 #include "npc.h"
 #include "game.h"
 #include "render.h"
+#include "bossCollision.h"
+#include "bulletCollision.h"
+
+using std::string;
+using std::to_string;
 
 npc bossObj[BOSSNPCS];
 
@@ -45,6 +54,20 @@ void updateBoss()
 				--bossObj[bos].shock;
 		}
 	}
+	else if (bossActs[boss[0].code_char] == nullptr && boss[0].code_char != 0)
+    {
+		static bool wasNotifiedAbout[_countof(bossActs)] = { 0 };
+
+		if (wasNotifiedAbout[boss[0].code_char])
+			return;
+
+		wasNotifiedAbout[boss[0].code_char] = true;
+		string msg = "Boss " + to_string(boss[0].code_char) + " is not implementated yet.";
+		SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_WARNING, "Missing Boss", msg.c_str(), nullptr);
+    }
+
+    bossHitMap();
+    bulletHitBoss();
 }
 
 void drawBoss()

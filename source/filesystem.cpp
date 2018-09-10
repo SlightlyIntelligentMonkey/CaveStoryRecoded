@@ -3,9 +3,12 @@
 #include "weapons.h"
 #include "player.h"
 #include "game.h"
+#include "input.h"
 #include "flags.h"
+#include "render.h"
 #include "script.h"
 #include "org.h"
+#include <SDL.h>
 
 #include <string>
 #include <vector>
@@ -65,7 +68,7 @@ void writeLElong(uint8_t *data, uint32_t input, size_t offset)
 }
 
 //Loading and writing functions
-bool fileExists(const string& name) 
+bool fileExists(const string& name)
 {
 	struct stat buffer;
 	return (stat(name.c_str(), &buffer) == 0);
@@ -107,7 +110,7 @@ int loadFile(const string& name, uint8_t **data)
 	return filesize;
 }
 
-void writeFile(const string& name, const void *data, size_t amount) 
+void writeFile(const string& name, const void *data, size_t amount)
 {
 	FILE *file;
 	if ((file = fopen(name.c_str(), "wb")) == nullptr)
@@ -259,6 +262,92 @@ void saveProfile()
 	writeFile(profileName, profile, 0x604);
 }
 
+//Save and load config.dat thing
+string configName = "Config.dat";
+CONFIG *currentConfig;
+int configVersion = 1;
+
+CONFIG defaultConfigData = { configVersion, 20, 320, 240, 2, false, true, false, keyLeft, keyRight, keyUp, keyDown, keyJump, keyShoot, keyMenu, keyMap, keyRotLeft, keyRotRight, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+
+void setFromConfig(CONFIG *config)
+{
+	framerate = config->framerate;
+	createWindow(config->screenWidth, config->screenHeight, config->screenScale, true);
+
+	if (config->fullscreen)
+		switchScreenMode();
+
+	if (config->useGamepad)
+	{
+		keyLeft = config->padLeft;
+		keyRight = config->padRight;
+		keyUp = config->padUp;
+		keyDown = config->padDown;
+		keyJump = config->padJump;
+		keyShoot = config->padShoot;
+		keyMenu = config->padMenu;
+		keyMap = config->padMap;
+
+		keyRotLeft = config->padRotLeft;
+		keyRotRight = config->padRotRight;
+	}
+	else
+	{
+		keyLeft = config->keyLeft;
+		keyRight = config->keyRight;
+		keyUp = config->keyUp;
+		keyDown = config->keyDown;
+		keyJump = config->keyJump;
+		keyShoot = config->keyShoot;
+		keyMenu = config->keyMenu;
+		keyMap = config->keyMap;
+
+		keyRotLeft = config->keyRotLeft;
+		keyRotRight = config->keyRotRight;
+	}
+
+	currentConfig = config;
+}
+
+void defaultConfig()
+{
+	setFromConfig(&defaultConfigData);
+}
+
+void loadConfig()
+{
+	if (!fileExists(configName.c_str()))
+	{
+		return defaultConfig();
+	}
+	else
+	{
+		CONFIG *config;
+		int configSize = loadFile(configName.c_str(), (uint8_t**)&config);
+
+		if (configSize < sizeof(config->version) || config->version != configVersion)
+		{
+			SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_WARNING, "Invalid config.dat", "Version isn't valid", nullptr);
+			return defaultConfig();
+		}
+		else if (configSize != sizeof(CONFIG))
+		{
+			SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_WARNING, "Invalid config.dat", "Not valid size.", nullptr);
+			return defaultConfig();
+		}
+
+		setFromConfig(config);
+	}
+}
+
+void saveConfig()
+{
+	uint8_t *writeData = (uint8_t*)malloc(sizeof(*currentConfig));
+	memcpy(writeData, currentConfig, sizeof(*currentConfig));
+	writeFile(configName.c_str(), writeData, sizeof(*currentConfig));
+}
+
+//thing
 vector<string> getLinesFromFile(const string& fileName)
 {
 	vector<string> lines;

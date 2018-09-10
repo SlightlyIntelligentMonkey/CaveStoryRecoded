@@ -65,7 +65,7 @@ void init2()
 }
 
 //Keep view inside the level
-void viewBounds() 
+void viewBounds()
 {
 	if ((levelWidth - 1) << 4 > screenWidth)
 		viewport.x = clamp(viewport.x, 0, tilesToUnits(levelWidth - 1) - (screenWidth << 9));
@@ -207,7 +207,7 @@ void debugFunction()
 		{
 		case 0:
 			break;
-			
+
 		case 1:
 			break;
 
@@ -312,6 +312,7 @@ int gameUpdatePlay()
 			updateBoss();
 			playerHitMap();
 			playerHitNpcs();
+			playerHitBosses();
 			if (gameFlags & 2)
 				actWeapon();
 			updateBullets();
@@ -536,6 +537,7 @@ int gameUpdateIntro()
 		}
 
 		updateNPC();
+		updateBoss();
 		updateCarets();
 
 		handleView();
@@ -600,6 +602,7 @@ int mainGameLoop()
 		}
 	}
 
+	saveConfig();
 	return 0;
 }
 

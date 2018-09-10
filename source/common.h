@@ -41,7 +41,7 @@ enum Direction
 	dirUp,
 	dirRight,
 	dirDown,
-	dirCenter,
+	dirAuto,
 };
 
 struct SDL_Window;

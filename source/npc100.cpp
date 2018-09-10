@@ -798,7 +798,7 @@ void npcAct117(npc *NPC)
 	{
 	case 0: //Stand
 		//Look towards player if direction is 4
-		if (NPC->direct == dirCenter)
+		if (NPC->direct == dirAuto)
 		{
 			if (NPC->x <= currentPlayer.x)
 				NPC->direct = dirRight;
