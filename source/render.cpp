@@ -25,7 +25,7 @@ static bool handleEvents()
 {
 	static bool focusGained = true;
 
-	while (SDL_PollEvent(NULL) || !focusGained)
+	while (SDL_PollEvent(nullptr) || !focusGained)
 	{
 		SDL_Event event;
 		SDL_WaitEvent(&event);
