@@ -248,7 +248,13 @@ void drawNPC()
 	{
 		for (size_t i = 0; i < npcs.size(); i++)
 		{
-			if (npcs[i].cond & npccond_alive)
+			if (npcs[i].priority == false && npcs[i].cond & npccond_alive)
+				npcs[i].draw();
+		}
+
+		for (size_t i = 0; i < npcs.size(); i++)
+		{
+			if (npcs[i].priority == true && npcs[i].cond & npccond_alive)
 				npcs[i].draw();
 		}
 	}
