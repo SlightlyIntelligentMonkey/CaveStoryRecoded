@@ -319,6 +319,8 @@ void setFromConfig(CONFIG *config)
 	}
 
 	currentConfig = config;
+
+	saveConfig();
 }
 
 void defaultConfig()

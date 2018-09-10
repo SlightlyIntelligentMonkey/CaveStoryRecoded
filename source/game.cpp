@@ -419,6 +419,7 @@ int gameUpdateMenu()
 	else
 		select = 0;
 
+	/*
 	while (true)
 	{
 		//Handle events
@@ -477,6 +478,7 @@ int gameUpdateMenu()
 		if (!drawWindow())
 			return 0;
 	}
+	*/
 
 	changeOrg(0);
 
