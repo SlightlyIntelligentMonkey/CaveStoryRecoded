@@ -4,6 +4,7 @@
 #include <SDL_image.h>
 #include "sound.h"
 #include "script.h"
+#include "input.h"
 #include "flags.h"
 #include "player.h"
 #include "render.h"
@@ -114,6 +115,8 @@ int init()
 
 	initTsc();
 	initFlags();
+
+	initGamepad();
 
 	initAudio();
 	loadSounds();

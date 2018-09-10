@@ -7,7 +7,7 @@
 
 using std::memcpy;
 
-SDL_Joystick* currentGamepad = NULL;
+SDL_GameController* currentGamepad = NULL;
 
 int keyLeft = SDL_SCANCODE_LEFT;
 int keyRight = SDL_SCANCODE_RIGHT;
@@ -33,10 +33,14 @@ void initGamepad()
 	if (SDL_GameControllerAddMappingsFromFile("data/gamecontrollerdb.txt") < 0)
 		doError();
 
-	currentGamepad = SDL_JoystickOpen(0);
+	for (int i = 0; i < SDL_NumJoysticks(); ++i) {
+		if (SDL_IsGameController(i)) {
+			currentGamepad = SDL_GameControllerOpen(i);
 
-	if (currentGamepad == NULL)
-		return;
+			if (currentGamepad)
+				break;
+		}
+	}
 }
 
 void getKeys()
