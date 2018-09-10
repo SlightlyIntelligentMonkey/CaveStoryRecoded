@@ -75,6 +75,7 @@ int random(int32_t minimum, int32_t maximum)
 {
 	return (minimum + (distrInt(engine) % (maximum - minimum + 1)));
 }
+// minimum + (rand()[maximum - minimum + 1])
 
 int sign(int x)
 {

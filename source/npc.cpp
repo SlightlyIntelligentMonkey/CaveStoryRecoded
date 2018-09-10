@@ -33,6 +33,27 @@ int curlyShootX = 0;
 int curlyShootY = 0;
 
 //NPC Functions
+void setUniqueAttributes(npc *NPC)
+{
+	NPC->surf = npcTable[NPC->code_char].surf;
+	NPC->hit_voice = npcTable[NPC->code_char].hit_voice;
+	NPC->destroy_voice = npcTable[NPC->code_char].destroy_voice;
+
+	NPC->damage = npcTable[NPC->code_char].damage;
+	NPC->size = npcTable[NPC->code_char].size;
+	NPC->life = npcTable[NPC->code_char].life;
+
+	NPC->hit.left = npcTable[NPC->code_char].hit.front << 9;
+	NPC->hit.right = npcTable[NPC->code_char].hit.back << 9;
+	NPC->hit.top = npcTable[NPC->code_char].hit.top << 9;
+	NPC->hit.bottom = npcTable[NPC->code_char].hit.bottom << 9;
+
+	NPC->view.left = npcTable[NPC->code_char].view.front << 9;
+	NPC->view.right = npcTable[NPC->code_char].view.back << 9;
+	NPC->view.top = npcTable[NPC->code_char].view.top << 9;
+	NPC->view.bottom = npcTable[NPC->code_char].view.bottom << 9;
+}
+
 void createSmokeLeft(int x, int y, int w, size_t num)
 {
 	const int wa = w / 0x200;
@@ -114,15 +135,20 @@ void changeNpc(int code_event, int code_char, int dir)
 	{
 		if (npcs[i].cond & npccond_alive && npcs[i].code_event == code_event)
 		{
-			const int code_flag = npcs[i].code_flag;
-			int bits = npcs[i].bits;
-
-			bits &= 0x7F00; //Only bits that seem to determine interactability and other stuff
-
-			npcs[i].init(code_char, npcs[i].x, npcs[i].y, 0, 0, npcs[i].direct, npcs[i].pNpc);
-			npcs[i].bits |= bits;
-			npcs[i].code_flag = code_flag;
-			npcs[i].code_event = code_event;
+			npcs[i].bits &= 0x7F00u;
+			npcs[i].code_char = code_char;
+			npcs[i].bits |= npcTable[npcs[i].code_char].bits;
+			npcs[i].exp = npcTable[npcs[i].code_char].exp;
+			setUniqueAttributes(&npcs[i]);
+			npcs[i].cond |= 0x80u;
+			npcs[i].act_no = 0;
+			npcs[i].act_wait = 0;
+			npcs[i].count1 = 0;
+			npcs[i].count2 = 0;
+			npcs[i].ani_no = 0;
+			npcs[i].ani_wait = 0;
+			npcs[i].xm = 0;
+			npcs[i].ym = 0;
 
 			if (dir != 5)
 			{
@@ -533,23 +559,7 @@ void npc::init(int setCode, int setX, int setY, int setXm, int setYm, int setDir
 	bits = npcTable[code_char].bits;
 	exp = npcTable[code_char].exp;
 
-	surf = npcTable[code_char].surf;
-	hit_voice = npcTable[code_char].hit_voice;
-	destroy_voice = npcTable[code_char].destroy_voice;
-
-	damage = npcTable[code_char].damage;
-	size = npcTable[code_char].size;
-	life = npcTable[code_char].life;
-
-	hit.left = npcTable[code_char].hit.front << 9;
-	hit.right = npcTable[code_char].hit.back << 9;
-	hit.top = npcTable[code_char].hit.top << 9;
-	hit.bottom = npcTable[code_char].hit.bottom << 9;
-
-	view.left = npcTable[code_char].view.front << 9;
-	view.right = npcTable[code_char].view.back << 9;
-	view.top = npcTable[code_char].view.top << 9;
-	view.bottom = npcTable[code_char].view.bottom << 9;
+	setUniqueAttributes(this);
 }
 
 void npc::update()

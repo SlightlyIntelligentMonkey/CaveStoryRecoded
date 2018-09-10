@@ -1,0 +1,49 @@
+WARNINGS = -pedantic -Wall -Wextra -Wno-multichar -Wno-unused-parameter
+
+CXXFLAGS = -O3 $(WARNINGS) -DUSE_ICONS_SDL2
+ALL_CXXFLAGS = -std=c++17 `sdl2-config --cflags` -IJson_Modern_Cpp $(CXXFLAGS)
+LDFLAGS = -s
+ALL_LDFLAGS = -static `sdl2-config --static-libs` $(LDFLAGS)
+LIBS = 
+ALL_LIBS = -lSDL2_image -ljpeg -lpng -lwebp -lz -ltiff -llzma $(LIBS)
+
+MAIN := main
+# states
+MAIN += game 
+# modules
+MAIN += filesystem flags input inventory level loadConfig mapSystem mathUtils script stageSelect stdUtils
+# collision
+MAIN += bulletCollision npcCollision playerCollision
+# drawing
+MAIN += fade hud render
+# sound
+MAIN +=	org pxt sound
+# classes
+MAIN += bullet caret npc player weapons valueview
+# weapon acts
+MAIN += bladeThrow bubblePew fireballShoot machineGunShoot missileShoot nemesisShoot polarStarShoot snakeShoot spurShoot
+# bullet acts
+MAIN += blade bubbler fireball missile polarStar machineGun misc nemesis snake spur
+# npc acts
+MAIN += npcAct npc000 npc020 npc040 npc060 npc080 npc100 npc120 npc140 npc160 npc180 npc200 npc220 npc240 npc260 npc280 npc300 npc320 npc340
+
+OBJS := $(addprefix obj/, $(addsuffix .o, $(MAIN)))
+
+# Embed a bitmap in the binary, and load it with SDL
+OBJS += obj/icon_mini.o
+
+all: bin/CaveStoryRemake
+
+bin/CaveStoryRemake: $(OBJS)
+	@mkdir -p $(@D)
+	@$(CXX) $(ALL_CXXFLAGS) $(OBJS) -o $@ $(ALL_LDFLAGS) $(ALL_LIBS)
+
+obj/%.o: source/%.cpp
+	@mkdir -p $(@D)
+	@$(CXX) $(ALL_CXXFLAGS) $^ -o $@ -c
+
+obj/icon_mini.o: res/icon_mini.bmp
+	@$(LD) -r -b binary -o $@ $<
+
+clean:
+	@rm -rf obj bin/CaveStoryRemake

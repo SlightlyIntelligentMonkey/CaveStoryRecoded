@@ -35,25 +35,25 @@ void mixSounds(int16_t *stream, int len)
 
 		for (auto& sound : sounds)
 		{
-			const auto waveSamples = (size_t)(22050.0 / (double)sampleRate * 4096.0);
+			const long double waveSamples = 22050.0 / (double)sampleRate;
 
 			if (sound.playing)
 			{
 				sound.pos += waveSamples;
 
-				if ((sound.pos >> 12) >= sound.length)
+				if (sound.pos >= sound.length)
 					sound.playing = false;
 				else
 				{
-					const size_t s_offset_1 = sound.pos >> 12;
+					const size_t s_offset_1 = (size_t)floor(sound.pos);
 
 					const int sample1 = (sound.wave[s_offset_1] - 0x80) << 7;
 					int sample2 = 0;
 
-					if ((sound.pos >> 12) < sound.length - 1)
+					if (sound.pos < sound.length - 1)
 						sample2 = (sound.wave[s_offset_1 + 1] - 0x80) << 7;
 
-					const auto val = (int)(sample1 + (sample2 - sample1) * ((double)(sound.pos & 0xFFF) / 4096.0));
+					const auto val = (int)(sample1 + (sample2 - sample1) * fmod(sound.pos, 1.0f));
 
 					tempSampleL += val * 2;
 					tempSampleR += val * 2;
