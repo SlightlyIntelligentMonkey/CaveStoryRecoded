@@ -22,7 +22,7 @@ MAIN += fade hud render
 # sound
 MAIN +=	org pxt sound
 # classes
-MAIN += bullet caret npc player weapons valueview
+MAIN += boss bullet caret npc player weapons valueview
 # weapon acts
 MAIN += bladeThrow bubblePew fireballShoot machineGunShoot missileShoot nemesisShoot polarStarShoot snakeShoot spurShoot
 # bullet acts

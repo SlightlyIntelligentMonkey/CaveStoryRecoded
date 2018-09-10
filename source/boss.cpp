@@ -4,6 +4,8 @@
 #include "game.h"
 #include "render.h"
 
+#include <cstring>
+
 npc boss[BOSSNPCS];
 
 using bossAct = void(*)(npc *);
