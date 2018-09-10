@@ -1,7 +1,9 @@
 #include "render.h"
 #include "common.h"
+#include "input.h"
 
 #include <SDL_image.h>
+#include "SDL.h"
 #include "game.h"
 
 SDL_Rect drawRectangle = { 0, 0, 0, 0 };
@@ -25,33 +27,6 @@ int charScale = 2;
 extern const char binary_res_icon_mini_bmp_start[];
 extern const char binary_res_icon_mini_bmp_end[];
 #endif
-
-static bool handleEvents()
-{
-	static bool focusGained = true;
-
-	while (SDL_PollEvent(nullptr) || !focusGained)
-	{
-		SDL_Event event;
-		SDL_WaitEvent(&event);
-
-		switch (event.type)
-		{
-		case SDL_QUIT:
-			return false;
-
-		case SDL_WINDOWEVENT:
-			if (event.window.event == SDL_WINDOWEVENT_FOCUS_GAINED)
-				focusGained = true;
-			else if (event.window.event == SDL_WINDOWEVENT_FOCUS_LOST)
-				focusGained = false;
-
-			break;
-		}
-	}
-
-	return true;
-}
 
 //Create window
 int createWindow(int width, int height, int scale, bool fullscreen)  // TBD : Handle fullscreen parameter
