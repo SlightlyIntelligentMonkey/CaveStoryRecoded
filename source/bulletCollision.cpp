@@ -524,7 +524,7 @@ void bulletHitBoss()
 {
 	for (size_t n = 0; n < BOSSNPCS; n++)
 	{
-		if (boss[n].cond & npccond_alive && (!(boss[n].bits & npc_shootable) || !(boss[n].bits & npc_interact)))
+		if (bossObj[n].cond & npccond_alive && (!(bossObj[n].bits & npc_shootable) || !(bossObj[n].bits & npc_interact)))
 		{
 			for (size_t i = 0; i < bullets.size(); i++)
 			{
@@ -535,78 +535,78 @@ void bulletHitBoss()
 				{
 					bool bHit = false;
 
-					if (boss[n].bits & npc_shootable //Check for shootable npc collision
-						&& boss[n].x - boss[n].hit.right < bul->x + bul->enemyXL
-						&& boss[n].x + boss[n].hit.right > bul->x - bul->enemyXL
-						&& boss[n].y - boss[n].hit.top < bul->y + bul->enemyYL
-						&& boss[n].y + boss[n].hit.bottom > bul->y - bul->enemyYL)
+					if (bossObj[n].bits & npc_shootable //Check for shootable npc collision
+						&& bossObj[n].x - bossObj[n].hit.right < bul->x + bul->enemyXL
+						&& bossObj[n].x + bossObj[n].hit.right > bul->x - bul->enemyXL
+						&& bossObj[n].y - bossObj[n].hit.top < bul->y + bul->enemyYL
+						&& bossObj[n].y + bossObj[n].hit.bottom > bul->y - bul->enemyYL)
 						bHit = true;
-					else if (boss[n].bits & npc_invulnerable //Check for collision with a specifically not shootable npc
-						&& boss[n].x - boss[n].hit.right < bul->x + bul->blockXL
-						&& boss[n].x + boss[n].hit.right > bul->x - bul->blockXL
-						&& boss[n].y - boss[n].hit.top < bul->y + bul->blockYL
-						&& boss[n].y + boss[n].hit.bottom > bul->y - bul->blockYL)
+					else if (bossObj[n].bits & npc_invulnerable //Check for collision with a specifically not shootable npc
+						&& bossObj[n].x - bossObj[n].hit.right < bul->x + bul->blockXL
+						&& bossObj[n].x + bossObj[n].hit.right > bul->x - bul->blockXL
+						&& bossObj[n].y - bossObj[n].hit.top < bul->y + bul->blockYL
+						&& bossObj[n].y + bossObj[n].hit.bottom > bul->y - bul->blockYL)
 						bHit = true;
 
 					if (bHit)
 					{
-						if (boss[n].bits & npc_shootable)
+						if (bossObj[n].bits & npc_shootable)
 						{
 							//Something
 							int bos_;
 
-							if (boss[n].cond & 0x10)
+							if (bossObj[n].cond & 0x10)
 								bos_ = 0;
 							else
 								bos_ = n;
 
 							//NPC takes damage
-							boss[bos_].life -= bul->damage;
+							bossObj[bos_].life -= bul->damage;
 
-							if (boss[bos_].life > 0)
+							if (bossObj[bos_].life > 0)
 							{
 								//Shock if not already shocked for 2 frames
-								if (boss[bos_].shock < 14)
+								if (bossObj[bos_].shock < 14)
 								{
-									createCaret((bul->x + boss[bos_].x) / 2, (bul->y + boss[bos_].y) / 2, effect_RedDamageRings);
-									createCaret((bul->x + boss[bos_].x) / 2, (bul->y + boss[bos_].y) / 2, effect_RedDamageRings);
-									createCaret((bul->x + boss[bos_].x) / 2, (bul->y + boss[bos_].y) / 2, effect_RedDamageRings);
+									createCaret((bul->x + bossObj[bos_].x) / 2, (bul->y + bossObj[bos_].y) / 2, effect_RedDamageRings);
+									createCaret((bul->x + bossObj[bos_].x) / 2, (bul->y + bossObj[bos_].y) / 2, effect_RedDamageRings);
+									createCaret((bul->x + bossObj[bos_].x) / 2, (bul->y + bossObj[bos_].y) / 2, effect_RedDamageRings);
 
-									playSound(boss[bos_].hit_voice);
+									playSound(bossObj[bos_].hit_voice);
 								}
 
-								boss[n].shock = 8;
-								boss[bos_].shock = 8;
-								boss[bos_].damage_view -= bul->damage;
+								bossObj[n].shock = 8;
+								bossObj[bos_].shock = 8;
+								bossObj[bos_].damage_view -= bul->damage;
 							}
 							else
 							{
 								//what the fuck you the pixel
-								boss[bos_].life = bos_;
+								bossObj[bos_].life = bos_;
 
 								//Either run event if the run event on death flag's set, or die
-								if (currentPlayer.cond & 0x80 && boss[n].bits & npc_eventDie)
+								if (currentPlayer.cond & 0x80 && bossObj[n].bits & npc_eventDie)
 								{
-									startTscEvent(boss[n].code_event);
+									startTscEvent(bossObj[n].code_event);
 								}
 								else
 								{
-									playSound(boss[bos_].destroy_voice);
+									playSound(bossObj[bos_].destroy_voice);
 
-									switch(boss[bos_].size)
+									switch(bossObj[bos_].size)
 									{
 									case 1:
-										createSmokeLeft(boss[bos_].x, boss[bos_].y, boss[bos_].view.right, 4);
+										createSmokeLeft(bossObj[bos_].x, bossObj[bos_].y, bossObj[bos_].view.right, 4);
 										break;
 									case 2:
-										createSmokeLeft(boss[bos_].x, boss[bos_].y, boss[bos_].view.right, 8);
+										createSmokeLeft(bossObj[bos_].x, bossObj[bos_].y, bossObj[bos_].view.right, 8);
 										break;
 									case 3:
-										createSmokeLeft(boss[bos_].x, boss[bos_].y, boss[bos_].view.right, 16);
+										createSmokeLeft(bossObj[bos_].x, bossObj[bos_].y, bossObj[bos_].view.right, 16);
 										break;
 									}
 
-									boss[bos_].cond = 0;
+									bossObj[bos_].cond = 0;
 								}
 							}
 						}
@@ -619,7 +619,7 @@ void bulletHitBoss()
 							&& !(bul->bbits & 0x10))
 						{
 							//Break if hitting a non-shootable NPC
-							createCaret((bul->x + boss[n].x) / 2, (bul->y + boss[n].y) / 2, effect_RisingDisc, dirRight);
+							createCaret((bul->x + bossObj[n].x) / 2, (bul->y + bossObj[n].y) / 2, effect_RisingDisc, dirRight);
 							playSound(SFX_ShotHitInvulnerableEntity);
 							bul->life = 0;
 						}

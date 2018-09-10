@@ -212,27 +212,6 @@ void npcAct106(npc *NPC) // Speech balloon 'Hey' high
 	}
 }
 
-<<<<<<< HEAD
-void npcAct107(npc *NPC) //malco
-{
-	switch (NPC->act_no)
-	{
-	case 0:
-		NPC->act_no = 1;
-		if (NPC->direct == 2)
-			NPC->ani_no = 5;
-		break;
-	case 10:
-		NPC->act_no = 11;
-		NPC->act_wait = 0;
-		NPC->ani_wait = 0;
-		for (int i = 0; i <= 3; ++i)
-			createNpc(4, NPC->x, NPC->y, random(-341, 341), random(-1536, 0));
-	case 11:
-		if (++NPC->ani_wait > 1)
-		{
-			playSound(43);
-=======
 void npcAct107(npc *NPC) // Malco
 {
 	enum
@@ -270,102 +249,98 @@ void npcAct107(npc *NPC) // Malco
 		if (++NPC->ani_wait > 1)
 		{
 			playSound(SFX_ComputerScreenOn);
->>>>>>> upstream/master
-			NPC->ani_wait = 0;
-			++NPC->ani_no;
-		}
-		if (NPC->ani_no > 1)
-			NPC->ani_no = 0;
-		if (++NPC->act_wait > 100)
-<<<<<<< HEAD
-			NPC->act_no = 12;
-		break;
-	case 12:
-		NPC->act_no = 13;
+			NPC->act_no = flickerAndBeep + 2;
+			break;
+
+	case flickerAndBeep + 2:
+		NPC->act_no = flickerAndBeep + 3;
 		NPC->act_wait = 0;
 		NPC->ani_no = 1;
-	case 13:
+		// Fallthrough
+	case flickerAndBeep + 3:
 		if (++NPC->act_wait > 50)
-			NPC->act_no = 14;
+			NPC->act_no = flickerAndBeep + 4;
 		break;
-	case 14:
-		NPC->act_no = 15;
+
+	case flickerAndBeep + 4:
+		NPC->act_no = shaking;
 		NPC->act_wait = 0;
-	case 15:
-		if (NPC->act_wait / 2 & 1)
+		// Fallthrough
+	case shaking:
+		if (NPC->act_wait / 2 % 2)
 		{
-			NPC->x += 512;
-			playSound(11);
+			NPC->x += pixelsToUnits(1);
+			playSound(SFX_DoorOpen);
 		}
 		else
-		{
-			NPC->x -= 512;
-		}
+			NPC->x -= pixelsToUnits(1);
+
 		if (++NPC->act_wait > 50)
-			NPC->act_no = 16;
+			NPC->act_no = standUp;
 		break;
-	case 16:
-		NPC->act_no = 17;
+
+	case standUp:
+		NPC->act_no = standUp + 1;
 		NPC->act_wait = 0;
 		NPC->ani_no = 2;
-		playSound(12);
-		for (int i = 0; i <= 7; ++i)
-			createNpc(4, NPC->x, NPC->y, random(-341, 341), random(-1536, 0));
-	case 17:
+		playSound(SFX_DestroyBreakableBlock);
+		for (size_t i = 0; i < 8; ++i)
+		{
+			auto yVel = random(pixelsToUnits(-3), 0);
+			auto xVel = random(-0x155, 0x155);
+			createNpc(NPC_Smoke, NPC->x, NPC->y, xVel, yVel);
+		}
+		// Fallthrough
+	case standUp + 1:
 		if (++NPC->act_wait > 150)
 			NPC->act_no = 18;
 		break;
-	case 18:
-		NPC->act_no = 19;
+
+	case bopUpDown:
+		NPC->act_no = bopUpDown + 1;
 		NPC->act_wait = 0;
 		NPC->ani_no = 3;
 		NPC->ani_wait = 0;
-	case 19:
-		if (++NPC->ani_wait > 3)
-		{
-			NPC->ani_wait = 0;
-			++NPC->ani_no;
-		}
+		// Fallthrough
+	case bopUpDown + 1:
+		NPC->animate(3);
+
 		if (NPC->ani_no > 4)
 		{
-			playSound(11, 1);
+			playSound(SFX_DoorOpen);
 			NPC->ani_no = 3;
 		}
+
 		if (++NPC->act_wait > 100)
 		{
-			NPC->act_no = 20;
-			playSound(12);
-			for (int i = 0; i <= 3; ++i)
-				createNpc(4, NPC->x, NPC->y, random(-341, 341), random(-1536, 0));
+			NPC->act_no = bopUpDown + 2;
+			playSound(SFX_DestroyBreakableBlock);
+			NPC->createSmokeWithVel(4, random(pixelsToUnits(-3), 0), random(-0x155, 0x155));
 		}
 		break;
-	case 20:
+
+	case bopUpDown + 2:
 		NPC->ani_no = 4;
 		break;
-	case 21:
-		NPC->act_no = 22;
+
+	case getSmashed:
+		NPC->act_no = getSmashed + 1;
 		NPC->ani_no = 5;
-		playSound(51);
+		playSound(SFX_CritterSmallHurt);
 		break;
-	case 100:
-		NPC->act_no = 101;
-		NPC->ani_no = 6;
-		NPC->ani_wait = 0;
-	case 101:
-		if (++NPC->ani_wait > 4)
-		{
-			NPC->ani_wait = 0;
-			++NPC->ani_no;
-		}
-		if (NPC->ani_no > 9)
-			NPC->ani_no = 6;
+
+	case babyMalco:
+		NPC->animate(4, 6, 9);
 		break;
-	case 110:
-		createSmokeLeft(NPC->x, NPC->y, 0x2000, 16);
+
+	case babyBlowsUp:
+		createSmokeLeft(NPC->x, NPC->y, tilesToUnits(1), 16);
 		NPC->cond = 0;
 		break;
+
 	default:
 		break;
+		}
 	}
 
 	NPC->rect.left = 144 + (NPC->ani_no*16);
@@ -573,115 +548,6 @@ void npcAct110(npc *NPC) //mini frog
 	NPC->rect.top = 128 + ((NPC->direct / 2) * 16);
 	NPC->rect.right = NPC->rect.left + 16;
 	NPC->rect.bottom = NPC->rect.top + 16;
-=======
-			NPC->act_no = flickerAndBeep + 2;
-		break;
-
-	case flickerAndBeep + 2:
-		NPC->act_no = flickerAndBeep + 3;
-		NPC->act_wait = 0;
-		NPC->ani_no = 1;
-		// Fallthrough
-	case flickerAndBeep + 3:
-		if (++NPC->act_wait > 50)
-			NPC->act_no = flickerAndBeep + 4;
-		break;
-	
-	case flickerAndBeep + 4:
-		NPC->act_no = shaking;
-		NPC->act_wait = 0;
-		// Fallthrough
-	case shaking:
-		if (NPC->act_wait / 2 % 2)
-		{
-			NPC->x += pixelsToUnits(1);
-			playSound(SFX_DoorOpen);
-		}
-		else
-			NPC->x -= pixelsToUnits(1);
-
-		if (++NPC->act_wait > 50)
-			NPC->act_no = standUp;
-		break;
-
-	case standUp:
-		NPC->act_no = standUp + 1;
-		NPC->act_wait = 0;
-		NPC->ani_no = 2;
-		playSound(SFX_DestroyBreakableBlock);
-		for (size_t i = 0; i < 8; ++i)
-		{
-			auto yVel = random(pixelsToUnits(-3), 0);
-			auto xVel = random(-0x155, 0x155);
-			createNpc(NPC_Smoke, NPC->x, NPC->y, xVel, yVel);
-		}
-		// Fallthrough
-	case standUp + 1:
-		if (++NPC->act_wait > 150)
-			NPC->act_no = 18;
-		break;
-
-	case bopUpDown:
-		NPC->act_no = bopUpDown + 1;
-		NPC->act_wait = 0;
-		NPC->ani_no = 3;
-		NPC->ani_wait = 0;
-		// Fallthrough
-	case bopUpDown + 1:
-		NPC->animate(3);
-
-		if (NPC->ani_no > 4)
-		{
-			playSound(SFX_DoorOpen);
-			NPC->ani_no = 3;
-		}
-
-		if (++NPC->act_wait > 100)
-		{
-			NPC->act_no = bopUpDown + 2;
-			playSound(SFX_DestroyBreakableBlock);
-			NPC->createSmokeWithVel(4, random(pixelsToUnits(-3), 0), random(-0x155, 0x155));
-		}
-		break;
-
-	case bopUpDown + 2:
-		NPC->ani_no = 4;
-		break;
-
-	case getSmashed:
-		NPC->act_no = getSmashed + 1;
-		NPC->ani_no = 5;
-		playSound(SFX_CritterSmallHurt);
-		break;
-
-	case babyMalco:
-		NPC->animate(4, 6, 9);
-		break;
-
-	case babyBlowsUp:
-		createSmokeLeft(NPC->x, NPC->y, tilesToUnits(1), 16);
-		NPC->cond = 0;
-		break;
-
-	default:
-		break;
-	}
-
-	vector<RECT> rcNPC(10);
-
-	rcNPC[0] = { 144, 0, 160, 24 };
-	rcNPC[1] = { 160, 0, 176, 24 };
-	rcNPC[2] = { 176, 0, 192, 24 };
-	rcNPC[3] = { 192, 0, 208, 24 };
-	rcNPC[4] = { 208, 0, 224, 24 };
-	rcNPC[5] = { 224, 0, 240, 24 };
-	rcNPC[6] = { 176, 0, 192, 24 };
-	rcNPC[7] = { 192, 0, 208, 24 };
-	rcNPC[8] = { 208, 0, 224, 24 };
-	rcNPC[9] = { 192, 0, 208, 24 };
-
-	NPC->doRects(rcNPC);
->>>>>>> upstream/master
 }
 
 void npcAct111(npc *NPC) //Quote teleport out

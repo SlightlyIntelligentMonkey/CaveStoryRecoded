@@ -4,14 +4,14 @@
 #include "game.h"
 #include "render.h"
 
-npc boss[BOSSNPCS];
+npc bossObj[BOSSNPCS];
 
 using bossAct = void(*)(npc *);
 const bossAct bossActs[10] =
 {
 	static_cast<bossAct>(nullptr),
 	static_cast<bossAct>(nullptr),
-	static_cast<bossAct>(nullptr),
+	&actBoss_Frog,
 	static_cast<bossAct>(nullptr),
 	static_cast<bossAct>(nullptr),
 	static_cast<bossAct>(nullptr),
@@ -23,26 +23,26 @@ const bossAct bossActs[10] =
 
 void initBoss(int code)
 {
-	memset(boss, 0, sizeof(boss));
-	boss[0].cond = npccond_alive;
-	boss[0].code_char = code;
+	memset(bossObj, 0, sizeof(bossObj));
+	bossObj[0].cond = npccond_alive;
+	bossObj[0].code_char = code;
 }
 
 void setBossAction(int a)
 {
-	boss[0].act_no = a;
+	bossObj[0].act_no = a;
 }
 
 void updateBoss()
 {
-	if ((boss[0].cond & npccond_alive) && bossActs[boss[0].code_char] != nullptr)
+	if ((bossObj[0].cond & npccond_alive) && bossActs[bossObj[0].code_char] != nullptr)
 	{
-		bossActs[boss[0].code_char](&boss[0]);
+		bossActs[bossObj[0].code_char](&bossObj[0]);
 
 		for (size_t bos = 0; bos < BOSSNPCS; ++bos)
 		{
-			if (boss[bos].shock)
-				--boss[bos].shock;
+			if (bossObj[bos].shock)
+				--bossObj[bos].shock;
 		}
 	}
 }
@@ -51,28 +51,30 @@ void drawBoss()
 {
 	for (size_t bos = BOSSNPCS - 1; bos > 0; bos--)
 	{
-		if (boss[bos].cond & npccond_alive)
+		if (bossObj[bos].cond & npccond_alive)
 		{
-			int xOffset = 0;
+			int shake = 0;
 
-			if (boss[bos].shock)
+			if (bossObj[bos].shock)
 			{
-				xOffset = 2 * ((boss[bos].shock >> 1) & 1) - 1;
+				shake = 2 * ((bossObj[bos].shock >> 1) & 1) - 1;
 			}
 			else
 			{
-				if (boss[bos].bits & npc_showDamage && boss[bos].damage_view)
+				if (bossObj[bos].bits & npc_showDamage && bossObj[bos].damage_view)
 				{
-					createValueView(&boss[bos].x, &boss[bos].y, boss[bos].damage_view);
-					boss[bos].damage_view = 0;
+					createValueView(&bossObj[bos].x, &bossObj[bos].y, bossObj[bos].damage_view);
+					bossObj[bos].damage_view = 0;
 				}
 			}
 
-			int side = boss[bos].view.left;
-			if (boss[bos].direct != dirLeft)
-				side = boss[bos].view.right;
+			int side = bossObj[bos].view.left;
+			if (bossObj[bos].direct != dirLeft)
+				side = bossObj[bos].view.right;
 
-			drawTexture(sprites[TEX_NPC_2], &boss[bos].rect, (boss[bos].x - side) / 0x200 - viewport.x / 0x200 + xOffset, (boss[bos].y - boss[bos].view.top) / 0x200 - viewport.y / 0x200);
+			drawTexture(sprites[TEX_NPC_2], &bossObj[bos].rect, 
+				(bossObj[bos].x - side) / 0x200 - (viewport.x / 0x200) + shake, 
+				(bossObj[bos].y - bossObj[bos].view.top) / 0x200 - (viewport.y / 0x200));
 		}
 	}
 }

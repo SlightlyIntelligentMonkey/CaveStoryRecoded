@@ -1,4 +1,4 @@
-#include "mapboss.h"
+#include "boss.h"
 #include "sound.h"
 #include "mathUtils.h"
 #include "player.h"

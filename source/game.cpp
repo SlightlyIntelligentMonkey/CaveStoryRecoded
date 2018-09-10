@@ -229,7 +229,7 @@ void debugFunction()
 		string debugStr2 = "There are " + to_string(bullets.size()) + " bullet slots.";
 		string debugStr3 = "There are " + to_string(carets.size()) + " caret slots.";
 		string debugStr4 = "There are " + to_string(valueviews.size()) + " valueview slots";
-		string debugStr5 = "Currently loaded boss is " + to_string(boss[0].code_char);
+		string debugStr5 = "Currently loaded boss is " + to_string(bossObj[0].code_char);
 		drawString(8, screenHeight - 12, debugStr1.c_str());
 		drawString(8, screenHeight - 24, debugStr2.c_str());
 		drawString(8, screenHeight - 36, debugStr3.c_str());

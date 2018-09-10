@@ -221,7 +221,6 @@
     <ClCompile Include="loadConfig.cpp" />
     <ClCompile Include="machineGun.cpp" />
     <ClCompile Include="machineGunShoot.cpp" />
-    <ClCompile Include="mapBoss.cpp" />
     <ClCompile Include="mapSystem.cpp" />
     <ClCompile Include="misc.cpp" />
     <ClCompile Include="missile.cpp" />
@@ -265,6 +264,7 @@
     <ClCompile Include="playerCollision.cpp" />
     <ClCompile Include="polarStar.cpp" />
     <ClCompile Include="polarStarShoot.cpp" />
+    <ClCompile Include="pxt.cpp" />
     <ClCompile Include="render.cpp" />
     <ClCompile Include="script.cpp" />
     <ClCompile Include="snake.cpp" />
@@ -292,7 +292,6 @@
     <ClInclude Include="org.h" />
     <ClInclude Include="loadConfig.h" />
     <ClInclude Include="machineGun.h" />
-    <ClInclude Include="mapBoss.h" />
     <ClInclude Include="misc.h" />
     <ClInclude Include="missile.h" />
     <ClInclude Include="nemesis.h" />
