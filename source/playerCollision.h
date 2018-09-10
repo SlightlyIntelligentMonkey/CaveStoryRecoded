@@ -4,3 +4,4 @@
 
 void playerHitMap();
 void playerHitNpcs();
+void playerHitBosses();

@@ -68,7 +68,7 @@ void writeLElong(uint8_t *data, uint32_t input, size_t offset)
 }
 
 //Loading and writing functions
-bool fileExists(const string& name) 
+bool fileExists(const string& name)
 {
 	struct stat buffer;
 	return (stat(name.c_str(), &buffer) == 0);
@@ -110,7 +110,7 @@ int loadFile(const string& name, uint8_t **data)
 	return filesize;
 }
 
-void writeFile(const string& name, const void *data, size_t amount) 
+void writeFile(const string& name, const void *data, size_t amount)
 {
 	FILE *file;
 	if ((file = fopen(name.c_str(), "wb")) == nullptr)
@@ -267,7 +267,7 @@ string configName = "Config.dat";
 CONFIG *currentConfig;
 int configVersion = 1;
 
-CONFIG defaultConfigData = { configVersion, 20, 320, 240, 2, false, true, false, keyLeft, keyRight, keyUp, keyDown, keyJump, keyShoot, keyMenu, keyShoot, keyRotLeft, keyRotRight, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+CONFIG defaultConfigData = { configVersion, 20, 320, 240, 2, false, true, false, keyLeft, keyRight, keyUp, keyDown, keyJump, keyShoot, keyMenu, keyMap, keyRotLeft, keyRotRight, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
 
 void setFromConfig(CONFIG *config)
 {

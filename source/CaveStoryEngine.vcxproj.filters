@@ -177,6 +177,9 @@
     <ClCompile Include="bulletCollision.cpp">
       <Filter>Source Files\modules\collision</Filter>
     </ClCompile>
+    <ClCompile Include="bossCollision.cpp">
+      <Filter>Source Files\modules\collision</Filter>
+    </ClCompile>
     <ClCompile Include="spur.cpp">
       <Filter>Source Files\classes\bullet\act</Filter>
     </ClCompile>
@@ -384,6 +387,9 @@
       <Filter>Source Files\modules\collision</Filter>
     </ClInclude>
     <ClInclude Include="bulletCollision.h">
+      <Filter>Source Files\modules\collision</Filter>
+    </ClInclude>
+    <ClInclude Include="bossCollision.h">
       <Filter>Source Files\modules\collision</Filter>
     </ClInclude>
     <ClInclude Include="spur.h">

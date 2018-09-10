@@ -16,7 +16,7 @@ MAIN += game
 # modules
 MAIN += filesystem flags input inventory level loadConfig mapSystem mathUtils script stageSelect stdUtils
 # collision
-MAIN += bulletCollision npcCollision playerCollision
+MAIN += bossCollision bulletCollision npcCollision playerCollision
 # drawing
 MAIN += fade hud render
 # sound

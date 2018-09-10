@@ -207,6 +207,7 @@
     <ClCompile Include="blade.cpp" />
     <ClCompile Include="bladeThrow.cpp" />
     <ClCompile Include="boss.cpp" />
+    <ClCompile Include="bossCollision.cpp" />
     <ClCompile Include="bubblePew.cpp" />
     <ClCompile Include="bubbler.cpp" />
     <ClCompile Include="bullet.cpp" />
