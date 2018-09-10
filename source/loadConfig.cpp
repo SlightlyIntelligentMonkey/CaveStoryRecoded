@@ -42,14 +42,6 @@ void loadGameJson()
 		debugFlags |= notifyOnNotImplemented;
 	if (jDbgFlgs["showNPCHealth"] == true)
 		debugFlags |= showNPCHealth;
-
-	if (jGame["millisecondsPerFrame"].is_number_integer())
-		framerate = jGame["millisecondsPerFrame"];
-
-	if (jGame["screenWidth"].is_number_integer() && jGame["screenHeight"].is_number_integer() && jGame["screenScale"].is_number_integer())
-		createWindow(jGame["screenWidth"], jGame["screenHeight"], jGame["screenScale"], true);
-	else
-		doCustomError("Screen related variables in game.json aren't defined");
 }
 
 void loadOrgJson()

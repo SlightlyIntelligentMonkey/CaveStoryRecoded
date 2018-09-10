@@ -600,6 +600,7 @@ int mainGameLoop()
 		}
 	}
 
+	saveConfig();
 	return 0;
 }
 
