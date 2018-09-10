@@ -67,7 +67,6 @@ void updateBoss()
     }
 
     bossHitMap();
-    bulletHitBoss();
 }
 
 void drawBoss()
