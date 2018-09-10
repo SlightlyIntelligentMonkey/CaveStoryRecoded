@@ -1,5 +1,6 @@
 #include "bulletCollision.h"
 #include "bullet.h"
+#include "boss.h"
 #include "sound.h"
 #include "caret.h"
 #include "level.h"
@@ -512,6 +513,120 @@ void bulletHitNpcs()
 
 						//I think this is for the spur maybe?
 						--bul->life;
+					}
+				}
+			}
+		}
+	}
+}
+
+void bulletHitBoss()
+{
+	for (size_t n = 0; n < BOSSNPCS; n++)
+	{
+		if (boss[n].cond & npccond_alive && (!(boss[n].bits & npc_shootable) || !(boss[n].bits & npc_interact)))
+		{
+			for (size_t i = 0; i < bullets.size(); i++)
+			{
+				bullet *bul = &bullets[i];
+
+				//Check if the bullet is tangible
+				if (bul->cond & 0x80 && bul->damage != -1)
+				{
+					bool bHit = false;
+
+					if (boss[n].bits & npc_shootable //Check for shootable npc collision
+						&& boss[n].x - boss[n].hit.right < bul->x + bul->enemyXL
+						&& boss[n].x + boss[n].hit.right > bul->x - bul->enemyXL
+						&& boss[n].y - boss[n].hit.top < bul->y + bul->enemyYL
+						&& boss[n].y + boss[n].hit.bottom > bul->y - bul->enemyYL)
+						bHit = true;
+					else if (boss[n].bits & npc_invulnerable //Check for collision with a specifically not shootable npc
+						&& boss[n].x - boss[n].hit.right < bul->x + bul->blockXL
+						&& boss[n].x + boss[n].hit.right > bul->x - bul->blockXL
+						&& boss[n].y - boss[n].hit.top < bul->y + bul->blockYL
+						&& boss[n].y + boss[n].hit.bottom > bul->y - bul->blockYL)
+						bHit = true;
+
+					if (bHit)
+					{
+						if (boss[n].bits & npc_shootable)
+						{
+							//Something
+							int bos_;
+
+							if (boss[n].cond & 0x10)
+								bos_ = 0;
+							else
+								bos_ = n;
+
+							//NPC takes damage
+							boss[bos_].life -= bul->damage;
+
+							if (boss[bos_].life > 0)
+							{
+								//Shock if not already shocked for 2 frames
+								if (boss[bos_].shock < 14)
+								{
+									createCaret((bul->x + boss[bos_].x) / 2, (bul->y + boss[bos_].y) / 2, effect_RedDamageRings);
+									createCaret((bul->x + boss[bos_].x) / 2, (bul->y + boss[bos_].y) / 2, effect_RedDamageRings);
+									createCaret((bul->x + boss[bos_].x) / 2, (bul->y + boss[bos_].y) / 2, effect_RedDamageRings);
+
+									playSound(boss[bos_].hit_voice);
+								}
+
+								boss[n].shock = 8;
+								boss[bos_].shock = 8;
+								boss[bos_].damage_view -= bul->damage;
+							}
+							else
+							{
+								//what the fuck you the pixel
+								boss[bos_].life = bos_;
+
+								//Either run event if the run event on death flag's set, or die
+								if (currentPlayer.cond & 0x80 && boss[n].bits & npc_eventDie)
+								{
+									startTscEvent(boss[n].code_event);
+								}
+								else
+								{
+									playSound(boss[bos_].destroy_voice);
+
+									switch(boss[bos_].size)
+									{
+									case 1:
+										createSmokeLeft(boss[bos_].x, boss[bos_].y, boss[bos_].view.right, 4);
+										break;
+									case 2:
+										createSmokeLeft(boss[bos_].x, boss[bos_].y, boss[bos_].view.right, 8);
+										break;
+									case 3:
+										createSmokeLeft(boss[bos_].x, boss[bos_].y, boss[bos_].view.right, 16);
+										break;
+									}
+
+									boss[bos_].cond = 0;
+								}
+							}
+						}
+						else if (bul->code_bullet != 13
+							&& bul->code_bullet != 14
+							&& bul->code_bullet != 15
+							&& bul->code_bullet != 28
+							&& bul->code_bullet != 29
+							&& bul->code_bullet != 30
+							&& !(bul->bbits & 0x10))
+						{
+							//Break if hitting a non-shootable NPC
+							createCaret((bul->x + boss[n].x) / 2, (bul->y + boss[n].y) / 2, effect_RisingDisc, dirRight);
+							playSound(SFX_ShotHitInvulnerableEntity);
+							bul->life = 0;
+						}
+						else
+						{
+							--bul->life;
+						}
 					}
 				}
 			}

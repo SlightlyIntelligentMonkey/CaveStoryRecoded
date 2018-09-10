@@ -3,6 +3,7 @@
 #include "player.h"
 #include "filesystem.h"
 #include "flags.h"
+#include "boss.h"
 #include "valueview.h"
 #include "bullet.h"
 #include "caret.h"
@@ -119,6 +120,9 @@ void loadLevel(int levelIndex)
 	mapName.flag = 0;
 	mapName.wait = 0;
 	strcpy(mapName.name, stageTable[levelIndex].name);
+
+	//Load boss
+	initBoss(stageTable[levelIndex].boss);
 
 	//Load pxm
 	const string pxmPath = string("data/Stage/") + stageTable[levelIndex].filename + ".pxm";

@@ -1,0 +1,14 @@
+{
+  "debugFlags": {
+    "showSlots": false,
+    "showNPCId ": false,
+    "showBULId": false,
+    "showCARId": false,
+    "notifyOnNotImplemented": false,
+    "showNPCHealth": false
+  },
+  "millisecondsPerFrame": 20,
+  "screenWidth": 320,
+  "screenHeight": 240,
+  "screenScale": 2
+}

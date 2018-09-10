@@ -4,7 +4,7 @@ OPTIMISATIONS := -Os -frename-registers -funroll-loops
 #OPTIMISATIONS += -flto
 
 COMPILE_C := $(CC) -m32 $(OPTIMISATIONS) $(WARNINGS) -std=c11 -I/mingw32/include/SDL2/ -IJson_Modern_Cpp -c
-COMPILE_CPP := $(CXX) -m32 $(OPTIMISATIONS) $(WARNINGS) -std=c++17 -I/mingw32/include/SDL2/ -IJson_Modern_Cpp -c
+COMPILE_CPP := $(CXX) -m32 $(OPTIMISATIONS) $(WARNINGS) -std=c++17 -I/mingw32/include/SDL2/ -IJson_Modern_Cpp -c -DUSE_ICONS_WINDOWS
 # Replace mingw32 with usr for actual Unix build
 LINK_CPP := $(CXX) -m32 $(OPTIMISATIONS) $(WARNINGS) -static -static-libstdc++ -static-libgcc -mwindows
 LINK_C := $(CC) -m32 $(OPTIMISATIONS) $(WARNINGS) -static -static-libstdc++ -static-libgcc -mwindows
@@ -31,6 +31,7 @@ MAIN += blade bubbler fireball missile polarStar machineGun misc nemesis snake s
 MAIN += npcAct npc000 npc020 npc040 npc060 npc080 npc100 npc120 npc140 npc160 npc180 npc200 npc220 npc240 npc260 npc280 npc300 npc320 npc340
 
 OBJS := $(addprefix obj/, $(addsuffix .o, $(MAIN)))
+OBJS += obj/icon.o
 
 all: bin/CaveStoryRemake
 
@@ -44,6 +45,9 @@ bin/CaveStoryRemake: $(OBJS)
 obj/%.o: source/%.cpp
 	@mkdir -p $(@D)
 	$(COMPILE_CPP) $^ -o $@
+
+obj/icon.o: res/icon.rc res/icon_mini.ico
+	@windres $< $@
 
 # cleanup
 

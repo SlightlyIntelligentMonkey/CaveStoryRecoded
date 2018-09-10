@@ -4,6 +4,7 @@
 #include "org.h"
 #include "filesystem.h"
 #include "player.h"
+#include "render.h"
 
 #include <string>
 #include <fstream>
@@ -13,7 +14,7 @@ using std::string;
 using std::ifstream;
 using nlohmann::json;
 
-const string baseJsonFolder = "data/Config/";
+const string baseJsonFolder = "Config/";
 
 json loadJsonFromFile(const string& path)
 {
@@ -41,9 +42,6 @@ void loadGameJson()
 		debugFlags |= notifyOnNotImplemented;
 	if (jDbgFlgs["showNPCHealth"] == true)
 		debugFlags |= showNPCHealth;
-
-	if (jGame["millisecondsPerFrame"].is_string())
-		framerate = jGame["millisecondsPerFrame"];
 }
 
 void loadOrgJson()

@@ -53,7 +53,7 @@ struct WAVE {
 	size_t length;
 	bool playing;
 	bool loops;
-	unsigned int pos;
+	long double pos;
 	long double volume;
 	long double volume_l;
 	long double volume_r;
@@ -65,7 +65,7 @@ struct DRUM {
 	size_t length;
 	size_t freq;
 	bool playing;
-	size_t pos;
+	long double pos;
 	long double volume;
 	long double volume_l;
 	long double volume_r;

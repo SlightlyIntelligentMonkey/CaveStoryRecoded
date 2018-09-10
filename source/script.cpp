@@ -3,6 +3,7 @@
 #include "weapons.h"
 #include "render.h"
 #include "sound.h"
+#include "boss.h"
 #include "flags.h"
 #include "npc.h"
 #include "filesystem.h"
@@ -457,9 +458,7 @@ bool doTscCommand(int *retVal, bool *bExit)
 {
     int xt;
     int yt;
-
-	static bool notifiedAboutBOA = false;
-	static bool notifiedAboutBossBSL = false;
+	
 	static bool notifiedAboutCIL = false;
 	static bool notifiedAboutCPS = false;
 	static bool notifiedAboutCRE = false;
@@ -472,6 +471,7 @@ bool doTscCommand(int *retVal, bool *bExit)
 	static bool notifiedAboutSSS = false;
 	static bool notifiedAboutSTC = false;
 	static bool notifiedAboutXX1 = false;
+
 	//Parse and run TSC commands
 	switch (tsc.data[tsc.p_read + 3] + (tsc.data[tsc.p_read + 2] << 8) + (tsc.data[tsc.p_read + 1] << 16) + (tsc.data[tsc.p_read] << 24))
 	{
@@ -502,12 +502,7 @@ bool doTscCommand(int *retVal, bool *bExit)
 		tscCleanup(3);
 		break;
 	case('<BOA'):
-		if (!notifiedAboutBOA && debugFlags & notifyOnNotImplemented)
-		{
-			notifiedAboutBOA = true;
-			showTSCNotImplementedWarning("<BOA is not implemented");
-		}
-
+		setBossAction(getTSCNumber(tsc.p_read + 4));
 		tscCleanup(1);
 		break;
 	case('<BSL'):
@@ -525,11 +520,13 @@ bool doTscCommand(int *retVal, bool *bExit)
 				}
 			}
 		}
-		else if (!notifiedAboutBossBSL && debugFlags & notifyOnNotImplemented)
-        {
-            notifiedAboutBossBSL = true;
-            showTSCNotImplementedWarning("BSL for bosses is not yet implemented");
-        }
+		else
+		{
+			bossLife.flag = 1;
+			bossLife.max = boss[0].life;
+			bossLife.br = boss[0].life;
+			bossLife.pLife = &boss[0].life;
+		}
 
 		tscCleanup(1);
 		break;
@@ -846,7 +843,7 @@ bool doTscCommand(int *retVal, bool *bExit)
 		tscCleanup(0);
 		break;
 	case('<MNP'):
-        moveNPC(getTSCNumber(tsc.p_read + 4), getTSCNumber(tsc.p_read + 9), getTSCNumber(tsc.p_read + 14),
+        moveNPC(getTSCNumber(tsc.p_read + 4), getTSCNumber(tsc.p_read + 9) << 9, getTSCNumber(tsc.p_read + 14) << 9,
                 getTSCNumber(tsc.p_read + 19));
 		tscCleanup(4);
 		break;
@@ -938,7 +935,6 @@ bool doTscCommand(int *retVal, bool *bExit)
 		break;
 	case('<RMU'):
 		resumeOrg();
-
 		tscCleanup(0);
 		break;
 	case('<SAT'):
