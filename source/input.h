@@ -17,3 +17,4 @@ void getKeys();
 
 bool isKeyDown(int keynum)  attrPure;
 bool isKeyPressed(int keynum)  attrPure;
+bool handleEvents();
