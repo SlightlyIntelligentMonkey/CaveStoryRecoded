@@ -89,7 +89,7 @@ void npcAct242(npc *NPC) // Bat, Red Wave (enemy)
 {
     if (NPC->x < 0 || NPC->x > tilesToUnits(levelWidth))
     {
-        killNpc(NPC, true);
+		NPC->init(3, NPC->x, NPC->y, 0, 0, 0, nullptr);
         return;
     }
 
