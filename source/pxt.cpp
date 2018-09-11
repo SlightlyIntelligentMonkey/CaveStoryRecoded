@@ -1,12 +1,16 @@
 #include "pxt.h"
-
 #include <string>
 #include <vector>
 #include <cstring>
 #include <cmath>
-#include "filesystem.h"
-#include "mathUtils.h"
-#include "main.h"
+#include <cstdlib>
+#include <cstdio>
+#include <cstring>
+#include <iostream>
+#include <algorithm>
+#include <fstream>
+#include <iostream>
+#include <vector>
 
 using std::vector;
 using std::string;
