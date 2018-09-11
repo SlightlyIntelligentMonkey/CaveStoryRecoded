@@ -40,7 +40,7 @@ Uint32 currentOrg = 0;
 Uint32 prevOrg = 0;
 Uint32 prevOrgPos = 0;
 
-long double orgVolume = 100;
+int orgVolume = 1;
 bool orgFadeout = false;
 
 bool disableOrg = false;
@@ -114,18 +114,16 @@ void mixOrg(int16_t *stream, int len)
 
 					if (++org.samples > samplesPerBeat)
 					{
+						if (orgFadeout && orgVolume > 0)
+							orgVolume -= 2;
+						if (orgVolume < 0)
+							orgVolume = 0;
 						playData();
 						org.samples = 0;
 					}
 
 					if (++org.samplesForFrame > samplesPerFrame)
-					{
-						if (orgFadeout && orgVolume > 0.0)
-							orgVolume -= 0.02;
-						if (orgVolume < 0.0)
-							orgVolume = 0.0;
 						org.samplesForFrame = 0;
-					}
 				}
 				else
 				{
@@ -175,8 +173,8 @@ void mixOrg(int16_t *stream, int len)
 
 									const auto val = (int)(sample1 + (sample2 - sample1) * fmod(orgWaves[wave][j][k].pos, 1.0f));
 
-									tempSampleL += (int32_t)((long double)val * orgWaves[wave][j][k].volume * orgWaves[wave][j][k].volume_l * orgVolume);
-									tempSampleR += (int32_t)((long double)val * orgWaves[wave][j][k].volume * orgWaves[wave][j][k].volume_r * orgVolume);
+									tempSampleL += (int32_t)((long double)val * orgWaves[wave][j][k].volume * orgWaves[wave][j][k].volume_l);
+									tempSampleR += (int32_t)((long double)val * orgWaves[wave][j][k].volume * orgWaves[wave][j][k].volume_r);
 								}
 							}
 						}
@@ -206,8 +204,8 @@ void mixOrg(int16_t *stream, int len)
 
 							const auto val = (int)(sample1 + (sample2 - sample1) * fmod(orgDrums[wave].pos, 1.0f));
 
-							tempSampleL += (int32_t)((long double)val * orgDrums[wave].volume * orgDrums[wave].volume_l * orgVolume);
-							tempSampleR += (int32_t)((long double)val * orgDrums[wave].volume * orgDrums[wave].volume_r * orgVolume);
+							tempSampleL += (int32_t)((long double)val * orgDrums[wave].volume * orgDrums[wave].volume_l);
+							tempSampleR += (int32_t)((long double)val * orgDrums[wave].volume * orgDrums[wave].volume_r);
 						}
 					}
 				}
@@ -413,8 +411,7 @@ void changeOrganPan(unsigned char key, unsigned char pan, uint8_t track)
 	}
 }
 
-constexpr long double orgVolumeMin = 0.04;
-
+constexpr long double orgVolumeMin = 0.204;
 void changeOrganVolume(int no, long volume, uint8_t track)
 {
 	if (old_key[track] != 0xFF)
@@ -567,6 +564,7 @@ void playDrumObject(uint8_t key, int play_mode, uint8_t track)
 long play_p; //Current playback position
 NOTELIST *play_np[16]; //Currently ready to play notes
 long now_leng[8] = { 0 };
+int trackVol[16] = { 0 };
 
 void clearPlayNp()
 {
@@ -611,7 +609,7 @@ void playData()
 			if (play_np[i]->pan < 0xFF)
 				changeOrganPan(play_np[i]->y, play_np[i]->pan, i);
 			if (play_np[i]->volume < 0xFF)
-				changeOrganVolume(play_np[i]->y, play_np[i]->volume, i);
+				trackVol[i] = play_np[i]->volume; //changeOrganVolume(play_np[i]->y, play_np[i]->volume, i);
 
 			play_np[i] = play_np[i]->to;
 		}
@@ -626,6 +624,9 @@ void playData()
 
 		if (now_leng[i] > 0)
 			now_leng[i]--;
+
+		if (play_np[i])
+			changeOrganVolume(play_np[i]->y, orgVolume * trackVol[i] / 100, i);
 	}
 
 	//Drums
@@ -639,10 +640,13 @@ void playData()
 			if (play_np[i]->pan != 0xFF)
 				changeDrumPan(play_np[i]->pan, i - 8);
 			if (play_np[i]->volume != 0xFF)
-				changeDrumVolume(play_np[i]->volume, i - 8);
+				trackVol[i] = play_np[i]->volume; //changeDrumVolume(play_np[i]->volume, i - 8);
 
 			play_np[i] = play_np[i]->to;
 		}
+
+		if (play_np[i])
+			changeDrumVolume(orgVolume * trackVol[i] / 100, i - 8);
 	}
 
 	//Looping
@@ -814,7 +818,7 @@ void changeOrg(const uint32_t num)
 	prevOrgPos = play_p;
 	currentOrg = num;
 	string path(orgFolder + musicList[num]);
-	orgVolume = 1.0;
+	orgVolume = 100;
 	orgFadeout = false;
 	loadOrganya(path.c_str());
 }
@@ -827,7 +831,7 @@ void resumeOrg()
 	prevOrg = temp;
 	string path(orgFolder + musicList[currentOrg]);
 	temp = play_p;
-	orgVolume = 1.0;
+	orgVolume = 100;
 	orgFadeout = false;
 	loadOrganya(path.c_str());
 	setPlayPointer(prevOrgPos);
