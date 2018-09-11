@@ -1,5 +1,3 @@
-#include <cstring>
-
 #include "boss.h"
 
 #include <string>
@@ -11,6 +9,7 @@
 #include "render.h"
 #include "bossCollision.h"
 #include "bulletCollision.h"
+#include "log.h"
 
 using std::string;
 using std::to_string;
@@ -56,7 +55,7 @@ void updateBoss()
 				--boss[bos].shock;
 		}
 	}
-	else if (debugFlags & notifyOnNotImplemented && bossActs[boss[0].code_char] == nullptr && boss[0].code_char != 0)
+	else if (bossActs[boss[0].code_char] == nullptr && boss[0].code_char != 0)
     {
 		static bool wasNotifiedAbout[_countof(bossActs)] = { 0 };
 
@@ -65,7 +64,9 @@ void updateBoss()
 
 		wasNotifiedAbout[boss[0].code_char] = true;
 		string msg = "Boss " + to_string(boss[0].code_char) + " is not implementated yet.";
-		SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_WARNING, "Missing Boss", msg.c_str(), nullptr);
+		logWarning(msg);
+		if (debugFlags & notifyOnNotImplemented)
+            SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_WARNING, "Missing Boss", msg.c_str(), nullptr);
     }
 
     bossHitMap();

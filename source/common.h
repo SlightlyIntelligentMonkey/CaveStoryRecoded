@@ -1,8 +1,8 @@
 #pragma once
 
 #include <cstdint>
-#include <string>
 
+// Structs
 struct RECT
 {
 	int32_t left, top, right, bottom;
@@ -13,7 +13,7 @@ struct POINT
 	int32_t x, y;
 };
 
-//Enums
+// Enums
 enum Collisions
 {
 	leftWall = 0x1, //Touching a left wall
@@ -44,32 +44,7 @@ enum Direction
 	dirAuto,
 };
 
-struct SDL_Window;
-struct SDL_Renderer;
-struct SDL_Rect;
-struct SDL_Texture;
-
-//Drawing related variables
-extern SDL_Window *window;
-extern SDL_Renderer *renderer;
-
-extern SDL_Rect DrawRect;
-extern SDL_Rect ImageRect;
-
-extern SDL_Texture* sprites[40];
-
-//Some game variables
-extern int framerate;
-
-extern int mode;
-
-extern int gameFlags;
-
-//Functions
-[[noreturn]] void doError();
-[[noreturn]] void doCustomError(const std::string& msg);
-
-//Macros
+// Macros
 #ifdef __GNUC__
 #define attrPure __attribute__((pure))
 #define attrConst __attribute__((const))

@@ -4,6 +4,7 @@
 #include <cstring>
 #include <SDL_keyboard.h>
 #include <SDL_events.h>
+#include "main.h"
 
 using std::memcpy;
 

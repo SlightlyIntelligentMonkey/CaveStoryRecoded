@@ -1,7 +1,8 @@
 #pragma once
-#include "common.h"
 
+#include <cstdint>
 #include <deque>
+#include "common.h"
 
 struct BULLETSTATS
 {
@@ -59,7 +60,7 @@ public:
 	RECT view;
 
 	int weapon;
-  
+
 public:
 	void init(int setCode, int setX, int setY, uint8_t setDir, int weaponId);
 

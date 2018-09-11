@@ -1,4 +1,9 @@
 #include "game.h"
+
+#include <string>
+#include <cstring>
+#include <SDL_events.h>
+#include <SDL_render.h>
 #include "input.h"
 #include "script.h"
 #include "sound.h"
@@ -7,11 +12,7 @@
 #include "player.h"
 #include "caret.h"
 #include "valueview.h"
-
-#include <string>
-#include <cstring>
-#include <SDL_events.h>
-#include <SDL_render.h>
+#include "main.h"
 
 using std::string;
 using std::strcpy;

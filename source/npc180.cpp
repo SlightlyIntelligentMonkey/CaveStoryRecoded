@@ -1,5 +1,6 @@
 #include "npc180.h"
 
+#include <cmath>
 #include "mathUtils.h"
 #include "player.h"
 #include "flags.h"
@@ -7,6 +8,7 @@
 #include "render.h"
 #include "bullet.h"
 #include "caret.h"
+#include "level.h"
 
 void npcAct180(npc * NPC) // Curly, AI
 {
@@ -558,7 +560,7 @@ void npcAct188(npc *NPC) //Baby Fuzz
 		else
 		{
 			deg = (NPC->count1 & 0xFF) + (NPC->pNpc->count1 & 0xFF);
-			
+
 			NPC->x = NPC->pNpc->x + 20 * getSin(deg);
 			NPC->y = NPC->pNpc->y + 0x20 * getCos(deg);
 		}
@@ -569,7 +571,7 @@ void npcAct188(npc *NPC) //Baby Fuzz
 			NPC->xm += 0x20;
 		else
 			NPC->xm -= 0x20;
-		
+
 		if (currentPlayer.y >= NPC->y)
 			NPC->ym += 0x20;
 		else

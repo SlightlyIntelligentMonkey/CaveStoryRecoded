@@ -6,6 +6,7 @@
 #include "render.h"
 #include "mathUtils.h"
 #include "game.h"
+#include "level.h"
 
 using std::vector;
 

@@ -5,6 +5,7 @@
 #include "player.h"
 #include "caret.h"
 #include "render.h"
+#include "main.h"
 
 void shootFireball(int level)
 {

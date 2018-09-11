@@ -5,6 +5,7 @@
 #include "mathUtils.h"
 #include "sound.h"
 #include "render.h"
+#include "level.h"
 
 using std::vector;
 

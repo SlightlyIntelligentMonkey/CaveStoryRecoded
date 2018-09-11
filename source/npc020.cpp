@@ -7,6 +7,7 @@
 #include "sound.h"
 #include "render.h"
 #include "game.h"
+#include "level.h"
 
 using std::vector;
 

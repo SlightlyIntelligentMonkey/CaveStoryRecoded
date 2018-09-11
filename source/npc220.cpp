@@ -6,6 +6,7 @@
 #include "mathUtils.h"
 #include "caret.h"
 #include "render.h"
+#include "level.h"
 
 using std::vector;
 

@@ -1,4 +1,11 @@
 ﻿#include "npc.h"
+
+#include <deque>
+#include <vector>
+#include <string>
+#include <cmath>
+#include <cstring>
+#include <SDL_rwops.h>
 #include "npcAct.h"
 #include "weapons.h"
 #include "mathUtils.h"
@@ -9,13 +16,8 @@
 #include "flags.h"
 #include "game.h"
 #include "caret.h"
-
-#include <deque>
-#include <vector>
-#include <string>
-#include <cmath>
-#include <cstring>
-#include <SDL_rwops.h>
+#include "main.h"
+#include "npcCollision.h"
 
 using std::memset;
 using std::string;

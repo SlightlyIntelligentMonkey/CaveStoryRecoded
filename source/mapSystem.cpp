@@ -1,4 +1,9 @@
 #include "game.h"
+
+#include <string>
+#include <cstring>
+#include <SDL_events.h>
+#include <SDL_render.h>
 #include "input.h"
 #include "script.h"
 #include "hud.h"
@@ -8,11 +13,8 @@
 #include "player.h"
 #include "caret.h"
 #include "valueview.h"
-
-#include <string>
-#include <cstring>
-#include <SDL_events.h>
-#include <SDL_render.h>
+#include "log.h"
+#include "main.h"
 
 using std::string;
 
@@ -40,6 +42,8 @@ const uint8_t tileTypes[0x100] =
 //Open and update
 int openMapSystem()
 {
+    logInfo("Started openMapSystem");
+
 	//Init player marker
 	RECT my_rect;
 	int my_x;

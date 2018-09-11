@@ -78,6 +78,9 @@
     <ClCompile Include="flags.cpp">
       <Filter>Source Files\modules</Filter>
     </ClCompile>
+    <ClCompile Include="log.cpp">
+      <Filter>Source Files\modules</Filter>
+    </ClCompile>
     <ClCompile Include="sound.cpp">
       <Filter>Source Files\modules\sound</Filter>
     </ClCompile>
@@ -314,6 +317,9 @@
     <ClInclude Include="npcAct.h">
       <Filter>Source Files\classes\npc\act</Filter>
     </ClInclude>
+    <ClInclude Include="main.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
     <ClInclude Include="common.h">
       <Filter>Source Files</Filter>
     </ClInclude>
@@ -345,6 +351,9 @@
       <Filter>Source Files\classes\npc\act</Filter>
     </ClInclude>
     <ClInclude Include="flags.h">
+      <Filter>Source Files\modules</Filter>
+    </ClInclude>
+    <ClInclude Include="log.h">
       <Filter>Source Files\modules</Filter>
     </ClInclude>
     <ClInclude Include="npc140.h">

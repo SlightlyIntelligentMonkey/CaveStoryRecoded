@@ -1,14 +1,4 @@
 #include "filesystem.h"
-#include "fade.h"
-#include "weapons.h"
-#include "player.h"
-#include "game.h"
-#include "input.h"
-#include "flags.h"
-#include "render.h"
-#include "script.h"
-#include "org.h"
-#include <SDL.h>
 
 #include <string>
 #include <vector>
@@ -16,7 +6,22 @@
 #include <cstdio>
 #include <cstdlib>
 #include <sys/stat.h>
+#include <SDL_keyboard.h>
+#include <SDL_gamecontroller.h>
 #include <SDL_rwops.h>
+#include <SDL_messagebox.h>
+#include "main.h"
+#include "input.h"
+#include "render.h"
+#include "flags.h"
+#include "game.h"
+#include "weapons.h"
+#include "player.h"
+#include "level.h"
+#include "fade.h"
+#include "script.h"
+#include "org.h"
+#include "log.h"
 
 using std::string;
 using std::vector;
@@ -29,6 +34,7 @@ using std::ftell;
 using std::malloc;
 using std::fread;
 using std::fclose;
+using std::to_string;
 
 uint16_t readLEshort(const uint8_t * data, size_t offset)
 {
@@ -107,6 +113,7 @@ int loadFile(const string& name, uint8_t **data)
 	if (fclose(file) == EOF)
 		throw std::runtime_error("Could not close " + name);
 
+    logInfo("Loaded from " + name);
 	return filesize;
 }
 
@@ -125,6 +132,8 @@ void writeFile(const string& name, const void *data, size_t amount)
 
 	if (fclose(file) == EOF)
 		throw std::runtime_error("Could not close " + name);
+
+    logInfo("Wrote to " + name);
 }
 
 //Profile code
@@ -205,9 +214,9 @@ void loadProfile()
 		SDL_RWclose(profile);
 	}
 	else
-	{
 		initGame();
-	}
+
+	logInfo("Loaded profile");
 }
 
 void saveProfile()
@@ -361,7 +370,7 @@ void saveConfig()
 	writeFile(configName.c_str(), writeData, sizeof(*currentConfig));
 }
 
-//thing
+/// Return a vector of strings containing the contents of the file who's name is given as argument
 vector<string> getLinesFromFile(const string& fileName)
 {
 	vector<string> lines;

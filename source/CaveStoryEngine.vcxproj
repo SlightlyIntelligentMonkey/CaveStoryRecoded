@@ -102,7 +102,7 @@
       <LanguageStandard>stdcpplatest</LanguageStandard>
       <EnableModules>true</EnableModules>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
-      <PrecompiledHeaderFile>common.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile>main.h</PrecompiledHeaderFile>
       <CallingConvention>Cdecl</CallingConvention>
       <CompileAs>CompileAsCpp</CompileAs>
       <UseFullPaths>false</UseFullPaths>
@@ -127,7 +127,7 @@
       <InlineFunctionExpansion>Disabled</InlineFunctionExpansion>
       <OmitFramePointers>false</OmitFramePointers>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
-      <PrecompiledHeaderFile>common.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile>main.h</PrecompiledHeaderFile>
       <CallingConvention>Cdecl</CallingConvention>
       <CompileAs>CompileAsCpp</CompileAs>
       <UseFullPaths>false</UseFullPaths>
@@ -159,7 +159,7 @@
       <EnableModules>true</EnableModules>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
-      <PrecompiledHeaderFile>common.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile>main.h</PrecompiledHeaderFile>
       <CallingConvention>Cdecl</CallingConvention>
       <CompileAs>CompileAsCpp</CompileAs>
       <UseFullPaths>false</UseFullPaths>
@@ -189,7 +189,7 @@
       <OmitFramePointers>true</OmitFramePointers>
       <EnableFiberSafeOptimizations>true</EnableFiberSafeOptimizations>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
-      <PrecompiledHeaderFile>common.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile>main.h</PrecompiledHeaderFile>
       <CallingConvention>Cdecl</CallingConvention>
       <CompileAs>CompileAsCpp</CompileAs>
       <UseFullPaths>false</UseFullPaths>
@@ -219,6 +219,7 @@
     <ClCompile Include="hud.cpp" />
     <ClCompile Include="inventory.cpp" />
     <ClCompile Include="loadConfig.cpp" />
+    <ClCompile Include="log.cpp" />
     <ClCompile Include="machineGun.cpp" />
     <ClCompile Include="machineGunShoot.cpp" />
     <ClCompile Include="mapSystem.cpp" />
@@ -292,12 +293,14 @@
     <ClInclude Include="bullet.h" />
     <ClInclude Include="bulletCollision.h" />
     <ClInclude Include="caret.h" />
+    <ClInclude Include="common.h" />
     <ClInclude Include="fade.h" />
     <ClInclude Include="fireball.h" />
     <ClInclude Include="flags.h" />
     <ClInclude Include="game.h" />
     <ClInclude Include="org.h" />
     <ClInclude Include="loadConfig.h" />
+    <ClInclude Include="log.h" />
     <ClInclude Include="machineGun.h" />
     <ClInclude Include="misc.h" />
     <ClInclude Include="missile.h" />
@@ -332,7 +335,7 @@
     <ClInclude Include="hud.h" />
     <ClInclude Include="npc340.h" />
     <ClInclude Include="npcCollision.h" />
-    <ClInclude Include="common.h" />
+    <ClInclude Include="main.h" />
     <ClInclude Include="filesystem.h" />
     <ClInclude Include="input.h" />
     <ClInclude Include="level.h" />

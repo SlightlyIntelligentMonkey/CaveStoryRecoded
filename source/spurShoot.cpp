@@ -5,6 +5,7 @@
 #include "caret.h"
 #include "bullet.h"
 #include "player.h"
+#include "main.h"
 
 int spurCharge = 0;
 bool bMax = false;
