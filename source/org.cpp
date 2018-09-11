@@ -430,7 +430,7 @@ void playOrganObject(unsigned char key, int play_mode, uint8_t track, int32_t fr
 	case 2: //Stop
 		if (old_key[track] != 255) {
 			orgWaves[track][old_key[track] / 12][key_twin[track]].playing = false;
-			orgWaves[track][old_key[track] / 12][key_twin[track]].pos = 0;
+			//orgWaves[track][old_key[track] / 12][key_twin[track]].pos = 0;
 			old_key[track] = 255;
 		}
 		break;
@@ -440,30 +440,30 @@ void playOrganObject(unsigned char key, int play_mode, uint8_t track, int32_t fr
 			changeOrganFrequency(key % 12, track, freq);
 			orgWaves[track][key / 12][key_twin[track]].playing = true;
 			orgWaves[track][key / 12][key_twin[track]].loops = true;
-			orgWaves[track][key / 12][key_twin[track]].pos = 0;
+			//orgWaves[track][key / 12][key_twin[track]].pos = 0;
 			old_key[track] = key;
 			key_on[track] = 1;
 		}
 		else if (key_on[track] == 1 && old_key[track] == key) //Same note
 		{
 			orgWaves[track][old_key[track] / 12][key_twin[track]].playing = false;
-			orgWaves[track][old_key[track] / 12][key_twin[track]].pos = 0;
+			//orgWaves[track][old_key[track] / 12][key_twin[track]].pos = 0;
 			key_twin[track]++;
 			if (key_twin[track] == 2)key_twin[track] = 0;
 			orgWaves[track][key / 12][key_twin[track]].playing = true;
 			orgWaves[track][key / 12][key_twin[track]].loops = true;
-			orgWaves[track][key / 12][key_twin[track]].pos = 0;
+			//orgWaves[track][key / 12][key_twin[track]].pos = 0;
 		}
 		else //Different note
 		{
 			orgWaves[track][old_key[track] / 12][key_twin[track]].playing = false;
-			orgWaves[track][old_key[track] / 12][key_twin[track]].pos = 0;
+			//orgWaves[track][old_key[track] / 12][key_twin[track]].pos = 0;
 			key_twin[track]++;
 			if (key_twin[track] == 2)key_twin[track] = 0;
 			changeOrganFrequency(key % 12, track, freq);
 			orgWaves[track][key / 12][key_twin[track]].playing = true;
 			orgWaves[track][key / 12][key_twin[track]].loops = true;
-			orgWaves[track][key / 12][key_twin[track]].pos = 0;
+			//orgWaves[track][key / 12][key_twin[track]].pos = 0;
 			old_key[track] = key;
 		}
 		break;

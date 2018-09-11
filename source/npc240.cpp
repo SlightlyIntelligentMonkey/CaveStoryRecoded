@@ -108,7 +108,10 @@ void npcAct242(npc *NPC) // Bat, Red Wave (enemy)
         NPC->ym = pixelsToUnits(2);
         // Fallthrough
     case 2:
-        NPC->moveTowardsPlayer(0x100);
+		if (NPC->direct)
+			NPC->xm = 0x100;
+		else
+			NPC->xm = -0x100;
 
         if (NPC->tgt_y < NPC->y)
             NPC->ym -= 0x10;
