@@ -55,15 +55,15 @@ void updateBoss()
 				--bossObj[bos].shock;
 		}
 	}
-	else if (bossActs[boss[0].code_char] == nullptr && boss[0].code_char != 0)
+	else if (bossActs[bossObj[0].code_char] == nullptr && bossObj[0].code_char != 0)
     {
 		static bool wasNotifiedAbout[_countof(bossActs)] = { 0 };
 
-		if (wasNotifiedAbout[boss[0].code_char])
+		if (wasNotifiedAbout[bossObj[0].code_char])
 			return;
 
-		wasNotifiedAbout[boss[0].code_char] = true;
-		string msg = "Boss " + to_string(boss[0].code_char) + " is not implementated yet.";
+		wasNotifiedAbout[bossObj[0].code_char] = true;
+		string msg = "Boss " + to_string(bossObj[0].code_char) + " is not implementated yet.";
 		logWarning(msg);
 		if (debugFlags & notifyOnNotImplemented)
             SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_WARNING, "Missing Boss", msg.c_str(), nullptr);
@@ -97,8 +97,8 @@ void drawBoss()
 			if (bossObj[bos].direct != dirLeft)
 				side = bossObj[bos].view.right;
 
-			drawTexture(sprites[TEX_NPC_2], &bossObj[bos].rect, 
-				(bossObj[bos].x - side) / 0x200 - (viewport.x / 0x200) + shake, 
+			drawTexture(sprites[TEX_NPC_2], &bossObj[bos].rect,
+				(bossObj[bos].x - side) / 0x200 - (viewport.x / 0x200) + shake,
 				(bossObj[bos].y - bossObj[bos].view.top) / 0x200 - (viewport.y / 0x200));
 		}
 	}
