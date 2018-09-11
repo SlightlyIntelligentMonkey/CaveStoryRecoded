@@ -30,7 +30,7 @@ int mode;
 
 // Some global functions
 
-static void doQuit() 
+static void doQuit()
 {
 	//sound::quit(); // TBD : Make a sound quit method, make the quit method a global destructor or remove this
 	SDL_Quit();
@@ -38,7 +38,7 @@ static void doQuit()
 	freeSounds();
 }
 
-void doError() 
+void doError()
 {
 	SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Critical Error", SDL_GetError(), nullptr);
 	SDL_ClearError();
@@ -46,7 +46,7 @@ void doError()
 	exit(EXIT_FAILURE);
 }
 
-void doCustomError(const string& msg) 
+void doCustomError(const string& msg)
 {
 	SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Critical Error", msg.c_str(), nullptr);
 	doQuit();

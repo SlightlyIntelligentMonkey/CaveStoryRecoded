@@ -268,7 +268,7 @@ void npcAct107(npc *NPC) // Malco
 		if (++NPC->act_wait > 50)
 			NPC->act_no = flickerAndBeep + 4;
 		break;
-	
+
 	case flickerAndBeep + 4:
 		NPC->act_no = shaking;
 		NPC->act_wait = 0;
@@ -363,6 +363,66 @@ void npcAct107(npc *NPC) // Malco
 	rcNPC[9] = { 192, 0, 208, 24 };
 
 	NPC->doRects(rcNPC);
+}
+
+void npcAct109(npc *NPC) // Malco, damaged
+{
+    vector<RECT> rcLeft = {{240, 0, 256, 24}, {256, 0, 272, 24}};
+    vector<RECT> rcRight = {{240, 24, 256, 48}, {256, 24, 272, 48}};
+
+    enum
+    {
+        init = 0,
+        stand = 1,
+        blinking = 2,
+        pulledOutOfGround = 10,
+    };
+
+    switch (NPC->act_no)
+    {
+    case init:
+        if (--NPC->act_wait)
+            NPC->act_no = stand;
+        NPC->ani_no = 0;
+        NPC->ani_wait = 0;
+        // Fallthrough
+
+    case stand:
+        if (!random(0, 120))
+        {
+            NPC->act_no = blinking;
+            NPC->act_wait = 0;
+            NPC->ani_no = 0;
+        }
+
+        if (NPC->isPlayerWithinDistance(tilesToUnits(2), tilesToUnits(2), tilesToUnits(1)))
+            NPC->facePlayer();
+
+        break;
+
+    case blinking:
+        if (++NPC->act_wait > 8)
+        {
+            NPC->act_no = 1;
+            NPC->ani_no = 0;
+        }
+        break;
+
+    case pulledOutOfGround:
+        NPC->act_no = 0;
+        playSound(SFX_DestroyBreakableBlock);
+        for (size_t i = 0; i < 8; ++i)
+            createNpc(NPC_Smoke, NPC->x, NPC->y, random(-0x155, 0x155), random(pixelsToUnits(-3), 0));
+        break;
+
+    default:
+        break;
+    }
+
+    NPC->doGravity(0x40, 0x5FF);
+    NPC->y += NPC->ym;
+
+    NPC->doRects(rcLeft, rcRight);
 }
 
 void npcAct111(npc *NPC) //Quote teleport out

@@ -30,7 +30,7 @@ static bool controller_buttons[SDL_CONTROLLER_BUTTON_MAX];
 
 void initGamepad()
 {
-	if (SDL_GameControllerAddMappingsFromFile("data/gamecontrollerdb.txt") < 0)
+	if (fileExists("data/gamecontrollerdb.txt") && SDL_GameControllerAddMappingsFromFile("data/gamecontrollerdb.txt") < 0)
 		doError();
 
 	for (int i = 0; i < SDL_NumJoysticks(); ++i) {
@@ -51,7 +51,7 @@ void getKeys()
 	memcpy(controller_buttons_prev, controller_buttons, sizeof(controller_buttons));
 }
 
-bool isKeyDown(int keynum) 
+bool isKeyDown(int keynum)
 {
 	if (currentConfig->useGamepad)
 		return (controller_buttons[keynum] == true);
@@ -59,7 +59,7 @@ bool isKeyDown(int keynum)
 		return (key[keynum] == 1);
 }
 
-bool isKeyPressed(int keynum) 
+bool isKeyPressed(int keynum)
 {
 	if (currentConfig->useGamepad)
 		return (controller_buttons_prev[keynum] == false && controller_buttons[keynum] == true);
