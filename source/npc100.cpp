@@ -6,6 +6,7 @@
 #include "render.h"
 #include "mathUtils.h"
 #include "game.h"
+#include "caret.h"
 #include "level.h"
 
 using std::vector;
@@ -251,14 +252,8 @@ void npcAct107(npc *NPC) // Malco
 		if (++NPC->ani_wait > 1)
 		{
 			playSound(SFX_ComputerScreenOn);
-			NPC->ani_wait = 0;
-			++NPC->ani_no;
-		}
-		if (NPC->ani_no > 1)
-			NPC->ani_no = 0;
-		if (++NPC->act_wait > 100)
 			NPC->act_no = flickerAndBeep + 2;
-		break;
+			break;
 
 	case flickerAndBeep + 2:
 		NPC->act_no = flickerAndBeep + 3;
@@ -348,22 +343,45 @@ void npcAct107(npc *NPC) // Malco
 
 	default:
 		break;
+		}
 	}
 
-	vector<RECT> rcNPC(10);
+	NPC->rect.left = 144 + (NPC->ani_no*16);
+	NPC->rect.top = (NPC->direct/2)*24;
+	NPC->rect.right = NPC->rect.left + 16;
+	NPC->rect.bottom = NPC->rect.top + 24;
+}
 
-	rcNPC[0] = { 144, 0, 160, 24 };
-	rcNPC[1] = { 160, 0, 176, 24 };
-	rcNPC[2] = { 176, 0, 192, 24 };
-	rcNPC[3] = { 192, 0, 208, 24 };
-	rcNPC[4] = { 208, 0, 224, 24 };
-	rcNPC[5] = { 224, 0, 240, 24 };
-	rcNPC[6] = { 176, 0, 192, 24 };
-	rcNPC[7] = { 192, 0, 208, 24 };
-	rcNPC[8] = { 208, 0, 224, 24 };
-	rcNPC[9] = { 192, 0, 208, 24 };
+void npcAct108(npc *NPC) //balfrog projectile
+{
 
-	NPC->doRects(rcNPC);
+	if (NPC->flag & 0xFF)
+	{
+		createCaret(NPC->x, NPC->y, 2, 0);
+		NPC->cond = 0;
+	}
+
+	NPC->y += NPC->ym;
+	NPC->x += NPC->xm;
+
+	if (++NPC->ani_wait > 1)
+	{
+		NPC->ani_wait = 0;
+		++NPC->ani_no;
+	}
+	if (NPC->ani_no > 2)
+		NPC->ani_no = 0;
+
+	NPC->rect.left = 96 + (NPC->ani_no * 16);
+	NPC->rect.top = 48;
+	NPC->rect.right = NPC->rect.left + 16;
+	NPC->rect.bottom = NPC->rect.top + 16;
+
+	if (++NPC->count1 > 300)
+	{
+		createCaret(NPC->x, NPC->y, 2, 0);
+		NPC->cond = 0;
+	}
 }
 
 void npcAct109(npc *NPC) // Malco, damaged
