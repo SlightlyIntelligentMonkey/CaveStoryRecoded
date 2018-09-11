@@ -12,19 +12,19 @@ void bossHitMap()
 
     for (size_t i = 0; i < 20; ++i)
     {
-        RECT *rcHit = &boss[i].rect;
-        npc *NPC = &boss[i];
-        if (boss[i].cond & 0x80 && !(boss[i].bits & npc_ignoreSolid))
+        RECT *rcHit = &bossObj[i].rect;
+        npc *NPC = &bossObj[i];
+        if (bossObj[i].cond & 0x80 && !(bossObj[i].bits & npc_ignoreSolid))
         {
             size_t judg;
-            auto xPosBlocks = unitsToTiles(boss[i].x);
-            auto yPosBlocks = unitsToTiles(boss[i].y);
-            if (boss[i].size < 3)
+            auto xPosBlocks = unitsToTiles(bossObj[i].x);
+            auto yPosBlocks = unitsToTiles(bossObj[i].y);
+            if (bossObj[i].size < 3)
                 judg = 4;
             else
                 judg = 0x10;
 
-            boss[i].flag = 0;
+            bossObj[i].flag = 0;
 
             int8_t attributes[0x10];
             for (size_t j = 0; j < judg; ++j)
@@ -35,7 +35,7 @@ void bossHitMap()
                 switch (attributes[j])
                 {
                 case 0x44:
-                    if ((boss[i].bits & npc_ignore44))
+                    if ((bossObj[i].bits & npc_ignore44))
                         break;
                     // Fallthrough
                 case 0x5:

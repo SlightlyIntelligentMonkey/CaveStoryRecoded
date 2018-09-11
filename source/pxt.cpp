@@ -2,11 +2,11 @@
 
 #include <string>
 #include <vector>
-#include <cstring>
 #include <cmath>
-#include "filesystem.h"
-#include "mathUtils.h"
+#include <cstring>
 #include "main.h"
+#include "mathUtils.h"
+#include "filesystem.h"
 
 using std::vector;
 using std::string;
