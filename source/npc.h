@@ -111,7 +111,6 @@ public:
 	void limitXVel(int maxVel);
 	void limitYVel(int maxVel);
 	void moveInDir(int vel);
-	void moveTowardsPlayer(int vel);
 	void accelerateTowardsXTarget(int vel);
 	void accelerateTowardsYTarget(int vel);
 	bool isPlayerWithinDistance(int xDist, int yDistHigh, int yDistLow) attrPure;

@@ -521,14 +521,6 @@ void npc::moveInDir(int vel)
         this->xm = -vel;
 }
 
-void npc::moveTowardsPlayer(int vel)
-{
-	if (this->x < currentPlayer.x)
-		this->xm = vel;
-	else
-		this->xm = -vel;
-}
-
 void npc::accelerateTowardsXTarget(int vel)
 {
     if (this->x >= this->tgt_x)
