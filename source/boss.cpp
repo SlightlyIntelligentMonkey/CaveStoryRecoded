@@ -56,7 +56,7 @@ void updateBoss()
 				--boss[bos].shock;
 		}
 	}
-	else if (bossActs[boss[0].code_char] == nullptr && boss[0].code_char != 0)
+	else if (debugFlags & notifyOnNotImplemented && bossActs[boss[0].code_char] == nullptr && boss[0].code_char != 0)
     {
 		static bool wasNotifiedAbout[_countof(bossActs)] = { 0 };
 
