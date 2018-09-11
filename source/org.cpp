@@ -160,7 +160,10 @@ void mixOrg(int16_t *stream, int len)
 									orgWaves[wave][j][k].pos = fmod(orgWaves[wave][j][k].pos, (long double)orgWaves[wave][j][k].length);
 
 								if (orgWaves[wave][j][k].loops == false && orgWaves[wave][j][k].pos >= orgWaves[wave][j][k].length)
+								{
 									orgWaves[wave][j][k].playing = false;
+									orgWaves[wave][j][k].pos = 0;
+								}
 								else
 								{
 									const size_t s_offset_1 = (size_t)floor(orgWaves[wave][j][k].pos);
