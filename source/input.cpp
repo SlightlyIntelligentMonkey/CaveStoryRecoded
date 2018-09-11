@@ -1,4 +1,5 @@
 #include "input.h"
+#include "filesystem.h"
 
 #include <cstring>
 #include <SDL_keyboard.h>
@@ -6,7 +7,7 @@
 
 using std::memcpy;
 
-SDL_Joystick* currentGamepad = NULL;
+SDL_GameController* currentGamepad = NULL;
 
 int keyLeft = SDL_SCANCODE_LEFT;
 int keyRight = SDL_SCANCODE_RIGHT;
@@ -20,33 +21,83 @@ int keyMap = SDL_SCANCODE_W;
 int keyRotLeft = SDL_SCANCODE_A;
 int keyRotRight = SDL_SCANCODE_S;
 
-uint8_t key_prev[SDL_NUM_SCANCODES] = { 0 };
-uint8_t key[SDL_NUM_SCANCODES] = { 0 };
-int key_array_size = 0;
+static uint8_t key_prev[SDL_NUM_SCANCODES] = { 0 };
+static uint8_t key[SDL_NUM_SCANCODES] = { 0 };
+static int key_array_size = 0;
+
+static bool controller_buttons_prev[SDL_CONTROLLER_BUTTON_MAX];
+static bool controller_buttons[SDL_CONTROLLER_BUTTON_MAX];
 
 void initGamepad()
 {
 	if (SDL_GameControllerAddMappingsFromFile("data/gamecontrollerdb.txt") < 0)
 		doError();
 
-	currentGamepad = SDL_JoystickOpen(0);
+	for (int i = 0; i < SDL_NumJoysticks(); ++i) {
+		if (SDL_IsGameController(i)) {
+			currentGamepad = SDL_GameControllerOpen(i);
 
-	if (currentGamepad == NULL)
-		return;
+			if (currentGamepad)
+				break;
+		}
+	}
 }
 
 void getKeys()
 {
-	memcpy(&key_prev, key, key_array_size);
-	memcpy(&key, SDL_GetKeyboardState(&key_array_size), SDL_NUM_SCANCODES);
+	memcpy(key_prev, key, key_array_size);
+	memcpy(key, SDL_GetKeyboardState(&key_array_size), SDL_NUM_SCANCODES);
+
+	memcpy(controller_buttons_prev, controller_buttons, sizeof(controller_buttons));
 }
 
 bool isKeyDown(int keynum) 
 {
-	return (key[keynum] == 1);
+	if (currentConfig->useGamepad)
+		return (controller_buttons[keynum] == true);
+	else
+		return (key[keynum] == 1);
 }
 
 bool isKeyPressed(int keynum) 
 {
-	return (key_prev[keynum] == 0 && key[keynum] == 1);
+	if (currentConfig->useGamepad)
+		return (controller_buttons_prev[keynum] == false && controller_buttons[keynum] == true);
+	else
+		return (key_prev[keynum] == 0 && key[keynum] == 1);
+}
+
+bool handleEvents()
+{
+	static bool focusGained = true;
+
+	while (SDL_PollEvent(nullptr) || !focusGained)
+	{
+		SDL_Event event;
+		SDL_WaitEvent(&event);
+
+		switch (event.type)
+		{
+		case SDL_QUIT:
+			return false;
+
+		case SDL_WINDOWEVENT:
+			if (event.window.event == SDL_WINDOWEVENT_FOCUS_GAINED)
+				focusGained = true;
+			else if (event.window.event == SDL_WINDOWEVENT_FOCUS_LOST)
+				focusGained = false;
+
+			break;
+
+		case SDL_CONTROLLERBUTTONDOWN:
+			controller_buttons[event.cbutton.button] = true;
+			break;
+
+		case SDL_CONTROLLERBUTTONUP:
+			controller_buttons[event.cbutton.button] = false;
+			break;
+		}
+	}
+
+	return true;
 }

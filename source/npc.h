@@ -92,8 +92,11 @@ public:
 	int damage_view;
 	int damage;
 
-	/// Parent NPC
+	// Parent NPC
 	npc *pNpc;
+
+	// Priority
+	bool priority;
 
 public:
 	// These are kinda supposed to be internal, but I can't put them as protected/private
@@ -108,7 +111,6 @@ public:
 	void limitXVel(int maxVel);
 	void limitYVel(int maxVel);
 	void moveInDir(int vel);
-	void moveTowardsPlayer(int vel);
 	void accelerateTowardsXTarget(int vel);
 	void accelerateTowardsYTarget(int vel);
 	bool isPlayerWithinDistance(int xDist, int yDistHigh, int yDistLow) attrPure;
@@ -134,7 +136,7 @@ void loadNpcTable();
 void createSmokeLeft(int x, int y, int w, size_t num);
 void createSmokeUp(int x, int y, int w, int num);
 
-void createNpc(int setCode, int setX = 0, int setY = 0, int setXm = 0, int setYm = 0, int setDir = dirLeft, npc *parentNpc = nullptr);
+void createNpc(int setCode, int setX = 0, int setY = 0, int setXm = 0, int setYm = 0, int setDir = dirLeft, npc *parentNpc = nullptr, bool setPriority = true);
 void changeNpc(int code_event, int code_char, int dir = dirLeft);
 int findEntityByType(int entityType) attrPure;
 void setNPCState(int entityEventNum, int newNPCState, int direction);

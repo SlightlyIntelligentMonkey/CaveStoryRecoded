@@ -198,7 +198,10 @@ void npcAct203(npc * NPC) // Critter, Hopping Aqua (enemy)
 			if (!(currentPlayer.cond & player_removed))
 				playSound(SFX_CritterHop);
 
-			NPC->moveTowardsPlayer(0x100);
+			if (NPC->x < currentPlayer.x)
+				NPC->xm = 0x100;
+			else
+				NPC->xm = -0x100;
 		}
 		break;
 

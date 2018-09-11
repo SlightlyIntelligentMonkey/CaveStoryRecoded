@@ -481,6 +481,7 @@ int gameUpdateMenu()
 	changeOrg(0);
 
 	frame = SDL_GetTicks();
+
 	while (SDL_GetTicks() < frame + 1000)
 	{
 		getKeys();

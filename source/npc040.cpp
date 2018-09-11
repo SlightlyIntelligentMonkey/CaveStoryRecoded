@@ -170,7 +170,10 @@ void npcAct042(npc *NPC) // Sue
 	// Fallthrough
 	case 4:
 		NPC->animate(4, 2, 5);
-		NPC->moveTowardsPlayer(pixelsToUnits(1));
+		if (NPC->direct)
+			NPC->xm = 0x200;
+		else
+			NPC->xm = -0x200;
 		break;
 
 	case 5:
@@ -283,7 +286,10 @@ void npcAct042(npc *NPC) // Sue
 	// Fallthrough
 	case 21:
 		NPC->animate(2, 2, 5);
-		NPC->moveTowardsPlayer(pixelsToUnits(2));
+		if (NPC->direct)
+			NPC->xm = pixelsToUnits(2);
+		else
+			NPC->xm = pixelsToUnits(-2);
 
 		if (NPC->x < currentPlayer.x - 0x1000)
 		{
@@ -299,7 +305,10 @@ void npcAct042(npc *NPC) // Sue
 	// Fallthrough
 	case 31:
 		NPC->animate(2, 2, 5);
-		NPC->moveTowardsPlayer(pixelsToUnits(2));
+		if (NPC->direct)
+			NPC->xm = pixelsToUnits(2);
+		else
+			NPC->xm = pixelsToUnits(-2);
 		break;
 	case jumpOffIsland:
 		NPC->act_no = 41;

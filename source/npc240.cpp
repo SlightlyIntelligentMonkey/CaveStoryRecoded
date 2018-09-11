@@ -89,7 +89,7 @@ void npcAct242(npc *NPC) // Bat, Red Wave (enemy)
 {
     if (NPC->x < 0 || NPC->x > tilesToUnits(levelWidth))
     {
-        killNpc(NPC, true);
+		NPC->init(3, NPC->x, NPC->y, 0, 0, 0, nullptr);
         return;
     }
 
@@ -108,7 +108,10 @@ void npcAct242(npc *NPC) // Bat, Red Wave (enemy)
         NPC->ym = pixelsToUnits(2);
         // Fallthrough
     case 2:
-        NPC->moveTowardsPlayer(0x100);
+		if (NPC->direct)
+			NPC->xm = 0x100;
+		else
+			NPC->xm = -0x100;
 
         if (NPC->tgt_y < NPC->y)
             NPC->ym -= 0x10;

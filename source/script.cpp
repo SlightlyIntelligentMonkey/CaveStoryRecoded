@@ -577,6 +577,7 @@ bool doTscCommand(int *retVal, bool *bExit)
 		tscCleanup(0);
 		break;
 	case('<CRE'):
+		changeOrg(mus_TheWayBackHome); //because i smelly
 		if (!notifiedAboutCRE && debugFlags & notifyOnNotImplemented)
 		{
 			notifiedAboutCRE = true;

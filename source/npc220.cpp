@@ -513,7 +513,10 @@ void npcAct232(npc *NPC) // Orangebell (enemy)
         else if (NPC->xm > 0 && NPC->flag & rightWall)
             NPC->direct = dirLeft;
 
-        NPC->moveTowardsPlayer(0x100);
+		if (NPC->direct)
+			NPC->xm = 0x100;
+		else
+			NPC->xm = -0x100;
 
         if (NPC->y >= NPC->tgt_y)
             NPC->ym -= 8;

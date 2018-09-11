@@ -4,6 +4,7 @@
 #include <SDL_image.h>
 #include "sound.h"
 #include "script.h"
+#include "input.h"
 #include "flags.h"
 #include "player.h"
 #include "render.h"
@@ -98,7 +99,7 @@ int init()
 #endif
 
 	//Initiate SDL and window stuff
-	if (SDL_Init(SDL_INIT_TIMER | SDL_INIT_AUDIO | SDL_INIT_VIDEO | SDL_INIT_JOYSTICK) < 0)
+	if (SDL_Init(SDL_INIT_TIMER | SDL_INIT_AUDIO | SDL_INIT_VIDEO | SDL_INIT_GAMECONTROLLER) < 0)
 		doCustomError("Couldn't initiate SDL");
 
 	//Initiate SDL_image
@@ -114,6 +115,8 @@ int init()
 
 	initTsc();
 	initFlags();
+
+	initGamepad();
 
 	initAudio();
 	loadSounds();

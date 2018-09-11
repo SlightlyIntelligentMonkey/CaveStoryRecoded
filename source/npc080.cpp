@@ -115,7 +115,10 @@ void npcAct080(npc *NPC) //Gravekeeper
 			NPC->act_no = 3;
 			NPC->bits |= npc_shootable;
 
-			NPC->moveTowardsPlayer(pixelsToUnits(2));
+			if (NPC->direct)
+				NPC->xm = pixelsToUnits(2);
+			else
+				NPC->xm = pixelsToUnits(-2);
 		}
 
 		if (currentPlayer.x >= NPC->x)
@@ -939,7 +942,11 @@ void npcAct088(npc * NPC) // Igor (boss)
 	case walk:
 		++NPC->act_wait;
 		NPC->animate(3, 2, 5);
-		NPC->moveTowardsPlayer(0x200);
+
+		if (NPC->direct)
+			NPC->xm = pixelsToUnits(1);
+		else
+			NPC->xm = pixelsToUnits(-1);
 
 		if (NPC->count2)
 		{

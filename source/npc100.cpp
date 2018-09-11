@@ -50,7 +50,10 @@ void npcAct103(npc *NPC) // Manann red blast (projectile)
     {
         if (!NPC->act_no)
             NPC->act_no = 1;
-        NPC->accelerateTowardsPlayer(0x20);
+		if (NPC->direct)
+			NPC->xm += 0x20;
+		else
+			NPC->xm -= 0x20;
         NPC->animate(0, 0, 2);
     }
 
@@ -68,8 +71,8 @@ void npcAct104(npc *NPC) // Frog (enemy)
 	vector<RECT> rcLeft(3);
 	vector<RECT> rcRight(3);
 
-	rcLeft = { {0, 112, 32, 144}, {32, 112, 64, 144}, {64, 112, 96, 144} };
-	rcRight = { {0, 144, 32, 176}, {32, 144, 64, 176}, {64, 144, 96, 176} };
+	rcLeft = { { 0, 112, 32, 144 },{ 32, 112, 64, 144 },{ 64, 112, 96, 144 } };
+	rcRight = { { 0, 144, 32, 176 },{ 32, 144, 64, 176 },{ 64, 144, 96, 176 } };
 
 	enum
 	{
@@ -99,7 +102,7 @@ void npcAct104(npc *NPC) // Frog (enemy)
 			NPC->act_no = fallingFromCeiling;
 			break;
 		}
-		NPC->act_no &= ~npc_ignoreSolid;
+		NPC->bits &= ~npc_ignoreSolid;
 		// Fallthrough
 	case standing:
 		++NPC->act_wait;
@@ -132,8 +135,8 @@ void npcAct104(npc *NPC) // Frog (enemy)
 		break;
 
 	case startJump:
-	    NPC->act_no = jumping;
-	    // Fallthrough
+		NPC->act_no = jumping;
+		// Fallthrough
 	case jumping:
 		if (NPC->flag & leftWall && NPC->xm < 0)
 		{
@@ -188,7 +191,6 @@ void npcAct104(npc *NPC) // Frog (enemy)
 
 	NPC->doRects(rcLeft, rcRight);
 }
-
 
 void npcAct105(npc *NPC) // Speech balloon 'Hey' low
 {

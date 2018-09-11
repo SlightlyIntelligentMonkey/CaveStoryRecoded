@@ -265,9 +265,21 @@ void saveProfile()
 //Save and load config.dat thing
 string configName = "Config.dat";
 CONFIG *currentConfig;
-int configVersion = 1;
+int configVersion = 2;
 
-CONFIG defaultConfigData = { configVersion, 20, 320, 240, 2, false, true, false, keyLeft, keyRight, keyUp, keyDown, keyJump, keyShoot, keyMenu, keyMap, keyRotLeft, keyRotRight, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+int defaultPadLeft = SDL_CONTROLLER_BUTTON_DPAD_LEFT;
+int defaultPadRight = SDL_CONTROLLER_BUTTON_DPAD_RIGHT;
+int defaultPadUp = SDL_CONTROLLER_BUTTON_DPAD_UP;
+int defaultPadDown = SDL_CONTROLLER_BUTTON_DPAD_DOWN;
+int defaultPadJump = SDL_CONTROLLER_BUTTON_A;
+int defaultPadShoot = SDL_CONTROLLER_BUTTON_X;
+int defaultPadMenu = SDL_CONTROLLER_BUTTON_Y;
+int defaultPadMap = SDL_CONTROLLER_BUTTON_B;
+
+int defaultPadRotLeft = SDL_CONTROLLER_BUTTON_LEFTSHOULDER;
+int defaultPadRotRight = SDL_CONTROLLER_BUTTON_RIGHTSHOULDER;
+
+CONFIG defaultConfigData = { configVersion, 20, 320, 240, 2, false, true, false, keyLeft, keyRight, keyUp, keyDown, keyJump, keyShoot, keyMenu, keyMap, keyRotLeft, keyRotRight, defaultPadLeft, defaultPadRight, defaultPadUp, defaultPadDown, defaultPadJump, defaultPadShoot, defaultPadMenu, defaultPadMap, defaultPadRotLeft, defaultPadRotRight };
 
 void setFromConfig(CONFIG *config)
 {
@@ -307,6 +319,8 @@ void setFromConfig(CONFIG *config)
 	}
 
 	currentConfig = config;
+
+	saveConfig();
 }
 
 void defaultConfig()
