@@ -1,10 +1,8 @@
 #pragma once
-#include "common.h"
-#include "npcCollision.h"
-#include "level.h"
 
 #include <deque>
 #include <vector>
+#include "common.h"
 
 struct NPC_RECT
 {

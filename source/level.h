@@ -1,6 +1,8 @@
 #pragma once
-#include "common.h"
+
 #include "npc.h"
+
+struct SDL_Texture;
 
 struct STAGE_TABLE
 {

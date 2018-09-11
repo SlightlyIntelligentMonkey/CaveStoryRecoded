@@ -1,5 +1,6 @@
 #pragma once
-#include "common.h"
+
+#include <cstdint>
 
 void initAudio();
 void loadSounds();

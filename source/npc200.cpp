@@ -1,12 +1,14 @@
 #include "npc200.h"
 
 #include <vector>
+#include <cmath>
 #include "sound.h"
 #include "player.h"
 #include "mathUtils.h"
 #include "caret.h"
 #include "render.h"
 #include "bullet.h"
+#include "level.h"
 
 using std::vector;
 

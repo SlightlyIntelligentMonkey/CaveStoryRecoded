@@ -6,6 +6,7 @@
 #include "sound.h"
 #include "game.h"
 #include "render.h"
+#include "level.h"
 
 using std::vector;
 
@@ -1531,7 +1532,7 @@ void npcAct095(npc * NPC)
 
 	case 11:
 		NPC->animate(5);
-		
+
 		if (NPC->ani_no == 2)
 		{
 			NPC->moveInDir(0x100);
@@ -1592,7 +1593,7 @@ void npcAct095(npc * NPC)
 		NPC->x += NPC->xm;
 		NPC->y += NPC->ym;
 	}
-	
+
 	NPC->doRects(rcLeft, rcRight);
 }
 

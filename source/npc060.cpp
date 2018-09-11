@@ -4,6 +4,7 @@
 #include "player.h"
 #include "sound.h"
 #include "game.h"
+#include "level.h"
 
 void npcAct060(npc *NPC) //Toroko
 {

@@ -1,7 +1,7 @@
 #pragma once
-#include "common.h"
 
 #include <deque>
+#include "common.h"
 
 struct CARETSTAT
 {

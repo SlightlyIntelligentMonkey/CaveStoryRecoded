@@ -6,6 +6,7 @@
 #include "player.h"
 #include "input.h"
 #include "boss.h"
+#include "game.h"
 
 void putLittleStar(const RECT *rcHit, const player *me)
 {

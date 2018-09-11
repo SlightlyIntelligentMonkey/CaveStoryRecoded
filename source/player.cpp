@@ -1,4 +1,6 @@
 #include "player.h"
+
+#include <cstring>
 #include "weapons.h"
 #include "render.h"
 #include "input.h"
@@ -9,8 +11,8 @@
 #include "mathUtils.h"
 #include "valueview.h"
 #include "game.h"
-
-#include <cstring>
+#include "level.h"
+#include "npc.h"
 
 using std::memset;
 

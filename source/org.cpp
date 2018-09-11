@@ -1,13 +1,6 @@
 ﻿#include "org.h"
-#include "pxt.h"
-#include "sound.h"
-#include "filesystem.h"
-#include "mathUtils.h"
-
-#include <SDL.h>
 
 #include <fstream>
-#include <sys/stat.h>
 #include <string>
 #include <vector>
 #include <memory>
@@ -15,7 +8,16 @@
 #include <cstdlib>
 #include <cstdio>
 #include <cstring>
-#include <SDL.h>
+#include <sys/stat.h>
+#include <SDL_rwops.h>
+#include <SDL_video.h>
+#include "pxt.h"
+#include "sound.h"
+#include "filesystem.h"
+#include "mathUtils.h"
+#include "log.h"
+#include "render.h"
+#include "main.h"
 
 using std::string;
 using std::vector;
@@ -597,7 +599,7 @@ void playData()
 	{
 		if (org.loaded && play_np[i] != nullptr && play_p == play_np[i]->x)
 		{
-			if (play_np[i]->y != 0xFF) 
+			if (play_np[i]->y != 0xFF)
 			{
 				if (org.tdata[i].pipi)
 					playOrganObject2(play_np[i]->y, -1, i, org.tdata[i].freq);
@@ -661,10 +663,13 @@ char pass[7] = "Org-01";
 char pass2[7] = "Org-02"; //Pipi
 char pass3[7] = "Org-03"; //New drums
 
-void loadOrganya(const char *name)
+void loadOrganya(const string& name)
 {
 	if (disableOrg)
 		return;
+
+    logInfo("Loading " + name);
+
 	//Pause sound device
 	//SDL_PauseAudioDevice(soundDev, -1);
 
@@ -687,11 +692,10 @@ void loadOrganya(const char *name)
 	memset(now_leng, 0, sizeof(now_leng));
 
 	//Load
-	SDL_RWops *fp = SDL_RWFromFile(name, "rb");
+	SDL_RWops *fp = SDL_RWFromFile(name.c_str(), "rb");
 
 	if (!fp) {
-		char msg[0x40];
-		sprintf(msg, "%s couldn't be accessed", name);
+		string msg(name + "couldn't be accessed");
 		doCustomError(msg);
 		return;
 	}
@@ -825,7 +829,7 @@ void changeOrg(const uint32_t num)
 
 void resumeOrg()
 {
-	Uint32 temp = 0;
+	uint32_t temp = 0;
 	temp = currentOrg;
 	currentOrg = prevOrg;
 	prevOrg = temp;
