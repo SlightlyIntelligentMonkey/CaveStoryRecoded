@@ -6,128 +6,139 @@
 
 void bossHitMap()
 {
-    constexpr char offsetX[0x10] = {0, 1, 0, 1, 2, 2, 2, 0, 1, -1, -1, -1, -1, 0, 1, 2};
-    constexpr char offsetY[0x10] = {0, 0, 1, 1, 0, 1, 2, 2, 2, -1, 0, 1, 2, -1, -1, -1};
-    // see https://en.wikipedia.org/wiki/Cartesian_product for understanding what the fuck these even are
+	int offy[16];
+	int offx[16];
+	uint8_t atrb[16];
 
-    for (size_t i = 0; i < 20; ++i)
-    {
-        RECT *rcHit = &bossObj[i].rect;
-        npc *NPC = &bossObj[i];
-        if (bossObj[i].cond & 0x80 && !(bossObj[i].bits & npc_ignoreSolid))
-        {
-            size_t judg;
-            auto xPosBlocks = unitsToTiles(bossObj[i].x);
-            auto yPosBlocks = unitsToTiles(bossObj[i].y);
-            if (bossObj[i].size < 3)
-                judg = 4;
-            else
-                judg = 0x10;
+	offx[0] = 0;
+	offx[1] = 1;
+	offx[2] = 0;
+	offx[3] = 1;
+	offx[4] = 2;
+	offx[5] = 2;
+	offx[6] = 2;
+	offx[7] = 0;
+	offx[8] = 1;
+	offx[9] = -1;
+	offx[10] = -1;
+	offx[11] = -1;
+	offx[12] = -1;
+	offx[13] = 0;
+	offx[14] = 1;
+	offx[15] = 2;
 
-            bossObj[i].flag = 0;
+	offy[0] = 0;
+	offy[1] = 0;
+	offy[2] = 1;
+	offy[3] = 1;
+	offy[4] = 0;
+	offy[5] = 1;
+	offy[6] = 2;
+	offy[7] = 2;
+	offy[8] = 2;
+	offy[9] = -1;
+	offy[10] = 0;
+	offy[11] = 1;
+	offy[12] = 2;
+	offy[13] = -1;
+	offy[14] = -1;
+	offy[15] = -1;
 
-            int8_t attributes[0x10];
-            for (size_t j = 0; j < judg; ++j)
-            {
-                int currentX = offsetX[j] + xPosBlocks;
-                int currentY = offsetY[j] + yPosBlocks;
-                attributes[j] = getTileAttribute(offsetX[j] + xPosBlocks, offsetY[j] + yPosBlocks);
-                switch (attributes[j])
-                {
-                case 0x44:
-                    if ((bossObj[i].bits & npc_ignore44))
-                        break;
-                    // Fallthrough
-                case 0x5:
-                case 0x41:
-                case 0x43:
-                    npcJudgeBlock(rcHit, NPC, currentX, currentY);
-                    break;
+	for (size_t b = 0; b < BOSSNPCS; ++b)
+	{
+		if (bossObj[b].cond & npccond_alive && !(bossObj[b].bits & npc_ignoreSolid))
+		{
+			//Get amount of tiles to judge
+			size_t judg = 16;
+			if (bossObj[b].size < 3)
+				judg = 4;
 
-                case 0x50:
-                    npcJudgeTriangleA(rcHit, NPC, currentX, currentY);
-                    break;
+			int x = bossObj[b].x / 0x2000;
+			int y = bossObj[b].y / 0x2000;
 
-                case 0x51:
-                    npcJudgeTriangleB(rcHit, NPC, currentX, currentY);
-                    break;
+			bossObj[b].flag = 0;
 
-                case 0x52:
-                    npcJudgeTriangleC(rcHit, NPC, currentX, currentY);
-                    break;
+			for (size_t j = 0; j < judg; ++j)
+			{
+				atrb[j] = getTileAttribute(x + offx[j], y + offy[j]);
 
-                case 0x53:
-                    npcJudgeTriangleD(rcHit, NPC, currentX, currentY);
-                    break;
-
-                case 0x54:
-                    npcJudgeTriangleE(rcHit, NPC, currentX, currentY);
-                    break;
-
-                case 0x55:
-                    npcJudgeTriangleF(rcHit, NPC, currentX, currentY);
-                    break;
-
-                case 0x56:
-                    npcJudgeTriangleG(rcHit, NPC, currentX, currentY);
-                    break;
-
-                case 0x57:
-                    npcJudgeTriangleH(rcHit, NPC, currentX, currentY);
-                    break;
-
-                case 0x2:
-                case 0x60:
-                case 0x61:
-                case 0x64:
-                    npcJudgeBlock(rcHit, NPC, currentX, currentY);
-                    npcJudgeWater(rcHit, NPC, currentX, currentY);
-                    break;
-
-                case 0x70:
-                    npcJudgeTriangleA(rcHit, NPC, currentX, currentY);
-                    npcJudgeWater(rcHit, NPC, currentX, currentY);
-                    break;
-
-                case 0x71:
-                    npcJudgeTriangleB(rcHit, NPC, currentX, currentY);
-                    npcJudgeWater(rcHit, NPC, currentX, currentY);
-                    break;
-
-                case 0x72:
-                    npcJudgeTriangleC(rcHit, NPC, currentX, currentY);
-                    npcJudgeWater(rcHit, NPC, currentX, currentY);
-                    break;
-
-                case 0x73:
-                    npcJudgeTriangleD(rcHit, NPC, currentX, currentY);
-                    npcJudgeWater(rcHit, NPC, currentX, currentY);
-                    break;
-
-                case 0x74:
-                    npcJudgeTriangleE(rcHit, NPC, currentX, currentY);
-                    npcJudgeWater(rcHit, NPC, currentX, currentY);
-                    break;
-
-                case 0x75:
-                    npcJudgeTriangleF(rcHit, NPC, currentX, currentY);
-                    npcJudgeWater(rcHit, NPC, currentX, currentY);
-                    break;
-
-                case 0x76:
-                    npcJudgeTriangleG(rcHit, NPC, currentX, currentY);
-                    npcJudgeWater(rcHit, NPC, currentX, currentY);
-                    break;
-
-                case 0x77:
-                    npcJudgeTriangleH(rcHit, NPC, currentX, currentY);
-                    npcJudgeWater(rcHit, NPC, currentX, currentY);
-                    break;
-
-                default:
-                    continue;
-                }
-            }
-        }
-    }
+				switch (atrb[j])
+				{
+				case 2u:
+				case 0x60u:
+				case 0x61u:
+				case 0x64u:
+					npcJudgeBlock(&bossObj[b].hit, &bossObj[b], x + offx[j], y + offy[j]);
+					npcJudgeWater(&bossObj[b].hit, &bossObj[b], x + offx[j], y + offy[j]);
+					break;
+				case 5u:
+				case 0x41u:
+				case 0x43u:
+					npcJudgeBlock(&bossObj[b].hit, &bossObj[b], x + offx[j], y + offy[j]);
+				case 0x44u:
+					if (!(bossObj[b].bits & npc_ignore44))
+						npcJudgeBlock(&bossObj[b].hit, &bossObj[b], x + offx[j], y + offy[j]);
+					break;
+				case 0x50u:
+					npcJudgeTriangleA(&bossObj[b].hit, &bossObj[b], x + offx[j], y + offy[j]);
+					break;
+				case 0x51u:
+					npcJudgeTriangleB(&bossObj[b].hit, &bossObj[b], x + offx[j], y + offy[j]);
+					break;
+				case 0x52u:
+					npcJudgeTriangleC(&bossObj[b].hit, &bossObj[b], x + offx[j], y + offy[j]);
+					break;
+				case 0x53u:
+					npcJudgeTriangleD(&bossObj[b].hit, &bossObj[b], x + offx[j], y + offy[j]);
+					break;
+				case 0x54u:
+					npcJudgeTriangleE(&bossObj[b].hit, &bossObj[b], x + offx[j], y + offy[j]);
+					break;
+				case 0x55u:
+					npcJudgeTriangleF(&bossObj[b].hit, &bossObj[b], x + offx[j], y + offy[j]);
+					break;
+				case 0x56u:
+					npcJudgeTriangleG(&bossObj[b].hit, &bossObj[b], x + offx[j], y + offy[j]);
+					break;
+				case 0x57u:
+					npcJudgeTriangleH(&bossObj[b].hit, &bossObj[b], x + offx[j], y + offy[j]);
+					break;
+				case 0x70u:
+					npcJudgeTriangleA(&bossObj[b].hit, &bossObj[b], x + offx[j], y + offy[j]);
+					npcJudgeWater(&bossObj[b].hit, &bossObj[b], x + offx[j], y + offy[j]);
+					break;
+				case 0x71u:
+					npcJudgeTriangleB(&bossObj[b].hit, &bossObj[b], x + offx[j], y + offy[j]);
+					npcJudgeWater(&bossObj[b].hit, &bossObj[b], x + offx[j], y + offy[j]);
+					break;
+				case 0x72u:
+					npcJudgeTriangleC(&bossObj[b].hit, &bossObj[b], x + offx[j], y + offy[j]);
+					npcJudgeWater(&bossObj[b].hit, &bossObj[b], x + offx[j], y + offy[j]);
+					break;
+				case 0x73u:
+					npcJudgeTriangleD(&bossObj[b].hit, &bossObj[b], x + offx[j], y + offy[j]);
+					npcJudgeWater(&bossObj[b].hit, &bossObj[b], x + offx[j], y + offy[j]);
+					break;
+				case 0x74u:
+					npcJudgeTriangleE(&bossObj[b].hit, &bossObj[b], x + offx[j], y + offy[j]);
+					npcJudgeWater(&bossObj[b].hit, &bossObj[b], x + offx[j], y + offy[j]);
+					break;
+				case 0x75u:
+					npcJudgeTriangleF(&bossObj[b].hit, &bossObj[b], x + offx[j], y + offy[j]);
+					npcJudgeWater(&bossObj[b].hit, &bossObj[b], x + offx[j], y + offy[j]);
+					break;
+				case 0x76u:
+					npcJudgeTriangleG(&bossObj[b].hit, &bossObj[b], x + offx[j], y + offy[j]);
+					npcJudgeWater(&bossObj[b].hit, &bossObj[b], x + offx[j], y + offy[j]);
+					break;
+				case 0x77u:
+					npcJudgeTriangleH(&bossObj[b].hit, &bossObj[b], x + offx[j], y + offy[j]);
+					npcJudgeWater(&bossObj[b].hit, &bossObj[b], x + offx[j], y + offy[j]);
+					break;
+				default:
+					continue;
+				}
+			}
+		}
+	}
 }

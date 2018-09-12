@@ -74,8 +74,10 @@ void updateBoss()
 
 void drawBoss()
 {
-	for (size_t bos = BOSSNPCS - 1; bos > 0; bos--)
+	for (size_t i = 0; i < BOSSNPCS; i++)
 	{
+		size_t bos = (BOSSNPCS - 1) - i;
+
 		if (bossObj[bos].cond & npccond_alive)
 		{
 			int shake = 0;

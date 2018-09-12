@@ -147,7 +147,7 @@ void loadProfile()
 		SDL_RWops *profile = SDL_RWFromFile(profileName.c_str(), "rb");
 
 		if (profile == nullptr)
-			return;
+			doCustomError("Profile.dat exists, but couldn't be read from.");
 
 		const uint64_t code = SDL_ReadLE64(profile); //Code
 		if (memcmp(&code, profileCode.c_str(), sizeof(code)) != 0)
@@ -212,11 +212,14 @@ void loadProfile()
 
 		//Close RW
 		SDL_RWclose(profile);
+
+		logInfo("Loaded profile");
 	}
 	else
+	{
 		initGame();
-
-	logInfo("Loaded profile");
+		logInfo("Attempted to load profile, but it didn't exist.");
+	}
 }
 
 void saveProfile()

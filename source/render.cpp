@@ -180,8 +180,6 @@ uint8_t colorValTbl[] = { 0, 73, 109, 146, 182, 219, 255 };
 //Texture and drawing stuff
 void loadImage(const char *file, SDL_Texture **tex)
 {
-	SDL_Surface *surface;
-
 	if (tex == nullptr)
 		doCustomError("tex was nullptr in loadImage");
 
@@ -190,30 +188,7 @@ void loadImage(const char *file, SDL_Texture **tex)
 	{
 		SDL_DestroyTexture(*tex);
 	}
-	surface = IMG_Load(file);
-	if (surface->format->palette != nullptr)
-	{
-		SDL_Color *colors = static_cast<SDL_Color*>(calloc(4, surface->format->palette->ncolors));
-		for (int c = 0; c < surface->format->palette->ncolors; c++)
-		{
-			colors[c].r = colorValTbl[(surface->format->palette->colors[c].r * (sizeof(colorValTbl) - 1)) / 0xFF];
-			colors[c].g = colorValTbl[(surface->format->palette->colors[c].g * (sizeof(colorValTbl) - 1)) / 0xFF];
-			colors[c].b = colorValTbl[(surface->format->palette->colors[c].b * (sizeof(colorValTbl) - 1)) / 0xFF];
-			colors[c].a = surface->format->palette->colors[c].a;
-		}
-		SDL_SetPaletteColors(surface->format->palette, colors, 0, surface->format->palette->ncolors);
-		free(colors);
-	}
-	else
-	{
-		uint8_t *pixel = reinterpret_cast<uint8_t*>(surface->pixels);
-		for (int p = 0; p < surface->w*surface->h; p++)
-		{
-			if (pixel[p])
-				pixel[p] = colorValTbl[(pixel[p] * (sizeof(colorValTbl) - 1)) / 0xFF];
-		}
-	}
-	*tex = SDL_CreateTextureFromSurface(renderer, surface);
+	*tex = IMG_LoadTexture(renderer, file);
 
 	//Error if anything failed
 	if (*tex == nullptr)

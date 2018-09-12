@@ -9,460 +9,457 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
-    <Filter Include="Resource Files\Source Files">
+    <Filter Include="Source Files">
       <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
       <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
     </Filter>
-    <Filter Include="Resource Files\Source Files\modules">
+    <Filter Include="Source Files\modules">
       <UniqueIdentifier>{6ac8c2af-c217-44c8-94f4-f76a6ff22d8e}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Resource Files\Source Files\modules\sound">
+    <Filter Include="Source Files\modules\sound">
       <UniqueIdentifier>{b5c05ef0-304a-407a-8aa8-b2ea2bbd4ed1}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Resource Files\Source Files\modules\drawing">
+    <Filter Include="Source Files\modules\drawing">
       <UniqueIdentifier>{f67e1619-7260-48d0-85ab-0e7d7bde77b4}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Resource Files\Source Files\modules\collision">
+    <Filter Include="Source Files\modules\collision">
       <UniqueIdentifier>{60184d26-58a8-46b5-a929-e52d1fe5c897}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Resource Files\Source Files\classes">
+    <Filter Include="Source Files\classes">
       <UniqueIdentifier>{8af45837-cea6-45a3-9b88-ed0998b1c352}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Resource Files\Source Files\classes\player">
+    <Filter Include="Source Files\classes\player">
       <UniqueIdentifier>{9f59141a-ca26-4191-a411-a781c776450f}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Resource Files\Source Files\classes\npc">
+    <Filter Include="Source Files\classes\npc">
       <UniqueIdentifier>{dd025e45-f001-4d20-b7b6-f19fd265abff}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Resource Files\Source Files\classes\npc\act">
+    <Filter Include="Source Files\classes\npc\act">
       <UniqueIdentifier>{4ff93f4a-c3c8-4ee2-9f39-03301d066c06}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Resource Files\Source Files\classes\caret">
+    <Filter Include="Source Files\classes\caret">
       <UniqueIdentifier>{c4140a78-85b3-4b3d-be75-d6bda949fe8a}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Resource Files\Source Files\classes\value view">
+    <Filter Include="Source Files\classes\value view">
       <UniqueIdentifier>{368172ad-77b6-4756-983f-ea3543166e69}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Resource Files\Source Files\classes\weapons">
+    <Filter Include="Source Files\classes\weapons">
       <UniqueIdentifier>{1c05a025-f740-4e51-9dfc-042f8e8411cd}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Resource Files\Source Files\classes\weapons\shoot">
+    <Filter Include="Source Files\classes\weapons\shoot">
       <UniqueIdentifier>{1e9da9f7-fb23-4ccb-9cf9-44b4263996e9}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Resource Files\Source Files\classes\bullet">
+    <Filter Include="Source Files\classes\bullet">
       <UniqueIdentifier>{b846e75c-6357-4a5b-ae14-c31015067097}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Resource Files\Source Files\classes\bullet\act">
+    <Filter Include="Source Files\classes\bullet\act">
       <UniqueIdentifier>{754df458-b380-47d1-a7ca-725b1365a1b9}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Resource Files\Source Files\classes\boss">
+    <Filter Include="Source Files\classes\boss">
       <UniqueIdentifier>{0fbb2a6d-eecd-4fe5-9249-47168aab44b9}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Resource Files\Source Files\classes\boss\act">
+    <Filter Include="Source Files\classes\boss\act">
       <UniqueIdentifier>{ac3190a8-a551-4d5b-9972-f0ee5957681c}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Resource Files\Source Files\states">
+    <Filter Include="Source Files\states">
       <UniqueIdentifier>{a4b019f6-de34-4577-9b8b-64cf1ee3b5ac}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
-      <Filter>Resource Files\Source Files</Filter>
+      <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="level.cpp">
-      <Filter>Resource Files\Source Files\modules</Filter>
+      <Filter>Source Files\modules</Filter>
     </ClCompile>
     <ClCompile Include="filesystem.cpp">
-      <Filter>Resource Files\Source Files\modules</Filter>
+      <Filter>Source Files\modules</Filter>
     </ClCompile>
     <ClCompile Include="input.cpp">
-      <Filter>Resource Files\Source Files\modules</Filter>
+      <Filter>Source Files\modules</Filter>
     </ClCompile>
     <ClCompile Include="flags.cpp">
-      <Filter>Resource Files\Source Files\modules</Filter>
-    </ClCompile>
-    <ClCompile Include="log.cpp">
       <Filter>Source Files\modules</Filter>
     </ClCompile>
     <ClCompile Include="sound.cpp">
-      <Filter>Resource Files\Source Files\modules\sound</Filter>
+      <Filter>Source Files\modules\sound</Filter>
     </ClCompile>
     <ClCompile Include="player.cpp">
-      <Filter>Resource Files\Source Files\classes\player</Filter>
+      <Filter>Source Files\classes\player</Filter>
     </ClCompile>
     <ClCompile Include="weapons.cpp">
-      <Filter>Resource Files\Source Files\classes\weapons</Filter>
+      <Filter>Source Files\classes\weapons</Filter>
     </ClCompile>
     <ClCompile Include="npc.cpp">
-      <Filter>Resource Files\Source Files\classes\npc</Filter>
+      <Filter>Source Files\classes\npc</Filter>
     </ClCompile>
     <ClCompile Include="npc000.cpp">
-      <Filter>Resource Files\Source Files\classes\npc\act</Filter>
+      <Filter>Source Files\classes\npc\act</Filter>
     </ClCompile>
     <ClCompile Include="npc020.cpp">
-      <Filter>Resource Files\Source Files\classes\npc\act</Filter>
+      <Filter>Source Files\classes\npc\act</Filter>
     </ClCompile>
     <ClCompile Include="npc040.cpp">
-      <Filter>Resource Files\Source Files\classes\npc\act</Filter>
+      <Filter>Source Files\classes\npc\act</Filter>
     </ClCompile>
     <ClCompile Include="npc060.cpp">
-      <Filter>Resource Files\Source Files\classes\npc\act</Filter>
+      <Filter>Source Files\classes\npc\act</Filter>
     </ClCompile>
     <ClCompile Include="npc200.cpp">
-      <Filter>Resource Files\Source Files\classes\npc\act</Filter>
+      <Filter>Source Files\classes\npc\act</Filter>
     </ClCompile>
     <ClCompile Include="npc340.cpp">
-      <Filter>Resource Files\Source Files\classes\npc\act</Filter>
+      <Filter>Source Files\classes\npc\act</Filter>
     </ClCompile>
     <ClCompile Include="npcAct.cpp">
-      <Filter>Resource Files\Source Files\classes\npc\act</Filter>
+      <Filter>Source Files\classes\npc\act</Filter>
     </ClCompile>
     <ClCompile Include="game.cpp">
-      <Filter>Resource Files\Source Files\states</Filter>
+      <Filter>Source Files\states</Filter>
     </ClCompile>
     <ClCompile Include="polarStar.cpp">
-      <Filter>Resource Files\Source Files\classes\bullet\act</Filter>
+      <Filter>Source Files\classes\bullet\act</Filter>
     </ClCompile>
     <ClCompile Include="npc080.cpp">
-      <Filter>Resource Files\Source Files\classes\npc\act</Filter>
+      <Filter>Source Files\classes\npc\act</Filter>
     </ClCompile>
     <ClCompile Include="npc180.cpp">
-      <Filter>Resource Files\Source Files\classes\npc\act</Filter>
+      <Filter>Source Files\classes\npc\act</Filter>
     </ClCompile>
     <ClCompile Include="caret.cpp">
-      <Filter>Resource Files\Source Files\classes\caret</Filter>
+      <Filter>Source Files\classes\caret</Filter>
     </ClCompile>
     <ClCompile Include="npc220.cpp">
-      <Filter>Resource Files\Source Files\classes\npc\act</Filter>
+      <Filter>Source Files\classes\npc\act</Filter>
     </ClCompile>
     <ClCompile Include="npc100.cpp">
-      <Filter>Resource Files\Source Files\classes\npc\act</Filter>
+      <Filter>Source Files\classes\npc\act</Filter>
     </ClCompile>
     <ClCompile Include="npc280.cpp">
-      <Filter>Resource Files\Source Files\classes\npc\act</Filter>
+      <Filter>Source Files\classes\npc\act</Filter>
     </ClCompile>
     <ClCompile Include="npc300.cpp">
-      <Filter>Resource Files\Source Files\classes\npc\act</Filter>
+      <Filter>Source Files\classes\npc\act</Filter>
     </ClCompile>
     <ClCompile Include="npc140.cpp">
-      <Filter>Resource Files\Source Files\classes\npc\act</Filter>
+      <Filter>Source Files\classes\npc\act</Filter>
     </ClCompile>
     <ClCompile Include="npc120.cpp">
-      <Filter>Resource Files\Source Files\classes\npc\act</Filter>
+      <Filter>Source Files\classes\npc\act</Filter>
     </ClCompile>
     <ClCompile Include="script.cpp">
-      <Filter>Resource Files\Source Files\modules</Filter>
+      <Filter>Source Files\modules</Filter>
     </ClCompile>
     <ClCompile Include="valueview.cpp">
-      <Filter>Resource Files\Source Files\classes\value view</Filter>
+      <Filter>Source Files\classes\value view</Filter>
     </ClCompile>
     <ClCompile Include="npc240.cpp">
-      <Filter>Resource Files\Source Files\classes\npc\act</Filter>
+      <Filter>Source Files\classes\npc\act</Filter>
     </ClCompile>
     <ClCompile Include="render.cpp">
-      <Filter>Resource Files\Source Files\modules\drawing</Filter>
+      <Filter>Source Files\modules\drawing</Filter>
     </ClCompile>
     <ClCompile Include="hud.cpp">
-      <Filter>Resource Files\Source Files\modules\drawing</Filter>
+      <Filter>Source Files\modules\drawing</Filter>
     </ClCompile>
     <ClCompile Include="fade.cpp">
-      <Filter>Resource Files\Source Files\modules\drawing</Filter>
+      <Filter>Source Files\modules\drawing</Filter>
     </ClCompile>
     <ClCompile Include="polarStarShoot.cpp">
-      <Filter>Resource Files\Source Files\classes\weapons\shoot</Filter>
+      <Filter>Source Files\classes\weapons\shoot</Filter>
     </ClCompile>
     <ClCompile Include="mathUtils.cpp">
-      <Filter>Resource Files\Source Files\modules</Filter>
+      <Filter>Source Files\modules</Filter>
     </ClCompile>
     <ClCompile Include="npcCollision.cpp">
-      <Filter>Resource Files\Source Files\modules\collision</Filter>
+      <Filter>Source Files\modules\collision</Filter>
     </ClCompile>
     <ClCompile Include="playerCollision.cpp">
-      <Filter>Resource Files\Source Files\modules\collision</Filter>
+      <Filter>Source Files\modules\collision</Filter>
     </ClCompile>
     <ClCompile Include="bulletCollision.cpp">
-      <Filter>Resource Files\Source Files\modules\collision</Filter>
+      <Filter>Source Files\modules\collision</Filter>
+    </ClCompile>
+    <ClCompile Include="spur.cpp">
+      <Filter>Source Files\classes\bullet\act</Filter>
+    </ClCompile>
+    <ClCompile Include="bullet.cpp">
+      <Filter>Source Files\classes\bullet</Filter>
+    </ClCompile>
+    <ClCompile Include="fireball.cpp">
+      <Filter>Source Files\classes\bullet\act</Filter>
+    </ClCompile>
+    <ClCompile Include="fireballShoot.cpp">
+      <Filter>Source Files\classes\weapons\shoot</Filter>
+    </ClCompile>
+    <ClCompile Include="spurShoot.cpp">
+      <Filter>Source Files\classes\weapons\shoot</Filter>
+    </ClCompile>
+    <ClCompile Include="stageSelect.cpp">
+      <Filter>Source Files\states</Filter>
+    </ClCompile>
+    <ClCompile Include="inventory.cpp">
+      <Filter>Source Files\states</Filter>
+    </ClCompile>
+    <ClCompile Include="org.cpp">
+      <Filter>Source Files\modules\sound</Filter>
+    </ClCompile>
+    <ClCompile Include="stdUtils.cpp">
+      <Filter>Source Files\modules</Filter>
+    </ClCompile>
+    <ClCompile Include="loadConfig.cpp">
+      <Filter>Source Files\modules</Filter>
+    </ClCompile>
+    <ClCompile Include="npc320.cpp">
+      <Filter>Source Files\classes\npc\act</Filter>
+    </ClCompile>
+    <ClCompile Include="npc160.cpp">
+      <Filter>Source Files\classes\npc\act</Filter>
+    </ClCompile>
+    <ClCompile Include="npc260.cpp">
+      <Filter>Source Files\classes\npc\act</Filter>
+    </ClCompile>
+    <ClCompile Include="missile.cpp">
+      <Filter>Source Files\classes\bullet\act</Filter>
+    </ClCompile>
+    <ClCompile Include="snakeShoot.cpp">
+      <Filter>Source Files\classes\weapons\shoot</Filter>
+    </ClCompile>
+    <ClCompile Include="snake.cpp">
+      <Filter>Source Files\classes\bullet\act</Filter>
+    </ClCompile>
+    <ClCompile Include="machineGunShoot.cpp">
+      <Filter>Source Files\classes\weapons\shoot</Filter>
+    </ClCompile>
+    <ClCompile Include="machineGun.cpp">
+      <Filter>Source Files\classes\bullet\act</Filter>
+    </ClCompile>
+    <ClCompile Include="mapSystem.cpp">
+      <Filter>Source Files\states</Filter>
+    </ClCompile>
+    <ClCompile Include="misc.cpp">
+      <Filter>Source Files\classes\bullet\act</Filter>
+    </ClCompile>
+    <ClCompile Include="nemesis.cpp">
+      <Filter>Source Files\classes\bullet\act</Filter>
+    </ClCompile>
+    <ClCompile Include="bladeThrow.cpp">
+      <Filter>Source Files\classes\weapons\shoot</Filter>
+    </ClCompile>
+    <ClCompile Include="bubblePew.cpp">
+      <Filter>Source Files\classes\weapons\shoot</Filter>
+    </ClCompile>
+    <ClCompile Include="missileShoot.cpp">
+      <Filter>Source Files\classes\weapons\shoot</Filter>
+    </ClCompile>
+    <ClCompile Include="blade.cpp">
+      <Filter>Source Files\classes\bullet\act</Filter>
+    </ClCompile>
+    <ClCompile Include="bubbler.cpp">
+      <Filter>Source Files\classes\bullet\act</Filter>
+    </ClCompile>
+    <ClCompile Include="nemesisShoot.cpp">
+      <Filter>Source Files\classes\weapons\shoot</Filter>
+    </ClCompile>
+    <ClCompile Include="boss.cpp">
+      <Filter>Source Files\classes\boss</Filter>
+    </ClCompile>
+    <ClCompile Include="balfrog.cpp">
+      <Filter>Source Files\classes\boss\act</Filter>
+    </ClCompile>
+    <ClCompile Include="pxt.cpp">
+      <Filter>Source Files\modules\sound</Filter>
     </ClCompile>
     <ClCompile Include="bossCollision.cpp">
       <Filter>Source Files\modules\collision</Filter>
     </ClCompile>
-    <ClCompile Include="spur.cpp">
-      <Filter>Resource Files\Source Files\classes\bullet\act</Filter>
-    </ClCompile>
-    <ClCompile Include="bullet.cpp">
-      <Filter>Resource Files\Source Files\classes\bullet</Filter>
-    </ClCompile>
-    <ClCompile Include="fireball.cpp">
-      <Filter>Resource Files\Source Files\classes\bullet\act</Filter>
-    </ClCompile>
-    <ClCompile Include="fireballShoot.cpp">
-      <Filter>Resource Files\Source Files\classes\weapons\shoot</Filter>
-    </ClCompile>
-    <ClCompile Include="spurShoot.cpp">
-      <Filter>Resource Files\Source Files\classes\weapons\shoot</Filter>
-    </ClCompile>
-    <ClCompile Include="stageSelect.cpp">
-      <Filter>Resource Files\Source Files\states</Filter>
-    </ClCompile>
-    <ClCompile Include="inventory.cpp">
-      <Filter>Resource Files\Source Files\states</Filter>
-    </ClCompile>
-    <ClCompile Include="org.cpp">
-      <Filter>Resource Files\Source Files\modules\sound</Filter>
-    </ClCompile>
-    <ClCompile Include="stdUtils.cpp">
-      <Filter>Resource Files\Source Files\modules</Filter>
-    </ClCompile>
-    <ClCompile Include="loadConfig.cpp">
-      <Filter>Resource Files\Source Files\modules</Filter>
-    </ClCompile>
-    <ClCompile Include="npc320.cpp">
-      <Filter>Resource Files\Source Files\classes\npc\act</Filter>
-    </ClCompile>
-    <ClCompile Include="npc160.cpp">
-      <Filter>Resource Files\Source Files\classes\npc\act</Filter>
-    </ClCompile>
-    <ClCompile Include="npc260.cpp">
-      <Filter>Resource Files\Source Files\classes\npc\act</Filter>
-    </ClCompile>
-    <ClCompile Include="missile.cpp">
-      <Filter>Resource Files\Source Files\classes\bullet\act</Filter>
-    </ClCompile>
-    <ClCompile Include="snakeShoot.cpp">
-      <Filter>Resource Files\Source Files\classes\weapons\shoot</Filter>
-    </ClCompile>
-    <ClCompile Include="snake.cpp">
-      <Filter>Resource Files\Source Files\classes\bullet\act</Filter>
-    </ClCompile>
-    <ClCompile Include="machineGunShoot.cpp">
-      <Filter>Resource Files\Source Files\classes\weapons\shoot</Filter>
-    </ClCompile>
-    <ClCompile Include="machineGun.cpp">
-      <Filter>Resource Files\Source Files\classes\bullet\act</Filter>
-    </ClCompile>
-    <ClCompile Include="mapSystem.cpp">
-      <Filter>Resource Files\Source Files\states</Filter>
-    </ClCompile>
-    <ClCompile Include="misc.cpp">
-      <Filter>Resource Files\Source Files\classes\bullet\act</Filter>
-    </ClCompile>
-    <ClCompile Include="nemesis.cpp">
-      <Filter>Resource Files\Source Files\classes\bullet\act</Filter>
-    </ClCompile>
-    <ClCompile Include="bladeThrow.cpp">
-      <Filter>Resource Files\Source Files\classes\weapons\shoot</Filter>
-    </ClCompile>
-    <ClCompile Include="bubblePew.cpp">
-      <Filter>Resource Files\Source Files\classes\weapons\shoot</Filter>
-    </ClCompile>
-    <ClCompile Include="missileShoot.cpp">
-      <Filter>Resource Files\Source Files\classes\weapons\shoot</Filter>
-    </ClCompile>
-    <ClCompile Include="blade.cpp">
-      <Filter>Resource Files\Source Files\classes\bullet\act</Filter>
-    </ClCompile>
-    <ClCompile Include="bubbler.cpp">
-      <Filter>Resource Files\Source Files\classes\bullet\act</Filter>
-    </ClCompile>
-    <ClCompile Include="nemesisShoot.cpp">
-      <Filter>Resource Files\Source Files\classes\weapons\shoot</Filter>
-    </ClCompile>
-    <ClCompile Include="boss.cpp">
-      <Filter>Resource Files\Source Files\classes\boss</Filter>
-    </ClCompile>
-    <ClCompile Include="balfrog.cpp">
-      <Filter>Resource Files\Source Files\classes\boss\act</Filter>
-    </ClCompile>
-    <ClCompile Include="pxt.cpp">
-      <Filter>Resource Files\Source Files\modules\sound</Filter>
+    <ClCompile Include="log.cpp">
+      <Filter>Source Files\modules</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="level.h">
-      <Filter>Resource Files\Source Files\modules</Filter>
+      <Filter>Source Files\modules</Filter>
     </ClInclude>
     <ClInclude Include="filesystem.h">
-      <Filter>Resource Files\Source Files\modules</Filter>
+      <Filter>Source Files\modules</Filter>
     </ClInclude>
     <ClInclude Include="input.h">
-      <Filter>Resource Files\Source Files\modules</Filter>
-    </ClInclude>
-    <ClInclude Include="resource.h">
-      <Filter>Header Files</Filter>
+      <Filter>Source Files\modules</Filter>
     </ClInclude>
     <ClInclude Include="sound.h">
-      <Filter>Resource Files\Source Files\modules\sound</Filter>
+      <Filter>Source Files\modules\sound</Filter>
     </ClInclude>
     <ClInclude Include="player.h">
-      <Filter>Resource Files\Source Files\classes\player</Filter>
+      <Filter>Source Files\classes\player</Filter>
     </ClInclude>
     <ClInclude Include="npc.h">
-      <Filter>Resource Files\Source Files\classes\npc</Filter>
+      <Filter>Source Files\classes\npc</Filter>
     </ClInclude>
     <ClInclude Include="npc000.h">
-      <Filter>Resource Files\Source Files\classes\npc\act</Filter>
+      <Filter>Source Files\classes\npc\act</Filter>
     </ClInclude>
     <ClInclude Include="npc020.h">
-      <Filter>Resource Files\Source Files\classes\npc\act</Filter>
+      <Filter>Source Files\classes\npc\act</Filter>
     </ClInclude>
     <ClInclude Include="npc040.h">
-      <Filter>Resource Files\Source Files\classes\npc\act</Filter>
+      <Filter>Source Files\classes\npc\act</Filter>
     </ClInclude>
     <ClInclude Include="npc060.h">
-      <Filter>Resource Files\Source Files\classes\npc\act</Filter>
+      <Filter>Source Files\classes\npc\act</Filter>
     </ClInclude>
     <ClInclude Include="npc200.h">
-      <Filter>Resource Files\Source Files\classes\npc\act</Filter>
+      <Filter>Source Files\classes\npc\act</Filter>
     </ClInclude>
     <ClInclude Include="npc340.h">
-      <Filter>Resource Files\Source Files\classes\npc\act</Filter>
+      <Filter>Source Files\classes\npc\act</Filter>
     </ClInclude>
     <ClInclude Include="npcAct.h">
-      <Filter>Resource Files\Source Files\classes\npc\act</Filter>
-    </ClInclude>
-    <ClInclude Include="main.h">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\classes\npc\act</Filter>
     </ClInclude>
     <ClInclude Include="common.h">
-      <Filter>Resource Files\Source Files</Filter>
+      <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="game.h">
-      <Filter>Resource Files\Source Files\states</Filter>
+      <Filter>Source Files\states</Filter>
     </ClInclude>
     <ClInclude Include="polarStar.h">
-      <Filter>Resource Files\Source Files\classes\bullet\act</Filter>
+      <Filter>Source Files\classes\bullet\act</Filter>
     </ClInclude>
     <ClInclude Include="npc080.h">
-      <Filter>Resource Files\Source Files\classes\npc\act</Filter>
+      <Filter>Source Files\classes\npc\act</Filter>
     </ClInclude>
     <ClInclude Include="npc180.h">
-      <Filter>Resource Files\Source Files\classes\npc\act</Filter>
+      <Filter>Source Files\classes\npc\act</Filter>
     </ClInclude>
     <ClInclude Include="caret.h">
-      <Filter>Resource Files\Source Files\classes\caret</Filter>
+      <Filter>Source Files\classes\caret</Filter>
     </ClInclude>
     <ClInclude Include="npc220.h">
-      <Filter>Resource Files\Source Files\classes\npc\act</Filter>
+      <Filter>Source Files\classes\npc\act</Filter>
     </ClInclude>
     <ClInclude Include="npc100.h">
-      <Filter>Resource Files\Source Files\classes\npc\act</Filter>
+      <Filter>Source Files\classes\npc\act</Filter>
     </ClInclude>
     <ClInclude Include="npc280.h">
-      <Filter>Resource Files\Source Files\classes\npc\act</Filter>
+      <Filter>Source Files\classes\npc\act</Filter>
     </ClInclude>
     <ClInclude Include="npc300.h">
-      <Filter>Resource Files\Source Files\classes\npc\act</Filter>
+      <Filter>Source Files\classes\npc\act</Filter>
     </ClInclude>
     <ClInclude Include="flags.h">
-      <Filter>Resource Files\Source Files\modules</Filter>
-    </ClInclude>
-    <ClInclude Include="log.h">
       <Filter>Source Files\modules</Filter>
     </ClInclude>
     <ClInclude Include="npc140.h">
-      <Filter>Resource Files\Source Files\classes\npc\act</Filter>
+      <Filter>Source Files\classes\npc\act</Filter>
     </ClInclude>
     <ClInclude Include="npc120.h">
-      <Filter>Resource Files\Source Files\classes\npc\act</Filter>
+      <Filter>Source Files\classes\npc\act</Filter>
     </ClInclude>
     <ClInclude Include="script.h">
-      <Filter>Resource Files\Source Files\modules</Filter>
+      <Filter>Source Files\modules</Filter>
     </ClInclude>
     <ClInclude Include="valueview.h">
-      <Filter>Resource Files\Source Files\classes\value view</Filter>
+      <Filter>Source Files\classes\value view</Filter>
     </ClInclude>
     <ClInclude Include="npc240.h">
-      <Filter>Resource Files\Source Files\classes\npc\act</Filter>
+      <Filter>Source Files\classes\npc\act</Filter>
     </ClInclude>
     <ClInclude Include="render.h">
-      <Filter>Resource Files\Source Files\modules\drawing</Filter>
+      <Filter>Source Files\modules\drawing</Filter>
     </ClInclude>
     <ClInclude Include="hud.h">
-      <Filter>Resource Files\Source Files\modules\drawing</Filter>
+      <Filter>Source Files\modules\drawing</Filter>
     </ClInclude>
     <ClInclude Include="fade.h">
-      <Filter>Resource Files\Source Files\modules\drawing</Filter>
+      <Filter>Source Files\modules\drawing</Filter>
     </ClInclude>
     <ClInclude Include="shootFunctions.h">
-      <Filter>Resource Files\Source Files\classes\weapons\shoot</Filter>
+      <Filter>Source Files\classes\weapons\shoot</Filter>
     </ClInclude>
     <ClInclude Include="weapons.h">
-      <Filter>Resource Files\Source Files\classes\weapons</Filter>
+      <Filter>Source Files\classes\weapons</Filter>
     </ClInclude>
     <ClInclude Include="mathUtils.h">
-      <Filter>Resource Files\Source Files\modules</Filter>
+      <Filter>Source Files\modules</Filter>
     </ClInclude>
     <ClInclude Include="playerCollision.h">
-      <Filter>Resource Files\Source Files\modules\collision</Filter>
+      <Filter>Source Files\modules\collision</Filter>
     </ClInclude>
     <ClInclude Include="npcCollision.h">
-      <Filter>Resource Files\Source Files\modules\collision</Filter>
+      <Filter>Source Files\modules\collision</Filter>
     </ClInclude>
     <ClInclude Include="bulletCollision.h">
-      <Filter>Resource Files\Source Files\modules\collision</Filter>
+      <Filter>Source Files\modules\collision</Filter>
     </ClInclude>
     <ClInclude Include="spur.h">
-      <Filter>Resource Files\Source Files\classes\bullet\act</Filter>
+      <Filter>Source Files\classes\bullet\act</Filter>
     </ClInclude>
     <ClInclude Include="bullet.h">
-      <Filter>Resource Files\Source Files\classes\bullet</Filter>
+      <Filter>Source Files\classes\bullet</Filter>
     </ClInclude>
     <ClInclude Include="fireball.h">
-      <Filter>Resource Files\Source Files\classes\bullet\act</Filter>
+      <Filter>Source Files\classes\bullet\act</Filter>
     </ClInclude>
     <ClInclude Include="org.h">
-      <Filter>Resource Files\Source Files\modules\sound</Filter>
+      <Filter>Source Files\modules\sound</Filter>
     </ClInclude>
     <ClInclude Include="stdUtils.h">
-      <Filter>Resource Files\Source Files\modules</Filter>
+      <Filter>Source Files\modules</Filter>
     </ClInclude>
     <ClInclude Include="loadConfig.h">
-      <Filter>Resource Files\Source Files\modules</Filter>
+      <Filter>Source Files\modules</Filter>
     </ClInclude>
     <ClInclude Include="npc320.h">
-      <Filter>Resource Files\Source Files\classes\npc\act</Filter>
+      <Filter>Source Files\classes\npc\act</Filter>
     </ClInclude>
     <ClInclude Include="npc260.h">
-      <Filter>Resource Files\Source Files\classes\npc\act</Filter>
+      <Filter>Source Files\classes\npc\act</Filter>
     </ClInclude>
     <ClInclude Include="npc160.h">
-      <Filter>Resource Files\Source Files\classes\npc\act</Filter>
+      <Filter>Source Files\classes\npc\act</Filter>
     </ClInclude>
     <ClInclude Include="missile.h">
-      <Filter>Resource Files\Source Files\classes\bullet\act</Filter>
+      <Filter>Source Files\classes\bullet\act</Filter>
     </ClInclude>
     <ClInclude Include="snake.h">
-      <Filter>Resource Files\Source Files\classes\bullet\act</Filter>
+      <Filter>Source Files\classes\bullet\act</Filter>
     </ClInclude>
     <ClInclude Include="machineGun.h">
-      <Filter>Resource Files\Source Files\classes\bullet\act</Filter>
+      <Filter>Source Files\classes\bullet\act</Filter>
     </ClInclude>
     <ClInclude Include="misc.h">
-      <Filter>Resource Files\Source Files\classes\bullet\act</Filter>
+      <Filter>Source Files\classes\bullet\act</Filter>
     </ClInclude>
     <ClInclude Include="nemesis.h">
-      <Filter>Resource Files\Source Files\classes\bullet\act</Filter>
+      <Filter>Source Files\classes\bullet\act</Filter>
     </ClInclude>
     <ClInclude Include="blade.h">
-      <Filter>Resource Files\Source Files\classes\bullet\act</Filter>
+      <Filter>Source Files\classes\bullet\act</Filter>
     </ClInclude>
     <ClInclude Include="bubbler.h">
-      <Filter>Resource Files\Source Files\classes\bullet\act</Filter>
-    </ClInclude>
-    <ClInclude Include="ORIG_org.h">
-      <Filter>Header Files</Filter>
+      <Filter>Source Files\classes\bullet\act</Filter>
     </ClInclude>
     <ClInclude Include="boss.h">
-      <Filter>Resource Files\Source Files\classes\boss</Filter>
+      <Filter>Source Files\classes\boss</Filter>
     </ClInclude>
     <ClInclude Include="pxt.h">
-      <Filter>Resource Files\Source Files\modules\sound</Filter>
+      <Filter>Source Files\modules\sound</Filter>
+    </ClInclude>
+    <ClInclude Include="pxt.h">
+      <Filter>Source Files\modules\sound</Filter>
     </ClInclude>
     <ClInclude Include="bossCollision.h">
       <Filter>Source Files\modules\collision</Filter>
     </ClInclude>
-    <ClInclude Include="pxt.h">
-      <Filter>Source Files\modules\sound</Filter>
+    <ClInclude Include="log.h">
+      <Filter>Source Files\modules</Filter>
+    </ClInclude>
+    <ClInclude Include="main.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="resource.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
