@@ -69,6 +69,14 @@ extern int gameFlags;
 [[noreturn]] void doError();
 [[noreturn]] void doCustomError(const std::string& msg);
 
+// Note : 1 tile is 0x2000 units
+
+constexpr inline int tilesToUnits(int x) { return x << 13; }
+constexpr inline int unitsToTiles(int x) { return x >> 13; }
+constexpr inline int pixelsToUnits(int x) { return x << 9; }
+constexpr inline int unitsToPixels(int x) { return x >> 9; }
+
+
 //Macros
 #ifdef __GNUC__
 #define attrPure __attribute__((pure))

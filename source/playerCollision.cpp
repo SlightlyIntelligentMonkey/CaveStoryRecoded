@@ -819,48 +819,49 @@ void playerHitNpcs()
 
 void playerHitBosses()
 {
+	int hit = 0;
     player *me = &currentPlayer;
-    const RECT *rcHit = &me->rect;
+    const RECT *rcHit = &me->hit;
 
-    if (currentPlayer.cond & player_visible && !(currentPlayer.cond & player_removed))
+    if (me->cond & player_visible && !(me->cond & player_removed))
     {
-        for (size_t i = 0; i < _countof(boss); ++i)
+        for (size_t i = 0; i < _countof(bossObj); ++i)
         {
-            int hit = 0;
-            if (boss[i].cond & 0x80)
+            if (bossObj[i].cond & npccond_alive)
             {
-                if (boss[i].bits & npc_solidSoft)
+				hit = 0;
+                if (bossObj[i].bits & npc_solidSoft)
                 {
-                    hit = playerHitNpcSoftSolid(rcHit, me, &boss[i]);
+                    hit = playerHitNpcSoftSolid(rcHit, me, &bossObj[i]);
                     currentPlayer.flag |= hit;
                 }
-                else if (boss[i].bits & npc_solidHard)
+                else if (bossObj[i].bits & npc_solidHard)
                 {
-                    hit = playerHitNpcHardSolid(rcHit, me, &boss[i]);
+                    hit = playerHitNpcHardSolid(rcHit, me, &bossObj[i]);
                     currentPlayer.flag |= hit;
                 }
                 else
-                    hit = playerHitNpcNonSolid(rcHit, me, &boss[i]);
+                    hit = playerHitNpcNonSolid(rcHit, me, &bossObj[i]);
 
-                if (!(gameFlags & 4) && hit && boss[i].bits & npc_eventTouch)
+                if (!(gameFlags & 4) && hit && bossObj[i].bits & npc_eventTouch)
                 {
-                    startTscEvent(boss[i].code_event);
+                    startTscEvent(bossObj[i].code_event);
                     currentPlayer.ques = 0;
                 }
 
-                if (hit & rightWall && boss[i].xm < 0)
-                    currentPlayer.damage(boss[i].damage);
-                if (hit & leftWall && boss[i].xm > 0)
-                    currentPlayer.damage(boss[i].damage);
+                if (hit & rightWall && bossObj[i].xm < 0)
+                    currentPlayer.damage(bossObj[i].damage);
+                if (hit & leftWall && bossObj[i].xm > 0)
+                    currentPlayer.damage(bossObj[i].damage);
             }
-            else if (hit && boss[i].damage && !(gameFlags & 4))
-                currentPlayer.damage(boss[i].damage);
+            else if (hit && bossObj[i].damage && !(gameFlags & 4))
+                currentPlayer.damage(bossObj[i].damage);
 
             if (!(gameFlags & 4) && hit && currentPlayer.cond & player_interact)
             {
-                if (boss[i].bits & npc_interact)
+                if (bossObj[i].bits & npc_interact)
                 {
-                    startTscEvent(boss[i].code_event);
+                    startTscEvent(bossObj[i].code_event);
                     currentPlayer.xm = 0;
                     currentPlayer.ques = 0;
                 }

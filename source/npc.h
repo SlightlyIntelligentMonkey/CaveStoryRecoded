@@ -156,6 +156,7 @@ extern int curlyShootY;
 
 enum NPC_cond
 {
+	npccond_dmgboss = 0x10, //when set damages the main boss
 	npccond_alive = 0x80, //Determines if an npc is alive
 };
 

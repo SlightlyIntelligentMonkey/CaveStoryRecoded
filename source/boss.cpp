@@ -2,7 +2,7 @@
 
 #include <string>
 #include <cstring>
-#include <SDL_messagebox.h>
+#include <SDL.h>
 #include "valueview.h"
 #include "npc.h"
 #include "game.h"
@@ -54,15 +54,15 @@ void updateBoss()
 				--bossObj[bos].shock;
 		}
 	}
-	else if (bossActs[boss[0].code_char] == nullptr && boss[0].code_char != 0)
+	else if (bossActs[bossObj[0].code_char] == nullptr && bossObj[0].code_char != 0)
     {
 		static bool wasNotifiedAbout[_countof(bossActs)] = { 0 };
 
-		if (wasNotifiedAbout[boss[0].code_char])
+		if (wasNotifiedAbout[bossObj[0].code_char])
 			return;
 
-		wasNotifiedAbout[boss[0].code_char] = true;
-		string msg = "Boss " + to_string(boss[0].code_char) + " is not implementated yet.";
+		wasNotifiedAbout[bossObj[0].code_char] = true;
+		string msg = "Boss " + to_string(bossObj[0].code_char) + " is not implementated yet.";
 		SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_WARNING, "Missing Boss", msg.c_str(), nullptr);
     }
 
@@ -72,7 +72,7 @@ void updateBoss()
 
 void drawBoss()
 {
-	for (size_t bos = BOSSNPCS - 1; bos > 0; bos--)
+	for (size_t bos = 0; bos < BOSSNPCS; bos++)
 	{
 		if (bossObj[bos].cond & npccond_alive)
 		{
@@ -98,6 +98,15 @@ void drawBoss()
 			drawTexture(sprites[TEX_NPC_2], &bossObj[bos].rect, 
 				(bossObj[bos].x - side) / 0x200 - (viewport.x / 0x200) + shake, 
 				(bossObj[bos].y - bossObj[bos].view.top) / 0x200 - (viewport.y / 0x200));
+
+			if (debugFlags & showHitRects)
+			{
+				SDL_SetRenderDrawColor(renderer, 0x80, 0x80, 0x80, 0xFF);
+				drawRect(unitsToPixels(bossObj[bos].x - bossObj[bos].hit.left) - unitsToPixels(viewport.x),
+					unitsToPixels(bossObj[bos].y - bossObj[bos].hit.top) - unitsToPixels(viewport.y),
+					unitsToPixels(bossObj[bos].hit.right + bossObj[bos].hit.left),
+					unitsToPixels(bossObj[bos].hit.bottom + bossObj[bos].hit.top));
+			}
 		}
 	}
 }

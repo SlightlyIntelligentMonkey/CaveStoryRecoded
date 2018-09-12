@@ -6,7 +6,7 @@
 
 #include <string>
 #include <deque>
-#include <SDL_messagebox.h>
+#include <SDL.h>
 #include <cstring>
 
 using std::string;
@@ -340,5 +340,19 @@ void bullet::draw()
 		}
 
 		drawString(drawX / 0x200 - viewport.x / 0x200, drawY / 0x200 - viewport.y / 0x200 - 16, std::to_string(index).c_str());
+	}
+	if (debugFlags & showHitRects)
+	{
+		SDL_SetRenderDrawColor(renderer, 0x80, 0x80, 0x80, 0xFF);
+		drawRect(unitsToPixels(x - (blockXL / 2) - 0x200) - unitsToPixels(viewport.x),
+			unitsToPixels(y - (blockYL / 2) - 0x200) - unitsToPixels(viewport.y),
+			unitsToPixels(blockXL + 0x400), unitsToPixels(blockYL + 0x400));
+	}
+	if (debugFlags & showHurtRects)
+	{
+		SDL_SetRenderDrawColor(renderer, 0xFF, 0x00, 0x00, 0xFF);
+		drawRect(unitsToPixels(x - (enemyXL / 2) - 0x200) - unitsToPixels(viewport.x),
+			unitsToPixels(y - (enemyYL / 2) - 0x200) - unitsToPixels(viewport.y),
+			unitsToPixels(enemyXL + 0x400), unitsToPixels(enemyYL + 0x400));
 	}
 }

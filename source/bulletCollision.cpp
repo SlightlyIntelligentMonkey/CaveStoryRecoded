@@ -493,7 +493,7 @@ void bulletHitNpcs()
 								if (currentPlayer.cond & 0x80 && npcs[n].bits & npc_eventDie)
 									startTscEvent(npcs[n].code_event);
 								else
-									npcs[n].cond |= 8u;
+									npcs[n].cond |= 8;
 							}
 						}
 						else if (bul->code_bullet != 13
@@ -555,7 +555,7 @@ void bulletHitBoss()
 							//Something
 							int bos_;
 
-							if (bossObj[n].cond & 0x10)
+							if (bossObj[n].cond & npccond_dmgboss)
 								bos_ = 0;
 							else
 								bos_ = n;
@@ -585,9 +585,9 @@ void bulletHitBoss()
 								bossObj[bos_].life = bos_;
 
 								//Either run event if the run event on death flag's set, or die
-								if (currentPlayer.cond & 0x80 && bossObj[n].bits & npc_eventDie)
+								if (currentPlayer.cond & 0x80 && bossObj[bos_].bits & npc_eventDie)
 								{
-									startTscEvent(bossObj[n].code_event);
+									startTscEvent(bossObj[bos_].code_event);
 								}
 								else
 								{
@@ -622,11 +622,9 @@ void bulletHitBoss()
 							createCaret((bul->x + bossObj[n].x) / 2, (bul->y + bossObj[n].y) / 2, effect_RisingDisc, dirRight);
 							playSound(SFX_ShotHitInvulnerableEntity);
 							bul->life = 0;
+							continue;
 						}
-						else
-						{
-							--bul->life;
-						}
+						--bul->life;
 					}
 				}
 			}
