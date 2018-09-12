@@ -75,6 +75,7 @@ void bossHitMap()
 				case 0x41u:
 				case 0x43u:
 					npcJudgeBlock(&bossObj[b].hit, &bossObj[b], x + offx[j], y + offy[j]);
+					break;
 				case 0x44u:
 					if (!(bossObj[b].bits & npc_ignore44))
 						npcJudgeBlock(&bossObj[b].hit, &bossObj[b], x + offx[j], y + offy[j]);

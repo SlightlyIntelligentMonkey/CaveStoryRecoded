@@ -349,7 +349,7 @@ void loadConfig()
 	else
 	{
 		CONFIG *config;
-		int configSize = loadFile(configName.c_str(), (uint8_t**)&config);
+		size_t configSize = loadFile(configName.c_str(), (uint8_t**)&config);
 
 		if (configSize < sizeof(config->version) || config->version != configVersion)
 		{
