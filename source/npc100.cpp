@@ -444,6 +444,124 @@ void npcAct109(npc *NPC) // Malco, damaged
     NPC->doRects(rcLeft, rcRight);
 }
 
+void npcAct110(npc *NPC)
+{
+    vector<RECT> rcLeft = {{96, 128, 112, 144}, {112, 128, 128, 144}, {128, 128, 144, 144}};
+    vector<RECT> rcRight = {{96, 144, 112, 160}, {112, 144, 128, 160}, {128, 144, 144, 160}};
+
+    enum
+    {
+        init = 0,
+        stand = 1,
+        mouthFlitter = 2,
+        fallingFromCeiling = 3,
+        jumping = 10,
+    };
+
+    switch (NPC->act_no)
+    {
+    case init:
+        NPC->act_no = stand;
+        NPC->act_wait = 0,
+        NPC->xm = 0;
+        NPC->ym = 0;
+        if (NPC->direct == dirAuto) // Spawned by Balfrog
+        {
+            NPC->direct = random(0, 1) ? dirLeft : dirRight;
+            NPC->bits |= npc_ignoreSolid;
+            NPC->ani_no = 2;
+            NPC->act_no = fallingFromCeiling;
+            break;
+        }
+        NPC->bits &= ~npc_ignoreSolid;
+        // Fallthrough
+    case stand:
+        if (!random(0, 50))
+        {
+            NPC->act_no = mouthFlitter;
+            NPC->act_wait = 0;
+            NPC->ani_no = 0;
+            NPC->ani_wait = 0;
+        }
+        break;
+
+    case mouthFlitter:
+        NPC->animate(2, 0, 1);
+
+        if (++NPC->act_wait > 18)
+            NPC->act_no = stand;
+        break;
+
+    case fallingFromCeiling:
+        if (++NPC->act_wait > 40)
+            NPC->bits &= ~npc_ignoreSolid;
+
+        if (NPC->flag & ground)
+        {
+            NPC->act_no = init;
+            NPC->ani_no = 0;
+            NPC->ani_wait = 0;
+        }
+        break;
+
+    case jumping:
+    case jumping + 1:
+        if (NPC->flag & leftWall && NPC->xm < 0)
+        {
+            NPC->xm = -NPC->xm;
+            NPC->direct = dirRight;
+        }
+        if (NPC->flag & rightWall && NPC->xm > 0)
+        {
+            NPC->xm = -NPC->xm;
+            NPC->direct = dirLeft;
+        }
+        if (NPC->flag & ground)
+        {
+            NPC->act_no = init;
+            NPC->ani_no = 0;
+            NPC->act_wait = 0;
+        }
+        break;
+
+    default:
+        break;
+    }
+
+    bool doJump = false;
+
+    if (NPC->act_no < jumping && NPC->act_no != fallingFromCeiling && NPC->act_wait > 10)
+    {
+        if (NPC->shock)
+            doJump = true;
+        else if (NPC->x >= currentPlayer.x - tilesToUnits(10)
+                 && NPC->x <= currentPlayer.x + tilesToUnits(10)
+                 && NPC->y >= currentPlayer.y - tilesToUnits(4)
+                 && NPC->y <= currentPlayer.y + tilesToUnits(4)
+                 && !random(0, 50))
+            doJump = true;
+    }
+
+    if (doJump)
+    {
+        NPC->facePlayer();
+
+        NPC->act_no = jumping;
+        NPC->ani_no = 2;
+
+        NPC->ym = -0x2FF;
+        playSound(SFX_HighPitchCritterHop);
+        NPC->moveInDir(0x100);
+    }
+
+    NPC->doGravity(0x80, 0x5FF);
+
+    NPC->x += NPC->xm;
+    NPC->y += NPC->ym;
+
+    NPC->doRects(rcLeft, rcRight);
+}
+
 void npcAct111(npc *NPC) //Quote teleport out
 {
 	RECT rcLeft[2];

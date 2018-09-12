@@ -131,7 +131,7 @@ const npcAct npcActs[361] =
 	&npcAct107,
 	&npcAct108,
 	&npcAct109,
-	&npcActNone,
+	&npcAct110,
 	&npcAct111,
 	&npcAct112,
 	&npcActNone,

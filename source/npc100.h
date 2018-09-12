@@ -12,7 +12,7 @@ void npcAct106(npc *NPC);
 void npcAct107(npc *NPC);
 void npcAct108(npc *NPC);
 void npcAct109(npc *NPC);
-
+void npcAct110(npc *NPC);
 void npcAct111(npc *NPC);
 void npcAct112(npc *NPC);
 

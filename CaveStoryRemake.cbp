@@ -13,8 +13,12 @@
 				<Option compiler="gcc" />
 			</Target>
 		</Build>
+		<Unit filename="source/CaveStoryEngine.rc">
+			<Option compilerVar="WINDRES" />
+		</Unit>
 		<Unit filename="source/ORIG_org.cpp" />
 		<Unit filename="source/ORIG_org.h" />
+		<Unit filename="source/balfrog.cpp" />
 		<Unit filename="source/blade.cpp" />
 		<Unit filename="source/blade.h" />
 		<Unit filename="source/bladeThrow.cpp" />
@@ -58,6 +62,7 @@
 		<Unit filename="source/machineGun.h" />
 		<Unit filename="source/machineGunShoot.cpp" />
 		<Unit filename="source/main.cpp" />
+		<Unit filename="source/main.h" />
 		<Unit filename="source/mapSystem.cpp" />
 		<Unit filename="source/mathUtils.cpp" />
 		<Unit filename="source/mathUtils.h" />
