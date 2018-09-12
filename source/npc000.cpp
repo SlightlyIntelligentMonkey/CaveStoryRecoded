@@ -1198,7 +1198,7 @@ void npcAct012(npc *NPC) //Balrog cutscene
 			NPC->act_wait = 0;
 			NPC->ani_no = 3;
 			NPC->ym = -2048;
-			NPC->bits |= 8U;
+			NPC->bits |= npc_ignoreSolid;
 
 			createNpc(NPC_BalrogCrashingThroughWall, 0, 0, 0, 0, dirLeft, NPC);
 			createNpc(NPC_BalrogCrashingThroughWall, 0, 0, 0, 0, dirUp, NPC);

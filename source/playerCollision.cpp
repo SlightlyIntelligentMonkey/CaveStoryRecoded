@@ -828,7 +828,7 @@ void playerHitBosses()
         for (size_t i = 0; i < _countof(bossObj); ++i)
         {
             int hit = 0;
-            if (bossObj[i].cond & 0x80)
+            if (bossObj[i].cond & npccond_alive)
             {
                 if (bossObj[i].bits & npc_solidSoft)
                 {

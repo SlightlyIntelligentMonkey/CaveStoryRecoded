@@ -113,7 +113,7 @@ int loadFile(const string& name, uint8_t **data)
 	if (fclose(file) == EOF)
 		throw std::runtime_error("Could not close " + name);
 
-    logInfo("Loaded from " + name);
+    logDebug("Loaded from " + name);
 	return filesize;
 }
 
@@ -133,7 +133,7 @@ void writeFile(const string& name, const void *data, size_t amount)
 	if (fclose(file) == EOF)
 		throw std::runtime_error("Could not close " + name);
 
-    logInfo("Wrote to " + name);
+    logDebug("Wrote to " + name);
 }
 
 //Profile code
@@ -213,7 +213,7 @@ void loadProfile()
 		//Close RW
 		SDL_RWclose(profile);
 
-		logInfo("Loaded profile");
+		logDebug("Loaded profile");
 	}
 	else
 	{

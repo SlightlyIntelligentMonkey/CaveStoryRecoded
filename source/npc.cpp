@@ -141,7 +141,7 @@ void changeNpc(int code_event, int code_char, int dir)
 	{
 		if (npcs[i].cond & npccond_alive && npcs[i].code_event == code_event)
 		{
-			npcs[i].bits &= 0x7F00u;
+			npcs[i].bits &= ~(npc_showDamage | 0xFF);
 			npcs[i].code_char = code_char;
 			npcs[i].bits |= npcTable[npcs[i].code_char].bits;
 			npcs[i].exp = npcTable[npcs[i].code_char].exp;

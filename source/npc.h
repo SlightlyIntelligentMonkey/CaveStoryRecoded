@@ -64,11 +64,17 @@ public:
 	//life stuff
 	int life;
 	int exp;
+
+	/// Explosion size
 	int size;
 
-	//what do i look like and bits
+	/// Direction NPC is facing towards
 	int direct;
+
+	/// Entity flags
 	unsigned __int16 bits;
+
+	/// Rect location in spritesheet
 	RECT rect;
 
 	//state, counters, and action
