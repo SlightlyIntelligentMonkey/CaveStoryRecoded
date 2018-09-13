@@ -327,8 +327,8 @@ void npcAct228(npc *NPC) // Droll, guarding
         {
             NPC->act_no = jumping;
             NPC->ani_no = 3;
-            NPC->ym = -0x600;
-            NPC->moveInDir(0x200);
+            NPC->ym = pixelsToUnits(-3);
+            NPC->moveInDir(pixelsToUnits(1));
         }
         break;
 

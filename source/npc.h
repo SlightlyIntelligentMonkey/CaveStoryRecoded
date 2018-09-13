@@ -108,8 +108,11 @@ public:
 	void animate(int aniWait, int aniStart = -1, int aniMax = -1);
 	void createSmokeWithVel(size_t num, int xVel, int yVel);
 	void doGravity(int gravity, int maxYVel);
-	/// If only one argument is passed it will just not check for direction and just use the first argument
-	void doRects(const std::vector<RECT>& rcLeft, const std::vector<RECT>& rcRight = std::vector<RECT>());
+
+	void doRects(const std::vector<RECT>& rcLeft, const std::vector<RECT>& rcRight);
+	void doRects(const std::vector<RECT>& rcNPC);
+	void doRects(RECT rcLeft, RECT rcRight);
+	void doRects(RECT rcNPC);
 	void facePlayer();
     int getXDistToPlayer() attrPure;
 	void limitXVel(int maxVel);

@@ -184,7 +184,7 @@ void npcAct104(npc *NPC) // Frog (enemy)
 		if (!(currentPlayer.cond & player_removed))
 			playSound(SFX_CritterHop);
 
-		NPC->moveInDir(0x200);
+		NPC->moveInDir(pixelsToUnits(1));
 	}
 
 	NPC->doGravity(0x80, 0x5FF);
@@ -556,7 +556,7 @@ void npcAct110(npc *NPC)
 
         NPC->ym = -0x2FF;
         playSound(SFX_HighPitchCritterHop);
-        NPC->moveInDir(0x100);
+        NPC->moveInDir(pixelsToUnits(0.5));
     }
 
     NPC->doGravity(0x80, 0x5FF);

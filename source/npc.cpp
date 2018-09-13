@@ -475,15 +475,28 @@ void npc::doGravity(int gravity, int maxYVel)
 
 void npc::doRects(const vector<RECT>& rcLeft, const vector<RECT>& rcRight)
 {
-	if (!rcRight.empty())
-	{
-		if (this->direct != dirLeft)
-			this->rect = rcRight.at(this->ani_no);
-		else
-			this->rect = rcLeft.at(this->ani_no);
-	}
+    if (this->direct != dirLeft)
+		this->rect = rcRight.at(this->ani_no);
 	else
 		this->rect = rcLeft.at(this->ani_no);
+}
+
+void npc::doRects(const vector<RECT>& rcNPC)
+{
+    this->rect = rcNPC.at(this->ani_no);
+}
+
+void npc::doRects(RECT rcLeft, RECT rcRight)
+{
+    if (this->direct != dirLeft)
+        this->rect = rcRight;
+    else
+        this->rect = rcLeft;
+}
+
+void npc::doRects(RECT rcNPC)
+{
+    this->rect = rcNPC;
 }
 
 void npc::facePlayer()

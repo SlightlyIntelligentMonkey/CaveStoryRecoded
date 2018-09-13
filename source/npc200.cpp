@@ -657,3 +657,13 @@ void npcAct216(npc *NPC) // Debug cat
 	NPC->rect = { 256, 192, 272, 216 };
 }
 
+void npcAct219(npc *NPC) // Generator - Smoke/Underwater Current
+{
+    if (NPC->direct != dirLeft)
+        createNpc(NPC_UnderwaterCurrent,
+                  NPC->x + pixelsToUnits(random(-0xA0, 0xA0)), NPC->y + pixelsToUnits(random(-0x80, 0x80)), 0, 0, dirRight);
+    else if (!random(0, 40))
+        createNpc(NPC_Smoke, NPC->x + pixelsToUnits(random(-20, 20)), NPC->y, 0, pixelsToUnits(-1));
+
+    NPC->doRects({0, 0, 0, 0});
+}

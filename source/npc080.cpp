@@ -1535,7 +1535,7 @@ void npcAct095(npc * NPC)
 
 		if (NPC->ani_no == 2)
 		{
-			NPC->moveInDir(0x100);
+			NPC->moveInDir(pixelsToUnits(0.5));
 			NPC->ym -= pixelsToUnits(1);
 		}
 		else if (NPC->ani_no > 2)

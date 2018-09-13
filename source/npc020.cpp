@@ -148,7 +148,7 @@ void npcAct024(npc *NPC) // Power Critter (enemy)
             NPC->ym = -0x5FF;
             playSound(SFX_PowerCritterLargeEnemyJump);
             NPC->facePlayer();
-            NPC->moveInDir(0x100);
+            NPC->moveInDir(pixelsToUnits(0.5));
         }
         break;
 
@@ -490,7 +490,7 @@ void npcAct028(npc *NPC)
 			NPC->ym = -0x4CC;
 			playSound(SFX_CritterHop);
 			NPC->facePlayer();
-			NPC->moveInDir(0x100);
+			NPC->moveInDir(pixelsToUnits(0.5));
 		}
 		break;
 

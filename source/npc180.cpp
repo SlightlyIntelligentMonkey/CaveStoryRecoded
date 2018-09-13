@@ -708,6 +708,17 @@ void npcAct192(npc *NPC) // Scooter
 	NPC->doRects(rcLeft, rcRight);
 }
 
+void npcAct193(npc *NPC) // Scooter, crashed
+{
+    if (!NPC->act_no)
+    {
+        NPC->act_no = 1;
+        NPC->x += tilesToUnits(1.5);
+    }
+
+    NPC->doRects({256, 96, 320, 112});
+}
+
 void npcAct194(npc *NPC) // Blue Robot, destroyed
 {
 	if (NPC->act_no == 0)
