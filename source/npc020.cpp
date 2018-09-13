@@ -886,7 +886,7 @@ void npcAct036(npc *NPC) // Balrog, Flying (boss)
             NPC->act_no = shootPlayer;
             NPC->act_wait = 0;
             NPC->count1 = 3;
-            NPC->ani_no = 0;
+            NPC->ani_no = 1;
         }
         break;
 
@@ -895,10 +895,10 @@ void npcAct036(npc *NPC) // Balrog, Flying (boss)
         {
             --NPC->count1;
             NPC->act_wait = 0;
-            int16_t randVel = getAtan(NPC->x - currentPlayer.x, NPC->y + pixelsToUnits(4) - currentPlayer.y);
-            randVel += random(-0x10, 0x10);
-            auto xVel = getSin(randVel);
-            auto yVel = getCos(randVel);
+            int16_t angle = getAtan(NPC->x - currentPlayer.x, NPC->y + pixelsToUnits(4) - currentPlayer.y);
+            angle += random(-0x10, 0x10);
+            auto xVel = getCos(angle);
+            auto yVel = getSin(angle);
             createNpc(NPC_ProjectileBalrogEnergyBallInvincible, NPC->x, NPC->y + pixelsToUnits(4), xVel, yVel);
             playSound(SFX_EnemyShootProjectile);
             if (!NPC->count1)
