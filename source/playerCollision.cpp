@@ -821,9 +821,9 @@ void playerHitNpcs()
 void playerHitBosses()
 {
     player *me = &currentPlayer;
-    const RECT *rcHit = &me->rect;
+    const RECT *rcHit = &me->hit;
 
-    if (currentPlayer.cond & player_visible && !(currentPlayer.cond & player_removed))
+    if (me->cond & player_visible && !(me->cond & player_removed))
     {
         for (size_t i = 0; i < _countof(bossObj); ++i)
         {
@@ -833,12 +833,12 @@ void playerHitBosses()
                 if (bossObj[i].bits & npc_solidSoft)
                 {
                     hit = playerHitNpcSoftSolid(rcHit, me, &bossObj[i]);
-                    currentPlayer.flag |= hit;
+                    me->flag |= hit;
                 }
                 else if (bossObj[i].bits & npc_solidHard)
                 {
                     hit = playerHitNpcHardSolid(rcHit, me, &bossObj[i]);
-                    currentPlayer.flag |= hit;
+                    me->flag |= hit;
                 }
                 else
                     hit = playerHitNpcNonSolid(rcHit, me, &bossObj[i]);
@@ -846,28 +846,28 @@ void playerHitBosses()
                 if (!(gameFlags & 4) && hit && bossObj[i].bits & npc_eventTouch)
                 {
                     startTscEvent(bossObj[i].code_event);
-                    currentPlayer.ques = 0;
+                    me->ques = 0;
                 }
 
                 if (hit & rightWall && bossObj[i].xm < 0)
-                    currentPlayer.damage(bossObj[i].damage);
+                    me->damage(bossObj[i].damage);
                 if (hit & leftWall && bossObj[i].xm > 0)
-                    currentPlayer.damage(bossObj[i].damage);
+                    me->damage(bossObj[i].damage);
             }
             else if (hit && bossObj[i].damage && !(gameFlags & 4))
-                currentPlayer.damage(bossObj[i].damage);
+                me->damage(bossObj[i].damage);
 
-            if (!(gameFlags & 4) && hit && currentPlayer.cond & player_interact)
+            if (!(gameFlags & 4) && hit && me->cond & player_interact)
             {
                 if (bossObj[i].bits & npc_interact)
                 {
                     startTscEvent(bossObj[i].code_event);
-                    currentPlayer.xm = 0;
-                    currentPlayer.ques = 0;
+                    me->xm = 0;
+                    me->ques = 0;
                 }
             }
         }
-        if (currentPlayer.ques)
-            createCaret(currentPlayer.x, currentPlayer.y, effect_ExclamationMark);
+        if (me->ques)
+            createCaret(me->x, me->y, effect_ExclamationMark);
     }
 }
