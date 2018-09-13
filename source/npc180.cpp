@@ -1,5 +1,6 @@
 #include "npc180.h"
 
+#include <vector>
 #include <cmath>
 #include "mathUtils.h"
 #include "player.h"
@@ -9,6 +10,8 @@
 #include "bullet.h"
 #include "caret.h"
 #include "level.h"
+
+using std::vector;
 
 void npcAct180(npc * NPC) // Curly, AI
 {
@@ -614,7 +617,7 @@ void npcAct188(npc *NPC) //Baby Fuzz
 		NPC->rect = rcLeft[NPC->ani_no];
 }
 
-void npcAct192(npc * NPC)
+void npcAct192(npc *NPC) // Scooter
 {
 	enum
 	{
@@ -629,15 +632,15 @@ void npcAct192(npc * NPC)
 	{
 	case parked:
 		NPC->act_no = parked + 1;
-		NPC->view = { 0x2000, 0x1000, 0x2000, 0x1000 };
+		NPC->view = { tilesToUnits(1), tilesToUnits(0.5), tilesToUnits(1), tilesToUnits(0.5) };
 		break;
 
 	case mounted:
 		NPC->act_no = mounted + 1;
 		NPC->ani_no = 1;
-		NPC->view.top = 0x2000;
-		NPC->view.bottom = 0x2000;
-		NPC->y -= 0xA00;
+		NPC->view.top = tilesToUnits(1);
+		NPC->view.bottom = tilesToUnits(1);
+		NPC->y -= pixelsToUnits(5);
 		break;
 
 	case startEngine:
@@ -645,6 +648,7 @@ void npcAct192(npc * NPC)
 		NPC->act_wait = 1;
 		NPC->tgt_x = NPC->x;
 		NPC->tgt_y = NPC->y;
+		playSound(SFX_MissileImpact);
 		// Fallthrough
 	case startEngine + 1:
 		NPC->x = NPC->tgt_x + pixelsToUnits(random(-1, 1));
@@ -656,7 +660,7 @@ void npcAct192(npc * NPC)
 	case takeOff:
 		NPC->act_no = takeOff + 1;
 		NPC->act_wait = 1;
-		NPC->xm = -0x800;
+		NPC->xm = pixelsToUnits(-4);
 		NPC->x = NPC->tgt_x;
 		NPC->y = NPC->tgt_y;
 		playSound(SFX_MissileImpact);
@@ -664,9 +668,8 @@ void npcAct192(npc * NPC)
 	case takeOff + 1:
 		NPC->xm += 0x20;
 		NPC->x += NPC->xm;
-		++NPC->act_wait;
 		NPC->y = NPC->tgt_y + pixelsToUnits(random(-1, 1));
-		if (NPC->act_wait > 10)
+		if (++NPC->act_wait > 10)
 			NPC->direct = dirRight;
 		if (NPC->act_wait > 200)
 			NPC->act_no = outOfControl;
@@ -676,8 +679,8 @@ void npcAct192(npc * NPC)
 		NPC->act_no = outOfControl + 1;
 		NPC->act_wait = 2;
 		NPC->direct = dirLeft;
-		NPC->y = -0x6000;
-		NPC->xm = -0x1000;
+		NPC->y -= tilesToUnits(3);
+		NPC->xm = tilesToUnits(0.5);
 		// Fallthrough
 	case outOfControl + 1:
 		NPC->x += NPC->xm;
@@ -690,22 +693,19 @@ void npcAct192(npc * NPC)
 	default:
 		break;
 	}
-	if (!(NPC->act_wait % 4) && NPC->act_no >= startEngine)
+	if (NPC->act_no >= startEngine && !(NPC->act_wait % 4))
 	{
 		playSound(SFX_FireballBounce);
 		if (NPC->direct != dirLeft)
-			createCaret(NPC->x - 0x1400, NPC->y + 0x1400, effect_BoosterSmoke, dirLeft);
+			createCaret(NPC->x - pixelsToUnits(10), NPC->y + pixelsToUnits(10), effect_BoosterSmoke, dirLeft);
 		else
-			createCaret(NPC->x + 0x1400, NPC->y + 0x1400, effect_BoosterSmoke, dirRight);
+			createCaret(NPC->x + pixelsToUnits(10), NPC->y + pixelsToUnits(10), effect_BoosterSmoke, dirRight);
 	}
 
-	constexpr RECT rcLeft[2] = { {224, 64, 256, 80}, {256, 64, 288, 96} };
-	constexpr RECT rcRight[2] = { {224, 80, 256, 96}, {288, 64, 0x200, 96} };
+	vector<RECT> rcLeft = { {224, 64, 256, 80}, {256, 64, 288, 96} };
+	vector<RECT> rcRight = { {224, 80, 256, 96}, {288, 64, 320, 96} };
 
-	if (NPC->direct != dirLeft)
-		NPC->rect = rcRight[NPC->ani_no];
-	else
-		NPC->rect = rcLeft[NPC->ani_no];
+	NPC->doRects(rcLeft, rcRight);
 }
 
 void npcAct194(npc *NPC) // Blue Robot, destroyed
@@ -752,18 +752,12 @@ void npcAct199(npc *NPC) //Current / fan effect
 		else if (direction > 1)
 		{
 			if (direction == 2)
-			{
 				NPC->xm = 1;
-			}
 			else if (direction == 3)
-			{
 				NPC->ym = 1;
-			}
 		}
 		else if (!direction)
-		{
 			NPC->xm = -1;
-		}
 
 		NPC->xm = (random(4, 8) << 9) / 2 * NPC->xm;
 		NPC->ym = (random(4, 8) << 9) / 2 * NPC->ym;
