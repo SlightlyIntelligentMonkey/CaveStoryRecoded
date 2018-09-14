@@ -64,12 +64,10 @@ int createWindow(int width, int height, int scale, bool fullscreen)
 #endif
 	}
 	else
-	{
 		SDL_SetWindowSize(window, createWidth, createHeight);
-	}
 
 	if (fullscreen)
-        SDL_SetWindowFullscreen(window, SDL_WINDOW_FULLSCREEN_DESKTOP);
+        SDL_SetWindowFullscreen(window, SDL_WINDOW_FULLSCREEN);
 
 	//Set renderer
 	if (!renderer)
