@@ -14,4 +14,15 @@ int sign(int x)  attrConst;
 int clamp(int x, int mi, int ma)  attrConst;
 
 double sinc(double x) attrConst;
-int getGCD(int x, int y) attrConst;
+
+template <typename T> T getGCD(T a, T b)
+{
+    T c = a % b;
+    while (c != 0)
+    {
+        a = b;
+        b = c;
+        c = a % b;
+    }
+    return b;
+}

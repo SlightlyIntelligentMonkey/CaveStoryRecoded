@@ -183,7 +183,7 @@ void npcAct244(npc *NPC)
             NPC->ym = 0x5FF;
         NPC->y += NPC->ym;
 
-        NPC->rect = {96, 0, 104, 16};
+        NPC->doRects({96, 0, 104, 16});
     }
 }
 
@@ -436,5 +436,5 @@ void npcAct258(npc *NPC) // Mimiga, sleeping
 
 void npcAct259(npc *NPC) // Sleeping mimiga
 {
-	NPC->rect = { 48, 32, 64, 48 };
+	NPC->doRects({ 48, 32, 64, 48 });
 }

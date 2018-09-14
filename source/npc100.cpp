@@ -19,7 +19,7 @@ void npcAct100(npc * NPC) // Grate
 		NPC->y += 0x2000;
 	}
 
-	NPC->rect = { 272, 48, 288, 64 };
+	NPC->doRects({ 272, 48, 288, 64 });
 }
 
 void npcAct101(npc *NPC) // Power Controls, screen
@@ -569,8 +569,8 @@ void npcAct110(npc *NPC)
 
 void npcAct111(npc *NPC) //Quote teleport out
 {
-	RECT rcLeft[2];
-	RECT rcRight[2];
+	vector<RECT> rcLeft(2);
+	vector<RECT> rcRight(2);
 
 	rcLeft[0] = { 0, 0, 16, 16 };
 	rcLeft[1] = { 16, 0, 32, 16 };
@@ -630,10 +630,7 @@ void npcAct111(npc *NPC) //Quote teleport out
 	NPC->ym += 0x40;
 	NPC->y += NPC->ym;
 
-	if (NPC->direct != dirLeft)
-		NPC->rect = rcRight[NPC->ani_no];
-	else
-		NPC->rect = rcLeft[NPC->ani_no];
+	NPC->doRects(rcLeft, rcRight);
 
 	if (currentPlayer.equip & equip_mimigaMask)
 	{
@@ -652,8 +649,8 @@ void npcAct111(npc *NPC) //Quote teleport out
 
 void npcAct112(npc *NPC) //Quote teleport in
 {
-	RECT rcLeft[2];
-	RECT rcRight[2];
+	vector<RECT> rcLeft(2);
+	vector<RECT> rcRight(2);
 
 	rcLeft[0] = { 0, 0, 16, 16 };
 	rcLeft[1] = { 16, 0, 32, 16 };
@@ -703,10 +700,7 @@ void npcAct112(npc *NPC) //Quote teleport in
 	NPC->ym += 64;
 	NPC->y += NPC->ym;
 
-	if (NPC->direct != dirLeft)
-		NPC->rect = rcRight[NPC->ani_no];
-	else
-		NPC->rect = rcLeft[NPC->ani_no];
+	NPC->doRects(rcLeft, rcRight);
 
 	if (currentPlayer.equip & equip_mimigaMask)
 	{
@@ -1061,13 +1055,13 @@ void npcAct115(npc *NPC) // Ravil (enemy)
 
 void npcAct116(npc *NPC) // Red flowers petals
 {
-	NPC->rect = { 272, 184, 320, 200 };
+	NPC->doRects({ 272, 184, 320, 200 });
 }
 
 void npcAct117(npc *NPC)
 {
-	RECT rcLeft[10];
-	RECT rcRight[10];
+	vector<RECT> rcLeft(10);
+	vector<RECT> rcRight(10);
 
 	rcLeft[0] = { 0x00, 0x60, 0x10, 0x70 };
 	rcLeft[1] = { 0x10, 0x60, 0x20, 0x70 };
@@ -1255,14 +1249,11 @@ void npcAct117(npc *NPC)
 	NPC->x += NPC->xm;
 	NPC->y += NPC->ym;
 
-	if (NPC->direct)
-		NPC->rect = rcRight[NPC->ani_no];
-	else
-		NPC->rect = rcLeft[NPC->ani_no];
+	NPC->doRects(rcLeft, rcRight);
 }
 
 void npcAct119(npc *NPC) // Table & Chair
 {
-	NPC->rect = { 248, 184, 272, 200 };
+	NPC->doRects({ 248, 184, 272, 200 });
 }
 

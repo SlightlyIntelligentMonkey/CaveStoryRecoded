@@ -288,7 +288,7 @@ void dropExperience(int x, int y, int exp)
 			effectiveExp = 20;
 		}
 
-		createNpcExp(1, x, y, 0, 0, 0, nullptr, 0, effectiveExp);
+		createNpcExp(NPC_WeaponEnergy, x, y, 0, 0, 0, nullptr, 0, effectiveExp);
 	}
 }
 
@@ -315,7 +315,7 @@ int dropMissiles(int x, int y, int val)
 	n = random(1, 10 * t);
 	const int bullet_no = tamakazu_ari[n % t];
 
-	createNpcExp(86, x, y, 0, 0, 0, nullptr, bullet_no, val);
+	createNpcExp(NPC_Missile, x, y, 0, 0, 0, nullptr, bullet_no, val);
 
 	return 1;
 }
@@ -373,16 +373,14 @@ void killNpc(npc *NPC, bool bVanish)
 		if (drop == 1) //Health drop
 		{
 			if (NPC->exp <= 6)
-				createNpcExp(87, x, y, 0, 0, 0, nullptr, 0, 2);
+				createNpcExp(NPC_Heart, x, y, 0, 0, 0, nullptr, 0, 2);
 			else
-				createNpcExp(87, x, y, 0, 0, 0, nullptr, 0, 6);
+				createNpcExp(NPC_Heart, x, y, 0, 0, 0, nullptr, 0, 6);
 		}
 		else
 		{
 			if (drop != 2) //Drop experience
-			{
 				dropExperience(x, y, exp);
-			}
 			else //Drop missile, if doesn't drop, drop experience instead.
 			{
 				if (NPC->exp <= 6)

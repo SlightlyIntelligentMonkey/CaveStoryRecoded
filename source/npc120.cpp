@@ -1,6 +1,9 @@
 #include "npc120.h"
 
+#include <vector>
 #include "sound.h"
+
+using std::vector;
 
 void npcAct125(npc *NPC) //Hidden item
 {
@@ -15,20 +18,7 @@ void npcAct125(npc *NPC) //Hidden item
 		NPC->cond = 0;
 	}
 
-	if (NPC->direct)
-	{
-		NPC->rect.left = 16;
-		NPC->rect.top = 96;
-		NPC->rect.right = 32;
-	}
-	else
-	{
-		NPC->rect.left = 0;
-		NPC->rect.top = 96;
-		NPC->rect.right = 16;
-	}
-
-	NPC->rect.bottom = 112;
+	NPC->doRects({0, 96, 16, 112}, {16, 96, 32, 112});
 }
 
 void npcAct127(npc *NPC)
@@ -144,13 +134,13 @@ void npcAct129(npc *NPC) //Fireball Level 1/2 trail
 
 void npcAct137(npc *NPC) // Large doorway frame
 {
-	NPC->rect = { 96, 136, 128, 188 };
+	NPC->doRects({ 96, 136, 128, 188 });
 }
 
 void npcAct139(npc *NPC) //Doctor with the crown
 {
-	RECT rcLeft[3];
-	RECT rcRight[3];
+	vector<RECT> rcLeft(3);
+	vector<RECT> rcRight(3);
 
 	rcLeft[0] = { 0, 128, 24, 160 };
 	rcLeft[1] = { 24, 128, 48, 160 };
@@ -261,10 +251,7 @@ void npcAct139(npc *NPC) //Doctor with the crown
 	NPC->x += NPC->xm;
 	NPC->y += NPC->ym;
 
-	if (NPC->direct != dirLeft)
-		NPC->rect = rcRight[NPC->ani_no];
-	else
-		NPC->rect = rcLeft[NPC->ani_no];
+	NPC->doRects(rcLeft, rcRight);
 
 	if (NPC->act_no == 31 || NPC->act_no == 41)
 	{

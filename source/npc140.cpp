@@ -1,9 +1,12 @@
 ﻿#include "npc140.h"
 
+#include <vector>
 #include "sound.h"
 #include "player.h"
 #include "caret.h"
 #include "mathUtils.h"
+
+using std::vector;
 
 void npcAct145(npc *NPC) //King's blade
 {
@@ -38,15 +41,12 @@ void npcAct145(npc *NPC) //King's blade
 	}
 
 	//Set framerect
-	if (NPC->direct != dirLeft)
-		NPC->rect = rcRight;
-	else
-		NPC->rect = rcLeft;
+	NPC->doRects(rcLeft, rcRight);
 }
 
 void npcAct146(npc *NPC) //Lightning
 {
-	RECT rect[5];
+	vector<RECT> rect(5);
 
 	rect[0] = { 0, 0, 0, 0 };
 	rect[1] = { 260, 0, 275, 240 };
@@ -90,13 +90,13 @@ void npcAct146(npc *NPC) //Lightning
 		break;
 	}
 
-	NPC->rect = rect[NPC->ani_no];
+	NPC->doRects(rect);
 }
 
 void npcAct147(npc *NPC)
 {
-	RECT rcLeft[6];
-	RECT rcRight[6];
+	vector<RECT> rcLeft(6);
+	vector<RECT> rcRight(6);
 	uint8_t deg;
 
 	rcLeft[0].left = 0;
@@ -243,7 +243,7 @@ void npcAct147(npc *NPC)
 			{
 				deg = getAtan(NPC->x - currentPlayer.x, NPC->y - currentPlayer.y);
 				deg += random(-6, 6);
-				createNpc(148, NPC->x, NPC->y, 3 * getCos(deg), 3 * getSin(deg), 0, nullptr);
+				createNpc(NPC_ProjectileCritter, NPC->x, NPC->y, 3 * getCos(deg), 3 * getSin(deg), 0, nullptr);
 				playSound(39);
 			}
 
@@ -301,15 +301,12 @@ void npcAct147(npc *NPC)
 	NPC->x += NPC->xm;
 	NPC->y += NPC->ym;
 
-	if (NPC->direct)
-		NPC->rect = rcRight[NPC->ani_no];
-	else
-		NPC->rect = rcLeft[NPC->ani_no];
+	NPC->doRects(rcLeft, rcRight);
 }
 
 void npcAct148(npc *NPC)
 {
-	RECT rect[2];
+	vector<RECT> rect(2);
 
 	if (NPC->flag & 0xFF)
 	{
@@ -332,7 +329,7 @@ void npcAct148(npc *NPC)
 	if (++NPC->ani_no > 1)
 		NPC->ani_no = 0;
 
-	NPC->rect = rect[NPC->ani_no];
+	NPC->doRects(rect);
 
 	if (++NPC->count1 > 300)
 	{
@@ -343,8 +340,8 @@ void npcAct148(npc *NPC)
 
 void npcAct150(npc *NPC) // Quote
 {
-	RECT rcLeft[9];
-	RECT rcRight[9];
+	vector<RECT> rcLeft(9);
+	vector<RECT> rcRight(9);
 
 	rcLeft[0] = { 0, 0, 16, 16 };
 	rcLeft[1] = { 48, 0, 64, 16 };
@@ -508,10 +505,7 @@ void npcAct150(npc *NPC) // Quote
 		break;
 	}
 
-	if (NPC->direct != dirLeft)
-		NPC->rect = rcRight[NPC->ani_no];
-	else
-		NPC->rect = rcLeft[NPC->ani_no];
+    NPC->doRects(rcLeft, rcRight);
 
 	if (NPC->act_no == teleportAway + 1)
 	{
@@ -529,8 +523,8 @@ void npcAct150(npc *NPC) // Quote
 
 void npcAct151(npc *NPC) //Blue robot standing
 {
-	RECT rcLeft[2];
-	RECT rcRight[2];
+	vector<RECT> rcLeft(2);
+	vector<RECT> rcRight(2);
 
 	rcLeft[0] = { 192, 0, 208, 16 };
 	rcLeft[1] = { 208, 0, 224, 16 };
@@ -561,15 +555,12 @@ void npcAct151(npc *NPC) //Blue robot standing
 		}
 	}
 
-	if (NPC->direct)
-		NPC->rect = rcRight[NPC->ani_no];
-	else
-		NPC->rect = rcLeft[NPC->ani_no];
+	NPC->doRects(rcLeft, rcRight);
 }
 
 void npcAct153(npc *NPC)
 {
-	RECT rcLeft[21] =
+	vector<RECT> rcLeft =
 	{
 		{ 0, 0, 24, 24 },
 		{ 24, 0, 48, 24 },
@@ -594,7 +585,7 @@ void npcAct153(npc *NPC)
 		{ 96, 48, 120, 72 }
 	};
 
-	RECT rcRight[21] =
+	vector<RECT> rcRight =
 	{
 		{ 0, 24, 24, 48 },
 		{ 24, 24, 48, 48 },
@@ -776,10 +767,7 @@ void npcAct153(npc *NPC)
 		NPC->y += NPC->ym;
 
 		//Set framerect
-		if (NPC->direct)
-			NPC->rect = rcRight[NPC->ani_no];
-		else
-			NPC->rect = rcLeft[NPC->ani_no];
+		NPC->doRects(rcLeft, rcRight);
 
 		if (NPC->life <= 985)
 		{
@@ -791,7 +779,7 @@ void npcAct153(npc *NPC)
 
 void npcAct154(npc *NPC)
 {
-	RECT rcLeft[21] =
+	vector<RECT> rcLeft =
 	{
 		{ 0, 0, 24, 24 },
 		{ 24, 0, 48, 24 },
@@ -816,7 +804,7 @@ void npcAct154(npc *NPC)
 		{ 96, 48, 120, 72 }
 	};
 
-	RECT rcRight[21] =
+	vector<RECT> rcRight =
 	{
 		{ 0, 24, 24, 48 },
 		{ 24, 24, 48, 48 },
@@ -895,8 +883,5 @@ void npcAct154(npc *NPC)
 	NPC->y += NPC->ym;
 
 	//Set framerect
-	if (NPC->direct)
-		NPC->rect = rcRight[NPC->ani_no];
-	else
-		NPC->rect = rcLeft[NPC->ani_no];
+	NPC->doRects(rcLeft, rcRight);
 }
