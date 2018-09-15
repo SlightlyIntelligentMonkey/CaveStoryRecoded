@@ -77,7 +77,7 @@ int createWindow(int width, int height, int scale, bool fullscreen)
 		renderer = SDL_CreateRenderer(window, -1, 0);
 
 	// TODO free these when closing-down
-	cursor_surface = IMG_Load("data/cursor_normal.png");
+	cursor_surface = IMG_Load("data/Cursor/cursor_normal.png");
 	if (cursor_surface)
 	{
 		cursor = SDL_CreateColorCursor(cursor_surface, 0, 0);	// Don't worry, the hotspots are accurate to the original files
