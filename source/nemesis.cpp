@@ -21,16 +21,16 @@ void actBulletNemesis1(bullet *bul)
 			switch (bul->direct)
 			{
 			case(dirLeft):
-				createNpc(4, bul->x, bul->y, -512, random(-512, 512), 2);
+				createNpc(NPC_Smoke, bul->x, bul->y, -512, random(-512, 512), 2);
 				break;
 			case(dirUp):
-				createNpc(4, bul->x, bul->y, random(-512, 512), -512, 2);
+				createNpc(NPC_Smoke, bul->x, bul->y, random(-512, 512), -512, 2);
 				break;
 			case(dirRight):
-				createNpc(4, bul->x, bul->y, 512, random(-512, 512), 2);
+				createNpc(NPC_Smoke, bul->x, bul->y, 512, random(-512, 512), 2);
 				break;
 			case(dirDown):
-				createNpc(4, bul->x, bul->y, random(-512, 512), 512, 2);
+				createNpc(NPC_Smoke, bul->x, bul->y, random(-512, 512), 512, 2);
 				break;
 			}
 		}

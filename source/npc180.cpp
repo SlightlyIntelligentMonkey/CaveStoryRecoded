@@ -1,5 +1,6 @@
 #include "npc180.h"
 
+#include <vector>
 #include <cmath>
 #include "mathUtils.h"
 #include "player.h"
@@ -10,10 +11,12 @@
 #include "caret.h"
 #include "level.h"
 
+using std::vector;
+
 void npcAct180(npc * NPC) // Curly, AI
 {
-	RECT rcLeft[11];
-	RECT rcRight[11];
+	vector<RECT> rcLeft(11);
+	vector<RECT> rcRight(11);
 
 	rcLeft[0] = { 0, 96, 16, 112 };
 	rcLeft[1] = { 16, 96, 0x20, 112 };
@@ -266,10 +269,7 @@ void npcAct180(npc * NPC) // Curly, AI
 			NPC->ani_no = 6;
 	}
 
-	if (NPC->direct != dirLeft)
-		NPC->rect = rcRight[NPC->ani_no];
-	else
-		NPC->rect = rcLeft[NPC->ani_no];
+	NPC->doRects(rcLeft, rcRight);
 }
 
 void curlyNPCCommonStart(npc *NPC)
@@ -348,8 +348,8 @@ void curlyNPCCommonBulletSpawn(const npc *NPC, int bulletCode)
 
 void npcAct181(npc *NPC) // Curly Machine Gun bullet spawner (projectile)
 {
-	constexpr RECT rcLeft[2] = { { 184, 152, 200, 168 },{ 200, 152, 216, 168 } };
-	constexpr RECT rcRight[2] = { { 184, 168, 200, 184 },{ 200, 168, 216, 184 } };
+	vector<RECT> rcLeft = { { 184, 152, 200, 168 },{ 200, 152, 216, 168 } };
+	vector<RECT> rcRight = { { 184, 168, 200, 184 },{ 200, 168, 216, 184 } };
 
 	if (NPC->pNpc)
 	{
@@ -371,17 +371,14 @@ void npcAct181(npc *NPC) // Curly Machine Gun bullet spawner (projectile)
 			NPC->act_wait = 0;
 		}
 
-		if (NPC->direct != dirLeft)
-			NPC->rect = rcRight[NPC->ani_no];
-		else
-			NPC->rect = rcLeft[NPC->ani_no];
+		NPC->doRects(rcLeft, rcRight);
 	}
 }
 
 void npcAct182(npc * NPC) // Curly Polar Star bullet spawner (projectile)
 {
-	constexpr RECT rcLeft[2] = { { 184, 152, 200, 168 },{ 200, 152, 216, 168 } };
-	constexpr RECT rcRight[2] = { { 184, 168, 200, 184 },{ 200, 168, 216, 184 } };
+	vector<RECT> rcLeft = { { 184, 152, 200, 168 },{ 200, 152, 216, 168 } };
+	vector<RECT> rcRight = { { 184, 168, 200, 184 },{ 200, 168, 216, 184 } };
 
 	if (NPC->pNpc)
 	{
@@ -404,16 +401,13 @@ void npcAct182(npc * NPC) // Curly Polar Star bullet spawner (projectile)
 			NPC->act_wait = 0;
 		}
 
-		if (NPC->direct != dirLeft)
-			NPC->rect = rcRight[NPC->ani_no];
-		else
-			NPC->rect = rcLeft[NPC->ani_no];
+		NPC->doRects(rcLeft, rcRight);
 	}
 }
 
 void npcAct183(npc * NPC) // Curly Air Bubble
 {
-	constexpr RECT rcNPC[2] = { {56, 96, 80, 120}, {80, 96, 104, 120} };
+	vector<RECT> rcNPC = { {56, 96, 80, 120}, {80, 96, 104, 120} };
 
 	if (NPC->pNpc)
 	{
@@ -429,7 +423,7 @@ void npcAct183(npc * NPC) // Curly Air Bubble
 		NPC->animate(1, 0, 1);
 
 		if (NPC->pNpc->flag & water)
-			NPC->rect = rcNPC[NPC->ani_no];
+			NPC->doRects(rcNPC);
 		else
 			NPC->rect.right = 0;
 	}
@@ -437,8 +431,8 @@ void npcAct183(npc * NPC) // Curly Air Bubble
 
 void npcAct187(npc *NPC) //Fuzz
 {
-	RECT rcLeft[2];
-	RECT rcRight[2];
+	vector<RECT> rcLeft(2);
+	vector<RECT> rcRight(2);
 
 	rcLeft[0].left = 224;
 	rcLeft[0].top = 104;
@@ -468,7 +462,7 @@ void npcAct187(npc *NPC) //Fuzz
 		NPC->act_wait = random(0, 50);
 
 		for (int i = 0; i < 5; ++i)
-			createNpc(188, 0, 0, 0, 0, 51 * i, NPC);
+			createNpc(NPC_FuzzEnemy, 0, 0, 0, 0, 51 * i, NPC);
 //Fallthrough
 	case 1:
 		if (++NPC->act_wait >= 50)
@@ -514,17 +508,14 @@ void npcAct187(npc *NPC) //Fuzz
 	if (NPC->ani_no > 1)
 		NPC->ani_no = 0;
 
-	if (NPC->direct)
-		NPC->rect = rcRight[NPC->ani_no];
-	else
-		NPC->rect = rcLeft[NPC->ani_no];
+	NPC->doRects(rcLeft, rcRight);
 }
 
 void npcAct188(npc *NPC) //Baby Fuzz
 {
 	uint8_t deg;
-	RECT rcLeft[2];
-	RECT rcRight[2];
+	vector<RECT> rcLeft(2);
+	vector<RECT> rcRight(2);
 
 	rcLeft[0].left = 288;
 	rcLeft[0].top = 104;
@@ -608,13 +599,10 @@ void npcAct188(npc *NPC) //Baby Fuzz
 	if (NPC->ani_no > 1)
 		NPC->ani_no = 0;
 
-	if (NPC->direct)
-		NPC->rect = rcRight[NPC->ani_no];
-	else
-		NPC->rect = rcLeft[NPC->ani_no];
+	NPC->doRects(rcLeft, rcRight);
 }
 
-void npcAct192(npc * NPC)
+void npcAct192(npc *NPC) // Scooter
 {
 	enum
 	{
@@ -629,15 +617,15 @@ void npcAct192(npc * NPC)
 	{
 	case parked:
 		NPC->act_no = parked + 1;
-		NPC->view = { 0x2000, 0x1000, 0x2000, 0x1000 };
+		NPC->view = { tilesToUnits(1), tilesToUnits(0.5), tilesToUnits(1), tilesToUnits(0.5) };
 		break;
 
 	case mounted:
 		NPC->act_no = mounted + 1;
 		NPC->ani_no = 1;
-		NPC->view.top = 0x2000;
-		NPC->view.bottom = 0x2000;
-		NPC->y -= 0xA00;
+		NPC->view.top = tilesToUnits(1);
+		NPC->view.bottom = tilesToUnits(1);
+		NPC->y -= pixelsToUnits(5);
 		break;
 
 	case startEngine:
@@ -645,6 +633,7 @@ void npcAct192(npc * NPC)
 		NPC->act_wait = 1;
 		NPC->tgt_x = NPC->x;
 		NPC->tgt_y = NPC->y;
+		playSound(SFX_MissileImpact);
 		// Fallthrough
 	case startEngine + 1:
 		NPC->x = NPC->tgt_x + pixelsToUnits(random(-1, 1));
@@ -656,7 +645,7 @@ void npcAct192(npc * NPC)
 	case takeOff:
 		NPC->act_no = takeOff + 1;
 		NPC->act_wait = 1;
-		NPC->xm = -0x800;
+		NPC->xm = pixelsToUnits(-4);
 		NPC->x = NPC->tgt_x;
 		NPC->y = NPC->tgt_y;
 		playSound(SFX_MissileImpact);
@@ -664,9 +653,8 @@ void npcAct192(npc * NPC)
 	case takeOff + 1:
 		NPC->xm += 0x20;
 		NPC->x += NPC->xm;
-		++NPC->act_wait;
 		NPC->y = NPC->tgt_y + pixelsToUnits(random(-1, 1));
-		if (NPC->act_wait > 10)
+		if (++NPC->act_wait > 10)
 			NPC->direct = dirRight;
 		if (NPC->act_wait > 200)
 			NPC->act_no = outOfControl;
@@ -676,8 +664,8 @@ void npcAct192(npc * NPC)
 		NPC->act_no = outOfControl + 1;
 		NPC->act_wait = 2;
 		NPC->direct = dirLeft;
-		NPC->y = -0x6000;
-		NPC->xm = -0x1000;
+		NPC->y -= tilesToUnits(3);
+		NPC->xm = tilesToUnits(0.5);
 		// Fallthrough
 	case outOfControl + 1:
 		NPC->x += NPC->xm;
@@ -690,22 +678,30 @@ void npcAct192(npc * NPC)
 	default:
 		break;
 	}
-	if (!(NPC->act_wait % 4) && NPC->act_no >= startEngine)
+	if (NPC->act_no >= startEngine && !(NPC->act_wait % 4))
 	{
 		playSound(SFX_FireballBounce);
 		if (NPC->direct != dirLeft)
-			createCaret(NPC->x - 0x1400, NPC->y + 0x1400, effect_BoosterSmoke, dirLeft);
+			createCaret(NPC->x - pixelsToUnits(10), NPC->y + pixelsToUnits(10), effect_BoosterSmoke, dirLeft);
 		else
-			createCaret(NPC->x + 0x1400, NPC->y + 0x1400, effect_BoosterSmoke, dirRight);
+			createCaret(NPC->x + pixelsToUnits(10), NPC->y + pixelsToUnits(10), effect_BoosterSmoke, dirRight);
 	}
 
-	constexpr RECT rcLeft[2] = { {224, 64, 256, 80}, {256, 64, 288, 96} };
-	constexpr RECT rcRight[2] = { {224, 80, 256, 96}, {288, 64, 0x200, 96} };
+	vector<RECT> rcLeft = { {224, 64, 256, 80}, {256, 64, 288, 96} };
+	vector<RECT> rcRight = { {224, 80, 256, 96}, {288, 64, 320, 96} };
 
-	if (NPC->direct != dirLeft)
-		NPC->rect = rcRight[NPC->ani_no];
-	else
-		NPC->rect = rcLeft[NPC->ani_no];
+	NPC->doRects(rcLeft, rcRight);
+}
+
+void npcAct193(npc *NPC) // Scooter, crashed
+{
+    if (!NPC->act_no)
+    {
+        NPC->act_no = 1;
+        NPC->x += tilesToUnits(1.5);
+    }
+
+    NPC->doRects({256, 96, 320, 112});
 }
 
 void npcAct194(npc *NPC) // Blue Robot, destroyed
@@ -716,12 +712,12 @@ void npcAct194(npc *NPC) // Blue Robot, destroyed
 		NPC->y += 0x800;
 	}
 
-	NPC->rect = { 192, 120, 224, 128 };
+	NPC->doRects({ 192, 120, 224, 128 });
 }
 
 void npcAct195(npc *NPC) // Grate mouth
 {
-	NPC->rect = { 112, 64, 128, 80 };
+	NPC->doRects({ 112, 64, 128, 80 });
 }
 
 void npcAct196(npc *NPC) //Stream floor
@@ -730,10 +726,7 @@ void npcAct196(npc *NPC) //Stream floor
 	if (NPC->x <= 0x26000)
 		NPC->x += 0x2C000;
 
-	if (NPC->direct)
-		NPC->rect = { 112, 80, 144, 96 };
-	else
-		NPC->rect = { 112, 64, 144, 80 };
+    NPC->doRects({112, 64, 155, 80}, {112, 80, 144, 96});
 }
 
 void npcAct199(npc *NPC) //Current / fan effect
@@ -746,24 +739,16 @@ void npcAct199(npc *NPC) //Current / fan effect
 		const int direction = NPC->direct;
 
 		if (direction == 1)
-		{
 			NPC->ym = -1;
-		}
 		else if (direction > 1)
 		{
 			if (direction == 2)
-			{
 				NPC->xm = 1;
-			}
 			else if (direction == 3)
-			{
 				NPC->ym = 1;
-			}
 		}
 		else if (!direction)
-		{
 			NPC->xm = -1;
-		}
 
 		NPC->xm = (random(4, 8) << 9) / 2 * NPC->xm;
 		NPC->ym = (random(4, 8) << 9) / 2 * NPC->ym;

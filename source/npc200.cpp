@@ -14,9 +14,9 @@ using std::vector;
 
 void npcAct200(npc *NPC) // Dragon Zombie (enemy)
 {
-	constexpr RECT rcLeft[6] = { {0, 0, 40, 40}, {40, 0, 80, 40}, {80, 0, 120, 40}, {120, 0, 160, 40},
+	vector<RECT> rcLeft = { {0, 0, 40, 40}, {40, 0, 80, 40}, {80, 0, 120, 40}, {120, 0, 160, 40},
 	{160, 0, 200, 40}, {200, 0, 240, 40} };
-	constexpr RECT rcRight[6] = { {0, 40, 40, 80}, {40, 40, 80, 80}, {80, 40, 120, 80}, {120, 40, 160, 80}, {160, 40, 200, 80},
+	vector<RECT> rcRight = { {0, 40, 40, 80}, {40, 40, 80, 80}, {80, 40, 120, 80}, {120, 40, 160, 80}, {160, 40, 200, 80},
 	{200, 40, 240, 80} };
 
 	enum
@@ -107,18 +107,12 @@ void npcAct200(npc *NPC) // Dragon Zombie (enemy)
 		break;
 	}
 
-	if (NPC->direct != dirLeft)
-		NPC->rect = rcRight[NPC->ani_no];
-	else
-		NPC->rect = rcLeft[NPC->ani_no];
+	NPC->doRects(rcLeft, rcRight);
 }
 
 void npcAct201(npc * NPC) // Dragon Zombie, dead
 {
-	if (NPC->direct != dirLeft)
-		NPC->rect = { 200, 40, 240, 80 };
-	else
-		NPC->rect = { 200, 0, 240, 40 };
+    NPC->doRects({ 200, 0, 240, 40 }, { 200, 40, 240, 80 });
 }
 
 void npcAct202(npc * NPC) // Dragon Zombie fire (projectile)
@@ -132,11 +126,11 @@ void npcAct202(npc * NPC) // Dragon Zombie fire (projectile)
 	NPC->x += NPC->xm;
 	NPC->y += NPC->ym;
 
-	constexpr RECT rcNPC[3] = { {184, 216, 200, 240}, {200, 216, 216, 240}, {216, 216, 232, 240} };
+	vector<RECT> rcNPC = { {184, 216, 200, 240}, {200, 216, 216, 240}, {216, 216, 232, 240} };
 
 	NPC->animate(1, 0, 2);
 
-	NPC->rect = rcNPC[NPC->ani_no];
+	NPC->doRects(rcNPC);
 
 	if (++NPC->count1 > 300)
 	{
@@ -147,8 +141,8 @@ void npcAct202(npc * NPC) // Dragon Zombie fire (projectile)
 
 void npcAct203(npc * NPC) // Critter, Hopping Aqua (enemy)
 {
-	constexpr RECT rcLeft[3] = { {0, 80, 16, 96}, {16, 80, 32, 96}, {32, 80, 48, 96} };
-	constexpr RECT rcRight[3] = { {0, 96, 16, 112}, {16, 96, 32, 112}, {32, 96, 48, 112} };
+	vector<RECT> rcLeft = { {0, 80, 16, 96}, {16, 80, 32, 96}, {32, 80, 48, 96} };
+	vector<RECT> rcRight = { {0, 96, 16, 112}, {16, 96, 32, 112}, {32, 96, 48, 112} };
 
 	enum
 	{
@@ -230,10 +224,7 @@ void npcAct203(npc * NPC) // Critter, Hopping Aqua (enemy)
 	NPC->x += NPC->xm;
 	NPC->y += NPC->ym;
 
-	if (NPC->direct != dirLeft)
-		NPC->rect = rcRight[NPC->ani_no];
-	else
-		NPC->rect = rcLeft[NPC->ani_no];
+	NPC->doRects(rcLeft, rcRight);
 }
 
 void npcAct204(npc * NPC) // Falling Spike, small
@@ -449,7 +440,7 @@ void npcAct210(npc *NPC) // Beetle, Follow Aqua (enemy)
 
 void npcAct211(npc *NPC) //Spikes
 {
-	RECT rcNPC[4];
+	vector<RECT> rcNPC(4);
 
 	rcNPC[0].left = 256;
 	rcNPC[0].top = 200;
@@ -468,7 +459,7 @@ void npcAct211(npc *NPC) //Spikes
 	rcNPC[3].right = 320;
 	rcNPC[3].bottom = 216;
 
-	NPC->rect = rcNPC[NPC->code_event];
+	NPC->doRects(rcNPC);
 }
 
 void npcAct212(npc *NPC) // Sky Dragon
@@ -654,6 +645,16 @@ void npcAct215(npc *NPC) // Sandcroc, White (enemy)
 
 void npcAct216(npc *NPC) // Debug cat
 {
-	NPC->rect = { 256, 192, 272, 216 };
+	NPC->doRects({ 256, 192, 272, 216 });
 }
 
+void npcAct219(npc *NPC) // Generator - Smoke/Underwater Current
+{
+    if (NPC->direct != dirLeft)
+        createNpc(NPC_UnderwaterCurrent,
+                  NPC->x + pixelsToUnits(random(-0xA0, 0xA0)), NPC->y + pixelsToUnits(random(-0x80, 0x80)), 0, 0, dirRight);
+    else if (!random(0, 40))
+        createNpc(NPC_Smoke, NPC->x + pixelsToUnits(random(-20, 20)), NPC->y, 0, pixelsToUnits(-1));
+
+    NPC->doRects({0, 0, 0, 0});
+}

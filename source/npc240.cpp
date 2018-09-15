@@ -43,7 +43,7 @@ void npcAct241(npc *NPC) // Critter, Hopping Red (enemy)
         else
             NPC->ani_no = 1;
 
-        if (NPC->shock || (NPC->act_wait >= 8 && NPC->isPlayerWithinDistance(0xC000, 0xA000, 0xC000)))
+        if (NPC->shock || (NPC->act_wait >= 8 && NPC->isPlayerWithinDistance(tilesToUnits(6), tilesToUnits(5), tilesToUnits(6))))
         {
             NPC->act_no = startHop;
             NPC->ani_no = 0;
@@ -58,7 +58,7 @@ void npcAct241(npc *NPC) // Critter, Hopping Red (enemy)
             NPC->ani_no = 2;
             NPC->ym = -0x5FF;
             playSound(SFX_CritterHop);
-            NPC->moveInDir(0x200);
+            NPC->moveInDir(pixelsToUnits(1));
         }
         break;
 
@@ -183,7 +183,7 @@ void npcAct244(npc *NPC)
             NPC->ym = 0x5FF;
         NPC->y += NPC->ym;
 
-        NPC->rect = {96, 0, 104, 16};
+        NPC->doRects({96, 0, 104, 16});
     }
 }
 
@@ -436,5 +436,5 @@ void npcAct258(npc *NPC) // Mimiga, sleeping
 
 void npcAct259(npc *NPC) // Sleeping mimiga
 {
-	NPC->rect = { 48, 32, 64, 48 };
+	NPC->doRects({ 48, 32, 64, 48 });
 }

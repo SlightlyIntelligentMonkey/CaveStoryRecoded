@@ -37,7 +37,7 @@ extern const char binary_res_icon_mini_bmp_end[];
 #endif
 
 //Create window
-int createWindow(int width, int height, int scale, bool fullscreen)  // TBD : Handle fullscreen parameter
+int createWindow(int width, int height, int scale, bool fullscreen)
 {
 	const int createWidth = width * scale;
 	const int createHeight = height * scale;
@@ -64,9 +64,10 @@ int createWindow(int width, int height, int scale, bool fullscreen)  // TBD : Ha
 #endif
 	}
 	else
-	{
 		SDL_SetWindowSize(window, createWidth, createHeight);
-	}
+
+	if (fullscreen)
+        SDL_SetWindowFullscreen(window, SDL_WINDOW_FULLSCREEN);
 
 	//Set renderer
 	if (!renderer)

@@ -19,7 +19,7 @@ void npcAct100(npc * NPC) // Grate
 		NPC->y += 0x2000;
 	}
 
-	NPC->rect = { 272, 48, 288, 64 };
+	NPC->doRects({ 272, 48, 288, 64 });
 }
 
 void npcAct101(npc *NPC) // Power Controls, screen
@@ -184,7 +184,7 @@ void npcAct104(npc *NPC) // Frog (enemy)
 		if (!(currentPlayer.cond & player_removed))
 			playSound(SFX_CritterHop);
 
-		NPC->moveInDir(0x200);
+		NPC->moveInDir(pixelsToUnits(1));
 	}
 
 	NPC->doGravity(0x80, 0x5FF);
@@ -252,8 +252,14 @@ void npcAct107(npc *NPC) // Malco
 		if (++NPC->ani_wait > 1)
 		{
 			playSound(SFX_ComputerScreenOn);
-			NPC->act_no = flickerAndBeep + 2;
-			break;
+			NPC->ani_wait = 0;
+			++NPC->ani_no;
+		}
+		if (NPC->ani_no > 1)
+            NPC->ani_no = 0;
+        if (++NPC->act_wait > 100)
+            NPC->act_no = flickerAndBeep + 2;
+        break;
 
 	case flickerAndBeep + 2:
 		NPC->act_no = flickerAndBeep + 3;
@@ -270,7 +276,7 @@ void npcAct107(npc *NPC) // Malco
 		NPC->act_wait = 0;
 		// Fallthrough
 	case shaking:
-		if (NPC->act_wait / 2 % 2)
+		if (NPC->act_wait / 2 & 1)
 		{
 			NPC->x += pixelsToUnits(1);
 			playSound(SFX_DoorOpen);
@@ -343,7 +349,6 @@ void npcAct107(npc *NPC) // Malco
 
 	default:
 		break;
-		}
 	}
 
 	NPC->rect.left = 144 + (NPC->ani_no*16);
@@ -444,10 +449,128 @@ void npcAct109(npc *NPC) // Malco, damaged
     NPC->doRects(rcLeft, rcRight);
 }
 
+void npcAct110(npc *NPC)
+{
+    vector<RECT> rcLeft = {{96, 128, 112, 144}, {112, 128, 128, 144}, {128, 128, 144, 144}};
+    vector<RECT> rcRight = {{96, 144, 112, 160}, {112, 144, 128, 160}, {128, 144, 144, 160}};
+
+    enum
+    {
+        init = 0,
+        stand = 1,
+        mouthFlitter = 2,
+        fallingFromCeiling = 3,
+        jumping = 10,
+    };
+
+    switch (NPC->act_no)
+    {
+    case init:
+        NPC->act_no = stand;
+        NPC->act_wait = 0,
+        NPC->xm = 0;
+        NPC->ym = 0;
+        if (NPC->direct == dirAuto) // Spawned by Balfrog
+        {
+            NPC->direct = random(0, 1) ? dirLeft : dirRight;
+            NPC->bits |= npc_ignoreSolid;
+            NPC->ani_no = 2;
+            NPC->act_no = fallingFromCeiling;
+            break;
+        }
+        NPC->bits &= ~npc_ignoreSolid;
+        // Fallthrough
+    case stand:
+        if (!random(0, 50))
+        {
+            NPC->act_no = mouthFlitter;
+            NPC->act_wait = 0;
+            NPC->ani_no = 0;
+            NPC->ani_wait = 0;
+        }
+        break;
+
+    case mouthFlitter:
+        NPC->animate(2, 0, 1);
+
+        if (++NPC->act_wait > 18)
+            NPC->act_no = stand;
+        break;
+
+    case fallingFromCeiling:
+        if (++NPC->act_wait > 40)
+            NPC->bits &= ~npc_ignoreSolid;
+
+        if (NPC->flag & ground)
+        {
+            NPC->act_no = init;
+            NPC->ani_no = 0;
+            NPC->ani_wait = 0;
+        }
+        break;
+
+    case jumping:
+    case jumping + 1:
+        if (NPC->flag & leftWall && NPC->xm < 0)
+        {
+            NPC->xm = -NPC->xm;
+            NPC->direct = dirRight;
+        }
+        if (NPC->flag & rightWall && NPC->xm > 0)
+        {
+            NPC->xm = -NPC->xm;
+            NPC->direct = dirLeft;
+        }
+        if (NPC->flag & ground)
+        {
+            NPC->act_no = init;
+            NPC->ani_no = 0;
+            NPC->act_wait = 0;
+        }
+        break;
+
+    default:
+        break;
+    }
+
+    bool doJump = false;
+
+    if (NPC->act_no < jumping && NPC->act_no != fallingFromCeiling && NPC->act_wait > 10)
+    {
+        if (NPC->shock)
+            doJump = true;
+        else if (NPC->x >= currentPlayer.x - tilesToUnits(10)
+                 && NPC->x <= currentPlayer.x + tilesToUnits(10)
+                 && NPC->y >= currentPlayer.y - tilesToUnits(4)
+                 && NPC->y <= currentPlayer.y + tilesToUnits(4)
+                 && !random(0, 50))
+            doJump = true;
+    }
+
+    if (doJump)
+    {
+        NPC->facePlayer();
+
+        NPC->act_no = jumping;
+        NPC->ani_no = 2;
+
+        NPC->ym = -0x2FF;
+        playSound(SFX_HighPitchCritterHop);
+        NPC->moveInDir(pixelsToUnits(0.5));
+    }
+
+    NPC->doGravity(0x80, 0x5FF);
+
+    NPC->x += NPC->xm;
+    NPC->y += NPC->ym;
+
+    NPC->doRects(rcLeft, rcRight);
+}
+
 void npcAct111(npc *NPC) //Quote teleport out
 {
-	RECT rcLeft[2];
-	RECT rcRight[2];
+	vector<RECT> rcLeft(2);
+	vector<RECT> rcRight(2);
 
 	rcLeft[0] = { 0, 0, 16, 16 };
 	rcLeft[1] = { 16, 0, 32, 16 };
@@ -507,10 +630,7 @@ void npcAct111(npc *NPC) //Quote teleport out
 	NPC->ym += 0x40;
 	NPC->y += NPC->ym;
 
-	if (NPC->direct != dirLeft)
-		NPC->rect = rcRight[NPC->ani_no];
-	else
-		NPC->rect = rcLeft[NPC->ani_no];
+	NPC->doRects(rcLeft, rcRight);
 
 	if (currentPlayer.equip & equip_mimigaMask)
 	{
@@ -529,8 +649,8 @@ void npcAct111(npc *NPC) //Quote teleport out
 
 void npcAct112(npc *NPC) //Quote teleport in
 {
-	RECT rcLeft[2];
-	RECT rcRight[2];
+	vector<RECT> rcLeft(2);
+	vector<RECT> rcRight(2);
 
 	rcLeft[0] = { 0, 0, 16, 16 };
 	rcLeft[1] = { 16, 0, 32, 16 };
@@ -580,10 +700,7 @@ void npcAct112(npc *NPC) //Quote teleport in
 	NPC->ym += 64;
 	NPC->y += NPC->ym;
 
-	if (NPC->direct != dirLeft)
-		NPC->rect = rcRight[NPC->ani_no];
-	else
-		NPC->rect = rcLeft[NPC->ani_no];
+	NPC->doRects(rcLeft, rcRight);
 
 	if (currentPlayer.equip & equip_mimigaMask)
 	{
@@ -598,6 +715,134 @@ void npcAct112(npc *NPC) //Quote teleport in
 		if (NPC->act_wait / 2 & 1)
 			++NPC->rect.left;
 	}
+}
+
+void npcAct113(npc *NPC) // Professor Booster
+{
+    vector<RECT> rcLeft(7);
+    vector<RECT> rcRight(7);
+
+    rcLeft[0] = {224, 0, 240, 16};
+    rcLeft[1] = {240, 0, 256, 16};
+    rcLeft[2] = {256, 0, 272, 16};
+    rcLeft[3] = rcLeft[0];
+    rcLeft[4] = {272, 0, 288, 16};
+    rcLeft[5] = {224, 0, 240, 16};
+    rcLeft[6] = {288, 0, 304, 16};
+
+    rcRight[0] = {224, 16, 240, 32};
+    rcRight[1] = {240, 16, 256, 32};
+    rcRight[2] = {256, 16, 272, 32};
+    rcRight[3] = rcRight[0];
+    rcRight[4] = {272, 16, 288, 32};
+    rcRight[5] = {224, 16, 240, 32};
+    rcRight[6] = {288, 16, 304, 32};
+
+    enum
+    {
+        init = 0,
+        stand = 1,
+        blinking = 2,
+        startWalk = 3,
+        walking = 4,
+        faceAway = 5,
+        shelterTeleportIn = 30,
+        teleportingIn = 31,
+        waitThenHopOut = 32,
+        hoppingOut = 33,
+    };
+
+    switch (NPC->act_no)
+    {
+    case init:
+        NPC->act_no = stand;
+        NPC->ani_no = 0;
+        NPC->ani_wait = 0;
+        // Fallthrough
+    case stand:
+        if (!random(0, 120))
+        {
+            NPC->act_no = blinking;
+            NPC->act_wait = 0;
+            NPC->ani_no = 1;
+        }
+        break;
+
+    case blinking:
+        if (++NPC->act_wait > 8)
+        {
+            NPC->act_no = stand;
+            NPC->ani_no = 0;
+        }
+        break;
+
+    case startWalk:
+        NPC->act_no = walking;
+        NPC->ani_no = 2;
+        NPC->ani_wait = 0;
+        // Fallthrough
+    case walking:
+        NPC->animate(4, 2, 5);
+        if (NPC->direct != dirLeft)
+            NPC->x += pixelsToUnits(1);
+        else
+            NPC->x -= pixelsToUnits(1);
+        break;
+
+    case faceAway:
+        NPC->ani_no = 6;
+        break;
+
+    case shelterTeleportIn:
+        NPC->act_no = teleportingIn;
+        NPC->ani_no = 0;
+        NPC->ani_wait = 0;
+        NPC->hit.bottom = tilesToUnits(1);
+        NPC->x -= tilesToUnits(1);
+        NPC->y += tilesToUnits(0.5);
+        playSound(SFX_Teleport);
+        // Fallthrough
+    case teleportingIn:
+        if (++NPC->act_wait == 0x40)
+        {
+            NPC->act_no = waitThenHopOut;
+            NPC->act_wait = 0;
+        }
+        break;
+
+    case waitThenHopOut:
+        if (++NPC->act_wait > 20)
+        {
+            NPC->act_no = hoppingOut;
+            NPC->ani_no = 1;
+            NPC->hit.bottom = tilesToUnits(0.5);
+        }
+        break;
+
+    case hoppingOut:
+        if (NPC->flag & ground)
+        {
+            NPC->act_no = hoppingOut + 1;
+            NPC->act_wait = 0;
+            NPC->ani_no = 0;
+        }
+        break;
+
+    default:
+        break;
+    }
+
+    NPC->ym += 0x40;
+    NPC->y += NPC->ym;
+
+    NPC->doRects(rcLeft, rcRight);
+
+    if (NPC->act_no == teleportingIn)
+    {
+        NPC->rect.bottom = NPC->rect.top + NPC->act_wait / 4;
+        if (NPC->act_wait / 2 & 1)
+            ++NPC->rect.left;
+    }
 }
 
 void npcAct114(npc *NPC) // Press (enemy)
@@ -661,10 +906,162 @@ void npcAct114(npc *NPC) // Press (enemy)
     NPC->doRects(rcNPC);
 }
 
+void npcAct115(npc *NPC) // Ravil (enemy)
+{
+    vector<RECT> rcLeft(6);
+    vector<RECT> rcRight(6);
+
+    rcLeft[0] = {0, 120, 24, 144};
+    rcLeft[1] = {24, 120, 48, 144};
+    rcLeft[2] = {48, 120, 72, 144};
+    rcLeft[3] = {72, 120, 96, 144};
+    rcLeft[4] = {96, 120, 120, 144};
+    rcLeft[5] = {120, 120, 144, 144};
+
+    rcRight[0] = {0, 144, 24, 168};
+    rcRight[1] = {24, 144, 48, 168};
+    rcRight[2] = {48, 144, 72, 168};
+    rcRight[3] = {72, 144, 96, 168};
+    rcRight[4]= {96, 144, 120, 168};
+    rcRight[5] = {120, 144, 144, 168};
+
+    enum
+    {
+        init = 0,
+        wait = 1,
+        readyAttack = 10,
+        hopHopLunge = 20,
+        inAir = 21,
+        jumpingFromFireplace = 30,
+        killedAsMiniBoss = 50,
+        deathJumping = 51,
+    };
+
+    switch (NPC->act_no)
+    {
+    case init:
+        NPC->xm = 0;
+        NPC->act_no = wait;
+        NPC->act_wait = 0;
+        NPC->count1 = 0;
+        // Fallthrough
+    case wait:
+        if (NPC->isPlayerWithinDistance(tilesToUnits(6), tilesToUnits(6), tilesToUnits(2)) || NPC->shock)
+            NPC->act_no = readyAttack;
+        break;
+
+    case readyAttack:
+        NPC->facePlayer();
+        NPC->ani_no = 1;
+
+        if (++NPC->act_wait > 20)
+        {
+            NPC->act_wait = 0;
+            NPC->act_no = hopHopLunge;
+        }
+        break;
+
+    case hopHopLunge:
+        NPC->damage = 0;
+        NPC->xm = 0;
+
+        NPC->animate(2);
+        if (NPC->ani_no > 2)
+        {
+            NPC->facePlayer();
+            NPC->moveInDir(pixelsToUnits(1));
+
+            if (++NPC->count1 <= 2)
+            {
+                NPC->act_no = inAir;
+                NPC->ym = pixelsToUnits(-2);
+                playSound(SFX_CritterHop);
+            }
+            else
+            {
+                NPC->count1 = 0;
+                NPC->ani_no = 4;
+                NPC->act_no = inAir;
+                NPC->ym = pixelsToUnits(-2);
+                NPC->xm *= 2;
+                NPC->damage = 5;
+                playSound(SFX_SandCroc);
+            }
+        }
+        break;
+
+    case inAir:
+        if (NPC->flag & ground)
+        {
+            playSound(SFX_HitGround);
+            NPC->act_no = hopHopLunge;
+            NPC->ani_no = 1;
+            NPC->ani_wait = 0;
+            NPC->damage = 0;
+
+            if (currentPlayer.x > NPC->x + tilesToUnits(6)
+                || currentPlayer.x < NPC->x - tilesToUnits(6)
+                || currentPlayer.y > NPC->y + tilesToUnits(3)
+                || currentPlayer.y < NPC->y - tilesToUnits(6))
+                NPC->act_no = init;
+        }
+        break;
+
+    case jumpingFromFireplace:
+        for (size_t i = 0; i < 8; ++i)
+        {
+            auto xPos = NPC->x + pixelsToUnits(random(-12, 12));
+            auto yPos = NPC->y + pixelsToUnits(random(-12, 12));
+            auto xVel = random(-0x155, 0x155);
+            auto yVel = random(pixelsToUnits(-3), 0);
+            createNpc(NPC_Smoke, xPos, yPos, xVel, yVel);
+        }
+        NPC->ani_no = 0;
+        NPC->act_no = init;
+        break;
+
+    case killedAsMiniBoss:
+        NPC->act_no = deathJumping;
+        NPC->ani_no = 4;
+        NPC->damage = 0;
+        NPC->ym = pixelsToUnits(-1);
+        NPC->bits &= ~(npc_shootable | npc_solidSoft);
+        playSound(SFX_CritterSmallHurt);
+        // Fallthrough
+    case deathJumping:
+        if (NPC->flag & ground)
+        {
+            playSound(SFX_HitGround);
+            NPC->act_no = deathJumping + 1;
+            NPC->ani_no = 5;
+            NPC->xm = 0;
+        }
+        break;
+
+    default:
+        break;
+    }
+
+    if (NPC->act_no <= killedAsMiniBoss)
+        NPC->ym += 0x40;
+    else
+        NPC->ym += 0x20;
+    NPC->doGravity(0, 0x5FF);
+    NPC->x += NPC->xm;
+    NPC->y += NPC->ym;
+
+    NPC->doRects(rcLeft, rcRight);
+}
+
+void npcAct116(npc *NPC) // Red flowers petals
+{
+	NPC->doRects({ 272, 184, 320, 200 });
+}
+
 void npcAct117(npc *NPC)
 {
-	RECT rcLeft[10];
-	RECT rcRight[10];
+	vector<RECT> rcLeft(10);
+	vector<RECT> rcRight(10);
 
 	rcLeft[0] = { 0x00, 0x60, 0x10, 0x70 };
 	rcLeft[1] = { 0x10, 0x60, 0x20, 0x70 };
@@ -852,19 +1249,11 @@ void npcAct117(npc *NPC)
 	NPC->x += NPC->xm;
 	NPC->y += NPC->ym;
 
-	if (NPC->direct)
-		NPC->rect = rcRight[NPC->ani_no];
-	else
-		NPC->rect = rcLeft[NPC->ani_no];
-}
-
-void npcAct116(npc *NPC) // Red flowers petals
-{
-	NPC->rect = { 272, 184, 320, 200 };
+	NPC->doRects(rcLeft, rcRight);
 }
 
 void npcAct119(npc *NPC) // Table & Chair
 {
-	NPC->rect = { 248, 184, 272, 200 };
+	NPC->doRects({ 248, 184, 272, 200 });
 }
 

@@ -1,6 +1,9 @@
 #include "npc280.h"
 
+#include <vector>
 #include "game.h"
+
+using std::vector;
 
 void npcAct292(npc * /*NPC*/) //Quake
 {
@@ -11,6 +14,7 @@ void npcAct297(npc *NPC) //Sue on sky dragon
 {
 	NPC->x = NPC->pNpc->x + 0x2000;
 	NPC->y = NPC->pNpc->y + 0x1000;
+	NPC->doRects({112, 48, 128, 64});
 	NPC->rect.left = 112;
 	NPC->rect.top = 48;
 	NPC->rect.right = 128;
@@ -19,7 +23,7 @@ void npcAct297(npc *NPC) //Sue on sky dragon
 
 void npcAct298(npc *NPC) //Doctor without crown (intro)
 {
-	RECT rc[8];
+	vector<RECT> rc(8);
 
 	rc[0] = { 0x48, 0x80, 0x58, 0xA0 };
 	rc[1] = { 0x58, 0x80, 0x68, 0xA0 };
@@ -118,12 +122,12 @@ void npcAct298(npc *NPC) //Doctor without crown (intro)
 		break;
 	}
 
-	NPC->rect = rc[NPC->ani_no];
+	NPC->doRects(rc);
 }
 
 void npcAct299(npc *NPC) //Balrog / Misery in bubble (intro)
 {
-	RECT rc[2]; // [esp+0h] [ebp-20h]
+	vector<RECT> rc(2); // [esp+0h] [ebp-20h]
 
 	rc[0] = { 0, 0, 48, 48 };
 	rc[1] = { 48, 0, 96, 48 };
@@ -149,5 +153,5 @@ void npcAct299(npc *NPC) //Balrog / Misery in bubble (intro)
 	else
 		NPC->y -= 64;
 
-	NPC->rect = rc[NPC->ani_no];
+	NPC->doRects(rc);
 }

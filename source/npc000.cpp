@@ -1,6 +1,7 @@
 #include "npc000.h"
 
 #include <string>
+#include <vector>
 #include <SDL_messagebox.h>
 #include "render.h"
 #include "mathUtils.h"
@@ -14,11 +15,12 @@
 
 using std::string;
 using std::to_string;
+using std::vector;
 
 void npcActNone(npc *NPC)
 {
 	NPC->surf = 0x27;
-	NPC->rect = { 0, 0, NPC->view.left >> 8, NPC->view.top >> 8 };
+	NPC->doRects({ 0, 0, NPC->view.left >> 8, NPC->view.top >> 8 });
 
 	static bool wasNotifiedAbout[_countof(npcActs)] = { 0 };
 
@@ -42,7 +44,7 @@ void npcAct000(npc *NPC) //Null
 			NPC->y += 0x2000;
 	}
 
-	NPC->rect = { 0, 0, 16, 16 };
+	NPC->doRects({ 0, 0, 16, 16 });
 }
 
 void npcAct001(npc *NPC) //Experience
@@ -140,7 +142,7 @@ void npcAct001(npc *NPC) //Experience
 	NPC->y += NPC->ym;
 
 	//Framerects
-	RECT rect[6];
+	vector<RECT> rect(6);
 
 	rect[0] = { 0x00, 0x10, 0x10, 0x20 };
 	rect[1] = { 0x10, 0x10, 0x20, 0x20 };
@@ -167,7 +169,7 @@ void npcAct001(npc *NPC) //Experience
 			NPC->ani_no = 0;
 	}
 
-	NPC->rect = rect[NPC->ani_no];
+	NPC->doRects(rect);
 
 	//Change size
 	if (NPC->act_no)
@@ -191,17 +193,15 @@ void npcAct001(npc *NPC) //Experience
 		NPC->cond = 0;
 
 	if (NPC->count1 > 400 && (NPC->count1 / 2 & 1))
-	{
 		NPC->rect = { 0, 0, 0, 0 };
-	}
 }
 
 void npcAct002(npc *NPC) //Behemoth
 {
 	const int act_no = NPC->act_no;
 
-	RECT rcLeft[7];
-	RECT rcRight[7];
+	vector<RECT> rcLeft(7);
+	vector<RECT> rcRight(7);
 
 	//Framerect
 	rcLeft[0] = { 32, 0, 64, 24 };
@@ -310,17 +310,14 @@ void npcAct002(npc *NPC) //Behemoth
 	NPC->x += NPC->xm;
 	NPC->y += NPC->ym;
 
-	if (NPC->direct != dirLeft)
-		NPC->rect = rcRight[NPC->ani_no];
-	else
-		NPC->rect = rcLeft[NPC->ani_no];
+	NPC->doRects(rcLeft, rcRight);
 }
 
 void npcAct003(npc *NPC) // Null, spawned upon NPC death, disappears
 {
 	if (++NPC->count1 > 100)
 		NPC->cond = 0;
-	NPC->rect = { 0, 0, 0, 0 };
+	NPC->doRects({ 0, 0, 0, 0 });
 }
 
 void npcAct004(npc *NPC) //Smoke
@@ -382,13 +379,9 @@ void npcAct004(npc *NPC) //Smoke
 	if (NPC->ani_no <= 7)
 	{
 		if (NPC->direct != dirUp)
-		{
 			NPC->rect = rcLeft[NPC->ani_no];
-		}
 		else
-		{
 			NPC->rect = rcUp[NPC->ani_no];
-		}
 	}
 	else
 		NPC->cond = 0;
@@ -497,10 +490,8 @@ void npcAct005(npc *NPC) //Egg Corridor critter
 	NPC->y += NPC->ym;
 
 	//Change framerect
-	if (NPC->direct != dirLeft)
-		NPC->rect = { (NPC->ani_no << 4), 64, ((NPC->ani_no + 1) << 4), 80 };
-	else
-		NPC->rect = { (NPC->ani_no << 4), 48, ((NPC->ani_no + 1) << 4), 64 };
+	NPC->doRects({ (NPC->ani_no << 4), 48, ((NPC->ani_no + 1) << 4), 64 },
+              { (NPC->ani_no << 4), 64, ((NPC->ani_no + 1) << 4), 80 });
 }
 
 void npcAct006(npc *NPC) //Beetle
@@ -602,17 +593,14 @@ void npcAct006(npc *NPC) //Beetle
 	}
 
 	//Set framerect
-	if (NPC->direct != dirLeft)
-		NPC->rect = { (NPC->ani_no << 4), 96, (NPC->ani_no << 4) + 16, 112 };
-	else
-		NPC->rect = { (NPC->ani_no << 4), 80, (NPC->ani_no << 4) + 16, 96 };
+	NPC->doRects({ (NPC->ani_no << 4), 80, (NPC->ani_no << 4) + 16, 96 },
+              { (NPC->ani_no << 4), 96, (NPC->ani_no << 4) + 16, 112 });
 }
 
 void npcAct007(npc *NPC) //Basil
 {
-	RECT *setRect;
-	RECT rcRight[3];
-	RECT rcLeft[3];
+	vector<RECT> rcRight(3);
+	vector<RECT> rcLeft(3);
 
 	rcLeft[0] = { 256, 64, 288, 80 };
 	rcLeft[1] = { 256, 80, 288, 96 };
@@ -699,23 +687,13 @@ void npcAct007(npc *NPC) //Basil
 		NPC->ani_no = 0;
 
 	//Set framerect
-	if (NPC->direct != dirLeft)
-	{
-		setRect = &rcRight[NPC->ani_no];
-	}
-	else
-	{
-		setRect = &rcLeft[NPC->ani_no];
-	}
-
-	NPC->rect = { setRect->left, setRect->top, setRect->right, setRect->bottom };
+	NPC->doRects(rcLeft, rcRight);
 }
 
 void npcAct008(npc *NPC) //Follow beetle (egg corridor)
 {
-	RECT rcRight[2];
-	RECT rcLeft[2];
-	RECT *setRect;
+	vector<RECT> rcRight(2);
+	vector<RECT> rcLeft(2);
 
 	rcLeft[0] = { 80, 80, 96, 96 };
 	rcLeft[1] = { 96, 80, 112, 96 };
@@ -806,22 +784,13 @@ void npcAct008(npc *NPC) //Follow beetle (egg corridor)
 	if (NPC->ani_no > 1)
 		NPC->ani_no = 0;
 
-	if (NPC->direct != dirLeft)
-	{
-		setRect = &rcRight[NPC->ani_no];
-	}
-	else
-	{
-		setRect = &rcLeft[NPC->ani_no];
-	}
-
-	NPC->rect = { setRect->left, setRect->top, setRect->right, setRect->bottom };
+	NPC->doRects(rcLeft, rcRight);
 }
 
 void npcAct009(npc *NPC) //Balrog drop in
 {
-	RECT rcLeft[3];
-	RECT rcRight[3];
+	vector<RECT> rcLeft(3);
+	vector<RECT> rcRight(3);
 
 	rcLeft[0] = { 0, 0, 40, 24 };
 	rcLeft[1] = { 80, 0, 120, 24 };
@@ -890,15 +859,12 @@ void npcAct009(npc *NPC) //Balrog drop in
 	NPC->y += NPC->ym;
 
 	//Set framerect
-	if (NPC->direct != dirLeft)
-		NPC->rect = rcRight[NPC->ani_no];
-	else
-		NPC->rect = rcLeft[NPC->ani_no];
+	NPC->doRects(rcLeft, rcRight);
 }
 
 void npcAct011(npc *NPC) //Bubble
 {
-	RECT rect[3];
+	vector<RECT> rect(3);
 
 	rect[0] = { 208, 104, 224, 120 };
 	rect[1] = { 224, 104, 240, 120 };
@@ -921,7 +887,7 @@ void npcAct011(npc *NPC) //Bubble
 			NPC->ani_no = 0;
 	}
 
-	NPC->rect = rect[NPC->ani_no];
+	NPC->doRects(rect);
 
 	if (++NPC->count1 > 150)
 	{
@@ -935,8 +901,8 @@ void npcAct012(npc *NPC) //Balrog cutscene
 	int x;
 	int y;
 
-	RECT rcLeft[14];
-	RECT rcRight[14];
+	vector<RECT> rcLeft(14);
+	vector<RECT> rcRight(14);
 
 	rcLeft[0] = { 0x000, 0x000, 0x028, 0x018 };
 	rcLeft[1] = { 0x0A0, 0x000, 0x0C8, 0x018 };
@@ -1198,7 +1164,7 @@ void npcAct012(npc *NPC) //Balrog cutscene
 			NPC->act_wait = 0;
 			NPC->ani_no = 3;
 			NPC->ym = -2048;
-			NPC->bits |= 8U;
+			NPC->bits |= npc_ignoreSolid;
 
 			createNpc(NPC_BalrogCrashingThroughWall, 0, 0, 0, 0, dirLeft, NPC);
 			createNpc(NPC_BalrogCrashingThroughWall, 0, 0, 0, 0, dirUp, NPC);
@@ -1239,10 +1205,7 @@ void npcAct012(npc *NPC) //Balrog cutscene
 	NPC->x += NPC->xm;
 	NPC->y += NPC->ym;
 
-	if (NPC->direct != dirLeft)
-		NPC->rect = rcRight[NPC->ani_no];
-	else
-		NPC->rect = rcLeft[NPC->ani_no];
+	NPC->doRects(rcLeft, rcRight);
 
 	if (NPC->act_no == 71)
 	{
@@ -1254,7 +1217,7 @@ void npcAct012(npc *NPC) //Balrog cutscene
 
 void npcAct013(npc *NPC) // Forcefield
 {
-	constexpr RECT rcNPC[4] = { {128, 0, 144, 16 }, {144, 0, 160, 16 }, {160, 0, 176, 16}, {176, 0, 192, 16 } };
+	vector<RECT> rcNPC = { {128, 0, 144, 16 }, {144, 0, 160, 16 }, {160, 0, 176, 16}, {176, 0, 192, 16 } };
 
 	if (++NPC->ani_wait > 0)
 	{
@@ -1265,12 +1228,12 @@ void npcAct013(npc *NPC) // Forcefield
 	if (NPC->ani_no > 3)
 		NPC->ani_no = 0;
 
-	NPC->rect = rcNPC[NPC->ani_no];
+	NPC->doRects(rcNPC);
 }
 
 void npcAct014(npc * NPC) // Santa's Key
 {
-	constexpr RECT rcNPC[3] = { {192, 0, 208, 16}, {208, 0, 224, 16}, {224, 0, 240, 16} };
+	vector<RECT> rcNPC = { {192, 0, 208, 16}, {208, 0, 224, 16}, {224, 0, 240, 16} };
 
 	if (!NPC->act_no)
 	{
@@ -1297,7 +1260,7 @@ void npcAct014(npc * NPC) // Santa's Key
 
 	NPC->y += NPC->ym;
 
-	NPC->rect = rcNPC[NPC->ani_no];
+	NPC->doRects(rcNPC);
 }
 
 void npcAct015(npc *NPC) //Closed chest
@@ -1362,7 +1325,7 @@ void npcAct015(npc *NPC) //Closed chest
 	NPC->y += NPC->ym;
 
 	//Framerect
-	NPC->rect = { 240 + (NPC->ani_no << 4), 0, 256 + (NPC->ani_no << 4), 16 };
+	NPC->doRects({ 240 + (NPC->ani_no << 4), 0, 256 + (NPC->ani_no << 4), 16 });
 }
 
 void npcAct016(npc *NPC) //Save point
@@ -1398,7 +1361,7 @@ void npcAct016(npc *NPC) //Save point
 		NPC->ani_no = 0;
 
 	//Set framerect
-	NPC->rect = { 96 + (NPC->ani_no << 4), 16, 112 + (NPC->ani_no << 4), 32 };
+	NPC->doRects({ 96 + (NPC->ani_no << 4), 16, 112 + (NPC->ani_no << 4), 32 });
 
 	//Fall down
 	NPC->ym += 0x40;
@@ -1503,20 +1466,14 @@ void npcAct018(npc *NPC) //Door
 			NPC->rect = { 224, 16, 240, 40 };
 		}
 	}
-	else if (NPC->direct != dirLeft)
-	{
-		NPC->rect = { 192, 112, 208, 136 };
-	}
 	else
-	{
-		NPC->rect = { 224, 16, 240, 40 };
-	}
+        NPC->doRects({224, 16, 240, 40}, {192, 112, 208, 136});
 }
 
 void npcAct019(npc *NPC) //Balrog burst
 {
-	RECT rcLeft[4];
-	RECT rcRight[5];
+	vector<RECT> rcLeft(4);
+	vector<RECT> rcRight(4);
 
 	rcLeft[0] = { 0, 0, 40, 24 };
 	rcLeft[1] = { 160, 0, 200, 24 };
@@ -1593,9 +1550,6 @@ void npcAct019(npc *NPC) //Balrog burst
 	NPC->x += NPC->xm;
 	NPC->y += NPC->ym;
 
-	if (NPC->direct)
-		NPC->rect = rcRight[NPC->ani_no];
-	else
-		NPC->rect = rcLeft[NPC->ani_no];
+	NPC->doRects(rcLeft, rcRight);
 }
 

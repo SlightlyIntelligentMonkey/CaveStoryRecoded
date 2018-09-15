@@ -141,7 +141,7 @@ void changeNpc(int code_event, int code_char, int dir)
 	{
 		if (npcs[i].cond & npccond_alive && npcs[i].code_event == code_event)
 		{
-			npcs[i].bits &= 0x7F00u;
+			npcs[i].bits &= ~(npc_showDamage | 0xFF);
 			npcs[i].code_char = code_char;
 			npcs[i].bits |= npcTable[npcs[i].code_char].bits;
 			npcs[i].exp = npcTable[npcs[i].code_char].exp;
@@ -288,7 +288,7 @@ void dropExperience(int x, int y, int exp)
 			effectiveExp = 20;
 		}
 
-		createNpcExp(1, x, y, 0, 0, 0, nullptr, 0, effectiveExp);
+		createNpcExp(NPC_WeaponEnergy, x, y, 0, 0, 0, nullptr, 0, effectiveExp);
 	}
 }
 
@@ -315,7 +315,7 @@ int dropMissiles(int x, int y, int val)
 	n = random(1, 10 * t);
 	const int bullet_no = tamakazu_ari[n % t];
 
-	createNpcExp(86, x, y, 0, 0, 0, nullptr, bullet_no, val);
+	createNpcExp(NPC_Missile, x, y, 0, 0, 0, nullptr, bullet_no, val);
 
 	return 1;
 }
@@ -373,16 +373,14 @@ void killNpc(npc *NPC, bool bVanish)
 		if (drop == 1) //Health drop
 		{
 			if (NPC->exp <= 6)
-				createNpcExp(87, x, y, 0, 0, 0, nullptr, 0, 2);
+				createNpcExp(NPC_Heart, x, y, 0, 0, 0, nullptr, 0, 2);
 			else
-				createNpcExp(87, x, y, 0, 0, 0, nullptr, 0, 6);
+				createNpcExp(NPC_Heart, x, y, 0, 0, 0, nullptr, 0, 6);
 		}
 		else
 		{
 			if (drop != 2) //Drop experience
-			{
 				dropExperience(x, y, exp);
-			}
 			else //Drop missile, if doesn't drop, drop experience instead.
 			{
 				if (NPC->exp <= 6)
@@ -475,15 +473,28 @@ void npc::doGravity(int gravity, int maxYVel)
 
 void npc::doRects(const vector<RECT>& rcLeft, const vector<RECT>& rcRight)
 {
-	if (!rcRight.empty())
-	{
-		if (this->direct != dirLeft)
-			this->rect = rcRight.at(this->ani_no);
-		else
-			this->rect = rcLeft.at(this->ani_no);
-	}
+    if (this->direct != dirLeft)
+		this->rect = rcRight.at(this->ani_no);
 	else
 		this->rect = rcLeft.at(this->ani_no);
+}
+
+void npc::doRects(const vector<RECT>& rcNPC)
+{
+    this->rect = rcNPC.at(this->ani_no);
+}
+
+void npc::doRects(RECT rcLeft, RECT rcRight)
+{
+    if (this->direct != dirLeft)
+        this->rect = rcRight;
+    else
+        this->rect = rcLeft;
+}
+
+void npc::doRects(RECT rcNPC)
+{
+    this->rect = rcNPC;
 }
 
 void npc::facePlayer()

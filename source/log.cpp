@@ -29,6 +29,12 @@ void initLogFile()
     logFile << "New session started at : " << put_time(localtime(&now), "%c") << endl;
 }
 
+void logDebug(const string& str)
+{
+    auto now = time(nullptr);
+    logFile << '<' << put_time(localtime(&now), "%c") << '>' << " : Debug : " << str << endl;
+}
+
 void logInfo(const string& str)
 {
     auto now = time(nullptr);

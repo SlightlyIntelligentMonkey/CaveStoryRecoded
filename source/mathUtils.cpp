@@ -95,17 +95,3 @@ double sinc(double x)
 {
 	return (sin(M_PI*static_cast<float>(x)) / (M_PI*static_cast<float>(x)));
 }
-
-//returns greatest common denominator x and y
-int getGCD(int x, int y)
-{
-	if (x < y)
-		std::swap(x, y);
-	while (y > 0)
-	{
-		const int f = x % y;
-		x = y;
-		y = f;
-	}
-	return x;
-}

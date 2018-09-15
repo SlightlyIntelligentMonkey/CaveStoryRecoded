@@ -1,14 +1,18 @@
 #include "npc160.h"
+
+#include <vector>
 #include "sound.h"
 #include "player.h"
 #include "caret.h"
 #include "mathUtils.h"
 
+using std::vector;
+
 void npcAct171(npc *NPC) //Fire whirr
 {
-	RECT rcRight[2];
-	RECT rcLeft[2];
-	
+	vector<RECT> rcRight(2);
+	vector<RECT> rcLeft(2);
+
 	rcLeft[0].left = 120;
 	rcLeft[0].top = 48;
 	rcLeft[0].right = 152;
@@ -54,7 +58,7 @@ void npcAct171(npc *NPC) //Fire whirr
 	default:
 		break;
 	}
-	
+
 	if (++NPC->ani_wait > 0)
 	{
 		NPC->ani_wait = 0;
@@ -82,28 +86,23 @@ void npcAct171(npc *NPC) //Fire whirr
 			++NPC->count1;
 	}
 	else if (currentPlayer.y < NPC->y + 40960 && currentPlayer.y > NPC->y - 40960 && currentPlayer.x < NPC->x && currentPlayer.x > NPC->x - 81920)
-	{
 		++NPC->count1;
-	}
 
 	if (NPC->count1 > 20)
 	{
-		createNpc(172, NPC->x, NPC->y, 0, 0, NPC->direct, nullptr);
+		createNpc(NPC_ProjectileFireWhirrr, NPC->x, NPC->y, 0, 0, NPC->direct, nullptr);
 		NPC->count1 = -100;
 		curlyShootWait = random(80, 100);
 		curlyShootX = NPC->x;
 		curlyShootY = NPC->y;
 	}
 
-	if (NPC->direct)
-		NPC->rect = rcRight[NPC->ani_no];
-	else
-		NPC->rect = rcLeft[NPC->ani_no];
+	NPC->doRects(rcLeft, rcRight);
 }
 
 void npcAct172(npc *NPC) //Fire whirr projectile
 {
-	RECT rect[3];
+	vector<RECT> rect(3);
 
 	rect[0].left = 248;
 	rect[0].top = 48;
@@ -117,7 +116,7 @@ void npcAct172(npc *NPC) //Fire whirr projectile
 	rect[2].top = 48;
 	rect[2].right = 296;
 	rect[2].bottom = 80;
-	
+
 	switch (NPC->act_no)
 	{
 	case 0:
@@ -149,13 +148,13 @@ void npcAct172(npc *NPC) //Fire whirr projectile
 		break;
 	}
 
-	NPC->rect = rect[NPC->ani_no];
+	NPC->doRects(rect);
 }
 
 void npcAct173(npc *NPC) //Armoured Gaudi
 {
-	RECT rcLeft[4];
-	RECT rcRight[4];
+	vector<RECT> rcLeft(4);
+	vector<RECT> rcRight(4);
 	uint8_t deg;
 
 	rcLeft[0].left = 0;
@@ -266,7 +265,7 @@ void npcAct173(npc *NPC) //Armoured Gaudi
 			{
 				deg = getAtan(NPC->x - currentPlayer.x, NPC->y - currentPlayer.y);
 				deg += random(-6, 6);
-				createNpc(174, NPC->x, NPC->y, 3 * getCos(deg), 3 * getSin(deg), 0, nullptr);
+				createNpc(NPC_ProjectileGaudiArmor, NPC->x, NPC->y, 3 * getCos(deg), 3 * getSin(deg), 0, nullptr);
 				playSound(39);
 
 				NPC->ani_no = 3;
@@ -317,10 +316,7 @@ void npcAct173(npc *NPC) //Armoured Gaudi
 		NPC->x += NPC->xm;
 		NPC->y += NPC->ym;
 
-		if (NPC->direct)
-			NPC->rect = rcRight[NPC->ani_no];
-		else
-			NPC->rect = rcLeft[NPC->ani_no];
+		NPC->doRects(rcLeft, rcRight);
 
 		if (NPC->life <= 985)
 		{
@@ -333,7 +329,7 @@ void npcAct173(npc *NPC) //Armoured Gaudi
 
 void npcAct174(npc *NPC)
 {
-	RECT rect[3];
+	vector<RECT> rect(3);
 	rect[0].left = 120;
 	rect[0].top = 80;
 	rect[0].right = 136;
@@ -420,14 +416,14 @@ void npcAct174(npc *NPC)
 	if (++NPC->ani_no > 2)
 		NPC->ani_no = 0;
 
-	NPC->rect = rect[NPC->ani_no];
+	NPC->doRects(rect);
 }
 
 void npcAct175(npc *NPC)
 {
-	RECT rcLeft[2];
-	RECT rcRight[2];
-	
+	vector<RECT> rcLeft(2);
+	vector<RECT> rcRight(2);
+
 	rcLeft[0].left = 168;
 	rcLeft[0].top = 80;
 	rcLeft[0].right = 192;
@@ -473,16 +469,13 @@ void npcAct175(npc *NPC)
 
 	NPC->y += NPC->ym;
 
-	if (NPC->direct)
-		NPC->rect = rcRight[NPC->ani_no];
-	else
-		NPC->rect = rcLeft[NPC->ani_no];
+	NPC->doRects(rcLeft, rcRight);
 }
 
 void npcAct176(npc *NPC)
 {
-	RECT rcRight[3];
-	RECT rcLeft[3];
+	vector<RECT> rcRight(3);
+	vector<RECT> rcLeft(3);
 
 	rcLeft[0].left = 96;
 	rcLeft[0].top = 128;
@@ -517,7 +510,7 @@ void npcAct176(npc *NPC)
 		NPC->bits &= ~npc_shootable;
 		NPC->damage = 0;
 	}
-	
+
 	switch (NPC->act_no)
 	{
 	case 0:
@@ -566,9 +559,9 @@ void npcAct176(npc *NPC)
 			}
 
 			if (NPC->direct)
-				createNpc(177, NPC->x, NPC->y + 4096, 0, 0, 2, nullptr);
+				createNpc(NPC_EnemyBuyoBuyo, NPC->x, NPC->y + 4096, 0, 0, 2, nullptr);
 			else
-				createNpc(177, NPC->x, NPC->y - 4096, 0, 0, 0, nullptr);
+				createNpc(NPC_EnemyBuyoBuyo, NPC->x, NPC->y - 4096, 0, 0, 0, nullptr);
 			playSound(39);
 
 			NPC->act_no = 0;
@@ -584,15 +577,12 @@ void npcAct176(npc *NPC)
 		break;
 	}
 
-	if (NPC->direct)
-		NPC->rect = rcRight[NPC->ani_no];
-	else
-		NPC->rect = rcLeft[NPC->ani_no];
+	NPC->doRects(rcLeft, rcRight);
 }
 
 void npcAct177(npc *NPC)
 {
-	RECT rect[2];
+	vector<RECT> rect(2);
 
 	rect[0].left = 192;
 	rect[0].top = 128;
@@ -642,12 +632,12 @@ void npcAct177(npc *NPC)
 			NPC->xm -= 0x20;
 		else
 			NPC->xm += 0x20;
-		
+
 		if (NPC->y >= NPC->tgt_y)
 			NPC->ym -= 0x20;
 		else
 			NPC->ym += 0x20;
-		
+
 		if (++NPC->act_wait > 300)
 		{
 			createCaret(NPC->x, NPC->y, 3, 0);
@@ -686,5 +676,5 @@ void npcAct177(npc *NPC)
 	if (NPC->ani_no > 1)
 		NPC->ani_no = 0;
 
-	NPC->rect = rect[NPC->ani_no];
+	NPC->doRects(rect);
 }

@@ -4,6 +4,38 @@
 #include "player.h"
 #include "render.h"
 #include "game.h"
+#include "common.h"
+#include "level.h"
+
+//states enum so this is more readable
+enum
+{
+	ini = 0,
+	start = 10,
+	ini_flicker = 20,
+	flicker = 21,
+	wait = 100,
+	ini_hop_1 = 101,
+	ini_hop_2 = 102,
+	hop = 103,
+	midair = 104,
+	ini_land = 110,
+	land = 111,
+	ini_shoot = 112,
+	shoot = 113,
+	ini_leap = 120,
+	ini_leap_2 = 121,
+	ini_leap_3 = 122,
+	leap = 123,
+	leap_midair = 124,
+	die = 130,
+	die_flashing = 131,
+	revert = 132,
+	nop_start = 140,
+	nop = 141,
+	go_into_ceilng = 142,
+	gone_into_ceiling = 143
+};
 
 //balfrog's mouth
 void balfrogMouth(npc *sub)
@@ -15,45 +47,46 @@ void balfrogMouth(npc *sub)
 	else
 		minus = 1;
 
-	switch (bossObj[0].act_no)
+	switch (bossObj[0].ani_no)
 	{
-	case 0:	//ini
+	case -1:
 		sub->hit_voice = 52;
-		sub->hit.left = 0x2000;
-		sub->hit.top = 0x2000;
-		sub->hit.right = 0x2000;
-		sub->hit.bottom = 0x2000;
+		sub->hit.left = pixelsToUnits(16);
+		sub->hit.top = pixelsToUnits(16);
+		sub->hit.right = pixelsToUnits(16);
+		sub->hit.bottom = pixelsToUnits(16);
 		sub->size = 3;
 		sub->bits = 4;
 		break;
+	case 0:
+		sub->x = bossObj[0].x - pixelsToUnits(24) * minus;
+		sub->y = bossObj[0].y - pixelsToUnits(24);
+		break;
 	case 1:
-		sub->x = bossObj[0].x - 12288 * minus;
-		sub->y = bossObj[0].y - 12288;
+		sub->x = bossObj[0].x - pixelsToUnits(24) * minus;
+		sub->y = bossObj[0].y - pixelsToUnits(20);
 		break;
 	case 2:
-		sub->x = bossObj[0].x - 12288 * minus;
-		sub->y = bossObj[0].y - 10240;
-		break;
 	case 3:
-	case 4:
-		sub->x = bossObj[0].x - 12288 * minus;
-		sub->y = bossObj[0].y - 8192;
+		sub->x = bossObj[0].x - pixelsToUnits(24) * minus;
+		sub->y = bossObj[0].y - pixelsToUnits(16);
 		break;
-	case 5:
-		sub->x = bossObj[0].x - 12288 * minus;
-		sub->y = bossObj[0].y - 22016;
+	case 4:
+		sub->x = bossObj[0].x - pixelsToUnits(24) * minus;
+		sub->y = bossObj[0].y - pixelsToUnits(43);
 		break;
 	default:
 		return;
 	}
 }
 
-//second half of balfrog or something
-void actBoss_Frog2(npc *sub)
+//second half of balfrog or something and has the exact same hitbox and is at the exact same coordinates
+//so really this does fucking nothing
+void balfrog_other_half(npc *sub)
 {
-	if (bossObj[0].act_no)
+	if (bossObj[0].ani_no != -1)
 	{
-		if (bossObj[0].act_no >= 0 && bossObj[0].act_no <= 5)
+		if (bossObj[0].ani_no >= 0 && bossObj[0].ani_no <= 5)
 		{
 			sub->x = bossObj[0].x;
 			sub->y = bossObj[0].y;
@@ -62,12 +95,12 @@ void actBoss_Frog2(npc *sub)
 	else
 	{
 		sub->hit_voice = 52;
-		sub->hit.left = 12288;
-		sub->hit.top = 8192;
-		sub->hit.right = 12288;
-		sub->hit.bottom = 8192;
+		sub->hit.left = pixelsToUnits(24);
+		sub->hit.top = pixelsToUnits(16);
+		sub->hit.right = pixelsToUnits(24);
+		sub->hit.bottom = pixelsToUnits(16);
 		sub->size = 3;
-		sub->bits = 4;
+		sub->bits = npc_invulnerable;
 	}
 }
 
@@ -78,92 +111,87 @@ void actBoss_Frog(npc *boss)
 	int ym = 0;
 	uint8_t deg = 0;
 
-	//states enum so this is more readable
-	enum
-	{
-		ini = 0,
-		start = 10,
-		hop = 103
-	};
-
 	switch (boss->act_no)
 	{
 	case ini:
-		boss->x = 49152;
-		boss->y = 102400;
+		boss->x = tilesToUnits(6);
+		boss->y = tilesToUnits(12);
 		boss->direct = 2;
-		boss->view.left = 24576;
-		boss->view.top = 24576;
-		boss->view.right = 16384;
-		boss->view.bottom = 8192;
+
+		boss->view.left = pixelsToUnits(48);
+		boss->view.top = pixelsToUnits(48);
+		boss->view.right = pixelsToUnits(32);
+		boss->view.bottom = pixelsToUnits(16);
 
 		boss->hit_voice = 52;
 
-		boss->hit.left = 12288;
-		boss->hit.top = 8192;
+		boss->hit.left = pixelsToUnits(24);
+		boss->hit.top = pixelsToUnits(16);
+		boss->hit.right = pixelsToUnits(24);
+		boss->hit.bottom = pixelsToUnits(16);
 
-		boss->hit.right = 12288;
-		boss->hit.bottom = 8192;
-
+		boss->ani_no = -1;
 		boss->size = 3;
 		boss->exp = 1;
 		boss->code_event = 1000;
-		boss->bits |= 0x8200;
+		boss->bits = npc_showDamage | npc_eventDie;
 		boss->life = 300;
 		break;
 	case start:
+		boss->cond = npccond_alive;
+		bossObj[1].cond = npccond_alive | npccond_dmgboss;
+		bossObj[2].cond = npccond_alive;
+		boss->bits |= npc_invulnerable;
+
 		boss->act_no = 11;
-		boss->ani_no = 3;
-		boss->cond = -128;
+		boss->ani_no = 2;
 
 		boss->rect.left = 80;
 		boss->rect.top = 48;
 		boss->rect.right = 160;
 		boss->rect.bottom = 112;
 
-		boss->cond = -112;
-		boss->code_event = 1000;
-		bossObj[2].cond = 0x80;
 		boss->damage = 5;
 		bossObj[2].damage = 5;
+
 		for (int i = 0; i <= 7; ++i)
-			createNpc(4, boss->x + (random(-12, 12) << 9), boss->y + (random(-12, 12) << 9), random(-341, 341), random(-1536, 0));
+			createNpc(NPC_Smoke, boss->x + (random(-12, 12) << 9), boss->y + (random(-12, 12) << 9), random(-341, 341), random(-1536, 0));
 		break;
-	case 20:
+	case ini_flicker:
 		boss->act_no = 21;
 		boss->act_wait = 0;
-	case 21:
+	case flicker:
 		if (++boss->act_wait / 2 & 1)
-			boss->ani_no = 3;
+			boss->ani_no = 2;
 		else
-			boss->ani_no = 0;
+			boss->ani_no = -1;
 		break;
-	case 100:
-		boss->act_no = 101;
+	case wait:
+		boss->act_no = ini_hop_1;
 		boss->act_wait = 0;
-		boss->ani_no = 1;
+		boss->ani_no = 0;
 		boss->xm = 0;
-	case 101:
+	case ini_hop_1:
 		if (++boss->act_wait > 50)
 		{
-			boss->act_no = 102;
-			boss->ani_wait = 0;
-			boss->ani_no = 2;
-		}
-		break;
-	case 102:
-		if (++boss->ani_wait > 10)
-		{
-			boss->act_no = 103;
+			boss->act_no = ini_hop_2;
 			boss->ani_wait = 0;
 			boss->ani_no = 1;
+		}
+		break;
+	case ini_hop_2:
+		if (++boss->ani_wait > 10)
+		{
+			boss->act_no = hop;
+			boss->ani_wait = 0;
+			boss->ani_no = 0;
 		}
 		break;
 	case hop:
 		if (++boss->ani_wait > 4)
 		{
-			boss->act_no = 104;
-			boss->ani_no = 5;
+			boss->act_no = midair;
+			boss->ani_no = 4;
 			playSound(25);
 
 			boss->ym = -1024;
@@ -176,25 +204,25 @@ void actBoss_Frog(npc *boss)
 			boss->view.bottom = 12288;
 		}
 		break;
-	case 104:
-		if (!boss->direct && boss->flag & 1)
+	case midair:
+		if (!boss->direct && boss->flag & leftWall)
 		{
 			boss->direct = 2;
 			boss->xm = 512;
 		}
-		if (boss->direct == 2 && boss->flag & 4)
+		if (boss->direct == 2 && boss->flag & rightWall)
 		{
 			boss->direct = 0;
 			boss->xm = -512;
 		}
-		if (boss->flag & 8)
+		if (boss->flag & ground)
 		{
 			playSound(26, 1);
 			viewport.quake = 30;
 			boss->act_no = 100;
 			boss->ani_no = 1;
-			boss->view.top = 24576;
-			boss->view.bottom = 0x2000;
+			boss->view.top = pixelsToUnits(48);
+			boss->view.bottom = pixelsToUnits(16);
 			if (!boss->direct && boss->x < currentPlayer.x)
 			{
 				boss->direct = 2;
@@ -207,61 +235,60 @@ void actBoss_Frog(npc *boss)
 			}
 			createNpc(110, random(4, 16) << 13, random(0, 4) << 13, 0, 0, 4);
 			for (int i = 0; i <= 3; ++i)
-				createNpc(4, boss->x + (random(-12, 12) << 9), boss->y + boss->hit.bottom, random(-341, 341), random(-1536, 0));
+				createNpc(NPC_Smoke, boss->x + (random(-12, 12) << 9), boss->y + boss->hit.bottom, random(-341, 341), random(-1536, 0));
 		}
 		break;
-	case 110:
-		boss->ani_no = 1;
+	case ini_land:
+		boss->ani_no = 0;
 		boss->act_wait = 0;
-		boss->act_no = 111;
-	case 111:
-		++boss->act_wait;
+		boss->act_no = land;
+	case land:
 		boss->xm = 8 * boss->xm / 9;
-		if (boss->act_wait > 50)
+		if (boss->act_wait++ > 50)
 		{
-			boss->ani_no = 2;
+			boss->ani_no = 1;
 			boss->ani_wait = 0;
-			boss->act_no = 112;
+			boss->act_no = ini_shoot;
 		}
 		break;
-	case 112:
+	case ini_shoot:
 		if (++boss->ani_wait > 4)
 		{
-			boss->act_no = 113;
+			boss->act_no = shoot;
 			boss->act_wait = 0;
-			boss->ani_no = 3;
+			boss->ani_no = 2;
 			boss->count1 = 16;
-			bossObj[1].bits |= 0x20;
+			bossObj[1].bits |= npc_shootable;
 			boss->tgt_x = boss->life;
 		}
 		break;
-	case 113:
+	case shoot:
 		if (boss->shock)
 		{
 			if ((boss->count2++ / 2) & 1)
-				boss->ani_no = 4;
-			else
 				boss->ani_no = 3;
+			else
+				boss->ani_no = 2;
 		}
 		else
 		{
 			boss->count2 = 0;
-			boss->ani_no = 3;
+			boss->ani_no = 2;
 		}
 		boss->xm = 10 * boss->xm / 11;
 		if (++boss->act_wait > 16)
 		{
 			boss->act_wait = 0;
 			--boss->count1;
-			deg = boss->direct ? getAtan(boss->x + 0x4000 - currentPlayer.x, boss->y - 4096 - currentPlayer.y) : 
+			deg = boss->direct ? getAtan(boss->x + 0x4000 - currentPlayer.x, boss->y - 4096 - currentPlayer.y) :
 				getAtan(boss->x - 0x4000 - currentPlayer.x, boss->y - 4096 - currentPlayer.y);
 			deg += random(-16, 16);
 			ym = getSin(deg);
 			xm = getCos(deg);
 			if (boss->direct)
-				createNpc(108, boss->x + 0x4000, boss->y - 4096, xm, ym);
+				createNpc(NPC_ProjectileBalfrog, boss->x + 0x4000, boss->y - 4096, xm, ym);
 			else
-				createNpc(108, boss->x - 0x4000, boss->y - 4096, xm, ym);
+				createNpc(NPC_ProjectileBalfrog, boss->x - 0x4000, boss->y - 4096, xm, ym);
 			playSound(39, 1);
 			if (!boss->count1 || boss->life < boss->tgt_x - 90)
 			{
@@ -270,7 +297,7 @@ void actBoss_Frog(npc *boss)
 				boss->ani_no = 2;
 				boss->ani_wait = 0;
 
-				bossObj[1].bits &= 0xFFDF;
+				bossObj[1].bits &= ~npc_shootable;
 			}
 		}
 		break;
@@ -290,40 +317,40 @@ void actBoss_Frog(npc *boss)
 			boss->ani_no = 1;
 		}
 		break;
-	case 120:
+	case ini_leap:
 		boss->act_no = 121;
 		boss->act_wait = 0;
-		boss->ani_no = 1;
+		boss->ani_no = 0;
 		boss->xm = 0;
-	case 121:
+	case ini_leap_2:
 		if (++boss->act_wait > 50)
 		{
 			boss->act_no = 122;
 			boss->ani_wait = 0;
-			boss->ani_no = 2;
+			boss->ani_no = 1;
 		}
 		break;
-	case 122:
+	case ini_leap_3:
 		if (++boss->ani_wait > 20)
 		{
 			boss->act_no = 123;
 			boss->ani_wait = 0;
-			boss->ani_no = 1;
+			boss->ani_no = 0;
 		}
 		break;
-	case 123:
+	case leap:
 		if (++boss->ani_wait > 4)
 		{
 			boss->act_no = 124;
-			boss->ani_no = 5;
+			boss->ani_no = 4;
 			boss->ym = -2560;
 			boss->view.top = 0x8000;
 			boss->view.bottom = 12288;
 			playSound(25, 1);
 		}
 		break;
-	case 124:
-		if (boss->flag & 8)
+	case leap_midair:
+		if (boss->flag & ground)
 		{
 			playSound(26, 1);
 			viewport.quake = 60;
@@ -332,11 +359,11 @@ void actBoss_Frog(npc *boss)
 			boss->view.top = 24576;
 			boss->view.bottom = 0x2000;
 			for (int i = 0; i <= 1; ++i)
-				createNpc(104, random(4, 16) << 13, random(0, 4) << 13, 0, 0, 4, 0);
+				createNpc(NPC_EnemyFrog, random(4, 16) << 13, random(0, 4) << 13, 0, 0, 4, 0);
 			for (int i = 0; i <= 5; ++i)
-				createNpc(110, random(4, 16) << 13, random(0, 4) << 13, 0, 0, 4, 0);
+				createNpc(NPC_EnemyPuchi, random(4, 16) << 13, random(0, 4) << 13, 0, 0, 4, 0);
 			for (int i = 0; i <= 7; ++i)
-				createNpc(4, boss->x + (random(-12, 12) << 9), boss->y + boss->hit.bottom, random(-341, 341), random(-1536, 0), 0, 0);
+				createNpc(NPC_Smoke, boss->x + (random(-12, 12) << 9), boss->y + boss->hit.bottom, random(-341, 341), random(-1536, 0));
 			if (!boss->direct && boss->x < currentPlayer.x)
 			{
 				boss->direct = 2;
@@ -349,19 +376,19 @@ void actBoss_Frog(npc *boss)
 			}
 		}
 		break;
-	case 130:
+	case die:
 		boss->act_no = 131;
-		boss->ani_no = 3;
+		boss->ani_no = 2;
 		boss->act_wait = 0;
 		boss->xm = 0;
 		playSound(72, 1);
 		for (int i = 0; i <= 7; ++i)
-			createNpc(4, boss->x + (random(-12, 12) << 9), boss->y + (random(-12, 12) << 9), random(-341, 341), random(-1536, 0));
+			createNpc(NPC_Smoke, boss->x + (random(-12, 12) << 9), boss->y + (random(-12, 12) << 9), random(-341, 341), random(-1536, 0));
 		bossObj[1].cond = 0;
 		bossObj[2].cond = 0;
-	case 131:
+	case die_flashing:
 		if (!(++boss->act_wait % 5))
-			createNpc(4, boss->x + (random(-12, 12) << 9), boss->y + (random(-12, 12) << 9), random(-341, 341), random(-1536, 0));
+			createNpc(NPC_Smoke, boss->x + (random(-12, 12) << 9), boss->y + (random(-12, 12) << 9), random(-341, 341), random(-1536, 0));
 		if (boss->act_wait / 2 & 1)
 			boss->x -= 512;
 		else
@@ -372,51 +399,51 @@ void actBoss_Frog(npc *boss)
 			boss->act_no = 132;
 		}
 		break;
-	case 132:
+	case revert:
 		if (++boss->act_wait / 2 & 1)
 		{
-			boss->view.left = 10240;
-			boss->view.top = 6144;
-			boss->view.right = 10240;
-			boss->view.bottom = 6144;
-			boss->ani_no = 6;
+			boss->view.left = pixelsToUnits(20);
+			boss->view.top = pixelsToUnits(12);
+			boss->view.right = pixelsToUnits(20);
+			boss->view.bottom = pixelsToUnits(12);
+			boss->ani_no = 8;
 		}
 		else
 		{
-			boss->view.left = 24576;
-			boss->view.top = 24576;
-			boss->view.right = 0x4000;
-			boss->view.bottom = 0x2000;
-			boss->ani_no = 3;
+			boss->view.left = pixelsToUnits(48);
+			boss->view.top = pixelsToUnits(48);
+			boss->view.right = pixelsToUnits(32);
+			boss->view.bottom = pixelsToUnits(16);
+			boss->ani_no = 2;
 		}
 		if (!(boss->act_wait % 9))
-			createNpc(4, boss->x + (random(-12, 12) << 9), boss->y + (random(-12, 12) << 9), random(-341, 341), random(-1536, 0));
+			createNpc(NPC_Smoke, boss->x + (random(-12, 12) << 9), boss->y + (random(-12, 12) << 9), random(-341, 341), random(-1536, 0));
 		if (boss->act_wait > 150)
 		{
 			boss->act_no = 140;
 			boss->hit.bottom = 6144;
 		}
 		break;
-	case 140:
+	case nop_start:
 		boss->act_no = 141;
-	case 141:
+	case nop:
 		if (boss->flag & 8)
 		{
 			boss->act_no = 142;
 			boss->act_wait = 0;
-			boss->ani_no = 7;
+			boss->ani_no = 5;
 		}
 		break;
-	case 142:
+	case go_into_ceilng:
 		if (++boss->act_wait > 30)
 		{
-			boss->ani_no = 8;
+			boss->ani_no = 6;
 			boss->ym = -2560;
-			boss->bits |= 8;
+			boss->bits |= npc_ignoreSolid;
 			boss->act_no = 143;
 		}
 		break;
-	case 143:
+	case gone_into_ceiling:
 		boss->ym = -2560;
 		if (boss->y < 0)
 		{
@@ -430,16 +457,34 @@ void actBoss_Frog(npc *boss)
 	}
 
 	boss->doGravity(64, 1535);
+	//if (ym < 0) { boss->bits |= npc_ignoreSolid; }
+	//else { boss->bits &= npc_ignoreSolid; }
 
 	boss->x += boss->xm;
 	boss->y += boss->ym;
-	 
-	boss->rect.left = ((boss->ani_no / 3) * 160) + (boss->direct * 80);
-	boss->rect.top = 48 + ((boss->ani_no % 3) * 64);
-	boss->rect.right = boss->rect.left + 80;
-	boss->rect.bottom = boss->rect.top + 64;
+
+	//when balrog is a frog
+	if (boss->ani_no <= 4)
+	{
+		boss->rect.left = ((boss->ani_no / 3) * 160) + ((boss->direct / 2) * 80);
+		boss->rect.top = 48 + ((boss->ani_no % 3) * 64);
+		boss->rect.right = boss->rect.left + 80;
+		boss->rect.bottom = boss->rect.top + 64 + ((boss->ani_no / 4) * 24);
+	}
+	//when balrog reverts and goes into ceiling
+	if (boss->ani_no > 4)
+	{
+		boss->rect.left = 80 + ((boss->ani_no-5)*40);
+		boss->rect.top = (boss->direct/2)*24;
+		boss->rect.right = boss->rect.left + 40;
+		boss->rect.bottom = boss->rect.top + 24;
+	}
+
+
+	if (boss->ani_no == -1)
+		boss->rect.right = boss->rect.left;
 
 	balfrogMouth(&bossObj[1]);
-	actBoss_Frog2(&bossObj[2]);
+	balfrog_other_half(&bossObj[2]);
 	return;
 }

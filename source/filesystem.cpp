@@ -113,7 +113,7 @@ int loadFile(const string& name, uint8_t **data)
 	if (fclose(file) == EOF)
 		throw std::runtime_error("Could not close " + name);
 
-    logInfo("Loaded from " + name);
+    logDebug("Loaded from " + name);
 	return filesize;
 }
 
@@ -133,7 +133,7 @@ void writeFile(const string& name, const void *data, size_t amount)
 	if (fclose(file) == EOF)
 		throw std::runtime_error("Could not close " + name);
 
-    logInfo("Wrote to " + name);
+    logDebug("Wrote to " + name);
 }
 
 //Profile code
@@ -213,7 +213,7 @@ void loadProfile()
 		//Close RW
 		SDL_RWclose(profile);
 
-		logInfo("Loaded profile");
+		logDebug("Loaded profile");
 	}
 	else
 	{
@@ -296,7 +296,7 @@ CONFIG defaultConfigData = { configVersion, 20, 320, 240, 2, false, true, false,
 void setFromConfig(CONFIG *config)
 {
 	framerate = config->framerate;
-	createWindow(config->screenWidth, config->screenHeight, config->screenScale, true);
+	createWindow(config->screenWidth, config->screenHeight, config->screenScale, config->fullscreen);
 
 	if (config->fullscreen)
 		switchScreenMode();
@@ -349,7 +349,7 @@ void loadConfig()
 	else
 	{
 		CONFIG *config;
-		int configSize = loadFile(configName.c_str(), (uint8_t**)&config);
+		size_t configSize = loadFile(configName.c_str(), (uint8_t**)&config);
 
 		if (configSize < sizeof(config->version) || config->version != configVersion)
 		{

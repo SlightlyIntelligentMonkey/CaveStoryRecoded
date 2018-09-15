@@ -668,7 +668,7 @@ void loadOrganya(const string& name)
 	if (disableOrg)
 		return;
 
-    logInfo("Loading " + name);
+    logDebug("Loading " + name);
 
 	//Pause sound device
 	//SDL_PauseAudioDevice(soundDev, -1);

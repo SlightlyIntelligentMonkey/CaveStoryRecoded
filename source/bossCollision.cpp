@@ -6,43 +6,11 @@
 
 void bossHitMap()
 {
-	int offy[16];
-	int offx[16];
+	constexpr int offy[16] = {0, 1, 0, 1, 2, 2, 2, 0, 1, -1, -1, -1, -1, 0, 1, 2};
+	constexpr int offx[16] = {0, 0, 1, 1, 0, 1, 2, 2, 2, -1, 0, 1, 2, -1, -1, -1};
+    // see https://en.wikipedia.org/wiki/Cartesian_product for understanding what the fuck these even are
+
 	uint8_t atrb[16];
-
-	offx[0] = 0;
-	offx[1] = 1;
-	offx[2] = 0;
-	offx[3] = 1;
-	offx[4] = 2;
-	offx[5] = 2;
-	offx[6] = 2;
-	offx[7] = 0;
-	offx[8] = 1;
-	offx[9] = -1;
-	offx[10] = -1;
-	offx[11] = -1;
-	offx[12] = -1;
-	offx[13] = 0;
-	offx[14] = 1;
-	offx[15] = 2;
-
-	offy[0] = 0;
-	offy[1] = 0;
-	offy[2] = 1;
-	offy[3] = 1;
-	offy[4] = 0;
-	offy[5] = 1;
-	offy[6] = 2;
-	offy[7] = 2;
-	offy[8] = 2;
-	offy[9] = -1;
-	offy[10] = 0;
-	offy[11] = 1;
-	offy[12] = 2;
-	offy[13] = -1;
-	offy[14] = -1;
-	offy[15] = -1;
 
 	for (size_t b = 0; b < BOSSNPCS; ++b)
 	{
@@ -75,6 +43,7 @@ void bossHitMap()
 				case 0x41u:
 				case 0x43u:
 					npcJudgeBlock(&bossObj[b].hit, &bossObj[b], x + offx[j], y + offy[j]);
+					break;
 				case 0x44u:
 					if (!(bossObj[b].bits & npc_ignore44))
 						npcJudgeBlock(&bossObj[b].hit, &bossObj[b], x + offx[j], y + offy[j]);
