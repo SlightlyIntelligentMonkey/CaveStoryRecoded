@@ -73,5 +73,4 @@ void shootNemesis(int level)
 			break;
 		}
 	}
-	return;
 }

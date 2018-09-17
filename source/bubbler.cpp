@@ -70,7 +70,6 @@ void actBulletBubbler1(bullet *bul)
 	bul->rect.top = 0;
 	bul->rect.right = bul->rect.left + 8;
 	bul->rect.bottom = bul->rect.top + 8;
-	return;
 }
 
 void actBulletBubbler2(bullet *bul)
@@ -150,8 +149,6 @@ void actBulletBubbler2(bullet *bul)
 	bul->rect.top = 8;
 	bul->rect.right = bul->rect.left + 8;
 	bul->rect.bottom = bul->rect.top + 8;
-
-	return;
 }
 
 void actBulletBubbler3(bullet *bul)
@@ -233,7 +230,6 @@ void actBulletBubbler3(bullet *bul)
 			createBullet(bullet_BubblerSpurs, bul->x, bul->y, currentPlayer.direct);
 		}
 	}
-	return;
 }
 
 void actBulletBubblerSpur(bullet *bul)
@@ -286,6 +282,4 @@ void actBulletBubblerSpur(bullet *bul)
 	bul->rect.top = (bul->ani_no % 2) * 8;
 	bul->rect.right = bul->rect.left + 8;
 	bul->rect.bottom = bul->rect.top + 8;
-
-	return;
 }

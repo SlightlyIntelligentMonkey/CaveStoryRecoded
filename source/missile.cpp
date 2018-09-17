@@ -544,7 +544,6 @@ void actBulletSuperMissileLauncher1(bullet *bul)
 	bul->rect.top = 96;
 	bul->rect.right = bul->rect.left + 16;
 	bul->rect.bottom = bul->rect.top + 16;
-	return;
 }
 
 void actBulletSuperMissileLauncher2(bullet *bul)
@@ -651,7 +650,6 @@ void actBulletSuperMissileLauncher2(bullet *bul)
 	bul->rect.top = 96;
 	bul->rect.right = bul->rect.left + 16;
 	bul->rect.bottom = bul->rect.top + 16;
-	return;
 }
 
 void actBulletSuperMissileLauncher3(bullet *bul)
@@ -794,7 +792,6 @@ void actBulletSuperMissileLauncher3(bullet *bul)
 	bul->rect.top = 96;
 	bul->rect.right = bul->rect.left + 16;
 	bul->rect.bottom = bul->rect.top + 16;
-	return;
 }
 
 void actBulletSuperBoom1(bullet *bul)
@@ -819,7 +816,6 @@ void actBulletSuperBoom1(bullet *bul)
 
 	if (--bul->act_wait < 0)
 		bul->cond = 0;
-	return;
 }
 
 void actBulletSuperBoom2(bullet *bul)
@@ -843,7 +839,6 @@ void actBulletSuperBoom2(bullet *bul)
 
 	if (--bul->act_wait < 0)
 		bul->cond = 0;
-	return;
 }
 
 void actBulletSuperBoom3(bullet *bul)
@@ -867,5 +862,4 @@ void actBulletSuperBoom3(bullet *bul)
 
 	if (--bul->act_wait < 0)
 		bul->cond = 0;
-	return;
 }

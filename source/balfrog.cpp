@@ -463,8 +463,6 @@ void actBoss_Frog(npc *boss)
 	}
 
 	boss->doGravity(64, 1535);
-	//if (ym < 0) { boss->bits |= npc_ignoreSolid; }
-	//else { boss->bits &= npc_ignoreSolid; }
 
 	boss->x += boss->xm;
 	boss->y += boss->ym;
@@ -492,5 +490,4 @@ void actBoss_Frog(npc *boss)
 
 	balfrogMouth(&bossObj[1]);
 	balfrog_other_half(&bossObj[2]);
-	return;
 }

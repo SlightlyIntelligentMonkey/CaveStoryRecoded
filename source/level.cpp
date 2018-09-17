@@ -351,11 +351,8 @@ void drawLevel(bool foreground)
 	}
 
 	//Animate currents
-	if (gameFlags & 1)
-	{
-		if (foreground)
-			currentEffect += 2;
-	}
+	if (gameFlags & 1 && foreground)
+		currentEffect += 2;
 
 	//Render tiles
 	RECT tileRect;
