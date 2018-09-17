@@ -1,6 +1,6 @@
 #include "npc100.h"
 
-#include <vector>
+#include <array>
 #include "player.h"
 #include "sound.h"
 #include "render.h"
@@ -9,7 +9,7 @@
 #include "caret.h"
 #include "level.h"
 
-using std::vector;
+using std::array;
 
 void npcAct100(npc * NPC) // Grate
 {
@@ -24,14 +24,14 @@ void npcAct100(npc * NPC) // Grate
 
 void npcAct101(npc *NPC) // Power Controls, screen
 {
-    vector<RECT> rcNPC = {{240, 136, 256, 152}, {240, 136, 256, 152}, {256, 136, 272, 152}};
+	array<RECT, 3> rcNPC{ {{240, 136, 256, 152}, {240, 136, 256, 152}, {256, 136, 272, 152}} };
     NPC->animate(3, 0, 2);
     NPC->doRects(rcNPC);
 }
 
 void npcAct102(npc *NPC) // Power Controls, power flow
 {
-    vector<RECT> rcNPC = {{208, 120, 224, 136}, {224, 120, 240, 136}, {240, 120, 256, 136}, {256, 120, 272, 136}};
+	array<RECT, 4> rcNPC = { {{208, 120, 224, 136}, {224, 120, 240, 136}, {240, 120, 256, 136}, {256, 120, 272, 136}} };
 
     if (!NPC->act_no)
     {
@@ -45,8 +45,8 @@ void npcAct102(npc *NPC) // Power Controls, power flow
 
 void npcAct103(npc *NPC) // Manann red blast (projectile)
 {
-    vector<RECT> rcLeft = {{192, 96, 208, 120}, {208, 96, 224, 120}, {224, 96, 240, 120}};
-    vector<RECT> rcRight = {{192, 120, 208, 144}, {208, 120, 224, 144}, {224, 120, 240, 144}};
+	array<RECT, 3> rcLeft = { {{192, 96, 208, 120}, {208, 96, 224, 120}, {224, 96, 240, 120}} };
+	array<RECT, 3> rcRight = { {{192, 120, 208, 144}, {208, 120, 224, 144}, {224, 120, 240, 144}} };
 
     if (NPC->act_no == 1 || !NPC->act_no)
     {
@@ -70,11 +70,8 @@ void npcAct103(npc *NPC) // Manann red blast (projectile)
 
 void npcAct104(npc *NPC) // Frog (enemy)
 {
-	vector<RECT> rcLeft(3);
-	vector<RECT> rcRight(3);
-
-	rcLeft = { { 0, 112, 32, 144 },{ 32, 112, 64, 144 },{ 64, 112, 96, 144 } };
-	rcRight = { { 0, 144, 32, 176 },{ 32, 144, 64, 176 },{ 64, 144, 96, 176 } };
+	array<RECT, 3> rcLeft = { { { 0, 112, 32, 144 },{ 32, 112, 64, 144 },{ 64, 112, 96, 144 } } };
+	array<RECT, 3> rcRight = { { { 0, 144, 32, 176 },{ 32, 144, 64, 176 },{ 64, 144, 96, 176 } } };
 
 	enum
 	{
@@ -196,7 +193,7 @@ void npcAct104(npc *NPC) // Frog (enemy)
 
 void npcAct105(npc *NPC) // Speech balloon 'Hey' low
 {
-    vector<RECT> rcNPC = {{128, 32, 144, 48}, {128, 38, 128, 32}};
+	array<RECT, 2> rcNPC = { {{128, 32, 144, 48}, {128, 38, 128, 32}} };
 
     if (++NPC->act_wait > 30)
         NPC->cond = 0;
@@ -391,8 +388,8 @@ void npcAct108(npc *NPC) //balfrog projectile
 
 void npcAct109(npc *NPC) // Malco, damaged
 {
-    vector<RECT> rcLeft = {{240, 0, 256, 24}, {256, 0, 272, 24}};
-    vector<RECT> rcRight = {{240, 24, 256, 48}, {256, 24, 272, 48}};
+	array<RECT, 2> rcLeft = { {{240, 0, 256, 24}, {256, 0, 272, 24}} };
+	array<RECT, 2> rcRight = { {{240, 24, 256, 48}, {256, 24, 272, 48}} };
 
     enum
     {
@@ -451,8 +448,8 @@ void npcAct109(npc *NPC) // Malco, damaged
 
 void npcAct110(npc *NPC)
 {
-    vector<RECT> rcLeft = {{96, 128, 112, 144}, {112, 128, 128, 144}, {128, 128, 144, 144}};
-    vector<RECT> rcRight = {{96, 144, 112, 160}, {112, 144, 128, 160}, {128, 144, 144, 160}};
+	array<RECT, 3> rcLeft = { {{96, 128, 112, 144}, {112, 128, 128, 144}, {128, 128, 144, 144}} };
+	array<RECT, 3> rcRight = {{ {96, 144, 112, 160}, {112, 144, 128, 160}, {128, 144, 144, 160} } };
 
     enum
     {
@@ -467,7 +464,7 @@ void npcAct110(npc *NPC)
     {
     case init:
         NPC->act_no = stand;
-        NPC->act_wait = 0,
+		NPC->act_wait = 0;
         NPC->xm = 0;
         NPC->ym = 0;
         if (NPC->direct == dirAuto) // Spawned by Balfrog
@@ -569,8 +566,8 @@ void npcAct110(npc *NPC)
 
 void npcAct111(npc *NPC) //Quote teleport out
 {
-	vector<RECT> rcLeft(2);
-	vector<RECT> rcRight(2);
+	array<RECT, 2> rcLeft;
+	array<RECT, 2> rcRight;
 
 	rcLeft[0] = { 0, 0, 16, 16 };
 	rcLeft[1] = { 16, 0, 32, 16 };
@@ -649,8 +646,8 @@ void npcAct111(npc *NPC) //Quote teleport out
 
 void npcAct112(npc *NPC) //Quote teleport in
 {
-	vector<RECT> rcLeft(2);
-	vector<RECT> rcRight(2);
+	array<RECT, 2> rcLeft;
+	array<RECT, 2> rcRight;
 
 	rcLeft[0] = { 0, 0, 16, 16 };
 	rcLeft[1] = { 16, 0, 32, 16 };
@@ -719,8 +716,8 @@ void npcAct112(npc *NPC) //Quote teleport in
 
 void npcAct113(npc *NPC) // Professor Booster
 {
-    vector<RECT> rcLeft(7);
-    vector<RECT> rcRight(7);
+    array<RECT, 7> rcLeft;
+	array<RECT, 7> rcRight;
 
     rcLeft[0] = {224, 0, 240, 16};
     rcLeft[1] = {240, 0, 256, 16};
@@ -847,7 +844,7 @@ void npcAct113(npc *NPC) // Professor Booster
 
 void npcAct114(npc *NPC) // Press (enemy)
 {
-    vector<RECT> rcNPC = {{144, 112, 160, 136}, {160, 112, 176, 136}, {176, 112, 192, 136}};
+	array<RECT, 3> rcNPC = { {{144, 112, 160, 136}, {160, 112, 176, 136}, {176, 112, 192, 136}} };
 
     switch (NPC->act_no)
     {
@@ -908,8 +905,8 @@ void npcAct114(npc *NPC) // Press (enemy)
 
 void npcAct115(npc *NPC) // Ravil (enemy)
 {
-    vector<RECT> rcLeft(6);
-    vector<RECT> rcRight(6);
+	array<RECT, 6> rcLeft;
+	array<RECT, 6> rcRight;
 
     rcLeft[0] = {0, 120, 24, 144};
     rcLeft[1] = {24, 120, 48, 144};
@@ -1060,8 +1057,8 @@ void npcAct116(npc *NPC) // Red flowers petals
 
 void npcAct117(npc *NPC)
 {
-	vector<RECT> rcLeft(10);
-	vector<RECT> rcRight(10);
+	array<RECT, 10> rcLeft;
+	array<RECT, 10> rcRight;
 
 	rcLeft[0] = { 0x00, 0x60, 0x10, 0x70 };
 	rcLeft[1] = { 0x10, 0x60, 0x20, 0x70 };

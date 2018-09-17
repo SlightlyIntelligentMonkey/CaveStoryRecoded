@@ -1,16 +1,17 @@
 #include "npc040.h"
 
+#include <array>
 #include "player.h"
 #include "sound.h"
 #include "mathUtils.h"
 #include "render.h"
 
-using std::vector;
+using std::array;
 
 void npcAct040(npc * NPC) // Santa
 {
-	vector<RECT> rcLeft(7);
-	vector<RECT> rcRight(7);
+	array<RECT, 7> rcLeft;
+	array<RECT, 7> rcRight;
 
 	rcLeft[0] = { 0, 32, 16, 48 };
 	rcLeft[1] = { 16, 32, 32, 48 };
@@ -91,8 +92,8 @@ void npcAct041(npc * NPC) // Busted doorway
 
 void npcAct042(npc *NPC) // Sue
 {
-	vector<RECT> rcLeft(13);
-	vector<RECT> rcRight(13);
+	array<RECT, 13> rcLeft;
+	array<RECT, 13> rcRight;
 
 	rcLeft[0] = { 0, 0, 16, 16 };
 	rcLeft[1] = { 16, 0, 32, 16 };
@@ -375,8 +376,8 @@ void npcAct052(npc *NPC) // Blue robots
 
 void npcAct055(npc *NPC) //Kazuma
 {
-	vector<RECT> rcLeft(6);
-	vector<RECT> rcRight(6);
+	array<RECT, 6> rcLeft;
+	array<RECT, 6> rcRight;
 
 	rcLeft[0] = { 0xC0, 0xC0, 0xD0, 0xD8 };
 	rcLeft[1] = { 0xD0, 0xC0, 0xE0, 0xD8 };
@@ -592,7 +593,7 @@ void npcAct058(npc *NPC) //Basu 1
 
 void npcAct059(npc *NPC) //Eye door
 {
-	vector<RECT> rect(4);
+	array<RECT, 4> rect;
 
 	rect[0] = { 224, 16, 240, 40 };
 	rect[1] = { 208, 80, 224, 104 };

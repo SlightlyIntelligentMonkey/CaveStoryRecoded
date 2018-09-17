@@ -1,9 +1,9 @@
 #include "npc120.h"
 
-#include <vector>
+#include <array>
 #include "sound.h"
 
-using std::vector;
+using std::array;
 
 void npcAct125(npc *NPC) //Hidden item
 {
@@ -139,8 +139,8 @@ void npcAct137(npc *NPC) // Large doorway frame
 
 void npcAct139(npc *NPC) //Doctor with the crown
 {
-	vector<RECT> rcLeft(3);
-	vector<RECT> rcRight(3);
+	array<RECT, 3> rcLeft;
+	array<RECT, 3> rcRight;
 
 	rcLeft[0] = { 0, 128, 24, 160 };
 	rcLeft[1] = { 24, 128, 48, 160 };

@@ -1,12 +1,12 @@
 ﻿#include "npc140.h"
 
-#include <vector>
+#include <array>
 #include "sound.h"
 #include "player.h"
 #include "caret.h"
 #include "mathUtils.h"
 
-using std::vector;
+using std::array;
 
 void npcAct145(npc *NPC) //King's blade
 {
@@ -46,7 +46,7 @@ void npcAct145(npc *NPC) //King's blade
 
 void npcAct146(npc *NPC) //Lightning
 {
-	vector<RECT> rect(5);
+	array<RECT, 5> rect;
 
 	rect[0] = { 0, 0, 0, 0 };
 	rect[1] = { 260, 0, 275, 240 };
@@ -95,8 +95,8 @@ void npcAct146(npc *NPC) //Lightning
 
 void npcAct147(npc *NPC)
 {
-	vector<RECT> rcLeft(6);
-	vector<RECT> rcRight(6);
+	array<RECT, 6> rcLeft;
+	array<RECT, 6> rcRight;
 	uint8_t deg;
 
 	rcLeft[0].left = 0;
@@ -306,7 +306,7 @@ void npcAct147(npc *NPC)
 
 void npcAct148(npc *NPC)
 {
-	vector<RECT> rect(2);
+	array<RECT, 2> rect;
 
 	if (NPC->flag & 0xFF)
 	{
@@ -340,8 +340,8 @@ void npcAct148(npc *NPC)
 
 void npcAct150(npc *NPC) // Quote
 {
-	vector<RECT> rcLeft(9);
-	vector<RECT> rcRight(9);
+	array<RECT, 9> rcLeft;
+	array<RECT, 9> rcRight;
 
 	rcLeft[0] = { 0, 0, 16, 16 };
 	rcLeft[1] = { 48, 0, 64, 16 };
@@ -523,8 +523,8 @@ void npcAct150(npc *NPC) // Quote
 
 void npcAct151(npc *NPC) //Blue robot standing
 {
-	vector<RECT> rcLeft(2);
-	vector<RECT> rcRight(2);
+	array<RECT, 2> rcLeft;
+	array<RECT, 2> rcRight;
 
 	rcLeft[0] = { 192, 0, 208, 16 };
 	rcLeft[1] = { 208, 0, 224, 16 };
@@ -560,8 +560,8 @@ void npcAct151(npc *NPC) //Blue robot standing
 
 void npcAct153(npc *NPC)
 {
-	vector<RECT> rcLeft =
-	{
+	array<RECT, 21> rcLeft =
+	{ {
 		{ 0, 0, 24, 24 },
 		{ 24, 0, 48, 24 },
 		{ 48, 0, 72, 24 },
@@ -583,10 +583,10 @@ void npcAct153(npc *NPC)
 		{ 288, 0, 312, 24 },
 		{ 24, 48, 48, 72 },
 		{ 96, 48, 120, 72 }
-	};
+	} };
 
-	vector<RECT> rcRight =
-	{
+	array<RECT, 21> rcRight =
+	{ {
 		{ 0, 24, 24, 48 },
 		{ 24, 24, 48, 48 },
 		{ 48, 24, 72, 48 },
@@ -608,7 +608,7 @@ void npcAct153(npc *NPC)
 		{ 288, 24, 312, 48 },
 		{ 24, 72, 48, 96 },
 		{ 96, 72, 120, 96 }
-	};
+	} };
 
 	if (NPC->x <= currentPlayer.x + 0x28000 && NPC->x >= currentPlayer.x - 0x28000 && NPC->y <= currentPlayer.y + 0x1E000 && NPC->y >= currentPlayer.y - 0x1E000)
 	{
@@ -779,8 +779,8 @@ void npcAct153(npc *NPC)
 
 void npcAct154(npc *NPC)
 {
-	vector<RECT> rcLeft =
-	{
+	array<RECT, 21> rcLeft =
+	{ {
 		{ 0, 0, 24, 24 },
 		{ 24, 0, 48, 24 },
 		{ 48, 0, 72, 24 },
@@ -802,10 +802,10 @@ void npcAct154(npc *NPC)
 		{ 288, 0, 312, 24 },
 		{ 24, 48, 48, 72 },
 		{ 96, 48, 120, 72 }
-	};
+	} };
 
-	vector<RECT> rcRight =
-	{
+	array<RECT, 21> rcRight =
+	{ {
 		{ 0, 24, 24, 48 },
 		{ 24, 24, 48, 48 },
 		{ 48, 24, 72, 48 },
@@ -827,7 +827,7 @@ void npcAct154(npc *NPC)
 		{ 288, 24, 312, 48 },
 		{ 24, 72, 48, 96 },
 		{ 96, 72, 120, 96 }
-	};
+	} };
 
 	switch (NPC->act_no)
 	{

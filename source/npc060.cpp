@@ -1,13 +1,13 @@
 #include "npc060.h"
 
-#include <vector>
+#include <array>
 #include "mathUtils.h"
 #include "player.h"
 #include "sound.h"
 #include "game.h"
 #include "level.h"
 
-using std::vector;
+using std::array;
 
 void npcAct060(npc *NPC) //Toroko
 {
@@ -184,8 +184,8 @@ void npcAct060(npc *NPC) //Toroko
 
 void npcAct061(npc *NPC) //King
 {
-	vector<RECT> rcLeft(11);
-	vector<RECT> rcRight(11);
+	array<RECT, 11> rcLeft;
+	array<RECT, 11> rcRight;
 
 	rcLeft[0] = { 224, 32, 240, 48 };
 	rcLeft[1] = { 240, 32, 256, 48 };
@@ -421,7 +421,7 @@ void npcAct061(npc *NPC) //King
 
 void npcAct062(npc *NPC) // Kazuma, facing away
 {
-	vector<RECT> rcNPC = { {272, 192, 288, 216}, {288, 192, 304, 216}, {304, 192, 320, 216} };
+	array<RECT, 3> rcNPC = { { {272, 192, 288, 216}, {288, 192, 304, 216}, {304, 192, 320, 216} } };
 
 	enum
 	{
@@ -488,8 +488,8 @@ void npcAct062(npc *NPC) // Kazuma, facing away
 
 void npcAct063(npc *NPC) // Toroko, panicking
 {
-	vector<RECT> rcLeft(6);
-	vector<RECT> rcRight(6);
+	array<RECT, 6> rcLeft;
+	array<RECT, 6> rcRight;
 
 	rcLeft[0] = { 64, 64, 80, 80 };
 	rcLeft[1] = { 80, 64, 96, 80 };
@@ -780,7 +780,7 @@ void npcAct065(npc *NPC) //First Cave Bat
 void npcAct066(npc *NPC) //Bubble (to catch Toroko in the shack)
 {
 	uint8_t deg;
-	vector<RECT> rect(4);
+	array<RECT, 4> rect;
 
 	rect[0] = { 32, 192, 56, 216 };
 	rect[1] = { 56, 192, 80, 216 };
@@ -867,8 +867,8 @@ void npcAct066(npc *NPC) //Bubble (to catch Toroko in the shack)
 
 void npcAct067(npc *NPC) //Misery floating
 {
-	vector<RECT> rcLeft(8);
-	vector<RECT> rcRight(8);
+	array<RECT, 8> rcLeft;
+	array<RECT, 8> rcRight;
 
 	rcLeft[0] = { 0x50, 0x00, 0x60, 0x10 };
 	rcLeft[1] = { 0x60, 0x00, 0x70, 0x10 };
@@ -1221,8 +1221,8 @@ void npcAct068(npc * NPC) // Balrog, Running (boss)
 	NPC->x += NPC->xm;
 	NPC->y += NPC->ym;
 
-	vector<RECT> rcLeft(9);
-	vector<RECT> rcRight(9);
+	array<RECT, 9> rcLeft;
+	array<RECT, 9> rcRight;
 	rcLeft[0] = { 0, 0, 40, 24 };
 	rcLeft[1] = { 0, 48, 40, 72 };
 	rcLeft[2] = rcLeft[0];
@@ -1247,8 +1247,8 @@ void npcAct068(npc * NPC) // Balrog, Running (boss)
 
 void npcAct069(npc *NPC) //Pignon
 {
-	vector<RECT> rcLeft(6);
-	vector<RECT> rcRight(6);
+	array<RECT, 6> rcLeft;
+	array<RECT, 6> rcRight;
 
 	rcLeft[0] = { 48, 0, 64, 16 };
 	rcLeft[1] = { 64, 0, 80, 16 };
@@ -1368,7 +1368,7 @@ void npcAct069(npc *NPC) //Pignon
 
 void npcAct070(npc * NPC) // Sparkling Item
 {
-	vector<RECT> rcNPC = { {96, 48, 112, 64}, {112, 48, 128, 64}, {128, 48, 144, 64}, {144, 48, 160, 64} };
+	array<RECT, 4> rcNPC = { { {96, 48, 112, 64}, {112, 48, 128, 64}, {128, 48, 144, 64}, {144, 48, 160, 64} } };
 
 	if (++NPC->ani_wait > 3)
 	{
@@ -1405,8 +1405,8 @@ void npcAct071(npc * NPC) // Chinfish (enemy)
 	NPC->x += NPC->xm;
 	NPC->y += NPC->ym;
 
-	vector<RECT> rcLeft = { {64, 32, 80, 48}, {80, 32, 96, 48}, {92, 32, 112, 48} };
-	vector<RECT> rcRight = { {64, 48, 80, 64}, {80, 48, 96, 64}, {96, 48, 112, 64} };
+	array<RECT, 3> rcLeft = { { {64, 32, 80, 48}, {80, 32, 96, 48}, {92, 32, 112, 48} } };
+	array<RECT, 3> rcRight = { { {64, 48, 80, 64}, {80, 48, 96, 64}, {96, 48, 112, 64} } };
 
 	if (++NPC->ani_wait > 4)
 	{
@@ -1448,7 +1448,9 @@ void npcAct072(npc *NPC) // Sprinkler
 		}
 	}
 
-	NPC->doRects({ {224, 48, 240, 64}, {240, 48, 256, 64} });
+	array<RECT, 2> rcNPC = { { {224, 48, 240, 64}, {240, 48, 256, 64} } };
+
+	NPC->doRects(rcNPC);
 }
 
 void npcAct073(npc *NPC) //Water drop
@@ -1484,8 +1486,8 @@ void npcAct073(npc *NPC) //Water drop
 
 void npcAct074(npc *NPC) //Jack
 {
-	vector<RECT> rcLeft(6);
-	vector<RECT> rcRight(6);
+	array<RECT, 6> rcLeft;
+	array<RECT, 6> rcRight;
 
 	rcLeft[0] = { 64, 0, 80, 16 };
 	rcLeft[1] = { 80, 0, 96, 16 };
@@ -1577,7 +1579,7 @@ void npcAct074(npc *NPC) //Jack
 
 void npcAct075(npc * NPC) // Kanpachi
 {
-	vector<RECT> rcNPC = { {272, 32, 296, 56}, {296, 32, 320, 56} };
+	array<RECT, 2> rcNPC = { { {272, 32, 296, 56}, {296, 32, 320, 56} } };
 
 	if (NPC->act_no)
 	{
@@ -1647,8 +1649,8 @@ void npcAct078(npc *NPC) //Pot
 
 void npcAct079(npc *NPC) // Mahin
 {
-	vector<RECT> rcLeft = { { 0, 0, 16, 16 },{ 16, 0, 32, 16 },{ 32, 0, 48, 16 } };
-	vector<RECT> rcRight = { { 0, 16, 16, 32 },{ 16, 16, 32, 32 },{ 32, 16, 48, 32 } };
+	array<RECT, 3> rcLeft = { { { 0, 0, 16, 16 }, { 16, 0, 32, 16 }, { 32, 0, 48, 16 } } };
+	array<RECT, 3> rcRight = { { { 0, 16, 16, 32 }, { 16, 16, 32, 32 }, { 32, 16, 48, 32 } } };
 
 	if (!NPC->act_no)
 	{

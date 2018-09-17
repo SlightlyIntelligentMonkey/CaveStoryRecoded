@@ -1,6 +1,6 @@
 #include "npc240.h"
 
-#include <vector>
+#include <array>
 #include "render.h"
 #include "player.h"
 #include "level.h"
@@ -11,12 +11,12 @@
 #include "sound.h"
 #include "game.h"
 
-using std::vector;
+using std::array;
 
 void npcAct241(npc *NPC) // Critter, Hopping Red (enemy)
 {
-    vector<RECT> rcLeft = {{0, 0, 16, 16}, {16, 0, 32, 16}, {32, 0, 48, 16}};
-    vector<RECT> rcRight = {{0, 16, 16, 32}, {16, 16, 32, 32}, {32, 16, 48, 32}};
+	array<RECT, 3> rcLeft = { {{0, 0, 16, 16}, {16, 0, 32, 16}, {32, 0, 48, 16}} };
+	array<RECT, 3> rcRight = { {{0, 16, 16, 32}, {16, 16, 32, 32}, {32, 16, 48, 32}} };
 
     enum
     {
@@ -131,8 +131,8 @@ void npcAct242(npc *NPC) // Bat, Red Wave (enemy)
     NPC->x += NPC->xm;
     NPC->y += NPC->ym;
 
-    vector<RECT> rcLeft = {{32, 32, 48, 48}, {48, 32, 64, 48}, {64, 32, 80, 48}, {80, 32, 96, 48}};
-    vector<RECT> rcRight = {{32, 48, 48, 64}, {48, 48, 64, 64}, {64, 48, 80, 64}, {80, 48, 96, 64}};
+	array<RECT, 4> rcLeft = { {{32, 32, 48, 48}, {48, 32, 64, 48}, {64, 32, 80, 48}, {80, 32, 96, 48}} };
+	array<RECT, 4> rcRight = { {{32, 48, 48, 64}, {48, 48, 64, 64}, {64, 48, 80, 64}, {80, 48, 96, 64}} };
 
     NPC->animate(1, 0, 2);
     NPC->doRects(rcLeft, rcRight);
@@ -189,7 +189,7 @@ void npcAct244(npc *NPC)
 
 void npcAct245(npc *NPC) // Generator - Lava Drop
 {
-	vector<RECT> rcNPC = {{0, 0, 0, 0}, {104, 0, 112, 16}, {112, 0, 120, 16}, {120, 0, 128, 16}};
+	array<RECT, 4> rcNPC = { {{0, 0, 0, 0}, {104, 0, 112, 16}, {112, 0, 120, 16}, {120, 0, 128, 16}} };
 
 	if (NPC->act_no)
 	{
@@ -240,7 +240,7 @@ endOfAI:
 
 void npcAct246(npc *NPC) // Press, Proximity (enemy)
 {
-    vector<RECT> rcNPC = {{144, 112, 160, 136}, {160, 112, 176, 136}, {176, 112, 196, 136}};
+	array<RECT, 3> rcNPC = { {{144, 112, 160, 136}, {160, 112, 176, 136}, {176, 112, 196, 136}} };
 
     switch (NPC->act_no)
     {
@@ -328,7 +328,9 @@ void npcAct253(npc *NPC) // Energy Capsule
 		NPC->cond = 0;
 	}
 
-	NPC->doRects({ {0, 64, 16, 80}, {16, 64, 32, 80} });
+	array<RECT, 2> rcNPC = { { {0, 64, 16, 80}, {16, 64, 32, 80} } };
+
+	NPC->doRects(rcNPC);
 }
 
 void npcAct254(npc *NPC) // Helicopter
@@ -371,15 +373,13 @@ void npcAct254(npc *NPC) // Helicopter
         break;
     }
 
-    vector<RECT> rcLeft = {{0, 0, 128, 64}};
-    vector<RECT> rcRight = {{0, 64, 128, 128}};
-    NPC->doRects(rcLeft, rcRight);
+	NPC->doRects({ 0, 0, 128, 64 }, { 0, 64, 128, 128 });
 }
 
 void npcAct255(npc *NPC) // Helicopter Blades
 {
-    vector<RECT> rcLeft = {{128, 0, 240, 16}, {128, 16, 240, 32}, {128, 32, 240, 48}, {128, 16, 240, 32}};
-    vector<RECT> rcRight = {{240, 0, 320, 16}, {240, 16, 320, 32}, {240, 32, 320, 48}, {240, 16, 320, 32}};
+	array<RECT, 4> rcLeft = { {{128, 0, 240, 16}, {128, 16, 240, 32}, {128, 32, 240, 48}, {128, 16, 240, 32}} };
+	array<RECT, 4> rcRight = { { {240, 0, 320, 16}, {240, 16, 320, 32}, {240, 32, 320, 48}, {240, 16, 320, 32} } };
 
     switch (NPC->act_no)
     {
@@ -431,7 +431,7 @@ void npcAct255(npc *NPC) // Helicopter Blades
 
 void npcAct258(npc *NPC) // Mimiga, sleeping
 {
-    NPC->doRects({{48, 32, 64, 48}});
+    NPC->doRects({48, 32, 64, 48});
 }
 
 void npcAct259(npc *NPC) // Sleeping mimiga
