@@ -356,7 +356,6 @@ void npcAct081(npc *NPC) //Big pignon
 
 void npcAct082(npc *NPC) //Misery standing
 {
-	int something; //This is like, set to act_wait - 30 after act_wait is increased by 1? Then it does weird shit in an if statement???
 	array<RECT, 9> rcLeft;
 	array<RECT, 9> rcRight;
 
