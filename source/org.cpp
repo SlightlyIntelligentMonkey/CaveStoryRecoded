@@ -114,14 +114,14 @@ void mixOrg(int16_t *stream, int len)
 					const int samplesPerBeat = sampleRate * org.wait / 1000;
 					const int samplesPerFrame = sampleRate * framerate / 1000;
 
-					if (++org.samples > samplesPerBeat)
+					if (org.samples-- == 0)
 					{
 						if (orgFadeout && orgVolume > 0)
 							orgVolume -= 2;
 						if (orgVolume < 0)
 							orgVolume = 0;
 						playData();
-						org.samples = 0;
+						org.samples = samplesPerBeat;
 					}
 
 					if (++org.samplesForFrame > samplesPerFrame)
