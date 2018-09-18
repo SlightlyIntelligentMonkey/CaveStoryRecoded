@@ -11,14 +11,9 @@
 #include "mathUtils.h"
 #include "valueview.h"
 #include "game.h"
-<<<<<<< HEAD
-
-#include <cstring>
 #include <SDL.h>
-=======
 #include "level.h"
 #include "npc.h"
->>>>>>> upstream/master
 
 using std::memset;
 

@@ -178,11 +178,7 @@
       <Filter>Source Files\modules\collision</Filter>
     </ClCompile>
     <ClCompile Include="bulletCollision.cpp">
-<<<<<<< HEAD
-      <Filter>Resource Files\Source Files\modules\collision</Filter>
-=======
       <Filter>Source Files\modules\collision</Filter>
->>>>>>> upstream/master
     </ClCompile>
     <ClCompile Include="spur.cpp">
       <Filter>Source Files\classes\bullet\act</Filter>
@@ -456,10 +452,6 @@
     <ClInclude Include="pxt.h">
       <Filter>Source Files\modules\sound</Filter>
     </ClInclude>
-<<<<<<< HEAD
-    <ClInclude Include="pxt.h">
-      <Filter>Source Files\modules\sound</Filter>
-=======
     <ClInclude Include="bossCollision.h">
       <Filter>Source Files\modules\collision</Filter>
     </ClInclude>
@@ -471,7 +463,6 @@
     </ClInclude>
     <ClInclude Include="resource.h">
       <Filter>Header Files</Filter>
->>>>>>> upstream/master
     </ClInclude>
     <ClInclude Include="bossCollision.h">
       <Filter>Header Files</Filter>

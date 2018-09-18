@@ -1,11 +1,11 @@
-﻿#include "npc.h"
-
-#include <deque>
+﻿#include <deque>
 #include <vector>
 #include <string>
 #include <cmath>
 #include <cstring>
-#include <SDL_rwops.h>
+#include <SDL.h>
+
+#include "npc.h"
 #include "npcAct.h"
 #include "weapons.h"
 #include "mathUtils.h"
@@ -16,19 +16,8 @@
 #include "flags.h"
 #include "game.h"
 #include "caret.h"
-<<<<<<< HEAD
-
-#include <deque>
-#include <vector>
-#include <string>
-#include <cmath>
-#include <cstring>
-#include <SDL_rwops.h>
-#include <SDL.h>
-=======
 #include "main.h"
 #include "npcCollision.h"
->>>>>>> upstream/master
 
 using std::memset;
 using std::string;

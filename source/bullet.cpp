@@ -2,10 +2,7 @@
 
 #include <string>
 #include <deque>
-<<<<<<< HEAD
 #include <SDL.h>
-=======
->>>>>>> upstream/master
 #include <cstring>
 #include <SDL_messagebox.h>
 #include "weapons.h"

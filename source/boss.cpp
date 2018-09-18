@@ -64,13 +64,9 @@ void updateBoss()
 
 		wasNotifiedAbout[bossObj[0].code_char] = true;
 		string msg = "Boss " + to_string(bossObj[0].code_char) + " is not implementated yet.";
-<<<<<<< HEAD
-		SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_WARNING, "Missing Boss", msg.c_str(), nullptr);
-=======
 		logWarning(msg);
 		if (debugFlags & notifyOnNotImplemented)
             SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_WARNING, "Missing Boss", msg.c_str(), nullptr);
->>>>>>> upstream/master
     }
 
     bossHitMap();
@@ -78,11 +74,7 @@ void updateBoss()
 
 void drawBoss()
 {
-<<<<<<< HEAD
-	for (size_t bos = 0; bos < BOSSNPCS; bos++)
-=======
 	for (size_t i = 0; i < BOSSNPCS; i++)
->>>>>>> upstream/master
 	{
 		size_t bos = (BOSSNPCS - 1) - i;
 
