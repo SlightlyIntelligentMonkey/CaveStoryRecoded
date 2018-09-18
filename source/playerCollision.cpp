@@ -820,7 +820,6 @@ void playerHitNpcs()
 
 void playerHitBosses()
 {
-	int hit = 0;
     player *me = &currentPlayer;
     const RECT *rcHit = &me->hit;
 
