@@ -31,6 +31,9 @@ int charScale = 2;
 
 int framerate = 20; //17 for 60-ish fps
 
+static SDL_Surface *cursor_surface;
+static SDL_Cursor *cursor;
+
 #ifdef USE_ICONS_SDL2
 extern const char binary_res_icon_mini_bmp_start[];
 extern const char binary_res_icon_mini_bmp_end[];
@@ -72,6 +75,15 @@ int createWindow(int width, int height, int scale, bool fullscreen)
 	//Set renderer
 	if (!renderer)
 		renderer = SDL_CreateRenderer(window, -1, 0);
+
+	// TODO free these when closing-down
+	cursor_surface = IMG_Load("data/Cursor/cursor_normal.png");
+	if (cursor_surface)
+	{
+		cursor = SDL_CreateColorCursor(cursor_surface, 0, 0);	// Don't worry, the hotspots are accurate to the original files
+		if (cursor)
+			SDL_SetCursor(cursor);
+	}
 
 	return 0;
 }
