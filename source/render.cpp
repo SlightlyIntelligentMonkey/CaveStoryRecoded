@@ -174,10 +174,6 @@ void createTextureBuffer(enum TextureNums texture_id, int width, int height)
 	sprites[texture_id] = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_RGB888, SDL_TEXTUREACCESS_TARGET, width, height);//SDL_CreateTextureFromSurface(renderer, surface);
 }
 
-
-//uint8_t colorValTbl[] = { 0, 52, 87, 116, 144, 172, 206, 255 };
-uint8_t colorValTbl[] = { 0, 73, 109, 146, 182, 219, 255 };
-
 //Texture and drawing stuff
 void loadImage(const char *file, SDL_Texture **tex)
 {
@@ -200,6 +196,8 @@ void loadImage(const char *file, SDL_Texture **tex)
 		doError();
 }
 
+//loads images with limited colors
+uint8_t colorValTbl[] = { 0, 52, 87, 116, 144, 172, 206, 255 };
 void loadImageBad(const char *file, SDL_Texture **tex)
 {
 	SDL_Surface *surface;

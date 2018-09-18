@@ -820,6 +820,7 @@ void playerHitNpcs()
 
 void playerHitBosses()
 {
+	int hit = 0;
     player *me = &currentPlayer;
     const RECT *rcHit = &me->hit;
 
@@ -862,6 +863,7 @@ void playerHitBosses()
                 if (bossObj[i].bits & npc_interact)
                 {
                     startTscEvent(bossObj[i].code_event);
+
                     me->xm = 0;
                     me->ques = 0;
                 }

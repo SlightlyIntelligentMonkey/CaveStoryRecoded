@@ -1,11 +1,11 @@
-﻿#include "npc.h"
-
-#include <deque>
+﻿#include <deque>
 #include <vector>
 #include <string>
 #include <cmath>
 #include <cstring>
-#include <SDL_rwops.h>
+#include <SDL.h>
+
+#include "npc.h"
 #include "npcAct.h"
 #include "weapons.h"
 #include "mathUtils.h"
@@ -646,6 +646,14 @@ void npc::draw()
 			drawNumber(life, (x - side) / 0x200 - viewport.x / 0x200 + xOffset, (y - view.top) / 0x200 - viewport.y / 0x200 - 24, true);
 			drawTexture(sprites[TEX_TEXTBOX], &rcPer, (x - side) / 0x200 - viewport.x / 0x200 + xOffset + 32, (y - view.top) / 0x200 - viewport.y / 0x200 - 24);
 			drawNumber(npcTable[code_char].life, (x - side) / 0x200 - viewport.x / 0x200 + xOffset + 40, (y - view.top) / 0x200 - viewport.y / 0x200 - 24, true);
+		}
+
+		if (debugFlags & showHitRects)
+		{
+			SDL_SetRenderDrawColor(renderer, 0x80, 0x80, 0x80, 0xFF);
+			drawRect(unitsToPixels(x - hit.left) - unitsToPixels(viewport.x),
+				unitsToPixels(y - hit.top) - unitsToPixels(viewport.y),
+				unitsToPixels(hit.left + hit.right), unitsToPixels(hit.top + hit.bottom));
 		}
 	}
 }

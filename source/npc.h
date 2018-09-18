@@ -145,13 +145,18 @@ public:
 
 	void doRects(RECT rcLeft, RECT rcRight);
 	void doRects(RECT rcNPC);
+
 	void facePlayer();
     int getXDistToPlayer() attrPure;
+
 	void limitXVel(int maxVel);
 	void limitYVel(int maxVel);
+
 	void moveInDir(int vel);
+
 	void accelerateTowardsXTarget(int vel);
 	void accelerateTowardsYTarget(int vel);
+
 	bool isPlayerWithinDistance(int xDist, int yDistHigh, int yDistLow) attrPure;
 	inline bool isPlayerWithinDistance(int xDist, int yDist) attrPure
 	{
@@ -198,7 +203,7 @@ extern int curlyShootY;
 
 enum NPC_cond
 {
-	npccond_dmgboss = 0x10,
+	npccond_dmgboss = 0x10, //when set damages the main boss
 	npccond_alive = 0x80, //Determines if an npc is alive
 };
 

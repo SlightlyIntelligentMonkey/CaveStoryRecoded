@@ -276,6 +276,9 @@
     <ClCompile Include="log.cpp">
       <Filter>Source Files\modules</Filter>
     </ClCompile>
+    <ClCompile Include="bossCollision.cpp">
+      <Filter>Resource Files\Source Files\modules\collision</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="level.h">
@@ -459,6 +462,9 @@
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="resource.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="bossCollision.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
