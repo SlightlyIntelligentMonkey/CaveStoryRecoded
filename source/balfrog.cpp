@@ -283,7 +283,6 @@ void actBoss_Frog(npc *boss)
 		{
 			boss->act_wait = 0;
 			--boss->count1;
-			deg = boss->direct ? getAtan(boss->x + 0x4000 - currentPlayer.x, boss->y - 4096 - currentPlayer.y) : 
 			deg = boss->direct ? getAtan(boss->x + 0x4000 - currentPlayer.x, boss->y - 4096 - currentPlayer.y) :
 				getAtan(boss->x - 0x4000 - currentPlayer.x, boss->y - 4096 - currentPlayer.y);
 			deg += random(-16, 16);
