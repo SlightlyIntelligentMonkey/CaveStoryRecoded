@@ -60,22 +60,25 @@ void npcAct023(npc *NPC) //Teleporter lights
 
 void npcAct024(npc *NPC) // Power Critter (enemy)
 {
-	array<RECT, 6> rcLeft;
-	array<RECT, 6> rcRight;
+	array<RECT, 6> rcLeft =
+	{{
+        {0, 0, 24, 24},
+        {24, 0, 48, 24},
+        {48, 0, 72, 24},
+        {72, 0, 96, 24},
+        {96, 0, 120, 24},
+        {120, 0, 144, 24},
+    }};
 
-    rcLeft[0] = {0, 0, 24, 24};
-    rcLeft[1] = {24, 0, 48, 24};
-    rcLeft[2] = {48, 0, 72, 24};
-    rcLeft[3] = {72, 0, 96, 24};
-    rcLeft[4] = {96, 0, 120, 24};
-    rcLeft[5] = {120, 0, 144, 24};
-
-    rcRight[0] = {0, 24, 24, 48};
-    rcRight[1] = {24, 24, 48, 48};
-    rcRight[2] = {48, 24, 72, 48};
-    rcRight[3] = {72, 24, 96, 48};
-    rcRight[4] = {96, 24, 120, 48};
-	rcRight[5] = {120, 24, 144, 48};
+	array<RECT, 6> rcRight =
+	{{
+        {0, 24, 24, 48},
+	    {24, 24, 48, 48},
+	    {48, 24, 72, 48},
+	    {72, 24, 96, 48},
+	    {96, 24, 120, 48},
+	    {120, 24, 144, 48},
+    }};
 
 	enum
 	{

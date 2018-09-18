@@ -313,6 +313,117 @@ void npcAct246(npc *NPC) // Press, Proximity (enemy)
     NPC->doRects(rcNPC);
 }
 
+enum
+{
+    init = 0,
+    stand = 1,
+    blink = 2,
+    jumpFromThrone = 20,
+    standAfterJumpFromThrone = 21,
+    blinkAfterJumpFromThrone = 22,
+    fighting = 100,
+    flashForSpell = 110,
+    startTeleportAway = 112,
+    summonBlock = 113,
+    teleporingAway = 150,
+    summonBalls = 160,
+    defeated = 1000,
+    shake = 1001,
+    fallToGround = 1010,
+};
+
+void npcAct247(npc *NPC)
+{
+    array<RECT, 9> rcLeft =
+    {{
+        { 0, 0, 16, 16 },
+        { 16, 0, 32, 16},
+        { 32, 0, 48, 16},
+        { 48, 0, 64, 16 },
+        { 64, 0, 80, 16 },
+        { 80, 0, 96, 16 },
+        { 96, 0, 112, 16},
+        { 0, 0, 0, 0 },
+        { 112, 0, 128, 16 },
+    }};
+
+    array<RECT, 9> rcRight =
+    {{
+        { 0, 16, 16, 32},
+        { 16, 16, 32, 32},
+        { 32, 16, 48, 32},
+        { 48, 16, 64, 32},
+        { 64, 16, 80, 32},
+        { 80, 16, 96, 32},
+        { 96, 16, 112, 32},
+        { 0, 0, 0, 0},
+        { 112, 0, 128, 32},
+    }};
+
+    switch (NPC->act_no)
+    {
+    case init:
+        NPC->act_no = 1;
+        NPC->y += pixelsToUnits(6);
+        NPC->tgt_y = tilesToUnits(4);
+        // Fallthrough
+    case stand:
+        if (!random(0, 120))
+        {
+            NPC->act_no = blink;
+            NPC->act_wait = 0;
+            NPC->ani_no = 1;
+        }
+        break;
+
+    case blink:
+        if (++NPC->act_wait > 8)
+        {
+            NPC->act_no = stand;
+            NPC->ani_no = 0;
+        }
+        break;
+
+    case jumpFromThrone:
+        NPC->xm = 0;
+        NPC->ym += 0x40;
+        if (NPC->flag & ground)
+        {
+            NPC->act_no = standAfterJumpFromThrone;
+            NPC->ani_no = 2;
+        }
+        break;
+
+    case standAfterJumpFromThrone:
+        logDebug("Yeah got to stand thingy");
+        ++NPC->act_no;
+        break;
+
+    case flashForSpell + 1:
+        if (++NPC->act_wait & 1)
+            NPC->ani_no = 5;
+        else
+            NPC->ani_no = 6;
+
+        if (NPC->act_wait > 30)
+        {
+            NPC->act_wait = 0;
+            if (++NPC->count1 % 3)
+                NPC->act_no = startTeleportAway;
+            else
+                NPC->act_no = summonBlock;
+            NPC->ani_no = 4;
+        }
+    }
+
+    NPC->limitXVel(pixelsToUnits(1));
+    NPC->limitYVel(pixelsToUnits(2));
+    NPC->x += NPC->xm;
+    NPC->y += NPC->ym;
+
+    NPC->doRects(rcLeft, rcRight);
+}
+
 void npcAct253(npc *NPC) // Energy Capsule
 {
 	if (!NPC->act_no)

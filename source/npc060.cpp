@@ -6,6 +6,7 @@
 #include "sound.h"
 #include "game.h"
 #include "level.h"
+#include "render.h"
 
 using std::array;
 
@@ -13,25 +14,40 @@ void npcAct060(npc *NPC) //Toroko
 {
 	constexpr int frameMap[11] = { 0, 1, 2, 1, 3, 4, 5, 4, 6, 7, 8 };
 
+	enum
+	{
+	    init = 0,
+	    stand = 1,
+	    blink = 2,
+        startRunning = 3,
+        running = 4,
+        jumpThenRun = 6,
+        inAir = 7,
+        jumpOnTheSpot = 8,
+        fallDown = 10,
+        fallen = 11,
+	};
+
 	switch(NPC->act_no)
 	{
-	case 0: //Stand still and blink
-		NPC->act_no = 1;
+	case init: //Stand still and blink
+		NPC->act_no = stand;
 		NPC->ani_no = 0;
 		NPC->ani_wait = 0;
 		NPC->xm = 0;
 	// Fallthrough
-	case 1:
+	case stand:
 		//Blink randomly
-		if (random(0, 120) == 10)
+		if (!random(0, 120))
 		{
-			NPC->act_no = 2;
+			NPC->act_no = blink;
 			NPC->act_wait = 0;
 			NPC->ani_no = 1;
 		}
 
 		//Face towards player if nearby
-		if (NPC->x - 0x2000 < currentPlayer.x && NPC->x + 0x2000 > currentPlayer.x && NPC->y - 0x2000 < currentPlayer.y && NPC->y + 0x2000 > currentPlayer.y)
+		if (NPC->x - tilesToUnits(1) < currentPlayer.x && NPC->x + tilesToUnits(1) > currentPlayer.x
+            && NPC->y - tilesToUnits(1) < currentPlayer.y && NPC->y + tilesToUnits(1) > currentPlayer.y)
 		{
 			if (NPC->x <= currentPlayer.x)
 				NPC->direct = dirRight;
@@ -45,26 +61,19 @@ void npcAct060(npc *NPC) //Toroko
 		//Blink for 8 frames
 		if (++NPC->act_wait > 8)
 		{
-			NPC->act_no = 1;
+			NPC->act_no = stand;
 			NPC->ani_no = 0;
 		}
 		break;
 
-	case 3: //Running
-		NPC->act_no = 4;
+	case startRunning: //Running
+		NPC->act_no = running;
 		NPC->ani_no = 1;
 		NPC->ani_wait = 0;
 	// Fallthrough
-	case 4:
+	case running:
 		//Animate
-		if (++NPC->ani_wait > 2)
-		{
-			NPC->ani_wait = 0;
-			++NPC->ani_no;
-		}
-
-		if (NPC->ani_no > 4)
-			NPC->ani_no = 1;
+		NPC->animate(2, 1, 4);
 
 		//Turn when hit wall
 		if (NPC->flag & leftWall)
@@ -79,68 +88,50 @@ void npcAct060(npc *NPC) //Toroko
 		}
 
 		//Run in facing direction
-		if (NPC->direct != dirLeft)
-			NPC->xm = 0x400;
-		else
-			NPC->xm = -0x400;
+		NPC->moveInDir(pixelsToUnits(2));
 
 		break;
 
-	case 6: //Jump then run
-		NPC->act_no = 7;
+	case jumpThenRun: //Jump then run
+		NPC->act_no = inAir;
 		NPC->act_wait = 0;
 		NPC->ani_no = 1;
 		NPC->ani_wait = 0;
 		NPC->ym = -0x400;
 	// Fallthrough
-	case 7: //In air
+	case inAir: //In air
 		//Animate
-		if (++NPC->ani_wait > 2)
-		{
-			NPC->ani_wait = 0;
-			++NPC->ani_no;
-		}
-
-		if (NPC->ani_no > 4)
-			NPC->ani_no = 1;
 
 		//Run in facing direction
-		if (NPC->direct != dirLeft)
-			NPC->xm = 0x100;
-		else
-			NPC->xm = -0x100;
+		NPC->moveInDir(pixelsToUnits(0.5));
 
 		if (++NPC->act_wait > 1 && NPC->flag & ground)
-			NPC->act_no = 3;
+			NPC->act_no = startRunning;
 
 		break;
 
-	case 8: //Jump on the spot (I think this is used in the shack?)
+	case jumpOnTheSpot: //Jump on the spot (I think this is used in the shack?)
 		NPC->ani_no = 1;
 		NPC->act_wait = 0;
-		NPC->act_no = 9;
+		NPC->act_no = jumpOnTheSpot + 1;
 		NPC->ym = -0x200;
 	// Fallthrough
-	case 9:
+	case jumpOnTheSpot + 1:
 		if (++NPC->act_wait > 1 && NPC->flag & ground)
-			NPC->act_no = 0;
+			NPC->act_no = init;
 
 		break;
 
-	case 10: //Fall down
-		NPC->act_no = 11;
+	case fallDown: //Fall down
+		NPC->act_no = fallen;
 		NPC->ani_no = 9;
-		NPC->ym = -0x400;
+		NPC->ym = pixelsToUnits(-2);
 		playSound(SFX_EnemySqueal);
 
-		if (NPC->direct != dirLeft)
-			NPC->xm = 0x100;
-		else
-			NPC->xm = -0x100;
-
+		NPC->moveInDir(pixelsToUnits(0.5));
 		break;
 
-	case 11: //Fallen
+	case fallen: //Fallen
 		if (++NPC->act_wait > 1 && NPC->flag & ground)
 		{
 			NPC->act_no = 12;
@@ -160,15 +151,8 @@ void npcAct060(npc *NPC) //Toroko
 	}
 
 	//Move
-	NPC->ym += 0x40;
-
-	if (NPC->ym > 0x5FF)
-		NPC->ym = 0x5FF;
-
-	if (NPC->xm > 0x400)
-		NPC->xm = 0x400;
-	if (NPC->xm < -0x400)
-		NPC->xm = -0x400;
+	NPC->doGravity(0x40, 0x5FF);
+    NPC->limitXVel(pixelsToUnits(2));
 
 	NPC->x += NPC->xm;
 	NPC->y += NPC->ym;
@@ -184,32 +168,35 @@ void npcAct060(npc *NPC) //Toroko
 
 void npcAct061(npc *NPC) //King
 {
-	array<RECT, 11> rcLeft;
-	array<RECT, 11> rcRight;
+	array<RECT, 11> rcLeft =
+	{{
+        { 224, 32, 240, 48 },
+        { 240, 32, 256, 48 },
+        { 256, 32, 272, 48 },
+        { 272, 32, 288, 48 },
+        { 288, 32, 304, 48 },
+        { 224, 32, 240, 48 },
+        { 304, 32, 320, 48 },
+        { 224, 32, 240, 48 },
+        { 272, 32, 288, 48 },
+        { 0, 0, 0, 0 },
+        { 96, 32, 112, 48 },
+    }};
 
-	rcLeft[0] = { 224, 32, 240, 48 };
-	rcLeft[1] = { 240, 32, 256, 48 };
-	rcLeft[2] = { 256, 32, 272, 48 };
-	rcLeft[3] = { 272, 32, 288, 48 };
-	rcLeft[4] = { 288, 32, 304, 48 };
-	rcLeft[5] = { 224, 32, 240, 48 };
-	rcLeft[6] = { 304, 32, 320, 48 };
-	rcLeft[7] = { 224, 32, 240, 48 };
-	rcLeft[8] = { 272, 32, 288, 48 };
-	rcLeft[9] = { 0, 0, 0, 0 };
-	rcLeft[10] = { 96, 32, 112, 48 };
-
-	rcRight[0] = { 224, 48, 240, 64 };
-	rcRight[1] = { 240, 48, 256, 64 };
-	rcRight[2] = { 256, 48, 272, 64 };
-	rcRight[3] = { 272, 48, 288, 64 };
-	rcRight[4] = { 288, 48, 304, 64 };
-	rcRight[5] = { 224, 48, 240, 64 };
-	rcRight[6] = { 304, 48, 320, 64 };
-	rcRight[7] = { 224, 48, 240, 64 };
-	rcRight[8] = { 272, 48, 288, 64 };
-	rcRight[9] = { 0, 0, 0, 0 };
-	rcRight[10] = { 112, 32, 128, 48 };
+	array<RECT, 11> rcRight =
+	{{
+        { 224, 48, 240, 64 },
+        { 240, 48, 256, 64 },
+        { 256, 48, 272, 64 },
+        { 272, 48, 288, 64 },
+        { 288, 48, 304, 64 },
+        { 224, 48, 240, 64 },
+        { 304, 48, 320, 64 },
+        { 224, 48, 240, 64 },
+        { 272, 48, 288, 64 },
+        { 0, 0, 0, 0 },
+        { 112, 32, 128, 48 },
+    }};
 
 	switch (NPC->act_no)
 	{
@@ -220,7 +207,7 @@ void npcAct061(npc *NPC) //King
 		NPC->xm = 0;
 	// Fallthrough
 	case 1:
-		if (random(0, 120) == 10)
+		if (!random(0, 120))
 		{
 			NPC->act_no = 2;
 			NPC->act_wait = 0;
@@ -245,16 +232,13 @@ void npcAct061(npc *NPC) //King
 		NPC->act_no = 7;
 		NPC->act_wait = 0;
 		NPC->ani_wait = 0;
-		NPC->ym = -0x400;
+		NPC->ym = pixelsToUnits(-2);
 	// Fallthrough
 	case 7:
 		NPC->ani_no = 2;
 
 		//Move in "facing" direction
-		if (NPC->direct != dirLeft)
-			NPC->xm = 512;
-		else
-			NPC->xm = -512;
+		NPC->moveInDir(pixelsToUnits(1));
 
 		if (++NPC->act_wait > 1 && NPC->flag & ground)
 			NPC->act_no = 5;
@@ -267,20 +251,10 @@ void npcAct061(npc *NPC) //King
 	// Fallthrough
 	case 9:
 		//Animate
-		if (++NPC->ani_wait > 4)
-		{
-			NPC->ani_wait = 0;
-			++NPC->ani_no;
-		}
-
-		if (NPC->ani_no > 7)
-			NPC->ani_no = 4;
+		NPC->animate(4, 4, 7);
 
 		//Walk forward
-		if (NPC->direct != dirLeft)
-			NPC->xm = 0x200;
-		else
-			NPC->xm = -0x200;
+		NPC->moveInDir(pixelsToUnits(1));
 
 		break;
 
@@ -291,20 +265,10 @@ void npcAct061(npc *NPC) //King
 	// Fallthrough
 	case 11:
 		//Animate
-		if (++NPC->ani_wait > 2)
-		{
-			NPC->ani_wait = 0;
-			++NPC->ani_no;
-		}
-
-		if (NPC->ani_no > 7)
-			NPC->ani_no = 4;
+		NPC->animate(2, 4, 7);
 
 		//Run forward
-		if (NPC->direct != dirLeft)
-			NPC->xm = 0x400;
-		else
-			NPC->xm = -0x400;
+		NPC->moveInDir(pixelsToUnits(2));
 
 		break;
 
@@ -324,10 +288,7 @@ void npcAct061(npc *NPC) //King
 		NPC->ani_no = 2;
 
 		//Fly in current direction (knockback frame is backwards, though)
-		if (NPC->direct != dirLeft)
-			NPC->xm = 0x600;
-		else
-			NPC->xm = -0x600;
+		NPC->moveInDir(pixelsToUnits(3));
 
 		if (NPC->flag & leftWall)
 		{
@@ -337,12 +298,12 @@ void npcAct061(npc *NPC) //King
 			NPC->act_wait = 0;
 			NPC->ani_wait = 0;
 
-			NPC->ym = -0x400;
-			NPC->xm = 0x200;
+			NPC->ym = pixelsToUnits(-2);
+			NPC->xm = pixelsToUnits(1);
 
 			playSound(SFX_QuoteSmashIntoGround);
 
-			createSmokeLeft(NPC->x, NPC->y, 2048, 4);
+			createSmokeLeft(NPC->x, NPC->y, pixelsToUnits(4), 4);
 		}
 		break;
 
@@ -375,7 +336,7 @@ void npcAct061(npc *NPC) //King
 		NPC->ani_no = 6;
 		NPC->act_no = 61;
 
-		NPC->xm = 0x400;
+		NPC->xm = pixelsToUnits(2);
 		NPC->ym = -0x5FF;
 
 		NPC->count2 = 1; //Hold his sword up
@@ -399,15 +360,8 @@ void npcAct061(npc *NPC) //King
 	//Gravity and speed limit stuff
 	if (NPC->act_no <= 29 || NPC->act_no > 39)
 	{
-		NPC->ym += 0x40;
-
-		if (NPC->xm > 0x400)
-			NPC->xm = 0x400;
-		if (NPC->xm < -0x400)
-			NPC->xm = -0x400;
-
-		if (NPC->ym > 0x5FF)
-			NPC->ym = 0x5FF;
+		NPC->limitXVel(pixelsToUnits(2));
+		NPC->doGravity(0x40, 0x5FF);
 	}
 
 	//Move
@@ -434,28 +388,22 @@ void npcAct062(npc *NPC) // Kazuma, facing away
 	switch (NPC->act_no)
 	{
 	case initial:
-		NPC->x -= 0x800;
-		NPC->y += 0x2000;
+		NPC->x -= pixelsToUnits(4);
+		NPC->y += tilesToUnits(1);
 		NPC->act_no = typing;
 		NPC->ani_no = 0;
 		NPC->ani_wait = 0;
 	// Fallthrough
 	case typing:
-		if (++NPC->ani_wait > 2)
-		{
-			NPC->ani_wait = 0;
-			++NPC->ani_no;
-		}
-		if (NPC->ani_no > 1)
-			NPC->ani_no = 0;
+	    NPC->animate(2, 0, 1);
 
-		if (random(0, 80) == 1)
+		if (!random(0, 80))
 		{
 			NPC->act_no = slouch;
 			NPC->act_wait = 0;
 			NPC->ani_no = 2;
 		}
-		if (random(0, 120) == 10)
+		if (!random(0, 120))
 		{
 			NPC->act_no = upright;
 			NPC->act_wait = 0;
@@ -517,18 +465,9 @@ void npcAct063(npc *NPC) // Toroko, panicking
 		if (NPC->ym > 0)
 			NPC->bits &= ~npc_ignoreSolid;
 
-		if (++NPC->ani_wait > 2)
-		{
-			NPC->ani_wait = 0;
-			++NPC->ani_no;
-		}
-		if (NPC->ani_no > 3)
-			NPC->ani_no = 0;
+        NPC->animate(2, 0, 3);
 
-		if (NPC->direct != dirLeft)
-			NPC->xm = 0x100;
-		else
-			NPC->xm = -0x100;
+        NPC->moveInDir(pixelsToUnits(0.5));
 
 		if (NPC->act_wait++ && NPC->flag & ground)
 			NPC->act_no = 2;
@@ -541,13 +480,7 @@ void npcAct063(npc *NPC) // Toroko, panicking
 		NPC->ani_wait = 0;
 	// Fallthrough
 	case 3:
-		if (++NPC->ani_wait > 2)
-		{
-			NPC->ani_wait = 0;
-			++NPC->ani_no;
-		}
-		if (NPC->ani_no > 3)
-			NPC->ani_no = 0;
+	    NPC->animate(2, 0, 3);
 
 		if (++NPC->act_wait > 50)
 		{
@@ -562,26 +495,20 @@ void npcAct063(npc *NPC) // Toroko, panicking
 		if (NPC->act_wait > 35)
 			NPC->bits |= npc_shootable;
 
-		if (NPC->direct != dirLeft)
-			NPC->xm += 0x40;
-		else
-			NPC->xm -= 0x40;
+        NPC->moveInDir(0x40);
 
 		if (NPC->shock)
 		{
 			NPC->act_no = 4;
 			NPC->ani_no = 4;
-			NPC->ym = -0x400;
+			NPC->ym = pixelsToUnits(-2);
 			NPC->bits &= ~npc_shootable;
 			NPC->damage = 0;
 		}
 		break;
 
 	case 4:
-		if (NPC->direct != dirLeft)
-			NPC->xm = 0x100;
-		else
-			NPC->xm = -0x100;
+	    NPC->moveInDir(pixelsToUnits(0.5));
 
 		if (NPC->act_wait++ && NPC->flag & ground)
 		{
@@ -598,13 +525,8 @@ void npcAct063(npc *NPC) // Toroko, panicking
 		break;
 	}
 
-	NPC->ym += 0x40;
-	if (NPC->xm > 0x400)
-		NPC->xm = 0x400;
-	if (NPC->xm < -0x400)
-		NPC->xm = -0x400;
-	if (NPC->ym > 0x5FF)
-		NPC->ym = 0x5FF;
+	NPC->doGravity(0x40, 0x5FF);
+	NPC->limitXVel(pixelsToUnits(2));
 
 	NPC->x += NPC->xm;
 	NPC->y += NPC->ym;
@@ -635,6 +557,7 @@ void npcAct064(npc *NPC) //First Cave critter
 			NPC->ym = -0x5FF;
 
 			//Jump in direction facing
+			NPC->moveInDir(pixelsToUnits(0.5));
 			if (NPC->direct != dirLeft)
 				NPC->xm = 0x100;
 			else
@@ -670,16 +593,16 @@ void npcAct064(npc *NPC) //First Cave critter
 			++NPC->tgt_x;
 
 		//Timer for looking at Quote
-		if (NPC->act_wait < 8 || NPC->x - 0xE000 >= currentPlayer.x || NPC->x + 0xE000 <= currentPlayer.x || NPC->y - 0xA000 >= currentPlayer.y || NPC->y + 0xA000 <= currentPlayer.y)
+		if (NPC->act_wait < 8
+            || NPC->x - tilesToUnits(7) >= currentPlayer.x || NPC->x + tilesToUnits(7) <= currentPlayer.x
+            || NPC->y - tilesToUnits(5) >= currentPlayer.y || NPC->y + tilesToUnits(5) <= currentPlayer.y)
 		{
 			if (NPC->act_wait <= 7)
 				++NPC->act_wait;
 			NPC->ani_no = 0;
 		}
 		else
-		{
 			NPC->ani_no = 1;
-		}
 
 		//If shocked, jump
 		if (NPC->shock)
@@ -693,10 +616,10 @@ void npcAct064(npc *NPC) //First Cave critter
 		//Go into "going to jump" state
 		if (NPC->act_wait >= 8
 		        && NPC->tgt_x >= 100
-		        && NPC->x - 0x8000 < currentPlayer.x
-		        && NPC->x + 0x8000 > currentPlayer.x
-		        && NPC->y - 0xA000 < currentPlayer.y
-		        && NPC->y + 0x6000 > currentPlayer.y)
+		        && NPC->x - tilesToUnits(4) < currentPlayer.x
+		        && NPC->x + tilesToUnits(4) > currentPlayer.x
+		        && NPC->y - tilesToUnits(5) < currentPlayer.y
+		        && NPC->y + tilesToUnits(3) > currentPlayer.y)
 		{
 			NPC->act_no = 2;
 			NPC->act_wait = 0;
@@ -706,9 +629,7 @@ void npcAct064(npc *NPC) //First Cave critter
 	}
 
 	//Gravity
-	NPC->ym += 0x40;
-	if (NPC->ym > 0x5FF)
-		NPC->ym = 0x5FF;
+	NPC->doGravity(0x40, 0x5FF);
 
 	//Move critter
 	NPC->x += NPC->xm;
@@ -741,23 +662,15 @@ void npcAct065(npc *NPC) //First Cave Bat
 			NPC->direct = dirLeft;
 
 		//Fly up and down
-		if (NPC->tgt_y < NPC->y)
-			NPC->ym -= 0x10;
-		if (NPC->tgt_y > NPC->y)
-			NPC->ym += 0x10;
-
-		//Limit speed
-		if (NPC->ym > 0x300)
-			NPC->ym = 0x300;
-		if (NPC->ym < -0x300)
-			NPC->ym = -0x300;
+		NPC->accelerateTowardsYTarget(0x10);
+		NPC->limitYVel(pixelsToUnits(1.5));
 	}
 
 	if (action == 1 && ++NPC->act_wait >= 50)
 	{
 		NPC->act_wait = 0;
 		NPC->act_no = 2;
-		NPC->ym = 0x300;
+		NPC->ym = pixelsToUnits(1.5);
 	}
 
 	//Move bat
@@ -765,13 +678,7 @@ void npcAct065(npc *NPC) //First Cave Bat
 	NPC->y += NPC->ym;
 
 	//Animate
-	if (++NPC->ani_wait > 1)
-	{
-		NPC->ani_wait = 0;
-		++NPC->ani_no;
-	}
-
-	NPC->ani_no %= 3;
+	NPC->animate(1, 0, 2);
 
 	NPC->doRects({ 32 + (NPC->ani_no << 4), 32, 48 + (NPC->ani_no << 4), 48 },
               { 32 + (NPC->ani_no << 4), 48, 48 + (NPC->ani_no << 4), 64 });
@@ -808,20 +715,13 @@ void npcAct066(npc *NPC) //Bubble (to catch Toroko in the shack)
 	// Fallthrough
 	case 1:
 		//Animate
-		if (++NPC->ani_wait > 1)
-		{
-			NPC->ani_wait = 0;
-			++NPC->ani_no;
-		}
-
-		if (NPC->ani_no > 1)
-			NPC->ani_no = 0;
+		NPC->animate(1, 0, 1);
 
 		//Check if hit Toroko
-		if (NPC->x - 0x600 < NPC->tgt_x
-		        && NPC->x + 0x600 > NPC->tgt_x
-		        && NPC->y - 0x600 < NPC->tgt_y
-		        && NPC->y + 0x600 > NPC->tgt_y)
+		if (NPC->x - pixelsToUnits(3) < NPC->tgt_x
+		        && NPC->x + pixelsToUnits(3) > NPC->tgt_x
+		        && NPC->y - pixelsToUnits(3) < NPC->tgt_y
+		        && NPC->y + pixelsToUnits(3) > NPC->tgt_y)
 		{
 			NPC->act_no = 2;
 			NPC->ani_no = 2;
@@ -841,18 +741,10 @@ void npcAct066(npc *NPC) //Bubble (to catch Toroko in the shack)
 		if (NPC->ym < -0x5FF)
 			NPC->ym = -0x5FF;
 
-		if (NPC->y < -4096)
+		if (NPC->y < -0x1000)
 			NPC->cond = 0;
 
-		if (++NPC->ani_wait > 3)
-		{
-			NPC->ani_wait = 0;
-			++NPC->ani_no;
-		}
-
-		if (NPC->ani_no > 3)
-			NPC->ani_no = 2;
-
+        NPC->animate(3, 2, 3);
 		break;
 
 	default:
@@ -898,7 +790,7 @@ void npcAct067(npc *NPC) //Misery floating
 		playSound(29);
 //Fallthrough
 	case 1:
-		NPC->x = NPC->tgt_x + (random(-1, 1) << 9);
+		NPC->x = NPC->tgt_x + pixelsToUnits(random(-1, 1));
 
 		if (++NPC->act_wait >= 32)
 			NPC->act_no = 10;
@@ -908,25 +800,16 @@ void npcAct067(npc *NPC) //Misery floating
 		NPC->act_no = 11;
 		NPC->act_wait = 0;
 		NPC->ani_no = 0;
-		NPC->ym = 0x200;
+		NPC->ym = pixelsToUnits(1);
 //Fallthrough
 	case 11:
-		if (NPC->tgt_y < NPC->y)
-			NPC->ym -= 0x10;
-		if (NPC->tgt_y > NPC->y)
-			NPC->ym += 0x10;
-		if (NPC->ym > 0x100)
-			NPC->ym = 0x100;
-		if (NPC->ym < -0x100)
-			NPC->ym = -0x100;
+	    NPC->accelerateTowardsYTarget(0x10);
+	    NPC->limitYVel(pixelsToUnits(0.5));
 		break;
 
 	case 13: //Fall down to the floor
 		NPC->ani_no = 1;
-		NPC->ym += 0x40;
-
-		if (NPC->ym > 0x5FF)
-			NPC->ym = 0x5FF;
+		NPC->doGravity(0x40, 0x5FF);
 
 		if (NPC->flag & ground)
 		{
@@ -947,7 +830,7 @@ void npcAct067(npc *NPC) //Misery floating
 		if (++NPC->act_wait == 30)
 		{
 			playSound(21);
-			createNpc(NPC_ProjectileMiseryBubble, NPC->x, NPC->y - 0x2000);
+			createNpc(NPC_ProjectileMiseryBubble, NPC->x, NPC->y - tilesToUnits(1));
 		}
 		if (NPC->act_wait >= 50)
 			NPC->act_no = 14;
@@ -961,7 +844,7 @@ void npcAct067(npc *NPC) //Misery floating
 		//Fallthrough
 	case 21:
 		NPC->ym -= 0x20;
-		if (NPC->y < -0x1000)
+		if (NPC->y < tilesToUnits(-0.5))
 			NPC->cond = 0;
 		break;
 
@@ -1052,12 +935,7 @@ void npcAct068(npc * NPC) // Balrog, Running (boss)
 		NPC->act_no = initial + 1;
 		NPC->ani_no = 0;
 		NPC->act_wait = 20;
-
-		// Face player
-		if (NPC->x <= currentPlayer.x)
-			NPC->direct = dirRight;
-		else
-			NPC->direct = dirLeft;
+		NPC->facePlayer();
 		// Fallthrough
 	case initial + 1:
 		if (!--NPC->act_wait)
@@ -1089,10 +967,10 @@ void npcAct068(npc * NPC) // Balrog, Running (boss)
 			NPC->xm -= 0x10;
 
 		if (NPC->act_wait < 8
-			|| NPC->x - 0x1800 >= currentPlayer.x
-			|| NPC->x + 0x1800 <= currentPlayer.x
-			|| NPC->y - 0x1800 >= currentPlayer.y
-			|| NPC->y + 0x1800 <= currentPlayer.y)
+			|| NPC->x - pixelsToUnits(12) >= currentPlayer.x
+			|| NPC->x + pixelsToUnits(12) <= currentPlayer.x
+			|| NPC->y - pixelsToUnits(12) >= currentPlayer.y
+			|| NPC->y + pixelsToUnits(12) <= currentPlayer.y)
 		{
 			++NPC->act_wait;
 			if (NPC->flag & (rightWall | leftWall) || NPC->act_wait > 75)
@@ -1104,7 +982,7 @@ void npcAct068(npc * NPC) // Balrog, Running (boss)
 			{
 				NPC->act_no = jump;
 				NPC->ani_no = 7;
-				NPC->ym = -0x400;
+				NPC->ym = pixelsToUnits(-2);
 			}
 		}
 		else
@@ -1126,10 +1004,10 @@ void npcAct068(npc * NPC) // Balrog, Running (boss)
 		}
 
 		if (NPC->act_wait >= 8
-			&& NPC->x - 0x1800 < currentPlayer.x
-			&& NPC->x + 0x1800 > currentPlayer.x
-			&& NPC->y - 0x1800 < currentPlayer.y
-			&& NPC->y + 0x1800 > currentPlayer.y)
+			&& NPC->x - pixelsToUnits(12) < currentPlayer.x
+			&& NPC->x + pixelsToUnits(12) > currentPlayer.x
+			&& NPC->y - pixelsToUnits(12) < currentPlayer.y
+			&& NPC->y + pixelsToUnits(12) > currentPlayer.y)
 		{
 			NPC->act_no = caughtQuote;
 			NPC->ani_no = 5;
@@ -1162,13 +1040,7 @@ void npcAct068(npc * NPC) // Balrog, Running (boss)
 		currentPlayer.x = NPC->x;
 		currentPlayer.y = NPC->y;
 
-		if (++NPC->ani_wait > 2)
-		{
-			NPC->ani_wait = 0;
-			++NPC->ani_no;
-		}
-		if (NPC->ani_no > 6)
-			NPC->ani_no = 5;
+		NPC->animate(2, 5, 6);
 
 		if (++NPC->act_wait > 100)
 			NPC->act_no = throwQuote;
@@ -1180,19 +1052,19 @@ void npcAct068(npc * NPC) // Balrog, Running (boss)
 
 		if (NPC->direct != dirLeft)
 		{
-			currentPlayer.x -= 0x800;
-			currentPlayer.y -= 0x1000;
+			currentPlayer.x -= pixelsToUnits(4);
+			currentPlayer.y -= pixelsToUnits(8);
 			currentPlayer.xm = -0x5FF;
-			currentPlayer.ym = -0x200;
+			currentPlayer.ym = pixelsToUnits(-1);
 			currentPlayer.direct = dirLeft;
 			NPC->direct = dirLeft;
 		}
 		else
 		{
-			currentPlayer.x += 0x800;
-			currentPlayer.y -= 0x1000;
+			currentPlayer.x += pixelsToUnits(4);
+			currentPlayer.y -= pixelsToUnits(8);
 			currentPlayer.xm = 0x5FF;
-			currentPlayer.ym = -0x200;
+			currentPlayer.ym = pixelsToUnits(-1);
 			currentPlayer.direct = dirLeft;
 			NPC->direct = dirLeft;
 		}
@@ -1211,13 +1083,8 @@ void npcAct068(npc * NPC) // Balrog, Running (boss)
 		break;
 	}
 
-	NPC->ym += 0x20;
-	if (NPC->xm < -0x400)
-		NPC->xm = -0x400;
-	if (NPC->xm > 0x400)
-		NPC->xm = 0x400;
-	if (NPC->ym > 0x5FF)
-		NPC->ym = 0x5FF;
+	NPC->doGravity(0x20, 0x5FF);
+	NPC->limitXVel(pixelsToUnits(2));
 	NPC->x += NPC->xm;
 	NPC->y += NPC->ym;
 
@@ -1313,6 +1180,7 @@ void npcAct069(npc *NPC) //Pignon
 		if (!--NPC->act_wait)
 			NPC->act_no = 0;
 
+        NPC->animate(2, 2, 4);
 		if (++NPC->ani_wait > 2)
 		{
 			NPC->ani_wait = 0;
@@ -1325,23 +1193,20 @@ void npcAct069(npc *NPC) //Pignon
 		if (NPC->flag & leftWall)
 		{
 			NPC->direct = 2;
-			NPC->xm = 0x200; //Overwritten right away
+			NPC->xm = pixelsToUnits(1); //Overwritten right away
 		}
 
 		if (NPC->flag & rightWall)
 		{
 			NPC->direct = 0;
-			NPC->xm = -0x200; //Overwritten right away
+			NPC->xm = pixelsToUnits(-1); //Overwritten right away
 		}
 
-		if (NPC->direct)
-			NPC->xm = 0x100;
-		else
-			NPC->xm = -0x100;
+		NPC->moveInDir(pixelsToUnits(1));
 		break;
 
 	case 5:
-		if (NPC->flag & 8)
+		if (NPC->flag & ground)
 			NPC->act_no = 0;
 		break;
 
@@ -1351,14 +1216,12 @@ void npcAct069(npc *NPC) //Pignon
 
 	if (NPC->act_no < 5 && (1 << NPC->act_no) & 0x16 && NPC->shock)
 	{
-		NPC->ym = -0x200;
+		NPC->ym = pixelsToUnits(-1);
 		NPC->ani_no = 5;
 		NPC->act_no = 5;
 	}
 
-	NPC->ym += 0x40;
-	if (NPC->ym > 0x5FF)
-		NPC->ym = 0x5FF;
+	NPC->doGravity(0x40, 0x5FF);
 
 	NPC->x += NPC->xm;
 	NPC->y += NPC->ym;
@@ -1370,14 +1233,7 @@ void npcAct070(npc * NPC) // Sparkling Item
 {
 	array<RECT, 4> rcNPC = { { {96, 48, 112, 64}, {112, 48, 128, 64}, {128, 48, 144, 64}, {144, 48, 160, 64} } };
 
-	if (++NPC->ani_wait > 3)
-	{
-		NPC->ani_wait = 0;
-		++NPC->ani_no;
-	}
-	if (NPC->ani_no > 3)
-		NPC->ani_no = 0;
-
+	NPC->animate(3, 0, 3);
 	NPC->doRects(rcNPC);
 }
 
@@ -1392,14 +1248,8 @@ void npcAct071(npc * NPC) // Chinfish (enemy)
 	}
 	else if (NPC->act_no == 1)
 	{
-		if (NPC->tgt_y < NPC->y)
-			NPC->ym -= 8;
-		if (NPC->tgt_y > NPC->y)
-			NPC->ym += 8;
-		if (NPC->ym > 0x100)
-			NPC->ym = 0x100;
-		if (NPC->ym < -0x100)
-			NPC->ym = 0x100;
+	    NPC->accelerateTowardsYTarget(8);
+	    NPC->limitYVel(pixelsToUnits(0.5));
 	}
 
 	NPC->x += NPC->xm;
@@ -1408,13 +1258,7 @@ void npcAct071(npc * NPC) // Chinfish (enemy)
 	array<RECT, 3> rcLeft = { { {64, 32, 80, 48}, {80, 32, 96, 48}, {92, 32, 112, 48} } };
 	array<RECT, 3> rcRight = { { {64, 48, 80, 64}, {80, 48, 96, 64}, {96, 48, 112, 64} } };
 
-	if (++NPC->ani_wait > 4)
-	{
-		NPC->ani_wait = 0;
-		++NPC->ani_no;
-	}
-	if (NPC->ani_no > 1)
-		NPC->ani_no = 0;
+	NPC->animate(4, 0, 1);
 	if (NPC->shock)
 		NPC->ani_no = 2;
 
@@ -1425,11 +1269,7 @@ void npcAct072(npc *NPC) // Sprinkler
 {
 	if (NPC->direct == dirLeft)
 	{
-		if (++NPC->ani_wait > 1)
-		{
-			NPC->ani_wait = 0;
-			++NPC->ani_no;
-		}
+		NPC->animate(1);
 
 		if (NPC->ani_no > 1)
 		{
@@ -1437,14 +1277,16 @@ void npcAct072(npc *NPC) // Sprinkler
 			return;
 		}
 
-		if (currentPlayer.x < NPC->x + 0x28000
-		        && currentPlayer.x > NPC->x - 0x28000
-		        && currentPlayer.y < NPC->y + 0x1E000
-		        && currentPlayer.y > NPC->y - 0x1E000)
+		if (currentPlayer.x < NPC->x + tilesToUnits(20)
+		        && currentPlayer.x > NPC->x - tilesToUnits(20)
+		        && currentPlayer.y < NPC->y + tilesToUnits(15)
+		        && currentPlayer.y > NPC->y - tilesToUnits(15))
 		{
 			if (++NPC->act_no % 2)
-				createNpc(NPC_Waterdrop, NPC->x, NPC->y, 2 * random(-0x200, 0x200), 3 * random(-0x200, 0x80));
-			createNpc(NPC_Waterdrop, NPC->x, NPC->y, 2 * random(-0x200, 0x200), 3 * random(-0x200, 0x80));
+				createNpc(NPC_Waterdrop, NPC->x, NPC->y,
+                        2 * random(pixelsToUnits(-1), pixelsToUnits(1)), 3 * random(pixelsToUnits(-1), 0x80));
+			createNpc(NPC_Waterdrop, NPC->x, NPC->y,
+                        2 * random(pixelsToUnits(-1), pixelsToUnits(1)), 3 * random(pixelsToUnits(-1), 0x80));
 		}
 	}
 
@@ -1455,10 +1297,7 @@ void npcAct072(npc *NPC) // Sprinkler
 
 void npcAct073(npc *NPC) //Water drop
 {
-	NPC->ym += 0x20;
-
-	if (NPC->ym > 0x5FF)
-		NPC->ym = 0x5FF;
+    NPC->doGravity(0x20, 0x5FF);
 
 	NPC->ani_no = random(0, 4);
 
@@ -1538,20 +1377,10 @@ void npcAct074(npc *NPC) //Jack
 	// Fallthrough
 	case 9:
 		//Animate
-		if (++NPC->ani_wait > 4)
-		{
-			NPC->ani_wait = 0;
-			++NPC->ani_no;
-		}
-
-		if (NPC->ani_no > 5)
-			NPC->ani_no = 2;
+		NPC->animate(4, 2, 5);
 
 		//Move in facing direction
-		if (NPC->direct != dirLeft)
-			NPC->xm = 0x200;
-		else
-			NPC->xm = -0x200;
+		NPC->moveInDir(pixelsToUnits(1));
 
 		break;
 
@@ -1560,15 +1389,8 @@ void npcAct074(npc *NPC) //Jack
 	}
 
 	//Gravity and speed limit
-	NPC->ym += 64;
-
-	if (NPC->xm > 0x400)
-		NPC->xm = 0x400;
-	if (NPC->xm < -0x400)
-		NPC->xm = -0x400;
-
-	if (NPC->ym > 0x5FF)
-		NPC->ym = 0x5FF;
+	NPC->doGravity(0x40, 0x5FF);
+	NPC->limitXVel(pixelsToUnits(2));
 
 	NPC->x += NPC->xm;
 	NPC->y += NPC->ym;
@@ -1592,10 +1414,10 @@ void npcAct075(npc * NPC) // Kanpachi
 		NPC->ani_no = 0;
 		NPC->ani_wait = 0;
 	}
-	NPC->ani_no = NPC->x - 0x6000 < currentPlayer.x
-	              && NPC->x + 0x6000 > currentPlayer.x
-	              && NPC->y - 0x6000 < currentPlayer.y
-	              && NPC->y + 0x2000 > currentPlayer.y;
+	NPC->ani_no = NPC->x - tilesToUnits(3) < currentPlayer.x
+	              && NPC->x + tilesToUnits(3) > currentPlayer.x
+	              && NPC->y - tilesToUnits(3) < currentPlayer.y
+	              && NPC->y + tilesToUnits(1) > currentPlayer.y;
 doRects:
 	NPC->doRects(rcNPC);
 
@@ -1667,16 +1489,11 @@ void npcAct079(npc *NPC) // Mahin
 			NPC->act_wait = 0;
 			NPC->ani_no = 1;
 		}
-		if (NPC->x - 0x4000 < currentPlayer.x
-		        && NPC->x + 0x4000 > currentPlayer.x
-		        && NPC->y - 0x4000 < currentPlayer.y
-		        && NPC->y + 0x2000 > currentPlayer.x)
-		{
-			if (NPC->x <= currentPlayer.x)
-				NPC->direct = dirRight;
-			else
-				NPC->direct = dirLeft;
-		}
+		if (NPC->x - tilesToUnits(2) < currentPlayer.x
+		        && NPC->x + tilesToUnits(2) > currentPlayer.x
+		        && NPC->y - tilesToUnits(2) < currentPlayer.y
+		        && NPC->y + tilesToUnits(1) > currentPlayer.x)
+			NPC->facePlayer();
 	}
 	else if (NPC->act_no == 3 && ++NPC->act_wait > 8)
 	{
@@ -1684,12 +1501,8 @@ void npcAct079(npc *NPC) // Mahin
 		NPC->ani_no = 0;
 	}
 
-	NPC->ym += 64;
-	if (NPC->ym > 1535)
-		NPC->ym = 1535;
+	NPC->doGravity(0x40, 0x5FF);
 	NPC->y += NPC->ym;
 
 	NPC->doRects(rcLeft, rcRight);
 }
-
-

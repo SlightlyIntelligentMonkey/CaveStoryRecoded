@@ -296,7 +296,7 @@ CONFIG defaultConfigData = { configVersion, 20, 320, 240, 2, false, true, false,
 void setFromConfig(CONFIG *config)
 {
 	framerate = config->framerate;
-	createWindow(config->screenWidth, config->screenHeight, config->screenScale, config->fullscreen);
+	createWindow(config->screenWidth, config->screenHeight, config->screenScale / 2, config->fullscreen);
 
 	if (config->fullscreen)
 		switchScreenMode();
