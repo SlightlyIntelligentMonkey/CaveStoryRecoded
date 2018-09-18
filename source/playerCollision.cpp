@@ -850,10 +850,22 @@ void playerHitBosses()
                     me->ques = 0;
                 }
 
-                if (hit & rightWall && bossObj[i].xm < 0)
-                    me->damage(bossObj[i].damage);
-                if (hit & leftWall && bossObj[i].xm > 0)
-                    me->damage(bossObj[i].damage);
+				if (gameFlags & 2 && !(npcs[i].bits & npc_interact))
+				{
+					if (npcs[i].bits & npc_rearTop)
+					{
+						if (hit & rightWall && npcs[i].xm < 0)
+							me->damage(npcs[i].damage);
+						if (hit & leftWall && npcs[i].xm > 0)
+							me->damage(npcs[i].damage);
+						if (hit & ground && npcs[i].ym < 0)
+							me->damage(npcs[i].damage);
+						if (hit & ceiling && npcs[i].ym > 0)
+							me->damage(npcs[i].damage);
+					}
+					else if (hit && npcs[i].damage && !(gameFlags & 4))
+						me->damage(npcs[i].damage);
+				}
             }
             else if (hit && bossObj[i].damage && !(gameFlags & 4))
                 me->damage(bossObj[i].damage);
