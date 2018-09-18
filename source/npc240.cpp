@@ -395,8 +395,24 @@ void npcAct247(npc *NPC)
         break;
 
     case standAfterJumpFromThrone:
-        logDebug("Yeah got to stand thingy");
-        ++NPC->act_no;
+        if (!random(0, 120))
+        {
+            NPC->act_no = blinkAfterJumpFromThrone;
+            NPC->act_wait = 0;
+            NPC->ani_no = 3;
+        }
+        break;
+
+    case blinkAfterJumpFromThrone:
+        if (++NPC->act_wait > 8)
+        {
+            NPC->act_no = standAfterJumpFromThrone;
+            NPC->ani_no = 2;
+        }
+        break;
+
+    case fighting:
+        NPC->act_no = fighting + 1;;
         break;
 
     case flashForSpell + 1:
