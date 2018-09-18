@@ -335,9 +335,7 @@ void killNpc(npc *NPC, bool bVanish)
 
 	//Destroy npc
 	if (!(NPC->bits & npc_showDamage))
-	{
 		NPC->cond = 0;
-	}
 	else
 	{
 		if (NPC->damage_view)
@@ -395,6 +393,24 @@ void killNpc(npc *NPC, bool bVanish)
 	}
 
 	setFlag(flag);
+}
+
+void killNpcsByType(int entityType, bool makeDustClouds)
+{
+	for (size_t i = 0; i < npcs.size(); ++i)
+	{
+		if (npcs[i].cond & npccond_alive && npcs[i].code_char == entityType)
+		{
+			npcs[i].cond = 0;
+			setFlag(npcs[i].code_flag);
+
+			if (makeDustClouds)
+			{
+				playSound(npcs[i].destroy_voice);
+				createSmokeLeft(npcs[i].x, npcs[i].y, npcs[i].view.right, npcs[i].size * 4);
+			}
+		}
+	}
 }
 
 //NPC Table

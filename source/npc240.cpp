@@ -325,7 +325,7 @@ enum
     flashForSpell = 110,
     startTeleportAway = 112,
     summonBlock = 113,
-    teleporingAway = 150,
+    teleportingAway = 150,
     summonBalls = 160,
     defeated = 1000,
     shake = 1001,
@@ -412,9 +412,32 @@ void npcAct247(npc *NPC)
         break;
 
     case fighting:
-        NPC->act_no = fighting + 1;;
+        NPC->act_no = fighting + 1;
+        NPC->act_wait = 0;
+        NPC->ani_no = 0;
+        NPC->xm = 0;
+        NPC->bits |= npc_shootable;
+        NPC->count2 = NPC->life;
+        // Fallthrough
+    case fighting + 1:
+        NPC->facePlayer();
+        NPC->accelerateTowardsYTarget(0x20);
+        NPC->limitYVel(pixelsToUnits(1));
+
+        if (++NPC->act_wait > secondsToFrames(4) || NPC->life <= NPC->count2 - 80)
+        {
+            NPC->act_wait = 0;
+            NPC->act_no = flashForSpell;
+        }
         break;
 
+    case flashForSpell:
+        NPC->act_no = flashForSpell + 1;
+        NPC->act_wait = 0;
+        NPC->xm = 0;
+        NPC->ym = 0;
+        NPC->bits &= ~npc_shootable;
+        // Fallthrough
     case flashForSpell + 1:
         if (++NPC->act_wait & 1)
             NPC->ani_no = 5;
@@ -430,6 +453,131 @@ void npcAct247(npc *NPC)
                 NPC->act_no = summonBlock;
             NPC->ani_no = 4;
         }
+        break;
+
+    case startTeleportAway:
+        if (!(++NPC->act_wait % 6))
+        {
+            auto angle = getAtan(NPC->x - currentPlayer.x, NPC->y - currentPlayer.y);
+            angle += random(-4, 4);
+            auto xVel = 4 * getCos(angle);
+            auto yVel = 4 * getSin(angle);
+            createNpc(NPC_BossMiseryVanish, NPC->x, NPC->y + pixelsToUnits(4), xVel, yVel);
+            playSound(SFX_FireballBounce);
+        }
+        if (NPC->act_wait > 30)
+        {
+            NPC->act_wait = 0;
+            NPC->act_no = teleportingAway;
+        }
+        break;
+
+    case summonBlock:
+        if (++NPC->act_wait == secondsToFrames(0.2))
+            createNpc(NPC_FallingBlockLarge, currentPlayer.x, currentPlayer.y - tilesToUnits(4), 0, 0, dirUp);
+        if (NPC->act_wait > 30)
+        {
+            NPC->act_wait = 0;
+            NPC->act_no = teleportingAway;
+        }
+        break;
+
+    case teleportingAway:
+        NPC->act_no = teleportingAway + 1;
+        NPC->act_wait = 0;
+        NPC->ani_no = 7;
+        createNpc(NPC_ProjectileMiseryEnergyShot, NPC->x, NPC->y, 0, 0, dirLeft);
+        createNpc(NPC_ProjectileMiseryEnergyShot, NPC->x, NPC->y, 0, 0, dirRight);
+
+        NPC->tgt_x = tilesToUnits(random(9, 31));
+        NPC->tgt_y = tilesToUnits(random(5, 7));
+        playSound(SFX_Teleport);
+        // Fallthrough
+    case teleportingAway + 1:
+        if (++NPC->act_wait == 42)
+        {
+            createNpc(NPC_ProjectileMiseryEnergyShot, NPC->tgt_x + tilesToUnits(1), NPC->tgt_y, 0, 0, dirLeft);
+            createNpc(NPC_ProjectileMiseryEnergyShot, NPC->tgt_x - tilesToUnits(1), NPC->tgt_y, 0, 0, dirRight);
+        }
+        if (NPC->act_wait > 50)
+        {
+            NPC->act_wait = 0;
+            NPC->ym = pixelsToUnits(-1);
+            NPC->bits |= npc_shootable;
+            NPC->x = NPC->tgt_x;
+            NPC->y = NPC->tgt_y;
+
+            if (NPC->life < 340)
+            {
+                createNpc(NPC_ProjectileMiseryBlackOrbitingRings, 0, 0, 0, 0, 0, NPC);
+                createNpc(NPC_ProjectileMiseryBlackOrbitingRings, 0, 0, 0, 0, 128, NPC);
+            }
+            if (NPC->life < 180)
+            {
+                createNpc(NPC_ProjectileMiseryBlackOrbitingRings, 0, 0, 0, 0, 64, NPC);
+                createNpc(NPC_ProjectileMiseryBlackOrbitingRings, 0, 0, 0, 0, 192, NPC);
+            }
+
+            if (currentPlayer.x >= NPC->x - tilesToUnits(7) && currentPlayer.x <= NPC->x + tilesToUnits(7))
+                NPC->act_no = fighting;
+            else
+                NPC->act_no = summonBalls;
+        }
+        break;
+
+    case summonBalls:
+        NPC->act_no = summonBalls + 1;
+        NPC->act_wait = 0;
+        NPC->ani_no = 4;
+        NPC->facePlayer();
+        // Fallthrough
+    case summonBalls + 1:
+        NPC->accelerateTowardsYTarget(0x20);
+        NPC->limitYVel(pixelsToUnits(1));
+
+        if (!(++NPC->act_wait % 24))
+        {
+            createNpc(NPC_ProjectileMiseryLightningBall, NPC->x, NPC->y + pixelsToUnits(4));
+            playSound(SFX_FireballBounce);
+        }
+
+        if (NPC->act_wait > 72)
+        {
+            NPC->act_wait = 0;
+            NPC->act_no = fighting;
+        }
+        break;
+
+    case defeated:
+        NPC->bits &= ~npc_shootable;
+        NPC->act_no = shake;
+        NPC->act_wait = 0;
+        NPC->ani_no = 4;
+        NPC->tgt_x = NPC->x;
+        NPC->tgt_y = NPC->y;
+        NPC->xm = 0;
+        NPC->ym = 0;
+        killNpcsByType(NPC_ProjectileMiseryBlackOrbitingRings);
+        for (int i = 0; i < 3; ++i)
+            createNpc(NPC_Smoke, NPC->x, NPC->y);
+        // Fallthrough
+    case shake:
+        if (++NPC->act_wait / 2 & 1)
+            NPC->x = NPC->tgt_x + pixelsToUnits(1);
+        else
+            NPC->x = NPC->tgt_x;
+        break;
+
+    case fallToGround:
+        NPC->ym += 0x10;
+        if (NPC->flag & ground)
+        {
+            NPC->act_no = fallToGround + 10;
+            NPC->ani_no = 8;
+        }
+
+    default:
+        break;
     }
 
     NPC->limitXVel(pixelsToUnits(1));

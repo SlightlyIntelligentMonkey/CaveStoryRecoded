@@ -185,6 +185,7 @@ void updateNPC();
 void drawNPC();
 void dropExperience(int x, int y, int exp);
 void killNpc(npc *NPC, bool bVanish = true);
+void killNpcsByType(int entityType, bool makeDustClouds = true);
 
 extern std::deque<npc> npcs;
 
