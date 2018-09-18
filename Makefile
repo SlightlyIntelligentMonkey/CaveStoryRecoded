@@ -14,7 +14,7 @@ MAIN := main
 # states
 MAIN += game
 # modules
-MAIN += filesystem flags input inventory level loadConfig mapSystem mathUtils script stageSelect stdUtils
+MAIN += filesystem flags input inventory level loadConfig log mapSystem mathUtils script stageSelect stdUtils
 # collision
 MAIN += bossCollision bulletCollision npcCollision playerCollision
 # drawing
@@ -29,6 +29,8 @@ MAIN += bladeThrow bubblePew fireballShoot machineGunShoot missileShoot nemesisS
 MAIN += blade bubbler fireball missile polarStar machineGun misc nemesis snake spur
 # npc acts
 MAIN += npcAct npc000 npc020 npc040 npc060 npc080 npc100 npc120 npc140 npc160 npc180 npc200 npc220 npc240 npc260 npc280 npc300 npc320 npc340
+# boss acts
+MAIN += balfrog
 
 OBJS := $(addprefix obj/, $(addsuffix .o, $(MAIN)))
 OBJS += obj/icon.o

@@ -1,4 +1,11 @@
 #include "game.h"
+
+#include <string>
+#include <cstring>
+#include <SDL_scancode.h>
+#include <SDL_timer.h>
+#include <SDL_render.h>
+#include <SDL_events.h>
 #include "weapons.h"
 #include "level.h"
 #include "hud.h"
@@ -16,19 +23,16 @@
 #include "mathUtils.h"
 #include "flags.h"
 #include "org.h"
-
-#include <string>
-#include <cstring>
-#include <SDL_scancode.h>
-#include <SDL_timer.h>
-#include <SDL_render.h>
-#include <SDL_events.h>
+#include "log.h"
+#include "main.h"
+#include "playerCollision.h"
 
 using std::string;
 using std::to_string;
 using std::memset;
 
 int gameMode = 1;
+int gameFlags = 0;
 
 VIEW viewport;
 
@@ -249,36 +253,27 @@ RECT rcEscape = { 0, 128, 208, 144 };
 
 int escapeMenu()
 {
+    logInfo("Started escapeMenu");
 	do
 	{
 		//Handle events
 		getKeys();
 
 		if (isKeyPressed(SDL_SCANCODE_ESCAPE))
-		{
 			return 0;
-		}
 		if (isKeyPressed(SDL_SCANCODE_F1))
-		{
 			return 1;
-		}
 		if (isKeyPressed(SDL_SCANCODE_F2))
-		{
 			return 2;
-		}
 
 		if ((isKeyDown(SDL_SCANCODE_LALT) && isKeyPressed(SDL_SCANCODE_RETURN)) ||
 		        (isKeyPressed(SDL_SCANCODE_LALT) && isKeyDown(SDL_SCANCODE_RETURN)))
-		{
 			switchScreenMode();
-		}
 
 		SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
 		SDL_RenderClear(renderer);
 
-		drawTexture(sprites[0x1A], &rcEscape,
-		            (screenWidth >> 1) - 104,
-		            (screenHeight >> 1) - 8);
+		drawTexture(sprites[0x1A], &rcEscape, (screenWidth >> 1) - 104, (screenHeight >> 1) - 8);
 	} while (drawWindow());
 
 	return 0;
@@ -287,6 +282,7 @@ int escapeMenu()
 //Main States
 int gameUpdatePlay()
 {
+    logInfo("Started gameUpdatePlay");
 	init2();
 
 	while (true)
@@ -402,6 +398,8 @@ int gameUpdatePlay()
 
 int gameUpdateMenu()
 {
+    logInfo("Started gameUpdateMenu");
+
 	int select = 0;
 	int anime = 0;
 
@@ -487,6 +485,7 @@ int gameUpdateMenu()
 	changeOrg(0);
 
 	frame = SDL_GetTicks();
+
 	while (SDL_GetTicks() < frame + 1000)
 	{
 		getKeys();
@@ -506,6 +505,8 @@ int gameUpdateMenu()
 
 int gameUpdateIntro()
 {
+    logInfo("Started gameUpdateIntro");
+
 	init2();
 
 	uint32_t frame = 0;

@@ -1,9 +1,13 @@
 #include "npc060.h"
 
+#include <vector>
 #include "mathUtils.h"
 #include "player.h"
 #include "sound.h"
 #include "game.h"
+#include "level.h"
+
+using std::vector;
 
 void npcAct060(npc *NPC) //Toroko
 {
@@ -180,8 +184,8 @@ void npcAct060(npc *NPC) //Toroko
 
 void npcAct061(npc *NPC) //King
 {
-	RECT rcLeft[11];
-	RECT rcRight[11];
+	vector<RECT> rcLeft(11);
+	vector<RECT> rcRight(11);
 
 	rcLeft[0] = { 224, 32, 240, 48 };
 	rcLeft[1] = { 240, 32, 256, 48 };
@@ -411,15 +415,13 @@ void npcAct061(npc *NPC) //King
 	NPC->y += NPC->ym;
 
 	//Set framerect
-	if (NPC->direct != dirLeft)
-		NPC->rect = rcRight[NPC->ani_no];
-	else
-		NPC->rect = rcLeft[NPC->ani_no];
+	NPC->doRects(rcLeft, rcRight);
+
 }
 
 void npcAct062(npc *NPC) // Kazuma, facing away
 {
-	constexpr RECT rcNPC[3] = { {272, 192, 288, 216}, {288, 192, 304, 216}, {304, 192, 320, 216} };
+	vector<RECT> rcNPC = { {272, 192, 288, 216}, {288, 192, 304, 216}, {304, 192, 320, 216} };
 
 	enum
 	{
@@ -481,13 +483,13 @@ void npcAct062(npc *NPC) // Kazuma, facing away
 		break;
 	}
 
-	NPC->rect = rcNPC[NPC->ani_no];
+	NPC->doRects(rcNPC);
 }
 
 void npcAct063(npc *NPC) // Toroko, panicking
 {
-	RECT rcLeft[6];
-	RECT rcRight[6];
+	vector<RECT> rcLeft(6);
+	vector<RECT> rcRight(6);
 
 	rcLeft[0] = { 64, 64, 80, 80 };
 	rcLeft[1] = { 80, 64, 96, 80 };
@@ -607,10 +609,7 @@ void npcAct063(npc *NPC) // Toroko, panicking
 	NPC->x += NPC->xm;
 	NPC->y += NPC->ym;
 
-	if (NPC->direct == dirLeft)
-		NPC->rect = rcLeft[NPC->ani_no];
-	else
-		NPC->rect = rcRight[NPC->ani_no];
+	NPC->doRects(rcLeft, rcRight);
 }
 
 void npcAct064(npc *NPC) //First Cave critter
@@ -774,16 +773,14 @@ void npcAct065(npc *NPC) //First Cave Bat
 
 	NPC->ani_no %= 3;
 
-	if (NPC->direct != dirLeft)
-		NPC->rect = { 32 + (NPC->ani_no << 4), 48, 48 + (NPC->ani_no << 4), 64 };
-	else
-		NPC->rect = { 32 + (NPC->ani_no << 4), 32, 48 + (NPC->ani_no << 4), 48 };
+	NPC->doRects({ 32 + (NPC->ani_no << 4), 32, 48 + (NPC->ani_no << 4), 48 },
+              { 32 + (NPC->ani_no << 4), 48, 48 + (NPC->ani_no << 4), 64 });
 }
 
 void npcAct066(npc *NPC) //Bubble (to catch Toroko in the shack)
 {
 	uint8_t deg;
-	RECT rect[4];
+	vector<RECT> rect(4);
 
 	rect[0] = { 32, 192, 56, 216 };
 	rect[1] = { 56, 192, 80, 216 };
@@ -865,13 +862,13 @@ void npcAct066(npc *NPC) //Bubble (to catch Toroko in the shack)
 	NPC->x += NPC->xm;
 	NPC->y += NPC->ym;
 
-	NPC->rect = rect[NPC->ani_no];
+	NPC->doRects(rect);
 }
 
 void npcAct067(npc *NPC) //Misery floating
 {
-	RECT rcLeft[8];
-	RECT rcRight[8];
+	vector<RECT> rcLeft(8);
+	vector<RECT> rcRight(8);
 
 	rcLeft[0] = { 0x50, 0x00, 0x60, 0x10 };
 	rcLeft[1] = { 0x60, 0x00, 0x70, 0x10 };
@@ -950,7 +947,7 @@ void npcAct067(npc *NPC) //Misery floating
 		if (++NPC->act_wait == 30)
 		{
 			playSound(21);
-			createNpc(66, NPC->x, NPC->y - 0x2000);
+			createNpc(NPC_ProjectileMiseryBubble, NPC->x, NPC->y - 0x2000);
 		}
 		if (NPC->act_wait >= 50)
 			NPC->act_no = 14;
@@ -1031,10 +1028,7 @@ void npcAct067(npc *NPC) //Misery floating
 		}
 	}
 
-	if (NPC->direct)
-		NPC->rect = rcRight[NPC->ani_no];
-	else
-		NPC->rect = rcLeft[NPC->ani_no];
+	NPC->doRects(rcLeft, rcRight);
 
 	if (NPC->act_no == 1 && NPC->ani_wait < 32)
 		NPC->rect.bottom += ++NPC->ani_wait / 2 - 16;
@@ -1227,8 +1221,8 @@ void npcAct068(npc * NPC) // Balrog, Running (boss)
 	NPC->x += NPC->xm;
 	NPC->y += NPC->ym;
 
-	RECT rcLeft[9];
-	RECT rcRight[9];
+	vector<RECT> rcLeft(9);
+	vector<RECT> rcRight(9);
 	rcLeft[0] = { 0, 0, 40, 24 };
 	rcLeft[1] = { 0, 48, 40, 72 };
 	rcLeft[2] = rcLeft[0];
@@ -1248,16 +1242,13 @@ void npcAct068(npc * NPC) // Balrog, Running (boss)
 	rcRight[7] = { 120, 24, 160, 48 };
 	rcRight[8] = { 80, 24, 120, 48 };
 
-	if (NPC->direct == dirLeft)
-		NPC->rect = rcLeft[NPC->ani_no];
-	else
-		NPC->rect = rcRight[NPC->ani_no];
+	NPC->doRects(rcLeft, rcRight);
 }
 
 void npcAct069(npc *NPC) //Pignon
 {
-	RECT rcLeft[6];
-	RECT rcRight[6];
+	vector<RECT> rcLeft(6);
+	vector<RECT> rcRight(6);
 
 	rcLeft[0] = { 48, 0, 64, 16 };
 	rcLeft[1] = { 64, 0, 80, 16 };
@@ -1372,15 +1363,12 @@ void npcAct069(npc *NPC) //Pignon
 	NPC->x += NPC->xm;
 	NPC->y += NPC->ym;
 
-	if (NPC->direct)
-		NPC->rect = rcRight[NPC->ani_no];
-	else
-		NPC->rect = rcLeft[NPC->ani_no];
+	NPC->doRects(rcLeft, rcRight);
 }
 
 void npcAct070(npc * NPC) // Sparkling Item
 {
-	constexpr RECT rcNPC[4] = { {96, 48, 112, 64}, {112, 48, 128, 64}, {128, 48, 144, 64}, {144, 48, 160, 64} };
+	vector<RECT> rcNPC = { {96, 48, 112, 64}, {112, 48, 128, 64}, {128, 48, 144, 64}, {144, 48, 160, 64} };
 
 	if (++NPC->ani_wait > 3)
 	{
@@ -1390,7 +1378,7 @@ void npcAct070(npc * NPC) // Sparkling Item
 	if (NPC->ani_no > 3)
 		NPC->ani_no = 0;
 
-	NPC->rect = rcNPC[NPC->ani_no];
+	NPC->doRects(rcNPC);
 }
 
 void npcAct071(npc * NPC) // Chinfish (enemy)
@@ -1417,8 +1405,8 @@ void npcAct071(npc * NPC) // Chinfish (enemy)
 	NPC->x += NPC->xm;
 	NPC->y += NPC->ym;
 
-	constexpr RECT rcLeft[3] = { {64, 32, 80, 48}, {80, 32, 96, 48}, {92, 32, 112, 48} };
-	constexpr RECT rcRight[3] = { {64, 48, 80, 64}, {80, 48, 96, 64}, {96, 48, 112, 64} };
+	vector<RECT> rcLeft = { {64, 32, 80, 48}, {80, 32, 96, 48}, {92, 32, 112, 48} };
+	vector<RECT> rcRight = { {64, 48, 80, 64}, {80, 48, 96, 64}, {96, 48, 112, 64} };
 
 	if (++NPC->ani_wait > 4)
 	{
@@ -1430,10 +1418,7 @@ void npcAct071(npc * NPC) // Chinfish (enemy)
 	if (NPC->shock)
 		NPC->ani_no = 2;
 
-	if (NPC->direct == dirLeft)
-		NPC->rect = rcLeft[NPC->ani_no];
-	else
-		NPC->rect = rcRight[NPC->ani_no];
+	NPC->doRects(rcLeft, rcRight);
 }
 
 void npcAct072(npc *NPC) // Sprinkler
@@ -1463,8 +1448,7 @@ void npcAct072(npc *NPC) // Sprinkler
 		}
 	}
 
-	constexpr RECT rcNPC[2] = { {224, 48, 240, 64}, {240, 48, 256, 64} };
-	NPC->rect = rcNPC[NPC->ani_no];
+	NPC->doRects({ {224, 48, 240, 64}, {240, 48, 256, 64} });
 }
 
 void npcAct073(npc *NPC) //Water drop
@@ -1480,7 +1464,7 @@ void npcAct073(npc *NPC) //Water drop
 	NPC->y += NPC->ym;
 
 	//Set frameRect
-	NPC->rect = { 72 + (NPC->ani_no << 1), 16, 74 + (NPC->ani_no << 1), 18 };
+	NPC->doRects({ 72 + (NPC->ani_no << 1), 16, 74 + (NPC->ani_no << 1), 18 });
 
 	if (NPC->direct == dirRight) //Blood
 	{
@@ -1500,8 +1484,8 @@ void npcAct073(npc *NPC) //Water drop
 
 void npcAct074(npc *NPC) //Jack
 {
-	RECT rcLeft[6];
-	RECT rcRight[6];
+	vector<RECT> rcLeft(6);
+	vector<RECT> rcRight(6);
 
 	rcLeft[0] = { 64, 0, 80, 16 };
 	rcLeft[1] = { 80, 0, 96, 16 };
@@ -1588,15 +1572,12 @@ void npcAct074(npc *NPC) //Jack
 	NPC->y += NPC->ym;
 
 	//Set framerect
-	if (NPC->direct != dirLeft)
-		NPC->rect = rcRight[NPC->ani_no];
-	else
-		NPC->rect = rcLeft[NPC->ani_no];
+	NPC->doRects(rcLeft, rcRight);
 }
 
 void npcAct075(npc * NPC) // Kanpachi
 {
-	constexpr RECT rcNPC[2] = { {272, 32, 296, 56}, {296, 32, 320, 56} };
+	vector<RECT> rcNPC = { {272, 32, 296, 56}, {296, 32, 320, 56} };
 
 	if (NPC->act_no)
 	{
@@ -1614,13 +1595,13 @@ void npcAct075(npc * NPC) // Kanpachi
 	              && NPC->y - 0x6000 < currentPlayer.y
 	              && NPC->y + 0x2000 > currentPlayer.y;
 doRects:
-	NPC->rect = rcNPC[NPC->ani_no];
+	NPC->doRects(rcNPC);
 
 }
 
 void npcAct076(npc *NPC) //Flower
 {
-	NPC->rect.left = 16 * NPC->code_event; // Rects depend on the event number
+	NPC->rect.left = 16 * NPC->code_event;
 	NPC->rect.top = 0;
 	NPC->rect.right = NPC->rect.left + 16;
 	NPC->rect.bottom = 16;
@@ -1653,24 +1634,21 @@ void npcAct077(npc * NPC) // Sandaime's Pavillion
 		NPC->ani_no = 1;
 	}
 doRects:
-	if (!NPC->direct)
-		NPC->rect = rcSandaimePresent[NPC->ani_no];
-	else
-		NPC->rect = rcSandaimeGone;
+	if (NPC->direct == dirLeft)
+        NPC->rect = rcSandaimePresent[NPC->ani_no];
+    else
+        NPC->rect = rcSandaimeGone;
 }
 
 void npcAct078(npc *NPC) //Pot
 {
-	if (NPC->direct != dirLeft)
-		NPC->rect = { 176, 48, 192, 64 };
-	else
-		NPC->rect = { 160, 48, 176, 64 };
+    NPC->doRects({ 160, 48, 176, 64 }, { 176, 48, 192, 64 });
 }
 
 void npcAct079(npc *NPC) // Mahin
 {
-	constexpr RECT rcLeft[3] = { { 0, 0, 16, 16 },{ 16, 0, 32, 16 },{ 32, 0, 48, 16 } };
-	constexpr RECT rcRight[3] = { { 0, 16, 16, 32 },{ 16, 16, 32, 32 },{ 32, 16, 48, 32 } };
+	vector<RECT> rcLeft = { { 0, 0, 16, 16 },{ 16, 0, 32, 16 },{ 32, 0, 48, 16 } };
+	vector<RECT> rcRight = { { 0, 16, 16, 32 },{ 16, 16, 32, 32 },{ 32, 16, 48, 32 } };
 
 	if (!NPC->act_no)
 	{
@@ -1703,15 +1681,13 @@ void npcAct079(npc *NPC) // Mahin
 		NPC->act_no = 2;
 		NPC->ani_no = 0;
 	}
+
 	NPC->ym += 64;
 	if (NPC->ym > 1535)
 		NPC->ym = 1535;
 	NPC->y += NPC->ym;
 
-	if (NPC->direct == dirLeft)
-		NPC->rect = rcLeft[NPC->ani_no];
-	else
-		NPC->rect = rcRight[NPC->ani_no];
+	NPC->doRects(rcLeft, rcRight);
 }
 
 

@@ -9,6 +9,7 @@
 #include "render.h"
 #include "bossCollision.h"
 #include "bulletCollision.h"
+#include "log.h"
 
 using std::string;
 using std::to_string;
@@ -63,17 +64,28 @@ void updateBoss()
 
 		wasNotifiedAbout[bossObj[0].code_char] = true;
 		string msg = "Boss " + to_string(bossObj[0].code_char) + " is not implementated yet.";
+<<<<<<< HEAD
 		SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_WARNING, "Missing Boss", msg.c_str(), nullptr);
+=======
+		logWarning(msg);
+		if (debugFlags & notifyOnNotImplemented)
+            SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_WARNING, "Missing Boss", msg.c_str(), nullptr);
+>>>>>>> upstream/master
     }
 
     bossHitMap();
-    bulletHitBoss();
 }
 
 void drawBoss()
 {
+<<<<<<< HEAD
 	for (size_t bos = 0; bos < BOSSNPCS; bos++)
+=======
+	for (size_t i = 0; i < BOSSNPCS; i++)
+>>>>>>> upstream/master
 	{
+		size_t bos = (BOSSNPCS - 1) - i;
+
 		if (bossObj[bos].cond & npccond_alive)
 		{
 			int shake = 0;
@@ -95,8 +107,8 @@ void drawBoss()
 			if (bossObj[bos].direct != dirLeft)
 				side = bossObj[bos].view.right;
 
-			drawTexture(sprites[TEX_NPC_2], &bossObj[bos].rect, 
-				(bossObj[bos].x - side) / 0x200 - (viewport.x / 0x200) + shake, 
+			drawTexture(sprites[TEX_NPC_2], &bossObj[bos].rect,
+				(bossObj[bos].x - side) / 0x200 - (viewport.x / 0x200) + shake,
 				(bossObj[bos].y - bossObj[bos].view.top) / 0x200 - (viewport.y / 0x200));
 
 			if (debugFlags & showHitRects)

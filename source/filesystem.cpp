@@ -1,14 +1,4 @@
 #include "filesystem.h"
-#include "fade.h"
-#include "weapons.h"
-#include "player.h"
-#include "game.h"
-#include "input.h"
-#include "flags.h"
-#include "render.h"
-#include "script.h"
-#include "org.h"
-#include <SDL.h>
 
 #include <string>
 #include <vector>
@@ -16,7 +6,22 @@
 #include <cstdio>
 #include <cstdlib>
 #include <sys/stat.h>
+#include <SDL_keyboard.h>
+#include <SDL_gamecontroller.h>
 #include <SDL_rwops.h>
+#include <SDL_messagebox.h>
+#include "main.h"
+#include "input.h"
+#include "render.h"
+#include "flags.h"
+#include "game.h"
+#include "weapons.h"
+#include "player.h"
+#include "level.h"
+#include "fade.h"
+#include "script.h"
+#include "org.h"
+#include "log.h"
 
 using std::string;
 using std::vector;
@@ -29,6 +34,7 @@ using std::ftell;
 using std::malloc;
 using std::fread;
 using std::fclose;
+using std::to_string;
 
 uint16_t readLEshort(const uint8_t * data, size_t offset)
 {
@@ -107,6 +113,7 @@ int loadFile(const string& name, uint8_t **data)
 	if (fclose(file) == EOF)
 		throw std::runtime_error("Could not close " + name);
 
+    logDebug("Loaded from " + name);
 	return filesize;
 }
 
@@ -125,6 +132,8 @@ void writeFile(const string& name, const void *data, size_t amount)
 
 	if (fclose(file) == EOF)
 		throw std::runtime_error("Could not close " + name);
+
+    logDebug("Wrote to " + name);
 }
 
 //Profile code
@@ -138,7 +147,7 @@ void loadProfile()
 		SDL_RWops *profile = SDL_RWFromFile(profileName.c_str(), "rb");
 
 		if (profile == nullptr)
-			return;
+			doCustomError("Profile.dat exists, but couldn't be read from.");
 
 		const uint64_t code = SDL_ReadLE64(profile); //Code
 		if (memcmp(&code, profileCode.c_str(), sizeof(code)) != 0)
@@ -203,10 +212,13 @@ void loadProfile()
 
 		//Close RW
 		SDL_RWclose(profile);
+
+		logDebug("Loaded profile");
 	}
 	else
 	{
 		initGame();
+		logInfo("Attempted to load profile, but it didn't exist.");
 	}
 }
 
@@ -265,14 +277,26 @@ void saveProfile()
 //Save and load config.dat thing
 string configName = "Config.dat";
 CONFIG *currentConfig;
-int configVersion = 1;
+int configVersion = 2;
 
-CONFIG defaultConfigData = { configVersion, 20, 320, 240, 2, false, true, false, keyLeft, keyRight, keyUp, keyDown, keyJump, keyShoot, keyMenu, keyMap, keyRotLeft, keyRotRight, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+int defaultPadLeft = SDL_CONTROLLER_BUTTON_DPAD_LEFT;
+int defaultPadRight = SDL_CONTROLLER_BUTTON_DPAD_RIGHT;
+int defaultPadUp = SDL_CONTROLLER_BUTTON_DPAD_UP;
+int defaultPadDown = SDL_CONTROLLER_BUTTON_DPAD_DOWN;
+int defaultPadJump = SDL_CONTROLLER_BUTTON_A;
+int defaultPadShoot = SDL_CONTROLLER_BUTTON_X;
+int defaultPadMenu = SDL_CONTROLLER_BUTTON_Y;
+int defaultPadMap = SDL_CONTROLLER_BUTTON_B;
+
+int defaultPadRotLeft = SDL_CONTROLLER_BUTTON_LEFTSHOULDER;
+int defaultPadRotRight = SDL_CONTROLLER_BUTTON_RIGHTSHOULDER;
+
+CONFIG defaultConfigData = { configVersion, 20, 320, 240, 2, false, true, false, keyLeft, keyRight, keyUp, keyDown, keyJump, keyShoot, keyMenu, keyMap, keyRotLeft, keyRotRight, defaultPadLeft, defaultPadRight, defaultPadUp, defaultPadDown, defaultPadJump, defaultPadShoot, defaultPadMenu, defaultPadMap, defaultPadRotLeft, defaultPadRotRight };
 
 void setFromConfig(CONFIG *config)
 {
 	framerate = config->framerate;
-	createWindow(config->screenWidth, config->screenHeight, config->screenScale, true);
+	createWindow(config->screenWidth, config->screenHeight, config->screenScale, config->fullscreen);
 
 	if (config->fullscreen)
 		switchScreenMode();
@@ -307,6 +331,8 @@ void setFromConfig(CONFIG *config)
 	}
 
 	currentConfig = config;
+
+	saveConfig();
 }
 
 void defaultConfig()
@@ -323,7 +349,7 @@ void loadConfig()
 	else
 	{
 		CONFIG *config;
-		int configSize = loadFile(configName.c_str(), (uint8_t**)&config);
+		size_t configSize = loadFile(configName.c_str(), (uint8_t**)&config);
 
 		if (configSize < sizeof(config->version) || config->version != configVersion)
 		{
@@ -347,7 +373,7 @@ void saveConfig()
 	writeFile(configName.c_str(), writeData, sizeof(*currentConfig));
 }
 
-//thing
+/// Return a vector of strings containing the contents of the file who's name is given as argument
 vector<string> getLinesFromFile(const string& fileName)
 {
 	vector<string> lines;

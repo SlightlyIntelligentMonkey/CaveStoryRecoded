@@ -1,53 +1,46 @@
-#include "common.h"
+#include "main.h"
 
 #include <string>
 #include <SDL_image.h>
 #include "sound.h"
 #include "script.h"
+#include "input.h"
 #include "flags.h"
 #include "player.h"
 #include "render.h"
 #include "filesystem.h"
 #include "game.h"
 #include "loadConfig.h"
+#include "log.h"
+#include "level.h"
 
 using std::string;
 
-//Rendering and view related variables
-SDL_Window *window;
-SDL_Renderer *renderer;
-
-SDL_Rect DrawRect;
-SDL_Rect ImageRect;
-
-//Game variables
-int gameFlags = 0;
-
-int framerate = 20; //17 for 60-ish fps
-
-int mode;
-
 // Some global functions
 
-static void doQuit() 
+static void doQuit()
 {
 	//sound::quit(); // TBD : Make a sound quit method, make the quit method a global destructor or remove this
 	SDL_Quit();
 	IMG_Quit();
 	freeSounds();
+
+	logInfo("Finished quit");
 }
 
-void doError() 
+void doError()
 {
 	SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Critical Error", SDL_GetError(), nullptr);
+	logError(SDL_GetError());
 	SDL_ClearError();
 	doQuit();
 	exit(EXIT_FAILURE);
 }
 
-void doCustomError(const string& msg) 
+void doCustomError(const string& msg)
 {
 	SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Critical Error", msg.c_str(), nullptr);
+	logError(msg);
 	doQuit();
 	exit(EXIT_FAILURE);
 }
@@ -79,7 +72,7 @@ void loadInitialSprites()
 
 	loadImage("data/Npc/NpcRegu.png", &sprites[0x17]);
 
-	loadImage("data/TextBox.png", &sprites[0x1A]);
+	loadImage("data/TextBox.png", &sprites[0x1A]);  // Escape menu
 	loadImage("data/Face.png", &sprites[0x1B]);
 
 	loadImage("data/Font.png", &sprites[0x26]);
@@ -87,10 +80,10 @@ void loadInitialSprites()
 
 }
 
-constexpr bool useExperimentalJsonLoading = true;
-
-int init()
+void init()
 {
+    initLogFile();
+
 #ifdef USE_ICONS_WINDOWS
 	// Set the window icons. See icon.rc.
 	SDL_SetHint(SDL_HINT_WINDOWS_INTRESOURCE_ICON, "101");
@@ -98,15 +91,14 @@ int init()
 #endif
 
 	//Initiate SDL and window stuff
-	if (SDL_Init(SDL_INIT_TIMER | SDL_INIT_AUDIO | SDL_INIT_VIDEO | SDL_INIT_JOYSTICK) < 0)
+	if (SDL_Init(SDL_INIT_TIMER | SDL_INIT_AUDIO | SDL_INIT_VIDEO | SDL_INIT_GAMECONTROLLER) < 0)
 		doCustomError("Couldn't initiate SDL");
 
 	//Initiate SDL_image
 	if (!(IMG_Init(IMG_INIT_PNG) & IMG_INIT_PNG))
 		doCustomError("Couldn't initiate SDL Image");
 
-	if (useExperimentalJsonLoading)
-		loadConfigFiles();
+	loadConfigFiles();
 
 	// TBD : Load config data, initialise keybinds and screen resolution based on it
 	// TBD : Init joypad
@@ -114,6 +106,8 @@ int init()
 
 	initTsc();
 	initFlags();
+
+	initGamepad();
 
 	initAudio();
 	loadSounds();
@@ -126,7 +120,7 @@ int init()
 
 	loadInitialSprites();
 
-	return 0;
+	logInfo("Finished init");
 }
 
 int main(int /*argc*/, char ** /*argv*/) // TDB : Do something with command-line parameters

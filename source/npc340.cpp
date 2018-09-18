@@ -5,6 +5,7 @@
 #include "mathUtils.h"
 #include "sound.h"
 #include "render.h"
+#include "level.h"
 
 using std::vector;
 
@@ -100,7 +101,7 @@ void npcAct349(npc *NPC)
 			NPC->y += tilesToUnits(1);
 	}
 
-	NPC->rect = { 0, 0, 16, 16 };
+	NPC->doRects({ 0, 0, 16, 16 });
 }
 
 void npcAct359(npc *NPC)

@@ -6,13 +6,14 @@
 #include "sound.h"
 #include "game.h"
 #include "render.h"
+#include "level.h"
 
 using std::vector;
 
 void npcAct080(npc *NPC) //Gravekeeper
 {
-	RECT rcLeft[7];
-	RECT rcRight[7];
+	vector<RECT> rcLeft(7);
+	vector<RECT> rcRight(7);
 
 	rcLeft[0].left = 0; //Sorry I'm lazy
 	rcLeft[0].top = 64;
@@ -115,7 +116,10 @@ void npcAct080(npc *NPC) //Gravekeeper
 			NPC->act_no = 3;
 			NPC->bits |= npc_shootable;
 
-			NPC->moveTowardsPlayer(pixelsToUnits(2));
+			if (NPC->direct)
+				NPC->xm = pixelsToUnits(2);
+			else
+				NPC->xm = pixelsToUnits(-2);
 		}
 
 		if (currentPlayer.x >= NPC->x)
@@ -184,16 +188,13 @@ void npcAct080(npc *NPC) //Gravekeeper
 	NPC->x += NPC->xm;
 	NPC->y += NPC->ym;
 
-	if (NPC->direct)
-		NPC->rect = rcRight[NPC->ani_no];
-	else
-		NPC->rect = rcLeft[NPC->ani_no];
+	NPC->doRects(rcLeft, rcRight);
 }
 
 void npcAct081(npc *NPC) //Big pignon
 {
-	RECT rcLeft[6];
-	RECT rcRight[6];
+	vector<RECT> rcLeft(6);
+	vector<RECT> rcRight(6);
 
 	rcLeft[0].left = 144;
 	rcLeft[0].top = 64;
@@ -349,17 +350,14 @@ void npcAct081(npc *NPC) //Big pignon
 	NPC->x += NPC->xm;
 	NPC->y += NPC->ym;
 
-	if (NPC->direct)
-		NPC->rect = rcRight[NPC->ani_no];
-	else
-		NPC->rect = rcLeft[NPC->ani_no];
+	NPC->doRects(rcLeft, rcRight);
 }
 
 void npcAct082(npc *NPC) //Misery standing
 {
 	int something; //This is like, set to act_wait - 30 after act_wait is increased by 1? Then it does weird shit in an if statement???
-	RECT rcLeft[9];
-	RECT rcRight[9];
+	vector<RECT> rcLeft(9);
+	vector<RECT> rcRight(9);
 
 	rcLeft[0] = { 0x50, 0x00, 0x60, 0x10 };
 	rcLeft[1] = { 0x60, 0x00, 0x70, 0x10 };
@@ -490,9 +488,7 @@ void npcAct082(npc *NPC) //Misery standing
 	case 41:
 		NPC->ani_no = 4;
 
-		something = ++NPC->act_wait - 30;
-
-		if (something <= 0x14 && (1 << something) & 0x100401)
+		if (++NPC->act_wait == 30 || NPC->act_wait == 40 || NPC->act_wait == 50)
 		{
 			createNpc(NPC_ProjectileBalrogEnergyBallInvincible, NPC->x + 0x1000, NPC->y - 0x100, 0x600, random(-0x200, 0));
 			playSound(SFX_FireballShoot);
@@ -546,16 +542,13 @@ void npcAct082(npc *NPC) //Misery standing
 		}
 	}
 
-	if (NPC->direct != dirLeft)
-		NPC->rect = rcRight[NPC->ani_no];
-	else
-		NPC->rect = rcLeft[NPC->ani_no];
+	NPC->doRects(rcLeft, rcRight);
 }
 
 void npcAct083(npc *NPC) // Igor, standing
 {
-	RECT rcLeft[8];
-	RECT rcRight[8];
+	vector<RECT> rcLeft(8);
+	vector<RECT> rcRight(8);
 
 	rcLeft[0] = { 0, 0, 40, 40 };
 	rcLeft[1] = { 40, 0, 80, 40 };
@@ -660,15 +653,12 @@ void npcAct083(npc *NPC) // Igor, standing
 	NPC->x += NPC->xm;
 	NPC->y += NPC->ym;
 
-	if (NPC->direct == dirLeft)
-		NPC->rect = rcLeft[NPC->ani_no];
-	else
-		NPC->rect = rcRight[NPC->ani_no];
+	NPC->doRects(rcLeft, rcRight);
 }
 
 void npcAct084(npc *NPC) //Basu 1 projectile
 {
-	RECT rect[4];
+	vector<RECT> rect(4);
 
 	rect[0] = { 48, 48, 64, 64 };
 	rect[1] = { 64, 48, 80, 64 };
@@ -696,7 +686,7 @@ void npcAct084(npc *NPC) //Basu 1 projectile
 	if (NPC->ani_no > 3)
 		NPC->ani_no = 0;
 
-	NPC->rect = rect[NPC->ani_no];
+	NPC->doRects(rect);
 
 	if (++NPC->count1 > 300)
 	{
@@ -707,8 +697,8 @@ void npcAct084(npc *NPC) //Basu 1 projectile
 
 void npcAct085(npc * NPC) // Terminal
 {
-	constexpr RECT rcLeft[3] = { {256, 96, 272, 120}, {256, 96, 272, 120}, {272, 96, 288, 120} };
-	constexpr RECT rcRight[3] = { {256, 96, 272, 120}, {288, 96, 304, 120}, {304, 96, 320, 120} };
+	vector<RECT> rcLeft = { {256, 96, 272, 120}, {256, 96, 272, 120}, {272, 96, 288, 120} };
+	vector<RECT> rcRight = { {256, 96, 272, 120}, {288, 96, 304, 120}, {304, 96, 320, 120} };
 
 	if (NPC->act_no == 0)
 	{
@@ -725,10 +715,7 @@ void npcAct085(npc * NPC) // Terminal
 	else if (NPC->act_no == 1 && ++NPC->ani_no > 2)
 		NPC->ani_no = 1;
 
-	if (NPC->direct == dirLeft)
-		NPC->rect = rcLeft[NPC->ani_no];
-	else
-		NPC->rect = rcRight[NPC->ani_no];
+	NPC->doRects(rcLeft, rcRight);
 }
 
 void npcAct086(npc *NPC) //Dropped missiles
@@ -862,8 +849,8 @@ void npcAct087(npc *NPC) //Health refill
 
 void npcAct088(npc * NPC) // Igor (boss)
 {
-	RECT rcLeft[12];
-	RECT rcRight[12];
+	vector<RECT> rcLeft(12);
+	vector<RECT> rcRight(12);
 
 	rcLeft[0] = { 0, 0, 40, 40 };
 	rcLeft[1] = { 40, 0, 80, 40 };
@@ -939,7 +926,11 @@ void npcAct088(npc * NPC) // Igor (boss)
 	case walk:
 		++NPC->act_wait;
 		NPC->animate(3, 2, 5);
-		NPC->moveTowardsPlayer(0x200);
+
+		if (NPC->direct)
+			NPC->xm = pixelsToUnits(1);
+		else
+			NPC->xm = pixelsToUnits(-1);
 
 		if (NPC->count2)
 		{
@@ -1072,16 +1063,13 @@ void npcAct088(npc * NPC) // Igor (boss)
 	NPC->x += NPC->xm;
 	NPC->y += NPC->ym;
 
-	if (NPC->direct == dirLeft)
-		NPC->rect = rcLeft[NPC->ani_no];
-	else
-		NPC->rect = rcRight[NPC->ani_no];
+	NPC->doRects(rcLeft, rcRight);
 }
 
 void npcAct089(npc * NPC) // Igor, dying
 {
-	RECT rcLeft[4];
-	RECT rcRight[4];
+	vector<RECT> rcLeft(4);
+	vector<RECT> rcRight(4);
 
 	rcLeft[0].left = 80;
 	rcLeft[0].top = 80;
@@ -1127,7 +1115,7 @@ void npcAct089(npc * NPC) // Igor, dying
 			NPC->direct = 0;
 
 		for (int i = 0; i < 8; ++i)
-			createNpc(4, NPC->x + (random(-12, 12) << 9), NPC->y + (random(-12, 12) << 9), random(-0x155, 0x155), random(-0x600, 0), 0, nullptr);
+			createNpc(NPC_Smoke, NPC->x + (random(-12, 12) << 9), NPC->y + (random(-12, 12) << 9), random(-0x155, 0x155), random(-0x600, 0), 0, nullptr);
 
 		NPC->act_no = 1;
 //Fallthrough
@@ -1139,7 +1127,7 @@ void npcAct089(npc * NPC) // Igor, dying
 		}
 
 		if (!(NPC->act_wait % 5))
-			createNpc(4, NPC->x + (random(-12, 12) << 9), NPC->y + (random(-12, 12) << 9), random(-0x155, 0x155), random(-0x600, 0), 0, nullptr);
+			createNpc(NPC_Smoke, NPC->x + (random(-12, 12) << 9), NPC->y + (random(-12, 12) << 9), random(-0x155, 0x155), random(-0x600, 0), 0, nullptr);
 
 		if (NPC->direct)
 			NPC->rect = rcRight[0];
@@ -1174,7 +1162,7 @@ void npcAct089(npc * NPC) // Igor, dying
 		}
 
 		if (!(NPC->act_wait % 9))
-			createNpc(4, NPC->x + (random(-12, 12) << 9), NPC->y + (random(-12, 12) << 9), random(-0x155, 0x155), random(-0x600, 0), 0, nullptr);
+			createNpc(NPC_Smoke, NPC->x + (random(-12, 12) << 9), NPC->y + (random(-12, 12) << 9), random(-0x155, 0x155), random(-0x600, 0), 0, nullptr);
 
 		if (NPC->direct)
 			NPC->rect = rcRight[NPC->ani_no];
@@ -1192,10 +1180,7 @@ void npcAct089(npc * NPC) // Igor, dying
 		if (NPC->ani_no == 3)
 			NPC->act_no = 4;
 
-		if (NPC->direct)
-			NPC->rect = rcRight[NPC->ani_no];
-		else
-			NPC->rect = rcLeft[NPC->ani_no];
+		NPC->doRects(rcLeft, rcRight);
 		break;
 
 	default:
@@ -1212,7 +1197,7 @@ void npcAct089(npc * NPC) // Igor, dying
 
 void npcAct090(npc *NPC) // Background
 {
-	NPC->rect = { 280, 80, 296, 104 };
+	NPC->doRects({ 280, 80, 296, 104 });
 }
 
 void npcAct091(npc *NPC) // Cage
@@ -1223,12 +1208,12 @@ void npcAct091(npc *NPC) // Cage
 		NPC->y += 0x2000;
 	}
 
-	NPC->rect = { 96, 88, 128, 112 };
+	NPC->doRects({ 96, 88, 128, 112 });
 }
 
 void npcAct092(npc * NPC) // Sue (Computer)
 {
-	constexpr RECT rcNPC[3] = { {272, 216, 288, 240}, {288, 216, 304, 240}, {304, 216, 320, 240} };
+	vector<RECT> rcNPC = { {272, 216, 288, 240}, {288, 216, 304, 240}, {304, 216, 320, 240} };
 
 	enum
 	{
@@ -1285,7 +1270,7 @@ void npcAct092(npc * NPC) // Sue (Computer)
 		break;
 	}
 
-	NPC->rect = rcNPC[NPC->ani_no];
+	NPC->doRects(rcNPC);
 }
 
 void npcAct093(npc * NPC)
@@ -1524,10 +1509,10 @@ void npcAct095(npc * NPC)
 
 	case 11:
 		NPC->animate(5);
-		
+
 		if (NPC->ani_no == 2)
 		{
-			NPC->moveInDir(0x100);
+			NPC->moveInDir(pixelsToUnits(0.5));
 			NPC->ym -= pixelsToUnits(1);
 		}
 		else if (NPC->ani_no > 2)
@@ -1585,7 +1570,7 @@ void npcAct095(npc * NPC)
 		NPC->x += NPC->xm;
 		NPC->y += NPC->ym;
 	}
-	
+
 	NPC->doRects(rcLeft, rcRight);
 }
 
@@ -1632,7 +1617,7 @@ void npcAct096(npc *NPC) //Fan left
 		break;
 	}
 
-	NPC->rect = { 272 + (NPC->ani_no << 4), 120, 288 + (NPC->ani_no << 4), 136 };
+	NPC->doRects({ 272 + (NPC->ani_no << 4), 120, 288 + (NPC->ani_no << 4), 136 });
 }
 
 void npcAct097(npc *NPC) //Fan up
@@ -1675,7 +1660,7 @@ void npcAct097(npc *NPC) //Fan up
 		break;
 	}
 
-	NPC->rect = { 272 + (NPC->ani_no << 4), 136, 288 + (NPC->ani_no << 4), 152 };
+	NPC->doRects({ 272 + (NPC->ani_no << 4), 136, 288 + (NPC->ani_no << 4), 152 });
 }
 
 void npcAct098(npc *NPC) //Fan right

@@ -1,4 +1,5 @@
 #pragma once
+
 #include "common.h"
 
 extern int keyLeft;
@@ -13,7 +14,10 @@ extern int keyMap;
 extern int keyRotLeft;
 extern int keyRotRight;
 
+void initGamepad();
+
 void getKeys();
 
 bool isKeyDown(int keynum)  attrPure;
 bool isKeyPressed(int keynum)  attrPure;
+bool handleEvents();

@@ -1,10 +1,4 @@
 ﻿#include "sound.h"
-#include "pxt.h"
-#include "org.h"
-#include "input.h"
-#include "filesystem.h"
-#include "stdUtils.h"
-#include "mathUtils.h"	// For M_PI definition
 
 #include <vector>
 #include <string>
@@ -13,7 +7,14 @@
 #include <cctype>
 #include <cstdlib>
 #include <cstdio>
-#include <SDL.h>
+#include <SDL_audio.h>
+#include "pxt.h"
+#include "org.h"
+#include "input.h"
+#include "filesystem.h"
+#include "stdUtils.h"
+#include "mathUtils.h"	// For M_PI definition
+#include "main.h"
 
 using std::string;
 
@@ -130,13 +131,13 @@ void loadSounds()
 	}
 }
 
-void freeSounds() 
+void freeSounds()
 {
 	for (auto& sound : sounds)
 		free(sound.wave);
 }
 
-void playSound(size_t sound_no, int soundMode) 
+void playSound(size_t sound_no, int soundMode)
 {
 	sounds[sound_no].pos = 0;
 	sounds[sound_no].playing = true;

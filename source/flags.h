@@ -1,4 +1,5 @@
 #pragma once
+
 #include "common.h"
 
 extern uint8_t tscFlags[1000]; //game flags
@@ -7,13 +8,13 @@ extern uint8_t mapFlags[128]; //Map flags
 
 void initFlags();
 
-void setFlag(int a);
-void clearFlag(int a);
-bool getFlag(int a)  attrPure;
+void setFlag(size_t a);
+void clearFlag(size_t a);
+bool getFlag(size_t a)  attrPure;
 
-void setSkipFlag(int a);
-void clearSkipFlag(int a);
-bool getSkipFlag(int a)  attrPure;
+void setSkipFlag(size_t a);
+void clearSkipFlag(size_t a);
+bool getSkipFlag(size_t a)  attrPure;
 
-void setMapFlag(int a);
-bool getMapFlag(int a)  attrPure;
+void setMapFlag(size_t a);
+bool getMapFlag(size_t a)  attrPure;

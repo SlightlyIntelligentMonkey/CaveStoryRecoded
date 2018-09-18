@@ -1,5 +1,4 @@
 #pragma once
-#include "common.h"
 
 #include "npc.h"
 
@@ -12,7 +11,7 @@ void npcAct187(npc *NPC);
 void npcAct188(npc *NPC);
 
 void npcAct192(npc *NPC);
-
+void npcAct193(npc *NPC);
 void npcAct194(npc *NPC);
 void npcAct195(npc *NPC);
 void npcAct196(npc *NPC);

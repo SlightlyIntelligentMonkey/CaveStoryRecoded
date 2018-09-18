@@ -1,13 +1,18 @@
 #include "bullet.h"
+
+#include <string>
+#include <deque>
+<<<<<<< HEAD
+#include <SDL.h>
+=======
+>>>>>>> upstream/master
+#include <cstring>
+#include <SDL_messagebox.h>
 #include "weapons.h"
 #include "bulletCollision.h"
 #include "render.h"
 #include "game.h"
-
-#include <string>
-#include <deque>
-#include <SDL.h>
-#include <cstring>
+#include "log.h"
 
 using std::string;
 using std::to_string;
@@ -277,7 +282,7 @@ void bullet::update()
 	{
 		if (bulletActs[code_bullet] != nullptr)
 			bulletActs[code_bullet](this);
-		else if (debugFlags & notifyOnNotImplemented)
+		else
 		{
 			static bool wasNotifiedAboutBullet[_countof(bulletActs)] = { false };
 
@@ -286,7 +291,9 @@ void bullet::update()
 
 			wasNotifiedAboutBullet[this->code_bullet] = true;
 			string msg = "Bullet " + to_string(this->code_bullet) + " is not implemented yet.";
-			SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_WARNING, "Missing Bullet", msg.c_str(), nullptr);
+			logWarning(msg);
+			if (debugFlags & notifyOnNotImplemented)
+                SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_WARNING, "Missing Bullet", msg.c_str(), nullptr);
 		}
 	}
 	else

@@ -86,7 +86,7 @@ void npcAct041(npc * NPC) // Busted doorway
 		NPC->y -= 0x2000;
 	}
 
-	NPC->rect = { 0, 80, 48, 112 };
+	NPC->doRects({ 0, 80, 48, 112 });
 }
 
 void npcAct042(npc *NPC) // Sue
@@ -170,7 +170,10 @@ void npcAct042(npc *NPC) // Sue
 	// Fallthrough
 	case 4:
 		NPC->animate(4, 2, 5);
-		NPC->moveTowardsPlayer(pixelsToUnits(1));
+		if (NPC->direct)
+			NPC->xm = 0x200;
+		else
+			NPC->xm = -0x200;
 		break;
 
 	case 5:
@@ -283,7 +286,10 @@ void npcAct042(npc *NPC) // Sue
 	// Fallthrough
 	case 21:
 		NPC->animate(2, 2, 5);
-		NPC->moveTowardsPlayer(pixelsToUnits(2));
+		if (NPC->direct)
+			NPC->xm = pixelsToUnits(2);
+		else
+			NPC->xm = pixelsToUnits(-2);
 
 		if (NPC->x < currentPlayer.x - 0x1000)
 		{
@@ -299,7 +305,10 @@ void npcAct042(npc *NPC) // Sue
 	// Fallthrough
 	case 31:
 		NPC->animate(2, 2, 5);
-		NPC->moveTowardsPlayer(pixelsToUnits(2));
+		if (NPC->direct)
+			NPC->xm = pixelsToUnits(2);
+		else
+			NPC->xm = pixelsToUnits(-2);
 		break;
 	case jumpOffIsland:
 		NPC->act_no = 41;
@@ -334,10 +343,7 @@ void npcAct043(npc * NPC) // Blackboard
 		NPC->act_no = 1;
 		NPC->y -= 0x2000;
 	}
-	if (NPC->direct != dirLeft)
-		NPC->rect = { 168, 80, 208, 112 };
-	else
-		NPC->rect = { 128, 80, 168, 112 };
+	NPC->doRects({128, 80, 168, 112}, {168, 80, 168, 112});
 }
 
 void npcAct046(npc *NPC) //H/V trigger
@@ -359,18 +365,18 @@ void npcAct046(npc *NPC) //H/V trigger
 			NPC->x += 0x5FF;
 	}
 
-	NPC->rect = { 0, 0, 16, 16 };
+	NPC->doRects({ 0, 0, 16, 16 });
 }
 
 void npcAct052(npc *NPC) // Blue robots
 {
-	NPC->rect = { 240, 96, 256, 112 };
+	NPC->doRects({ 240, 96, 256, 112 });
 }
 
 void npcAct055(npc *NPC) //Kazuma
 {
-	RECT rcLeft[6];
-	RECT rcRight[6];
+	vector<RECT> rcLeft(6);
+	vector<RECT> rcRight(6);
 
 	rcLeft[0] = { 0xC0, 0xC0, 0xD0, 0xD8 };
 	rcLeft[1] = { 0xD0, 0xC0, 0xE0, 0xD8 };
@@ -428,10 +434,7 @@ void npcAct055(npc *NPC) //Kazuma
 
 	NPC->y += NPC->ym;
 
-	if (NPC->direct)
-		NPC->rect = rcRight[NPC->ani_no];
-	else
-		NPC->rect = rcLeft[NPC->ani_no];
+	NPC->doRects(rcLeft, rcRight);
 }
 
 void npcAct058(npc *NPC) //Basu 1
@@ -570,10 +573,8 @@ void npcAct058(npc *NPC) //Basu 1
 			if (NPC->act_wait > 120 && NPC->act_wait / 2 % 2 == 1 && NPC->ani_no == 1)
 				NPC->ani_no = 2;
 
-			if (NPC->direct != dirLeft)
-				NPC->rect = { 192 + (NPC->ani_no * 24), 24, 216 + (NPC->ani_no * 24), 48 };
-			else
-				NPC->rect = { 192 + (NPC->ani_no * 24), 0, 216 + (NPC->ani_no * 24), 24 };
+            NPC->doRects({ 192 + (NPC->ani_no * 24), 0, 216 + (NPC->ani_no * 24), 24 },
+                         { 192 + (NPC->ani_no * 24), 24, 216 + (NPC->ani_no * 24), 48 });
 		}
 		else
 		{
@@ -591,8 +592,7 @@ void npcAct058(npc *NPC) //Basu 1
 
 void npcAct059(npc *NPC) //Eye door
 {
-	RECT *setRect;
-	RECT rect[4];
+	vector<RECT> rect(4);
 
 	rect[0] = { 224, 16, 240, 40 };
 	rect[1] = { 208, 80, 224, 104 };
@@ -650,11 +650,9 @@ void npcAct059(npc *NPC) //Eye door
 	}
 
 	if (NPC->shock)
-		setRect = &rect[3];
+		NPC->rect = rect[3];
 	else
-		setRect = &rect[NPC->ani_no];
-
-	NPC->rect = { setRect->left, setRect->top, setRect->right, setRect->bottom };
+		NPC->rect = rect[NPC->ani_no];
 }
 
 

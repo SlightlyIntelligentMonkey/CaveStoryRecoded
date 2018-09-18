@@ -7,27 +7,21 @@
 #include "sound.h"
 #include "render.h"
 #include "game.h"
+#include "level.h"
 
 using std::vector;
 
 void npcAct020(npc *NPC) // Computer
 {
-	constexpr RECT rcLeft = { 288, 16, 320, 40 };
-	constexpr RECT rcRight[3] = { {288, 40, 320, 64}, {288, 40, 320, 64}, {288, 64, 320, 88} };
+	RECT rcLeft = { 288, 16, 320, 40 };
+	vector<RECT> rcRight = { {288, 40, 320, 64}, {288, 40, 320, 64}, {288, 64, 320, 88} };
 
-	// Animate from animation No 0 to 2 with a 3-frame delay
-	if (++NPC->ani_wait > 3)
-	{
-		NPC->ani_wait = 0;
-		++NPC->ani_no;
-	}
-	if (NPC->ani_no > 2)
-		NPC->ani_no = 0;
+	NPC->animate(3, 0, 2);
 
 	if (NPC->direct == dirLeft)
-		NPC->rect = rcLeft;
+		NPC->doRects(rcLeft);
 	else
-		NPC->rect = rcRight[NPC->ani_no];
+		NPC->doRects(rcRight);
 }
 
 void npcAct021(npc *NPC) //Open chest
@@ -40,21 +34,12 @@ void npcAct021(npc *NPC) //Open chest
 			NPC->y += 0x2000;
 	}
 
-	NPC->rect = { 224, 40, 240, 48 };
+	NPC->doRects({ 224, 40, 240, 48 });
 }
 
 void npcAct022(npc *NPC) //Teleporter
 {
-	RECT rect[2];
-
-	rect[0].left = 240;
-	rect[0].top = 16;
-	rect[0].right = 264;
-	rect[0].bottom = 48;
-	rect[1].left = 248;
-	rect[1].top = 152;
-	rect[1].right = 272;
-	rect[1].bottom = 184;
+	vector<RECT> rcNPC = {{240, 16, 264, 48}, {248, 152, 272, 184}};
 
 	if (NPC->act_no)
 	{
@@ -62,25 +47,15 @@ void npcAct022(npc *NPC) //Teleporter
 			NPC->ani_no = 0;
 	}
 	else
-	{
 		NPC->ani_no = 0;
-	}
 
-	NPC->rect = rect[NPC->ani_no];
+	NPC->doRects(rcNPC);
 }
 
 void npcAct023(npc *NPC) //Teleporter lights
 {
-	if (++NPC->ani_wait > 1)
-	{
-		NPC->ani_wait = 0;
-		++NPC->ani_no;
-	}
-
-	if (NPC->ani_no > 7)
-		NPC->ani_no = 0;
-
-	NPC->rect = { 264, 16 + (NPC->ani_no * 4), 288, 20 + (NPC->ani_no * 4) };
+    NPC->animate(1, 0, 7);
+	NPC->doRects({ 264, 16 + (NPC->ani_no * 4), 288, 20 + (NPC->ani_no * 4) });
 }
 
 void npcAct024(npc *NPC) // Power Critter (enemy)
@@ -147,7 +122,7 @@ void npcAct024(npc *NPC) // Power Critter (enemy)
             NPC->ym = -0x5FF;
             playSound(SFX_PowerCritterLargeEnemyJump);
             NPC->facePlayer();
-            NPC->moveInDir(0x100);
+            NPC->moveInDir(pixelsToUnits(0.5));
         }
         break;
 
@@ -201,8 +176,8 @@ void npcAct024(npc *NPC) // Power Critter (enemy)
     {
         NPC->accelerateTowardsPlayer(0x20);
         NPC->accelerateTowardsYTarget(0x10);
-        NPC->limitYVel(0x200);
-        NPC->limitXVel(0x200);
+        NPC->limitYVel(pixelsToUnits(1));
+        NPC->limitXVel(pixelsToUnits(1));
     }
     else
         NPC->doGravity(0x20, 0x5FF);
@@ -221,9 +196,12 @@ void npcAct025(npc *NPC) //egg corridor lift thing
 		NPC->act_no = 1;
 		NPC->ani_no = 0;
 		NPC->ani_wait = 0;
-		NPC->x += 0x1000;
+		NPC->x += tilesToUnits(0.5);
 //Fallthrough
 	case 1:
+    case 3:
+    case 5:
+    case 7:
 		if (++NPC->act_wait > 150)
 		{
 			NPC->act_wait = 0;
@@ -231,69 +209,16 @@ void npcAct025(npc *NPC) //egg corridor lift thing
 		}
 		break;
 	case 2:
+    case 4:
+    case 6:
+    case 8:
 		if (++NPC->act_wait > 64)
 		{
 			NPC->act_wait = 0;
 			++NPC->act_no;
 		}
 		else
-		{
 			NPC->y -= 0x200;
-		}
-		break;
-	case 3:
-		if (++NPC->act_wait > 150)
-		{
-			NPC->act_wait = 0;
-			++NPC->act_no;
-		}
-		break;
-	case 4:
-		if (++NPC->act_wait > 64)
-		{
-			NPC->act_wait = 0;
-			++NPC->act_no;
-		}
-		else
-		{
-			NPC->y -= 0x200;
-		}
-		break;
-	case 5:
-		if (++NPC->act_wait > 150)
-		{
-			NPC->act_wait = 0;
-			++NPC->act_no;
-		}
-		break;
-	case 6:
-		if (++NPC->act_wait > 64)
-		{
-			NPC->act_wait = 0;
-			++NPC->act_no;
-		}
-		else
-		{
-			NPC->y += 512;
-		}
-		break;
-	case 7:
-		if (++NPC->act_wait > 150)
-		{
-			NPC->act_wait = 0;
-			++NPC->act_no;
-		}
-		break;
-	case 8:
-		if (++NPC->act_wait > 64)
-		{
-			NPC->act_wait = 0;
-			NPC->act_no = 1;
-		}
-		else
-		{
-			NPC->y += 0x200;
-		}
 		break;
 	default:
 		break;
@@ -310,10 +235,7 @@ void npcAct025(npc *NPC) //egg corridor lift thing
 			NPC->ani_no = 0;
 	}
 
-	NPC->rect.left = 256;
-	NPC->rect.top = 64 + (16 * NPC->ani_no);
-	NPC->rect.right = 288;
-	NPC->rect.bottom = 80 + (16 * NPC->ani_no);
+	NPC->doRects({256, 64 + (16 * NPC->ani_no), 288, 80 + (16 * NPC->ani_no)});
 }
 
 void npcAct026(npc * NPC) // Bat, Black Circling (enemy)
@@ -344,25 +266,10 @@ void npcAct026(npc * NPC) // Bat, Black Circling (enemy)
 	case circleAroundTarget:
 		NPC->facePlayer();
 
-		if (NPC->tgt_x < NPC->x)
-			NPC->xm -= 0x10;
-		else if (NPC->tgt_x > NPC->x)
-			NPC->xm += 0x10;
-
-		if (NPC->tgt_y < NPC->y)
-			NPC->ym -= 0x10;
-		else if (NPC->tgt_y > NPC->y)
-			NPC->ym += 0x10;
-
-		if (NPC->xm > 0x200)
-			NPC->xm = 0x200;
-		else if (NPC->xm < -0x200)
-			NPC->xm = -0x200;
-
-		if (NPC->ym > 0x200)
-			NPC->ym = 0x200;
-		else if (NPC->ym < -0x200)
-			NPC->ym = -0x200;
+		NPC->accelerateTowardsXTarget(0x10);
+		NPC->accelerateTowardsYTarget(0x10);
+		NPC->limitXVel(pixelsToUnits(1));
+		NPC->limitYVel(pixelsToUnits(1));
 
 		if (NPC->count1 >= 120)
 		{
@@ -421,7 +328,7 @@ void npcAct026(npc * NPC) // Bat, Black Circling (enemy)
 
 void npcAct027(npc *NPC) // Death Spikes
 {
-	NPC->rect = { 96, 64, 128, 88 };
+	NPC->doRects({ 96, 64, 128, 88 });
 }
 
 void npcAct028(npc *NPC)
@@ -489,12 +396,12 @@ void npcAct028(npc *NPC)
 			NPC->ym = -0x4CC;
 			playSound(SFX_CritterHop);
 			NPC->facePlayer();
-			NPC->moveInDir(0x100);
+			NPC->moveInDir(pixelsToUnits(0.5));
 		}
 		break;
 
 	case jumping:
-		if (NPC->ym > 0x100)
+		if (NPC->ym > pixelsToUnits(0.5))
 		{
 			NPC->tgt_y = NPC->y;
 			NPC->act_no = flying;
@@ -557,8 +464,8 @@ void npcAct028(npc *NPC)
 
 void npcAct029(npc *NPC) // Cthulhu
 {
-	constexpr RECT rcLeft[2] = { {0, 192, 16, 216}, {16, 192, 32, 216} };
-	constexpr RECT rcRight[2] = { {0, 216, 16, 240}, {16, 216, 32, 240} };
+	vector<RECT> rcLeft = { {0, 192, 16, 216}, {16, 192, 32, 216} };
+	vector<RECT> rcRight = { {0, 216, 16, 240}, {16, 216, 32, 240} };
 
 	if (NPC->act_no != 0)
 	{
@@ -572,21 +479,15 @@ void npcAct029(npc *NPC) // Cthulhu
 		NPC->ani_wait = 0;
 	}
 
-	NPC->ani_no = NPC->x - 0x6000 < currentPlayer.x
-		&& NPC->x + 0x6000 > currentPlayer.x
-		&& NPC->y - 0x6000 < currentPlayer.y
-		&& NPC->y + 0x2000 > currentPlayer.y;
+	NPC->ani_no = NPC->isPlayerWithinDistance(tilesToUnits(3), tilesToUnits(3), tilesToUnits(1));
 
 doRects:
-	if (NPC->direct == dirLeft)
-		NPC->rect = rcLeft[NPC->ani_no];
-	else
-		NPC->rect = rcRight[NPC->ani_no];
+	NPC->doRects(rcLeft, rcRight);
 }
 
 void npcAct030(npc *NPC) // Hermit Gunsmith
 {
-	constexpr RECT rcNPC[3] = { { 48, 0, 64, 16 },{ 48, 16, 64, 32 },{ 0, 32, 16, 48 } };
+	vector<RECT> rcNPC = { { 48, 0, 64, 16 },{ 48, 16, 64, 32 },{ 0, 32, 16, 48 } };
 
 	if (NPC->direct == dirLeft)	// Wherever he's awoken depends on his direction, it would seem
 	{
@@ -627,7 +528,7 @@ void npcAct030(npc *NPC) // Hermit Gunsmith
 		}
 	}
 doRects:
-	NPC->rect = rcNPC[NPC->ani_no];
+	NPC->doRects(rcNPC);
 }
 
 void npcAct031(npc *NPC) // Bat, Black Hanging (enemy)
@@ -724,72 +625,42 @@ void npcAct031(npc *NPC) // Bat, Black Hanging (enemy)
 
 void npcAct032(npc *NPC) //Life Capsule
 {
-	RECT *setRect;
-	RECT rect[2];
+	vector<RECT> rcNPC = {{32, 96, 48, 112}, {48, 96, 64, 112}};
 
-	rect[0].left = 32;
-	rect[0].top = 96;
-	rect[0].right = 48;
-	rect[0].bottom = 112;
-	rect[1].left = 48;
-	rect[1].top = 96;
-	rect[1].right = 64;
-	rect[1].bottom = 112;
+    NPC->animate(2, 0, 1);
 
-	if (++NPC->ani_wait > 2)
-	{
-		NPC->ani_wait = 0;
-		++NPC->ani_no;
-	}
-
-	NPC->ani_no %= 2;
-
-	setRect = &rect[NPC->ani_no];
-
-	NPC->rect = { setRect->left, setRect->top, setRect->right, setRect->bottom };
+	NPC->doRects(rcNPC);
 }
 
-void npcAct033(npc *NPC) //balrog bouncy balls
+void npcAct033(npc *NPC) // Balrog energy ball bouncing (projectile)
 {
-	if (NPC->flag & 5)
-	{
-		createCaret(NPC->x, NPC->y, 2, 0);
-		NPC->cond = 0;
-	}
-	else if (NPC->flag & 8)
-	{
-		NPC->ym = -1024;
-	}
+    if (NPC->flag & (leftWall | rightWall))
+    {
+        createCaret(NPC->x, NPC->y, effect_RisingDisc);
+        NPC->cond = 0;
+    }
+    else if (NPC->flag & ground)
+        NPC->ym = pixelsToUnits(-4);
 
-	NPC->ym += 42;
-	NPC->y += NPC->ym;
-	NPC->x += NPC->xm;
+    NPC->ym += 42;
+    NPC->y += NPC->ym;
+    NPC->x += NPC->xm;
 
-	if (++NPC->ani_wait > 2)
-	{
-		NPC->ani_wait = 0;
-		if (++NPC->ani_no > 1)
-			NPC->ani_no = 0;
-	}
+    vector<RECT> rcNPC = {{240, 64, 256, 80}, {240, 80, 256, 96}};
+    NPC->animate(2, 0, 1);
 
-	NPC->rect.left = 240;
-	NPC->rect.top = 64 + (NPC->ani_no*16);
-	NPC->rect.right = 256;
-	NPC->rect.bottom = NPC->rect.top + 16;
+    NPC->doRects(rcNPC);
 
-	if (++NPC->act_wait > 250)
-	{
-		createCaret(NPC->x, NPC->y, 2, 0);
-		NPC->cond = 0;
-	}
+    if (++NPC->act_wait > 250)
+    {
+        createCaret(NPC->x, NPC->y, effect_RisingDisc);
+        NPC->cond = 0;  // NPC suicides after 5 seconds
+    }
 }
 
 void npcAct034(npc * NPC) // Bed
 {
-	if (NPC->direct == dirLeft)
-		NPC->rect = { 192, 48, 224, 64 };
-	else
-		NPC->rect = { 192, 184, 224, 200 };
+    NPC->doRects({192, 48, 224, 64}, {192, 184, 224, 200});
 }
 
 void npcAct035(npc * NPC) // Manann (enemy)
@@ -860,186 +731,193 @@ void npcAct035(npc * NPC) // Manann (enemy)
 		break;
 	}
 
-	constexpr RECT rcLeft[4] = { {96, 64, 120, 96}, {120, 64, 144, 96}, {144, 64, 168, 98}, {168, 64, 192, 96} };
-	constexpr RECT rcRight[4] = { {96, 96, 120, 128}, {120, 96, 144, 128}, {144, 96, 168, 128}, {168, 96, 192, 128} };
+	vector<RECT> rcLeft = { {96, 64, 120, 96}, {120, 64, 144, 96}, {144, 64, 168, 98}, {168, 64, 192, 96} };
+	vector<RECT> rcRight = { {96, 96, 120, 128}, {120, 96, 144, 128}, {144, 96, 168, 128}, {168, 96, 192, 128} };
 
-	if (NPC->direct == dirLeft)
-		NPC->rect = rcLeft[NPC->ani_no];
-	else
-		NPC->rect = rcRight[NPC->ani_no];
+	NPC->doRects(rcLeft, rcRight);
 }
 
-void npcAct036(npc *NPC) //Boss - Balrog (hovering)
+void npcAct036(npc *NPC) // Balrog, Flying (boss)
 {
-	uint8_t deg;
-	int xm;
-	int ym;
+    enum
+    {
+        init = 0,
+        wait = 1,
+        shootPlayer = 2,
+        startJump = 3,
+        jumpUp = 4,
+        flying = 5,
+        goDownFromJump = 6,
+        landed = 7,
+    };
 
-	switch (NPC->act_no)
-	{
-	case 0:
-		NPC->act_no = 1;
-	case 1:
-		if (++NPC->act_wait > 12)
-		{
-			NPC->act_no = 2;
-			NPC->act_wait = 0;
-			NPC->count1 = 3;
-			NPC->ani_no = 1;
-		}
-		break;
-	case 2:
-		if (++NPC->act_wait > 16)
-		{
-			--NPC->count1;
-			NPC->act_wait = 0;
-			deg = getAtan(NPC->x - currentPlayer.x, NPC->y + 2048 - currentPlayer.y);
-			deg += random(-16, 16);
-			ym = getSin(deg);
-			xm = getCos(deg);
-			createNpc(11, NPC->x, NPC->y + 2048, xm, ym);
-			playSound(39);
-			if (!NPC->count1)
-			{
-				NPC->act_no = 3;
-				NPC->act_wait = 0;
-			}
-		}
-		break;
-	case 3:
-		if (++NPC->act_wait > 3)
-		{
-			NPC->act_no = 4;
-			NPC->act_wait = 0;
-			NPC->xm = (currentPlayer.x - NPC->x) / 100;
-			NPC->ym = -1536;
-			NPC->ani_no = 3;
-		}
-		break;
-	case 4:
-		if (NPC->ym >= -511)
-		{
-			if (NPC->life <= 60)
-			{
-				NPC->act_no = 6;
-			}
-			else
-			{
-				NPC->act_no = 5;
-				NPC->ani_no = 4;
-				NPC->ani_wait = 0;
-				NPC->act_wait = 0;
-				NPC->tgt_y = NPC->y;
-			}
-		}
-		break;
-	case 5:
-		if (++NPC->ani_wait > 1)
-		{
-			NPC->ani_wait = 0;
-			++NPC->ani_no;
-		}
-		if (NPC->ani_no > 5)
-		{
-			NPC->ani_no = 4;
-			playSound(47);
-		}
-		if (++NPC->act_wait > 100)
-		{
-			NPC->act_no = 6;
-			NPC->ani_no = 3;
-		}
-		if (NPC->y >= NPC->tgt_y)
-			NPC->ym -= 64;
-		else
-			NPC->ym += 64;
+    switch (NPC->act_no)
+    {
+    case init:
+        NPC->act_no = wait;
+        // Fallthrough
+    case wait:
+        if (++NPC->act_wait > 12)
+        {
+            NPC->act_no = shootPlayer;
+            NPC->act_wait = 0;
+            NPC->count1 = 3;
+            NPC->ani_no = 1;
+        }
+        break;
 
-		if (NPC->ym < -512)
-			NPC->ym = -512;
-		if (NPC->ym > 512)
-			NPC->ym = 512;
-		break;
-	case 6:
-		if (NPC->y + 0x2000 >= currentPlayer.y)
-			NPC->damage = 0;
-		else
-			NPC->damage = 10;
-		if (NPC->flag & 8)
-		{
-			NPC->act_no = 7;
-			NPC->act_wait = 0;
-			NPC->ani_no = 2;
-			playSound(26);
-			playSound(25);
-			viewport.quake = 30;
-			NPC->damage = 0;
-			for (int i = 0; i <= 7; ++i)
-			{
-				createNpc(4, 
-					NPC->x + (random(-12, 12) << 9), 
-					NPC->y + (random(-12, 12) << 9), random(-341, 341), 
-					random(-1536, 0));
-			}
-			for (int i = 0; i <= 7; ++i)
-			{
-				createNpc(33, 
-					NPC->x + (random(-12, 12) << 9), 
-					NPC->y + (random(-12, 12) << 9),
-					random(-1024, 1024), random(-1024, 0));
-			}
-		}
-		break;
-	case 7:
-		NPC->xm = 0;
-		if (++NPC->act_wait > 3)
-		{
-			NPC->act_no = 1;
-			NPC->act_wait = 0;
-		}
-		break;
-	default:
-		break;
-	}
+    case shootPlayer:
+        if (++NPC->act_wait > 16)
+        {
+            --NPC->count1;
+            NPC->act_wait = 0;
+            int16_t angle = getAtan(NPC->x - currentPlayer.x, NPC->y + pixelsToUnits(4) - currentPlayer.y);
+            angle += random(-0x10, 0x10);
+            auto xVel = getCos(angle);
+            auto yVel = getSin(angle);
+            createNpc(NPC_ProjectileBalrogEnergyBallInvincible, NPC->x, NPC->y + pixelsToUnits(4), xVel, yVel);
+            playSound(SFX_EnemyShootProjectile);
+            if (!NPC->count1)
+            {
+                NPC->act_no = startJump;
+                NPC->act_wait = 0;
+            }
+        }
+        break;
 
-	if (NPC->act_no != 5)
-	{
-		NPC->ym += 51;
-		NPC->facePlayer();
-	}
-	if (NPC->ym > 1535)
-		NPC->ym = 1535;
-	NPC->x += NPC->xm;
-	NPC->y += NPC->ym;
+    case startJump:
+        if (++NPC->act_wait > 3)
+        {
+            NPC->act_no = jumpUp;
+            NPC->act_wait = 0;
+            NPC->xm = (currentPlayer.x - NPC->x) / 100;
+            NPC->ym = pixelsToUnits(-3);
+            NPC->ani_no = 3;
+        }
+        break;
 
-	NPC->rect.left = NPC->ani_no * 40;
-	NPC->rect.top = ((NPC->ani_no/4)*48) + (NPC->direct / 2) * 24;
-	NPC->rect.right = NPC->rect.left + 40;
-	NPC->rect.bottom = NPC->rect.top + 24;
+    case jumpUp:
+        if (NPC->ym > pixelsToUnits(-1))
+        {
+            if (NPC->life <= 60)
+                NPC->act_no = goDownFromJump;
+            else
+            {
+                NPC->act_no = flying;
+                NPC->ani_no = 4;
+                NPC->ani_wait = 0;
+                NPC->act_wait = 0;
+                NPC->tgt_y = NPC->y;
+            }
+        }
+        break;
+
+    case flying:
+        NPC->animate(1);
+        if (NPC->ani_no > 5)
+        {
+            NPC->ani_no = 4;
+            playSound(SFX_StrangeClick);
+        }
+
+        if (++NPC->act_wait > 100)
+        {
+            NPC->act_no = goDownFromJump;
+            NPC->ani_no = 3;
+        }
+
+        NPC->accelerateTowardsYTarget(0x40);
+        NPC->limitYVel(pixelsToUnits(1));
+        break;
+
+    case goDownFromJump:
+        if (NPC->y + tilesToUnits(1) >= currentPlayer.y)
+            NPC->damage = 0;
+        else
+            NPC->damage = 10;
+
+        if (NPC->flag & ground)
+        {
+            NPC->act_no = landed;
+            NPC->act_wait = 0;
+            NPC->ani_no = 2;
+            playSound(SFX_LargeObjectHitGround);
+            playSound(SFX_SillyExplosion);
+            viewport.quake = 30;
+            NPC->damage = 0;
+
+            for (size_t i = 0; i < 8; ++i)
+            {
+                auto yVel = random(pixelsToUnits(-3), 0);
+                auto xVel = random(-0x155, 0x155);
+                auto yPos = NPC->y + pixelsToUnits(random(-12, 12));
+                auto xPos = NPC->x + pixelsToUnits(random(-12, -12));
+                createNpc(NPC_Smoke, xPos, yPos, xVel, yVel);
+            }
+            for (size_t i = 0; i < 8; ++i)
+            {
+                auto yVel = random(pixelsToUnits(-2), 0);
+                auto xVel = random(pixelsToUnits(-2), pixelsToUnits(2));
+                auto yPos = NPC->y + pixelsToUnits(random(-12, 12));
+                auto xPos = NPC->x + pixelsToUnits(random(-12, -12));
+                createNpc(NPC_ProjectileBalrogEnergyBounce, xPos, yPos, xVel, yVel);
+            }
+        }
+        break;
+
+    case landed:
+        NPC->xm = 0;
+        if (++NPC->act_wait > 3)
+            NPC->act_no = wait;
+        break;
+
+    default:
+        break;
+    }
+
+    if (NPC->act_no != flying)
+    {
+        NPC->ym += 51;
+        NPC->facePlayer();
+    }
+
+    NPC->doGravity(0, 0x5FF);
+
+    NPC->x += NPC->xm;
+    NPC->y += NPC->ym;
+
+    vector<RECT> rcLeft(6);
+    vector<RECT> rcRight(6);
+
+    rcLeft[0] = {0, 0, 40, 24};
+    rcLeft[1] = {40, 0, 80, 24};
+    rcLeft[2] = {80, 0, 120, 24};
+    rcLeft[3] = {120, 0, 160, 24};
+    rcLeft[4] = {160, 48, 200, 72};
+    rcLeft[5] = {200, 48, 240, 72};
+
+    rcRight[0] = {0, 24, 40, 48};
+    rcRight[1]= {40, 24, 80, 48};
+    rcRight[2] = {80, 24, 120, 40};
+    rcRight[3] = {120, 24, 160, 48};
+    rcRight[4] = {160, 72, 200, 96};
+    rcRight[5] = {200, 72, 240, 96};
+
+    NPC->doRects(rcLeft, rcRight);
 }
 
 void npcAct037(npc *NPC) //Sign
 {
-	RECT rect[2];
+	vector<RECT> rcNPC = {{ 192, 64, 208, 80 }, { 208, 64, 224, 80 }};
 
-	rect[0] = { 192, 64, 208, 80 };
-	rect[1] = { 208, 64, 224, 80 };
+	NPC->animate(1, 0, 1);
 
-	//Animate (pixel is dumb)
-	if (++NPC->ani_wait > 1)
-	{
-		NPC->ani_wait = 0;
-		++NPC->ani_no;
-	}
-
-	if (NPC->ani_no > 1)
-		NPC->ani_no = 0;
-
-	NPC->rect = rect[NPC->ani_no];
+	NPC->doRects(rcNPC);
 }
 
 void npcAct038(npc * NPC)
 {
-	constexpr RECT rcNPC[4] = { {128, 64, 144, 80}, {144, 64, 160, 80}, {160, 64, 176, 80}, {176, 64, 192, 80} };
+	vector<RECT> rcNPC = { {128, 64, 144, 80}, {144, 64, 160, 80}, {160, 64, 176, 80}, {176, 64, 192, 80} };
 
 	if (NPC->act_no != 0)
 	{
@@ -1055,37 +933,16 @@ void npcAct038(npc * NPC)
 		return;
 	}
 
-	if (++NPC->ani_wait > 3)
-	{
-		NPC->ani_wait = 0;
-		NPC->ani_no++;
-	}
-	if (NPC->ani_no > 3)
-		NPC->ani_no = 0;
+	NPC->animate(3, 0, 3);
 
-	NPC->rect = rcNPC[NPC->ani_no];
+	NPC->doRects(rcNPC);
 }
 
 void npcAct039(npc *NPC) //Save Sign
 {
-	RECT *setRect;
-	RECT rect[2];
+	vector<RECT> rcNPC = {{224, 64, 240, 80}, {240, 64, 256, 80}};
 
-	rect[0].left = 224;
-	rect[0].top = 64;
-	rect[0].right = 240;
-	rect[0].bottom = 80;
-	rect[1].left = 240;
-	rect[1].top = 64;
-	rect[1].right = 256;
-	rect[1].bottom = 80;
+	NPC->ani_no = (NPC->direct == dirLeft) ? 0 : 1;
 
-	if (NPC->direct != dirLeft)
-		NPC->ani_no = 1;
-	else
-		NPC->ani_no = 0;
-
-	setRect = &rect[NPC->ani_no];
-
-	NPC->rect = { setRect->left, setRect->top, setRect->right, setRect->bottom };
+	NPC->doRects(rcNPC);
 }

@@ -1,4 +1,9 @@
 #include "game.h"
+
+#include <string>
+#include <cstring>
+#include <SDL_events.h>
+#include <SDL_render.h>
 #include "weapons.h"
 #include "input.h"
 #include "script.h"
@@ -8,11 +13,7 @@
 #include "player.h"
 #include "caret.h"
 #include "valueview.h"
-
-#include <string>
-#include <cstring>
-#include <SDL_events.h>
-#include <SDL_render.h>
+#include "log.h"
 
 using std::string;
 using std::strcpy;
@@ -143,7 +144,7 @@ void drawInventory()
 	RECT rcBoxTop = { 0, 0, 244, 8 };
 	RECT rcBoxBody = { 0, 8, 244, 16 };
 	RECT rcBoxBottom = { 0, 16, 244, 24 };
-	
+
 	drawTexture(sprites[TEX_TEXTBOX], &rcBoxTop, screenWidth / 2 - 122, 8);
 
 	int stripY;
@@ -240,6 +241,8 @@ void drawInventory()
 
 int openInventory()
 {
+    logInfo("Started openInventory");
+
 	//Keep track of old one
 	string oldScript(tsc.path);
 

@@ -1,13 +1,6 @@
 ﻿#include "org.h"
-#include "pxt.h"
-#include "sound.h"
-#include "filesystem.h"
-#include "mathUtils.h"
-
-#include <SDL.h>
 
 #include <fstream>
-#include <sys/stat.h>
 #include <string>
 #include <vector>
 #include <memory>
@@ -15,7 +8,16 @@
 #include <cstdlib>
 #include <cstdio>
 #include <cstring>
-#include <SDL.h>
+#include <sys/stat.h>
+#include <SDL_rwops.h>
+#include <SDL_video.h>
+#include "pxt.h"
+#include "sound.h"
+#include "filesystem.h"
+#include "mathUtils.h"
+#include "log.h"
+#include "render.h"
+#include "main.h"
 
 using std::string;
 using std::vector;
@@ -40,7 +42,7 @@ Uint32 currentOrg = 0;
 Uint32 prevOrg = 0;
 Uint32 prevOrgPos = 0;
 
-long double orgVolume = 100;
+int orgVolume = 1;
 bool orgFadeout = false;
 
 bool disableOrg = false;
@@ -112,20 +114,18 @@ void mixOrg(int16_t *stream, int len)
 					const int samplesPerBeat = sampleRate * org.wait / 1000;
 					const int samplesPerFrame = sampleRate * framerate / 1000;
 
-					if (++org.samples > samplesPerBeat)
+					if (org.samples-- == 0)
 					{
+						if (orgFadeout && orgVolume > 0)
+							orgVolume -= 2;
+						if (orgVolume < 0)
+							orgVolume = 0;
 						playData();
-						org.samples = 0;
+						org.samples = samplesPerBeat;
 					}
 
 					if (++org.samplesForFrame > samplesPerFrame)
-					{
-						if (orgFadeout && orgVolume > 0.0)
-							orgVolume -= 0.02;
-						if (orgVolume < 0.0)
-							orgVolume = 0.0;
 						org.samplesForFrame = 0;
-					}
 				}
 				else
 				{
@@ -162,7 +162,10 @@ void mixOrg(int16_t *stream, int len)
 									orgWaves[wave][j][k].pos = fmod(orgWaves[wave][j][k].pos, (long double)orgWaves[wave][j][k].length);
 
 								if (orgWaves[wave][j][k].loops == false && orgWaves[wave][j][k].pos >= orgWaves[wave][j][k].length)
+								{
 									orgWaves[wave][j][k].playing = false;
+									orgWaves[wave][j][k].pos = 0;
+								}
 								else
 								{
 									const size_t s_offset_1 = (size_t)floor(orgWaves[wave][j][k].pos);
@@ -175,8 +178,8 @@ void mixOrg(int16_t *stream, int len)
 
 									const auto val = (int)(sample1 + (sample2 - sample1) * fmod(orgWaves[wave][j][k].pos, 1.0f));
 
-									tempSampleL += (int32_t)((long double)val * orgWaves[wave][j][k].volume * orgWaves[wave][j][k].volume_l * orgVolume);
-									tempSampleR += (int32_t)((long double)val * orgWaves[wave][j][k].volume * orgWaves[wave][j][k].volume_r * orgVolume);
+									tempSampleL += (int32_t)((long double)val * orgWaves[wave][j][k].volume * orgWaves[wave][j][k].volume_l);
+									tempSampleR += (int32_t)((long double)val * orgWaves[wave][j][k].volume * orgWaves[wave][j][k].volume_r);
 								}
 							}
 						}
@@ -206,8 +209,8 @@ void mixOrg(int16_t *stream, int len)
 
 							const auto val = (int)(sample1 + (sample2 - sample1) * fmod(orgDrums[wave].pos, 1.0f));
 
-							tempSampleL += (int32_t)((long double)val * orgDrums[wave].volume * orgDrums[wave].volume_l * orgVolume);
-							tempSampleR += (int32_t)((long double)val * orgDrums[wave].volume * orgDrums[wave].volume_r * orgVolume);
+							tempSampleL += (int32_t)((long double)val * orgDrums[wave].volume * orgDrums[wave].volume_l);
+							tempSampleR += (int32_t)((long double)val * orgDrums[wave].volume * orgDrums[wave].volume_r);
 						}
 					}
 				}
@@ -413,8 +416,7 @@ void changeOrganPan(unsigned char key, unsigned char pan, uint8_t track)
 	}
 }
 
-constexpr long double orgVolumeMin = 0.04;
-
+constexpr long double orgVolumeMin = 0.204;
 void changeOrganVolume(int no, long volume, uint8_t track)
 {
 	if (old_key[track] != 0xFF)
@@ -432,8 +434,8 @@ void playOrganObject(unsigned char key, int play_mode, uint8_t track, int32_t fr
 		break;
 	case 2: //Stop
 		if (old_key[track] != 255) {
-			orgWaves[track][old_key[track] / 12][key_twin[track]].playing = false;
-			orgWaves[track][old_key[track] / 12][key_twin[track]].pos = 0;
+			orgWaves[track][old_key[track] / 12][key_twin[track]].playing = true;
+			orgWaves[track][old_key[track] / 12][key_twin[track]].loops = false;
 			old_key[track] = 255;
 		}
 		break;
@@ -443,30 +445,27 @@ void playOrganObject(unsigned char key, int play_mode, uint8_t track, int32_t fr
 			changeOrganFrequency(key % 12, track, freq);
 			orgWaves[track][key / 12][key_twin[track]].playing = true;
 			orgWaves[track][key / 12][key_twin[track]].loops = true;
-			orgWaves[track][key / 12][key_twin[track]].pos = 0;
 			old_key[track] = key;
 			key_on[track] = 1;
 		}
 		else if (key_on[track] == 1 && old_key[track] == key) //Same note
 		{
-			orgWaves[track][old_key[track] / 12][key_twin[track]].playing = false;
-			orgWaves[track][old_key[track] / 12][key_twin[track]].pos = 0;
+			orgWaves[track][old_key[track] / 12][key_twin[track]].playing = true;
+			orgWaves[track][old_key[track] / 12][key_twin[track]].loops = false;
 			key_twin[track]++;
 			if (key_twin[track] == 2)key_twin[track] = 0;
 			orgWaves[track][key / 12][key_twin[track]].playing = true;
 			orgWaves[track][key / 12][key_twin[track]].loops = true;
-			orgWaves[track][key / 12][key_twin[track]].pos = 0;
 		}
 		else //Different note
 		{
-			orgWaves[track][old_key[track] / 12][key_twin[track]].playing = false;
-			orgWaves[track][old_key[track] / 12][key_twin[track]].pos = 0;
+			orgWaves[track][old_key[track] / 12][key_twin[track]].playing = true;
+			orgWaves[track][old_key[track] / 12][key_twin[track]].loops = false;
 			key_twin[track]++;
 			if (key_twin[track] == 2)key_twin[track] = 0;
 			changeOrganFrequency(key % 12, track, freq);
 			orgWaves[track][key / 12][key_twin[track]].playing = true;
 			orgWaves[track][key / 12][key_twin[track]].loops = true;
-			orgWaves[track][key / 12][key_twin[track]].pos = 0;
 			old_key[track] = key;
 		}
 		break;
@@ -567,6 +566,7 @@ void playDrumObject(uint8_t key, int play_mode, uint8_t track)
 long play_p; //Current playback position
 NOTELIST *play_np[16]; //Currently ready to play notes
 long now_leng[8] = { 0 };
+int trackVol[16] = { 0 };
 
 void clearPlayNp()
 {
@@ -599,7 +599,7 @@ void playData()
 	{
 		if (org.loaded && play_np[i] != nullptr && play_p == play_np[i]->x)
 		{
-			if (play_np[i]->y != 0xFF) 
+			if (play_np[i]->y != 0xFF)
 			{
 				if (org.tdata[i].pipi)
 					playOrganObject2(play_np[i]->y, -1, i, org.tdata[i].freq);
@@ -611,7 +611,7 @@ void playData()
 			if (play_np[i]->pan < 0xFF)
 				changeOrganPan(play_np[i]->y, play_np[i]->pan, i);
 			if (play_np[i]->volume < 0xFF)
-				changeOrganVolume(play_np[i]->y, play_np[i]->volume, i);
+				trackVol[i] = play_np[i]->volume; //changeOrganVolume(play_np[i]->y, play_np[i]->volume, i);
 
 			play_np[i] = play_np[i]->to;
 		}
@@ -626,6 +626,9 @@ void playData()
 
 		if (now_leng[i] > 0)
 			now_leng[i]--;
+
+		if (play_np[i])
+			changeOrganVolume(play_np[i]->y, orgVolume * trackVol[i] / 100, i);
 	}
 
 	//Drums
@@ -639,10 +642,13 @@ void playData()
 			if (play_np[i]->pan != 0xFF)
 				changeDrumPan(play_np[i]->pan, i - 8);
 			if (play_np[i]->volume != 0xFF)
-				changeDrumVolume(play_np[i]->volume, i - 8);
+				trackVol[i] = play_np[i]->volume; //changeDrumVolume(play_np[i]->volume, i - 8);
 
 			play_np[i] = play_np[i]->to;
 		}
+
+		if (play_np[i])
+			changeDrumVolume(orgVolume * trackVol[i] / 100, i - 8);
 	}
 
 	//Looping
@@ -657,10 +663,13 @@ char pass[7] = "Org-01";
 char pass2[7] = "Org-02"; //Pipi
 char pass3[7] = "Org-03"; //New drums
 
-void loadOrganya(const char *name)
+void loadOrganya(const string& name)
 {
 	if (disableOrg)
 		return;
+
+    logDebug("Loading " + name);
+
 	//Pause sound device
 	//SDL_PauseAudioDevice(soundDev, -1);
 
@@ -683,11 +692,10 @@ void loadOrganya(const char *name)
 	memset(now_leng, 0, sizeof(now_leng));
 
 	//Load
-	SDL_RWops *fp = SDL_RWFromFile(name, "rb");
+	SDL_RWops *fp = SDL_RWFromFile(name.c_str(), "rb");
 
 	if (!fp) {
-		char msg[0x40];
-		sprintf(msg, "%s couldn't be accessed", name);
+		string msg(name + "couldn't be accessed");
 		doCustomError(msg);
 		return;
 	}
@@ -814,20 +822,20 @@ void changeOrg(const uint32_t num)
 	prevOrgPos = play_p;
 	currentOrg = num;
 	string path(orgFolder + musicList[num]);
-	orgVolume = 1.0;
+	orgVolume = 100;
 	orgFadeout = false;
 	loadOrganya(path.c_str());
 }
 
 void resumeOrg()
 {
-	Uint32 temp = 0;
+	uint32_t temp = 0;
 	temp = currentOrg;
 	currentOrg = prevOrg;
 	prevOrg = temp;
 	string path(orgFolder + musicList[currentOrg]);
 	temp = play_p;
-	orgVolume = 1.0;
+	orgVolume = 100;
 	orgFadeout = false;
 	loadOrganya(path.c_str());
 	setPlayPointer(prevOrgPos);

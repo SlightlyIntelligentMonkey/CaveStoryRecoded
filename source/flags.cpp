@@ -1,61 +1,95 @@
-//FLAG FUNCTIONS
-#include "common.h"
 #include "flags.h"
 
 #include <cstring>
+#include <string>
+#include "log.h"
 
 using std::memset;
+using std::to_string;
 
 uint8_t tscFlags[1000]; //game flags
 uint8_t skipFlags[0x40]; //skip flags
 uint8_t mapFlags[0x80]; //map flags
 
 //Normal flags
-void initFlags() 
+void initFlags()
 {
 	memset(tscFlags, 0, sizeof(tscFlags));
 	memset(skipFlags, 0, sizeof(skipFlags));
 	memset(mapFlags, 0, sizeof(mapFlags));
 }
 
-void setFlag(int a) 
+void setFlag(size_t a)
 {
-	tscFlags[a / 8] |= 1 << (a % 8);
+    if (a > _countof(tscFlags) * 8)
+        logWarning("Tried to access flag " + to_string(a) + " (Out of bounds)");
+    else
+        tscFlags[a / 8] |= 1 << (a % 8);
 }
 
-void clearFlag(int a) 
+void clearFlag(size_t a)
 {
-	tscFlags[a / 8] &= ~(1 << (a % 8));
+    if (a > _countof(tscFlags) * 8)
+        logWarning("Tried to access flag " + to_string(a) + " (Out of bounds)");
+    else
+        tscFlags[a / 8] &= ~(1 << (a % 8));
 }
 
-bool getFlag(int a) 
+bool getFlag(size_t a)
 {
-	return ((tscFlags[a / 8] >> (a % 8)) & 1) != 0;
+    if (a > _countof(tscFlags) * 8)
+    {
+        logWarning("Tried to access flag " + to_string(a) + " (Out of bounds)");
+        return false;
+    }
+    else
+        return ((tscFlags[a / 8] >> (a % 8)) & 1) != 0;
 }
 
 //Skip flags
-void setSkipFlag(int a) 
+void setSkipFlag(size_t a)
 {
-	skipFlags[a / 8] |= 1 << (a % 8);
+    if (a > _countof(skipFlags) * 8)
+        logWarning("Tried to access skipFlag " + to_string(a) + " (Out of bounds)");
+    else
+        skipFlags[a / 8] |= 1 << (a % 8);
 }
 
-void clearSkipFlag(int a) 
+void clearSkipFlag(size_t a)
 {
-	skipFlags[a / 8] &= ~(1 << (a % 8));
+    if (a > _countof(skipFlags) * 8)
+        logWarning("Tried to access skipFlag " + to_string(a) + " (Out of bounds)");
+    else
+        skipFlags[a / 8] &= ~(1 << (a % 8));
 }
 
-bool getSkipFlag(int a) 
+bool getSkipFlag(size_t a)
 {
-	return ((skipFlags[a / 8] >> (a % 8)) & 1) != 0;
+    if (a > _countof(skipFlags) * 8)
+    {
+        logWarning("Tried to access skipFlag " + to_string(a) + " (Out of bounds)");
+        return false;
+    }
+    else
+        return ((skipFlags[a / 8] >> (a % 8)) & 1) != 0;
 }
 
 //Map flags
-void setMapFlag(int a) 
+void setMapFlag(size_t a)
 {
-	mapFlags[a / 8] |= 1 << (a % 8);
+    if (a > _countof(mapFlags) * 8)
+        logWarning("Tried to access mapFlag " + to_string(a) + " (Out of bounds)");
+    else
+        mapFlags[a / 8] |= 1 << (a % 8);
 }
 
-bool getMapFlag(int a) 
+bool getMapFlag(size_t a)
 {
-	return ((mapFlags[a / 8] >> (a % 8)) & 1) != 0;
+    if (a > _countof(mapFlags) * 8)
+    {
+        logWarning("Tried to access mapFlag " + to_string(a) + " (Out of bounds)");
+        return false;
+    }
+    else
+        return ((mapFlags[a / 8] >> (a % 8)) & 1) != 0;
 }

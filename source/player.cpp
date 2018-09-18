@@ -1,4 +1,6 @@
 #include "player.h"
+
+#include <cstring>
 #include "weapons.h"
 #include "render.h"
 #include "input.h"
@@ -9,9 +11,14 @@
 #include "mathUtils.h"
 #include "valueview.h"
 #include "game.h"
+<<<<<<< HEAD
 
 #include <cstring>
 #include <SDL.h>
+=======
+#include "level.h"
+#include "npc.h"
+>>>>>>> upstream/master
 
 using std::memset;
 
@@ -177,7 +184,6 @@ void player::damage(int16_t damage)
 			cond = 0;
 
 			createSmokeLeft(x, y, 5120, 64);
-			createCaret(x, y, effect_BigExplosion);
 			startTscEvent(40);
 		}
 	}
@@ -424,7 +430,7 @@ void player::actNormal(bool bKey)
 			//Splash stuff
 			if (flag & ground || ym <= 0x200)
 			{
-				if (xm > 0x200 || xm < 0x200)
+				if (xm > 0x200 || xm < -0x200)
 				{
 					for (int i = 0; i < 8; ++i)
 						createNpc(NPC_Waterdrop, x + pixelsToUnits(random(-8, 8)), y,

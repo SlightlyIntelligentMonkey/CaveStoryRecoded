@@ -1,4 +1,10 @@
 #include "script.h"
+
+#include <cstring>
+#include <cstdlib>
+#include <SDL_messagebox.h>
+#include <SDL_rwops.h>
+#include <SDL_render.h>
 #include "fade.h"
 #include "weapons.h"
 #include "render.h"
@@ -12,18 +18,8 @@
 #include "player.h"
 #include "input.h"
 #include "org.h"
-
-#include <cstring>
-#include <cstdlib>
-#include <SDL_messagebox.h>
-#include <SDL_rwops.h>
-#include <SDL_render.h>
-
-using std::malloc;
-using std::memset;
-using std::strcpy;
-using std::strcat;
-
+#include "main.h"
+#include "level.h"
 
 //Variables
 TSC tsc;
@@ -458,7 +454,7 @@ bool doTscCommand(int *retVal, bool *bExit)
 {
     int xt;
     int yt;
-	
+
 	static bool notifiedAboutCIL = false;
 	static bool notifiedAboutCPS = false;
 	static bool notifiedAboutCRE = false;
@@ -577,6 +573,7 @@ bool doTscCommand(int *retVal, bool *bExit)
 		tscCleanup(0);
 		break;
 	case('<CRE'):
+		changeOrg(mus_TheWayBackHome); //because i smelly
 		if (!notifiedAboutCRE && debugFlags & notifyOnNotImplemented)
 		{
 			notifiedAboutCRE = true;

@@ -1,6 +1,8 @@
 #pragma once
-#include "common.h"
+
 #include "npc.h"
+
+struct SDL_Texture;
 
 struct STAGE_TABLE
 {
@@ -47,4 +49,20 @@ bool changeTile(int x, int y, uint8_t tile);
 void loadStageTable();
 
 void loadLevel(int levelIndex);
+<<<<<<< HEAD
 void drawLevel(bool foreground);
+=======
+void drawLevel(bool foreground);
+
+// Note : 1 tile is 0x2000 units
+
+template<typename T> constexpr inline int32_t tilesToUnits(T x)
+{
+    return x * 0x2000;
+}
+
+template<typename T> constexpr inline int32_t unitsToTiles(T x)
+{
+	return x / 0x2000;
+}
+>>>>>>> upstream/master

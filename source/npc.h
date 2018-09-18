@@ -1,10 +1,8 @@
 #pragma once
-#include "common.h"
-#include "npcCollision.h"
-#include "level.h"
 
 #include <deque>
 #include <vector>
+#include "common.h"
 
 struct NPC_RECT
 {
@@ -66,11 +64,17 @@ public:
 	//life stuff
 	int life;
 	int exp;
+
+	/// Explosion size
 	int size;
 
-	//what do i look like and bits
+	/// Direction NPC is facing towards
 	int direct;
+
+	/// Entity flags
 	unsigned __int16 bits;
+
+	/// Rect location in spritesheet
 	RECT rect;
 
 	//state, counters, and action
@@ -92,8 +96,11 @@ public:
 	int damage_view;
 	int damage;
 
-	/// Parent NPC
+	// Parent NPC
 	npc *pNpc;
+
+	// Priority
+	bool priority;
 
 public:
 	// These are kinda supposed to be internal, but I can't put them as protected/private
@@ -101,14 +108,16 @@ public:
 	void animate(int aniWait, int aniStart = -1, int aniMax = -1);
 	void createSmokeWithVel(size_t num, int xVel, int yVel);
 	void doGravity(int gravity, int maxYVel);
-	/// If only one argument is passed it will just not check for direction and just use the first argument
-	void doRects(const std::vector<RECT>& rcLeft, const std::vector<RECT>& rcRight = std::vector<RECT>());
+
+	void doRects(const std::vector<RECT>& rcLeft, const std::vector<RECT>& rcRight);
+	void doRects(const std::vector<RECT>& rcNPC);
+	void doRects(RECT rcLeft, RECT rcRight);
+	void doRects(RECT rcNPC);
 	void facePlayer();
     int getXDistToPlayer() attrPure;
 	void limitXVel(int maxVel);
 	void limitYVel(int maxVel);
 	void moveInDir(int vel);
-	void moveTowardsPlayer(int vel);
 	void accelerateTowardsXTarget(int vel);
 	void accelerateTowardsYTarget(int vel);
 	bool isPlayerWithinDistance(int xDist, int yDistHigh, int yDistLow) attrPure;
@@ -134,7 +143,7 @@ void loadNpcTable();
 void createSmokeLeft(int x, int y, int w, size_t num);
 void createSmokeUp(int x, int y, int w, int num);
 
-void createNpc(int setCode, int setX = 0, int setY = 0, int setXm = 0, int setYm = 0, int setDir = dirLeft, npc *parentNpc = nullptr);
+void createNpc(int setCode, int setX = 0, int setY = 0, int setXm = 0, int setYm = 0, int setDir = dirLeft, npc *parentNpc = nullptr, bool setPriority = true);
 void changeNpc(int code_event, int code_char, int dir = dirLeft);
 int findEntityByType(int entityType) attrPure;
 void setNPCState(int entityEventNum, int newNPCState, int direction);
@@ -156,7 +165,11 @@ extern int curlyShootY;
 
 enum NPC_cond
 {
+<<<<<<< HEAD
 	npccond_dmgboss = 0x10, //when set damages the main boss
+=======
+	npccond_dmgboss = 0x10,
+>>>>>>> upstream/master
 	npccond_alive = 0x80, //Determines if an npc is alive
 };
 

@@ -1,34 +1,15 @@
-#include <SDL.h>
-#include <fstream>
-#include <sys/stat.h>
+#include "pxt.h"
+
 #include <string>
 #include <vector>
-#include <memory>
 #include <cmath>
-#include <cstdlib>
-#include <cstdio>
 #include <cstring>
-#include <iostream>
-#include <algorithm>
-#include <fstream>
-#include <iostream>
-#include <vector>
-
-#include "pxt.h"
-#include "filesystem.h"
+#include "main.h"
 #include "mathUtils.h"
+#include "filesystem.h"
 
-using std::string;
 using std::vector;
-using std::ifstream;
-using std::getline;
-using std::FILE;
-using std::fopen;
-using std::fseek;
-using std::ftell;
-using std::malloc;
-using std::fread;
-using std::fclose;
+using std::string;
 
 //For pxt
 int8_t waveModelTable[6][256];

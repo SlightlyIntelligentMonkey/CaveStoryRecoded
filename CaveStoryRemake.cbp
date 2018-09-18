@@ -13,8 +13,12 @@
 				<Option compiler="null" />
 			</Target>
 		</Build>
+		<Unit filename="source/CaveStoryEngine.rc">
+			<Option compilerVar="WINDRES" />
+		</Unit>
 		<Unit filename="source/ORIG_org.cpp" />
 		<Unit filename="source/ORIG_org.h" />
+		<Unit filename="source/balfrog.cpp" />
 		<Unit filename="source/blade.cpp" />
 		<Unit filename="source/blade.h" />
 		<Unit filename="source/bladeThrow.cpp" />
@@ -52,10 +56,13 @@
 		<Unit filename="source/level.h" />
 		<Unit filename="source/loadConfig.cpp" />
 		<Unit filename="source/loadConfig.h" />
+		<Unit filename="source/log.cpp" />
+		<Unit filename="source/log.h" />
 		<Unit filename="source/machineGun.cpp" />
 		<Unit filename="source/machineGun.h" />
 		<Unit filename="source/machineGunShoot.cpp" />
 		<Unit filename="source/main.cpp" />
+		<Unit filename="source/main.h" />
 		<Unit filename="source/mapSystem.cpp" />
 		<Unit filename="source/mathUtils.cpp" />
 		<Unit filename="source/mathUtils.h" />
@@ -142,7 +149,10 @@
 		<Unit filename="source/weapons.cpp" />
 		<Unit filename="source/weapons.h" />
 		<Extensions>
-			<code_completion />
+			<code_completion>
+				<search_path add="C:\MSYS32\mingw32\include" />
+				<search_path add="C:\MSYS32\mingw32\include\SDL2" />
+			</code_completion>
 			<envvars />
 			<debugger />
 		</Extensions>

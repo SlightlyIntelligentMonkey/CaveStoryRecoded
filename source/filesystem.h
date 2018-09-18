@@ -1,7 +1,8 @@
 #pragma once
-#include "common.h"
+
 #include <vector>
 #include <string>
+#include "common.h"
 
 struct CONFIG {
 	int version;

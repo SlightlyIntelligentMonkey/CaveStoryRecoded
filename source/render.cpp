@@ -1,11 +1,19 @@
 #include "render.h"
 #include "common.h"
+#include "input.h"
 
 #include <SDL_image.h>
 #include "game.h"
+#include "main.h"
 
-SDL_Rect drawRectangle = { 0, 0, 0, 0 };
-SDL_Rect cliprect = { 0, 0, 0, 0 };
+SDL_Window *window;
+SDL_Renderer *renderer;
+
+SDL_Rect rcDraw = {0, 0, 0, 0};
+SDL_Rect rcImage = {0, 0, 0, 0};
+
+SDL_Rect drawRectangle = {0, 0, 0, 0};
+SDL_Rect cliprect = {0, 0, 0, 0};
 
 int screenWidth = 0;
 int screenHeight = 0;
@@ -21,40 +29,15 @@ int charWidth = 24;
 int charHeight = 24;
 int charScale = 2;
 
+int framerate = 20; //17 for 60-ish fps
+
 #ifdef USE_ICONS_SDL2
 extern const char binary_res_icon_mini_bmp_start[];
 extern const char binary_res_icon_mini_bmp_end[];
 #endif
 
-static bool handleEvents()
-{
-	static bool focusGained = true;
-
-	while (SDL_PollEvent(nullptr) || !focusGained)
-	{
-		SDL_Event event;
-		SDL_WaitEvent(&event);
-
-		switch (event.type)
-		{
-		case SDL_QUIT:
-			return false;
-
-		case SDL_WINDOWEVENT:
-			if (event.window.event == SDL_WINDOWEVENT_FOCUS_GAINED)
-				focusGained = true;
-			else if (event.window.event == SDL_WINDOWEVENT_FOCUS_LOST)
-				focusGained = false;
-
-			break;
-		}
-	}
-
-	return true;
-}
-
 //Create window
-int createWindow(int width, int height, int scale, bool fullscreen)  // TBD : Handle fullscreen parameter
+int createWindow(int width, int height, int scale, bool fullscreen)
 {
 	const int createWidth = width * scale;
 	const int createHeight = height * scale;
@@ -81,9 +64,10 @@ int createWindow(int width, int height, int scale, bool fullscreen)  // TBD : Ha
 #endif
 	}
 	else
-	{
 		SDL_SetWindowSize(window, createWidth, createHeight);
-	}
+
+	if (fullscreen)
+        SDL_SetWindowFullscreen(window, SDL_WINDOW_FULLSCREEN);
 
 	//Set renderer
 	if (!renderer)
@@ -280,16 +264,16 @@ void drawTexture(SDL_Texture *texture, const RECT *rect, int x, int y)
 	//Set framerect
 	if (rect)
 	{
-		ImageRect = { rect->left, rect->top, rect->right - rect->left, rect->bottom - rect->top };
+		rcImage = { rect->left, rect->top, rect->right - rect->left, rect->bottom - rect->top };
 
 		//Set drawrect, with defined width and height
-		DrawRect.x = x * screenScale;
-		DrawRect.y = y * screenScale;
-		DrawRect.w = ImageRect.w * screenScale;
-		DrawRect.h = ImageRect.h * screenScale;
+		rcDraw.x = x * screenScale;
+		rcDraw.y = y * screenScale;
+		rcDraw.w = rcImage.w * screenScale;
+		rcDraw.h = rcImage.h * screenScale;
 
 		//Draw to screen, error if failed
-		if (SDL_RenderCopy(renderer, texture, &ImageRect, &DrawRect) != 0)
+		if (SDL_RenderCopy(renderer, texture, &rcImage, &rcDraw) != 0)
 			doError();
 	}
 	else
@@ -297,12 +281,12 @@ void drawTexture(SDL_Texture *texture, const RECT *rect, int x, int y)
 		int w, h;
 		SDL_QueryTexture(texture, nullptr, nullptr, &w, &h);
 
-		DrawRect.x = x * screenScale;
-		DrawRect.y = y * screenScale;
-		DrawRect.w = w * screenScale;
-		DrawRect.h = h * screenScale;
+		rcDraw.x = x * screenScale;
+		rcDraw.y = y * screenScale;
+		rcDraw.w = w * screenScale;
+		rcDraw.h = h * screenScale;
 
-		if (SDL_RenderCopy(renderer, texture, nullptr, &DrawRect) != 0)
+		if (SDL_RenderCopy(renderer, texture, nullptr, &rcDraw) != 0)
 			doError();
 	}
 }
@@ -312,16 +296,16 @@ void drawTextureNoScale(SDL_Texture *texture, const RECT *rect, int x, int y)
 	//Set framerect
 	if (rect)
 	{
-		ImageRect = { rect->left, rect->top, rect->right - rect->left, rect->bottom - rect->top };
+		rcImage = { rect->left, rect->top, rect->right - rect->left, rect->bottom - rect->top };
 
 		//Set drawrect, with defined width and height
-		DrawRect.x = x;
-		DrawRect.y = y;
-		DrawRect.w = ImageRect.w;
-		DrawRect.h = ImageRect.h;
+		rcDraw.x = x;
+		rcDraw.y = y;
+		rcDraw.w = rcImage.w;
+		rcDraw.h = rcImage.h;
 
 		//Draw to screen, error if failed
-		if (SDL_RenderCopy(renderer, texture, &ImageRect, &DrawRect) != 0)
+		if (SDL_RenderCopy(renderer, texture, &rcImage, &rcDraw) != 0)
 			doError();
 	}
 	else
@@ -329,12 +313,12 @@ void drawTextureNoScale(SDL_Texture *texture, const RECT *rect, int x, int y)
 		int w, h;
 		SDL_QueryTexture(texture, nullptr, nullptr, &w, &h);
 
-		DrawRect.x = x;
-		DrawRect.y = y;
-		DrawRect.w = w;
-		DrawRect.h = h;
+		rcDraw.x = x;
+		rcDraw.y = y;
+		rcDraw.w = w;
+		rcDraw.h = h;
 
-		if (SDL_RenderCopy(renderer, texture, nullptr, &DrawRect) != 0)
+		if (SDL_RenderCopy(renderer, texture, nullptr, &rcDraw) != 0)
 			doError();
 	}
 }
@@ -342,16 +326,16 @@ void drawTextureNoScale(SDL_Texture *texture, const RECT *rect, int x, int y)
 void drawTextureSize(SDL_Texture *texture, const RECT *rect, int x, int y, int w, int h)
 {
 	//Set framerect
-	ImageRect = { rect->left, rect->top, rect->right - rect->left, rect->bottom - rect->top };
+	rcImage = { rect->left, rect->top, rect->right - rect->left, rect->bottom - rect->top };
 
 	//Set drawrect, with defined width and height
-	DrawRect.x = x * screenScale;
-	DrawRect.y = y * screenScale;
-	DrawRect.w = w * screenScale;
-	DrawRect.h = h * screenScale;
+	rcDraw.x = x * screenScale;
+	rcDraw.y = y * screenScale;
+	rcDraw.w = w * screenScale;
+	rcDraw.h = h * screenScale;
 
 	//Draw to screen, error if failed
-	if (SDL_RenderCopy(renderer, texture, &ImageRect, &DrawRect) != 0)
+	if (SDL_RenderCopy(renderer, texture, &rcImage, &rcDraw) != 0)
 		doError();
 }
 

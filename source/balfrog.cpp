@@ -5,6 +5,10 @@
 #include "render.h"
 #include "game.h"
 #include "common.h"
+<<<<<<< HEAD
+=======
+#include "level.h"
+>>>>>>> upstream/master
 
 //states enum so this is more readable
 enum
@@ -461,7 +465,11 @@ void actBoss_Frog(npc *boss)
 
 	boss->x += boss->xm;
 	boss->y += boss->ym;
+<<<<<<< HEAD
 	
+=======
+
+>>>>>>> upstream/master
 	//when balrog is a frog
 	if (boss->ani_no <= 4)
 	{

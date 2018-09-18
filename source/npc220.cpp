@@ -6,6 +6,7 @@
 #include "mathUtils.h"
 #include "caret.h"
 #include "render.h"
+#include "level.h"
 
 using std::vector;
 
@@ -62,7 +63,7 @@ void npcAct222(npc *NPC) // Prison bars
 		NPC->y -= 0x1000;
 	}
 
-	NPC->rect = { 96, 168, 112, 200 };
+	NPC->doRects({ 96, 168, 112, 200 });
 }
 
 void npcAct223(npc *NPC) // Momorin
@@ -283,7 +284,7 @@ void npcAct226(npc *NPC) // Kanpachi, standing
 
 void npcAct227(npc *NPC) // Bucket
 {
-	NPC->rect = { 208, 32, 224, 48 };
+	NPC->doRects({ 208, 32, 224, 48 });
 }
 
 void npcAct228(npc *NPC) // Droll, guarding
@@ -326,8 +327,8 @@ void npcAct228(npc *NPC) // Droll, guarding
         {
             NPC->act_no = jumping;
             NPC->ani_no = 3;
-            NPC->ym = -0x600;
-            NPC->moveInDir(0x200);
+            NPC->ym = pixelsToUnits(-3);
+            NPC->moveInDir(pixelsToUnits(1));
         }
         break;
 
@@ -365,10 +366,8 @@ void npcAct229(npc *NPC) // Red Flowers, small
 		NPC->act_no = 1;
 		NPC->y -= 0x2000;
 	}
-	if (NPC->direct)
-		NPC->rect = { 0, 112, 59, 129 };
-	else
-		NPC->rect = { 0, 96, 48, 112 };
+
+	NPC->doRects({0, 96, 48, 112}, {0, 112, 59, 129});
 }
 
 void npcAct230(npc *NPC) // Red Flowers, large
@@ -385,7 +384,7 @@ void npcAct230(npc *NPC) // Red Flowers, large
 
 void npcAct231(npc *NPC) //Momorin's rocket
 {
-	RECT rcNPC[2];
+	vector<RECT> rcNPC(2);
 
 	rcNPC[0] = { 176, 32, 208, 48 };
 	rcNPC[1] = { 176, 48, 208, 64 };
@@ -492,7 +491,7 @@ void npcAct231(npc *NPC) //Momorin's rocket
 
 	NPC->y += NPC->ym;
 
-	NPC->rect = rcNPC[NPC->ani_no];
+	NPC->doRects(rcNPC);
 }
 
 void npcAct232(npc *NPC) // Orangebell (enemy)
@@ -513,7 +512,10 @@ void npcAct232(npc *NPC) // Orangebell (enemy)
         else if (NPC->xm > 0 && NPC->flag & rightWall)
             NPC->direct = dirLeft;
 
-        NPC->moveTowardsPlayer(0x100);
+		if (NPC->direct)
+			NPC->xm = 0x100;
+		else
+			NPC->xm = -0x100;
 
         if (NPC->y >= NPC->tgt_y)
             NPC->ym -= 8;
@@ -548,15 +550,12 @@ void npcAct234(npc * NPC) // Red Flowers, picked
 		NPC->y += 0x2000;
 	}
 
-	if (NPC->direct != dirLeft)
-		NPC->rect = { 144, 112, 192, 128 };
-	else
-		NPC->rect = { 144, 96, 192, 112 };
+	NPC->doRects({144, 96, 192, 112}, {144, 112, 192, 128});
 }
 
 void npcAct238(npc *NPC) //Killer press
 {
-	RECT rcNPC[3];
+	vector<RECT> rcNPC(3);
 
 	rcNPC[0] = { 184, 200, 208, 216 };
 	rcNPC[1] = { 208, 200, 232, 216 };
@@ -654,7 +653,7 @@ void npcAct238(npc *NPC) //Killer press
 	else
 		NPC->hit.right = 0x2000;
 
-	NPC->rect = rcNPC[NPC->ani_no];
+	NPC->doRects(rcNPC);
 }
 
 void npcAct239(npc *NPC) // Cage bars

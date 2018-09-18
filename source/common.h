@@ -1,8 +1,8 @@
 #pragma once
 
 #include <cstdint>
-#include <string>
 
+// Structs
 struct RECT
 {
 	int32_t left, top, right, bottom;
@@ -13,7 +13,7 @@ struct POINT
 	int32_t x, y;
 };
 
-//Enums
+// Enums
 enum Collisions
 {
 	leftWall = 0x1, //Touching a left wall
@@ -44,6 +44,7 @@ enum Direction
 	dirAuto,
 };
 
+<<<<<<< HEAD
 struct SDL_Window;
 struct SDL_Renderer;
 struct SDL_Rect;
@@ -78,6 +79,9 @@ constexpr inline int unitsToPixels(int x) { return x >> 9; }
 
 
 //Macros
+=======
+// Macros
+>>>>>>> upstream/master
 #ifdef __GNUC__
 #define attrPure __attribute__((pure))
 #define attrConst __attribute__((const))

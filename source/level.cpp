@@ -1,23 +1,24 @@
 #include "level.h"
-#include "render.h"
-#include "player.h"
-#include "filesystem.h"
-#include "flags.h"
-#include "boss.h"
-#include "valueview.h"
-#include "bullet.h"
-#include "caret.h"
-#include "script.h"
-#include "game.h"
-#include "mathUtils.h"
 
 #include <string>
 #include <cstring>
 #include <SDL_render.h>
+#include "render.h"
+#include "mathUtils.h"
+#include "game.h"
+#include "player.h"
+#include "script.h"
+#include "flags.h"
+#include "filesystem.h"
+#include "boss.h"
+#include "bullet.h"
+#include "caret.h"
+#include "log.h"
+#include "main.h"
+#include "valueview.h"
 
-using std::strcmp;
-using std::strcpy;
 using std::string;
+using std::to_string;
 
 int currentLevel;
 
@@ -102,6 +103,7 @@ bool changeTile(int x, int y, uint8_t tile)
 
 void loadLevel(int levelIndex)
 {
+    logInfo("Loading level " + to_string(levelIndex));
 	currentLevel = levelIndex;
 
 	//Clear old carets
@@ -246,15 +248,18 @@ void drawLevel(bool foreground)
 		rect = { 0, 0, w, h };
 
 		//Update background effect
-		if (backgroundScroll == 5)
+		if (gameFlags & 1)
 		{
-			backgroundEffect += 0xC00;
-		}
+			if (backgroundScroll == 5)
+			{
+				backgroundEffect += 0xC00;
+			}
 
-		else if (backgroundScroll >= 5 && backgroundScroll <= 7)
-		{
-			++backgroundEffect;
-			backgroundEffect %= (w * 2);
+			else if (backgroundScroll >= 5 && backgroundScroll <= 7)
+			{
+				++backgroundEffect;
+				backgroundEffect %= (w * 2);
+			}
 		}
 
 		switch (backgroundScroll)
@@ -346,8 +351,11 @@ void drawLevel(bool foreground)
 	}
 
 	//Animate currents
-	if (foreground)
-		currentEffect += 2;
+	if (gameFlags & 1)
+	{
+		if (foreground)
+			currentEffect += 2;
+	}
 
 	//Render tiles
 	RECT tileRect;

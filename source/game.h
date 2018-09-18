@@ -1,5 +1,4 @@
 #pragma once
-#include "common.h"
 
 enum gameStates
 {
@@ -59,6 +58,8 @@ constexpr auto PERMITSTAGES = 8;
 extern PERMIT_STAGE permitStage[PERMITSTAGES];
 extern ITEM items[ITEMS];
 extern int selectedItem;
+
+extern int gameFlags;
 
 extern BOSSLIFE bossLife;
 

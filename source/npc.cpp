@@ -1,4 +1,11 @@
 ﻿#include "npc.h"
+
+#include <deque>
+#include <vector>
+#include <string>
+#include <cmath>
+#include <cstring>
+#include <SDL_rwops.h>
 #include "npcAct.h"
 #include "weapons.h"
 #include "mathUtils.h"
@@ -9,6 +16,7 @@
 #include "flags.h"
 #include "game.h"
 #include "caret.h"
+<<<<<<< HEAD
 
 #include <deque>
 #include <vector>
@@ -17,6 +25,10 @@
 #include <cstring>
 #include <SDL_rwops.h>
 #include <SDL.h>
+=======
+#include "main.h"
+#include "npcCollision.h"
+>>>>>>> upstream/master
 
 using std::memset;
 using std::string;
@@ -84,7 +96,7 @@ void createSmokeUp(int x, int y, int w, int num)
 	createCaret(x, y, effect_BigExplosion);
 }
 
-void createNpc(int setCode, int setX, int setY, int setXm, int setYm, int setDir, npc *parentNpc)
+void createNpc(int setCode, int setX, int setY, int setXm, int setYm, int setDir, npc *parentNpc, bool setPriority)
 {
 	size_t n;
 	for (n = 0; ; ++n)
@@ -96,11 +108,13 @@ void createNpc(int setCode, int setX, int setY, int setXm, int setYm, int setDir
 	if (n != npcs.size())
 	{
 		npcs[n].init(setCode, setX, setY, setXm, setYm, setDir, parentNpc);
+		npcs[n].priority = setPriority;
 	}
 	else
 	{
 		npc newNpc;
 		newNpc.init(setCode, setX, setY, setXm, setYm, setDir, parentNpc);
+		newNpc.priority = setPriority;
 		npcs.push_back(newNpc);
 	}
 }
@@ -118,6 +132,7 @@ void createNpcExp(int setCode, int setX, int setY, int setXm, int setYm, int set
 	{
 		npcs[n].init(setCode, setX, setY, setXm, setYm, setDir, parentNpc);
 		npcs[n].code_event = setEvent;
+		npcs[n].priority = true;
 		npcs[n].exp = exp;
 	}
 	else
@@ -126,6 +141,7 @@ void createNpcExp(int setCode, int setX, int setY, int setXm, int setYm, int set
 		newNpc.init(setCode, setX, setY, setXm, setYm, setDir, parentNpc);
 		newNpc.code_event = setEvent;
 		newNpc.exp = exp;
+		newNpc.priority = true;
 		npcs.push_back(newNpc);
 	}
 }
@@ -136,7 +152,7 @@ void changeNpc(int code_event, int code_char, int dir)
 	{
 		if (npcs[i].cond & npccond_alive && npcs[i].code_event == code_event)
 		{
-			npcs[i].bits &= 0x7F00u;
+			npcs[i].bits &= ~(npc_showDamage | 0xFF);
 			npcs[i].code_char = code_char;
 			npcs[i].bits |= npcTable[npcs[i].code_char].bits;
 			npcs[i].exp = npcTable[npcs[i].code_char].exp;
@@ -218,7 +234,16 @@ void updateNPC()
 		//Update
 		for (size_t i = 0; i < npcs.size(); i++)
 		{
-			if (npcs[i].cond & npccond_alive)
+			if (npcs[i].priority == false && npcs[i].cond & npccond_alive)
+			{
+				npcs[i].update();
+				npcHitMap(i);
+			}
+		}
+
+		for (size_t i = 0; i < npcs.size(); i++)
+		{
+			if (npcs[i].priority == true && npcs[i].cond & npccond_alive)
 			{
 				npcs[i].update();
 				npcHitMap(i);
@@ -236,7 +261,13 @@ void drawNPC()
 	{
 		for (size_t i = 0; i < npcs.size(); i++)
 		{
-			if (npcs[i].cond & npccond_alive)
+			if (npcs[i].priority == false && npcs[i].cond & npccond_alive)
+				npcs[i].draw();
+		}
+
+		for (size_t i = 0; i < npcs.size(); i++)
+		{
+			if (npcs[i].priority == true && npcs[i].cond & npccond_alive)
 				npcs[i].draw();
 		}
 	}
@@ -268,7 +299,7 @@ void dropExperience(int x, int y, int exp)
 			effectiveExp = 20;
 		}
 
-		createNpcExp(1, x, y, 0, 0, 0, nullptr, 0, effectiveExp);
+		createNpcExp(NPC_WeaponEnergy, x, y, 0, 0, 0, nullptr, 0, effectiveExp);
 	}
 }
 
@@ -295,7 +326,7 @@ int dropMissiles(int x, int y, int val)
 	n = random(1, 10 * t);
 	const int bullet_no = tamakazu_ari[n % t];
 
-	createNpcExp(86, x, y, 0, 0, 0, nullptr, bullet_no, val);
+	createNpcExp(NPC_Missile, x, y, 0, 0, 0, nullptr, bullet_no, val);
 
 	return 1;
 }
@@ -353,16 +384,14 @@ void killNpc(npc *NPC, bool bVanish)
 		if (drop == 1) //Health drop
 		{
 			if (NPC->exp <= 6)
-				createNpcExp(87, x, y, 0, 0, 0, nullptr, 0, 2);
+				createNpcExp(NPC_Heart, x, y, 0, 0, 0, nullptr, 0, 2);
 			else
-				createNpcExp(87, x, y, 0, 0, 0, nullptr, 0, 6);
+				createNpcExp(NPC_Heart, x, y, 0, 0, 0, nullptr, 0, 6);
 		}
 		else
 		{
 			if (drop != 2) //Drop experience
-			{
 				dropExperience(x, y, exp);
-			}
 			else //Drop missile, if doesn't drop, drop experience instead.
 			{
 				if (NPC->exp <= 6)
@@ -455,15 +484,28 @@ void npc::doGravity(int gravity, int maxYVel)
 
 void npc::doRects(const vector<RECT>& rcLeft, const vector<RECT>& rcRight)
 {
-	if (!rcRight.empty())
-	{
-		if (this->direct != dirLeft)
-			this->rect = rcRight.at(this->ani_no);
-		else
-			this->rect = rcLeft.at(this->ani_no);
-	}
+    if (this->direct != dirLeft)
+		this->rect = rcRight.at(this->ani_no);
 	else
 		this->rect = rcLeft.at(this->ani_no);
+}
+
+void npc::doRects(const vector<RECT>& rcNPC)
+{
+    this->rect = rcNPC.at(this->ani_no);
+}
+
+void npc::doRects(RECT rcLeft, RECT rcRight)
+{
+    if (this->direct != dirLeft)
+        this->rect = rcRight;
+    else
+        this->rect = rcLeft;
+}
+
+void npc::doRects(RECT rcNPC)
+{
+    this->rect = rcNPC;
 }
 
 void npc::facePlayer()
@@ -501,14 +543,6 @@ void npc::moveInDir(int vel)
         this->xm = vel;
     else
         this->xm = -vel;
-}
-
-void npc::moveTowardsPlayer(int vel)
-{
-	if (this->x < currentPlayer.x)
-		this->xm = vel;
-	else
-		this->xm = -vel;
 }
 
 void npc::accelerateTowardsXTarget(int vel)
