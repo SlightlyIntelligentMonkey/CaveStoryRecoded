@@ -648,9 +648,45 @@ void npcAct267(npc *NPC) // Muscle Doctor (boss)
         break;
     }
 
+    if (NPC->act_no >= 11 && NPC->act_no < 501)
+    {
+        if (NPC->act_no == 102)
+        {
+            superXPos = NPC->tgt_x;
+            superYPos = NPC->tgt_y;
+        }
+        else
+        {
+            superXPos = NPC->x;
+            superYPos = NPC->y;
+        }
+    }
+
     NPC->doGravity(0, 0x5FF);
     NPC->x += NPC->xm;
-    NPC->y += NPC->ym;
+	NPC->y += NPC->ym;
+
+	if (NPC->act_no < 512)
+	{
+		if (NPC->act_no >= 510)
+		{
+		    createNpc(NPC_RedEnergy,
+                NPC->x + pixelsToUnits(random(-0x10, 0x10)), NPC->y - pixelsToUnits((0x150 - NPC->act_wait) / 8),
+                random(pixelsToUnits(-1), pixelsToUnits(1)), 2 * random(pixelsToUnits(-1), 0), dirDown);
+		    createNpc(NPC_RedEnergy,
+                NPC->x + pixelsToUnits(random(-0x10, 0x10)), NPC->y - pixelsToUnits((0x150 - NPC->act_wait) / 8),
+                random(pixelsToUnits(-1), pixelsToUnits(1)), 2 * random(pixelsToUnits(-1), 0), dirDown);
+		    createNpc(NPC_RedEnergy,
+                NPC->x + pixelsToUnits(random(-0x10, 0x10)), NPC->y - pixelsToUnits((0x150 - NPC->act_wait) / 8),
+                0, 2 * random(pixelsToUnits(-1), 0), dirDown);
+		    createNpc(NPC_RedEnergy,
+                NPC->x + pixelsToUnits(random(-0x10, 0x10)), NPC->y - pixelsToUnits((0x150 - NPC->act_wait) / 8),
+                0, 2 * random(pixelsToUnits(-1), 0), dirDown);
+		}
+		else if (NPC->act_no != 102 && NPC->act_no != 103 && random(0, 3) == 2)
+            createNpc(NPC_RedEnergy, NPC->x + pixelsToUnits(random(-0x10, 0x10)), NPC->y + pixelsToUnits(random(-8, 4)),
+                      NPC->xm, 0, dirDown);
+	}
 
     NPC->doRects(rcLeft, rcRight);
 }
