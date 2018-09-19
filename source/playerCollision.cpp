@@ -820,14 +820,14 @@ void playerHitNpcs()
 
 void playerHitBosses()
 {
-    player *me = &currentPlayer;
+	int hit;
+	player *me = &currentPlayer;
     const RECT *rcHit = &me->hit;
 
     if (me->cond & player_visible && !(me->cond & player_removed))
     {
-        for (size_t i = 0; i < _countof(bossObj); ++i)
+        for (size_t i = 0; i < BOSSNPCS; ++i)
         {
-            int hit = 0;
             if (bossObj[i].cond & npccond_alive)
             {
                 if (bossObj[i].bits & npc_solidSoft)
@@ -849,22 +849,28 @@ void playerHitBosses()
                     me->ques = 0;
                 }
 
-                if (hit & rightWall && bossObj[i].xm < 0)
-                    me->damage(bossObj[i].damage);
-                if (hit & leftWall && bossObj[i].xm > 0)
-                    me->damage(bossObj[i].damage);
-            }
-            else if (hit && bossObj[i].damage && !(gameFlags & 4))
-                me->damage(bossObj[i].damage);
+				if (bossObj[i].bits & npc_rearTop)
+				{
+					if (hit & rightWall && bossObj[i].xm < 0)
+						me->damage(bossObj[i].damage);
+					if (hit & leftWall && bossObj[i].xm > 0)
+						me->damage(bossObj[i].damage);
+				}
+				else if (hit && bossObj[i].damage && !(gameFlags & 4))
+				{
+					me->damage(bossObj[i].damage);
+				}
 
-            if (!(gameFlags & 4) && hit && me->cond & player_interact)
-            {
-                if (bossObj[i].bits & npc_interact)
-                {
-                    startTscEvent(bossObj[i].code_event);
-                    me->xm = 0;
-                    me->ques = 0;
-                }
+				if (!(gameFlags & 4) && hit && me->cond & player_interact)
+				{
+					if (bossObj[i].bits & npc_interact)
+					{
+						startTscEvent(bossObj[i].code_event);
+
+						me->xm = 0;
+						me->ques = 0;
+					}
+				}
             }
         }
         if (me->ques)

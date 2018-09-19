@@ -11,7 +11,7 @@ void setBossAction(int a);
 void updateBoss();
 void drawBoss();
 
-//void actBoss_Omega();
+void actBoss_Omega(npc *boss);
 void actBoss_Frog(npc *boss);
 //void actBoss_MonstX();
 //void actBoss_Core();
