@@ -313,25 +313,6 @@ void npcAct246(npc *NPC) // Press, Proximity (enemy)
     NPC->doRects(rcNPC);
 }
 
-enum
-{
-    init = 0,
-    stand = 1,
-    blink = 2,
-    jumpFromThrone = 20,
-    standAfterJumpFromThrone = 21,
-    blinkAfterJumpFromThrone = 22,
-    fighting = 100,
-    flashForSpell = 110,
-    startTeleportAway = 112,
-    summonBlock = 113,
-    teleportingAway = 150,
-    summonBalls = 160,
-    defeated = 1000,
-    shake = 1001,
-    fallToGround = 1010,
-};
-
 void npcAct247(npc *NPC)
 {
     array<RECT, 9> rcLeft =
@@ -360,13 +341,33 @@ void npcAct247(npc *NPC)
         { 112, 0, 128, 32},
     }};
 
-    switch (NPC->act_no)
-    {
-    case init:
-        NPC->act_no = 1;
-        NPC->y += pixelsToUnits(6);
-        NPC->tgt_y = tilesToUnits(4);
-        // Fallthrough
+	enum
+	{
+		init = 0,
+		stand = 1,
+		blink = 2,
+		jumpFromThrone = 20,
+		standAfterJumpFromThrone = 21,
+		blinkAfterJumpFromThrone = 22,
+		fighting = 100,
+		flashForSpell = 110,
+		startTeleportAway = 112,
+		summonBlock = 113,
+		teleportingAway = 150,
+		summonBalls = 160,
+		defeated = 1000,
+		shake = 1001,
+		fallToGround = 1010,
+	};
+
+
+	switch (NPC->act_no)
+	{
+	case init:
+		NPC->act_no = 1;
+		NPC->y += pixelsToUnits(6);
+		NPC->tgt_y = tilesToUnits(4);
+		// Fallthrough
     case stand:
         if (!random(0, 120))
         {
