@@ -1,10 +1,11 @@
 #include "render.h"
-#include "common.h"
-#include "input.h"
 
 #include <SDL_image.h>
 #include "game.h"
 #include "main.h"
+#include "common.h"
+#include "input.h"
+#include "log.h"
 
 SDL_Window *window;
 SDL_Renderer *renderer;
@@ -83,7 +84,11 @@ int createWindow(int width, int height, int scale, bool fullscreen)
 		cursor = SDL_CreateColorCursor(cursor_surface, 0, 0);	// Don't worry, the hotspots are accurate to the original files
 		if (cursor)
 			SDL_SetCursor(cursor);
+        else
+            logError("Couldn't create cursor");
 	}
+	else
+        logError("Couldn't load cursor image (is the file missing ?)");
 
 	return 0;
 }
