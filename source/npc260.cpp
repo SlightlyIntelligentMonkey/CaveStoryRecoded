@@ -6,6 +6,7 @@
 #include "render.h"
 #include "sound.h"
 #include "level.h"
+#include "game.h"
 
 using std::array;
 
@@ -254,21 +255,6 @@ void npcAct263(npc *NPC) // Doctor (boss)
 
 void npcAct267(npc *NPC) // Muscle Doctor (boss)
 {
-    /**
-
-        TBD : HEY THIS ISN'T FINISHED SO PLS DO SO (also implement the first form of the doctor
-                                                before doing so cos it doesn't work w/o him anyway)
-
-    */
-
-    enum
-    {
-        init = 0,
-        stand = 5,
-        defeated = 500,
-        dissolve = 510,
-    };
-
     array<RECT, 10> rcLeft, rcRight;
 
     rcLeft[0] = {0, 0, 0, 0};
@@ -292,6 +278,14 @@ void npcAct267(npc *NPC) // Muscle Doctor (boss)
     rcRight[7] = {240, 112, 280, 160};
     rcRight[8] = {280, 112, 320, 160};
     rcRight[9] = {40, 160, 80, 208};
+
+    enum
+    {
+        init = 0,
+        stand = 5,
+        defeated = 500,
+        dissolve = 510,
+    };
 
     switch (NPC->act_no)
     {
@@ -335,6 +329,322 @@ void npcAct267(npc *NPC) // Muscle Doctor (boss)
         NPC->ym += 0x40;
         if (++NPC->act_wait > 40)
             NPC->act_no = 10;
+        break;
+
+    case 10:
+        NPC->bits |= npc_invulnerable;
+        NPC->xm = 0;
+        NPC->act_no = 11;
+        NPC->act_wait = 0;
+        NPC->ani_no = 1;
+        NPC->ani_wait = 0;
+        NPC->count2 = NPC->life;
+        // Fallthrough
+    case 11:
+        NPC->ym += 0x80;
+        NPC->facePlayer();
+
+        if (NPC->flag & ground)
+        {
+            if (NPC->life >= NPC->count2 - 20)
+                NPC->animate(10, 1, 2);
+            else if (currentPlayer.flag & ground
+                     && currentPlayer.x > NPC->x - tilesToUnits(3) && currentPlayer.x < NPC->x + tilesToUnits(3)
+                     && NPC->ani_no != 6)
+            {
+                // WHAT THE FUCK ARE YOU SERIOUS ???
+                NPC->ani_no = 6;
+                currentPlayer.damage(5);
+                viewport.quake = 10;
+                playSound(SFX_LargeObjectHitGround);
+                currentPlayer.ym = pixelsToUnits(-2);
+                if (NPC->x <= currentPlayer.x)
+                    currentPlayer.xm = 0x5FF;
+                else
+                    currentPlayer.xm = -0x5FF;
+
+                for (size_t i = 0; i < 100; ++i)
+                    createNpc(NPC_RedEnergy,
+                              NPC->x + pixelsToUnits(random(-0x10, 0x10)), NPC->y + pixelsToUnits(random(-0x10, 0x10)),
+                              3 * random(-0x200, 0x200), 3 * random(-0x200, 0x200), dirDown);
+            }
+        }
+        else
+            NPC->ani_no = 4;
+
+        if (++NPC->act_wait > 30 || NPC->life < NPC->count2 - 20)
+        {
+            if (++NPC->count1 > 10)
+                NPC->count1 = 0;
+
+            switch (NPC->count1)
+            {
+            case 8:
+                NPC->act_no = 20;
+                break;
+
+            case 3:
+            case 6:
+                NPC->act_no = 30;
+                break;
+
+            case 1:
+            case 9:
+                NPC->act_no = 40;
+                break;
+
+            case 2:
+            case 7:
+                NPC->act_no = 100;
+                break;
+
+            default:
+                NPC->act_no = 15;
+                NPC->act_wait = 0;
+                break;
+            }
+        }
+        break;
+
+    case 15:
+        NPC->ani_no = 3;
+        ++NPC->act_wait;
+        NPC->facePlayer();
+
+        if (NPC->act_wait > 20)
+        {
+            NPC->act_no = 16;
+            NPC->ani_no = 4;
+            NPC->ani_wait = 0;
+            NPC->ym = pixelsToUnits(-3);
+            NPC->moveInDir(pixelsToUnits(2));
+        }
+        break;
+
+    case 16:
+        NPC->ym += 0x40;
+        NPC->animate(1, 4, 5);
+        NPC->facePlayer();
+
+        if (NPC->ym > 0 && NPC->flag & ground)
+            NPC->act_no = 17;
+        break;
+
+    case 17:
+        NPC->act_no = 18;
+        NPC->act_wait = 0;
+        viewport.quake = 10;
+        playSound(SFX_LargeObjectHitGround);
+        // Fallthrough
+    case 18:
+        NPC->ani_no = 3;
+        ++NPC->act_wait;
+        NPC->xm = 7 * NPC->xm / 8;
+        NPC->ym += 0x80;
+        if (NPC->act_wait > 10)
+            NPC->act_no = 10;
+        break;
+
+    case 20:
+        NPC->act_no = 21;
+        NPC->act_wait = 0;
+        // Fallthrough
+    case 21:
+        NPC->ani_no = 6;
+        if (++NPC->act_wait > 20 && NPC->act_wait % 3 == 1)
+        {
+            auto xVel = 4 * random(pixelsToUnits(0.5), pixelsToUnits(1));
+            auto yVel = random(pixelsToUnits(-1), pixelsToUnits(1));
+            if (NPC->direct != dirLeft)
+                createNpc(NPC_EnemyBatRedEnergy, NPC->x + tilesToUnits(0.5), NPC->y - tilesToUnits(0.25), xVel, yVel, dirRight);
+            else
+                createNpc(NPC_EnemyBatRedEnergy, NPC->x - tilesToUnits(0.5), NPC->y - tilesToUnits(0.25), -xVel, yVel, dirLeft);
+            playSound(SFX_EnemyShootProjectile);
+        }
+        if (NPC->act_wait > 90)
+            NPC->act_no = 10;
+        break;
+
+    case 30:
+        NPC->act_no = 31;
+        NPC->act_wait = 0;
+        NPC->bits |= npc_solidSoft;
+        NPC->bits &= ~npc_shootable;
+        // Fallthrough
+    case 31:
+        NPC->ani_no = 3;
+        if (++NPC->act_wait > 20)
+        {
+            NPC->act_no = 32;
+            NPC->act_wait = 0;
+            NPC->ani_no = 7;
+            NPC->bits |= npc_rearTop;
+            NPC->damage = 0;
+            playSound(SFX_SillyExplosion);
+            NPC->moveInDir(0x5FF);
+        }
+        break;
+
+    case 32:
+        NPC->ym = 0;
+        if (++NPC->act_wait / 2 & 1)
+            NPC->ani_no = 7;
+        else
+            NPC->ani_no = 8;
+
+        if (NPC->act_wait > 30)
+        {
+            NPC->act_wait = 0;
+            NPC->act_no = 18;
+            NPC->damage = 5;
+            NPC->bits &= ~(npc_rearTop | npc_solidSoft);
+            NPC->bits |= npc_shootable;
+        }
+
+        if (NPC->flag & leftWall || NPC->flag & rightWall)
+        {
+            NPC->act_no = 15;
+            NPC->act_wait = 0;
+            NPC->damage = 5;
+            NPC->bits &= ~(npc_rearTop | npc_solidSoft);
+            NPC->bits |= npc_shootable;
+        }
+        break;
+
+    case 40:
+        NPC->ani_no = 3;
+        NPC->facePlayer();
+        if (++NPC->act_wait > 20)
+        {
+            NPC->act_no = 41;
+            NPC->ani_no = 4;
+            NPC->ani_wait = 0;
+            NPC->ym = pixelsToUnits(-4);
+            NPC->moveInDir(pixelsToUnits(2));
+        }
+        break;
+
+    case 41:
+        NPC->ym += 0x40;
+        NPC->animate(1, 4, 5);
+
+        if (currentPlayer.y > NPC->y && currentPlayer.x > NPC->x - 0x1000 && currentPlayer.x < NPC->x + 0x1000)
+        {
+            NPC->act_no = 16;
+            NPC->ym = 0x5FF;
+            NPC->xm = 0;
+        }
+        if (NPC->ym > 0 && NPC->flag & ground)
+            NPC->act_no = 17;
+
+        break;
+
+    case 100:
+        NPC->act_no = 101;
+        NPC->act_wait = 0;
+        NPC->bits &= ~npc_shootable;
+        NPC->damage = 0;
+        playSound(SFX_Teleport);
+        // Fallthrough
+
+    case 101:
+        NPC->act_wait += 2;
+        if (NPC->act_wait > 28)
+        {
+            NPC->act_no = 102;
+            NPC->act_wait = 0;
+            NPC->ani_no = 0;
+            NPC->tgt_x = currentPlayer.x;
+            NPC->tgt_y = currentPlayer.y - tilesToUnits(2);
+            if (NPC->tgt_y < tilesToUnits(4))
+                NPC->tgt_y = tilesToUnits(4);
+            if (NPC->tgt_x < tilesToUnits(4))
+                NPC->tgt_x = tilesToUnits(4);
+            if (NPC->tgt_x > tilesToUnits(36))
+                NPC->tgt_x = tilesToUnits(36);
+        }
+        break;
+
+    case 102:
+        if (++NPC->act_wait > 40)
+        {
+            NPC->act_no = 103;
+            NPC->act_wait = 28;
+            NPC->ani_no = 4;
+            NPC->ym = 0;
+            NPC->x = NPC->tgt_x;
+            NPC->y = NPC->tgt_y;
+            NPC->facePlayer();
+        }
+        break;
+
+    case 103:
+        NPC->act_wait -= 2;
+        if (NPC->act_wait <= 0)
+        {
+            NPC->bits |= (npc_shootable | npc_invulnerable);
+            NPC->damage = 5;
+            NPC->act_no = 16;
+            NPC->ym = pixelsToUnits(-1);
+            NPC->xm = 0;
+        }
+        break;
+
+    case defeated:
+        killNpcsByType(NPC_EnemyBatRedEnergy);
+        NPC->bits &= ~npc_shootable;
+        NPC->ani_no = 4;
+        NPC->ym += 0x20;
+        NPC->xm = 0;
+
+        if (NPC->flag & ground)
+        {
+            NPC->act_no = defeated + 1;
+            NPC->act_wait = 0;
+            NPC->tgt_x = NPC->x;
+            NPC->facePlayer();
+        }
+        break;
+
+    case defeated + 1:
+        NPC->ani_no = 9;
+        if (++NPC->act_wait / 2 & 1)
+            NPC->x = NPC->tgt_x;
+        else
+            NPC->x = NPC->tgt_x + pixelsToUnits(1);
+        break;
+
+    case dissolve:
+        NPC->act_no = dissolve + 1;
+        NPC->act_wait = 0;
+        NPC->ani_no = 9;
+        NPC->tgt_x = NPC->x;
+        NPC->y += tilesToUnits(1);
+        NPC->bits |= npc_ignoreSolid;
+        // Fallthrough
+    case dissolve + 1:
+        viewport.quake = 2;
+        if (++NPC->act_wait % 6 == 3)
+            playSound(SFX_SillyExplosion);
+
+        if (NPC->act_wait / 2 & 1)
+            NPC->x = NPC->tgt_x;
+        else
+            NPC->x = NPC->tgt_x + pixelsToUnits(1);
+
+        if (NPC->act_wait > 0x160)
+        {
+            NPC->ani_no = 0;
+            NPC->act_no = 512;
+        }
+        break;
+
+    case 520:
+        NPC->damage = 0;
+        superYPos = tilesToUnits(-2);
+        break;
+
+    default:
         break;
     }
 
