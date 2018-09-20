@@ -263,6 +263,7 @@
     <ClCompile Include="npc060.cpp" />
     <ClCompile Include="npc200.cpp" />
     <ClCompile Include="npcAct.cpp" />
+    <ClCompile Include="omega.cpp" />
     <ClCompile Include="org.cpp" />
     <ClCompile Include="player.cpp" />
     <ClCompile Include="playerCollision.cpp" />

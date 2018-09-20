@@ -276,8 +276,8 @@
     <ClCompile Include="log.cpp">
       <Filter>Source Files\modules</Filter>
     </ClCompile>
-    <ClCompile Include="bossCollision.cpp">
-      <Filter>Resource Files\Source Files\modules\collision</Filter>
+    <ClCompile Include="omega.cpp">
+      <Filter>Source Files\classes\boss\act</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

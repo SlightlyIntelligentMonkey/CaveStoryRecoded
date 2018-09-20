@@ -393,6 +393,20 @@ void killNpc(npc *NPC, bool bVanish)
 	}
 
 	setFlag(flag);
+
+	//Destroy npc
+	if (!(NPC->bits & npc_showDamage))
+	{
+		NPC->cond = 0;
+	}
+	else
+	{
+		if (NPC->damage_view)
+			createValueView(&NPC->x, &NPC->y, NPC->damage_view);
+
+		if (bVanish)
+			NPC->init(NPC_DeletesItself, NPC->x, NPC->y, 0, 0, 0, nullptr);
+	}
 }
 
 void killNpcsByType(int entityType, bool makeDustClouds)
