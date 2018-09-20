@@ -15,6 +15,8 @@ enum debugFlagsEnum
 	showCARId = 0x08,
 	notifyOnNotImplemented = 0x10,
 	showNPCHealth = 0x20,
+	showHitRects = 0x40,
+	showHurtRects = 0x80
 };
 
 struct PERMIT_STAGE

@@ -6,7 +6,7 @@ class player
 {
 public:
 	//State things
-	uint8_t cond; //Condition (alive, interactingm etc.)
+	uint8_t cond; //Condition (alive, interacting, etc.)
 	uint32_t flag; //Current collision flags
 	int direct; //Facing left or right
 	int up; //Looking up

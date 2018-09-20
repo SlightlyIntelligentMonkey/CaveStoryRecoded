@@ -1,6 +1,6 @@
 #include "npc020.h"
 
-#include <vector>
+#include <array>
 #include "mathUtils.h"
 #include "caret.h"
 #include "player.h"
@@ -9,19 +9,19 @@
 #include "game.h"
 #include "level.h"
 
-using std::vector;
+using std::array;
 
 void npcAct020(npc *NPC) // Computer
 {
 	RECT rcLeft = { 288, 16, 320, 40 };
-	vector<RECT> rcRight = { {288, 40, 320, 64}, {288, 40, 320, 64}, {288, 64, 320, 88} };
+	array<RECT, 3> rcRight = { {{288, 40, 320, 64}, {288, 40, 320, 64}, {288, 64, 320, 88}} };
 
 	NPC->animate(3, 0, 2);
 
 	if (NPC->direct == dirLeft)
-		NPC->doRects(rcLeft);
+		NPC->rect = rcLeft;
 	else
-		NPC->doRects(rcRight);
+		NPC->rect = rcRight.at(NPC->ani_no);
 }
 
 void npcAct021(npc *NPC) //Open chest
@@ -39,7 +39,7 @@ void npcAct021(npc *NPC) //Open chest
 
 void npcAct022(npc *NPC) //Teleporter
 {
-	vector<RECT> rcNPC = {{240, 16, 264, 48}, {248, 152, 272, 184}};
+	array<RECT, 2> rcNPC = { {{240, 16, 264, 48}, {248, 152, 272, 184}} };
 
 	if (NPC->act_no)
 	{
@@ -60,22 +60,25 @@ void npcAct023(npc *NPC) //Teleporter lights
 
 void npcAct024(npc *NPC) // Power Critter (enemy)
 {
-    vector<RECT> rcLeft(6);
-    vector<RECT> rcRight(6);
+	array<RECT, 6> rcLeft =
+	{{
+        {0, 0, 24, 24},
+        {24, 0, 48, 24},
+        {48, 0, 72, 24},
+        {72, 0, 96, 24},
+        {96, 0, 120, 24},
+        {120, 0, 144, 24},
+    }};
 
-    rcLeft[0] = {0, 0, 24, 24};
-    rcLeft[1] = {24, 0, 48, 24};
-    rcLeft[2] = {48, 0, 72, 24};
-    rcLeft[3] = {72, 0, 96, 24};
-    rcLeft[4] = {96, 0, 120, 24};
-    rcLeft[5] = {120, 0, 144, 24};
-
-    rcRight[0] = {0, 24, 24, 48};
-    rcRight[1] = {24, 24, 48, 48};
-    rcRight[2] = {48, 24, 72, 48};
-    rcRight[3] = {72, 24, 96, 48};
-    rcRight[4] = {96, 24, 120, 48};
-	rcRight[5] = {120, 24, 144, 48};
+	array<RECT, 6> rcRight =
+	{{
+        {0, 24, 24, 48},
+	    {24, 24, 48, 48},
+	    {48, 24, 72, 48},
+	    {72, 24, 96, 48},
+	    {96, 24, 120, 48},
+	    {120, 24, 144, 48},
+    }};
 
 	enum
 	{
@@ -305,8 +308,8 @@ void npcAct026(npc * NPC) // Bat, Black Circling (enemy)
 	NPC->x += NPC->xm;
 	NPC->y += NPC->ym;
 
-	vector<RECT> rcLeft(4);
-	vector<RECT> rcRight(4);
+	array<RECT, 4> rcLeft;
+	array<RECT, 4> rcRight;
 
 	rcLeft[0] = { 32, 80, 48, 96 };
 	rcLeft[1] = { 48, 80, 64, 96 };
@@ -333,8 +336,8 @@ void npcAct027(npc *NPC) // Death Spikes
 
 void npcAct028(npc *NPC)
 {
-    vector<RECT> rcLeft(6);
-	vector<RECT> rcRight(6);
+	array<RECT, 6> rcLeft;
+	array<RECT, 6> rcRight;
 
 	rcLeft[0] = { 0, 48, 16, 64 };
 	rcLeft[1] = { 16, 48, 32, 64 };
@@ -464,8 +467,8 @@ void npcAct028(npc *NPC)
 
 void npcAct029(npc *NPC) // Cthulhu
 {
-	vector<RECT> rcLeft = { {0, 192, 16, 216}, {16, 192, 32, 216} };
-	vector<RECT> rcRight = { {0, 216, 16, 240}, {16, 216, 32, 240} };
+	array<RECT, 2> rcLeft = { { {0, 192, 16, 216}, {16, 192, 32, 216} } };
+	array<RECT, 2> rcRight = { { {0, 216, 16, 240}, {16, 216, 32, 240} } };
 
 	if (NPC->act_no != 0)
 	{
@@ -487,7 +490,7 @@ doRects:
 
 void npcAct030(npc *NPC) // Hermit Gunsmith
 {
-	vector<RECT> rcNPC = { { 48, 0, 64, 16 },{ 48, 16, 64, 32 },{ 0, 32, 16, 48 } };
+	array<RECT, 3> rcNPC = { { { 48, 0, 64, 16 }, { 48, 16, 64, 32 }, { 0, 32, 16, 48 } } };
 
 	if (NPC->direct == dirLeft)	// Wherever he's awoken depends on his direction, it would seem
 	{
@@ -533,8 +536,8 @@ doRects:
 
 void npcAct031(npc *NPC) // Bat, Black Hanging (enemy)
 {
-    vector<RECT> rcLeft = {{0, 80, 16, 96}, {16, 80, 32, 96}, {32, 80, 48, 96}, {48, 80, 65, 96}, {64, 80, 80, 96}};
-    vector<RECT> rcRight = {{0, 96, 16, 112}, {16, 96, 32, 112}, {32, 96, 48, 112}, {48, 96, 64, 112}, {64, 96, 80, 112}};
+	array<RECT, 5> rcLeft = { {{0, 80, 16, 96}, {16, 80, 32, 96}, {32, 80, 48, 96}, {48, 80, 65, 96}, {64, 80, 80, 96}} };
+	array<RECT, 5> rcRight = { {{0, 96, 16, 112}, {16, 96, 32, 112}, {32, 96, 48, 112}, {48, 96, 64, 112}, {64, 96, 80, 112}} };
 
     enum
     {
@@ -625,7 +628,7 @@ void npcAct031(npc *NPC) // Bat, Black Hanging (enemy)
 
 void npcAct032(npc *NPC) //Life Capsule
 {
-	vector<RECT> rcNPC = {{32, 96, 48, 112}, {48, 96, 64, 112}};
+	array<RECT, 2> rcNPC = { {{32, 96, 48, 112}, {48, 96, 64, 112}} };
 
     NPC->animate(2, 0, 1);
 
@@ -646,7 +649,7 @@ void npcAct033(npc *NPC) // Balrog energy ball bouncing (projectile)
     NPC->y += NPC->ym;
     NPC->x += NPC->xm;
 
-    vector<RECT> rcNPC = {{240, 64, 256, 80}, {240, 80, 256, 96}};
+	array<RECT, 2> rcNPC = { {{240, 64, 256, 80}, {240, 80, 256, 96}} };
     NPC->animate(2, 0, 1);
 
     NPC->doRects(rcNPC);
@@ -731,8 +734,8 @@ void npcAct035(npc * NPC) // Manann (enemy)
 		break;
 	}
 
-	vector<RECT> rcLeft = { {96, 64, 120, 96}, {120, 64, 144, 96}, {144, 64, 168, 98}, {168, 64, 192, 96} };
-	vector<RECT> rcRight = { {96, 96, 120, 128}, {120, 96, 144, 128}, {144, 96, 168, 128}, {168, 96, 192, 128} };
+	array<RECT, 4> rcLeft = { { {96, 64, 120, 96}, {120, 64, 144, 96}, {144, 64, 168, 98}, {168, 64, 192, 96} } };
+	array<RECT, 4> rcRight = { { {96, 96, 120, 128}, {120, 96, 144, 128}, {144, 96, 168, 128}, {168, 96, 192, 128} } };
 
 	NPC->doRects(rcLeft, rcRight);
 }
@@ -886,8 +889,8 @@ void npcAct036(npc *NPC) // Balrog, Flying (boss)
     NPC->x += NPC->xm;
     NPC->y += NPC->ym;
 
-    vector<RECT> rcLeft(6);
-    vector<RECT> rcRight(6);
+	array<RECT, 6> rcLeft;
+	array<RECT, 6> rcRight;
 
     rcLeft[0] = {0, 0, 40, 24};
     rcLeft[1] = {40, 0, 80, 24};
@@ -908,7 +911,7 @@ void npcAct036(npc *NPC) // Balrog, Flying (boss)
 
 void npcAct037(npc *NPC) //Sign
 {
-	vector<RECT> rcNPC = {{ 192, 64, 208, 80 }, { 208, 64, 224, 80 }};
+	array<RECT, 2> rcNPC = { {{ 192, 64, 208, 80 }, { 208, 64, 224, 80 }} };
 
 	NPC->animate(1, 0, 1);
 
@@ -917,7 +920,7 @@ void npcAct037(npc *NPC) //Sign
 
 void npcAct038(npc * NPC)
 {
-	vector<RECT> rcNPC = { {128, 64, 144, 80}, {144, 64, 160, 80}, {160, 64, 176, 80}, {176, 64, 192, 80} };
+	array<RECT, 4> rcNPC = { { {128, 64, 144, 80}, {144, 64, 160, 80}, {160, 64, 176, 80}, {176, 64, 192, 80} } };
 
 	if (NPC->act_no != 0)
 	{
@@ -940,7 +943,7 @@ void npcAct038(npc * NPC)
 
 void npcAct039(npc *NPC) //Save Sign
 {
-	vector<RECT> rcNPC = {{224, 64, 240, 80}, {240, 64, 256, 80}};
+	array<RECT, 2> rcNPC = { {{224, 64, 240, 80}, {240, 64, 256, 80}} };
 
 	NPC->ani_no = (NPC->direct == dirLeft) ? 0 : 1;
 

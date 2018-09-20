@@ -1,15 +1,15 @@
 #include "npc320.h"
 
-#include <vector>
+#include <array>
 #include "player.h"
 #include "level.h"
 #include "render.h"
 
-using std::vector;
+using std::array;
 
 void npcAct323(npc *NPC)
 {
-	vector<RECT> rcNPC = {{216, 32, 232, 56}, {232, 32, 248, 56}, {216, 56, 232, 80}, {232, 56, 248, 80}};
+	array<RECT, 4> rcNPC = { {{216, 32, 232, 56}, {232, 32, 248, 56}, {216, 56, 232, 80}, {232, 56, 248, 80}} };
 
 	NPC->animate(3, 0, 3);
 
@@ -116,5 +116,5 @@ void npcAct324(npc *NPC)
 
 void npcAct328(npc *NPC) // Transmogrifier
 {
-	NPC->doRects({{96, 0, 128, 48}});
+	NPC->doRects({96, 0, 128, 48});
 }

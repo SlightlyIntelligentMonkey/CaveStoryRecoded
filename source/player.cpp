@@ -11,6 +11,7 @@
 #include "mathUtils.h"
 #include "valueview.h"
 #include "game.h"
+#include <SDL.h>
 #include "level.h"
 #include "npc.h"
 
@@ -856,6 +857,20 @@ void player::draw()
 			bubble++;
 			if (equip & equip_airTank && flag & water)
 				drawTexture(sprites[TEX_CARET], &rcBubble[(bubble >> 1) & 1], x / 0x200 - 12 - viewport.x / 0x200, y / 0x200 - 12 - viewport.y / 0x200);
+		}
+		if (debugFlags & showHitRects)
+		{
+			SDL_SetRenderDrawColor(renderer, 0x80, 0x80, 0x80, 0x00);
+			drawRect(unitsToPixels(x - hit.left) - unitsToPixels(viewport.x),
+				unitsToPixels(y - hit.top) - unitsToPixels(viewport.y),
+				unitsToPixels(hit.right + hit.left), unitsToPixels(hit.bottom + hit.top));
+		}
+		if (debugFlags & showHurtRects)
+		{
+			SDL_SetRenderDrawColor(renderer, 0x0FF, 0x00, 0x00, 0xFF);
+			drawRect(unitsToPixels(x - 0x400) - unitsToPixels(viewport.x),
+				unitsToPixels(y - 0x400) - unitsToPixels(viewport.y),
+				unitsToPixels(0x800), unitsToPixels(0x800));
 		}
 	}
 }

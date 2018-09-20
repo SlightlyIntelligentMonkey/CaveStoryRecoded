@@ -399,7 +399,7 @@ unsigned char old_key[16] = { 255,255,255,255,255,255,255,255 };
 unsigned char key_on[16] = { 0 };
 unsigned char key_twin[16] = { 0 };
 
-void changeOrganPan(unsigned char key, unsigned char pan, uint8_t track)
+void changeOrganPan(unsigned char /*key*/, unsigned char pan, uint8_t track)
 {
 	if (old_key[track] != 0xFF)
 	{
@@ -417,7 +417,7 @@ void changeOrganPan(unsigned char key, unsigned char pan, uint8_t track)
 }
 
 constexpr long double orgVolumeMin = 0.204;
-void changeOrganVolume(int no, long volume, uint8_t track)
+void changeOrganVolume(int /*no*/, long volume, uint8_t track)
 {
 	if (old_key[track] != 0xFF)
 		orgWaves[track][old_key[track] / 12][key_twin[track]].volume = orgVolumeMin + ((long double)volume / 255.0f * (1.0 - orgVolumeMin));

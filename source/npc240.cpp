@@ -1,6 +1,6 @@
 #include "npc240.h"
 
-#include <vector>
+#include <array>
 #include "render.h"
 #include "player.h"
 #include "level.h"
@@ -11,12 +11,12 @@
 #include "sound.h"
 #include "game.h"
 
-using std::vector;
+using std::array;
 
 void npcAct241(npc *NPC) // Critter, Hopping Red (enemy)
 {
-    vector<RECT> rcLeft = {{0, 0, 16, 16}, {16, 0, 32, 16}, {32, 0, 48, 16}};
-    vector<RECT> rcRight = {{0, 16, 16, 32}, {16, 16, 32, 32}, {32, 16, 48, 32}};
+	array<RECT, 3> rcLeft = { {{0, 0, 16, 16}, {16, 0, 32, 16}, {32, 0, 48, 16}} };
+	array<RECT, 3> rcRight = { {{0, 16, 16, 32}, {16, 16, 32, 32}, {32, 16, 48, 32}} };
 
     enum
     {
@@ -131,8 +131,8 @@ void npcAct242(npc *NPC) // Bat, Red Wave (enemy)
     NPC->x += NPC->xm;
     NPC->y += NPC->ym;
 
-    vector<RECT> rcLeft = {{32, 32, 48, 48}, {48, 32, 64, 48}, {64, 32, 80, 48}, {80, 32, 96, 48}};
-    vector<RECT> rcRight = {{32, 48, 48, 64}, {48, 48, 64, 64}, {64, 48, 80, 64}, {80, 48, 96, 64}};
+	array<RECT, 4> rcLeft = { {{32, 32, 48, 48}, {48, 32, 64, 48}, {64, 32, 80, 48}, {80, 32, 96, 48}} };
+	array<RECT, 4> rcRight = { {{32, 48, 48, 64}, {48, 48, 64, 64}, {64, 48, 80, 64}, {80, 48, 96, 64}} };
 
     NPC->animate(1, 0, 2);
     NPC->doRects(rcLeft, rcRight);
@@ -189,7 +189,7 @@ void npcAct244(npc *NPC)
 
 void npcAct245(npc *NPC) // Generator - Lava Drop
 {
-	vector<RECT> rcNPC = {{0, 0, 0, 0}, {104, 0, 112, 16}, {112, 0, 120, 16}, {120, 0, 128, 16}};
+	array<RECT, 4> rcNPC = { {{0, 0, 0, 0}, {104, 0, 112, 16}, {112, 0, 120, 16}, {120, 0, 128, 16}} };
 
 	if (NPC->act_no)
 	{
@@ -240,7 +240,7 @@ endOfAI:
 
 void npcAct246(npc *NPC) // Press, Proximity (enemy)
 {
-    vector<RECT> rcNPC = {{144, 112, 160, 136}, {160, 112, 176, 136}, {176, 112, 196, 136}};
+	array<RECT, 3> rcNPC = { {{144, 112, 160, 136}, {160, 112, 176, 136}, {176, 112, 196, 136}} };
 
     switch (NPC->act_no)
     {
@@ -313,6 +313,282 @@ void npcAct246(npc *NPC) // Press, Proximity (enemy)
     NPC->doRects(rcNPC);
 }
 
+void npcAct247(npc *NPC)
+{
+    array<RECT, 9> rcLeft =
+    {{
+        { 0, 0, 16, 16 },
+        { 16, 0, 32, 16},
+        { 32, 0, 48, 16},
+        { 48, 0, 64, 16 },
+        { 64, 0, 80, 16 },
+        { 80, 0, 96, 16 },
+        { 96, 0, 112, 16},
+        { 0, 0, 0, 0 },
+        { 112, 0, 128, 16 },
+    }};
+
+    array<RECT, 9> rcRight =
+    {{
+        { 0, 16, 16, 32},
+        { 16, 16, 32, 32},
+        { 32, 16, 48, 32},
+        { 48, 16, 64, 32},
+        { 64, 16, 80, 32},
+        { 80, 16, 96, 32},
+        { 96, 16, 112, 32},
+        { 0, 0, 0, 0},
+        { 112, 0, 128, 32},
+    }};
+
+	enum
+	{
+		init = 0,
+		stand = 1,
+		blink = 2,
+		jumpFromThrone = 20,
+		standAfterJumpFromThrone = 21,
+		blinkAfterJumpFromThrone = 22,
+		fighting = 100,
+		flashForSpell = 110,
+		startTeleportAway = 112,
+		summonBlock = 113,
+		teleportingAway = 150,
+		summonBalls = 160,
+		defeated = 1000,
+		shake = 1001,
+		fallToGround = 1010,
+	};
+
+
+	switch (NPC->act_no)
+	{
+	case init:
+		NPC->act_no = 1;
+		NPC->y += pixelsToUnits(6);
+		NPC->tgt_y = tilesToUnits(4);
+		// Fallthrough
+    case stand:
+        if (!random(0, 120))
+        {
+            NPC->act_no = blink;
+            NPC->act_wait = 0;
+            NPC->ani_no = 1;
+        }
+        break;
+
+    case blink:
+        if (++NPC->act_wait > 8)
+        {
+            NPC->act_no = stand;
+            NPC->ani_no = 0;
+        }
+        break;
+
+    case jumpFromThrone:
+        NPC->xm = 0;
+        NPC->ym += 0x40;
+        if (NPC->flag & ground)
+        {
+            NPC->act_no = standAfterJumpFromThrone;
+            NPC->ani_no = 2;
+        }
+        break;
+
+    case standAfterJumpFromThrone:
+        if (!random(0, 120))
+        {
+            NPC->act_no = blinkAfterJumpFromThrone;
+            NPC->act_wait = 0;
+            NPC->ani_no = 3;
+        }
+        break;
+
+    case blinkAfterJumpFromThrone:
+        if (++NPC->act_wait > 8)
+        {
+            NPC->act_no = standAfterJumpFromThrone;
+            NPC->ani_no = 2;
+        }
+        break;
+
+    case fighting:
+        NPC->act_no = fighting + 1;
+        NPC->act_wait = 0;
+        NPC->ani_no = 0;
+        NPC->xm = 0;
+        NPC->bits |= npc_shootable;
+        NPC->count2 = NPC->life;
+        // Fallthrough
+    case fighting + 1:
+        NPC->facePlayer();
+        NPC->accelerateTowardsYTarget(0x20);
+        NPC->limitYVel(pixelsToUnits(1));
+
+        if (++NPC->act_wait > secondsToFrames(4) || NPC->life <= NPC->count2 - 80)
+        {
+            NPC->act_wait = 0;
+            NPC->act_no = flashForSpell;
+        }
+        break;
+
+    case flashForSpell:
+        NPC->act_no = flashForSpell + 1;
+        NPC->act_wait = 0;
+        NPC->xm = 0;
+        NPC->ym = 0;
+        NPC->bits &= ~npc_shootable;
+        // Fallthrough
+    case flashForSpell + 1:
+        if (++NPC->act_wait & 1)
+            NPC->ani_no = 5;
+        else
+            NPC->ani_no = 6;
+
+        if (NPC->act_wait > 30)
+        {
+            NPC->act_wait = 0;
+            if (++NPC->count1 % 3)
+                NPC->act_no = startTeleportAway;
+            else
+                NPC->act_no = summonBlock;
+            NPC->ani_no = 4;
+        }
+        break;
+
+    case startTeleportAway:
+        if (!(++NPC->act_wait % 6))
+        {
+            auto angle = getAtan(NPC->x - currentPlayer.x, NPC->y - currentPlayer.y);
+            angle += random(-4, 4);
+            auto xVel = 4 * getCos(angle);
+            auto yVel = 4 * getSin(angle);
+            createNpc(NPC_BossMiseryVanish, NPC->x, NPC->y + pixelsToUnits(4), xVel, yVel);
+            playSound(SFX_FireballBounce);
+        }
+        if (NPC->act_wait > 30)
+        {
+            NPC->act_wait = 0;
+            NPC->act_no = teleportingAway;
+        }
+        break;
+
+    case summonBlock:
+        if (++NPC->act_wait == secondsToFrames(0.2))
+            createNpc(NPC_FallingBlockLarge, currentPlayer.x, currentPlayer.y - tilesToUnits(4), 0, 0, dirUp);
+        if (NPC->act_wait > 30)
+        {
+            NPC->act_wait = 0;
+            NPC->act_no = teleportingAway;
+        }
+        break;
+
+    case teleportingAway:
+        NPC->act_no = teleportingAway + 1;
+        NPC->act_wait = 0;
+        NPC->ani_no = 7;
+        createNpc(NPC_ProjectileMiseryEnergyShot, NPC->x, NPC->y, 0, 0, dirLeft);
+        createNpc(NPC_ProjectileMiseryEnergyShot, NPC->x, NPC->y, 0, 0, dirRight);
+
+        NPC->tgt_x = tilesToUnits(random(9, 31));
+        NPC->tgt_y = tilesToUnits(random(5, 7));
+        playSound(SFX_Teleport);
+        // Fallthrough
+    case teleportingAway + 1:
+        if (++NPC->act_wait == 42)
+        {
+            createNpc(NPC_ProjectileMiseryEnergyShot, NPC->tgt_x + tilesToUnits(1), NPC->tgt_y, 0, 0, dirLeft);
+            createNpc(NPC_ProjectileMiseryEnergyShot, NPC->tgt_x - tilesToUnits(1), NPC->tgt_y, 0, 0, dirRight);
+        }
+        if (NPC->act_wait > 50)
+        {
+            NPC->act_wait = 0;
+            NPC->ym = pixelsToUnits(-1);
+            NPC->bits |= npc_shootable;
+            NPC->x = NPC->tgt_x;
+            NPC->y = NPC->tgt_y;
+
+            if (NPC->life < 340)
+            {
+                createNpc(NPC_ProjectileMiseryBlackOrbitingRings, 0, 0, 0, 0, 0, NPC);
+                createNpc(NPC_ProjectileMiseryBlackOrbitingRings, 0, 0, 0, 0, 128, NPC);
+            }
+            if (NPC->life < 180)
+            {
+                createNpc(NPC_ProjectileMiseryBlackOrbitingRings, 0, 0, 0, 0, 64, NPC);
+                createNpc(NPC_ProjectileMiseryBlackOrbitingRings, 0, 0, 0, 0, 192, NPC);
+            }
+
+            if (currentPlayer.x >= NPC->x - tilesToUnits(7) && currentPlayer.x <= NPC->x + tilesToUnits(7))
+                NPC->act_no = fighting;
+            else
+                NPC->act_no = summonBalls;
+        }
+        break;
+
+    case summonBalls:
+        NPC->act_no = summonBalls + 1;
+        NPC->act_wait = 0;
+        NPC->ani_no = 4;
+        NPC->facePlayer();
+        // Fallthrough
+    case summonBalls + 1:
+        NPC->accelerateTowardsYTarget(0x20);
+        NPC->limitYVel(pixelsToUnits(1));
+
+        if (!(++NPC->act_wait % 24))
+        {
+            createNpc(NPC_ProjectileMiseryLightningBall, NPC->x, NPC->y + pixelsToUnits(4));
+            playSound(SFX_FireballBounce);
+        }
+
+        if (NPC->act_wait > 72)
+        {
+            NPC->act_wait = 0;
+            NPC->act_no = fighting;
+        }
+        break;
+
+    case defeated:
+        NPC->bits &= ~npc_shootable;
+        NPC->act_no = shake;
+        NPC->act_wait = 0;
+        NPC->ani_no = 4;
+        NPC->tgt_x = NPC->x;
+        NPC->tgt_y = NPC->y;
+        NPC->xm = 0;
+        NPC->ym = 0;
+        killNpcsByType(NPC_ProjectileMiseryBlackOrbitingRings);
+        for (int i = 0; i < 3; ++i)
+            createNpc(NPC_Smoke, NPC->x, NPC->y);
+        // Fallthrough
+    case shake:
+        if (++NPC->act_wait / 2 & 1)
+            NPC->x = NPC->tgt_x + pixelsToUnits(1);
+        else
+            NPC->x = NPC->tgt_x;
+        break;
+
+    case fallToGround:
+        NPC->ym += 0x10;
+        if (NPC->flag & ground)
+        {
+            NPC->act_no = fallToGround + 10;
+            NPC->ani_no = 8;
+        }
+
+    default:
+        break;
+    }
+
+    NPC->limitXVel(pixelsToUnits(1));
+    NPC->limitYVel(pixelsToUnits(2));
+    NPC->x += NPC->xm;
+    NPC->y += NPC->ym;
+
+    NPC->doRects(rcLeft, rcRight);
+}
+
 void npcAct253(npc *NPC) // Energy Capsule
 {
 	if (!NPC->act_no)
@@ -328,7 +604,9 @@ void npcAct253(npc *NPC) // Energy Capsule
 		NPC->cond = 0;
 	}
 
-	NPC->doRects({ {0, 64, 16, 80}, {16, 64, 32, 80} });
+	array<RECT, 2> rcNPC = { { {0, 64, 16, 80}, {16, 64, 32, 80} } };
+
+	NPC->doRects(rcNPC);
 }
 
 void npcAct254(npc *NPC) // Helicopter
@@ -371,15 +649,13 @@ void npcAct254(npc *NPC) // Helicopter
         break;
     }
 
-    vector<RECT> rcLeft = {{0, 0, 128, 64}};
-    vector<RECT> rcRight = {{0, 64, 128, 128}};
-    NPC->doRects(rcLeft, rcRight);
+	NPC->doRects({ 0, 0, 128, 64 }, { 0, 64, 128, 128 });
 }
 
 void npcAct255(npc *NPC) // Helicopter Blades
 {
-    vector<RECT> rcLeft = {{128, 0, 240, 16}, {128, 16, 240, 32}, {128, 32, 240, 48}, {128, 16, 240, 32}};
-    vector<RECT> rcRight = {{240, 0, 320, 16}, {240, 16, 320, 32}, {240, 32, 320, 48}, {240, 16, 320, 32}};
+	array<RECT, 4> rcLeft = { {{128, 0, 240, 16}, {128, 16, 240, 32}, {128, 32, 240, 48}, {128, 16, 240, 32}} };
+	array<RECT, 4> rcRight = { { {240, 0, 320, 16}, {240, 16, 320, 32}, {240, 32, 320, 48}, {240, 16, 320, 32} } };
 
     switch (NPC->act_no)
     {
@@ -431,7 +707,7 @@ void npcAct255(npc *NPC) // Helicopter Blades
 
 void npcAct258(npc *NPC) // Mimiga, sleeping
 {
-    NPC->doRects({{48, 32, 64, 48}});
+    NPC->doRects({48, 32, 64, 48});
 }
 
 void npcAct259(npc *NPC) // Sleeping mimiga
