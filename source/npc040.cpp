@@ -1214,7 +1214,7 @@ void npcAct053(npc *NPC) //Skullstep (leg)
 {
 	RECT rcLeft[2];
 	RECT rcRight[2];
-	uint8_t deg = 0;	// lol avoided potentially using it uninitialized
+	uint8_t deg = 0;
 
 	rcLeft[0].left = 0;
 	rcLeft[0].top = 128;

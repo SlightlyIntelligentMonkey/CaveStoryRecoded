@@ -1,5 +1,6 @@
 #include "script.h"
 
+#include <string>
 #include <cstring>
 #include <cstdlib>
 #include <SDL_messagebox.h>
@@ -20,6 +21,8 @@
 #include "org.h"
 #include "main.h"
 #include "level.h"
+
+using std::string;
 
 //Variables
 TSC tsc;
@@ -310,9 +313,10 @@ void tscPutNumber(int index)
 	}
 }
 
-static inline void showTSCNotImplementedWarning(const char *message) noexcept
+static inline void showTSCNotImplementedWarning(const string& message) noexcept
 {
-	SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_WARNING, "Unimplemented command", message, nullptr);
+	SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_WARNING, "Unimplemented command", message.c_str(), nullptr);
+	logWarning(message);
 }
 
 bool doTscModes(bool *bExit)

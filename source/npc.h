@@ -132,8 +132,7 @@ public:
 		try
 		{
 			this->rect = rcNPC.at(this->ani_no);
-		}
-		catch (const std::out_of_range& oops)
+		} catch (const std::out_of_range& oops)
 		{
 			logError("U FUCKED UP THE RECTS LMAO"
 				" (btw it's for NPC " + std::to_string(this->code_char) +
