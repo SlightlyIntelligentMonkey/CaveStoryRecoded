@@ -605,10 +605,11 @@ void npc::init(int setCode, int setX, int setY, int setXm, int setYm, int setDir
 
 void npc::update()
 {
-	npcActs[code_char](this);
+	if (this->code_char >= 0 && this->code_char <= _countof(npcActs))
+	npcActs[this->code_char](this);
 
-	if (shock > 0)
-		--shock;
+	if (this->shock > 0)
+		--this->shock;
 }
 
 void npc::draw()

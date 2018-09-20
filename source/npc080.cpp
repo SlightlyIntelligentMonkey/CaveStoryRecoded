@@ -704,7 +704,7 @@ void npcAct085(npc * NPC) // Terminal
 	{
 		NPC->ani_no = 0;
 		if (NPC->x - 0x1000 < currentPlayer.
-			
+
 			x
 			&& NPC->x + 0x1000 > currentPlayer.x
 			&& NPC->y - 0x2000 < currentPlayer.y
@@ -929,10 +929,7 @@ void npcAct088(npc * NPC) // Igor (boss)
 		++NPC->act_wait;
 		NPC->animate(3, 2, 5);
 
-		if (NPC->direct)
-			NPC->xm = pixelsToUnits(1);
-		else
-			NPC->xm = pixelsToUnits(-1);
+		NPC->moveInDir(pixelsToUnits(1));
 
 		if (NPC->count2)
 		{
@@ -947,16 +944,16 @@ void npcAct088(npc * NPC) // Igor (boss)
 		{
 			if (NPC->direct != dirLeft)
 			{
-				if (NPC->x + 0x3000 > currentPlayer.x)
+				if (NPC->x + tilesToUnits(1.5) > currentPlayer.x)
 					NPC->act_no = startPunch;
 			}
-			else if (NPC->x - 0x3000 < currentPlayer.x)
+			else if (NPC->x - tilesToUnits(1.5) < currentPlayer.x)
 				NPC->act_no = startPunch;
 		}
 		else
 		{
 			NPC->ani_no = 8;
-			NPC->ym = -0x400;
+			NPC->ym = pixelsToUnits(-2);
 			NPC->act_no = jump;
 			NPC->act_wait = 0;
 			NPC->xm = 3 * NPC->xm / 2;
@@ -978,7 +975,7 @@ void npcAct088(npc * NPC) // Igor (boss)
 			NPC->ani_no = 7;
 			playSound(SFX_EnemySmokePoof);
 			NPC->damage = 5;
-			NPC->hit.left = 0x3000;
+			NPC->hit.left = tilesToUnits(1.5);
 			NPC->hit.top = 1;
 		}
 		break;
@@ -989,8 +986,8 @@ void npcAct088(npc * NPC) // Igor (boss)
 			NPC->act_no = init;
 			NPC->ani_no = 0;
 			NPC->damage = 0;
-			NPC->hit.left = 0x1000;
-			NPC->hit.top = 0x2000;
+			NPC->hit.left = tilesToUnits(0.5);
+			NPC->hit.top = tilesToUnits(1);
 		}
 		break;
 
@@ -1008,7 +1005,7 @@ void npcAct088(npc * NPC) // Igor (boss)
 					NPC->x + (random(-12, 12) << 9),
 					NPC->y + (random(-12, 12) << 9),
 					random(-0x155, 0x155),
-					random(-0x600, 0));
+					random(pixelsToUnits(-3), 0));
 		}
 		break;
 
@@ -1035,7 +1032,7 @@ void npcAct088(npc * NPC) // Igor (boss)
 
 			createNpc(NPC_ProjectileBalrogEnergyBallInvincible
 				, NPC->x
-				, NPC->y + 0x800
+				, NPC->y + pixelsToUnits(4)
 				, 3 * getCos(angle)
 				, 3 * getSin(angle));
 			playSound(SFX_DestroyBreakableBlock);
@@ -1058,6 +1055,7 @@ void npcAct088(npc * NPC) // Igor (boss)
 		break;
 	}
 
+	NPC->doGravity(0x40, 0x5FF);
 	NPC->ym += 0x40;
 	if (NPC->ym > 0x5FF)
 		NPC->ym = 0x5FF;

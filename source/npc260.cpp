@@ -691,6 +691,158 @@ void npcAct267(npc *NPC) // Muscle Doctor (boss)
     NPC->doRects(rcLeft, rcRight);
 }
 
+void npcAct268(npc *NPC)
+{
+	array<RECT, 10> rcLeft;
+	array<RECT, 10> rcRight;
+
+	rcLeft[0] = { 0, 0, 40, 40 };
+	rcLeft[1] = { 40, 0, 80, 40 };
+	rcLeft[2] = { 80, 0, 120, 40 };
+	rcLeft[3] = rcLeft[0];
+	rcLeft[4] = { 120, 0, 160, 40 };
+	rcLeft[5] = rcLeft[0];
+	rcLeft[6] = { 40, 80, 80, 120 };
+	rcLeft[7] = { 0, 80, 40, 120 };
+	rcLeft[8] = { 240, 0, 280, 40 };
+	rcLeft[9] = { 280, 0, 320, 40 };
+
+	rcRight[0] = { 0, 40, 40, 80 };
+	rcRight[1] = { 40, 40, 80, 80 };
+	rcRight[2] = { 80, 40, 120, 80 };
+	rcRight[3] = rcRight[0];
+	rcRight[4] = { 120, 40, 160, 80 };
+	rcRight[5] = rcRight[0];
+	rcRight[6] = { 160, 80, 200, 120 };
+	rcRight[7] = { 120, 80, 160, 120 };
+	rcRight[8] = { 240, 40, 280, 80 };
+	rcRight[9] = { 280, 40, 320, 80 };
+
+	enum
+	{
+		init = 0,
+		stand = 1,
+		startAttack = 10,
+		walking = 11,
+        startJump = 20,
+        jumping = 30,
+        waitShoot = 40,
+        startShoot = 50,
+        shooting = 51,
+	};
+
+    if (!NPC->isPlayerWithinDistance(tilesToUnits(20), tilesToUnits(15)))
+		NPC->act_no = stand;
+
+	switch (NPC->act_no)
+	{
+	case init:
+		NPC->act_no = 1;
+		NPC->y += tilesToUnits(0.5);
+		// Fallthrough
+	case stand:
+		NPC->animate(20, 0, 1);
+
+        if (NPC->shock || NPC->isPlayerWithinDistance(tilesToUnits(7), tilesToUnits(3), tilesToUnits(7)))
+            NPC->act_no = startAttack;
+		break;
+
+	case startAttack:
+        NPC->act_no = walking;
+        NPC->act_wait = 0;
+        NPC->ani_no = 0;
+        NPC->ani_wait = 0;
+        NPC->facePlayer();
+        // Fallthrough
+	case walking:
+		NPC->moveInDir(pixelsToUnits(1));
+
+		if (NPC->x < currentPlayer.x + tilesToUnits(4) && NPC->x > currentPlayer.x - tilesToUnits(4))
+		{
+			NPC->act_no = 20;
+			NPC->act_wait = 0;
+		}
+
+		if ((NPC->xm < 0 && NPC->flag & leftWall) || (NPC->xm > 0 && NPC->flag & rightWall))
+		{
+			NPC->act_no = startJump;
+            NPC->act_wait = 9;
+		}
+
+		NPC->animate(4, 2, 5);
+		break;
+
+	case startJump:
+		NPC->xm = 0;
+        NPC->ani_no = 6;
+        if (++NPC->act_wait > 10)
+		{
+			NPC->act_no = 30;
+			NPC->ym = -0x5FF;
+			NPC->moveInDir(pixelsToUnits(1));
+			playSound(SFX_PowerCritterLargeEnemyJump);
+		}
+		break;
+
+	case jumping:
+        NPC->ani_no = 7;
+        if (NPC->flag & ground)
+		{
+			NPC->act_no = 40;
+			NPC->act_wait = 0;
+            viewport.quake = 20;
+            playSound(SFX_LargeObjectHitGround);
+		}
+		break;
+
+	case waitShoot:
+        NPC->xm = 0;
+        NPC->ani_no = 6;
+        if (++NPC->act_wait > 30)
+			NPC->act_no = startShoot;
+		break;
+
+	case startShoot:
+        NPC->act_no = shooting;
+        NPC->act_wait = 0;
+        NPC->facePlayer();
+        // Fallthrough
+
+	case shooting:
+		if (++NPC->act_wait > 30 && NPC->act_wait % 4 == 1)
+		{
+			auto angle = (NPC->direct != dirLeft) ? -8 : -120;
+			angle += random(-0x10, 0x10);
+
+			auto xVel = 5 * getCos(angle);
+			auto yVel = 5 * getSin(angle);
+			createNpc(NPC_ProjectileBalrogEnergyBallInvincible, NPC->x, NPC->y + pixelsToUnits(4), xVel, yVel);
+			playSound(SFX_DestroyBreakableBlock);
+		}
+
+		if (NPC->act_wait < secondsToFrames(1) && NPC->act_wait / 2 & 1)
+			NPC->ani_no = 9;
+		else
+			NPC->ani_no = 8;
+
+		if (NPC->act_wait > 82)
+		{
+			NPC->act_no = startAttack;
+			NPC->facePlayer();
+		}
+		break;
+
+	default:
+		break;
+	}
+
+	NPC->doGravity(0x33, 0x5FF);
+	NPC->x += NPC->xm;
+	NPC->y += NPC->ym;
+
+	NPC->doRects(rcLeft, rcRight);
+}
+
 void npcAct278(npc * NPC)
 {
 	constexpr RECT rcLittleMan[2] = { {0, 120, 8, 128}, {8, 120, 16, 128} };

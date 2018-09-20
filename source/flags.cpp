@@ -22,7 +22,7 @@ void initFlags()
 void setFlag(size_t a)
 {
     if (a > _countof(tscFlags) * 8)
-        logWarning("Tried to access flag " + to_string(a) + " (Out of bounds)");
+        logWarning("Tried to set flag " + to_string(a) + " (Out of bounds)");
     else
         tscFlags[a / 8] |= 1 << (a % 8);
 }
@@ -30,7 +30,7 @@ void setFlag(size_t a)
 void clearFlag(size_t a)
 {
     if (a > _countof(tscFlags) * 8)
-        logWarning("Tried to access flag " + to_string(a) + " (Out of bounds)");
+        logWarning("Tried to clear flag " + to_string(a) + " (Out of bounds)");
     else
         tscFlags[a / 8] &= ~(1 << (a % 8));
 }
@@ -39,7 +39,7 @@ bool getFlag(size_t a)
 {
     if (a > _countof(tscFlags) * 8)
     {
-        logWarning("Tried to access flag " + to_string(a) + " (Out of bounds)");
+        logWarning("Tried to get flag " + to_string(a) + " (Out of bounds)");
         return false;
     }
     else
@@ -50,7 +50,7 @@ bool getFlag(size_t a)
 void setSkipFlag(size_t a)
 {
     if (a > _countof(skipFlags) * 8)
-        logWarning("Tried to access skipFlag " + to_string(a) + " (Out of bounds)");
+        logWarning("Tried to set skipFlag " + to_string(a) + " (Out of bounds)");
     else
         skipFlags[a / 8] |= 1 << (a % 8);
 }
@@ -58,7 +58,7 @@ void setSkipFlag(size_t a)
 void clearSkipFlag(size_t a)
 {
     if (a > _countof(skipFlags) * 8)
-        logWarning("Tried to access skipFlag " + to_string(a) + " (Out of bounds)");
+        logWarning("Tried to clear skipFlag " + to_string(a) + " (Out of bounds)");
     else
         skipFlags[a / 8] &= ~(1 << (a % 8));
 }
@@ -67,7 +67,7 @@ bool getSkipFlag(size_t a)
 {
     if (a > _countof(skipFlags) * 8)
     {
-        logWarning("Tried to access skipFlag " + to_string(a) + " (Out of bounds)");
+        logWarning("Tried to get skipFlag " + to_string(a) + " (Out of bounds)");
         return false;
     }
     else
@@ -78,7 +78,7 @@ bool getSkipFlag(size_t a)
 void setMapFlag(size_t a)
 {
     if (a > _countof(mapFlags) * 8)
-        logWarning("Tried to access mapFlag " + to_string(a) + " (Out of bounds)");
+        logWarning("Tried to set mapFlag " + to_string(a) + " (Out of bounds)");
     else
         mapFlags[a / 8] |= 1 << (a % 8);
 }
@@ -87,7 +87,7 @@ bool getMapFlag(size_t a)
 {
     if (a > _countof(mapFlags) * 8)
     {
-        logWarning("Tried to access mapFlag " + to_string(a) + " (Out of bounds)");
+        logWarning("Tried to get mapFlag " + to_string(a) + " (Out of bounds)");
         return false;
     }
     else

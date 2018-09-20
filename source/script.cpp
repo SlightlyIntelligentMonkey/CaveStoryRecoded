@@ -1119,7 +1119,7 @@ int updateTsc()
 
 		if (tsc.data[tsc.p_read] != '<')
 		{
-			if (tsc.data[tsc.p_read] == 13) //Check for break line
+			if (tsc.data[tsc.p_read] == '\r') //Check for break line
 			{
 				//Shift read and write positions accordingly
 				tsc.p_read += 2;
@@ -1138,7 +1138,7 @@ int updateTsc()
 				int x;
 				for (x = tsc.p_read; ; ++x)
 				{
-					const bool quit = !(tsc.data[x] == '<' || tsc.data[x] == 13);
+					const bool quit = !(tsc.data[x] == '<' || tsc.data[x] == '\r');
 
 					if (!quit)
 						break;

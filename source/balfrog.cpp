@@ -462,7 +462,7 @@ void actBoss_Frog(npc *boss)
 		break;
 	}
 
-	boss->doGravity(64, 1535);
+	boss->doGravity(0x40, 0x5FF);
 
 	boss->x += boss->xm;
 	boss->y += boss->ym;
