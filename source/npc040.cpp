@@ -510,7 +510,7 @@ void npcAct044(npc *NPC) //Polish
 		NPC->x += NPC->xm;
 		NPC->y += NPC->ym;
 	}
-	
+
 	if (NPC->act_no > 1 && NPC->act_no < 10 && ++NPC->ani_no > 2)
 		NPC->ani_no = 1;
 
@@ -523,7 +523,7 @@ void npcAct044(npc *NPC) //Polish
 void npcAct045(npc *NPC) //Baby polish
 {
 	RECT rect[3];
-	
+
 	rect[0] = { 0, 32, 16, 48 };
 	rect[1] = { 16, 32, 32, 48 };
 	rect[2] = { 32, 32, 48, 48 };
@@ -555,7 +555,7 @@ void npcAct045(npc *NPC) //Baby polish
 	default:
 		break;
 	}
-	
+
 	if (NPC->xm2 < 0 && NPC->flag & leftWall)
 		NPC->xm2 = -NPC->xm2;
 	if (NPC->xm2 > 0 && NPC->flag & rightWall)
@@ -584,7 +584,7 @@ void npcAct045(npc *NPC) //Baby polish
 		NPC->x += NPC->xm2;
 		NPC->y += NPC->ym2;
 	}
-	
+
 	NPC->rect = rect[NPC->ani_no];
 }
 
@@ -746,7 +746,7 @@ void npcAct048(npc *NPC) //Omega projectile things
 
 	NPC->x += NPC->xm;
 	NPC->y += NPC->ym;
-	
+
 	if (++NPC->ani_wait > 2)
 	{
 		NPC->ani_wait = 0;
@@ -795,7 +795,7 @@ void npcAct049(npc *NPC) //Skull heads
 	rcRight[2].top = 104;
 	rcRight[2].right = 96;
 	rcRight[2].bottom = 128;
-	
+
 	uint8_t deg;
 	int xm;
 	int ym;
@@ -1153,7 +1153,7 @@ void npcAct051(npc *NPC) //Skull and crow
 	default:
 		break;
 	}
-	
+
 	if (NPC->xm < 0 && NPC->flag & leftWall)
 		NPC->xm = 0x100;
 	if (NPC->xm > 0 && NPC->flag & rightWall)
@@ -1175,7 +1175,7 @@ void npcAct051(npc *NPC) //Skull and crow
 
 	NPC->x += NPC->xm;
 	NPC->y += NPC->ym;
-	
+
 	if (NPC->shock)
 	{
 		NPC->ani_no = 4;
@@ -1214,7 +1214,7 @@ void npcAct053(npc *NPC) //Skullstep (leg)
 {
 	RECT rcLeft[2];
 	RECT rcRight[2];
-	uint8_t deg;
+	uint8_t deg = 0;	// lol avoided potentially using it uninitialized
 
 	rcLeft[0].left = 0;
 	rcLeft[0].top = 128;
@@ -1276,7 +1276,7 @@ void npcAct053(npc *NPC) //Skullstep (leg)
 		NPC->direct = NPC->pNpc->direct;
 		break;
 	}
-	
+
 	NPC->direct = NPC->pNpc->direct;
 	NPC->ani_no = deg < 0x14u || deg > 0x6Cu;
 
@@ -1316,7 +1316,7 @@ void npcAct054(npc *NPC) //Skullstep (body)
 	rcRight[2].top = 104;
 	rcRight[2].right = 96;
 	rcRight[2].bottom = 128;
-	
+
 	switch (NPC->act_no)
 	{
 	case 0:
@@ -1384,7 +1384,7 @@ void npcAct054(npc *NPC) //Skullstep (body)
 		}
 		break;
 	}
-	
+
 	NPC->ym += 0x80;
 
 	if (NPC->xm > 0x2FF)
@@ -1541,7 +1541,7 @@ void npcAct056(npc *NPC) //Sand zone beetles
 			NPC->x += NPC->xm / 2;
 		else
 			NPC->x += NPC->xm;
-		
+
 		if (++NPC->ani_wait > 1)
 		{
 			NPC->ani_wait = 0;
@@ -1739,7 +1739,7 @@ void npcAct057(npc *NPC) //Crow
 	default:
 		break;
 	}
-	
+
 	NPC->x += NPC->xm;
 	NPC->y += NPC->ym;
 
