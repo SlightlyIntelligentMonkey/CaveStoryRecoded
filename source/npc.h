@@ -117,7 +117,7 @@ public:
 			if (this->direct != dirLeft)
 				this->rect = rcLeft.at(this->ani_no);
 			else
-				this->rect = rcLeft.at(this->ani_no);
+				this->rect = rcRight.at(this->ani_no);
 		} catch (const std::out_of_range& oops)
 		{
 			logError("U FUCKED UP THE RECTS LMAO"
