@@ -7,35 +7,38 @@
 #include "common.h"
 #include "level.h"
 
-//states enum so this is more readable
-enum
+namespace balfrogStates
 {
-	ini = 0,
-	start = 10,
-	ini_flicker = 20,
-	flicker = 21,
-	wait = 100,
-	ini_hop_1 = 101,
-	ini_hop_2 = 102,
-	hop = 103,
-	midair = 104,
-	ini_land = 110,
-	land = 111,
-	ini_shoot = 112,
-	shoot = 113,
-	ini_leap = 120,
-	ini_leap_2 = 121,
-	ini_leap_3 = 122,
-	leap = 123,
-	leap_midair = 124,
-	die = 130,
-	die_flashing = 131,
-	revert = 132,
-	nop_start = 140,
-	nop = 141,
-	go_into_ceilng = 142,
-	gone_into_ceiling = 143
-};
+    //states enum so this is more readable
+    enum
+    {
+        ini = 0,
+        start = 10,
+        ini_flicker = 20,
+        flicker = 21,
+        wait = 100,
+        ini_hop_1 = 101,
+        ini_hop_2 = 102,
+        hop = 103,
+        midair = 104,
+        ini_land = 110,
+        land = 111,
+        ini_shoot = 112,
+        shoot = 113,
+        ini_leap = 120,
+        ini_leap_2 = 121,
+        ini_leap_3 = 122,
+        leap = 123,
+        leap_midair = 124,
+        die = 130,
+        die_flashing = 131,
+        revert = 132,
+        nop_start = 140,
+        nop = 141,
+        go_into_ceilng = 142,
+        gone_into_ceiling = 143
+    };
+}   // balfrogStates
 
 //balfrog's mouth
 void balfrogMouth(npc *sub)
@@ -105,8 +108,10 @@ void balfrog_other_half(npc *sub)
 }
 
 //main boss ai
-void actBoss_Frog(npc *boss)
+void actBoss_Balfrog(npc *boss)
 {
+    using namespace balfrogStates;
+
 	int xm = 0;
 	int ym = 0;
 	uint8_t deg = 0;

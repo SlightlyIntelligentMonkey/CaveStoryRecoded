@@ -219,6 +219,7 @@
     <ClCompile Include="fade.cpp" />
     <ClCompile Include="fireballShoot.cpp" />
     <ClCompile Include="game.cpp" />
+    <ClCompile Include="heavyPress.cpp" />
     <ClCompile Include="hud.cpp" />
     <ClCompile Include="inventory.cpp" />
     <ClCompile Include="loadConfig.cpp" />

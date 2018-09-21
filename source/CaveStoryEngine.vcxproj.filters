@@ -267,6 +267,9 @@
     <ClCompile Include="balfrog.cpp">
       <Filter>Source Files\classes\boss\act</Filter>
     </ClCompile>
+    <ClCompile Include="heavyPress.cpp">
+      <Filter>Source Files\classes\boss\act</Filter>
+    </ClCompile>
     <ClCompile Include="pxt.cpp">
       <Filter>Source Files\modules\sound</Filter>
     </ClCompile>
