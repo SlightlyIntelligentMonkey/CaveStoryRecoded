@@ -26,8 +26,9 @@ static uint8_t key_prev[SDL_NUM_SCANCODES] = { 0 };
 static uint8_t key[SDL_NUM_SCANCODES] = { 0 };
 static int key_array_size = 0;
 
-static uint8_t controller_buttons_prev[SDL_CONTROLLER_BUTTON_MAX];
-static uint8_t controller_buttons[SDL_CONTROLLER_BUTTON_MAX];
+static bool controller_buttons_pressed[SDL_CONTROLLER_BUTTON_MAX];
+static bool controller_buttons_held_prev[SDL_CONTROLLER_BUTTON_MAX];
+static bool controller_buttons_held[SDL_CONTROLLER_BUTTON_MAX];
 
 void initGamepad()
 {
@@ -49,13 +50,16 @@ void getKeys()
 	memcpy(key_prev, key, key_array_size);
 	memcpy(key, SDL_GetKeyboardState(&key_array_size), SDL_NUM_SCANCODES);
 
-	memcpy(controller_buttons_prev, controller_buttons, sizeof(controller_buttons));
+	for (unsigned int i = 0; i < SDL_CONTROLLER_BUTTON_MAX; ++i)
+		controller_buttons_pressed[i] = !controller_buttons_held_prev[i] && controller_buttons_held[i];
+
+	memcpy(controller_buttons_held_prev, controller_buttons_held, sizeof(controller_buttons_held));
 }
 
 bool isKeyDown(int keynum)
 {
 	if (currentConfig->useGamepad)
-		return (controller_buttons[keynum] == SDL_PRESSED);
+		return controller_buttons_held[keynum];
 	else
 		return (key[keynum] == 1);
 }
@@ -63,7 +67,7 @@ bool isKeyDown(int keynum)
 bool isKeyPressed(int keynum)
 {
 	if (currentConfig->useGamepad)
-		return (controller_buttons_prev[keynum] == SDL_RELEASED && controller_buttons[keynum] == SDL_PRESSED);
+		return controller_buttons_pressed[keynum];
 	else
 		return (key_prev[keynum] == 0 && key[keynum] == 1);
 }
@@ -91,8 +95,11 @@ bool handleEvents()
 			break;
 
 		case SDL_CONTROLLERBUTTONDOWN:
+			controller_buttons_held[event.cbutton.button] = true;
+			break;
+
 		case SDL_CONTROLLERBUTTONUP:
-			controller_buttons[event.cbutton.button] = event.cbutton.state;
+			controller_buttons_held[event.cbutton.button] = false;
 			break;
 		}
 	}
