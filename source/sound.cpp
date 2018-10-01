@@ -68,7 +68,7 @@ void mixSounds(int16_t *stream, int len)
 	}
 }
 
-void audio_callback(void */*userdata*/, Uint8 *stream, int len) // TBD : Handle userdata parameter
+void audio_callback(void * /*userdata*/, Uint8 *stream, int len) // TBD : Handle userdata parameter
 {
 	memset(stream, 0, len);
 
