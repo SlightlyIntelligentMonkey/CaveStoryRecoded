@@ -50,5 +50,6 @@ obj/icon.o: res/icon.rc res/icon_mini.ico
 
 include $(wildcard $(DEPS))
 
+# Remove all objects files and the binary
 clean:
 	@rm -rf obj bin/CaveStoryRemake

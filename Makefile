@@ -3,11 +3,10 @@ WARNINGS := -pedantic -Wall -Wextra -Wabi -Walloc-zero -Wbool-compare -Wcast-ali
 OPTIMISATIONS := -Os -frename-registers -funroll-loops
 #OPTIMISATIONS += -flto
 
-COMPILE_C := $(CC) -m32 $(OPTIMISATIONS) $(WARNINGS) -std=c11 -I/mingw32/include/SDL2/ -IJson_Modern_Cpp -c
-COMPILE_CPP := $(CXX) -m32 $(OPTIMISATIONS) $(WARNINGS) -std=c++17 -I/mingw32/include/SDL2/ -IJson_Modern_Cpp -c -DUSE_ICONS_WINDOWS
+COMPILE_CPP := $(CXX) -m32 $(OPTIMISATIONS) $(WARNINGS) -std=c++17 -I/mingw32/include/SDL2/ -IJson_Modern_Cpp -c -DUSE_ICONS_WINDOWS -MMD -MP -MF $@.d
 # Replace mingw32 with usr for actual Unix build
+
 LINK_CPP := $(CXX) -m32 $(OPTIMISATIONS) $(WARNINGS) -static -static-libstdc++ -static-libgcc -mwindows
-LINK_C := $(CC) -m32 $(OPTIMISATIONS) $(WARNINGS) -static -static-libstdc++ -static-libgcc -mwindows
 # Remove -mwindows for Unix build
 
 MAIN := main
@@ -33,6 +32,9 @@ MAIN += npcAct npc000 npc020 npc040 npc060 npc080 npc100 npc120 npc140 npc160 np
 MAIN += balfrog heavyPress omega
 
 OBJS := $(addprefix obj/, $(addsuffix .o, $(MAIN)))
+DEPS := $(addsuffix .d, $(OBJS))
+
+# Embed icons as resources, and load them natively
 OBJS += obj/icon.o
 
 all: bin/CaveStoryRemake
@@ -50,8 +52,9 @@ obj/%.o: source/%.cpp
 
 obj/icon.o: res/icon.rc res/icon_mini.ico
 	@windres $< $@
+	
+include $(wildcard $(DEPS))
 
-# cleanup
-
+# Remove all objects files and the binary
 clean:
 	rm -rf obj bin/CaveStoryRemake
