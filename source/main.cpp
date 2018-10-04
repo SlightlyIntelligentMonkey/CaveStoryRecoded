@@ -1,7 +1,7 @@
 #include "main.h"
 
 #include <string>
-#include <SDL_image.h>
+#include "SDL.h"
 #include "sound.h"
 #include "script.h"
 #include "input.h"
@@ -22,7 +22,6 @@ static void doQuit()
 {
 	//sound::quit(); // TBD : Make a sound quit method, make the quit method a global destructor or remove this
 	SDL_Quit();
-	IMG_Quit();
 	freeSounds();
 
 	logInfo("Finished quit");
@@ -93,10 +92,6 @@ void init()
 	//Initiate SDL and window stuff
 	if (SDL_Init(SDL_INIT_TIMER | SDL_INIT_AUDIO | SDL_INIT_VIDEO | SDL_INIT_GAMECONTROLLER) < 0)
 		doCustomError("Couldn't initiate SDL");
-
-	//Initiate SDL_image
-	if (!(IMG_Init(IMG_INIT_PNG) & IMG_INIT_PNG))
-		doCustomError("Couldn't initiate SDL Image");
 
 	loadConfigFiles();
 

@@ -1,11 +1,11 @@
 WARNINGS = -pedantic -Wall -Wextra -Wno-multichar -Wno-unused-parameter
 
-CXXFLAGS = -O3 $(WARNINGS) -DUSE_ICONS_SDL2
+CXXFLAGS = -O3 $(WARNINGS) -DUSE_ICONS_SDL2 -DLODEPNG_NO_COMPILE_ENCODER -DLODEPNG_NO_COMPILE_CPP
 ALL_CXXFLAGS = -std=c++17 `sdl2-config --cflags` -IJson_Modern_Cpp $(CXXFLAGS) -MMD -MP -MF $@.d
 LDFLAGS = -s
 ALL_LDFLAGS = -static `sdl2-config --static-libs` $(LDFLAGS)
 LIBS = 
-ALL_LIBS = -lSDL2_image -ljpeg -lpng -lwebp -lz -ltiff -llzma $(LIBS)
+ALL_LIBS = $(LIBS)
 
 MAIN := main
 # states
@@ -16,6 +16,8 @@ MAIN += filesystem flags input inventory level loadConfig log mapSystem mathUtil
 MAIN += bossCollision bulletCollision npcCollision playerCollision
 # drawing
 MAIN += fade hud render
+# libraries
+MAIN += lodepng/lodepng
 # sound
 MAIN +=	org pxt sound
 # classes
