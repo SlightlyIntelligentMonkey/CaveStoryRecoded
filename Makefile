@@ -39,9 +39,9 @@ DEPS := $(addsuffix .d, $(OBJS))
 # Embed icons as resources, and load them natively
 OBJS += obj/icon.o
 
-all: bin/CaveStoryRemake
+all: bin/CaveStoryEngine
 
-bin/CaveStoryRemake: $(OBJS)
+bin/CaveStoryEngine: $(OBJS)
 	@mkdir -p $(@D)
 	$(LINK_CPP) $(OBJS) -lmingw32 -lSDL2Main -lSDL2.dll -o $@
 # Remove -lmingw32 for actual Unix build maybe ? Also prolly remove the ".dll"s at the end of SDL2.dll
@@ -56,10 +56,11 @@ obj/lodepng/lodepng.o: source/lodepng/lodepng.cpp
 	$(COMPILE_CPP) $< -o $@ -Wno-zero-as-null-pointer-constant -Wno-suggest-attribute=pure -Wno-suggest-attribute=const -Wno-alloc-zero -Wno-useless-cast -Wno-cast-qual
 
 obj/icon.o: res/icon.rc res/icon_mini.ico
+	@mkdir -p $(@D)
 	@windres $< $@
 	
 include $(wildcard $(DEPS))
 
 # Remove all objects files and the binary
 clean:
-	rm -rf obj bin/CaveStoryRemake
+	rm -rf obj bin/CaveStoryEngine

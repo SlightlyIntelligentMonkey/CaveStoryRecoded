@@ -37,9 +37,9 @@ DEPS := $(addsuffix .d, $(OBJS))
 # Embed icons as resources, and load them natively
 OBJS += obj/icon.o
 
-all: bin/CaveStoryRemake
+all: bin/CaveStoryEngine
 
-bin/CaveStoryRemake: $(OBJS)
+bin/CaveStoryEngine: $(OBJS)
 	@mkdir -p $(@D)
 	@$(CXX) $(ALL_CXXFLAGS) $(OBJS) -o $@ $(ALL_LDFLAGS) $(ALL_LIBS)
 
@@ -49,10 +49,11 @@ obj/%.o: source/%.cpp
 	@$(CXX) $(ALL_CXXFLAGS) $< -o $@ -c
 
 obj/icon.o: res/icon.rc res/icon_mini.ico
+	@mkdir -p $(@D)
 	@windres $< $@
 
 include $(wildcard $(DEPS))
 
 # Remove all objects files and the binary
 clean:
-	@rm -rf obj bin/CaveStoryRemake
+	@rm -rf obj bin/CaveStoryEngine

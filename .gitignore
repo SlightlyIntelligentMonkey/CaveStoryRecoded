@@ -84,8 +84,8 @@ ipch/
 
 # ------ Actual stuff that matters ------
 /source/Profile.dat
-/CaveStoryRemake.layout
-/CaveStoryRemake.depend
+/CaveStoryEngine.layout
+/CaveStoryEngine.depend
 /CaveStoryEngine.mpp
 /source/*.aps
 /source/Config.dat
