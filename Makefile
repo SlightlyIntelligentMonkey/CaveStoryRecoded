@@ -51,6 +51,10 @@ obj/%.o: source/%.cpp
 	@mkdir -p $(@D)
 	$(COMPILE_CPP) $< -o $@
 
+obj/lodepng/lodepng.o: source/lodepng/lodepng.cpp
+	@mkdir -p $(@D)
+	$(COMPILE_CPP) $< -o $@ -Wno-zero-as-null-pointer-constant -Wno-suggest-attribute=pure -Wno-suggest-attribute=const -Wno-alloc-zero -Wno-useless-cast -Wno-cast-qual
+
 obj/icon.o: res/icon.rc res/icon_mini.ico
 	@windres $< $@
 	
