@@ -2,6 +2,8 @@
 
 #include "npc.h"
 
+void npcAct143(npc *NPC);
+void npcAct144(npc *NPC);
 void npcAct145(npc *NPC);
 void npcAct146(npc *NPC);
 void npcAct147(npc *NPC);

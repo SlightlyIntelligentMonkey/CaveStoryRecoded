@@ -333,20 +333,6 @@ void killNpc(npc *NPC, bool bVanish)
 	const int explodeWidth = NPC->view.right;
 	const int exp = NPC->exp;
 
-	//Destroy npc
-	if (!(NPC->bits & npc_showDamage))
-	{
-		NPC->cond = 0;
-	}
-	else
-	{
-		if (NPC->damage_view)
-			createValueView(&NPC->x, &NPC->y, NPC->damage_view);
-
-		if (bVanish)
-			NPC->init(NPC_DeletesItself, NPC->x, NPC->y, 0, 0, 0, nullptr);
-	}
-
 	//Play sound
 	playSound(voice);
 
@@ -395,6 +381,20 @@ void killNpc(npc *NPC, bool bVanish)
 	}
 
 	setFlag(flag);
+
+	//Destroy npc
+	if (!(NPC->bits & npc_showDamage))
+	{
+		NPC->cond = 0;
+	}
+	else
+	{
+		if (NPC->damage_view)
+			createValueView(&NPC->x, &NPC->y, NPC->damage_view);
+
+		if (bVanish)
+			NPC->init(NPC_DeletesItself, NPC->x, NPC->y, 0, 0, 0, nullptr);
+	}
 }
 
 //NPC Table

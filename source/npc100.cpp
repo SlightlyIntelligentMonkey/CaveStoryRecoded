@@ -5,6 +5,7 @@
 #include "sound.h"
 #include "render.h"
 #include "mathUtils.h"
+#include "weapons.h"
 #include "game.h"
 #include "caret.h"
 #include "level.h"
@@ -1058,7 +1059,7 @@ void npcAct116(npc *NPC) // Red flowers petals
 	NPC->doRects({ 272, 184, 320, 200 });
 }
 
-void npcAct117(npc *NPC)
+void npcAct117(npc *NPC) //Curly
 {
 	vector<RECT> rcLeft(10);
 	vector<RECT> rcRight(10);
@@ -1250,6 +1251,204 @@ void npcAct117(npc *NPC)
 	NPC->y += NPC->ym;
 
 	NPC->doRects(rcLeft, rcRight);
+}
+
+void npcAct118(npc *NPC) //Curly boss
+{
+	RECT rcLeft[9];
+	RECT rcRight[9];
+
+	rcLeft[0] = { 0x00, 0x20, 0x20, 0x38 };
+	rcLeft[1] = { 0x20, 0x20, 0x40, 0x38 };
+	rcLeft[2] = { 0x40, 0x20, 0x60, 0x38 };
+	rcLeft[3] = { 0x60, 0x20, 0x80, 0x38 };
+	rcLeft[4] = { 0x00, 0x20, 0x20, 0x38 };
+	rcLeft[5] = { 0x80, 0x20, 0xA0, 0x38 };
+	rcLeft[6] = { 0x00, 0x20, 0x20, 0x38 };
+	rcLeft[7] = { 0x00, 0x20, 0x20, 0x38 };
+	rcLeft[8] = { 0xA0, 0x20, 0xC0, 0x38 };
+
+	rcRight[0] = { 0x00, 0x38, 0x20, 0x50 };
+	rcRight[1] = { 0x20, 0x38, 0x40, 0x50 };
+	rcRight[2] = { 0x40, 0x38, 0x60, 0x50 };
+	rcRight[3] = { 0x60, 0x38, 0x80, 0x50 };
+	rcRight[4] = { 0x00, 0x38, 0x20, 0x50 };
+	rcRight[5] = { 0x80, 0x38, 0xA0, 0x50 };
+	rcRight[6] = { 0x00, 0x38, 0x20, 0x50 };
+	rcRight[7] = { 0x00, 0x38, 0x20, 0x50 };
+	rcRight[8] = { 0xA0, 0x38, 0xC0, 0x50 };
+
+	//I think this is to shoot Quote when he jumps over Curly
+	bool bUpper = false;
+
+	if (NPC->direct == dirLeft && NPC->x < currentPlayer.x)
+		bUpper = true;
+	if (NPC->direct == dirRight && NPC->x > currentPlayer.x)
+		bUpper = true;
+
+	switch (NPC->act_no)
+	{
+	case 0: //Idle
+		NPC->act_no = 1;
+		NPC->ani_no = 0;
+		NPC->ani_wait = 0;
+		break;
+
+	case 10: //Standing (in-battle)
+		NPC->act_no = 11;
+		NPC->act_wait = random(50, 100);
+		NPC->ani_no = 0;
+
+		if (NPC->x <= currentPlayer.x)
+			NPC->direct = dirRight;
+		else
+			NPC->direct = dirLeft;
+
+		NPC->bits |= npc_shootable;
+		NPC->bits &= ~npc_invulnerable;
+//Fallthrough
+	case 11:
+		if (NPC->act_wait)
+			--NPC->act_wait;
+		else
+			NPC->act_no = 13;
+		break;
+
+	case 13: //Walking
+		NPC->act_no = 14;
+		NPC->ani_no = 3;
+		NPC->act_wait = random(50, 100);
+
+		if (NPC->x <= currentPlayer.x)
+			NPC->direct = dirRight;
+		else
+			NPC->direct = dirLeft;
+//Fallthrough
+	case 14:
+		if (++NPC->ani_wait > 2)
+		{
+			NPC->ani_wait = 0;
+			++NPC->ani_no;
+		}
+
+		if (NPC->ani_no > 6)
+			NPC->ani_no = 3;
+
+		if (NPC->direct)
+			NPC->xm += 0x40;
+		else
+			NPC->xm -= 0x40;
+		
+		if (NPC->act_wait)
+		{
+			--NPC->act_wait;
+		}
+		else
+		{
+			NPC->bits |= npc_shootable;
+			NPC->act_no = 20;
+			NPC->act_wait = 0;
+			playSound(SFX_BallosBallAndCurlyChargingHerGun);
+		}
+		break;
+
+	case 20: //Charge shot
+		if (NPC->x <= currentPlayer.x)
+			NPC->direct = dirRight;
+		else
+			NPC->direct = dirLeft;
+
+		NPC->xm = 8 * NPC->xm / 9;
+
+		if (++NPC->ani_no > 1)
+			NPC->ani_no = 0;
+
+		if (++NPC->act_wait > 50)
+		{
+			NPC->act_no = 21;
+			NPC->act_wait = 0;
+		}
+		break;
+
+	case 21: //Shoot
+		if (++NPC->act_wait % 4 == 1)
+		{
+			if (NPC->direct)
+			{
+				if (bUpper)
+				{
+					NPC->ani_no = 2;
+					createNpc(NPC_ProjectileCurly, NPC->x, NPC->y - 0x1000, 0, 0, 1, nullptr, true);
+				}
+				else
+				{
+					NPC->ani_no = 0;
+					createNpc(NPC_ProjectileCurly, NPC->x + 0x1000, NPC->y + 0x800, 0, 0, 2, nullptr, true);
+					NPC->x -= 0x200;
+				}
+			}
+			else
+			{
+				if (bUpper)
+				{
+					NPC->ani_no = 2;
+					createNpc(NPC_ProjectileCurly, NPC->x, NPC->y - 0x1000, 0, 0, 1, nullptr, true);
+				}
+				else
+				{
+					NPC->ani_no = 0;
+					createNpc(NPC_ProjectileCurly, NPC->x - 0x1000, NPC->y + 0x800, 0, 0, 0, nullptr, true);
+					NPC->x += 0x200;
+				}
+			}
+		}
+
+		if (NPC->act_wait > 30)
+			NPC->act_no = 10;
+		break;
+
+	case 30: //Missile shield
+		if (++NPC->ani_no > 8)
+			NPC->ani_no = 7;
+
+		if (++NPC->act_wait > 30)
+		{
+			NPC->act_no = 10;
+			NPC->ani_no = 0;
+		}
+		break;
+
+	default:
+		break;
+	}
+
+	if (NPC->act_no > 10 && NPC->act_no < 30 && weaponBullets(6))
+	{
+		NPC->act_wait = 0;
+		NPC->act_no = 30;
+		NPC->ani_no = 7;
+		NPC->bits &= ~npc_shootable;
+		NPC->bits |= npc_invulnerable;
+		NPC->xm = 0;
+	}
+
+	NPC->ym += 0x20;
+
+	if (NPC->xm > 0x1FF)
+		NPC->xm = 0x1FF;
+	if (NPC->xm < -0x1FF)
+		NPC->xm = -0x1FF;
+
+	if (NPC->ym > 0x5FF)
+		NPC->ym = 0x5FF;
+
+	NPC->x += NPC->xm;
+	NPC->y += NPC->ym;
+
+	if (NPC->direct)
+		NPC->rect = rcRight[NPC->ani_no];
+	else
+		NPC->rect = rcLeft[NPC->ani_no];
 }
 
 void npcAct119(npc *NPC) // Table & Chair

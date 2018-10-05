@@ -459,7 +459,7 @@ void npcAct211(npc *NPC) //Spikes
 	rcNPC[3].right = 320;
 	rcNPC[3].bottom = 216;
 
-	NPC->doRects(rcNPC);
+	NPC->rect = rcNPC[NPC->code_event];
 }
 
 void npcAct212(npc *NPC) // Sky Dragon
