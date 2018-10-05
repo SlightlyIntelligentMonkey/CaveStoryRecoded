@@ -344,7 +344,7 @@ void killNpc(npc *NPC, bool bVanish)
 		if (bVanish)
 			NPC->init(NPC_DeletesItself, NPC->x, NPC->y, 0, 0, 0, nullptr);
 	}
-
+  
 	//Play sound
 	playSound(voice);
 

@@ -1,6 +1,7 @@
 #include "render.h"
 
-#include <SDL_image.h>
+#include "SDL.h"
+#include "lodepng/lodepng.h"
 #include "game.h"
 #include "main.h"
 #include "common.h"
@@ -36,9 +37,62 @@ static SDL_Surface *cursor_surface;
 static SDL_Cursor *cursor;
 
 #ifdef USE_ICONS_SDL2
-extern const char binary_res_icon_mini_bmp_start[];
-extern const char binary_res_icon_mini_bmp_end[];
+extern const unsigned char binary_res_icon_mini_png_start[];
+extern const unsigned char binary_res_icon_mini_png_end[];
 #endif
+
+static SDL_Surface* loadPNGToSurface(const char *path)
+{
+	SDL_Surface *surface = nullptr;
+
+	unsigned char *pixel_buffer;
+	unsigned int width;
+	unsigned int height;
+	if (const unsigned int error = lodepng_decode32_file(&pixel_buffer, &width, &height, path))
+	{
+		doCustomError((std::string)"loadPNGToSurface failed!\n\nlodepng error: " + lodepng_error_text(error));
+	}
+	else
+	{
+		// We don't use SDL_CreateRGBSurfaceWithFormatFrom because then the pixel data wouldn't
+		// automatically be freed when the surface is destroyed, so we have to do this trickery instead.
+
+		surface = SDL_CreateRGBSurfaceWithFormat(0, width, height, 0, SDL_PIXELFORMAT_RGBA32);
+
+		if (surface == nullptr)
+		{
+			doCustomError((std::string)"loadPNGToSurface failed!\n\nSDL2 error: " + SDL_GetError());
+		}
+		else
+		{
+			for (unsigned int i = 0; i < height; ++i)
+				memcpy((unsigned char*)surface->pixels + (i * surface->pitch), pixel_buffer + (i * width * 4), width * 4);
+		}
+
+		free(pixel_buffer);
+	}
+
+	return surface;
+}
+
+static SDL_Texture* loadPNGToTexture(SDL_Renderer *renderer, const char *path)
+{
+	SDL_Texture *texture = nullptr;
+
+	SDL_Surface *surface = loadPNGToSurface(path);
+
+	if (surface)
+	{
+		texture = SDL_CreateTextureFromSurface(renderer, surface);
+
+		if (texture == nullptr)
+			doCustomError((std::string)"loadPNGToTexture failed!\n\nSDL2 error: " + SDL_GetError());
+
+		SDL_FreeSurface(surface);
+	}
+
+	return texture;
+}
 
 //Create window
 int createWindow(int width, int height, int scale, bool fullscreen)
@@ -61,10 +115,21 @@ int createWindow(int width, int height, int scale, bool fullscreen)
 #ifdef USE_ICONS_SDL2
 		// Set the window icon.
 		// Note that we skip this on Windows since we do it natively.
-		SDL_RWops *icon_rw = SDL_RWFromConstMem(binary_res_icon_mini_bmp_start, binary_res_icon_mini_bmp_end-binary_res_icon_mini_bmp_start);
-		SDL_Surface *surface = SDL_LoadBMP_RW(icon_rw, 1);
-		SDL_SetWindowIcon(window, surface);
-		SDL_FreeSurface(surface);
+		unsigned char *pixel_buffer;
+		unsigned int width;
+		unsigned int height;
+		if (!lodepng_decode32(&pixel_buffer, &width, &height, binary_res_icon_mini_png_start, binary_res_icon_mini_png_end - binary_res_icon_mini_png_start))
+		{
+			SDL_Surface *surface = SDL_CreateRGBSurfaceWithFormatFrom(pixel_buffer, width, height, 0, width * 4, SDL_PIXELFORMAT_RGBA32);
+
+			if (surface)
+			{
+				SDL_SetWindowIcon(window, surface);
+				SDL_FreeSurface(surface);
+			}
+
+			free(pixel_buffer);
+		}
 #endif
 	}
 	else
@@ -78,7 +143,7 @@ int createWindow(int width, int height, int scale, bool fullscreen)
 		renderer = SDL_CreateRenderer(window, -1, 0);
 
 	// TODO free these when closing-down
-	cursor_surface = IMG_Load("data/Cursor/cursor_normal.png");
+	cursor_surface = loadPNGToSurface("data/Cursor/cursor_normal.png");
 	if (cursor_surface)
 	{
 		cursor = SDL_CreateColorCursor(cursor_surface, 0, 0);	// Don't worry, the hotspots are accurate to the original files
@@ -202,7 +267,7 @@ void loadImage(const char *file, SDL_Texture **tex)
 	{
 		SDL_DestroyTexture(*tex);
 	}
-	*tex = IMG_LoadTexture(renderer, file);
+	*tex = loadPNGToTexture(renderer, file);
 
 	//Error if anything failed
 	if (*tex == nullptr)
@@ -227,7 +292,7 @@ void loadImageBad(const char *file, SDL_Texture **tex)
 	{
 		SDL_DestroyTexture(*tex);
 	}
-	surface = IMG_Load(file);
+	surface = loadPNGToSurface(file);
 	if (surface->format->palette != nullptr)
 	{
 		SDL_Color *colors = static_cast<SDL_Color*>(calloc(4, surface->format->palette->ncolors));

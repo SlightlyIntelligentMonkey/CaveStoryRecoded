@@ -41,6 +41,39 @@ void npcAct165(npc *NPC) //Curly (Collapsed)
 		NPC->rect = rcLeft;
 }
 
+void npcAct165(npc *NPC) //Curly (Collapsed)
+{
+	RECT rcLeft;
+	RECT rcRight[2];
+
+	rcLeft = { 144, 96, 160, 122 };
+	rcRight[0] = { 192, 96, 208, 112 };
+	rcRight[1] = { 208, 96, 224, 112 };
+
+	switch (NPC->act_no)
+	{
+	case 0:
+		NPC->act_no = 1;
+		NPC->y += 0x1400;
+//Fallthrough
+	case 1:
+		NPC->ani_no = NPC->direct == 2
+			&& currentPlayer.x > NPC->x - 0x4000
+			&& currentPlayer.x < NPC->x + 0x4000
+			&& currentPlayer.y > NPC->y - 0x2000
+			&& currentPlayer.y < NPC->y + 0x2000;
+		break;
+
+	default:
+		break;
+	}
+	
+	if (NPC->direct)
+		NPC->rect = rcRight[NPC->ani_no];
+	else
+		NPC->rect = rcLeft;
+}
+
 void npcAct171(npc *NPC) //Fire whirr
 {
 	array<RECT, 2> rcRight;
