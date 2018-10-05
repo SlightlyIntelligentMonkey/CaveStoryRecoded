@@ -389,384 +389,6 @@ void npcAct124(npc *NPC) //Sunstone
 	NPC->rect = rect[NPC->ani_no];
 }
 
-void npcAct120(npc *NPC) //Colon 1
-{
-	if (NPC->direct)
-		NPC->rect = { 64, 16, 80, 32 };
-	else
-		NPC->rect = { 64, 0, 80, 16 };
-}
-
-void npcAct121(npc *NPC) //Colon 2
-{
-	RECT rect[3];
-
-	rect[0] = { 0, 0, 16, 16 };
-	rect[1] = { 16, 0, 32, 16 };
-	rect[2] = { 112, 0, 128, 16 };
-
-	if (!NPC->direct)
-	{
-		switch (NPC->act_no)
-		{
-		case 0:
-			NPC->act_no = 1;
-			NPC->ani_no = 0;
-			NPC->ani_wait = 0;
-//Fallthrough
-		case 1:
-			if (random(0, 120) == 10)
-			{
-				NPC->act_no = 2;
-				NPC->act_wait = 0;
-				NPC->ani_no = 1;
-			}
-			break;
-
-		case 2:
-			if (++NPC->act_wait > 8)
-			{
-				NPC->act_no = 1;
-				NPC->ani_no = 0;
-			}
-			break;
-
-		default:
-			break;
-		}
-		
-		NPC->rect = rect[NPC->ani_no];
-		return;
-	}
-
-	NPC->rect = rect[2];
-
-	if (++NPC->act_wait > 100)
-	{
-		NPC->act_wait = 0;
-		createCaret(NPC->x, NPC->y, 5, 0);
-	}
-}
-
-void npcAct122(npc *NPC) //Colon attack
-{
-	RECT rcLeft[10];
-	RECT rcRight[10];
-
-	rcLeft[0] = { 0x00, 0x00, 0x10, 0x10 };
-	rcLeft[1] = { 0x10, 0x00, 0x20, 0x10 };
-	rcLeft[2] = { 0x20, 0x00, 0x30, 0x10 };
-	rcLeft[3] = { 0x00, 0x00, 0x10, 0x10 };
-	rcLeft[4] = { 0x30, 0x00, 0x40, 0x10 };
-	rcLeft[5] = { 0x00, 0x00, 0x10, 0x10 };
-	rcLeft[6] = { 0x50, 0x00, 0x60, 0x10 };
-	rcLeft[7] = { 0x60, 0x00, 0x70, 0x10 };
-	rcLeft[8] = { 0x70, 0x00, 0x80, 0x10 };
-	rcLeft[9] = { 0x80, 0x00, 0x90, 0x10 };
-
-	rcRight[0] = { 0x00, 0x10, 0x10, 0x20 };
-	rcRight[1] = { 0x10, 0x10, 0x20, 0x20 };
-	rcRight[2] = { 0x20, 0x10, 0x30, 0x20 };
-	rcRight[3] = { 0x00, 0x10, 0x10, 0x20 };
-	rcRight[4] = { 0x30, 0x10, 0x40, 0x20 };
-	rcRight[5] = { 0x00, 0x10, 0x10, 0x20 };
-	rcRight[6] = { 0x50, 0x10, 0x60, 0x20 };
-	rcRight[7] = { 0x60, 0x10, 0x70, 0x20 };
-	rcRight[8] = { 0x70, 0x10, 0x80, 0x20 };
-	rcRight[9] = { 0x80, 0x10, 0x90, 0x20 };
-
-	switch (NPC->act_no)
-	{
-	case 0: //Init
-		NPC->act_no = 1;
-		NPC->ani_no = 0;
-		NPC->ani_wait = 0;
-//Fallthrough
-	case 1: //Stand
-		//Blink
-		if (random(0, 120) == 10)
-		{
-			NPC->act_no = 2;
-			NPC->act_wait = 0;
-			NPC->ani_no = 1;
-		}
-
-		//Look towards Quote if nearby
-		if (NPC->x - 0x4000 < currentPlayer.x && NPC->x + 0x4000 > currentPlayer.x && NPC->y - 0x4000 < currentPlayer.y && NPC->y + 0x2000 > currentPlayer.y)
-		{
-			if (NPC->x <= currentPlayer.x)
-				NPC->direct = dirRight;
-			else
-				NPC->direct = dirLeft;
-		}
-		break;
-
-	case 2: //Blink
-		//Blink for 8 frames
-		if (++NPC->act_wait > 8)
-		{
-			NPC->act_no = 1;
-			NPC->ani_no = 0;
-		}
-		break;
-
-	case 10: //Init attacking
-		NPC->life = 1000;
-		NPC->act_no = 11;
-		NPC->act_wait = random(0, 50);
-		NPC->ani_no = 0;
-		NPC->damage = 0;
-//Fallthrough
-	case 11: //Standing
-		if (NPC->act_wait)
-			--NPC->act_wait;
-		else
-			NPC->act_no = 13;
-		break;
-
-	case 13: //Run towards player
-		NPC->act_no = 14;
-		NPC->act_wait = random(0, 50);
-
-		if (NPC->x <= currentPlayer.x)
-			NPC->direct = dirRight;
-		else
-			NPC->direct = dirLeft;
-//Fallthrough
-	case 14: //Running (will jump after a few frames)
-		if (++NPC->ani_wait > 2)
-		{
-			NPC->ani_wait = 0;
-			++NPC->ani_no;
-		}
-
-		if (NPC->ani_no > 5)
-			NPC->ani_no = 2;
-
-		if (NPC->direct)
-			NPC->xm += 64;
-		else
-			NPC->xm -= 64;
-		
-		if (NPC->act_wait)
-		{
-			--NPC->act_wait;
-		}
-		else
-		{
-			NPC->bits |= npc_shootable;
-			NPC->act_no = 15;
-			NPC->ani_no = 2;
-			NPC->ym = -0x200;
-			NPC->damage = 2;
-		}
-		break;
-
-	case 15: //Jumped
-		if (NPC->flag & ground)
-		{
-			NPC->bits |= npc_shootable;
-			NPC->xm = 0;
-			NPC->act_no = 10;
-			NPC->damage = 0;
-		}
-		break;
-
-	case 20: //Shot (lay on the ground for 300 - 400 frames)
-		if (NPC->flag & ground)
-		{
-			NPC->xm = 0;
-			NPC->act_no = 21;
-			NPC->damage = 0;
-
-			if (NPC->ani_no == 6)
-				NPC->ani_no = 8;
-			else
-				NPC->ani_no = 9;
-
-			NPC->act_wait = random(300, 400);
-		}
-		break;
-
-	case 21: //Laying on the ground
-		if (NPC->act_wait)
-		{
-			--NPC->act_wait;
-		}
-		else
-		{
-			NPC->bits |= npc_shootable;
-			NPC->life = 1000;
-			NPC->act_no = 11;
-			NPC->act_wait = random(0, 50);
-			NPC->ani_no = 0;
-		}
-		break;
-
-	default:
-		break;
-	}
-
-	//When shot
-	if (NPC->act_no > 10 && NPC->act_no < 20 && NPC->life != 1000)
-	{
-		NPC->act_no = 20;
-		NPC->ym = -0x200;
-		NPC->ani_no = random(6, 7);
-		NPC->bits &= ~npc_shootable;
-	}
-
-	//Limit run speed
-	if (NPC->xm > 0x1FF)
-		NPC->xm = 0x1FF;
-	if (NPC->xm < -0x1FF)
-		NPC->xm = -0x1FF;
-
-	//Gravity
-	NPC->ym += 0x20;
-	if (NPC->ym > 0x5FF)
-		NPC->ym = 0x5FF;
-
-	//Move
-	NPC->x += NPC->xm;
-	NPC->y += NPC->ym;
-
-	//Set framerect
-	if (NPC->direct)
-		NPC->rect = rcRight[NPC->ani_no];
-	else
-		NPC->rect = rcLeft[NPC->ani_no];
-}
-
-void npcAct123(npc *NPC) //Curly projectile
-{
-	RECT rect[4];
-	bool bBreak = false;
-
-	rect[0] = { 192, 0, 208, 16 };
-	rect[1] = { 208, 0, 224, 16 };
-	rect[2] = { 224, 0, 240, 16 };
-	rect[3] = { 240, 0, 256, 16 };
-	
-	switch (NPC->act_no)
-	{
-	case 0:
-		NPC->act_no = 1;
-		createCaret(NPC->x, NPC->y, 3, 0);
-		playSound(32, 1);
-
-		switch (NPC->direct)
-		{
-		case dirLeft:
-			NPC->xm = -0x1000;
-			NPC->ym = random(-0x80, 0x80);
-			break;
-		case dirUp:
-			NPC->xm = random(-0x80, 0x80);
-			NPC->ym = -0x1000;
-			break;
-		case dirRight:
-			NPC->xm = 0x1000;
-			NPC->ym = random(-0x80, 0x80);
-			break;
-		case dirDown:
-			NPC->xm = random(-0x80, 0x80);
-			NPC->ym = 0x1000;
-			break;
-		default:
-			break;
-		}
-		break;
-
-	case 1:
-		switch (NPC->direct)
-		{
-		case dirLeft:
-			bBreak = (NPC->flag & leftWall) != 0;
-			break;
-		case dirUp:
-			bBreak = (NPC->flag & ceiling) != 0;
-			break;
-		case dirRight:
-			bBreak = (NPC->flag & rightWall) != 0;
-			break;
-		case dirDown:
-			bBreak = (NPC->flag & ground) != 0;
-			break;
-		default:
-			break;
-		}
-
-		NPC->x += NPC->xm;
-		NPC->y += NPC->ym;
-		break;
-
-	default:
-		break;
-	}
-
-	if (bBreak)
-	{
-		createCaret(NPC->x, NPC->y, 2, 2);
-		playSound(28);
-		NPC->cond = 0;
-	}
-
-	NPC->rect = rect[NPC->direct];
-}
-
-void npcAct124(npc *NPC) //Sunstone
-{
-	RECT rect[2];
-	rect[0] = { 160, 0, 192, 32 };
-	rect[1] = { 192, 0, 224, 32 };
-
-	switch (NPC->act_no)
-	{
-	case 0:
-		NPC->act_no = 1;
-		NPC->x += 0x1000;
-		NPC->y += 0x1000;
-//Fallthrough
-	case 1:
-		break;
-
-	case 10:
-		NPC->act_no = 11;
-		NPC->ani_no = 1;
-		NPC->act_wait = 0;
-		NPC->bits |= npc_ignoreSolid;
-//Fallthrough
-	case 11:
-		switch (NPC->direct)
-		{
-		case dirLeft:
-			NPC->x -= 0x80;
-			break;
-		case dirUp:
-			NPC->y -= 0x80;
-			break;
-		case dirRight:
-			NPC->x += 0x80;
-			break;
-		case dirDown:
-			NPC->y += 0x80;
-			break;
-		default:
-			break;
-		}
-		if (!(++NPC->act_wait & 7))
-			playSound(26, 1);
-		viewport.quake = 20;
-		break;
-
-	default:
-		break;
-	}
-
-	NPC->rect = rect[NPC->ani_no];
-}
-
 void npcAct125(npc *NPC) //Hidden item
 {
 	if (NPC->life <= 989)
@@ -883,7 +505,7 @@ void npcAct126(npc *NPC) //Running Puppy
 			NPC->xm += 0x40;
 		else
 			NPC->xm -= 0x40;
-      
+
 		if (NPC->xm > 0x5FF)
 			NPC->xm = 0x400;
 		if (NPC->xm < -0x5FF)
@@ -898,7 +520,7 @@ void npcAct126(npc *NPC) //Running Puppy
 		NPC->bits |= npc_interact;
 	else
 		NPC->bits &= ~npc_interact;
-  
+
 	NPC->ym += 0x40;
 	if (NPC->ym > 0x5FF)
 		NPC->ym = 0x5FF;
@@ -1297,7 +919,7 @@ void npcAct133(npc *NPC) //Jenka
 		}
 		break;
 	}
-  
+
 	if (NPC->direct)
 		NPC->rect = rcRight[NPC->ani_no];
 	else
@@ -1370,7 +992,7 @@ void npcAct134(npc *NPC) //Armadillo
 			NPC->x += 0x100;
 		else
 			NPC->x -= 0x100;
-      
+
 		if (weaponBullets(6))
 		{
 			NPC->act_no = 20;
@@ -1520,7 +1142,7 @@ void npcAct135(npc *NPC)
 		NPC->xm = 0x5FF;
 	if (NPC->xm < -0x5FF)
 		NPC->xm = -0x5FF;
-  
+
 	NPC->x += NPC->xm;
 	NPC->y += NPC->ym;
 
@@ -1568,7 +1190,7 @@ void npcAct136(npc *NPC) //Puppy on Quote's head
 	default:
 		break;
 	}
-  
+
 	//Face in same direction player is facing
 	if (currentPlayer.direct)
 		NPC->direct = 2;
@@ -1587,7 +1209,7 @@ void npcAct136(npc *NPC) //Puppy on Quote's head
 		NPC->x = currentPlayer.x + 0x800;
 		NPC->rect = rcLeft[NPC->ani_no];
 	}
-  
+
 	//Bob up when walking
 	if (currentPlayer.ani_no & 1)
 		++NPC->rect.top;
