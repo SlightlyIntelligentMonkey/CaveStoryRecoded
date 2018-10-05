@@ -10,10 +10,10 @@ LINK_CPP := $(CXX) -m32 $(OPTIMISATIONS) $(WARNINGS) -static -static-libstdc++ -
 # Remove -mwindows for Unix build
 
 MAIN := main
-# states
-MAIN += game
+# game states
+MAIN += game inventory mapSystem stageSelect
 # modules
-MAIN += filesystem flags input inventory level loadConfig log mapSystem mathUtils script stageSelect stdUtils
+MAIN += filesystem flags input level loadConfig log mathUtils script stdUtils
 # collision
 MAIN += bossCollision bulletCollision npcCollision playerCollision
 # drawing
