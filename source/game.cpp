@@ -59,7 +59,7 @@ void initGame()
 	currentPlayer.init();
 	currentPlayer.setPos(tilesToUnits(10), tilesToUnits(8));
 	loadLevel(13);
-	startTscEvent(200);
+	startTscEvent(tsc, 200);
 }
 
 //Init other important things
@@ -105,132 +105,113 @@ void handleView()
 	}
 }
 
-void debugLevels()
-{
-	if (isKeyPressed(SDL_SCANCODE_1))
-	{
-		loadLevel(13);
-		currentPlayer.setPos(tilesToUnits(10), tilesToUnits(8));
-
-		changeOrg(mus_Gestation);
-	}
-	else if (isKeyPressed(SDL_SCANCODE_2))
-	{
-		loadLevel(12);
-		currentPlayer.setPos(tilesToUnits(37), tilesToUnits(11));
-
-		changeOrg(mus_Gestation);
-	}
-	else if (isKeyPressed(SDL_SCANCODE_3))
-	{
-		loadLevel(2);
-		currentPlayer.setPos(tilesToUnits(5), tilesToUnits(6));
-
-		changeOrg(mus_MischievousRobot);
-	}
-	else if (isKeyPressed(SDL_SCANCODE_4))
-	{
-		loadLevel(11);
-		currentPlayer.setPos(tilesToUnits(13), tilesToUnits(34));
-
-		changeOrg(mus_MimigaTown);
-	}
-	else if (isKeyPressed(SDL_SCANCODE_5))
-	{
-		loadLevel(49);
-		currentPlayer.setPos(tilesToUnits(7), tilesToUnits(6));
-
-		changeOrg(mus_ScorchingBack);
-	}
-	else if (isKeyPressed(SDL_SCANCODE_6))
-	{
-		loadLevel(67);
-		currentPlayer.setPos(tilesToUnits(7), tilesToUnits(52));
-
-		changeOrg(mus_FinalCave);
-	}
-	else if (isKeyPressed(SDL_SCANCODE_7))
-	{
-		loadLevel(48);
-		currentPlayer.setPos(tilesToUnits(155), tilesToUnits(1));
-
-		changeOrg(mus_LivingWaterway);
-	}
-	else if (isKeyPressed(SDL_SCANCODE_8))
-	{
-		loadLevel(53);
-		currentPlayer.setPos(tilesToUnits(4), tilesToUnits(165));
-
-		changeOrg(mus_Moonsong);
-	}
-	else if (isKeyPressed(SDL_SCANCODE_9))
-	{
-		loadLevel(6);
-		currentPlayer.setPos(tilesToUnits(4), tilesToUnits(18));
-
-		changeOrg(mus_OnToGrasstown);
-	}
-	else if (isKeyPressed(SDL_SCANCODE_0))
-	{
-		loadLevel(62);
-		currentPlayer.setPos(tilesToUnits(10), tilesToUnits(18));
-
-		changeOrg(mus_Balcony);
-	}
-}
-
 int debugFlags = 0;
+
+void debugCMDGetInput(string &cmd)
+{
+	if (isKeyPressed(SDL_SCANCODE_COMMA)) { cmd += "<"; }
+	if (isKeyPressed(SDL_SCANCODE_SEMICOLON)) { cmd += ":"; }
+	if (isKeyPressed(SDL_SCANCODE_A)) { cmd += "A"; }
+	if (isKeyPressed(SDL_SCANCODE_B)) { cmd += "B"; }
+	if (isKeyPressed(SDL_SCANCODE_C)) { cmd += "C"; }
+	if (isKeyPressed(SDL_SCANCODE_D)) { cmd += "D"; }
+	if (isKeyPressed(SDL_SCANCODE_E)) { cmd += "E"; }
+	if (isKeyPressed(SDL_SCANCODE_F)) { cmd += "F"; }
+	if (isKeyPressed(SDL_SCANCODE_G)) { cmd += "G"; }
+	if (isKeyPressed(SDL_SCANCODE_H)) { cmd += "H"; }
+	if (isKeyPressed(SDL_SCANCODE_I)) { cmd += "I"; }
+	if (isKeyPressed(SDL_SCANCODE_J)) { cmd += "J"; }
+	if (isKeyPressed(SDL_SCANCODE_K)) { cmd += "K"; }
+	if (isKeyPressed(SDL_SCANCODE_L)) { cmd += "L"; }
+	if (isKeyPressed(SDL_SCANCODE_M)) { cmd += "M"; }
+	if (isKeyPressed(SDL_SCANCODE_N)) { cmd += "N"; }
+	if (isKeyPressed(SDL_SCANCODE_O)) { cmd += "O"; }
+	if (isKeyPressed(SDL_SCANCODE_P)) { cmd += "P"; }
+	if (isKeyPressed(SDL_SCANCODE_Q)) { cmd += "Q"; }
+	if (isKeyPressed(SDL_SCANCODE_R)) { cmd += "R"; }
+	if (isKeyPressed(SDL_SCANCODE_S)) { cmd += "S"; }
+	if (isKeyPressed(SDL_SCANCODE_T)) { cmd += "T"; }
+	if (isKeyPressed(SDL_SCANCODE_U)) { cmd += "U"; }
+	if (isKeyPressed(SDL_SCANCODE_V)) { cmd += "V"; }
+	if (isKeyPressed(SDL_SCANCODE_W)) { cmd += "W"; }
+	if (isKeyPressed(SDL_SCANCODE_X)) { cmd += "X"; }
+	if (isKeyPressed(SDL_SCANCODE_Y)) { cmd += "Y"; }
+	if (isKeyPressed(SDL_SCANCODE_Z)) { cmd += "Z"; }
+	if (isKeyPressed(SDL_SCANCODE_SPACE)) { cmd += " "; }
+
+	if (isKeyPressed(SDL_SCANCODE_0) || isKeyPressed(SDL_SCANCODE_KP_0)) { cmd += "0"; }
+	if (isKeyPressed(SDL_SCANCODE_1) || isKeyPressed(SDL_SCANCODE_KP_1)) { cmd += "1"; }
+	if (isKeyPressed(SDL_SCANCODE_2) || isKeyPressed(SDL_SCANCODE_KP_2)) { cmd += "2"; }
+	if (isKeyPressed(SDL_SCANCODE_3) || isKeyPressed(SDL_SCANCODE_KP_3)) { cmd += "3"; }
+	if (isKeyPressed(SDL_SCANCODE_4) || isKeyPressed(SDL_SCANCODE_KP_4)) { cmd += "4"; }
+	if (isKeyPressed(SDL_SCANCODE_5) || isKeyPressed(SDL_SCANCODE_KP_5)) { cmd += "5"; }
+	if (isKeyPressed(SDL_SCANCODE_6) || isKeyPressed(SDL_SCANCODE_KP_6)) { cmd += "6"; }
+	if (isKeyPressed(SDL_SCANCODE_7) || isKeyPressed(SDL_SCANCODE_KP_7)) { cmd += "7"; }
+	if (isKeyPressed(SDL_SCANCODE_8) || isKeyPressed(SDL_SCANCODE_KP_8)) { cmd += "8"; }
+	if (isKeyPressed(SDL_SCANCODE_9) || isKeyPressed(SDL_SCANCODE_KP_9)) { cmd += "9"; }
+	if (isKeyPressed(SDL_SCANCODE_MINUS) || isKeyPressed(SDL_SCANCODE_KP_MINUS)) { cmd += "-"; }
+	if (isKeyPressed(SDL_SCANCODE_EQUALS) || isKeyPressed(SDL_SCANCODE_KP_PLUS)) { cmd += "+"; }
+
+	if (isKeyPressed(SDL_SCANCODE_BACKSPACE) && cmd.size() != 0) { cmd.erase(cmd.cend()-1); }
+}
 
 void debugFunction()
 {
-	static uint32_t displayTimer = 0;
-	static string disp;
+	static string cmd;
+	static int debugMode = 0;
+	static TSC dtsc;
 
-	debugLevels();
-
-	if (displayTimer == 0)
+	if (isKeyDown(SDL_SCANCODE_RSHIFT) && isKeyDown(SDL_SCANCODE_BACKSPACE))
 	{
-		static int debugMode = 0;
-		if (debugMode == 0 && isKeyDown(SDL_SCANCODE_RSHIFT) && isKeyDown(SDL_SCANCODE_BACKSPACE))
-		{
-			//if (isKeyPressed(SDL_SCANCODE_M))
-			//	debugMode = 1;
-			if (isKeyPressed(SDL_SCANCODE_K))
-				debugFlags ^= showSlots;
-			if (isKeyPressed(SDL_SCANCODE_C))
-				debugFlags ^= showCARId;
-			if (isKeyPressed(SDL_SCANCODE_B))
-				debugFlags ^= showBULId;
-			if (isKeyPressed(SDL_SCANCODE_N))
-				debugFlags ^= showNPCId;
-			if (isKeyPressed(SDL_SCANCODE_H))
-				debugFlags ^= showHitRects;
-			if (isKeyPressed(SDL_SCANCODE_R))
-				debugFlags ^= showHurtRects;
-			if (isKeyPressed(SDL_SCANCODE_EQUALS))
-				framerate--;
-			if (isKeyPressed(SDL_SCANCODE_MINUS))
-				framerate++;
-		}
-
-		switch (debugMode)
-		{
-		case 0:
-			break;
-
-		case 1:
-			break;
-
-		default:
-			debugMode = 0;
-			break;
-		}
+		//if (isKeyPressed(SDL_SCANCODE_M))
+		//	debugMode = 1;
+		if (isKeyPressed(SDL_SCANCODE_K))
+			debugFlags ^= showSlots;
+		if (isKeyPressed(SDL_SCANCODE_C))
+			debugFlags ^= showCARId;
+		if (isKeyPressed(SDL_SCANCODE_B))
+			debugFlags ^= showBULId;
+		if (isKeyPressed(SDL_SCANCODE_N))
+			debugFlags ^= showNPCId;
+		if (isKeyPressed(SDL_SCANCODE_H))
+			debugFlags ^= showHitRects;
+		if (isKeyPressed(SDL_SCANCODE_R))
+			debugFlags ^= showHurtRects;
+		if (isKeyPressed(SDL_SCANCODE_EQUALS))
+			framerate--;
+		if (isKeyPressed(SDL_SCANCODE_MINUS))
+			framerate++;
 	}
 
-	if (displayTimer > 0)
+	switch (debugMode)
 	{
-		drawString(0, 0, disp.c_str());
-		displayTimer--;
+	case(0):
+		if (isKeyDown(SDL_SCANCODE_RSHIFT) && isKeyDown(SDL_SCANCODE_BACKSPACE) &&
+			(isKeyPressed(SDL_SCANCODE_RETURN) || isKeyPressed(SDL_SCANCODE_KP_ENTER)))
+		{
+			debugMode = 1;
+			cmd.clear();
+			cmd.shrink_to_fit();
+			cmd += "<";
+		}
+		break;
+	case(1):
+		debugCMDGetInput(cmd);
+		drawString(0, 0, cmd.c_str());
+		if (isKeyPressed(SDL_SCANCODE_RETURN) || isKeyPressed(SDL_SCANCODE_KP_ENTER))
+		{
+			cmd += "<END";
+			dtsc.data = (uint8_t*)cmd.c_str();
+			dtsc.mode = 1;
+			dtsc.wait = 5;
+			dtsc.p_read = 0;
+			debugMode = 2;
+		}
+		break;
+	case(2):
+		if (updateTsc(dtsc) == 32)
+			debugMode = 0;
+		break;
 	}
 
 	if (debugFlags & showSlots)
@@ -387,6 +368,7 @@ int gameUpdatePlay()
 
 		drawMapName(false);
 		drawHud(!(gameFlags & 2));
+		actFlash();
 		drawTsc();
 		debugFunction();
 		if (!drawWindow())
@@ -511,7 +493,7 @@ int gameUpdateIntro()
 
 	uint32_t frame = 0;
 	loadLevel(72);
-	startTscEvent(100);
+	startTscEvent(tsc, 100);
 	changeOrg(0);
 
 	//Set up fade

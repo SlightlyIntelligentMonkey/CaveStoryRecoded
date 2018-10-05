@@ -49,31 +49,29 @@ SDL_Texture* sprites[0x28];
 
 void loadInitialSprites()
 {
-	loadImage("data/Title.png", &sprites[0x00]);
-	loadImage("data/Pixel.png", &sprites[0x01]);
+	loadImage("data/Title.png", &sprites[TEX_TITLE]);
+	loadImage("data/Pixel.png", &sprites[TEX_PIXEL]);
 
-	loadImage("data/Fade.png", &sprites[0x06]);
+	loadImage("data/Fade.png", &sprites[TEX_FADE]);
 
-	loadImage("data/ItemImage.png", &sprites[0x08]);
+	loadImage("data/ItemImage.png", &sprites[TEX_ITEMIMAGE]);
 
-	loadImage("data/Arms.png", &sprites[0x0B]);
-	loadImage("data/ArmsImage.png", &sprites[0x0C]);
+	loadImage("data/Arms.png", &sprites[TEX_ARMS]);
+	loadImage("data/ArmsImage.png", &sprites[TEX_ARMSIMAGE]);
 
-	loadImage("data/StageImage.png", &sprites[0x0E]);
+	loadImage("data/StageImage.png", &sprites[TEX_STAGEIMAGE]);
 
-	loadImage("data/Loading.png", &sprites[0x0F]);
+	loadImage("data/MyChar.png", &sprites[TEX_MYCHAR]);
 
-	loadImage("data/MyChar.png", &sprites[0x10]);
+	loadImage("data/Bullet.png", &sprites[TEX_BULLET]);
+	loadImage("data/Caret.png", &sprites[TEX_CARET]);
 
-	loadImage("data/Bullet.png", &sprites[0x11]);
-	loadImage("data/Caret.png", &sprites[0x13]);
+	loadImage("data/Npc/NpcSym.png", &sprites[TEX_NPC_SYM]);
 
-	loadImage("data/Npc/NpcSym.png", &sprites[0x14]);
+	loadImage("data/Npc/NpcRegu.png", &sprites[TEX_NPC_REGU]);
 
-	loadImage("data/Npc/NpcRegu.png", &sprites[0x17]);
-
-	loadImage("data/TextBox.png", &sprites[0x1A]);  // Escape menu
-	loadImage("data/Face.png", &sprites[0x1B]);
+	loadImage("data/TextBox.png", &sprites[TEX_TEXTBOX]);
+	loadImage("data/Face.png", &sprites[TEX_FACE]);
 
 	loadImage("data/Font.png", &sprites[0x26]);
 	loadImage("data/Missing.png", &sprites[0x27]);
@@ -99,10 +97,18 @@ void init()
 		doCustomError("Couldn't initiate SDL Image");
 
 	loadConfigFiles();
+	loadConfig();
 
 	// TBD : Load config data, initialise keybinds and screen resolution based on it
 	// TBD : Init joypad
-	loadConfig();
+
+	//draws loading
+	loadImage("data/Loading.png", &sprites[TEX_LOADING]);
+	SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
+	SDL_RenderClear(renderer);
+	RECT rcLoad = { 0, 0, 64, 8 };
+	drawTexture(sprites[TEX_LOADING], &rcLoad, (screenWidth >> 1) - (rcLoad.right >> 1), (screenHeight >> 1) - (rcLoad.bottom >> 1));
+	SDL_RenderPresent(renderer);
 
 	initTsc();
 	initFlags();

@@ -785,7 +785,7 @@ void playerHitNpcs()
 				}
 
 				if (!(gameFlags & 4) && hit && npcs[i].bits & npc_eventTouch)
-					startTscEvent(npcs[i].code_event);
+					startTscEvent(tsc, npcs[i].code_event);
 
 				if (gameFlags & 2 && !(npcs[i].bits & npc_interact))
 				{
@@ -806,7 +806,7 @@ void playerHitNpcs()
 
 				if (!(gameFlags & 4) && hit && me->cond & player_interact && npcs[i].bits & npc_interact)
 				{
-					startTscEvent(npcs[i].code_event);
+					startTscEvent(tsc, npcs[i].code_event);
 					me->xm = 0;
 					me->ques = false;
 				}
@@ -845,7 +845,7 @@ void playerHitBosses()
 
                 if (!(gameFlags & 4) && hit && bossObj[i].bits & npc_eventTouch)
                 {
-                    startTscEvent(bossObj[i].code_event);
+                    startTscEvent(tsc, bossObj[i].code_event);
                     me->ques = 0;
                 }
 
@@ -865,7 +865,7 @@ void playerHitBosses()
 				{
 					if (bossObj[i].bits & npc_interact)
 					{
-						startTscEvent(bossObj[i].code_event);
+						startTscEvent(tsc, bossObj[i].code_event);
 
 						me->xm = 0;
 						me->ques = 0;

@@ -125,14 +125,13 @@ void loadTsc2(const char *name)
 }
 
 //Get number function
-int getTSCNumber(int a)  attrPure;
-
-int getTSCNumber(int a)
+int getTSCNumber(TSC &ptsc, int a)  attrPure;
+int getTSCNumber(TSC &ptsc, int a)
 {
-	return			(static_cast<char>(tsc.data[a + 3]) - 0x30) +
-	                10 *	(static_cast<char>(tsc.data[a + 2]) - 0x30) +
-	                100 *	(static_cast<char>(tsc.data[a + 1]) - 0x30) +
-	                1000 *	(static_cast<char>(tsc.data[a]) - 0x30);
+	return			(static_cast<char>(ptsc.data[a + 3]) - 0x30) +
+	                10 *	(static_cast<char>(ptsc.data[a + 2]) - 0x30) +
+	                100 *	(static_cast<char>(ptsc.data[a + 1]) - 0x30) +
+	                1000 *	(static_cast<char>(ptsc.data[a]) - 0x30);
 }
 
 void tscClearText()
@@ -147,133 +146,133 @@ void tscClearText()
 }
 
 //TSC run event functions
-int startTscEvent(int no)
+int startTscEvent(TSC &ptsc, int no)
 {
-	tsc.mode = 1;
+	ptsc.mode = 1;
 	gameFlags |= 5;
-	tsc.line = 0;
-	tsc.p_write = 0;
-	tsc.wait = 4;
-	tsc.flags = 0;
-	tsc.wait_beam = 0;
-	tsc.face = 0;
-	tsc.item = 0;
-	tsc.offsetY = 0;
+	ptsc.line = 0;
+	ptsc.p_write = 0;
+	ptsc.wait = 4;
+	ptsc.flags = 0;
+	ptsc.wait_beam = 0;
+	ptsc.face = 0;
+	ptsc.item = 0;
+	ptsc.offsetY = 0;
 	currentPlayer.shock = 0;
 
-	tsc.rcText = { 52, 184, 268, 234 };
+	ptsc.rcText = { 52, 184, 268, 234 };
 
 	//Get event id
 	int event_no;
-	for (tsc.p_read = 0; ; ++tsc.p_read)
+	for (ptsc.p_read = 0; ; ++ptsc.p_read)
 	{
-		if (!tsc.data[tsc.p_read])
+		if (!ptsc.data[ptsc.p_read])
 			return 0;
-		if (tsc.data[tsc.p_read] != 35)
+		if (ptsc.data[ptsc.p_read] != 35)
 			continue;
 
-		event_no = getTSCNumber(++tsc.p_read);
+		event_no = getTSCNumber(tsc, ++ptsc.p_read);
 		if (no == event_no)
 			break;
 		if (no < event_no)
 			return 0;
 	}
 
-	while (tsc.data[tsc.p_read] != '\n')
-		++tsc.p_read;
-	++tsc.p_read;
+	while (ptsc.data[ptsc.p_read] != '\n')
+		++ptsc.p_read;
+	++ptsc.p_read;
 	return 1;
 }
 
-int jumpTscEvent(int no)
+int jumpTscEvent(TSC &ptsc, int no)
 {
-	tsc.mode = 1;
+	ptsc.mode = 1;
 	gameFlags |= 4;
-	tsc.line = 0;
-	tsc.p_write = 0;
-	tsc.wait = 4;
-	tsc.wait_beam = 0;
+	ptsc.line = 0;
+	ptsc.p_write = 0;
+	ptsc.wait = 4;
+	ptsc.wait_beam = 0;
 
 	tscClearText();
 
 	//Get event id
 	int event_no;
-	for (tsc.p_read = 0; ; ++tsc.p_read)
+	for (ptsc.p_read = 0; ; ++ptsc.p_read)
 	{
-		if (!tsc.data[tsc.p_read])
+		if (!ptsc.data[ptsc.p_read])
 			return 0;
-		if (tsc.data[tsc.p_read] != 35)
+		if (ptsc.data[ptsc.p_read] != 35)
 			continue;
 
-		event_no = getTSCNumber(++tsc.p_read);
+		event_no = getTSCNumber(tsc, ++ptsc.p_read);
 		if (no == event_no)
 			break;
 		if (no < event_no)
 			return 0;
 	}
 
-	while (tsc.data[tsc.p_read] != '\n')
-		++tsc.p_read;
-	++tsc.p_read;
+	while (ptsc.data[ptsc.p_read] != '\n')
+		++ptsc.p_read;
+	++ptsc.p_read;
 	return 1;
 }
 
-void stopTsc()
+void stopTsc(TSC &ptsc)
 {
-	tsc.mode = 0;
+	ptsc.mode = 0;
 	gameFlags &= ~4;
 	gameFlags |= 3u;
-	tsc.flags = 0;
+	ptsc.flags = 0;
 }
 
 //Check new line
-void checkNewLine()
+void checkNewLine(TSC &ptsc)
 {
-	if (tsc.ypos_line[tsc.line % 4] == 48)
+	if (ptsc.ypos_line[ptsc.line % 4] == 48)
 	{
-		tsc.mode = 3;
+		ptsc.mode = 3;
 		gameFlags |= 4u;
-		memset(tscText + (tsc.line % 4 << 6), 0, 0x40);
-		memset(tscTextFlag + (tsc.line % 4 << 6), 0, 0x40);
+		memset(tscText + (ptsc.line % 4 << 6), 0, 0x40);
+		memset(tscTextFlag + (ptsc.line % 4 << 6), 0, 0x40);
 	}
 }
 
-void clearTextLine()
+void clearTextLine(TSC &ptsc)
 {
 	//Reset current writing position
-	tsc.line = 0;
-	tsc.p_write = 0;
-	tsc.offsetY = 0;
+	ptsc.line = 0;
+	ptsc.p_write = 0;
+	ptsc.offsetY = 0;
 
 	//Go through each line and clear it
 	for (int i = 0; i < 4; ++i)
 	{
-		tsc.ypos_line[i] = 16 * i;
+		ptsc.ypos_line[i] = 16 * i;
 
-		memset(tscText + (i * 40), 0, 0x40u);
-		memset(tscTextFlag + (i * 40), 0, 0x40u);
+		memset(tscText + (i * 40), 0, 0x40);
+		memset(tscTextFlag + (i * 40), 0, 0x40);
 	}
 }
 
 //TSC Update
-void tscCheck()
+void tscCheck(TSC &ptsc)
 {
 	//End tsc if in END state, continue if not
-	if (tsc.mode)
+	if (ptsc.mode)
 		gameFlags |= 4;
 	else
 		gameFlags &= ~4;
 }
 
-void tscCleanup(int numargs)  //Function to shift the current read position after a command
+void tscCleanup(int numargs, TSC &ptsc)  //Function to shift the current read position after a command
 {
-	tsc.p_read += 4 + (numargs * 4);
+	ptsc.p_read += 4 + (numargs * 4);
 
 	if (numargs > 1)
-		tsc.p_read += (numargs - 1);
+		ptsc.p_read += (numargs - 1);
 }
 
-void tscPutNumber(int index)
+void tscPutNumber(TSC &ptsc, int index)
 {
 	int table[3];
 	char str[5];
@@ -298,15 +297,15 @@ void tscPutNumber(int index)
 	}
 	str[offset] = a + 48;
 	str[offset + 1] = 0;
-	strcat(tscText + (tsc.line % 4 << 6), str);
+	strcat(tscText + (ptsc.line % 4 << 6), str);
 	playSound(2);
-	tsc.wait_beam = 0;
-	tsc.p_write += strlen(str);
-	if (tsc.p_write > 34)
+	ptsc.wait_beam = 0;
+	ptsc.p_write += strlen(str);
+	if (ptsc.p_write > 34)
 	{
-		tsc.p_write = 0;
-		++tsc.line;
-		checkNewLine();
+		ptsc.p_write = 0;
+		++ptsc.line;
+		checkNewLine(ptsc);
 	}
 }
 
@@ -315,142 +314,152 @@ static inline void showTSCNotImplementedWarning(const char *message) noexcept
 	SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_WARNING, "Unimplemented command", message, nullptr);
 }
 
-bool doTscModes(bool *bExit)
+int doTscModes(bool *bExit, TSC &ptsc)
 {
-	switch (tsc.mode)
+	switch (ptsc.mode)
 	{
 	case END:
-		tscCheck();
-		return true;
+		tscCheck(ptsc);
+		return 32;
 
 	case PARSE:
 		//Add to timer
-		++tsc.wait;
+		++ptsc.wait;
 
 		//If jump or shoot are held, add 4, effectively ending the timer early
 		if (!(gameFlags & 2) && (isKeyDown(keyShoot) || isKeyDown(keyJump)))
-			tsc.wait += 4;
+			ptsc.wait += 4;
 
 		//If timer value is less than 4, stop for this frame.
-		if (tsc.wait < 4)
+		if (ptsc.wait < 4)
         {
-			tscCheck();
-            return true;
+			tscCheck(ptsc);
+            return 1;
         }
 
 		//Reset timer and continue into parsing
-		tsc.wait = 0;
-		*bExit = false;
-		return false;
+		ptsc.wait = 0;
+		*bExit = 0;
+		return 0;
 
 	case NOD:
 		//If jump or shoot button pressed, continue script
 		if (isKeyPressed(keyShoot) || isKeyPressed(keyJump))
-			tsc.mode = PARSE;
+			ptsc.mode = PARSE;
 
-		tscCheck();
-		return true;
+		tscCheck(ptsc);
+		return 1;
 
 	case SCROLL:
 		//Go through every line
-		for (auto& i : tsc.ypos_line)
+		for (auto& i : ptsc.ypos_line)
 		{
 			i -= 4;
 			if (!i) //Check if done scrolling
-				tsc.mode = PARSE; //Continue like normal
+				ptsc.mode = PARSE; //Continue like normal
 
 			if (i == -16) //Check if scrolled off
 				i = 48;
 		}
 
-		tscCheck();
-		return true;
+		tscCheck(ptsc);
+		return 1;
 
 	case WAI:
 		//These two checks are for <WAI9999 to fully freeze the script
-		if (tsc.wait_next != 9999)
+		if (ptsc.wait_next != 9999)
 		{
-			if (tsc.wait != 9999)
-				++tsc.wait;
+			if (ptsc.wait != 9999)
+				++ptsc.wait;
 
-			if (tsc.wait >= tsc.wait_next) //If waited enough frames, continue
+			if (ptsc.wait >= ptsc.wait_next) //If waited enough frames, continue
 			{
-				tsc.mode = PARSE;
-				tsc.wait_beam = 0;
+				ptsc.mode = PARSE;
+				ptsc.wait_beam = 0;
 			}
 		}
 
-		tscCheck();
-		return true;
+		tscCheck(ptsc);
+		return 1;
 
 	case FADE:
 		if (fade.mode == 0) //Wait until fade has ended
 		{
 			//Continue script
-			tsc.mode = PARSE;
-			tsc.wait_beam = 0;
+			ptsc.mode = PARSE;
+			ptsc.wait_beam = 0;
 		}
-		tscCheck();
-		return true;
+		tscCheck(ptsc);
+		return 1;
 
 	case YNJ:
-		if (tsc.wait >= 16) //Do nothing for 16 frames
+		if (ptsc.wait >= 16) //Do nothing for 16 frames
 		{
 			if (isKeyPressed(keyJump)) //Select button pressed
 			{
 				//Play selection sound
 				playSound(SFX_YNConfirm);
 
-				if (tsc.select)
+				if (ptsc.select)
 				{
-					jumpTscEvent(tsc.next_event); //Jump to specified event
+					jumpTscEvent(ptsc, ptsc.next_event); //Jump to specified event
 				}
-				else if (!tsc.select)
+				else if (!ptsc.select)
 				{
 					//Continue like normal
-					tsc.mode = PARSE;
-					tsc.wait_beam = 0;
+					ptsc.mode = PARSE;
+					ptsc.wait_beam = 0;
 				}
 				else
 					doCustomError("Invalid YNJ result");
 			}
 			else if (isKeyPressed(keyLeft)) //Left pressed
 			{
-				tsc.select = 0; //Select yes and play sound
+				ptsc.select = 0; //Select yes and play sound
 				playSound(SFX_YNChangeChoice);
 			}
 			else if (isKeyPressed(keyRight)) //Right pressed
 			{
-				tsc.select = 1; //Select no and play sound
+				ptsc.select = 1; //Select no and play sound
 				playSound(SFX_YNChangeChoice);
 			}
 		}
 		else
 		{
-			++tsc.wait; //Add to wait counter
+			++ptsc.wait; //Add to wait counter
 		}
 
-		tscCheck();
-		return true;
+		tscCheck(ptsc);
+		return 1;
 
 	case WAS:
 		//Wait until on the ground
 		if (currentPlayer.flag & ground)
 		{
 			//Go into parse mode
-			tsc.mode = PARSE;
-			tsc.wait_beam = 0;
+			ptsc.mode = PARSE;
+			ptsc.wait_beam = 0;
 		}
 
-		tscCheck();
-		return true;
+		tscCheck(ptsc);
+		return 1;
 
 	default:
-		return false;
+		return 0;
 	}
 }
 
-bool doTscCommand(int *retVal, bool *bExit)
+void endTsc(TSC &ptsc, bool *bExit)
+{
+	ptsc.mode = END;
+	currentPlayer.cond &= ~player_interact;
+	gameFlags |= 3;
+	ptsc.face = 0;
+	*bExit = true;
+	return;
+}
+
+bool doTscCommand(int *retVal, bool *bExit, TSC &ptsc)
 {
     int xt;
     int yt;
@@ -459,7 +468,6 @@ bool doTscCommand(int *retVal, bool *bExit)
 	static bool notifiedAboutCPS = false;
 	static bool notifiedAboutCRE = false;
 	static bool notifiedAboutCSS = false;
-	static bool notifiedAboutFLA = false;
 	static bool notifiedAboutFOB = false;
 	static bool notifiedAboutINP = false;
 	static bool notifiedAboutSIL = false;
@@ -469,44 +477,44 @@ bool doTscCommand(int *retVal, bool *bExit)
 	static bool notifiedAboutXX1 = false;
 
 	//Parse and run TSC commands
-	switch (tsc.data[tsc.p_read + 3] + (tsc.data[tsc.p_read + 2] << 8) + (tsc.data[tsc.p_read + 1] << 16) + (tsc.data[tsc.p_read] << 24))
+	switch (ptsc.data[ptsc.p_read + 3] + (ptsc.data[ptsc.p_read + 2] << 8) + (ptsc.data[ptsc.p_read + 1] << 16) + (ptsc.data[ptsc.p_read] << 24))
 	{
 	case('<AE+'):
 		maxWeaponAmmo();
-		tscCleanup(0);
+		tscCleanup(0, ptsc);
 		break;
 	case('<AM+'):
-		tscNumber[0] = getTSCNumber(tsc.p_read + 9);
+		tscNumber[0] = getTSCNumber(ptsc, ptsc.p_read + 9);
 		tscNumber[1] = 0;
 		playSound(SFX_ItemGet);
-		giveWeapon(getTSCNumber(tsc.p_read + 4), getTSCNumber(tsc.p_read + 9));
-		tscCleanup(2);
+		giveWeapon(getTSCNumber(ptsc, ptsc.p_read + 4), getTSCNumber(ptsc, ptsc.p_read + 9));
+		tscCleanup(2, ptsc);
 		break;
 	case('<AM-'):
-		removeWeapon(getTSCNumber(tsc.p_read + 4));
-		tscCleanup(1);
+		removeWeapon(getTSCNumber(ptsc, ptsc.p_read + 4));
+		tscCleanup(1, ptsc);
 		break;
 	case('<AMJ'):
-		if (checkWeapon(getTSCNumber(tsc.p_read + 4)))
-			jumpTscEvent(getTSCNumber(tsc.p_read + 9));
+		if (checkWeapon(getTSCNumber(ptsc, ptsc.p_read + 4)))
+			jumpTscEvent(ptsc, getTSCNumber(ptsc, ptsc.p_read + 9));
 		else
-			tscCleanup(2);
+			tscCleanup(2, ptsc);
 		break;
 	case('<ANP'):
-        setNPCState(getTSCNumber(tsc.p_read + 4), getTSCNumber(tsc.p_read + 9), getTSCNumber(tsc.p_read + 14));
+        setNPCState(getTSCNumber(ptsc, ptsc.p_read + 4), getTSCNumber(ptsc, ptsc.p_read + 9), getTSCNumber(ptsc, ptsc.p_read + 14));
 
-		tscCleanup(3);
+		tscCleanup(3, ptsc);
 		break;
 	case('<BOA'):
-		setBossAction(getTSCNumber(tsc.p_read + 4));
-		tscCleanup(1);
+		setBossAction(getTSCNumber(ptsc, ptsc.p_read + 4));
+		tscCleanup(1, ptsc);
 		break;
 	case('<BSL'):
-		if (getTSCNumber(tsc.p_read + 4))
+		if (getTSCNumber(ptsc, ptsc.p_read + 4))
 		{
 			for (size_t i = 0; i < npcs.size(); i++)
 			{
-				if (npcs[i].code_event == getTSCNumber(tsc.p_read + 4))
+				if (npcs[i].code_event == getTSCNumber(ptsc, ptsc.p_read + 4))
 				{
 					bossLife.flag = 1;
 					bossLife.max = npcs[i].life;
@@ -524,11 +532,11 @@ bool doTscCommand(int *retVal, bool *bExit)
 			bossLife.pLife = &bossObj[0].life;
 		}
 
-		tscCleanup(1);
+		tscCleanup(1, ptsc);
 		break;
 	case('<CAT'):
-		tsc.flags |= 0x40u;
-		tscCleanup(0);
+		ptsc.flags |= 0x40u;
+		tscCleanup(0, ptsc);
 		break;
 	case('<CIL'):
 		if (!notifiedAboutCIL && debugFlags & notifyOnNotImplemented)
@@ -537,31 +545,31 @@ bool doTscCommand(int *retVal, bool *bExit)
 			showTSCNotImplementedWarning("<CIL is not implemented");
 		}
 
-		tscCleanup(0);
+		tscCleanup(0, ptsc);
 		break;
 	case('<CLO'):
-		tsc.flags &= ~0x33;
-		tscCleanup(0);
+		ptsc.flags &= ~0x33;
+		tscCleanup(0, ptsc);
 		break;
 	case('<CLR'):
-		clearTextLine();
-		tscCleanup(0);
+		clearTextLine(ptsc);
+		tscCleanup(0, ptsc);
 		break;
 	case('<CMP'):
-		changeTile(getTSCNumber(tsc.p_read + 4), getTSCNumber(tsc.p_read + 9),
-		           getTSCNumber(tsc.p_read + 14));
-		tscCleanup(3);
+		changeTile(getTSCNumber(ptsc, ptsc.p_read + 4), getTSCNumber(ptsc, ptsc.p_read + 9),
+		           getTSCNumber(ptsc, ptsc.p_read + 14));
+		tscCleanup(3, ptsc);
 		break;
 	case('<CMU'):
-		changeOrg(getTSCNumber(tsc.p_read + 4));
+		changeOrg(getTSCNumber(ptsc, ptsc.p_read + 4));
 
-		tscCleanup(1);
+		tscCleanup(1, ptsc);
 		break;
 	case('<CNP'):
-		changeNpc(getTSCNumber(tsc.p_read + 4),
-		          getTSCNumber(tsc.p_read + 9),
-		          getTSCNumber(tsc.p_read + 14));
-		tscCleanup(3);
+		changeNpc(getTSCNumber(ptsc, ptsc.p_read + 4),
+		          getTSCNumber(ptsc, ptsc.p_read + 9),
+		          getTSCNumber(ptsc, ptsc.p_read + 14));
+		tscCleanup(3, ptsc);
 		break;
 	case('<CPS'):
 		if (!notifiedAboutCPS && debugFlags & notifyOnNotImplemented)
@@ -570,7 +578,7 @@ bool doTscCommand(int *retVal, bool *bExit)
 			showTSCNotImplementedWarning("<CPS is not implemented");
 		}
 
-		tscCleanup(0);
+		tscCleanup(0, ptsc);
 		break;
 	case('<CRE'):
 		changeOrg(mus_TheWayBackHome); //because i smelly
@@ -580,7 +588,7 @@ bool doTscCommand(int *retVal, bool *bExit)
 			showTSCNotImplementedWarning("<CRE is not implemented");
 		}
 
-		tscCleanup(0);
+		tscCleanup(0, ptsc);
 		break;
 	case('<CSS'):
 		if (!notifiedAboutCSS && debugFlags & notifyOnNotImplemented)
@@ -589,120 +597,111 @@ bool doTscCommand(int *retVal, bool *bExit)
 			showTSCNotImplementedWarning("<CSS is not implemented");
 		}
 
-		tscCleanup(0);
+		tscCleanup(0, ptsc);
 		break;
 	case('<DNA'):
 		for (size_t i = 0; i < npcs.size(); i++)
 		{
 			if (npcs[i].cond & npccond_alive)
 			{
-				if (npcs[i].code_char == getTSCNumber(tsc.p_read + 4))
+				if (npcs[i].code_char == getTSCNumber(ptsc, ptsc.p_read + 4))
 				{
 					npcs[i].cond = 0;
 					setFlag(npcs[i].code_flag);
 				}
 			}
 		}
-		tscCleanup(1);
+		tscCleanup(1, ptsc);
 		break;
 	case('<DNP'):
 		for (size_t i = 0; i < npcs.size(); i++)
 		{
 			if (npcs[i].cond & npccond_alive)
 			{
-				if (npcs[i].code_event == getTSCNumber(tsc.p_read + 4))
+				if (npcs[i].code_event == getTSCNumber(ptsc, ptsc.p_read + 4))
 				{
 					npcs[i].cond = 0;
 					setFlag(npcs[i].code_flag);
 				}
 			}
 		}
-		tscCleanup(1);
+		tscCleanup(1, ptsc);
 		break;
 	case('<ECJ'):
 		for (size_t n = 0; n < npcs.size(); n++)
 		{
 			if (npcs[n].cond & npccond_alive)
 			{
-				if (npcs[n].code_char == getTSCNumber(tsc.p_read + 4))
+				if (npcs[n].code_char == getTSCNumber(ptsc, ptsc.p_read + 4))
 				{
-					jumpTscEvent(getTSCNumber(tsc.p_read + 9));
+					jumpTscEvent(ptsc, getTSCNumber(ptsc, ptsc.p_read + 9));
 					break;
 				}
 			}
 		}
 		break;
 	case('<END'):
-		tsc.mode = 0;
-		currentPlayer.cond &= ~player_interact;
-		gameFlags |= 3u;
-		tsc.face = 0;
-		*bExit = true;
+		endTsc(ptsc, bExit);
 		break;
 	case('<EQ+'):
-		currentPlayer.equip |= getTSCNumber(tsc.p_read + 4);
-		tscCleanup(1);
+		currentPlayer.equip |= getTSCNumber(ptsc, ptsc.p_read + 4);
+		tscCleanup(1, ptsc);
 		break;
 	case('<EQ-'):
-		currentPlayer.equip &= ~getTSCNumber(tsc.p_read + 4);
-		tscCleanup(1);
+		currentPlayer.equip &= ~getTSCNumber(ptsc, ptsc.p_read + 4);
+		tscCleanup(1, ptsc);
 		break;
 	case('<ESC'):
 		*retVal = 2;
 		return true;
 	case('<EVE'):
-		jumpTscEvent(getTSCNumber(tsc.p_read + 4));
+		jumpTscEvent(ptsc, getTSCNumber(ptsc, ptsc.p_read + 4));
 		break;
 	case('<FAC'):
-		if (tsc.face != getTSCNumber(tsc.p_read + 4))
+		if (ptsc.face != getTSCNumber(ptsc, ptsc.p_read + 4))
 		{
-			tsc.face_x = -48;
-			tsc.face = getTSCNumber(tsc.p_read + 4);
+			ptsc.face_x = -48;
+			ptsc.face = getTSCNumber(ptsc, ptsc.p_read + 4);
 		}
-		tscCleanup(1);
+		tscCleanup(1, ptsc);
 		break;
 	case('<FAI'):
 		fade.mode = 1;
-		fade.dir = getTSCNumber(tsc.p_read + 4);
+		fade.dir = getTSCNumber(ptsc, ptsc.p_read + 4);
 		fade.count = 0;
-		tsc.mode = FADE;
-		tscCleanup(1);
+		ptsc.mode = FADE;
+		tscCleanup(1, ptsc);
 		*bExit = true;
 		break;
 	case('<FAO'):
 		fade.mode = 2;
-		fade.dir = getTSCNumber(tsc.p_read + 4);
+		fade.dir = getTSCNumber(ptsc, ptsc.p_read + 4);
 		fade.count = 0;
-		tsc.mode = FADE;
-		tscCleanup(1);
+		ptsc.mode = FADE;
+		tscCleanup(1, ptsc);
 		*bExit = true;
 		break;
 	case('<FL+'):
-		setFlag(getTSCNumber(tsc.p_read + 4));
-		tscCleanup(1);
+		setFlag(getTSCNumber(ptsc, ptsc.p_read + 4));
+		tscCleanup(1, ptsc);
 		break;
 	case('<FL-'):
-		clearFlag(getTSCNumber(tsc.p_read + 4));
-		tscCleanup(1);
+		clearFlag(getTSCNumber(ptsc, ptsc.p_read + 4));
+		tscCleanup(1, ptsc);
 		break;
 	case('<FLA'):
-		if (!notifiedAboutFLA && debugFlags & notifyOnNotImplemented)
-		{
-			notifiedAboutFLA = true;
-			showTSCNotImplementedWarning("<FLA is not implemented");
-		}
-
-		tscCleanup(0);
+		setFlash(0, 0, normal, 20);
+		tscCleanup(0, ptsc);
 		break;
 	case('<FLJ'):
-		if (getFlag(getTSCNumber(tsc.p_read + 4)))
-			jumpTscEvent(getTSCNumber(tsc.p_read + 9));
+		if (getFlag(getTSCNumber(ptsc, ptsc.p_read + 4)))
+			jumpTscEvent(ptsc, getTSCNumber(ptsc, ptsc.p_read + 9));
 		else
-			tscCleanup(2);
+			tscCleanup(2, ptsc);
 		break;
 	case('<FMU'):
 		orgFadeout = true;
-		tscCleanup(0);
+		tscCleanup(0, ptsc);
 		break;
 	case('<FOB'):
 		if (!notifiedAboutFOB && debugFlags & notifyOnNotImplemented)
@@ -711,42 +710,42 @@ bool doTscCommand(int *retVal, bool *bExit)
 			showTSCNotImplementedWarning("<FOB is not implemented");
 		}
 
-		tscCleanup(2);
+		tscCleanup(2, ptsc);
 		break;
 	case('<FOM'):
 		viewport.lookX = &currentPlayer.tgt_x;
 		viewport.lookY = &currentPlayer.tgt_y;
-		viewport.speed = getTSCNumber(tsc.p_read + 4);
-		tscCleanup(1);
+		viewport.speed = getTSCNumber(ptsc, ptsc.p_read + 4);
+		tscCleanup(1, ptsc);
 		break;
 	case('<FON'):
 		for (size_t n = 0; n < npcs.size(); n++)
 		{
 			if (npcs[n].cond & npccond_alive)
 			{
-				if (npcs[n].code_event == getTSCNumber(tsc.p_read + 4))
+				if (npcs[n].code_event == getTSCNumber(ptsc, ptsc.p_read + 4))
 				{
 					viewport.lookX = &npcs[n].x;
 					viewport.lookY = &npcs[n].y;
-					viewport.speed = getTSCNumber(tsc.p_read + 9);
+					viewport.speed = getTSCNumber(ptsc, ptsc.p_read + 9);
 					break;
 				}
 			}
 		}
-		tscCleanup(2);
+		tscCleanup(2, ptsc);
 		break;
 	case('<FRE'):
 		gameFlags |= 3;
-		tscCleanup(0);
+		tscCleanup(0, ptsc);
 		break;
 	case('<GIT'):
-		tsc.item = getTSCNumber(tsc.p_read + 4);
-		tsc.item_y = 128;
-		tscCleanup(1);
+		ptsc.item = getTSCNumber(ptsc, ptsc.p_read + 4);
+		ptsc.item_y = 128;
+		tscCleanup(1, ptsc);
 		break;
 	case('<HMC'):
 		currentPlayer.cond &= ~player_visible;
-		tscCleanup(0);
+		tscCleanup(0, ptsc);
 		break;
 	case('<INI'):
 		initGame();
@@ -759,25 +758,25 @@ bool doTscCommand(int *retVal, bool *bExit)
 			showTSCNotImplementedWarning("<INP is not implemented");
 		}
 
-		tscCleanup(3);
+		tscCleanup(3, ptsc);
 		break;
 	case('<IT+'):
 		playSound(SFX_ItemGet);
-		for (xt = 0; xt < ITEMS && items[xt].code != getTSCNumber(tsc.p_read + 4) && items[xt].code; ++xt);
+		for (xt = 0; xt < ITEMS && items[xt].code != getTSCNumber(ptsc, ptsc.p_read + 4) && items[xt].code; ++xt);
 		if (xt == ITEMS)
 		{
-			tscCleanup(1);
+			tscCleanup(1, ptsc);
 			break;
 		}
 
-		items[xt].code = getTSCNumber(tsc.p_read + 4);
-		tscCleanup(1);
+		items[xt].code = getTSCNumber(ptsc, ptsc.p_read + 4);
+		tscCleanup(1, ptsc);
 		break;
 	case('<IT-'):
-		for (xt = 0; xt < ITEMS && items[xt].code != getTSCNumber(tsc.p_read + 4); ++xt);
+		for (xt = 0; xt < ITEMS && items[xt].code != getTSCNumber(ptsc, ptsc.p_read + 4); ++xt);
 		if (xt == ITEMS)
 		{
-			tscCleanup(1);
+			tscCleanup(1, ptsc);
 			break;
 		}
 
@@ -786,37 +785,37 @@ bool doTscCommand(int *retVal, bool *bExit)
 		items[yt - 1].code = 0;
 
 		selectedItem = 0;
-		tscCleanup(1);
+		tscCleanup(1, ptsc);
 		break;
 	case('<ITJ'):
-		for (xt = 0; xt < ITEMS && items[xt].code != getTSCNumber(tsc.p_read + 4); ++xt);
+		for (xt = 0; xt < ITEMS && items[xt].code != getTSCNumber(ptsc, ptsc.p_read + 4); ++xt);
 		if (xt == ITEMS)
-			tscCleanup(2);
+			tscCleanup(2, ptsc);
 		else
-			jumpTscEvent(getTSCNumber(tsc.p_read + 9));
+			jumpTscEvent(ptsc, getTSCNumber(ptsc, ptsc.p_read + 9));
 		break;
 	case('<KEY'):
 		gameFlags |= 1;
 		gameFlags &= ~2;
 		currentPlayer.up = false;
-		tscCleanup(0);
+		tscCleanup(0, ptsc);
 		break;
 	case('<LDP'):
 		loadProfile();
 		break;
 	case('<LI+'):
-		currentPlayer.life += getTSCNumber(tsc.p_read + 4);
+		currentPlayer.life += getTSCNumber(ptsc, ptsc.p_read + 4);
 		if (currentPlayer.life > currentPlayer.max_life)
 			currentPlayer.life = currentPlayer.max_life;
-		tscCleanup(1);
+		tscCleanup(1, ptsc);
 		break;
 	case('<ML+'):
-		currentPlayer.max_life += getTSCNumber(tsc.p_read + 4);
-		currentPlayer.life += getTSCNumber(tsc.p_read + 4);
-		tscCleanup(1);
+		currentPlayer.max_life += getTSCNumber(ptsc, ptsc.p_read + 4);
+		currentPlayer.life += getTSCNumber(ptsc, ptsc.p_read + 4);
+		tscCleanup(1, ptsc);
 		break;
 	case('<MLP'):
-		tscCleanup(0);
+		tscCleanup(0, ptsc);
 		*bExit = true;
 		xt = openMapSystem();
 		if (!xt)
@@ -832,111 +831,119 @@ bool doTscCommand(int *retVal, bool *bExit)
 		break;
 	case('<MM0'):
 		currentPlayer.xm = 0;
-		tscCleanup(0);
+		tscCleanup(0, ptsc);
 		break;
 	case('<MNA'):
 		mapName.wait = 0;
 		mapName.flag = 1;
-		tscCleanup(0);
+		tscCleanup(0, ptsc);
 		break;
 	case('<MNP'):
-        moveNPC(getTSCNumber(tsc.p_read + 4), getTSCNumber(tsc.p_read + 9) << 9, getTSCNumber(tsc.p_read + 14) << 9,
-                getTSCNumber(tsc.p_read + 19));
-		tscCleanup(4);
+        moveNPC(getTSCNumber(ptsc, ptsc.p_read + 4), getTSCNumber(ptsc, ptsc.p_read + 9) << 9, getTSCNumber(ptsc, ptsc.p_read + 14) << 9,
+                getTSCNumber(ptsc, ptsc.p_read + 19));
+		tscCleanup(4, ptsc);
 		break;
 	case('<MOV'):
-		currentPlayer.setPos(tilesToUnits(getTSCNumber(tsc.p_read + 4)), tilesToUnits(getTSCNumber(tsc.p_read + 9)));
-		tscCleanup(2);
+		currentPlayer.setPos(tilesToUnits(getTSCNumber(ptsc, ptsc.p_read + 4)), tilesToUnits(getTSCNumber(ptsc, ptsc.p_read + 9)));
+		tscCleanup(2, ptsc);
 		break;
 	case('<MPJ'):
 		if (getMapFlag(currentLevel))
-			jumpTscEvent(getTSCNumber(tsc.p_read + 4));
+			jumpTscEvent(ptsc, getTSCNumber(ptsc, ptsc.p_read + 4));
 		else
-			tscCleanup(1);
+			tscCleanup(1, ptsc);
 		break;
 	case('<MP+'):
-		setMapFlag(getTSCNumber(tsc.p_read + 4));
-		tscCleanup(1);
+		setMapFlag(getTSCNumber(ptsc, ptsc.p_read + 4));
+		tscCleanup(1, ptsc);
 		break;
 	case('<MS2'):
-		clearTextLine();
-		tsc.flags |= 0x21;
-		tsc.flags &= ~0x12;
-		if (tsc.flags & 0x40)
-			tsc.flags |= 0x10u;
-		tsc.face = 0;
-		tscCleanup(0);
+		clearTextLine(ptsc);
+		ptsc.flags |= 0x21;
+		ptsc.flags &= ~0x12;
+		if (ptsc.flags & 0x40)
+			ptsc.flags |= 0x10u;
+		ptsc.face = 0;
+		tscCleanup(0, ptsc);
 		*bExit = true;
 		break;
 	case('<MS3'):
-		clearTextLine();
-		tsc.flags |= 0x23;
-		tsc.flags &= ~0x10;
-		if (tsc.flags & 0x40)
-			tsc.flags |= 0x10u;
-		tscCleanup(0);
+		clearTextLine(ptsc);
+		ptsc.flags |= 0x23;
+		ptsc.flags &= ~0x10;
+		if (ptsc.flags & 0x40)
+			ptsc.flags |= 0x10u;
+		tscCleanup(0, ptsc);
 		*bExit = true;
 		break;
 	case('<MSG'):
-		clearTextLine();
-		tsc.flags |= 3;
-		tsc.flags &= ~0x30;
-		if (tsc.flags & 0x40)
-			tsc.flags |= 0x10u;
-		tscCleanup(0);
+		clearTextLine(ptsc);
+		ptsc.flags |= 3;
+		ptsc.flags &= ~0x30;
+		if (ptsc.flags & 0x40)
+			ptsc.flags |= 0x10u;
+		tscCleanup(0, ptsc);
 		*bExit = true;
 		break;
 	case('<MYB'):
-        currentPlayer.backStep(getTSCNumber(tsc.p_read + 4));
+        currentPlayer.backStep(getTSCNumber(ptsc, ptsc.p_read + 4));
 
-		tscCleanup(1);
+		tscCleanup(1, ptsc);
 		break;
 	case('<MYD'):
-		currentPlayer.setDir(getTSCNumber(tsc.p_read + 4));
-		tscCleanup(1);
+		currentPlayer.setDir(getTSCNumber(ptsc, ptsc.p_read + 4));
+		tscCleanup(1, ptsc);
 		break;
 	case('<NCJ'):
-		xt = getTSCNumber(tsc.p_read + 4);
-		yt = getTSCNumber(tsc.p_read + 9);
+		xt = getTSCNumber(ptsc, ptsc.p_read + 4);
+		yt = getTSCNumber(ptsc, ptsc.p_read + 9);
 
 		if (findEntityByType(xt) != -1)
-			jumpTscEvent(yt);
+			jumpTscEvent(ptsc, yt);
 		else
-			tscCleanup(2);
+			tscCleanup(2, ptsc);
 		break;
 	case('<NOD'):
-		tsc.mode = NOD;
-		tscCleanup(0);
+		ptsc.mode = NOD;
+		tscCleanup(0, ptsc);
 		*retVal = 1;
 		return true;
 	case('<NUM'):
-		tscPutNumber(getTSCNumber(tsc.p_read + 4));
-		tscCleanup(1);
+		tscPutNumber(ptsc, getTSCNumber(ptsc, ptsc.p_read + 4));
+		tscCleanup(1, ptsc);
 		break;
 	case('<PRI'):
 		gameFlags &= ~3;
-		tscCleanup(0);
+		tscCleanup(0, ptsc);
 		break;
 	case('<PS+'):
-		for (xt = 0; xt < 8 && permitStage[xt].index != getTSCNumber(tsc.p_read + 4) && permitStage[xt].index; ++xt);
+		for (xt = 0; xt < 8 && permitStage[xt].index != getTSCNumber(ptsc, ptsc.p_read + 4) && permitStage[xt].index; ++xt);
 		if (xt == 8)
 			break;
 
-		permitStage[xt].index = getTSCNumber(tsc.p_read + 4);
-		permitStage[xt].event = getTSCNumber(tsc.p_read + 9);
-		tscCleanup(2);
+		permitStage[xt].index = getTSCNumber(ptsc, ptsc.p_read + 4);
+		permitStage[xt].event = getTSCNumber(ptsc, ptsc.p_read + 9);
+		tscCleanup(2, ptsc);
 		break;
 	case('<QUA'):
-		viewport.quake = getTSCNumber(tsc.p_read + 4);
-		tscCleanup(1);
+		viewport.quake = getTSCNumber(ptsc, ptsc.p_read + 4);
+		tscCleanup(1, ptsc);
 		break;
 	case('<RMU'):
 		resumeOrg();
-		tscCleanup(0);
+		tscCleanup(0, ptsc);
 		break;
 	case('<SAT'):
-		tsc.flags |= 0x40u;	// <SAT is same as <CAT
-		tscCleanup(0);
+		ptsc.flags |= 0x40u;	// <SAT is same as <CAT
+		tscCleanup(0, ptsc);
+		break;
+	case('<SFC'):
+		setFlashColor(
+			getTSCNumber(ptsc, ptsc.p_read + 4),
+			getTSCNumber(ptsc, ptsc.p_read + 9),
+			getTSCNumber(ptsc, ptsc.p_read + 14),
+			getTSCNumber(ptsc, ptsc.p_read + 19));
+		tscCleanup(4, ptsc);
 		break;
 	case('<SIL'):
 		if (!notifiedAboutSIL && debugFlags & notifyOnNotImplemented)
@@ -945,21 +952,21 @@ bool doTscCommand(int *retVal, bool *bExit)
 			showTSCNotImplementedWarning("<SIL is not implemented");
 		}
 
-		tscCleanup(1);
+		tscCleanup(1, ptsc);
 		break;
 	case('<SK+'):
-		setSkipFlag(getTSCNumber(tsc.p_read + 4));
-		tscCleanup(1);
+		setSkipFlag(getTSCNumber(ptsc, ptsc.p_read + 4));
+		tscCleanup(1, ptsc);
 		break;
 	case('<SK-'):
-		clearSkipFlag(getTSCNumber(tsc.p_read + 4));
-		tscCleanup(1);
+		clearSkipFlag(getTSCNumber(ptsc, ptsc.p_read + 4));
+		tscCleanup(1, ptsc);
 		break;
 	case('<SKJ'):
-		if (getSkipFlag(getTSCNumber(tsc.p_read + 4)))
-			jumpTscEvent(getTSCNumber(tsc.p_read + 9));
+		if (getSkipFlag(getTSCNumber(ptsc, ptsc.p_read + 4)))
+			jumpTscEvent(ptsc, getTSCNumber(ptsc, ptsc.p_read + 9));
 		else
-			tscCleanup(2);
+			tscCleanup(2, ptsc);
 		break;
 	case('<SLP'):
 		*bExit = true;
@@ -974,31 +981,31 @@ bool doTscCommand(int *retVal, bool *bExit)
             *retVal = 2;
             return true;
         }
-		jumpTscEvent(xt);
+		jumpTscEvent(ptsc, xt);
 		gameFlags &= ~3;
 		break;
 	case('<SMC'):
 		currentPlayer.cond |= player_visible;
-		tscCleanup(0);
+		tscCleanup(0, ptsc);
 		break;
 	case('<SMP'):
-		shiftTile(getTSCNumber(tsc.p_read + 4), getTSCNumber(tsc.p_read + 9));
-		tscCleanup(2);
+		shiftTile(getTSCNumber(ptsc, ptsc.p_read + 4), getTSCNumber(ptsc, ptsc.p_read + 9));
+		tscCleanup(2, ptsc);
 		break;
 	case('<SNP'):
 
 		createNpc(
-		    getTSCNumber(tsc.p_read + 4),
-		    tilesToUnits(getTSCNumber(tsc.p_read + 9)),
-		    tilesToUnits(getTSCNumber(tsc.p_read + 14)),
+		    getTSCNumber(ptsc, ptsc.p_read + 4),
+		    tilesToUnits(getTSCNumber(ptsc, ptsc.p_read + 9)),
+		    tilesToUnits(getTSCNumber(ptsc, ptsc.p_read + 14)),
 		    0,
 		    0,
-		    getTSCNumber(tsc.p_read + 19));
-		tscCleanup(4);
+		    getTSCNumber(ptsc, ptsc.p_read + 19));
+		tscCleanup(4, ptsc);
 		break;
 	case('<SOU'):
-		playSound(getTSCNumber(tsc.p_read + 4));
-		tscCleanup(1);
+		playSound(getTSCNumber(ptsc, ptsc.p_read + 4));
+		tscCleanup(1, ptsc);
 		break;
 	case('<SPS'):
 		if (!notifiedAboutSPS && debugFlags & notifyOnNotImplemented)
@@ -1007,7 +1014,7 @@ bool doTscCommand(int *retVal, bool *bExit)
 			showTSCNotImplementedWarning("<SPS is not implemented");
 		}
 
-		tscCleanup(0);
+		tscCleanup(0, ptsc);
 		break;
 	case('<SSS'):
 		if (!notifiedAboutSSS && debugFlags & notifyOnNotImplemented)
@@ -1016,7 +1023,7 @@ bool doTscCommand(int *retVal, bool *bExit)
 			showTSCNotImplementedWarning("<SSS is not implemented");
 		}
 
-		tscCleanup(1);
+		tscCleanup(1, ptsc);
 		break;
 	case('<STC'):
 		if (!notifiedAboutSTC && debugFlags & notifyOnNotImplemented)
@@ -1025,46 +1032,48 @@ bool doTscCommand(int *retVal, bool *bExit)
 			showTSCNotImplementedWarning("<STC is not implemented");
 		}
 
-		tscCleanup(0);
+		tscCleanup(0, ptsc);
 		break;
 	case('<SVP'):
 		saveProfile();
-		tscCleanup(0);
+		tscCleanup(0, ptsc);
 		break;
 	case('<TAM'):
-		tradeWeapons(getTSCNumber(tsc.p_read + 4), getTSCNumber(tsc.p_read + 9), getTSCNumber(tsc.p_read + 14));
-		tscCleanup(3);
+		tradeWeapons(getTSCNumber(ptsc, ptsc.p_read + 4), getTSCNumber(ptsc, ptsc.p_read + 9), getTSCNumber(ptsc, ptsc.p_read + 14));
+		tscCleanup(3, ptsc);
 		break;
 	case('<TRA'):
-		xt = getTSCNumber(tsc.p_read + 9);
+		xt = getTSCNumber(ptsc, ptsc.p_read + 9);
 		currentPlayer.setPos(
-		    tilesToUnits(getTSCNumber(tsc.p_read + 14)),
-		    tilesToUnits(getTSCNumber(tsc.p_read + 19)));
-		loadLevel(getTSCNumber(tsc.p_read + 4));
-		startTscEvent(xt);
+		    tilesToUnits(getTSCNumber(ptsc, ptsc.p_read + 14)),
+		    tilesToUnits(getTSCNumber(ptsc, ptsc.p_read + 19)));
+		loadLevel(getTSCNumber(ptsc, ptsc.p_read + 4));
+
+		endTsc(ptsc, bExit);
+		startTscEvent(tsc, xt);
 		*retVal = 1;
 		return true;
 	case('<TUR'):
-		tscCleanup(0);
-		tsc.flags |= 0x10;
+		tscCleanup(0, ptsc);
+		ptsc.flags |= 0x10;
 		break;
 	case('<UNI'):
-		currentPlayer.unit = getTSCNumber(tsc.p_read + 4);
-		tscCleanup(1);
+		currentPlayer.unit = getTSCNumber(ptsc, ptsc.p_read + 4);
+		tscCleanup(1, ptsc);
 		break;
 	case('<UNJ'):
-		tscCleanup(2);
+		tscCleanup(2, ptsc);
 		break;
 	case('<WAI'):
-		tsc.mode = WAI;
-		tsc.wait = 0;
-		tsc.wait_next = getTSCNumber(tsc.p_read + 4);
-		tscCleanup(1);
+		ptsc.mode = WAI;
+		ptsc.wait = 0;
+		ptsc.wait_next = getTSCNumber(ptsc, ptsc.p_read + 4);
+		tscCleanup(1, ptsc);
 		*bExit = true;
 		break;
 	case('<WAS'):
-		tsc.mode = WAS;
-		tscCleanup(0);
+		ptsc.mode = WAS;
+		tscCleanup(0, ptsc);
 		*bExit = true;
 		break;
 	case('<XX1'):
@@ -1074,97 +1083,103 @@ bool doTscCommand(int *retVal, bool *bExit)
 			showTSCNotImplementedWarning("<XX1 is not implemented");
 		}
 
-		tscCleanup(1);
+		tscCleanup(1, ptsc);
 		break;
 	case('<YNJ'):
-		tsc.next_event = getTSCNumber(tsc.p_read + 4);
-		tsc.mode = YNJ;
+		ptsc.next_event = getTSCNumber(ptsc, ptsc.p_read + 4);
+		ptsc.mode = YNJ;
 		playSound(SFX_YNPrompt);
-		tsc.wait = 0;
-		tsc.select = 0;
-		tscCleanup(1);
+		ptsc.wait = 0;
+		ptsc.select = 0;
+		tscCleanup(1, ptsc);
 		*bExit = true;
 		break;
 	case('<ZAM'):
 		clearWeaponExperience();
-		tscCleanup(0);
+		tscCleanup(0, ptsc);
 		break;
 	default:
-		doCustomError("Unimplemented and unhandled (no fail-safe) TSC command");
+		char wmsg[35] = { 0 };
+		strncpy(wmsg, reinterpret_cast<char*>(ptsc.data + ptsc.p_read), 4);
+		strcat(wmsg, " is not a valid tsc command!");
+		showTSCNotImplementedWarning(wmsg);
+
+		endTsc(ptsc, bExit);
 		break;
 	}
 	return false;
 }
 
-int updateTsc()
+int updateTsc(TSC &ptsc)
 {
 	bool bExit = false;
 	char str[72];
 	char c[3];
 
-    if (doTscModes(&bExit))
-        return 1;
+	int mode = doTscModes(&bExit, ptsc);
+    if (mode)
+        return mode;
 
     while (true) //Parsing
 	{
 		if (bExit == true)
         {
-			tscCheck();
+			tscCheck(ptsc);
             return 1;
         }
 
-		if (tsc.data[tsc.p_read] != '<')
+		if (ptsc.data[ptsc.p_read] != '<')
 		{
-			if (tsc.data[tsc.p_read] == 13) //Check for break line
+			if (ptsc.data[ptsc.p_read] == 13) //Check for break line
 			{
 				//Shift read and write positions accordingly
-				tsc.p_read += 2;
-				tsc.p_write = 0;
+				ptsc.p_read += 2;
+				ptsc.p_write = 0;
 
 				//Only move if message box visible?
-				if (tsc.flags & 1)
+				if (ptsc.flags & 1)
 				{
-					++tsc.line;
-					checkNewLine();
+					++ptsc.line;
+					checkNewLine(ptsc);
 				}
 			}
-			else if (tsc.flags & 0x10) //CAT / SAT / TUR
+			else if (ptsc.flags & 0x10) //CAT / SAT / TUR
 			{
 				//Go through until reaching a command indicator or break line
 				int x;
-				for (x = tsc.p_read; ; ++x)
+				for (x = ptsc.p_read; ; ++x)
 				{
-					const bool quit = !(tsc.data[x] == '<' || tsc.data[x] == 13);
+					const bool quit = !(ptsc.data[x] == '<' || ptsc.data[x] == 13);
 
 					if (!quit)
 						break;
-					if ((tsc.data[x] & 0x80) != 0)
+					if ((ptsc.data[x] & 0x80) != 0)
 						++x;
 				}
 
 				//Get data to copy from tsc data
-				int copy = x - tsc.p_read;
-				memcpy(str, &tsc.data[tsc.p_read], copy);
+				int copy = x - ptsc.p_read;
+				memcpy(str, &ptsc.data[tsc.p_read], copy);
 				str[copy] = 0;
 
 				//Copy data onto the text buffer
-				strcpy(tscText + (tsc.line * 0x40), str);
-				memset(tscTextFlag + (tsc.line * 0x40), 1, copy); //This sets the flag that makes drawn text thinner.
+				strcpy(tscText + (ptsc.line * 0x40), str);
+				memset(tscTextFlag + (ptsc.line * 0x40), 1, copy); //This sets the flag that makes drawn text thinner.
 
 				//Shift read and write positions
-				tsc.p_write = x; //Pixel uses an absolute value rather than a relative value
-				tsc.p_read += copy;
+				ptsc.p_write = x; //Pixel uses an absolute value rather than a relative value
+				ptsc.p_read += copy;
 
 				//Check for new lines
-				if (tsc.p_write > 34)
-					checkNewLine();
+				if (ptsc.p_write > 34)
+					checkNewLine(ptsc);
 
 				bExit = true;
 			}
 			else
 			{
 				//Code for multibyte things?
-				c[0] = tsc.data[tsc.p_read];
+				c[0] = ptsc.data[ptsc.p_read];
 
 				if (c[0] >= 0) // Isn't c unsigned ?
 				{
@@ -1172,41 +1187,41 @@ int updateTsc()
 				}
 				else
 				{
-					c[1] = tsc.data[tsc.p_read + 1];
+					c[1] = ptsc.data[ptsc.p_read + 1];
 					c[2] = 0;
 				}
 
 				//Copy onto the text buffer
-				strcat(tscText + (tsc.line % 4 << 6), c);
-				tscTextFlag[(tsc.line % 4 << 6) + tsc.p_write] = 0; //Make text display at normal width
+				strcat(tscText + (ptsc.line % 4 << 6), c);
+				tscTextFlag[(ptsc.line % 4 << 6) + ptsc.p_write] = 0; //Make text display at normal width
 
 				//Make equal signs draw as the circle thing
 				if (c[0] == '=')
-					tscTextFlag[(tsc.line % 4 << 6) + tsc.p_write] |= 2;
+					tscTextFlag[(ptsc.line % 4 << 6) + ptsc.p_write] |= 2;
 
 				//Play sound and reset cursor blinking timer.
 				playSound(SFX_MessageTyping);
-				tsc.wait_beam = 0;
+				ptsc.wait_beam = 0;
 
 				//Shift read and write positions
 				if (c[0] >= 0)	// Isn't c unsigned ?
 				{
-					++tsc.p_read;
-					++tsc.p_write;
+					++ptsc.p_read;
+					++ptsc.p_write;
 				}
 				else
 				{
-					tsc.p_read += 2;
-					tsc.p_write += 2;
+					ptsc.p_read += 2;
+					ptsc.p_write += 2;
 				}
 
 				//Check for new lines
-				if (tsc.p_write > 34)
+				if (ptsc.p_write > 34)
 				{
-					checkNewLine();
-					tsc.p_write = 0;
-					++tsc.line;
-					checkNewLine();
+					checkNewLine(ptsc);
+					ptsc.p_write = 0;
+					++ptsc.line;
+					checkNewLine(ptsc);
 				}
 
 				bExit = true;
@@ -1215,7 +1230,7 @@ int updateTsc()
 		else
 		{
 		    int retVal;
-            if (doTscCommand(&retVal, &bExit))
+            if (doTscCommand(&retVal, &bExit, ptsc))
                 return retVal;
 		}
 	}

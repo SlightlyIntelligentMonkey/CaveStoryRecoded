@@ -86,7 +86,7 @@ void moveInventoryCursor()
 				selectedItem = itemNo - 1;
 
 			if (inventoryActive && isKeyPressed(keyJump))
-				startTscEvent(items[selectedItem].code + 6000);
+				startTscEvent(tsc, items[selectedItem].code + 6000);
 		}
 		else
 		{
@@ -121,18 +121,18 @@ void moveInventoryCursor()
 				playSound(1);
 
 				if (itemNo)
-					startTscEvent(items[selectedItem].code + 5000);
+					startTscEvent(tsc, items[selectedItem].code + 5000);
 				else
-					startTscEvent(5000);
+					startTscEvent(tsc, 5000);
 			}
 			else
 			{
 				playSound(4);
 
 				if (weaponNo)
-					startTscEvent(weapons[selectedWeapon].code + 1000);
+					startTscEvent(tsc, weapons[selectedWeapon].code + 1000);
 				else
-					startTscEvent(1000);
+					startTscEvent(tsc, 1000);
 			}
 		}
 	}
@@ -261,9 +261,9 @@ int openInventory()
 	for (weaponNo = 0; weaponNo < WEAPONS && weapons[weaponNo].code != 0; ++weaponNo);
 
 	if (weaponNo)
-		startTscEvent(weapons[selectedWeapon].code + 1000);
+		startTscEvent(tsc, weapons[selectedWeapon].code + 1000);
 	else
-		startTscEvent(items[selectedItem].code + 5000);
+		startTscEvent(tsc, items[selectedItem].code + 5000);
 
 	while (true)
 	{
@@ -300,7 +300,7 @@ int openInventory()
 		//Check to close
 		if (!inventoryActive && (isKeyPressed(keyMenu) || isKeyPressed(keyJump) || isKeyPressed(keyShoot)))
 		{
-			stopTsc();
+			stopTsc(tsc);
 			loadStageTsc(oldScript.c_str());
 			weaponShiftX = 32;
 			return 1;
@@ -308,7 +308,7 @@ int openInventory()
 
 		if (gameFlags & 2 && (isKeyPressed(keyMenu) || isKeyPressed(keyShoot)))
 		{
-			stopTsc();
+			stopTsc(tsc);
 			loadStageTsc(oldScript.c_str());
 			weaponShiftX = 32;
 			return 1;
