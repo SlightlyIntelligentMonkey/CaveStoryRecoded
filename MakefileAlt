@@ -41,6 +41,7 @@ bin/CaveStoryRemake: $(OBJS)
 	@mkdir -p $(@D)
 	@$(CXX) $(ALL_CXXFLAGS) $(OBJS) -o $@ $(ALL_LDFLAGS) $(ALL_LIBS)
 
+# general compile
 obj/%.o: source/%.cpp
 	@mkdir -p $(@D)
 	@$(CXX) $(ALL_CXXFLAGS) $< -o $@ -c

@@ -45,10 +45,9 @@ bin/CaveStoryRemake: $(OBJS)
 # Remove -lmingw32 for actual Unix build maybe ? Also prolly remove the ".dll"s at the end of SDL2.dll and SDL2_image.dll
 
 # general compile
-
 obj/%.o: source/%.cpp
 	@mkdir -p $(@D)
-	$(COMPILE_CPP) $^ -o $@
+	$(COMPILE_CPP) $< -o $@
 
 obj/icon.o: res/icon.rc res/icon_mini.ico
 	@windres $< $@

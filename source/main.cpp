@@ -90,7 +90,7 @@ void init()
 	SDL_SetHint(SDL_HINT_WINDOWS_INTRESOURCE_ICON_SMALL, "102");
 #endif
 
-	//Initiate SDL and window stuff
+	//Initiate SDL
 	if (SDL_Init(SDL_INIT_TIMER | SDL_INIT_AUDIO | SDL_INIT_VIDEO | SDL_INIT_GAMECONTROLLER) < 0)
 		doCustomError("Couldn't initiate SDL");
 
@@ -100,8 +100,6 @@ void init()
 
 	loadConfigFiles();
 
-	// TBD : Load config data, initialise keybinds and screen resolution based on it
-	// TBD : Init joypad
 	loadConfig();
 
 	initTsc();
