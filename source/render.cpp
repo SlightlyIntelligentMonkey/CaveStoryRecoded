@@ -66,7 +66,6 @@ static SDL_Surface* loadPNGToSurface(const char *path)
 		{
 			for (unsigned int i = 0; i < height; ++i)
 				memcpy((unsigned char*)surface->pixels + (i * surface->pitch), pixel_buffer + (i * width * 4), width * 4);
-
 		}
 
 		free(pixel_buffer);
