@@ -61,14 +61,10 @@ void loadInitialSprites()
 
 	loadImage("data/StageImage.png", &sprites[TEX_STAGEIMAGE]);
 
-<<<<<<< HEAD
 	loadImage("data/MyChar.png", &sprites[TEX_MYCHAR]);
 
 	loadImage("data/Bullet.png", &sprites[TEX_BULLET]);
 	loadImage("data/Caret.png", &sprites[TEX_CARET]);
-=======
-	loadImage("data/MyChar.png", &sprites[0x10]);
->>>>>>> e50bbb8c6038e8208e2111719c81505aac22f748
 
 	loadImage("data/Npc/NpcSym.png", &sprites[TEX_NPC_SYM]);
 
@@ -101,23 +97,11 @@ void init()
 		doCustomError("Couldn't initiate SDL Image");
 
 	loadConfigFiles();
-<<<<<<< HEAD
-	loadConfig();
 
-=======
-	
-	//draws loading
-	loadImage("data/Loading.png", &sprites[TEX_LOADING]);
-	SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
-	SDL_RenderClear(renderer);
-	RECT rcLoad = { 0, 0, 64, 8 };
-	drawTexture(sprites[TEX_LOADING], &rcLoad, (screenWidth >> 1) - (rcLoad.right >> 1), (screenHeight >> 1) - (rcLoad.bottom >> 1));
-	SDL_RenderPresent(renderer);
-	
->>>>>>> e50bbb8c6038e8208e2111719c81505aac22f748
 	// TBD : Load config data, initialise keybinds and screen resolution based on it
 	// TBD : Init joypad
-
+	loadConfig();
+	
 	//draws loading
 	loadImage("data/Loading.png", &sprites[TEX_LOADING]);
 	SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
