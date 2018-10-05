@@ -49,7 +49,7 @@ static SDL_Surface* loadPNGToSurface(const char *path)
 	unsigned int height;
 	if (const unsigned int error = lodepng_decode32_file(&pixel_buffer, &width, &height, path))
 	{
-		doCustomError((std::string)"loadPNGToSurface failed!\n\nlodepng error: " + lodepng_error_text(error) + '\n');
+		doCustomError((std::string)"loadPNGToSurface failed!\n\nlodepng error: " + lodepng_error_text(error));
 	}
 	else
 	{
@@ -60,7 +60,7 @@ static SDL_Surface* loadPNGToSurface(const char *path)
 
 		if (surface == nullptr)
 		{
-			doCustomError((std::string)"loadPNGToSurface failed!\n\nSDL2 error: " + SDL_GetError() + '\n');
+			doCustomError((std::string)"loadPNGToSurface failed!\n\nSDL2 error: " + SDL_GetError());
 		}
 		else
 		{
@@ -86,7 +86,7 @@ static SDL_Texture* loadPNGToTexture(SDL_Renderer *renderer, const char *path)
 		texture = SDL_CreateTextureFromSurface(renderer, surface);
 
 		if (texture == nullptr)
-			doCustomError((std::string)"loadPNGToTexture failed!\n\nSDL2 error: " + SDL_GetError() + '\n');
+			doCustomError((std::string)"loadPNGToTexture failed!\n\nSDL2 error: " + SDL_GetError());
 
 		SDL_FreeSurface(surface);
 	}
