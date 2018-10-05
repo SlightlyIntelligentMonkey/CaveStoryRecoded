@@ -20,7 +20,7 @@ void initLogFile()
     if (fileExists(logFileName))
     {
         logFile.open(logFileName, fstream::app);
-        logFile << "\n\n\n\n";
+        logFile << "\n\n";
     }
     else
         logFile.open(logFileName, fstream::out);

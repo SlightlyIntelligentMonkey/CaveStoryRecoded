@@ -1,8 +1,9 @@
 #pragma once
 
 #include <deque>
-#include <vector>
+#include <array>
 #include "common.h"
+#include "log.h"
 
 struct NPC_RECT
 {
@@ -109,17 +110,52 @@ public:
 	void createSmokeWithVel(size_t num, int xVel, int yVel);
 	void doGravity(int gravity, int maxYVel);
 
-	void doRects(const std::vector<RECT>& rcLeft, const std::vector<RECT>& rcRight);
-	void doRects(const std::vector<RECT>& rcNPC);
+	template <size_t N> void doRects(const std::array<RECT, N>& rcLeft, const std::array<RECT, N>& rcRight)
+	{
+		try
+		{
+			if (this->direct != dirLeft)
+				this->rect = rcRight.at(this->ani_no);
+			else
+				this->rect = rcLeft.at(this->ani_no);
+		} catch (const std::out_of_range& oops)
+		{
+			logError("U FUCKED UP THE RECTS LMAO"
+				" (btw it's for NPC " + std::to_string(this->code_char) +
+				" and you tried to access rect no " + std::to_string(this->ani_no) + ") (exception details : " + oops.what() + ')');
+			this->surf = 0x27;
+			this->doRects({ 0, 0, this->view.left >> 8, this->view.top >> 8 });
+		}
+	}
+	template <size_t N> void doRects(const std::array<RECT, N>& rcNPC)
+	{
+		try
+		{
+			this->rect = rcNPC.at(this->ani_no);
+		} catch (const std::out_of_range& oops)
+		{
+			logError("U FUCKED UP THE RECTS LMAO"
+				" (btw it's for NPC " + std::to_string(this->code_char) +
+				" and you tried to access rect no " + std::to_string(this->ani_no) + ") (exception details : " + oops.what() + ')');
+			this->surf = 0x27;
+			this->doRects({ 0, 0, this->view.left >> 8, this->view.top >> 8 });
+		}
+	}
+
 	void doRects(RECT rcLeft, RECT rcRight);
 	void doRects(RECT rcNPC);
+
 	void facePlayer();
     int getXDistToPlayer() attrPure;
+
 	void limitXVel(int maxVel);
 	void limitYVel(int maxVel);
+
 	void moveInDir(int vel);
+
 	void accelerateTowardsXTarget(int vel);
 	void accelerateTowardsYTarget(int vel);
+
 	bool isPlayerWithinDistance(int xDist, int yDistHigh, int yDistLow) attrPure;
 	inline bool isPlayerWithinDistance(int xDist, int yDist) attrPure
 	{
@@ -153,6 +189,7 @@ void updateNPC();
 void drawNPC();
 void dropExperience(int x, int y, int exp);
 void killNpc(npc *NPC, bool bVanish = true);
+void killNpcsByType(int entityType, bool makeDustClouds = true);
 
 extern std::deque<npc> npcs;
 
@@ -165,7 +202,7 @@ extern int curlyShootY;
 
 enum NPC_cond
 {
-	npccond_dmgboss = 0x10,
+	npccond_dmgboss = 0x10, //when set damages the main boss
 	npccond_alive = 0x80, //Determines if an npc is alive
 };
 

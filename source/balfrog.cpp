@@ -7,35 +7,38 @@
 #include "common.h"
 #include "level.h"
 
-//states enum so this is more readable
-enum
+namespace balfrogStates
 {
-	ini = 0,
-	start = 10,
-	ini_flicker = 20,
-	flicker = 21,
-	wait = 100,
-	ini_hop_1 = 101,
-	ini_hop_2 = 102,
-	hop = 103,
-	midair = 104,
-	ini_land = 110,
-	land = 111,
-	ini_shoot = 112,
-	shoot = 113,
-	ini_leap = 120,
-	ini_leap_2 = 121,
-	ini_leap_3 = 122,
-	leap = 123,
-	leap_midair = 124,
-	die = 130,
-	die_flashing = 131,
-	revert = 132,
-	nop_start = 140,
-	nop = 141,
-	go_into_ceilng = 142,
-	gone_into_ceiling = 143
-};
+    //states enum so this is more readable
+    enum
+    {
+        ini = 0,
+        start = 10,
+        ini_flicker = 20,
+        flicker = 21,
+        wait = 100,
+        ini_hop_1 = 101,
+        ini_hop_2 = 102,
+        hop = 103,
+        midair = 104,
+        ini_land = 110,
+        land = 111,
+        ini_shoot = 112,
+        shoot = 113,
+        ini_leap = 120,
+        ini_leap_2 = 121,
+        ini_leap_3 = 122,
+        leap = 123,
+        leap_midair = 124,
+        die = 130,
+        die_flashing = 131,
+        revert = 132,
+        nop_start = 140,
+        nop = 141,
+        go_into_ceilng = 142,
+        gone_into_ceiling = 143
+    };
+}   // balfrogStates
 
 //balfrog's mouth
 void balfrogMouth(npc *sub)
@@ -105,8 +108,10 @@ void balfrog_other_half(npc *sub)
 }
 
 //main boss ai
-void actBoss_Frog(npc *boss)
+void actBoss_Balfrog(npc *boss)
 {
+    using namespace balfrogStates;
+
 	int xm = 0;
 	int ym = 0;
 	uint8_t deg = 0;
@@ -160,6 +165,7 @@ void actBoss_Frog(npc *boss)
 	case ini_flicker:
 		boss->act_no = 21;
 		boss->act_wait = 0;
+		// Fallthrough
 	case flicker:
 		if (++boss->act_wait / 2 & 1)
 			boss->ani_no = 2;
@@ -171,6 +177,7 @@ void actBoss_Frog(npc *boss)
 		boss->act_wait = 0;
 		boss->ani_no = 0;
 		boss->xm = 0;
+		// Fallthrough
 	case ini_hop_1:
 		if (++boss->act_wait > 50)
 		{
@@ -242,6 +249,7 @@ void actBoss_Frog(npc *boss)
 		boss->ani_no = 0;
 		boss->act_wait = 0;
 		boss->act_no = land;
+		// Fallthrough
 	case land:
 		boss->xm = 8 * boss->xm / 9;
 		if (boss->act_wait++ > 50)
@@ -322,6 +330,7 @@ void actBoss_Frog(npc *boss)
 		boss->act_wait = 0;
 		boss->ani_no = 0;
 		boss->xm = 0;
+		// Fallthrough
 	case ini_leap_2:
 		if (++boss->act_wait > 50)
 		{
@@ -359,9 +368,9 @@ void actBoss_Frog(npc *boss)
 			boss->view.top = 24576;
 			boss->view.bottom = 0x2000;
 			for (int i = 0; i <= 1; ++i)
-				createNpc(NPC_EnemyFrog, random(4, 16) << 13, random(0, 4) << 13, 0, 0, 4, 0);
+				createNpc(NPC_EnemyFrog, random(4, 16) << 13, random(0, 4) << 13, 0, 0, dirAuto);
 			for (int i = 0; i <= 5; ++i)
-				createNpc(NPC_EnemyPuchi, random(4, 16) << 13, random(0, 4) << 13, 0, 0, 4, 0);
+				createNpc(NPC_EnemyPuchi, random(4, 16) << 13, random(0, 4) << 13, 0, 0, dirAuto);
 			for (int i = 0; i <= 7; ++i)
 				createNpc(NPC_Smoke, boss->x + (random(-12, 12) << 9), boss->y + boss->hit.bottom, random(-341, 341), random(-1536, 0));
 			if (!boss->direct && boss->x < currentPlayer.x)
@@ -386,6 +395,7 @@ void actBoss_Frog(npc *boss)
 			createNpc(NPC_Smoke, boss->x + (random(-12, 12) << 9), boss->y + (random(-12, 12) << 9), random(-341, 341), random(-1536, 0));
 		bossObj[1].cond = 0;
 		bossObj[2].cond = 0;
+		// Fallthrough
 	case die_flashing:
 		if (!(++boss->act_wait % 5))
 			createNpc(NPC_Smoke, boss->x + (random(-12, 12) << 9), boss->y + (random(-12, 12) << 9), random(-341, 341), random(-1536, 0));
@@ -426,6 +436,7 @@ void actBoss_Frog(npc *boss)
 		break;
 	case nop_start:
 		boss->act_no = 141;
+		// Fallthrough
 	case nop:
 		if (boss->flag & 8)
 		{
@@ -456,9 +467,7 @@ void actBoss_Frog(npc *boss)
 		break;
 	}
 
-	boss->doGravity(64, 1535);
-	//if (ym < 0) { boss->bits |= npc_ignoreSolid; }
-	//else { boss->bits &= npc_ignoreSolid; }
+	boss->doGravity(0x40, 0x5FF);
 
 	boss->x += boss->xm;
 	boss->y += boss->ym;
@@ -486,5 +495,4 @@ void actBoss_Frog(npc *boss)
 
 	balfrogMouth(&bossObj[1]);
 	balfrog_other_half(&bossObj[2]);
-	return;
 }

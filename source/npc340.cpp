@@ -1,13 +1,13 @@
 #include "npc340.h"
 
-#include <vector>
+#include <array>
 #include "player.h"
 #include "mathUtils.h"
 #include "sound.h"
 #include "render.h"
 #include "level.h"
 
-using std::vector;
+using std::array;
 
 void npcAct347(npc *NPC) // Hoppy (enemy)
 {
@@ -85,7 +85,7 @@ void npcAct347(npc *NPC) // Hoppy (enemy)
         break;
     }
 
-    vector<RECT> rcNPC = {{256, 48, 272, 64}, {272, 48, 288, 64}, {288, 48, 304, 64}, {304, 48, 320, 64}};
+	array<RECT, 4> rcNPC = { {{256, 48, 272, 64}, {272, 48, 288, 64}, {288, 48, 304, 64}, {304, 48, 320, 64}} };
 
     NPC->doRects(rcNPC);
 }

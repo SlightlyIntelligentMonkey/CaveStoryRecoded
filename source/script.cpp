@@ -1,5 +1,6 @@
 #include "script.h"
 
+#include <string>
 #include <cstring>
 #include <cstdlib>
 #include <SDL_messagebox.h>
@@ -20,6 +21,8 @@
 #include "org.h"
 #include "main.h"
 #include "level.h"
+
+using std::string;
 
 //Variables
 TSC tsc;
@@ -310,9 +313,10 @@ void tscPutNumber(int index)
 	}
 }
 
-static inline void showTSCNotImplementedWarning(const char *message) noexcept
+static inline void showTSCNotImplementedWarning(const string& message) noexcept
 {
-	SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_WARNING, "Unimplemented command", message, nullptr);
+	SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_WARNING, "Unimplemented command", message.c_str(), nullptr);
+	logWarning(message);
 }
 
 bool doTscModes(bool *bExit)
@@ -1115,7 +1119,7 @@ int updateTsc()
 
 		if (tsc.data[tsc.p_read] != '<')
 		{
-			if (tsc.data[tsc.p_read] == 13) //Check for break line
+			if (tsc.data[tsc.p_read] == '\r') //Check for break line
 			{
 				//Shift read and write positions accordingly
 				tsc.p_read += 2;
@@ -1134,7 +1138,7 @@ int updateTsc()
 				int x;
 				for (x = tsc.p_read; ; ++x)
 				{
-					const bool quit = !(tsc.data[x] == '<' || tsc.data[x] == 13);
+					const bool quit = !(tsc.data[x] == '<' || tsc.data[x] == '\r');
 
 					if (!quit)
 						break;

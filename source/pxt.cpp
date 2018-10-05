@@ -10,6 +10,7 @@
 
 using std::vector;
 using std::string;
+using std::to_string;
 
 //For pxt
 int8_t waveModelTable[6][256];
@@ -84,9 +85,7 @@ std::vector<long double> getNumbersFromString(const string& str)
 							break;
 					}
 					else
-					{
 						break;
-					}
 					v++;
 				}
 
@@ -97,9 +96,7 @@ std::vector<long double> getNumbersFromString(const string& str)
 					currentValue += (long double)(str[i] - 0x30) * (1.0 / pow(10, 2 - ((v - i) - 1)));
 			}
 			else
-			{
 				numberDecimal = true;
-			}
 		}
 		else
 		{
@@ -248,7 +245,7 @@ int makePixelWaveData(const std::vector<long double>& pxtData, uint8_t *data)
 	return 1;
 }
 
-int loadSound(const char *path, uint8_t **buf, size_t *length)
+int loadSound(const string& path, uint8_t **buf, size_t *length)
 {
 	if (fileExists(path))
 	{
@@ -265,8 +262,7 @@ int loadSound(const char *path, uint8_t **buf, size_t *length)
 
 				if (lineNumbers[i].size() != 21)
 				{
-					char error[0x100];
-					sprintf(error, "PXT: %s\nChannel: %s\nInvalid amount of properties: %s", path, std::to_string(i).c_str(), std::to_string(lineNumbers[i].size()).c_str());
+					string error("PXT: " + path + "\nChannel: " + to_string(i) + "\nInvalid amount of properties: " + to_string(lineNumbers[i].size()));
 					doCustomError(error);
 				}
 			}
@@ -309,9 +305,7 @@ int loadSound(const char *path, uint8_t **buf, size_t *length)
 								pBlock[j] = (uint8_t)-1;
 						}
 						else
-						{
 							pBlock[j] = 0;
-						}
 					}
 				}
 
@@ -339,17 +333,13 @@ int loadSound(const char *path, uint8_t **buf, size_t *length)
 			return -3;
 		}
 		else
-		{
 			return -4;
-		}
 
 		return 1;
 	}
 	else
 	{
-		char error[0x100];
-		sprintf(error, "Attempted to load .pxt which doesn't exist:\n%s", path);
+		string error("Attempted to load .pxt which doesn't exist:\n" + path);
 		doCustomError(error);
-		return -5;
 	}
 }

@@ -1,7 +1,7 @@
 #include "npc000.h"
 
 #include <string>
-#include <vector>
+#include <array>
 #include <SDL_messagebox.h>
 #include "render.h"
 #include "mathUtils.h"
@@ -15,7 +15,7 @@
 
 using std::string;
 using std::to_string;
-using std::vector;
+using std::array;
 
 void npcActNone(npc *NPC)
 {
@@ -142,7 +142,7 @@ void npcAct001(npc *NPC) //Experience
 	NPC->y += NPC->ym;
 
 	//Framerects
-	vector<RECT> rect(6);
+	array<RECT, 6> rect;
 
 	rect[0] = { 0x00, 0x10, 0x10, 0x20 };
 	rect[1] = { 0x10, 0x10, 0x20, 0x20 };
@@ -200,8 +200,8 @@ void npcAct002(npc *NPC) //Behemoth
 {
 	const int act_no = NPC->act_no;
 
-	vector<RECT> rcLeft(7);
-	vector<RECT> rcRight(7);
+	array<RECT, 7> rcLeft;
+	array<RECT, 7> rcRight;
 
 	//Framerect
 	rcLeft[0] = { 32, 0, 64, 24 };
@@ -599,8 +599,8 @@ void npcAct006(npc *NPC) //Beetle
 
 void npcAct007(npc *NPC) //Basil
 {
-	vector<RECT> rcRight(3);
-	vector<RECT> rcLeft(3);
+	array<RECT, 3> rcRight;
+	array<RECT, 3> rcLeft;
 
 	rcLeft[0] = { 256, 64, 288, 80 };
 	rcLeft[1] = { 256, 80, 288, 96 };
@@ -692,8 +692,8 @@ void npcAct007(npc *NPC) //Basil
 
 void npcAct008(npc *NPC) //Follow beetle (egg corridor)
 {
-	vector<RECT> rcRight(2);
-	vector<RECT> rcLeft(2);
+	array<RECT, 2> rcRight;
+	array<RECT, 2> rcLeft;
 
 	rcLeft[0] = { 80, 80, 96, 96 };
 	rcLeft[1] = { 96, 80, 112, 96 };
@@ -789,8 +789,8 @@ void npcAct008(npc *NPC) //Follow beetle (egg corridor)
 
 void npcAct009(npc *NPC) //Balrog drop in
 {
-	vector<RECT> rcLeft(3);
-	vector<RECT> rcRight(3);
+	array<RECT, 3> rcLeft;
+	array<RECT, 3> rcRight;
 
 	rcLeft[0] = { 0, 0, 40, 24 };
 	rcLeft[1] = { 80, 0, 120, 24 };
@@ -864,7 +864,7 @@ void npcAct009(npc *NPC) //Balrog drop in
 
 void npcAct011(npc *NPC) //Bubble
 {
-	vector<RECT> rect(3);
+	array<RECT, 3> rect;
 
 	rect[0] = { 208, 104, 224, 120 };
 	rect[1] = { 224, 104, 240, 120 };
@@ -901,8 +901,8 @@ void npcAct012(npc *NPC) //Balrog cutscene
 	int x;
 	int y;
 
-	vector<RECT> rcLeft(14);
-	vector<RECT> rcRight(14);
+	array<RECT, 14> rcLeft;
+	array<RECT, 14> rcRight;
 
 	rcLeft[0] = { 0x000, 0x000, 0x028, 0x018 };
 	rcLeft[1] = { 0x0A0, 0x000, 0x0C8, 0x018 };
@@ -1217,7 +1217,7 @@ void npcAct012(npc *NPC) //Balrog cutscene
 
 void npcAct013(npc *NPC) // Forcefield
 {
-	vector<RECT> rcNPC = { {128, 0, 144, 16 }, {144, 0, 160, 16 }, {160, 0, 176, 16}, {176, 0, 192, 16 } };
+	array<RECT, 4> rcNPC = { {{128, 0, 144, 16 }, {144, 0, 160, 16 }, {160, 0, 176, 16}, {176, 0, 192, 16 } } };
 
 	if (++NPC->ani_wait > 0)
 	{
@@ -1233,7 +1233,7 @@ void npcAct013(npc *NPC) // Forcefield
 
 void npcAct014(npc * NPC) // Santa's Key
 {
-	vector<RECT> rcNPC = { {192, 0, 208, 16}, {208, 0, 224, 16}, {224, 0, 240, 16} };
+	array<RECT, 3> rcNPC = { { {192, 0, 208, 16}, {208, 0, 224, 16}, {224, 0, 240, 16} } };
 
 	if (!NPC->act_no)
 	{
@@ -1472,8 +1472,8 @@ void npcAct018(npc *NPC) //Door
 
 void npcAct019(npc *NPC) //Balrog burst
 {
-	vector<RECT> rcLeft(4);
-	vector<RECT> rcRight(4);
+	array<RECT, 4> rcLeft;
+	array<RECT, 4> rcRight;
 
 	rcLeft[0] = { 0, 0, 40, 24 };
 	rcLeft[1] = { 160, 0, 200, 24 };

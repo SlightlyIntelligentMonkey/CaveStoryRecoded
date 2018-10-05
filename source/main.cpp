@@ -60,8 +60,6 @@ void loadInitialSprites()
 
 	loadImage("data/StageImage.png", &sprites[0x0E]);
 
-	loadImage("data/Loading.png", &sprites[0x0F]);
-
 	loadImage("data/MyChar.png", &sprites[0x10]);
 
 	loadImage("data/Bullet.png", &sprites[0x11]);
@@ -81,7 +79,7 @@ void loadInitialSprites()
 
 void init()
 {
-    initLogFile();
+	initLogFile();
 
 #ifdef USE_ICONS_WINDOWS
 	// Set the window icons. See icon.rc.
@@ -89,14 +87,20 @@ void init()
 	SDL_SetHint(SDL_HINT_WINDOWS_INTRESOURCE_ICON_SMALL, "102");
 #endif
 
-	//Initiate SDL and window stuff
+	//Initiate SDL
 	if (SDL_Init(SDL_INIT_TIMER | SDL_INIT_AUDIO | SDL_INIT_VIDEO | SDL_INIT_GAMECONTROLLER) < 0)
 		doCustomError("Couldn't initiate SDL");
 
 	loadConfigFiles();
 
-	// TBD : Load config data, initialise keybinds and screen resolution based on it
-	// TBD : Init joypad
+	//draws loading
+	loadImage("data/Loading.png", &sprites[TEX_LOADING]);   // Load the loading sprite now so that we can display it
+	SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
+	SDL_RenderClear(renderer);
+	RECT rcLoad = { 0, 0, 64, 8 };
+	drawTexture(sprites[TEX_LOADING], &rcLoad, (screenWidth >> 1) - (rcLoad.right >> 1), (screenHeight >> 1) - (rcLoad.bottom >> 1));
+	SDL_RenderPresent(renderer);
+
 	loadConfig();
 
 	initTsc();

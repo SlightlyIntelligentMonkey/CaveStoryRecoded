@@ -1,6 +1,6 @@
 #include "npc180.h"
 
-#include <vector>
+#include <array>
 #include <cmath>
 #include "mathUtils.h"
 #include "player.h"
@@ -11,12 +11,12 @@
 #include "caret.h"
 #include "level.h"
 
-using std::vector;
+using std::array;
 
 void npcAct180(npc * NPC) // Curly, AI
 {
-	vector<RECT> rcLeft(11);
-	vector<RECT> rcRight(11);
+	array<RECT, 11> rcLeft;
+	array<RECT, 11> rcRight;
 
 	rcLeft[0] = { 0, 96, 16, 112 };
 	rcLeft[1] = { 16, 96, 0x20, 112 };
@@ -348,8 +348,8 @@ void curlyNPCCommonBulletSpawn(const npc *NPC, int bulletCode)
 
 void npcAct181(npc *NPC) // Curly Machine Gun bullet spawner (projectile)
 {
-	vector<RECT> rcLeft = { { 184, 152, 200, 168 },{ 200, 152, 216, 168 } };
-	vector<RECT> rcRight = { { 184, 168, 200, 184 },{ 200, 168, 216, 184 } };
+	array<RECT, 2> rcLeft = { { { 184, 152, 200, 168 }, { 200, 152, 216, 168 } } };
+	array<RECT, 2> rcRight = { { { 184, 168, 200, 184 }, { 200, 168, 216, 184 } } };
 
 	if (NPC->pNpc)
 	{
@@ -377,8 +377,8 @@ void npcAct181(npc *NPC) // Curly Machine Gun bullet spawner (projectile)
 
 void npcAct182(npc * NPC) // Curly Polar Star bullet spawner (projectile)
 {
-	vector<RECT> rcLeft = { { 184, 152, 200, 168 },{ 200, 152, 216, 168 } };
-	vector<RECT> rcRight = { { 184, 168, 200, 184 },{ 200, 168, 216, 184 } };
+	array<RECT, 2> rcLeft = { { { 184, 152, 200, 168 }, { 200, 152, 216, 168 } } };
+	array<RECT, 2> rcRight = { { { 184, 168, 200, 184 }, { 200, 168, 216, 184 } } };
 
 	if (NPC->pNpc)
 	{
@@ -407,7 +407,7 @@ void npcAct182(npc * NPC) // Curly Polar Star bullet spawner (projectile)
 
 void npcAct183(npc * NPC) // Curly Air Bubble
 {
-	vector<RECT> rcNPC = { {56, 96, 80, 120}, {80, 96, 104, 120} };
+	array<RECT, 2> rcNPC = { { {56, 96, 80, 120}, {80, 96, 104, 120} } };
 
 	if (NPC->pNpc)
 	{
@@ -431,8 +431,8 @@ void npcAct183(npc * NPC) // Curly Air Bubble
 
 void npcAct187(npc *NPC) //Fuzz
 {
-	vector<RECT> rcLeft(2);
-	vector<RECT> rcRight(2);
+	array<RECT, 2> rcLeft;
+	array<RECT, 2> rcRight;
 
 	rcLeft[0].left = 224;
 	rcLeft[0].top = 104;
@@ -514,8 +514,8 @@ void npcAct187(npc *NPC) //Fuzz
 void npcAct188(npc *NPC) //Baby Fuzz
 {
 	uint8_t deg;
-	vector<RECT> rcLeft(2);
-	vector<RECT> rcRight(2);
+	array<RECT, 2> rcLeft;
+	array<RECT, 2> rcRight;
 
 	rcLeft[0].left = 288;
 	rcLeft[0].top = 104;
@@ -687,8 +687,8 @@ void npcAct192(npc *NPC) // Scooter
 			createCaret(NPC->x + pixelsToUnits(10), NPC->y + pixelsToUnits(10), effect_BoosterSmoke, dirRight);
 	}
 
-	vector<RECT> rcLeft = { {224, 64, 256, 80}, {256, 64, 288, 96} };
-	vector<RECT> rcRight = { {224, 80, 256, 96}, {288, 64, 320, 96} };
+	array<RECT, 2> rcLeft = { { {224, 64, 256, 80}, {256, 64, 288, 96} } };
+	array<RECT, 2> rcRight = { { {224, 80, 256, 96}, {288, 64, 320, 96} }};
 
 	NPC->doRects(rcLeft, rcRight);
 }

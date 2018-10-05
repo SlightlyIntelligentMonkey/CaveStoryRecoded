@@ -29,7 +29,7 @@ MAIN += blade bubbler fireball missile polarStar machineGun misc nemesis snake s
 # npc acts
 MAIN += npcAct npc000 npc020 npc040 npc060 npc080 npc100 npc120 npc140 npc160 npc180 npc200 npc220 npc240 npc260 npc280 npc300 npc320 npc340
 # boss acts
-MAIN += balfrog omega
+MAIN += balfrog heavyPress omega
 
 OBJS := $(addprefix obj/, $(addsuffix .o, $(MAIN)))
 DEPS := $(addsuffix .d, $(OBJS))
@@ -43,6 +43,7 @@ bin/CaveStoryRemake: $(OBJS)
 	@mkdir -p $(@D)
 	@$(CXX) $(ALL_CXXFLAGS) $(OBJS) -o $@ $(ALL_LDFLAGS) $(ALL_LIBS)
 
+# general compile
 obj/%.o: source/%.cpp
 	@mkdir -p $(@D)
 	@$(CXX) $(ALL_CXXFLAGS) $< -o $@ -c
@@ -52,5 +53,6 @@ obj/icon.o: res/icon.rc res/icon_mini.ico
 
 include $(wildcard $(DEPS))
 
+# Remove all objects files and the binary
 clean:
 	@rm -rf obj bin/CaveStoryRemake

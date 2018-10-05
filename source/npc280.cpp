@@ -1,9 +1,9 @@
 #include "npc280.h"
 
-#include <vector>
+#include <array>
 #include "game.h"
 
-using std::vector;
+using std::array;
 
 void npcAct292(npc * /*NPC*/) //Quake
 {
@@ -23,7 +23,7 @@ void npcAct297(npc *NPC) //Sue on sky dragon
 
 void npcAct298(npc *NPC) //Doctor without crown (intro)
 {
-	vector<RECT> rc(8);
+	array<RECT, 8> rc;
 
 	rc[0] = { 0x48, 0x80, 0x58, 0xA0 };
 	rc[1] = { 0x58, 0x80, 0x68, 0xA0 };
@@ -127,7 +127,7 @@ void npcAct298(npc *NPC) //Doctor without crown (intro)
 
 void npcAct299(npc *NPC) //Balrog / Misery in bubble (intro)
 {
-	vector<RECT> rc(2); // [esp+0h] [ebp-20h]
+	array<RECT, 2> rc; // [esp+0h] [ebp-20h]
 
 	rc[0] = { 0, 0, 48, 48 };
 	rc[1] = { 48, 0, 96, 48 };

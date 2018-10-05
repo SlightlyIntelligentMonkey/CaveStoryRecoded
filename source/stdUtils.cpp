@@ -12,10 +12,3 @@ string hexToString(unsigned int i)
 	s << std::hex << i;
 	return s.str();
 }
-
-string octToString(unsigned int i)
-{
-    stringstream s;
-    s << std::oct << i;
-    return s.str();
-}

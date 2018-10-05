@@ -1,15 +1,99 @@
 #include "npc320.h"
 
-#include <vector>
+#include <array>
 #include "player.h"
 #include "level.h"
 #include "render.h"
+#include "game.h"
+#include "sound.h"
 
-using std::vector;
+using std::array;
+
+void npcAct322(npc *NPC) // Deleet (enemy)
+{
+    constexpr array<RECT, 2> rcNormal = {{{272, 216, 296, 240}, {296, 216, 320, 240}}};
+    constexpr RECT rcExploding = {160, 216, 184, 240};
+
+    if (NPC->act_no < 2 && NPC->life <= 968)
+    {
+        NPC->act_no = 2;
+        NPC->act_wait = 0;
+        NPC->bits &= ~npc_shootable;
+        NPC->bits |= npc_invulnerable;
+    }
+
+    switch (NPC->act_no)
+    {
+    case 0:
+        NPC->act_no = 1;
+        if (NPC->direct != dirLeft)
+            NPC->x += tilesToUnits(0.5);
+        else
+            NPC->y += tilesToUnits(0.5);
+        // Fallthrough
+    case 1:
+        if (NPC->shock)
+            ++NPC->count1;
+        else
+            NPC->count1 = 0;
+
+        NPC->rect = rcNormal.at(NPC->count1 / 2 & 1);
+        return;
+
+    case 2:
+        NPC->ani_no = 2;
+        switch (NPC->act_wait)
+        {
+        case secondsToFrames(0):
+            createNpc(NPC_BalloonCountdown, NPC->x + pixelsToUnits(4), NPC->y, 0, 0, 0);
+            break;
+
+        case secondsToFrames(1):
+            createNpc(NPC_BalloonCountdown, NPC->x + pixelsToUnits(4), NPC->y, 0, 0, 1);
+            break;
+
+        case secondsToFrames(2):
+            createNpc(NPC_BalloonCountdown, NPC->x + pixelsToUnits(4), NPC->y, 0, 0, 2);
+            break;
+
+        case secondsToFrames(3):
+            createNpc(NPC_BalloonCountdown, NPC->x + pixelsToUnits(4), NPC->y, 0, 0, 3);
+            break;
+
+        case secondsToFrames(4):
+            createNpc(NPC_BalloonCountdown, NPC->x + pixelsToUnits(4), NPC->y, 0, 0, 4);
+            break;
+
+        case secondsToFrames(5):
+            NPC->hit = {tilesToUnits(3), tilesToUnits(3), tilesToUnits(3), tilesToUnits(3)};
+            NPC->damage = 12;
+            playSound(SFX_LargeObjectHitGround);
+            createSmokeLeft(NPC->x, NPC->y, tilesToUnits(3), 40);
+            viewport.quake = 10;
+            if (NPC->direct != dirLeft)
+            {
+                deleteTile(unitsToTiles(NPC->x - tilesToUnits(0.5)), unitsToTiles(NPC->y));
+                deleteTile(unitsToTiles(NPC->x + tilesToUnits(0.5)), unitsToTiles(NPC->y));
+            }
+            else
+            {
+                deleteTile(unitsToTiles(NPC->x), unitsToTiles(NPC->y - tilesToUnits(0.5)));
+                deleteTile(unitsToTiles(NPC->x), unitsToTiles(NPC->y + tilesToUnits(0.5)));
+            }
+            NPC->cond |= 8;
+            break;
+
+        default:
+            break;
+        }
+        ++NPC->act_wait;
+        NPC->rect = rcExploding;
+    }
+}
 
 void npcAct323(npc *NPC)
 {
-	vector<RECT> rcNPC = {{216, 32, 232, 56}, {232, 32, 248, 56}, {216, 56, 232, 80}, {232, 56, 248, 80}};
+	array<RECT, 4> rcNPC = { {{216, 32, 232, 56}, {232, 32, 248, 56}, {216, 56, 232, 80}, {232, 56, 248, 80}} };
 
 	NPC->animate(3, 0, 3);
 
@@ -116,5 +200,5 @@ void npcAct324(npc *NPC)
 
 void npcAct328(npc *NPC) // Transmogrifier
 {
-	NPC->doRects({{96, 0, 128, 48}});
+	NPC->doRects({96, 0, 128, 48});
 }

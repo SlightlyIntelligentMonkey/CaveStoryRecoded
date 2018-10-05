@@ -193,8 +193,6 @@ void debugFunction()
 		static int debugMode = 0;
 		if (debugMode == 0 && isKeyDown(SDL_SCANCODE_RSHIFT) && isKeyDown(SDL_SCANCODE_BACKSPACE))
 		{
-			//if (isKeyPressed(SDL_SCANCODE_M))
-			//	debugMode = 1;
 			if (isKeyPressed(SDL_SCANCODE_K))
 				debugFlags ^= showSlots;
 			if (isKeyPressed(SDL_SCANCODE_C))
@@ -203,8 +201,14 @@ void debugFunction()
 				debugFlags ^= showBULId;
 			if (isKeyPressed(SDL_SCANCODE_N))
 				debugFlags ^= showNPCId;
-			if (isKeyPressed(SDL_SCANCODE_KP_PLUS))
-				giveWeapon(13, 0);
+			if (isKeyPressed(SDL_SCANCODE_H))
+				debugFlags ^= showHitRects;
+			if (isKeyPressed(SDL_SCANCODE_R))
+				debugFlags ^= showHurtRects;
+			if (isKeyPressed(SDL_SCANCODE_EQUALS))
+				framerate--;
+			if (isKeyPressed(SDL_SCANCODE_MINUS))
+				framerate++;
 		}
 
 		switch (debugMode)

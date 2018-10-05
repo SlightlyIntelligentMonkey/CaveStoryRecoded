@@ -1,12 +1,135 @@
 ﻿#include "npc140.h"
 
-#include <vector>
+#include <array>
 #include "sound.h"
 #include "player.h"
 #include "caret.h"
 #include "mathUtils.h"
 
-using std::vector;
+using std::array;
+
+void npcAct143(npc *NPC) //Jenka collapsed
+{
+	RECT rcLeft[1];
+	RECT rcRight[1];
+
+	rcLeft[0].left = 208;
+	rcLeft[0].top = 32;
+	rcLeft[0].right = 224;
+	rcLeft[0].bottom = 48;
+	rcRight[0].left = 208;
+	rcRight[0].top = 48;
+	rcRight[0].right = 224;
+	rcRight[0].bottom = 64;
+
+	if (NPC->direct)
+		NPC->rect = rcRight[NPC->ani_no];
+	else
+		NPC->rect = rcLeft[NPC->ani_no];
+}
+
+void npcAct144(npc *NPC) //Toroko teleport in
+{
+	RECT rcLeft[5];
+	RECT rcRight[5];
+
+	rcLeft[0] = { 0, 64, 16, 80 };
+	rcLeft[1] = { 16, 64, 32, 80 };
+	rcLeft[2] = { 32, 64, 48, 80 };
+	rcLeft[3] = { 16, 64, 32, 80 };
+	rcLeft[4] = { 128, 64, 144, 80 };
+	rcRight[0] = { 0, 80, 16, 96 };
+	rcRight[1] = { 16, 80, 32, 96 };
+	rcRight[2] = { 32, 80, 48, 96 };
+	rcRight[3] = { 16, 80, 32, 96 };
+	rcRight[4] = { 128, 80, 144, 96 };
+
+	switch (NPC->act_no)
+	{
+	case 0:
+		NPC->act_no = 1;
+		NPC->ani_no = 0;
+		NPC->ani_wait = 0;
+		NPC->tgt_x = NPC->x;
+		playSound(SFX_Teleport);
+//Fallthrough
+	case 1:
+		if (++NPC->act_wait == 64)
+		{
+			NPC->act_no = 2;
+			NPC->act_wait = 0;
+		}
+		break;
+
+	case 2:
+		if (++NPC->ani_wait > 2)
+		{
+			NPC->ani_wait = 0;
+			++NPC->ani_no;
+		}
+
+		if (NPC->ani_no > 3)
+			NPC->ani_no = 2;
+
+		if (NPC->flag & ground)
+		{
+			NPC->act_no = 4;
+			NPC->act_wait = 0;
+			NPC->ani_no = 4;
+			playSound(SFX_HitGround);
+		}
+		break;
+
+	case 10:
+		NPC->act_no = 11;
+		NPC->ani_no = 0;
+		NPC->ani_wait = 0;
+//Fallthrough
+	case 11:
+		if (random(0, 120) == 10)
+		{
+			NPC->act_no = 12;
+			NPC->act_wait = 0;
+			NPC->ani_no = 1;
+		}
+		break;
+
+	case 12:
+		if (++NPC->act_wait > 8)
+		{
+			NPC->act_no = 11;
+			NPC->ani_no = 0;
+		}
+		break;
+
+	default:
+		break;
+	}
+
+	if (NPC->act_no > 1)
+	{
+		NPC->ym += 0x20;
+		if (NPC->ym > 0x5FF)
+			NPC->ym = 0x5FF;
+
+		NPC->y += NPC->ym;
+	}
+
+	if (NPC->direct)
+		NPC->rect = rcRight[NPC->ani_no];
+	else
+		NPC->rect = rcLeft[NPC->ani_no];
+
+	if (NPC->act_no == 1)
+	{
+		NPC->rect.bottom = NPC->act_wait / 4 + NPC->rect.top;
+
+		if (NPC->act_wait / 2 & 1)
+			NPC->x = NPC->tgt_x;
+		else
+			NPC->x = NPC->tgt_x + 0x200;
+	}
+}
 
 void npcAct143(npc *NPC) //Jenka collapsed
 {
@@ -169,7 +292,7 @@ void npcAct145(npc *NPC) //King's blade
 
 void npcAct146(npc *NPC) //Lightning
 {
-	vector<RECT> rect(5);
+	array<RECT, 5> rect;
 
 	rect[0] = { 0, 0, 0, 0 };
 	rect[1] = { 260, 0, 275, 240 };
@@ -218,8 +341,8 @@ void npcAct146(npc *NPC) //Lightning
 
 void npcAct147(npc *NPC)
 {
-	vector<RECT> rcLeft(6);
-	vector<RECT> rcRight(6);
+	array<RECT, 6> rcLeft;
+	array<RECT, 6> rcRight;
 	uint8_t deg;
 
 	rcLeft[0].left = 0;
@@ -429,7 +552,7 @@ void npcAct147(npc *NPC)
 
 void npcAct148(npc *NPC)
 {
-	vector<RECT> rect(2);
+	array<RECT, 2> rect;
 
 	if (NPC->flag & 0xFF)
 	{
@@ -463,8 +586,8 @@ void npcAct148(npc *NPC)
 
 void npcAct150(npc *NPC) // Quote
 {
-	vector<RECT> rcLeft(9);
-	vector<RECT> rcRight(9);
+	array<RECT, 9> rcLeft;
+	array<RECT, 9> rcRight;
 
 	rcLeft[0] = { 0, 0, 16, 16 };
 	rcLeft[1] = { 48, 0, 64, 16 };
@@ -646,8 +769,8 @@ void npcAct150(npc *NPC) // Quote
 
 void npcAct151(npc *NPC) //Blue robot standing
 {
-	vector<RECT> rcLeft(2);
-	vector<RECT> rcRight(2);
+	array<RECT, 2> rcLeft;
+	array<RECT, 2> rcRight;
 
 	rcLeft[0] = { 192, 0, 208, 16 };
 	rcLeft[1] = { 208, 0, 224, 16 };
@@ -683,8 +806,8 @@ void npcAct151(npc *NPC) //Blue robot standing
 
 void npcAct153(npc *NPC)
 {
-	vector<RECT> rcLeft =
-	{
+	array<RECT, 21> rcLeft =
+	{ {
 		{ 0, 0, 24, 24 },
 		{ 24, 0, 48, 24 },
 		{ 48, 0, 72, 24 },
@@ -706,10 +829,10 @@ void npcAct153(npc *NPC)
 		{ 288, 0, 312, 24 },
 		{ 24, 48, 48, 72 },
 		{ 96, 48, 120, 72 }
-	};
+	} };
 
-	vector<RECT> rcRight =
-	{
+	array<RECT, 21> rcRight =
+	{ {
 		{ 0, 24, 24, 48 },
 		{ 24, 24, 48, 48 },
 		{ 48, 24, 72, 48 },
@@ -731,7 +854,7 @@ void npcAct153(npc *NPC)
 		{ 288, 24, 312, 48 },
 		{ 24, 72, 48, 96 },
 		{ 96, 72, 120, 96 }
-	};
+	} };
 
 	if (NPC->x <= currentPlayer.x + 0x28000 && NPC->x >= currentPlayer.x - 0x28000 && NPC->y <= currentPlayer.y + 0x1E000 && NPC->y >= currentPlayer.y - 0x1E000)
 	{
@@ -902,8 +1025,8 @@ void npcAct153(npc *NPC)
 
 void npcAct154(npc *NPC)
 {
-	vector<RECT> rcLeft =
-	{
+	array<RECT, 21> rcLeft =
+	{ {
 		{ 0, 0, 24, 24 },
 		{ 24, 0, 48, 24 },
 		{ 48, 0, 72, 24 },
@@ -925,10 +1048,10 @@ void npcAct154(npc *NPC)
 		{ 288, 0, 312, 24 },
 		{ 24, 48, 48, 72 },
 		{ 96, 48, 120, 72 }
-	};
+	} };
 
-	vector<RECT> rcRight =
-	{
+	array<RECT, 21> rcRight =
+	{ {
 		{ 0, 24, 24, 48 },
 		{ 24, 24, 48, 48 },
 		{ 48, 24, 72, 48 },
@@ -950,7 +1073,7 @@ void npcAct154(npc *NPC)
 		{ 288, 24, 312, 48 },
 		{ 24, 72, 48, 96 },
 		{ 96, 72, 120, 96 }
-	};
+	} };
 
 	switch (NPC->act_no)
 	{

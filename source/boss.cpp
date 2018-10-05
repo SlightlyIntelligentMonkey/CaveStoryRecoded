@@ -2,7 +2,7 @@
 
 #include <string>
 #include <cstring>
-#include <SDL_messagebox.h>
+#include <SDL.h>
 #include "valueview.h"
 #include "npc.h"
 #include "game.h"
@@ -21,13 +21,13 @@ const bossAct bossActs[10] =
 {
 	static_cast<bossAct>(nullptr),
 	&actBoss_Omega,
-	&actBoss_Frog,
+	&actBoss_Balfrog,
 	static_cast<bossAct>(nullptr),
 	static_cast<bossAct>(nullptr),
 	static_cast<bossAct>(nullptr),
 	static_cast<bossAct>(nullptr),
 	static_cast<bossAct>(nullptr),
-	static_cast<bossAct>(nullptr),
+	&actBoss_HeavyPress,
 	static_cast<bossAct>(nullptr),
 };
 
@@ -102,6 +102,15 @@ void drawBoss()
 			drawTexture(sprites[TEX_NPC_2], &bossObj[bos].rect,
 				(bossObj[bos].x - side) / 0x200 - (viewport.x / 0x200) + shake,
 				(bossObj[bos].y - bossObj[bos].view.top) / 0x200 - (viewport.y / 0x200));
+
+			if (debugFlags & showHitRects)
+			{
+				SDL_SetRenderDrawColor(renderer, 0x80, 0x80, 0x80, 0xFF);
+				drawRect(unitsToPixels(bossObj[bos].x - bossObj[bos].hit.left) - unitsToPixels(viewport.x),
+					unitsToPixels(bossObj[bos].y - bossObj[bos].hit.top) - unitsToPixels(viewport.y),
+					unitsToPixels(bossObj[bos].hit.right + bossObj[bos].hit.left),
+					unitsToPixels(bossObj[bos].hit.bottom + bossObj[bos].hit.top));
+			}
 		}
 	}
 }
