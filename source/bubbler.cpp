@@ -218,17 +218,11 @@ void actBulletBubbler3(bullet *bul)
 		createCaret(bul->x, bul->y, 2, 0);
 		playSound(SFX_BubblerShootLevel3, 1);
 		if (currentPlayer.up)
-		{
-			createBullet(bullet_BubblerSpurs, bul->x, bul->y, 1);
-		}
+			createBullet(bullet_BubblerSpurs, bul->x, bul->y, dirUp);
 		else if (currentPlayer.down)
-		{
-			createBullet(bullet_BubblerSpurs, bul->x, bul->y, 3);
-		}
+			createBullet(bullet_BubblerSpurs, bul->x, bul->y, dirDown);
 		else
-		{
 			createBullet(bullet_BubblerSpurs, bul->x, bul->y, currentPlayer.direct);
-		}
 	}
 }
 
