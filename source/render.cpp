@@ -36,8 +36,8 @@ static SDL_Surface *cursor_surface;
 static SDL_Cursor *cursor;
 
 #ifdef USE_ICONS_SDL2
-extern const char binary_res_icon_mini_bmp_start[];
-extern const char binary_res_icon_mini_bmp_end[];
+extern const unsigned char binary_res_icon_mini_png_start[];
+extern const unsigned char binary_res_icon_mini_png_end[];
 #endif
 
 static SDL_Surface* loadPNGToSurface(const char *path)
@@ -115,10 +115,21 @@ int createWindow(int width, int height, int scale, bool fullscreen)
 #ifdef USE_ICONS_SDL2
 		// Set the window icon.
 		// Note that we skip this on Windows since we do it natively.
-		SDL_RWops *icon_rw = SDL_RWFromConstMem(binary_res_icon_mini_bmp_start, binary_res_icon_mini_bmp_end-binary_res_icon_mini_bmp_start);
-		SDL_Surface *surface = SDL_LoadBMP_RW(icon_rw, 1);
-		SDL_SetWindowIcon(window, surface);
-		SDL_FreeSurface(surface);
+		unsigned char *pixel_buffer;
+		unsigned int width;
+		unsigned int height;
+		if (!lodepng_decode32(&pixel_buffer, &width, &height, binary_res_icon_mini_png_start, binary_res_icon_mini_png_end - binary_res_icon_mini_png_start))
+		{
+			SDL_Surface *surface = SDL_CreateRGBSurfaceWithFormatFrom(pixel_buffer, width, height, 0, width * 4, SDL_PIXELFORMAT_RGBA32);
+
+			if (surface)
+			{
+				SDL_SetWindowIcon(window, surface);
+				SDL_FreeSurface(surface);
+			}
+
+			free(pixel_buffer);
+		}
 #endif
 	}
 	else
