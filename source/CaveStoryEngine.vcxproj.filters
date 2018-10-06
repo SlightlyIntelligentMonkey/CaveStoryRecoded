@@ -285,6 +285,8 @@
     <ClCompile Include="omega.cpp">
       <Filter>Source Files\classes\boss\act</Filter>
     </ClCompile>
+    <ClCompile Include="flash.cpp">
+      <Filter>Source Files\modules\drawing</Filter>
     <ClCompile Include="lodepng\lodepng.cpp">
       <Filter>Source Files\libraries</Filter>
     </ClCompile>
@@ -476,6 +478,8 @@
     <ClInclude Include="bossCollision.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="flash.h">
+      <Filter>Source Files\modules\drawing</Filter>
     <ClInclude Include="lodepng\lodepng.h">
       <Filter>Source Files\libraries</Filter>
     </ClInclude>

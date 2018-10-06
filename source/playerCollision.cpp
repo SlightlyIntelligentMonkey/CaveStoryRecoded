@@ -785,7 +785,7 @@ void playerHitNpcs()
 				}
 
 				if (!(gameFlags & 4) && hit && npcs[i].bits & npc_eventTouch)
-					startTscEvent(npcs[i].code_event);
+					startTscEvent(tsc, npcs[i].code_event);
 
 				if (gameFlags & 2 && !(npcs[i].bits & npc_interact))
 				{
@@ -806,7 +806,7 @@ void playerHitNpcs()
 
 				if (!(gameFlags & 4) && hit && me->cond & player_interact && npcs[i].bits & npc_interact)
 				{
-					startTscEvent(npcs[i].code_event);
+					startTscEvent(tsc, npcs[i].code_event);
 					me->xm = 0;
 					me->ques = false;
 				}
@@ -821,33 +821,32 @@ void playerHitNpcs()
 void playerHitBosses()
 {
 	player *me = &currentPlayer;
-	const RECT *rcHit = &me->hit;
+    const RECT *rcHit = &me->hit;
 
-	if (me->cond & player_visible && !(me->cond & player_removed))
-	{
-		for (size_t i = 0; i < _countof(bossObj); ++i)
-		{
-			int hit = 0;
-			if (bossObj[i].cond & npccond_alive)
-			{
-				if (bossObj[i].bits & npc_solidSoft)
-				{
-					hit = playerHitNpcSoftSolid(rcHit, me, &bossObj[i]);
-					me->flag |= hit;
-				}
-				else if (bossObj[i].bits & npc_solidHard)
-				{
-					hit = playerHitNpcHardSolid(rcHit, me, &bossObj[i]);
-					me->flag |= hit;
-				}
-				else
-					hit = playerHitNpcNonSolid(rcHit, me, &bossObj[i]);
+    if (me->cond & player_visible && !(me->cond & player_removed))
+    {
+        for (size_t i = 0; i < BOSSNPCS; ++i)
+        {
+            if (bossObj[i].cond & npccond_alive)
+            {
+                if (bossObj[i].bits & npc_solidSoft)
+                {
+                    hit = playerHitNpcSoftSolid(rcHit, me, &bossObj[i]);
+                    me->flag |= hit;
+                }
+                else if (bossObj[i].bits & npc_solidHard)
+                {
+                    hit = playerHitNpcHardSolid(rcHit, me, &bossObj[i]);
+                    me->flag |= hit;
+                }
+                else
+                    hit = playerHitNpcNonSolid(rcHit, me, &bossObj[i]);
 
-				if (!(gameFlags & 4) && hit && bossObj[i].bits & npc_eventTouch)
-				{
-					startTscEvent(bossObj[i].code_event);
-					me->ques = 0;
-				}
+                if (!(gameFlags & 4) && hit && bossObj[i].bits & npc_eventTouch)
+                {
+                    startTscEvent(tsc, bossObj[i].code_event);
+                    me->ques = 0;
+                }
 
 				if (bossObj[i].bits & npc_rearTop)
 				{
@@ -863,7 +862,7 @@ void playerHitBosses()
 				{
 					if (bossObj[i].bits & npc_interact)
 					{
-						startTscEvent(bossObj[i].code_event);
+						startTscEvent(tsc, bossObj[i].code_event);
 
 						me->xm = 0;
 						me->ques = 0;

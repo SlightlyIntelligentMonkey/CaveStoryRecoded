@@ -492,7 +492,7 @@ void bulletHitNpcs()
 
 								//Either run event if the run event on death flag's set, or die
 								if (currentPlayer.cond & npccond_alive && npcs[n].bits & npc_eventDie)
-									startTscEvent(npcs[n].code_event);
+									startTscEvent(tsc, npcs[n].code_event);
 								else
 									npcs[n].cond |= 8;
 							}
@@ -588,7 +588,7 @@ void bulletHitBoss()
 								//Either run event if the run event on death flag's set, or die
 								if (currentPlayer.cond & 0x80 && bossObj[bos_].bits & npc_eventDie)
 								{
-									startTscEvent(bossObj[bos_].code_event);
+									startTscEvent(tsc, bossObj[bos_].code_event);
 								}
 								else
 								{

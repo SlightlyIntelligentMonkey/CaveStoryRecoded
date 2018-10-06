@@ -45,7 +45,7 @@ void moveStageSelectCursor()
 
 		//Run event and play sound
 		if (isKeyPressed(keyLeft) || isKeyPressed(keyRight))
-			startTscEvent(permitStage[selectedStage].index + 1000);
+			startTscEvent(tsc, permitStage[selectedStage].index + 1000);
 		if (isKeyPressed(keyLeft) || isKeyPressed(keyRight))
 			playSound(SFX_YNChangeChoice);
 	}
@@ -106,7 +106,7 @@ int stageSelect(int *runEvent)
 
 	//Load stage select tsc
 	loadTsc2("data/StageSelect.tsc");
-	startTscEvent(permitStage[selectedStage].index + 1000);
+	startTscEvent(tsc, permitStage[selectedStage].index + 1000);
 
 	while (true)
 	{
@@ -142,7 +142,7 @@ int stageSelect(int *runEvent)
 		//Select
 		if (isKeyPressed(keyJump))
 		{
-			stopTsc();
+			stopTsc(tsc);
 			loadStageTsc(oldScript.c_str());
 			*runEvent = permitStage[selectedStage].event;
 			return 1;
@@ -151,7 +151,7 @@ int stageSelect(int *runEvent)
 		//Cancel
 		if (isKeyPressed(keyShoot))
 		{
-			stopTsc();
+			stopTsc(tsc);
 			loadStageTsc(oldScript.c_str());
 			*runEvent = 0;
 			return 1;

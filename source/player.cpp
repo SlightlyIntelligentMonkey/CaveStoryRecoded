@@ -179,7 +179,7 @@ void player::damage(int16_t damage)
 			cond = 0;
 
 			createSmokeLeft(x, y, 5120, 64);
-			startTscEvent(40);
+			startTscEvent(tsc, 40);
 		}
 	}
 }
@@ -772,11 +772,11 @@ void player::update(bool bKey)
 						{
 							if (getFlag(4000))
 							{
-								startTscEvent(1100);
+								startTscEvent(tsc, 1100);
 							}
 							else
 							{
-								startTscEvent(41);
+								startTscEvent(tsc, 41);
 
 								if (direct != dirLeft)
 									createCaret(x, y, effect_DrownedQuote, dirRight);
