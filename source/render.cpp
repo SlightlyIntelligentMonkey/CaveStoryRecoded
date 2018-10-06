@@ -75,7 +75,7 @@ static SDL_Surface* loadPNGToSurface(const char *path)
 	return surface;
 }
 
-static SDL_Texture* loadPNGToTexture(SDL_Renderer *renderer, const char *path)
+static SDL_Texture* loadPNGToTexture(SDL_Renderer *localRenderer, const char *path)
 {
 	SDL_Texture *texture = nullptr;
 
@@ -83,7 +83,7 @@ static SDL_Texture* loadPNGToTexture(SDL_Renderer *renderer, const char *path)
 
 	if (surface)
 	{
-		texture = SDL_CreateTextureFromSurface(renderer, surface);
+		texture = SDL_CreateTextureFromSurface(localRenderer, surface);
 
 		if (texture == nullptr)
 			doCustomError((std::string)"loadPNGToTexture failed!\n\nSDL2 error: " + SDL_GetError());
