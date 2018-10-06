@@ -50,7 +50,7 @@ static SDL_Surface* loadPNGToSurface(const char *path)
 	unsigned int height;
 	if (const unsigned int error = lodepng_decode32_file(&pixel_buffer, &width, &height, path))
 	{
-		doCustomError((std::string)"loadPNGToSurface failed!\n\nlodepng error: " + lodepng_error_text(error));
+		doCustomError((std::string)"loadPNGToSurface failed!\n\nlodepng error: " + lodepng_error_text(error) + "\nFile : " + path);
 	}
 	else
 	{
