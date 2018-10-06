@@ -5,6 +5,7 @@
 #include "player.h"
 #include "caret.h"
 #include "mathUtils.h"
+#include "flash.h"
 
 using std::vector;
 
@@ -169,8 +170,7 @@ void npcAct145(npc *NPC) //King's blade
 
 void npcAct146(npc *NPC) //Lightning
 {
-	vector<RECT> rect(5);
-
+	RECT rect[5];
 	rect[0] = { 0, 0, 0, 0 };
 	rect[1] = { 260, 0, 275, 240 };
 	rect[2] = { 275, 0, 290, 240 };
@@ -182,8 +182,8 @@ void npcAct146(npc *NPC) //Lightning
 	case 0:
 		NPC->act_no = 1;
 
-	//if (NPC->direct == 2)
-	//	SetFlash(0, 0, 2);
+	if (NPC->direct == 2)
+		setFlash(0, 0, normal, 20);
 	// Fallthrough
 	case 1:
 		if (++NPC->act_wait > 10)
@@ -213,7 +213,7 @@ void npcAct146(npc *NPC) //Lightning
 		break;
 	}
 
-	NPC->doRects(rect);
+	NPC->rect = rect[NPC->ani_no];
 }
 
 void npcAct147(npc *NPC)

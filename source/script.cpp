@@ -20,6 +20,7 @@
 #include "org.h"
 #include "main.h"
 #include "level.h"
+#include "flash.h"
 
 //Variables
 TSC tsc;

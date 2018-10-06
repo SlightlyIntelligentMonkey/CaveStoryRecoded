@@ -216,6 +216,7 @@
     <ClCompile Include="caret.cpp" />
     <ClCompile Include="fade.cpp" />
     <ClCompile Include="fireballShoot.cpp" />
+    <ClCompile Include="flash.cpp" />
     <ClCompile Include="game.cpp" />
     <ClCompile Include="hud.cpp" />
     <ClCompile Include="inventory.cpp" />
@@ -293,6 +294,7 @@
     <ClInclude Include="fade.h" />
     <ClInclude Include="fireball.h" />
     <ClInclude Include="flags.h" />
+    <ClInclude Include="flash.h" />
     <ClInclude Include="game.h" />
     <ClInclude Include="org.h" />
     <ClInclude Include="loadConfig.h" />

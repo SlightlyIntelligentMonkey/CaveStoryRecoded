@@ -26,6 +26,7 @@
 #include "log.h"
 #include "main.h"
 #include "playerCollision.h"
+#include "flash.h"
 
 using std::string;
 using std::to_string;

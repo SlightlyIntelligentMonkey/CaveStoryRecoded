@@ -7,6 +7,7 @@
 #include "game.h"
 #include "render.h"
 #include "level.h"
+#include "flash.h"
 
 using std::vector;
 
@@ -444,7 +445,7 @@ void npcAct082(npc *NPC) //Misery standing
 		if (++NPC->act_wait == 30)
 		{
 			playSound(SFX_Lightning);
-			//SetFlash(0, 0, 2);
+			setFlash(0, 0, normal, 20);
 			NPC->act_no = 27;
 			NPC->ani_no = 7;
 		}

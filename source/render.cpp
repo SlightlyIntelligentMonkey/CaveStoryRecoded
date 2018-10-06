@@ -72,6 +72,7 @@ int createWindow(int width, int height, int scale, bool fullscreen)
 	//Set renderer
 	if (!renderer)
 		renderer = SDL_CreateRenderer(window, -1, 0);
+	SDL_SetRenderDrawBlendMode(renderer, SDL_BLENDMODE_BLEND);
 
 	return 0;
 }
