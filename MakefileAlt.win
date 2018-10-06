@@ -8,18 +8,18 @@ LIBS =
 ALL_LIBS = $(LIBS)
 
 MAIN := main
-# states
-MAIN += game 
+# game states
+MAIN += game inventory mapSystem stageSelect
 # modules
-MAIN += filesystem flags input inventory level loadConfig log mapSystem mathUtils script stageSelect stdUtils
+MAIN += filesystem flags input level loadConfig log mathUtils script stdUtils
 # collision
 MAIN += bossCollision bulletCollision npcCollision playerCollision
 # drawing
 MAIN += fade hud render
-# sound
-MAIN +=	org pxt sound
 # libraries
 MAIN += lodepng/lodepng
+# sound
+MAIN +=	org pxt sound
 # classes
 MAIN += boss bullet caret npc player weapons valueview
 # weapon acts
