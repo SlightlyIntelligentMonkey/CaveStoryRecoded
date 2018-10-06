@@ -827,6 +827,7 @@ void playerHitBosses()
     {
         for (size_t i = 0; i < BOSSNPCS; ++i)
         {
+            int hit = 0;
             if (bossObj[i].cond & npccond_alive)
             {
                 if (bossObj[i].bits & npc_solidSoft)
@@ -890,7 +891,7 @@ void playerHitBosses()
 			{
 				if (bossObj[i].bits & npc_interact)
 				{
-					startTscEvent(bossObj[i].code_event);
+					startTscEvent(tsc, bossObj[i].code_event);
 
 					me->xm = 0;
 					me->ques = 0;

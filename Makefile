@@ -17,7 +17,7 @@ MAIN += filesystem flags input level loadConfig log mathUtils script stdUtils
 # collision
 MAIN += bossCollision bulletCollision npcCollision playerCollision
 # drawing
-MAIN += fade hud render
+MAIN += fade flash hud render
 # libraries
 MAIN += lodepng/lodepng
 # sound
