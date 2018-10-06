@@ -1,13 +1,3 @@
-#ifdef __GNUC__
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wzero-as-null-pointer-constant"
-#pragma GCC diagnostic ignored "-Wsuggest-attribute=pure"
-#pragma GCC diagnostic ignored "-Wsuggest-attribute=const"
-#pragma GCC diagnostic ignored "-Walloc-zero"
-#pragma GCC diagnostic ignored "-Wuseless-cast"
-#pragma GCC diagnostic ignored "-Wcast-qual"
-#endif // __GNUC__
-
 /*
 LodePNG version 20180910
 
@@ -6861,7 +6851,3 @@ unsigned encode(const std::string& filename,
 #endif /* LODEPNG_COMPILE_PNG */
 } /* namespace lodepng */
 #endif /*LODEPNG_COMPILE_CPP*/
-
-#ifdef __GNUC__
-#pragma GCC diagnostic pop
-#endif // __GNUC__

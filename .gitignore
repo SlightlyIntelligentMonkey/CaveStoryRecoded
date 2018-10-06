@@ -13,16 +13,23 @@
 *.userprefs
 
 # Build results
-[Dd]ebug/
-[Dd]ebugPublic/
-[Rr]elease/
-[Rr]eleases/
-x64/
-x86/
-bld/
-[Bb]in/
-[Oo]bj/
-[Ll]og/
+/[Dd]ebug/
+/[Dd]ebugPublic/
+/[Rr]elease/
+/[Rr]eleases/
+/x64
+/x86
+/bld/
+/source/[Dd]ebug/
+/source/[Dd]ebugPublic/
+/source/[Rr]elease/
+/source/[Rr]eleases/
+/source/x64
+/source/x86
+/source/bld/
+/[Bb]in/
+/[Oo]bj/
+/[Ll]og/
 
 # Visual Studio 2015 cache/options directory
 .vs/
@@ -77,8 +84,8 @@ ipch/
 
 # ------ Actual stuff that matters ------
 /source/Profile.dat
-/CaveStoryRemake.layout
-/CaveStoryRemake.depend
+/CaveStoryEngine.layout
+/CaveStoryEngine.depend
 /CaveStoryEngine.mpp
 /source/*.aps
 /source/Config.dat

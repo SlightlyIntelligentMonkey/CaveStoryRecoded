@@ -140,7 +140,12 @@ int createWindow(int width, int height, int scale, bool fullscreen)
 
 	//Set renderer
 	if (!renderer)
+	{
 		renderer = SDL_CreateRenderer(window, -1, 0);
+
+		if (renderer == nullptr)
+			logError((std::string)"Couldn't create renderer! SDL2 error: " + SDL_GetError());
+	}
 
 	// TODO free these when closing-down
 	cursor_surface = loadPNGToSurface("data/Cursor/cursor_normal.png");

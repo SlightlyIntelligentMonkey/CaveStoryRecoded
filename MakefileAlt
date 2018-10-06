@@ -37,9 +37,9 @@ DEPS := $(addsuffix .d, $(OBJS))
 # Embed a bitmap in the binary, and load it with SDL
 OBJS += obj/icon_mini.o
 
-all: bin/CaveStoryRemake
+all: bin/CaveStoryEngine
 
-bin/CaveStoryRemake: $(OBJS)
+bin/CaveStoryEngine: $(OBJS)
 	@mkdir -p $(@D)
 	@$(CXX) $(ALL_CXXFLAGS) $(OBJS) -o $@ $(ALL_LDFLAGS) $(ALL_LIBS)
 
@@ -49,10 +49,11 @@ obj/%.o: source/%.cpp
 	@$(CXX) $(ALL_CXXFLAGS) $< -o $@ -c
 
 obj/icon_mini.o: res/icon_mini.png
+	@mkdir -p $(@D)
 	@$(LD) -r -b binary -o $@ $<
 
 include $(wildcard $(DEPS))
 
 # Remove all object files and the binary
 clean:
-	@rm -rf obj bin/CaveStoryRemake
+	@rm -rf obj bin/CaveStoryEngine

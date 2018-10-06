@@ -93,6 +93,8 @@ void init()
 
 	loadConfigFiles();
 
+	loadConfig();
+
 	//draws loading
 	loadImage("data/Loading.png", &sprites[TEX_LOADING]);   // Load the loading sprite now so that we can display it
 	SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
@@ -100,8 +102,6 @@ void init()
 	RECT rcLoad = { 0, 0, 64, 8 };
 	drawTexture(sprites[TEX_LOADING], &rcLoad, (screenWidth >> 1) - (rcLoad.right >> 1), (screenHeight >> 1) - (rcLoad.bottom >> 1));
 	SDL_RenderPresent(renderer);
-
-	loadConfig();
 
 	initTsc();
 	initFlags();
