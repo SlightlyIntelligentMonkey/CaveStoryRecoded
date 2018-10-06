@@ -13,7 +13,7 @@ using std::put_time;
 
 fstream logFile;
 
-const string logFileName = "CaveStoryRemake.log";
+const string logFileName = "CaveStoryEngine.log";
 
 void initLogFile()
 {
