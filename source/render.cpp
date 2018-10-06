@@ -17,9 +17,9 @@ SDL_Rect rcImage = {0, 0, 0, 0};
 SDL_Rect drawRectangle = {0, 0, 0, 0};
 SDL_Rect cliprect = {0, 0, 0, 0};
 
-int screenWidth = 0;
-int screenHeight = 0;
-int screenScale = 0;
+int screenWidth = 320;
+int screenHeight = 240;
+int screenScale = 2;
 
 int prevWidth = 0;
 int prevHeight = 0;

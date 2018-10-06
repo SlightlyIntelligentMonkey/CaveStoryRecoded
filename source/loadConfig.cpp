@@ -42,6 +42,17 @@ void loadGameJson()
 		debugFlags |= notifyOnNotImplemented;
 	if (jDbgFlgs["showNPCHealth"] == true)
 		debugFlags |= showNPCHealth;
+
+	if (jGame["millisecondsPerFrame"].is_number())
+		framerate = jGame["millisecondsPerFrame"];
+
+	auto jScreen = jGame["screen"];
+	if (jScreen["width"].is_number())
+		screenWidth = jScreen["width"];
+	if (jScreen["height"].is_number())
+		screenHeight = jScreen["height"];
+	if (jScreen["scale"].is_number())
+		screenScale = jScreen["scale"];
 }
 
 void loadOrgJson()
