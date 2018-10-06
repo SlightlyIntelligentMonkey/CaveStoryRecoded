@@ -3,7 +3,7 @@ WARNINGS := -pedantic -Wall -Wextra -Wabi -Walloc-zero -Wbool-compare -Wcast-ali
 OPTIMISATIONS := -O3 -frename-registers
 # OPTIMISATIONS += -flto
 
-COMPILE_CPP = $(CXX) -m32 $(OPTIMISATIONS) $(WARNINGS) -std=c++17 -I/mingw32/include/SDL2/ -IJson_Modern_Cpp -c -DUSE_ICONS_WINDOWS -DLODEPNG_NO_COMPILE_ENCODER -DLODEPNG_NO_COMPILE_CPP -MMD -MP -MF $@.d
+COMPILE_CPP = $(CXX) -m32 $(OPTIMISATIONS) $(WARNINGS) -std=c++17 -I/mingw32/include/SDL2/ -IJson_Modern_Cpp -c -DUSE_ICONS_WINDOWS -MMD -MP -MF $@.d
 # Replace mingw32 with usr for actual Unix build
 
 LINK_CPP := $(CXX) -m32 $(OPTIMISATIONS) $(WARNINGS) -static -static-libstdc++ -static-libgcc -mwindows
@@ -53,7 +53,7 @@ obj/%.o: source/%.cpp
 
 obj/lodepng/lodepng.o: source/lodepng/lodepng.cpp
 	@mkdir -p $(@D)
-	$(COMPILE_CPP) $< -o $@ -Wno-zero-as-null-pointer-constant -Wno-suggest-attribute=pure -Wno-suggest-attribute=const -Wno-alloc-zero -Wno-useless-cast -Wno-cast-qual
+	$(COMPILE_CPP) $< -o $@ -DLODEPNG_NO_COMPILE_ENCODER -DLODEPNG_NO_COMPILE_CPP -Wno-zero-as-null-pointer-constant -Wno-suggest-attribute=pure -Wno-suggest-attribute=const -Wno-alloc-zero -Wno-useless-cast -Wno-cast-qual
 
 obj/icon.o: res/icon.rc res/icon_mini.ico
 	@mkdir -p $(@D)
