@@ -44,9 +44,9 @@ bool initTsc();
 void loadStageTsc(const char *name);
 void loadTsc2(const char *name);
 
-int startTscEvent(int no);
-int jumpTscEvent(int no);
-void stopTsc();
+int startTscEvent(TSC &ptsc, int no);
+int jumpTscEvent(TSC &ptsc, int no);
+void stopTsc(TSC &ptsc);
 
-int updateTsc();
+int updateTsc(TSC &ptsc = tsc);
 void drawTsc();

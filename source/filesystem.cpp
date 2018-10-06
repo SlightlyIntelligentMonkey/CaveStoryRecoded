@@ -207,7 +207,7 @@ void loadProfile()
 
 		//Now load level
 		loadLevel(level);
-		startTscEvent(0);
+		startTscEvent(tsc, 0);
 		initFade();
 
 		//Close RW

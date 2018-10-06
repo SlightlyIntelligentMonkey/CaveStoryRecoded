@@ -142,6 +142,7 @@ int createWindow(int width, int height, int scale, bool fullscreen)
 	if (!renderer)
 	{
 		renderer = SDL_CreateRenderer(window, -1, 0);
+	SDL_SetRenderDrawBlendMode(renderer, SDL_BLENDMODE_BLEND);
 
 		if (renderer == nullptr)
 			logError((std::string)"Couldn't create renderer! SDL2 error: " + SDL_GetError());

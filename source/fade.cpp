@@ -1,9 +1,10 @@
-#include "fade.h"
-
 #include <cstring>
 #include <algorithm>
 #include <SDL_render.h>
+
 #include "render.h"
+#include "fade.h"
+#include "game.h"
 
 using std::memset;
 using std::max;
