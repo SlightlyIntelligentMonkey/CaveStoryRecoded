@@ -1,5 +1,6 @@
 #include "script.h"
 
+#include <string>
 #include <cstring>
 #include <cstdlib>
 #include <SDL_messagebox.h>
@@ -21,6 +22,8 @@
 #include "main.h"
 #include "level.h"
 #include "flash.h"
+
+using std::string;
 
 //Variables
 TSC tsc;
@@ -310,9 +313,10 @@ void tscPutNumber(TSC &ptsc, int index)
 	}
 }
 
-static inline void showTSCNotImplementedWarning(const char *message) noexcept
+static inline void showTSCNotImplementedWarning(const string& message) noexcept
 {
-	SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_WARNING, "Unimplemented command", message, nullptr);
+	SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_WARNING, "Unimplemented command", message.c_str(), nullptr);
+	logWarning(message);
 }
 
 int doTscModes(bool *bExit, TSC &ptsc)
@@ -1131,7 +1135,7 @@ int updateTsc(TSC &ptsc)
 
 		if (ptsc.data[ptsc.p_read] != '<')
 		{
-			if (ptsc.data[ptsc.p_read] == 13) //Check for break line
+			if (tsc.data[tsc.p_read] == '\r') //Check for break line
 			{
 				//Shift read and write positions accordingly
 				ptsc.p_read += 2;
@@ -1150,7 +1154,7 @@ int updateTsc(TSC &ptsc)
 				int x;
 				for (x = ptsc.p_read; ; ++x)
 				{
-					const bool quit = !(ptsc.data[x] == '<' || ptsc.data[x] == 13);
+					const bool quit = !(tsc.data[x] == '<' || tsc.data[x] == '\r');
 
 					if (!quit)
 						break;

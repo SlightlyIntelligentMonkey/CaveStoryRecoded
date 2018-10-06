@@ -54,8 +54,6 @@ void actBulletBlade1(bullet *bul)
 	bul->rect.top = 48;
 	bul->rect.right = bul->rect.left + 16;
 	bul->rect.bottom = bul->rect.top + 16;
-
-	return;
 }
 
 void actBulletBlade2(bullet *bul)
@@ -109,8 +107,6 @@ void actBulletBlade2(bullet *bul)
 	bul->rect.top = 48 + (((bul->direct + 2) / 3) * 24);
 	bul->rect.right = bul->rect.left + 24;
 	bul->rect.bottom = bul->rect.top + 24;
-
-	return;
 }
 
 void actBulletBlade3(bullet *bul)
@@ -218,7 +214,6 @@ void actBulletBlade3(bullet *bul)
 
 	if (bul->act_wait & 1)
 		bul->rect.right = bul->rect.left;
-	return;
 }
 
 void actBulletSlash(bullet *bul)
@@ -262,6 +257,4 @@ void actBulletSlash(bullet *bul)
 		bul->rect.right = bul->rect.left + 24;
 		bul->rect.bottom = bul->rect.top + 24;
 	}
-
-	return;
 }

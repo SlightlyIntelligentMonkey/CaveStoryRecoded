@@ -10,7 +10,6 @@ void actBulletDrop(bullet *bul)
 	bul->rect.top = 0;
 	bul->rect.right = 0;
 	bul->rect.bottom = 0;
-	return;
 }
 
 //debug weapon
@@ -23,10 +22,7 @@ void actBulletEnemyClear(bullet *bul)
 		bul->enemyYL = 819200;
 	}
 	else
-	{
 		bul->cond = 0;
-	}
-	return;
 }
 
 //whimsical stars
@@ -34,5 +30,4 @@ void actBulletStar(bullet *bul)
 {
 	if (++bul->count1 > bul->life_count)
 		bul->cond = 0;
-	return;
 }

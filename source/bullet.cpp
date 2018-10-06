@@ -294,9 +294,7 @@ void bullet::update()
 		}
 	}
 	else
-	{
 		cond = 0;
-	}
 }
 
 void bullet::draw()

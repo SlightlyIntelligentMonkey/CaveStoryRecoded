@@ -101,9 +101,6 @@ void drawBossHealth()
 	}
 }
 
-//Weapon stats
-int addFlash = 0;
-
 void drawWeaponStats()
 {
 	//Define rects
@@ -170,9 +167,10 @@ void drawWeaponStats()
 		{
 			drawTexture(sprites[TEX_TEXTBOX], &rcExpMax, weaponShiftX + 24, 32);
 		}
-
+		
+		static int flashAlternator = 0;
 		//Draw the flashing
-		if (currentPlayer.exp_wait && (addFlash++ >> 1) & 1)
+		if (currentPlayer.exp_wait && (flashAlternator++ >> 1) & 1)
 			drawTexture(sprites[TEX_TEXTBOX], &rcExpFlash, weaponShiftX + 24, 32);
 	}
 }

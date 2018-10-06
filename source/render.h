@@ -74,7 +74,17 @@ template <typename T> constexpr inline int32_t pixelsToUnits(T x)
 	return x * 0x200;
 }
 
-template <typename T> constexpr inline int32_t unitsToPixels(T x)
+template <typename T> constexpr inline T unitsToPixels(T x)
 {
 	return x / 0x200;
+}
+
+template <typename T> constexpr inline int32_t secondsToFrames(T x)
+{
+    return x * 50;
+}
+
+template <typename T> constexpr inline T framesToSeconds(T x)
+{
+    return x / 50;
 }

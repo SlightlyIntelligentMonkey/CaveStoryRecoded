@@ -1,12 +1,12 @@
 #include "npc160.h"
 
-#include <vector>
+#include <array>
 #include "sound.h"
 #include "player.h"
 #include "caret.h"
 #include "mathUtils.h"
 
-using std::vector;
+using std::array;
 
 void npcAct165(npc *NPC) //Curly (Collapsed)
 {
@@ -34,7 +34,7 @@ void npcAct165(npc *NPC) //Curly (Collapsed)
 	default:
 		break;
 	}
-	
+
 	if (NPC->direct)
 		NPC->rect = rcRight[NPC->ani_no];
 	else
@@ -43,8 +43,8 @@ void npcAct165(npc *NPC) //Curly (Collapsed)
 
 void npcAct171(npc *NPC) //Fire whirr
 {
-	vector<RECT> rcRight(2);
-	vector<RECT> rcLeft(2);
+	array<RECT, 2> rcRight;
+	array<RECT, 2> rcLeft;
 
 	rcLeft[0].left = 120;
 	rcLeft[0].top = 48;
@@ -135,7 +135,7 @@ void npcAct171(npc *NPC) //Fire whirr
 
 void npcAct172(npc *NPC) //Fire whirr projectile
 {
-	vector<RECT> rect(3);
+	array<RECT, 3> rect;
 
 	rect[0].left = 248;
 	rect[0].top = 48;
@@ -186,8 +186,8 @@ void npcAct172(npc *NPC) //Fire whirr projectile
 
 void npcAct173(npc *NPC) //Armoured Gaudi
 {
-	vector<RECT> rcLeft(4);
-	vector<RECT> rcRight(4);
+	array<RECT, 4> rcLeft;
+	array<RECT, 4> rcRight;
 	uint8_t deg;
 
 	rcLeft[0].left = 0;
@@ -362,7 +362,7 @@ void npcAct173(npc *NPC) //Armoured Gaudi
 
 void npcAct174(npc *NPC)
 {
-	vector<RECT> rect(3);
+	array<RECT, 3> rect;
 	rect[0].left = 120;
 	rect[0].top = 80;
 	rect[0].right = 136;
@@ -454,8 +454,8 @@ void npcAct174(npc *NPC)
 
 void npcAct175(npc *NPC)
 {
-	vector<RECT> rcLeft(2);
-	vector<RECT> rcRight(2);
+	array<RECT, 2> rcLeft;
+	array<RECT, 2> rcRight;
 
 	rcLeft[0].left = 168;
 	rcLeft[0].top = 80;
@@ -507,8 +507,8 @@ void npcAct175(npc *NPC)
 
 void npcAct176(npc *NPC)
 {
-	vector<RECT> rcRight(3);
-	vector<RECT> rcLeft(3);
+	array<RECT, 3> rcRight;
+	array<RECT, 3> rcLeft;
 
 	rcLeft[0].left = 96;
 	rcLeft[0].top = 128;
@@ -615,7 +615,7 @@ void npcAct176(npc *NPC)
 
 void npcAct177(npc *NPC)
 {
-	vector<RECT> rect(2);
+	array<RECT, 2> rect;
 
 	rect[0].left = 192;
 	rect[0].top = 128;

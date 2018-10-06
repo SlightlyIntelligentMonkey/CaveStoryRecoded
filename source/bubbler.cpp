@@ -70,7 +70,6 @@ void actBulletBubbler1(bullet *bul)
 	bul->rect.top = 0;
 	bul->rect.right = bul->rect.left + 8;
 	bul->rect.bottom = bul->rect.top + 8;
-	return;
 }
 
 void actBulletBubbler2(bullet *bul)
@@ -150,8 +149,6 @@ void actBulletBubbler2(bullet *bul)
 	bul->rect.top = 8;
 	bul->rect.right = bul->rect.left + 8;
 	bul->rect.bottom = bul->rect.top + 8;
-
-	return;
 }
 
 void actBulletBubbler3(bullet *bul)
@@ -221,19 +218,12 @@ void actBulletBubbler3(bullet *bul)
 		createCaret(bul->x, bul->y, 2, 0);
 		playSound(SFX_BubblerShootLevel3, 1);
 		if (currentPlayer.up)
-		{
-			createBullet(bullet_BubblerSpurs, bul->x, bul->y, 1);
-		}
+			createBullet(bullet_BubblerSpurs, bul->x, bul->y, dirUp);
 		else if (currentPlayer.down)
-		{
-			createBullet(bullet_BubblerSpurs, bul->x, bul->y, 3);
-		}
+			createBullet(bullet_BubblerSpurs, bul->x, bul->y, dirDown);
 		else
-		{
 			createBullet(bullet_BubblerSpurs, bul->x, bul->y, currentPlayer.direct);
-		}
 	}
-	return;
 }
 
 void actBulletBubblerSpur(bullet *bul)
@@ -286,6 +276,4 @@ void actBulletBubblerSpur(bullet *bul)
 	bul->rect.top = (bul->ani_no % 2) * 8;
 	bul->rect.right = bul->rect.left + 8;
 	bul->rect.bottom = bul->rect.top + 8;
-
-	return;
 }

@@ -68,7 +68,7 @@ void mixSounds(int16_t *stream, int len)
 	}
 }
 
-void audio_callback(void *userdata, Uint8 *stream, int len) // TBD : Handle userdata parameter
+void audio_callback(void * /*userdata*/, Uint8 *stream, int len) // TBD : Handle userdata parameter
 {
 	memset(stream, 0, len);
 
@@ -137,7 +137,7 @@ void freeSounds()
 		free(sound.wave);
 }
 
-void playSound(size_t sound_no, int soundMode)
+void playSound(size_t sound_no, int /*soundMode*/)
 {
 	sounds[sound_no].pos = 0;
 	sounds[sound_no].playing = true;

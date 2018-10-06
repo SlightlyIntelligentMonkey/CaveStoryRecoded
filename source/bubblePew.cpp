@@ -116,6 +116,4 @@ void pewBubble(int level)
 			}
 		}
 	}
-
-	return;
 }

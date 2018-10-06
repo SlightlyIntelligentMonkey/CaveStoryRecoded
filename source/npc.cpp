@@ -397,6 +397,24 @@ void killNpc(npc *NPC, bool bVanish)
 	}
 }
 
+void killNpcsByType(int entityType, bool makeDustClouds)
+{
+	for (size_t i = 0; i < npcs.size(); ++i)
+	{
+		if (npcs[i].cond & npccond_alive && npcs[i].code_char == entityType)
+		{
+			npcs[i].cond = 0;
+			setFlag(npcs[i].code_flag);
+
+			if (makeDustClouds)
+			{
+				playSound(npcs[i].destroy_voice);
+				createSmokeLeft(npcs[i].x, npcs[i].y, npcs[i].view.right, npcs[i].size * 4);
+			}
+		}
+	}
+}
+
 //NPC Table
 NPC_TABLE *npcTable;
 
@@ -469,19 +487,6 @@ void npc::doGravity(int gravity, int maxYVel)
 	this->ym += gravity;
 	if (this->ym > maxYVel)
 		this->ym = maxYVel;
-}
-
-void npc::doRects(const vector<RECT>& rcLeft, const vector<RECT>& rcRight)
-{
-    if (this->direct != dirLeft)
-		this->rect = rcRight.at(this->ani_no);
-	else
-		this->rect = rcLeft.at(this->ani_no);
-}
-
-void npc::doRects(const vector<RECT>& rcNPC)
-{
-    this->rect = rcNPC.at(this->ani_no);
 }
 
 void npc::doRects(RECT rcLeft, RECT rcRight)
@@ -588,10 +593,11 @@ void npc::init(int setCode, int setX, int setY, int setXm, int setYm, int setDir
 
 void npc::update()
 {
-	npcActs[code_char](this);
+	if (this->code_char >= 0 && this->code_char <= _countof(npcActs))
+	npcActs[this->code_char](this);
 
-	if (shock > 0)
-		--shock;
+	if (this->shock > 0)
+		--this->shock;
 }
 
 void npc::draw()

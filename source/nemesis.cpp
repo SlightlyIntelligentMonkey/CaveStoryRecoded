@@ -76,8 +76,6 @@ void actBulletNemesis1(bullet *bul)
 		bul->rect.right = bul->rect.left + 16;
 		bul->rect.bottom = bul->rect.top + 32;
 	}
-
-	return;
 }
 
 void actBulletNemesis2(bullet *bul)
@@ -132,8 +130,6 @@ void actBulletNemesis2(bullet *bul)
 		bul->rect.right = bul->rect.left + 16;
 		bul->rect.bottom = bul->rect.top + 32;
 	}
-
-	return;
 }
 
 void actBulletNemesis3(bullet *bul)
@@ -188,6 +184,4 @@ void actBulletNemesis3(bullet *bul)
 		bul->rect.right = bul->rect.left + 16;
 		bul->rect.bottom = bul->rect.top + 32;
 	}
-
-	return;
 }

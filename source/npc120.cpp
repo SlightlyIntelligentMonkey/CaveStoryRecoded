@@ -1,6 +1,6 @@
 #include "npc120.h"
 
-#include <vector>
+#include <array>
 #include "sound.h"
 #include "caret.h"
 #include "player.h"
@@ -9,7 +9,7 @@
 #include "mathUtils.h"
 #include "game.h"
 
-using std::vector;
+using std::array;
 
 void npcAct120(npc *NPC) //Colon 1
 {
@@ -56,7 +56,7 @@ void npcAct121(npc *NPC) //Colon 2
 		default:
 			break;
 		}
-		
+
 		NPC->rect = rect[NPC->ani_no];
 		return;
 	}
@@ -169,7 +169,7 @@ void npcAct122(npc *NPC) //Colon attack
 			NPC->xm += 64;
 		else
 			NPC->xm -= 64;
-		
+
 		if (NPC->act_wait)
 		{
 			--NPC->act_wait;
@@ -269,7 +269,7 @@ void npcAct123(npc *NPC) //Curly projectile
 	rect[1] = { 208, 0, 224, 16 };
 	rect[2] = { 224, 0, 240, 16 };
 	rect[3] = { 240, 0, 256, 16 };
-	
+
 	switch (NPC->act_no)
 	{
 	case 0:
@@ -505,7 +505,7 @@ void npcAct126(npc *NPC) //Running Puppy
 			NPC->xm += 0x40;
 		else
 			NPC->xm -= 0x40;
-		
+
 		if (NPC->xm > 0x5FF)
 			NPC->xm = 0x400;
 		if (NPC->xm < -0x5FF)
@@ -520,7 +520,7 @@ void npcAct126(npc *NPC) //Running Puppy
 		NPC->bits |= npc_interact;
 	else
 		NPC->bits &= ~npc_interact;
-	
+
 	NPC->ym += 0x40;
 	if (NPC->ym > 0x5FF)
 		NPC->ym = 0x5FF;
@@ -698,25 +698,11 @@ void npcAct130(npc *NPC) //Puppy wag
 			NPC->act_wait = 0;
 			NPC->ani_no = 1;
 		}
-
 		if (NPC->x - 0x8000 < currentPlayer.x && NPC->x + 0x8000 > currentPlayer.x && NPC->y - 0x4000 < currentPlayer.y && NPC->y + 0x2000 > currentPlayer.y)
-		{
-			if (++NPC->ani_wait > 3)
-			{
-				NPC->ani_wait = 0;
-				++NPC->ani_no;
-			}
-			if (NPC->ani_no > 3)
-				NPC->ani_no = 2;
-		}
+		    NPC->animate(3, 2, 3);
 
 		if (NPC->x - 0xC000 < currentPlayer.x && NPC->x + 0xC000 > currentPlayer.x && NPC->y - 0x4000 < currentPlayer.y && NPC->y + 0x2000 > currentPlayer.y)
-		{
-			if (NPC->x <= currentPlayer.x)
-				NPC->direct = dirRight;
-			else
-				NPC->direct = dirRight;
-		}
+            NPC->facePlayer();
 		break;
 
 	case 2:
@@ -728,9 +714,7 @@ void npcAct130(npc *NPC) //Puppy wag
 		break;
 	}
 
-	NPC->ym += 0x40;
-	if (NPC->ym > 0x5FF)
-		NPC->ym = 0x5FF;
+	NPC->doGravity(0x40, 0x5FF);
 
 	NPC->x += NPC->xm;
 	NPC->y += NPC->ym;
@@ -935,7 +919,7 @@ void npcAct133(npc *NPC) //Jenka
 		}
 		break;
 	}
-	
+
 	if (NPC->direct)
 		NPC->rect = rcRight[NPC->ani_no];
 	else
@@ -1008,7 +992,7 @@ void npcAct134(npc *NPC) //Armadillo
 			NPC->x += 0x100;
 		else
 			NPC->x -= 0x100;
-		
+
 		if (weaponBullets(6))
 		{
 			NPC->act_no = 20;
@@ -1158,7 +1142,7 @@ void npcAct135(npc *NPC)
 		NPC->xm = 0x5FF;
 	if (NPC->xm < -0x5FF)
 		NPC->xm = -0x5FF;
-	
+
 	NPC->x += NPC->xm;
 	NPC->y += NPC->ym;
 
@@ -1206,7 +1190,7 @@ void npcAct136(npc *NPC) //Puppy on Quote's head
 	default:
 		break;
 	}
-	
+
 	//Face in same direction player is facing
 	if (currentPlayer.direct)
 		NPC->direct = 2;
@@ -1225,7 +1209,7 @@ void npcAct136(npc *NPC) //Puppy on Quote's head
 		NPC->x = currentPlayer.x + 0x800;
 		NPC->rect = rcLeft[NPC->ani_no];
 	}
-	
+
 	//Bob up when walking
 	if (currentPlayer.ani_no & 1)
 		++NPC->rect.top;
@@ -1289,8 +1273,8 @@ void npcAct138(npc *NPC)
 
 void npcAct139(npc *NPC) //Doctor with the crown
 {
-	vector<RECT> rcLeft(3);
-	vector<RECT> rcRight(3);
+	array<RECT, 3> rcLeft;
+	array<RECT, 3> rcRight;
 
 	rcLeft[0] = { 0, 128, 24, 160 };
 	rcLeft[1] = { 24, 128, 48, 160 };

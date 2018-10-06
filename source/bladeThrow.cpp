@@ -49,5 +49,4 @@ void throwBlade(int level)
 		createBullet(bulletId, currentPlayer.x + shootX, currentPlayer.y + shootY, shootDirect, 9);
 
 	}
-	return;
 }

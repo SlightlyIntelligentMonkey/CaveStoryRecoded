@@ -1,6 +1,6 @@
 #include "npc220.h"
 
-#include <vector>
+#include <array>
 #include "player.h"
 #include "sound.h"
 #include "mathUtils.h"
@@ -8,12 +8,12 @@
 #include "render.h"
 #include "level.h"
 
-using std::vector;
+using std::array;
 
 void npcAct220(npc *NPC) // Shovel Brigade, standing
 {
-	vector<RECT> rcLeft = { {0, 64, 16, 80}, {16, 64, 32, 80} };
-	vector<RECT> rcRight = { {0, 80, 16, 96}, {16, 80, 32, 96} };
+	array<RECT, 2> rcLeft = { { {0, 64, 16, 80}, {16, 64, 32, 80} } };
+	array<RECT, 2> rcRight = { { {0, 80, 16, 96}, {16, 80, 32, 96} } };
 
 	enum
 	{
@@ -68,8 +68,8 @@ void npcAct222(npc *NPC) // Prison bars
 
 void npcAct223(npc *NPC) // Momorin
 {
-    vector<RECT> rcLeft = {{80, 192, 96, 216}, {96, 192, 112, 216}, {112, 192, 128, 216}};
-    vector<RECT> rcRight = {{80, 216, 96, 240}, {96, 216, 112, 240}, {112, 216, 128, 240}};
+	array<RECT, 3> rcLeft = { {{80, 192, 96, 216}, {96, 192, 112, 216}, {112, 192, 128, 216}} };
+	array<RECT, 3> rcRight = { {{80, 216, 96, 240}, {96, 216, 112, 240}, {112, 216, 128, 240}} };
 
     switch (NPC->act_no)
     {
@@ -111,8 +111,8 @@ void npcAct223(npc *NPC) // Momorin
 
 void npcAct224(npc *NPC) // Chie
 {
-	vector<RECT> rcLeft = {{112, 32, 128, 48}, {128, 32, 144, 48}};
-	vector<RECT> rcRight = {{112, 48, 128, 64}, {128, 48, 144, 64}};
+	array<RECT, 2> rcLeft = { {{112, 32, 128, 48}, {128, 32, 144, 48}} };
+	array<RECT, 2> rcRight = { {{112, 48, 128, 64}, {128, 48, 144, 64}} };
 
 	enum
 	{
@@ -162,8 +162,8 @@ void npcAct224(npc *NPC) // Chie
 
 void npcAct225(npc *NPC) // Megane
 {
-	vector<RECT> rcLeft = {{64, 64, 80, 80}, {80, 64, 96, 80}};
-	vector<RECT> rcRight = {{64, 80, 80, 96}, {80, 80, 96, 96}};
+	array<RECT, 2> rcLeft = { {{64, 64, 80, 80}, {80, 64, 96, 80}} };
+	array<RECT, 2> rcRight = { {{64, 80, 80, 96}, {80, 80, 96, 96}} };
 
 	enum
 	{
@@ -211,7 +211,7 @@ void npcAct225(npc *NPC) // Megane
 
 void npcAct226(npc *NPC) // Kanpachi, standing
 {
-    vector<RECT> rcNPC(7);
+    array<RECT, 7> rcNPC;
 
     rcNPC[0] = {256, 56, 272, 80};
     rcNPC[1] = {272, 56, 288, 80};
@@ -289,8 +289,8 @@ void npcAct227(npc *NPC) // Bucket
 
 void npcAct228(npc *NPC) // Droll, guarding
 {
-    vector<RECT> rcLeft = {{0, 0, 32, 40}, {32, 0, 64, 40}, {64, 0, 96, 40}, {96, 0, 128, 40}};
-    vector<RECT> rcRight = {{0, 40, 32, 80}, {32, 40, 64, 80}, {64, 40, 96, 80}, {96, 40, 128, 80}};
+	array<RECT, 4> rcLeft = { {{0, 0, 32, 40}, {32, 0, 64, 40}, {64, 0, 96, 40}, {96, 0, 128, 40}} };
+	array<RECT, 4> rcRight = { {{0, 40, 32, 80}, {32, 40, 64, 80}, {64, 40, 96, 80}, {96, 40, 128, 80}} };
 
     enum
     {
@@ -379,12 +379,12 @@ void npcAct230(npc *NPC) // Red Flowers, large
         NPC->y -= tilesToUnits(1);
     }
 
-    NPC->doRects({{48, 96, 96, 128}}, {{96, 96, 144, 128}});
+    NPC->doRects({48, 96, 96, 128}, {96, 96, 144, 128});
 }
 
 void npcAct231(npc *NPC) //Momorin's rocket
 {
-	vector<RECT> rcNPC(2);
+	array<RECT, 2> rcNPC;
 
 	rcNPC[0] = { 176, 32, 208, 48 };
 	rcNPC[1] = { 176, 48, 208, 64 };
@@ -537,8 +537,8 @@ void npcAct232(npc *NPC) // Orangebell (enemy)
     NPC->x += NPC->xm;
     NPC->y += NPC->ym;
 
-    vector<RECT> rcLeft = {{128, 0, 160, 32}, {160, 0, 192, 32}, {192, 0, 224, 32}};
-    vector<RECT> rcRight = {{128, 32, 160, 64}, {160, 32, 192, 64}, {192, 32, 224, 64}};
+	array<RECT, 3> rcLeft = { {{128, 0, 160, 32}, {160, 0, 192, 32}, {192, 0, 224, 32}} };
+	array<RECT, 3> rcRight = { {{128, 32, 160, 64}, {160, 32, 192, 64}, {192, 32, 224, 64}} };
     NPC->doRects(rcLeft, rcRight);
 }
 
@@ -555,7 +555,7 @@ void npcAct234(npc * NPC) // Red Flowers, picked
 
 void npcAct238(npc *NPC) //Killer press
 {
-	vector<RECT> rcNPC(3);
+	array<RECT, 3> rcNPC;
 
 	rcNPC[0] = { 184, 200, 208, 216 };
 	rcNPC[1] = { 208, 200, 232, 216 };
@@ -674,5 +674,5 @@ void npcAct239(npc *NPC) // Cage bars
         }
     }
 
-    NPC->doRects({{192, 48, 256, 80}}, {{96, 112, 144, 144}});
+    NPC->doRects({192, 48, 256, 80}, {96, 112, 144, 144});
 }

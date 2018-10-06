@@ -2,7 +2,4 @@
 
 #include <string>
 
-namespace stdUtils
-{
-    std::string hexToString(unsigned int i);
-}
+std::string hexToString(unsigned int i);

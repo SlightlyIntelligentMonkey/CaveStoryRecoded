@@ -21,13 +21,13 @@ const bossAct bossActs[10] =
 {
 	static_cast<bossAct>(nullptr),
 	&actBoss_Omega,
-	&actBoss_Frog,
+	&actBoss_Balfrog,
 	static_cast<bossAct>(nullptr),
 	static_cast<bossAct>(nullptr),
 	static_cast<bossAct>(nullptr),
 	static_cast<bossAct>(nullptr),
 	static_cast<bossAct>(nullptr),
-	static_cast<bossAct>(nullptr),
+	&actBoss_HeavyPress,
 	static_cast<bossAct>(nullptr),
 };
 

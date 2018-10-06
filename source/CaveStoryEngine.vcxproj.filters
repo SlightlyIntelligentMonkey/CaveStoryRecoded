@@ -64,6 +64,9 @@
     <Filter Include="Source Files\states">
       <UniqueIdentifier>{a4b019f6-de34-4577-9b8b-64cf1ee3b5ac}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\libraries">
+      <UniqueIdentifier>{9d52d30d-d566-4716-b62d-904ce5c1ece2}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -267,6 +270,9 @@
     <ClCompile Include="balfrog.cpp">
       <Filter>Source Files\classes\boss\act</Filter>
     </ClCompile>
+    <ClCompile Include="heavyPress.cpp">
+      <Filter>Source Files\classes\boss\act</Filter>
+    </ClCompile>
     <ClCompile Include="pxt.cpp">
       <Filter>Source Files\modules\sound</Filter>
     </ClCompile>
@@ -281,6 +287,8 @@
     </ClCompile>
     <ClCompile Include="flash.cpp">
       <Filter>Source Files\modules\drawing</Filter>
+    <ClCompile Include="lodepng\lodepng.cpp">
+      <Filter>Source Files\libraries</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -472,6 +480,8 @@
     </ClInclude>
     <ClInclude Include="flash.h">
       <Filter>Source Files\modules\drawing</Filter>
+    <ClInclude Include="lodepng\lodepng.h">
+      <Filter>Source Files\libraries</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

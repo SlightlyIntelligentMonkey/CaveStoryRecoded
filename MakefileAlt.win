@@ -1,11 +1,11 @@
 WARNINGS = -pedantic -Wall -Wextra -Wno-multichar -Wno-unused-parameter
 
-CXXFLAGS = -O3 $(WARNINGS) -DUSE_ICONS_WINDOWS
-ALL_CXXFLAGS = -std=c++17 `sdl2-config --cflags` -IJson_Modern_Cpp $(CXXFLAGS)
+CXXFLAGS = -O3 $(WARNINGS) -DUSE_ICONS_WINDOWS -DLODEPNG_NO_COMPILE_ENCODER -DLODEPNG_NO_COMPILE_CPP
+ALL_CXXFLAGS = -std=c++17 `sdl2-config --cflags` -IJson_Modern_Cpp $(CXXFLAGS) -MMD -MP -MF $@.d
 LDFLAGS = -s
 ALL_LDFLAGS = -static `sdl2-config --static-libs` $(LDFLAGS)
 LIBS = 
-ALL_LIBS = -lSDL2_image -ljpeg -lpng -lwebp -lz -ltiff -llzma $(LIBS)
+ALL_LIBS = $(LIBS)
 
 MAIN := main
 # states
@@ -18,6 +18,8 @@ MAIN += bossCollision bulletCollision npcCollision playerCollision
 MAIN += fade hud render
 # sound
 MAIN +=	org pxt sound
+# libraries
+MAIN += lodepng/lodepng
 # classes
 MAIN += boss bullet caret npc player weapons valueview
 # weapon acts
@@ -27,25 +29,31 @@ MAIN += blade bubbler fireball missile polarStar machineGun misc nemesis snake s
 # npc acts
 MAIN += npcAct npc000 npc020 npc040 npc060 npc080 npc100 npc120 npc140 npc160 npc180 npc200 npc220 npc240 npc260 npc280 npc300 npc320 npc340
 # boss acts
-MAIN += balfrog
+MAIN += balfrog heavyPress omega
 
 OBJS := $(addprefix obj/, $(addsuffix .o, $(MAIN)))
+DEPS := $(addsuffix .d, $(OBJS))
 
 # Embed icons as resources, and load them natively
 OBJS += obj/icon.o
 
-all: bin/CaveStoryRemake
+all: bin/CaveStoryEngine
 
-bin/CaveStoryRemake: $(OBJS)
+bin/CaveStoryEngine: $(OBJS)
 	@mkdir -p $(@D)
 	@$(CXX) $(ALL_CXXFLAGS) $(OBJS) -o $@ $(ALL_LDFLAGS) $(ALL_LIBS)
 
+# general compile
 obj/%.o: source/%.cpp
 	@mkdir -p $(@D)
-	@$(CXX) $(ALL_CXXFLAGS) $^ -o $@ -c
+	@$(CXX) $(ALL_CXXFLAGS) $< -o $@ -c
 
 obj/icon.o: res/icon.rc res/icon_mini.ico
+	@mkdir -p $(@D)
 	@windres $< $@
 
+include $(wildcard $(DEPS))
+
+# Remove all objects files and the binary
 clean:
-	@rm -rf obj bin/CaveStoryRemake
+	@rm -rf obj bin/CaveStoryEngine
