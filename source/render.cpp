@@ -24,6 +24,8 @@ int screenWidth = 320;
 int screenHeight = 240;
 int screenScale = 2;
 
+bool displayFpsCounter = false;
+
 int prevWidth = 0;
 int prevHeight = 0;
 int prevScale = 0;
@@ -203,6 +205,37 @@ void switchScreenMode()
 	SDL_SetWindowFullscreen(window, windowFlags);
 }
 
+uint32_t calculateFPS()
+{
+	static bool hasFunctionBeenExecuted = false;
+	static uint32_t ticksAtStart = 0;
+
+	if (!hasFunctionBeenExecuted)
+	{
+		ticksAtStart = SDL_GetTicks();
+		hasFunctionBeenExecuted = true;
+	}
+
+	uint32_t tickCount = SDL_GetTicks();
+	static uint32_t timeElapsed = 0;
+	++timeElapsed;
+
+	static uint32_t currentRetVal;
+	if (ticksAtStart + 1000 <= tickCount)
+	{
+		ticksAtStart += 1000;
+		currentRetVal = timeElapsed;
+		timeElapsed = 0;
+	}
+	return currentRetVal;
+}
+
+void drawFPS()
+{
+	if (displayFpsCounter)
+		drawNumber(calculateFPS(), 280, 8, false);
+}
+
 bool drawWindow()
 {
 	while (true)
@@ -225,6 +258,8 @@ bool drawWindow()
 
 		SDL_Delay(1);
 	}
+
+	drawFPS();
 
 	SDL_RenderPresent(renderer);
 
