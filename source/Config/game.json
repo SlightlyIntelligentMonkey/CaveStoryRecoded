@@ -4,11 +4,7 @@
     "showNPCId ": false,
     "showBULId": false,
     "showCARId": false,
-    "notifyOnNotImplemented": false,
+    "notifyOnNotImplemented": true,
     "showNPCHealth": false
-  },
-  "millisecondsPerFrame": 20,
-  "screenWidth": 320,
-  "screenHeight": 240,
-  "screenScale": 2
+  }
 }

@@ -22,6 +22,8 @@ extern int screenScale;
 
 extern int framerate;
 
+extern bool displayFpsCounter;
+
 enum TextureNums
 {
 	TEX_TITLE = 0,

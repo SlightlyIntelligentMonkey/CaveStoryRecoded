@@ -7,12 +7,6 @@
 struct CONFIG {
 	int version;
 
-	//Window things
-	int framerate;
-	int screenWidth;
-	int screenHeight;
-	int screenScale;
-
 	//Gamepad bools
 	bool useGamepad;
 	bool enableThumbstick;

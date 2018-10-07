@@ -1,5 +1,6 @@
 #include "render.h"
 
+#include <string>
 #include "SDL.h"
 #include "lodepng/lodepng.h"
 #include "game.h"
@@ -7,6 +8,8 @@
 #include "common.h"
 #include "input.h"
 #include "log.h"
+
+using std::string;
 
 SDL_Window *window;
 SDL_Renderer *renderer;
@@ -17,9 +20,11 @@ SDL_Rect rcImage = {0, 0, 0, 0};
 SDL_Rect drawRectangle = {0, 0, 0, 0};
 SDL_Rect cliprect = {0, 0, 0, 0};
 
-int screenWidth = 0;
-int screenHeight = 0;
-int screenScale = 0;
+int screenWidth = 320;
+int screenHeight = 240;
+int screenScale = 2;
+
+bool displayFpsCounter = false;
 
 int prevWidth = 0;
 int prevHeight = 0;
@@ -41,17 +46,15 @@ extern const unsigned char binary_res_icon_mini_png_start[];
 extern const unsigned char binary_res_icon_mini_png_end[];
 #endif
 
-static SDL_Surface* loadPNGToSurface(const char *path)
+static SDL_Surface* loadPNGToSurface(const string& path)
 {
 	SDL_Surface *surface = nullptr;
 
 	unsigned char *pixel_buffer;
 	unsigned int width;
 	unsigned int height;
-	if (const unsigned int error = lodepng_decode32_file(&pixel_buffer, &width, &height, path))
-	{
+	if (const unsigned int error = lodepng_decode32_file(&pixel_buffer, &width, &height, path.c_str()))
 		doCustomError((std::string)"loadPNGToSurface failed!\n\nlodepng error: " + lodepng_error_text(error) + "\nFile : " + path);
-	}
 	else
 	{
 		// We don't use SDL_CreateRGBSurfaceWithFormatFrom because then the pixel data wouldn't
@@ -60,14 +63,10 @@ static SDL_Surface* loadPNGToSurface(const char *path)
 		surface = SDL_CreateRGBSurfaceWithFormat(0, width, height, 0, SDL_PIXELFORMAT_RGBA32);
 
 		if (surface == nullptr)
-		{
-			doCustomError((std::string)"loadPNGToSurface failed!\n\nSDL2 error: " + SDL_GetError());
-		}
+			doCustomError((std::string)"loadPNGToSurface failed!\n\nSDL2 error: " + SDL_GetError() + "\nFile : " + path);
 		else
-		{
 			for (unsigned int i = 0; i < height; ++i)
 				memcpy((unsigned char*)surface->pixels + (i * surface->pitch), pixel_buffer + (i * width * 4), width * 4);
-		}
 
 		free(pixel_buffer);
 	}
@@ -206,6 +205,37 @@ void switchScreenMode()
 	SDL_SetWindowFullscreen(window, windowFlags);
 }
 
+uint32_t calculateFPS()
+{
+	static bool hasFunctionBeenExecuted = false;
+	static uint32_t ticksAtStart = 0;
+
+	if (!hasFunctionBeenExecuted)
+	{
+		ticksAtStart = SDL_GetTicks();
+		hasFunctionBeenExecuted = true;
+	}
+
+	uint32_t tickCount = SDL_GetTicks();
+	static uint32_t timeElapsed = 0;
+	++timeElapsed;
+
+	static uint32_t currentRetVal;
+	if (ticksAtStart + 1000 <= tickCount)
+	{
+		ticksAtStart += 1000;
+		currentRetVal = timeElapsed;
+		timeElapsed = 0;
+	}
+	return currentRetVal;
+}
+
+void drawFPS()
+{
+	if (displayFpsCounter)
+		drawNumber(calculateFPS(), 280, 8, false);
+}
+
 bool drawWindow()
 {
 	while (true)
@@ -223,12 +253,13 @@ bool drawWindow()
 				timePrev = timeNow;	// If the timer is freakishly out of sync, panic and reset it, instead of spamming frames for who-knows how long
 			else
 				timePrev += framerate;
-
 			break;
 		}
 
 		SDL_Delay(1);
 	}
+
+	drawFPS();
 
 	SDL_RenderPresent(renderer);
 
@@ -270,9 +301,7 @@ void loadImage(const char *file, SDL_Texture **tex)
 
 	//Destroy previously existing texture and load new one
 	if (*tex != nullptr)
-	{
 		SDL_DestroyTexture(*tex);
-	}
 	*tex = loadPNGToTexture(renderer, file);
 
 	//Error if anything failed
@@ -295,9 +324,7 @@ void loadImageBad(const char *file, SDL_Texture **tex)
 
 	//Destroy previously existing texture and load new one
 	if (*tex != nullptr)
-	{
 		SDL_DestroyTexture(*tex);
-	}
 	surface = loadPNGToSurface(file);
 	if (surface->format->palette != nullptr)
 	{
@@ -316,10 +343,8 @@ void loadImageBad(const char *file, SDL_Texture **tex)
 	{
 		uint8_t *pixel = reinterpret_cast<uint8_t*>(surface->pixels);
 		for (int p = 0; p < surface->w*surface->h; p++)
-		{
 			if (pixel[p])
 				pixel[p] = colorValTbl[(pixel[p] * (sizeof(colorValTbl) - 1)) / 0xFF];
-		}
 	}
 	*tex = SDL_CreateTextureFromSurface(renderer, surface);
 
@@ -342,9 +367,7 @@ void setCliprect(const RECT *rect)
 		SDL_RenderSetClipRect(renderer, &cliprect);
 	}
 	else
-	{
 		SDL_RenderSetClipRect(renderer, nullptr);
-	}
 }
 
 void drawTexture(SDL_Texture *texture, const RECT *rect, int x, int y)
