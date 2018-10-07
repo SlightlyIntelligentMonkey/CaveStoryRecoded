@@ -311,7 +311,7 @@ int playerJudgeWaterSpike(const RECT * /*rcHit*/, const player *me, int tx, int 
 }
 
 //Current
-int playerJudgeCurrentLeft(const RECT *rcHit, const player *me, int tx, int ty) attrPure;
+attrPure int playerJudgeCurrentLeft(const RECT *rcHit, const player *me, int tx, int ty);
 
 int playerJudgeCurrentLeft(const RECT *rcHit, const player *me, int tx, int ty)
 {
@@ -356,7 +356,7 @@ int playerJudgeCurrentRight(const RECT *rcHit, const player *me, int tx, int ty)
 	return 0;
 }
 
-int playerJudgeCurrentDown(const RECT *rcHit, const player *me, int tx, int ty) attrPure;
+attrPure int playerJudgeCurrentDown(const RECT *rcHit, const player *me, int tx, int ty);
 
 int playerJudgeCurrentDown(const RECT *rcHit, const player *me, int tx, int ty)
 {
@@ -709,7 +709,7 @@ int playerHitNpcHardSolid(const RECT *rcHit, player *me, const npc *NPC)
 	return hit;
 }
 
-int playerHitNpcNonSolid(const RECT *rcHit, const player *me, const npc *NPC) attrPure;
+attrPure int playerHitNpcNonSolid(const RECT *rcHit, const player *me, const npc *NPC);
 
 int playerHitNpcNonSolid(const RECT * /*rcHit*/, const player *me, const npc *NPC)
 {

@@ -35,15 +35,15 @@ void actWeapon();
 int useWeaponAmmo(int num);
 void giveAmmo(int ammoToRefill);
 void giveWeaponAmmo(int amount);
-bool weaponMaxExp() attrPure;
-int weaponBullets(int arms_code) attrPure;
+attrPure bool weaponMaxExp();
+attrPure int weaponBullets(int arms_code);
 
 int giveWeapon(int code, int max_num);
 int removeWeapon(int code);
 int tradeWeapons(int code1, int code2, int max_num);
 void clearWeaponExperience();
 void maxWeaponAmmo();
-bool checkWeapon(int code)  attrPure;
+attrPure bool checkWeapon(int code);
 void giveWeaponAmmo(int num);
 
 void giveWeaponExperience(int x);

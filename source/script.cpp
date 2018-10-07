@@ -129,7 +129,7 @@ void loadTsc2(const char *name)
 }
 
 //Get number function
-int getTSCNumber(TSC &ptsc, int a)  attrPure;
+attrPure int getTSCNumber(TSC &ptsc, int a);
 int getTSCNumber(TSC &ptsc, int a)
 {
 	return			(static_cast<char>(ptsc.data[a + 3]) - 0x30) +
