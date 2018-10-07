@@ -291,12 +291,11 @@ int defaultPadMap = SDL_CONTROLLER_BUTTON_B;
 int defaultPadRotLeft = SDL_CONTROLLER_BUTTON_LEFTSHOULDER;
 int defaultPadRotRight = SDL_CONTROLLER_BUTTON_RIGHTSHOULDER;
 
-CONFIG defaultConfigData = { configVersion, 20, 320, 240, 2, false, true, false, keyLeft, keyRight, keyUp, keyDown, keyJump, keyShoot, keyMenu, keyMap, keyRotLeft, keyRotRight, defaultPadLeft, defaultPadRight, defaultPadUp, defaultPadDown, defaultPadJump, defaultPadShoot, defaultPadMenu, defaultPadMap, defaultPadRotLeft, defaultPadRotRight };
+CONFIG defaultConfigData = { configVersion, false, true, false, keyLeft, keyRight, keyUp, keyDown, keyJump, keyShoot, keyMenu, keyMap, keyRotLeft, keyRotRight, defaultPadLeft, defaultPadRight, defaultPadUp, defaultPadDown, defaultPadJump, defaultPadShoot, defaultPadMenu, defaultPadMap, defaultPadRotLeft, defaultPadRotRight };
 
 void setFromConfig(CONFIG *config)
 {
-	framerate = config->framerate;
-	createWindow(config->screenWidth, config->screenHeight, config->screenScale, config->fullscreen);
+	createWindow(screenWidth, screenHeight, screenScale, config->fullscreen);
 
 	if (config->fullscreen)
 		switchScreenMode();

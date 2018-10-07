@@ -73,10 +73,30 @@ void loadPlayerJson()
         disableDamage = true;
 }
 
+void loadRenderJson()
+{
+	auto jRender = loadJsonFromFile(baseJsonFolder + "render.json");
+
+	if (jRender["millisecondsPerFrame"].is_number())
+		framerate = jRender["millisecondsPerFrame"];
+
+	auto jScreen = jRender["screen"];
+	if (jScreen["width"].is_number())
+		screenWidth = jScreen["width"];
+	if (jScreen["height"].is_number())
+		screenHeight = jScreen["height"];
+	if (jScreen["scale"].is_number())
+		screenScale = jScreen["scale"];
+
+	if (jRender["displayFpsCounter"] == true)
+		displayFpsCounter = true;
+}
+
 void loadConfigFiles()
 {
 	loadGameJson();
 	loadOrgJson();
 	loadFilesystemJson();
 	loadPlayerJson();
+	loadRenderJson();
 }

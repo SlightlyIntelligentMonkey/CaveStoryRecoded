@@ -10,11 +10,11 @@ void initFlags();
 
 void setFlag(size_t a);
 void clearFlag(size_t a);
-bool getFlag(size_t a)  attrPure;
+attrPure bool getFlag(size_t a);
 
 void setSkipFlag(size_t a);
 void clearSkipFlag(size_t a);
-bool getSkipFlag(size_t a)  attrPure;
+attrPure bool getSkipFlag(size_t a);
 
 void setMapFlag(size_t a);
-bool getMapFlag(size_t a)  attrPure;
+attrPure bool getMapFlag(size_t a);

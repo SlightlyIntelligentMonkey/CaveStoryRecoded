@@ -200,7 +200,7 @@ void debugFunction()
 		if (isKeyPressed(SDL_SCANCODE_RETURN) || isKeyPressed(SDL_SCANCODE_KP_ENTER))
 		{
 			cmd += "<END";
-			dtsc.data = (uint8_t*)cmd.c_str();
+			dtsc.data = (uint8_t *)cmd.data();
 			dtsc.mode = 1;
 			dtsc.wait = 5;
 			dtsc.p_read = 0;
