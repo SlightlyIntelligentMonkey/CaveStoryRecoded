@@ -4,7 +4,7 @@ OPTIMISATIONS := -O3 -frename-registers
 # OPTIMISATIONS += -flto
 
 COMPILE_CPP = $(CXX) -m32 $(OPTIMISATIONS) $(WARNINGS) -std=c++17 -I/mingw32/include/SDL2/ -IJson_Modern_Cpp -c -DUSE_ICONS_WINDOWS -MMD -MP -MF $@.d
-# Replace mingw32 with usr for actual Unix build
+# Replace mingw32 with usr for Unix build
 
 LINK_CPP := $(CXX) -m32 $(OPTIMISATIONS) $(WARNINGS) -static -static-libstdc++ -static-libgcc -mwindows
 # Remove -mwindows for Unix build
@@ -44,7 +44,7 @@ all: bin/CaveStoryEngine
 bin/CaveStoryEngine: $(OBJS)
 	@mkdir -p $(@D)
 	$(LINK_CPP) $(OBJS) -lmingw32 -lSDL2Main -lSDL2.dll -o $@
-# Remove -lmingw32 for actual Unix build maybe ? Also prolly remove the ".dll"s at the end of SDL2.dll
+# Remove -lmingw32 for actual Unix build maybe ? Also you should probably remove the ".dll"s at the end of SDL2.dll (Maybe replace them with ".so" ?)
 
 # general compile
 obj/%.o: source/%.cpp

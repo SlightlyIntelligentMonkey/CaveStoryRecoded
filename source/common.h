@@ -46,7 +46,23 @@ enum Direction
 };
 
 #ifndef _countof
-#define _countof(x) (sizeof(x) / sizeof((x)[0]))
+#if __cplusplus >= 201103L || (defined(_MSC_VER) && _MSC_VER >= 1900)
+template <typename T, size_t N> constexpr size_t _countof(T const (&)[N]) noexcept
+{
+    return N;
+}
+
+// For dynamic containers
+template <class C> size_t _countof(C const& arr)
+{
+    return arr.size();
+}
+#elif __cplusplus >= 199711L
+template <typename T, size_t N> char (&COUNTOF_REQUIRES_ARRAY_ARGUMENT(T(&)[N]))[N];
+#define _countof(arr) sizeof(COUNTOF_REQUIRES_ARRAY_ARGUMENT(x))
+#else
+#define _countof(arr) (sizeof(arr) / sizeof((arr)[0]))
+#endif
 #endif
 
 // Macros
