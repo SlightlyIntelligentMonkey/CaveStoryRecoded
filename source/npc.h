@@ -73,7 +73,7 @@ public:
 	int direct;
 
 	/// Entity flags
-	unsigned __int16 bits;
+	uint16_t bits;
 
 	/// Rect location in spritesheet
 	RECT rect;

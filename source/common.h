@@ -1,6 +1,7 @@
 #pragma once
 
 #include <cstdint>
+#include <cstddef>
 
 // Structs
 struct RECT
@@ -43,6 +44,10 @@ enum Direction
 	dirDown,
 	dirAuto,
 };
+
+#ifndef _countof
+#define _countof(x) (sizeof(x) / sizeof((x)[0]))
+#endif
 
 // Macros
 #ifdef __GNUC__
