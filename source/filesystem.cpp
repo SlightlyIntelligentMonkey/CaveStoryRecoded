@@ -153,7 +153,7 @@ void loadProfile()
 		if (memcmp(&code, profileCode.c_str(), sizeof(code)) != 0)
 		{
 			const string errorMsg(string("Invalid profile (first 8 bytes aren't \"") + profileCode + "\"");
-			doCustomError(errorMsg.c_str());
+			doCustomError(errorMsg);
 		}
 
 		const int level = SDL_ReadLE32(profile); //level
@@ -341,14 +341,14 @@ void defaultConfig()
 
 void loadConfig()
 {
-	if (!fileExists(configName.c_str()))
+	if (!fileExists(configName))
 	{
 		return defaultConfig();
 	}
 	else
 	{
 		CONFIG *config;
-		size_t configSize = loadFile(configName.c_str(), (uint8_t**)&config);
+		size_t configSize = loadFile(configName, (uint8_t**)&config);
 
 		if (configSize < sizeof(config->version) || config->version != configVersion)
 		{
@@ -369,7 +369,7 @@ void saveConfig()
 {
 	uint8_t *writeData = (uint8_t*)malloc(sizeof(*currentConfig));
 	memcpy(writeData, currentConfig, sizeof(*currentConfig));
-	writeFile(configName.c_str(), writeData, sizeof(*currentConfig));
+	writeFile(configName, writeData, sizeof(*currentConfig));
 }
 
 /// Return a vector of strings containing the contents of the file who's name is given as argument

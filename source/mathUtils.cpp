@@ -2,9 +2,6 @@
 
 #include <random>
 #include <chrono>
-#include <cstddef>
-#include <cmath>
-#include <math.h>
 
 using std::mt19937;
 using std::enable_if;
@@ -75,21 +72,8 @@ uint8_t getAtan(int x, int y)
 	return static_cast<uint8_t>(atan2(-y, -x) * 0x80 / M_PI);
 }
 
-int sign(int x)
-{
-	if (x != 0)
-		return x / std::abs(x);
-
-	return 0;
-}
-
-int clamp(int x, int mi, int ma)
-{
-	return std::max(std::min(ma, x), mi);
-}
-
 //returns result of normalized sinc
 double sinc(double x)
 {
-	return (sin(M_PI*static_cast<float>(x)) / (M_PI*static_cast<float>(x)));
+	return (sin(M_PI*x) / (M_PI*x));
 }

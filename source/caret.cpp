@@ -573,7 +573,7 @@ void caret::draw()
 			}
 		}
 
-		drawString((x - view_left) / 0x200 - viewport.x / 0x200, (y - view_top) / 0x200 - viewport.y / 0x200 - 16, to_string(index).c_str(), nullptr);
+		drawString((x - view_left) / 0x200 - viewport.x / 0x200, (y - view_top) / 0x200 - viewport.y / 0x200 - 16, to_string(index), nullptr);
 	}
 }
 

@@ -130,7 +130,7 @@ void loadLevel(int levelIndex)
 	const string pxmPath = string("data/Stage/") + stageTable[levelIndex].filename + ".pxm";
 
 	uint8_t *pxm = nullptr;
-	const int pxmSize = loadFile(pxmPath.c_str(), &pxm);
+	const int pxmSize = loadFile(pxmPath, &pxm);
 
 	levelWidth = readLEshort(pxm, 4);
 	levelHeight = readLEshort(pxm, 6);
@@ -147,7 +147,7 @@ void loadLevel(int levelIndex)
 	const string pxaPath = string("data/Stage/") + stageTable[levelIndex].tileset + ".pxa";
 
 	uint8_t *pxa = nullptr;
-	const int pxaSize = loadFile(pxaPath.c_str(), &pxa);
+	const int pxaSize = loadFile(pxaPath, &pxa);
 
 	delete[] levelTileAttributes;
 
@@ -161,7 +161,7 @@ void loadLevel(int levelIndex)
 	const string pxePath = string("data/Stage/") + stageTable[levelIndex].filename + ".pxe";
 
 	uint8_t *pxe = nullptr;
-	loadFile(pxePath.c_str(), &pxe);
+	loadFile(pxePath, &pxe);
 
 	//Clear old npcs
 	npcs.clear();
@@ -198,29 +198,29 @@ void loadLevel(int levelIndex)
 	//Load tileset
 	const string tileImagePath = string("data/Stage/Prt") + stageTable[levelIndex].tileset + ".png";
 
-	loadImage(tileImagePath.c_str(), &sprites[0x02]);
+	loadImage(tileImagePath, &sprites[0x02]);
 
 	//Load background
 	const string backgroundImagePath = string("data/") + stageTable[levelIndex].background + ".png";
 
 	backgroundScroll = stageTable[levelIndex].backgroundScroll;
-	loadImage(backgroundImagePath.c_str(), &sprites[0x1C]);
+	loadImage(backgroundImagePath, &sprites[0x1C]);
 
 	//Load npc sheets
 	//Load sheet 1
 	const string npcSheet1Path = string("data/Npc/Npc") + stageTable[levelIndex].npc1 + ".png";
 
-	loadImage(npcSheet1Path.c_str(), &sprites[0x15]);
+	loadImage(npcSheet1Path, &sprites[0x15]);
 
 	//Load sheet 2
 	const string npcSheet2Path = string("data/Npc/Npc") + stageTable[levelIndex].npc2 + ".png";
 
-	loadImage(npcSheet2Path.c_str(), &sprites[0x16]);
+	loadImage(npcSheet2Path, &sprites[0x16]);
 
 	//Load tsc script
 	const string tscPath = string("data/Stage/") + stageTable[levelIndex].filename + ".tsc";
 
-	loadStageTsc(tscPath.c_str());
+	loadStageTsc(tscPath);
 
 
 	//Fix viewport

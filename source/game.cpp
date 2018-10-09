@@ -198,7 +198,7 @@ void debugFunction()
 		break;
 	case(1):
 		debugCMDGetInput(cmd);
-		drawString(0, 0, cmd.c_str());
+		drawString(0, 0, cmd);
 		if (isKeyPressed(SDL_SCANCODE_RETURN) || isKeyPressed(SDL_SCANCODE_KP_ENTER))
 		{
 			cmd += "<END";
@@ -222,11 +222,11 @@ void debugFunction()
 		string debugStr3 = "There are " + to_string(carets.size()) + " caret slots.";
 		string debugStr4 = "There are " + to_string(valueviews.size()) + " valueview slots";
 		string debugStr5 = "Currently loaded boss is " + to_string(bossObj[0].code_char);
-		drawString(8, screenHeight - 12, debugStr1.c_str());
-		drawString(8, screenHeight - 24, debugStr2.c_str());
-		drawString(8, screenHeight - 36, debugStr3.c_str());
-		drawString(8, screenHeight - 48, debugStr4.c_str());
-		drawString(8, screenHeight - 60, debugStr5.c_str());
+		drawString(8, screenHeight - 12, debugStr1);
+		drawString(8, screenHeight - 24, debugStr2);
+		drawString(8, screenHeight - 36, debugStr3);
+		drawString(8, screenHeight - 48, debugStr4);
+		drawString(8, screenHeight - 60, debugStr5);
 	}
 
 	if (debugFlags & showPosition)

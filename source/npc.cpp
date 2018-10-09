@@ -639,7 +639,7 @@ void npc::draw()
 				}
 			}
 
-			drawString((x - side) / 0x200 - viewport.x / 0x200 + xOffset, (y - view.top) / 0x200 - viewport.y / 0x200 - 16, to_string(index).c_str());
+			drawString((x - side) / 0x200 - viewport.x / 0x200 + xOffset, (y - view.top) / 0x200 - viewport.y / 0x200 - 16, to_string(index));
 		}
 
 		if (debugFlags & showNPCHealth && life)
