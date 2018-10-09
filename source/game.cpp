@@ -180,6 +180,8 @@ void debugFunction()
 			framerate--;
 		if (isKeyPressed(SDL_SCANCODE_MINUS))
 			framerate++;
+		if (isKeyPressed(SDL_SCANCODE_P))
+			debugFlags ^= showPosition;
 	}
 
 	switch (debugMode)
@@ -225,6 +227,14 @@ void debugFunction()
 		drawString(8, screenHeight - 36, debugStr3.c_str());
 		drawString(8, screenHeight - 48, debugStr4.c_str());
 		drawString(8, screenHeight - 60, debugStr5.c_str());
+	}
+
+	if (debugFlags & showPosition)
+	{
+		drawString(screenWidth - 96, screenHeight - 12, "x:");
+		drawNumber(unitsToTiles(currentPlayer.x), screenWidth - 88, screenHeight - 8, false);
+		drawString(screenWidth - 48, screenHeight - 12, "y:");
+		drawNumber(unitsToTiles(currentPlayer.y), screenWidth - 40, screenHeight - 8, false);
 	}
 }
 
