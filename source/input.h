@@ -18,6 +18,6 @@ void initGamepad();
 
 void getKeys();
 
-bool isKeyDown(int keynum)  attrPure;
-bool isKeyPressed(int keynum)  attrPure;
+attrPure bool isKeyDown(int keynum);
+attrPure bool isKeyPressed(int keynum);
 bool handleEvents();

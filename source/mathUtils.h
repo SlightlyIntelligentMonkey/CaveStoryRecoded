@@ -2,7 +2,7 @@
 #include "common.h"
 
 #ifndef M_PI	// cmath doesn't define M_PI if it's C99 comformant
-#define M_PI 3.14159265358979323846
+constexpr auto M_PI = 3.14159265358979323846;
 #endif
 
 int getSin(uint8_t deg)  attrConst;

@@ -82,7 +82,7 @@ public:
 private:
     void doBooster();
     void doFriction(int resist);
-    int getBoostCount() attrPure;
+	attrPure int getBoostCount();
     void limitSpeed();
 };
 

@@ -146,7 +146,7 @@ public:
 	void doRects(RECT rcNPC);
 
 	void facePlayer();
-    int getXDistToPlayer() attrPure;
+	attrPure int getXDistToPlayer();
 
 	void limitXVel(int maxVel);
 	void limitYVel(int maxVel);
@@ -156,14 +156,14 @@ public:
 	void accelerateTowardsXTarget(int vel);
 	void accelerateTowardsYTarget(int vel);
 
-	bool isPlayerWithinDistance(int xDist, int yDistHigh, int yDistLow) attrPure;
-	inline bool isPlayerWithinDistance(int xDist, int yDist) attrPure
+	attrPure bool isPlayerWithinDistance(int xDist, int yDistHigh, int yDistLow);
+	attrPure inline bool isPlayerWithinDistance(int xDist, int yDist)
 	{
 		return isPlayerWithinDistance(xDist, yDist, yDist);
 	}
 
-	bool isPlayerAligned(int xRay, int yRayHigh, int yRayLow) attrPure;
-	inline bool isPlayerAligned(int xRay, int yRay) attrPure
+	attrPure bool isPlayerAligned(int xRay, int yRayHigh, int yRayLow);
+	attrPure inline bool isPlayerAligned(int xRay, int yRay)
 	{
 		return isPlayerAligned(xRay, yRay, yRay);
 	}
@@ -181,7 +181,7 @@ void createSmokeUp(int x, int y, int w, int num);
 
 void createNpc(int setCode, int setX = 0, int setY = 0, int setXm = 0, int setYm = 0, int setDir = dirLeft, npc *parentNpc = nullptr, bool setPriority = true);
 void changeNpc(int code_event, int code_char, int dir = dirLeft);
-int findEntityByType(int entityType) attrPure;
+attrPure int findEntityByType(int entityType);
 void setNPCState(int entityEventNum, int newNPCState, int direction);
 void moveNPC(int entityEventNum, int xPos, int yPos, int direction);
 

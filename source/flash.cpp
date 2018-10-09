@@ -103,7 +103,7 @@ void flashNormal()
 	if (flash.timer / 2 & 1)
 	{
 		SDL_SetRenderDrawColor(renderer, flash.r, flash.g, flash.b, flash.a);
-		SDL_RenderFillRect(renderer, NULL);
+		SDL_RenderFillRect(renderer, nullptr);
 	}
 	if (flash.timer < 0)
 		flash.mode = none;

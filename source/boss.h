@@ -1,7 +1,7 @@
 #pragma once
 #include "npc.h"
 
-#define BOSSNPCS 20
+constexpr size_t BOSSNPCS = 20;
 extern npc bossObj[BOSSNPCS];
 
 void initBoss(int code);

@@ -4,6 +4,7 @@
 #include <chrono>
 #include <cstddef>
 #include <cmath>
+#include <math.h>
 
 using std::mt19937;
 using std::enable_if;
