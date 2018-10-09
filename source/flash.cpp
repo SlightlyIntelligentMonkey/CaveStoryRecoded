@@ -1,4 +1,5 @@
 #include <SDL_render.h>
+#include <math.h>
 
 #include "flash.h"
 #include "render.h"
@@ -12,8 +13,6 @@ struct FLASH
 	flashModes mode;
 	int timer;
 	int vW;
-	int vH;
-	int hW;
 	int hH;
 	Uint8 r;
 	Uint8 g;
@@ -25,8 +24,6 @@ FLASH flash =
 	0,
 	0,
 	none,
-	0,
-	0,
 	0,
 	0,
 	0,
@@ -43,8 +40,6 @@ void setFlash(int x, int y, flashModes mode, int length)
 	flash.mode = mode;
 	flash.timer = length;
 	flash.vW = 0;
-	flash.vH = 0;
-	flash.hW = 0;
 	flash.hH = 0;
 	return;
 }
@@ -60,20 +55,44 @@ void setFlashColor(uint8_t r, uint8_t g, uint8_t b, uint8_t a)
 
 void flashExplosion()
 {
-	if (1)
+	static bool explosionEnd = false;
+	static int explInc = 0;
+	static float h = 0;
+
+	if (explosionEnd == true)
 	{
-		flash.hH -= flash.hH / 8;
+		h -= h / 8;
+		flash.hH = h;
 		if (flash.hH <= 0)
+		{
 			flash.mode = none;
+			explInc = 0;
+			h = 0;
+			explosionEnd = false;
+			return;
+		}
 	}
 	else
 	{
+		flash.timer += 512;
+		explInc += flash.timer;
 
+		flash.vW = explInc / 512;
+		flash.hH = explInc / 512;
+
+		if (explInc > 655360)
+		{
+			explosionEnd = true;
+			flash.timer = 0;
+			explInc = 122880;
+			h = screenHeight;
+		}
 	}
 
-	if (!1)
-		drawRect((flash.x - viewport.x) - (flash.vW / 2), (flash.y - viewport.y) - (flash.vH / 2), flash.vW, flash.vH);
-	drawRect((flash.x - viewport.x) - (flash.hW / 2), (flash.y - viewport.y) - (flash.hH / 2), flash.hW, flash.hH);
+	SDL_SetRenderDrawColor(renderer, flash.r, flash.g, flash.b, flash.a);
+	if (explosionEnd != true)
+		drawRect(unitsToPixels(flash.x - pixelsToUnits(flash.vW/2) - viewport.x), 0, flash.vW, screenHeight);
+	drawRect(0, unitsToPixels(flash.y - pixelsToUnits(flash.hH/2) - viewport.y), screenWidth, flash.hH);
 
 	return;
 }

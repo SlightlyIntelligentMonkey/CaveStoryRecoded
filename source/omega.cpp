@@ -7,6 +7,7 @@
 #include "game.h"
 #include "common.h"
 #include "level.h"
+#include "flash.h"
 
 #include <cstring>
 
@@ -399,7 +400,7 @@ void actBoss_Omega(npc *boss)
 		{
 			boss->act_wait = 0;
 			boss->act_no = 160;
-			//SetFlash(unk_81CCFC8, unk_81CCFCC, 1);
+			setFlash(boss->x, boss->y, explosion, 0);
 			playSound(SFX_largeExplosion);
 		}
 		break;
