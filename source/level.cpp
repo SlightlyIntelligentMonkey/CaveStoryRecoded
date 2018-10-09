@@ -196,15 +196,11 @@ void loadLevel(int levelIndex)
 	delete[] pxe;
 
 	//Load tileset
-	const string tileImagePath = string("data/Stage/Prt") + stageTable[levelIndex].tileset + ".png";
-
-	loadImage(tileImagePath, &sprites[0x02]);
+	loadImage(string("data/Stage/Prt") + stageTable[levelIndex].tileset + ".png", &sprites[0x02]);
 
 	//Load background
-	const string backgroundImagePath = string("data/") + stageTable[levelIndex].background + ".png";
-
 	backgroundScroll = stageTable[levelIndex].backgroundScroll;
-	loadImage(backgroundImagePath, &sprites[0x1C]);
+	loadImage(string("data/") + stageTable[levelIndex].background + ".png", &sprites[0x1C]);
 
 	//Load npc sheets
 	//Load sheet 1
@@ -212,15 +208,11 @@ void loadLevel(int levelIndex)
 
 	loadImage(npcSheet1Path, &sprites[0x15]);
 
-	//Load sheet 2
-	const string npcSheet2Path = string("data/Npc/Npc") + stageTable[levelIndex].npc2 + ".png";
+	// Load sheet 2
+	loadImage(string("data/Npc/Npc") + stageTable[levelIndex].npc2 + ".png", &sprites[0x16]);
 
-	loadImage(npcSheet2Path, &sprites[0x16]);
-
-	//Load tsc script
-	const string tscPath = string("data/Stage/") + stageTable[levelIndex].filename + ".tsc";
-
-	loadStageTsc(tscPath);
+	// Load tsc script
+	loadStageTsc(string("data/Stage/") + stageTable[levelIndex].filename + ".tsc");
 
 
 	//Fix viewport
