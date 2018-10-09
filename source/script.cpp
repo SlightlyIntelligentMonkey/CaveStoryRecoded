@@ -539,6 +539,10 @@ bool doTscCommand(int *retVal, bool *bExit, TSC &ptsc)
 
 		tscCleanup(1, ptsc);
 		break;
+	case('<BXL'):
+		setFlash(getTSCNumber(ptsc, ptsc.p_read + 4)<<13, getTSCNumber(ptsc, ptsc.p_read + 9)<<13, explosion, 0);
+		tscCleanup(2, ptsc);
+		break;
 	case('<CAT'):
 		ptsc.flags |= 0x40u;
 		tscCleanup(0, ptsc);
