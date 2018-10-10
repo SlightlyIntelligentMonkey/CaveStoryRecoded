@@ -16,10 +16,7 @@ uint8_t getAtan(int x, int y) attrConst;
 int random(int32_t mi, int32_t ma);
 template <typename T> T sign(T x)
 {
-	if (x != 0)
-		return x / std::abs(x);
-
-	return 0;
+	return (x > 0) - (x < 0);
 }
 
  template <typename T> attrConst T clamp(T x, T mi, T ma)

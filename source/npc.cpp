@@ -533,10 +533,10 @@ void npc::limitYVel(int maxVel)
 
 void npc::moveInDir(int vel)
 {
-    if (this->direct != dirLeft)
-        this->xm = vel;
-    else
-        this->xm = -vel;
+    if (this->direct == dirLeft)
+        vel = -vel;
+
+    this->xm = vel;
 }
 
 void npc::accelerateTowardsXTarget(int vel)

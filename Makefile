@@ -63,4 +63,4 @@ include $(wildcard $(DEPS))
 
 # Remove all objects files and the binary
 clean:
-	rm -rf obj bin/CaveStoryEngine
+	rm -rf obj/*.o bin/CaveStoryEngine

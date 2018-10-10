@@ -160,7 +160,7 @@ void debugFunction()
 {
 	static string cmd;
 	static int debugMode = 0;
-	static TSC dtsc;
+	static TSC debugTSC;
 
 	if (isKeyDown(SDL_SCANCODE_RSHIFT) && isKeyDown(SDL_SCANCODE_BACKSPACE))
 	{
@@ -192,7 +192,8 @@ void debugFunction()
 		{
 			debugMode = 1;
 			cmd.clear();
-			cmd.shrink_to_fit();
+			if (cmd.capacity() > 1024)
+                cmd.shrink_to_fit();
 			cmd += "<";
 		}
 		break;
@@ -202,15 +203,15 @@ void debugFunction()
 		if (isKeyPressed(SDL_SCANCODE_RETURN) || isKeyPressed(SDL_SCANCODE_KP_ENTER))
 		{
 			cmd += "<END";
-			dtsc.data = (uint8_t *)cmd.data();
-			dtsc.mode = 1;
-			dtsc.wait = 5;
-			dtsc.p_read = 0;
+			debugTSC.data = (uint8_t *)cmd.data();
+			debugTSC.mode = 1;
+			debugTSC.wait = 5;
+			debugTSC.p_read = 0;
 			debugMode = 2;
 		}
 		break;
 	case(2):
-		if (updateTsc(dtsc) == 32)
+		if (updateTsc(debugTSC) == 32)
 			debugMode = 0;
 		break;
 	}
