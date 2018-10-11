@@ -208,6 +208,7 @@ void debugFunction()
 			debugTSC.wait = 5;
 			debugTSC.p_read = 0;
 			debugMode = 2;
+			logInfo("Running manually entered command : " + cmd);
 		}
 		break;
 	case(2):

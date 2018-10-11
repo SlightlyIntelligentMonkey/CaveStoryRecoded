@@ -1,8 +1,13 @@
 #include "npc300.h"
 
+#include <array>
 #include "player.h"
 #include "mathUtils.h"
 #include "caret.h"
+#include "render.h"
+#include "level.h"
+
+using std::array;
 
 void npcAct300(npc *NPC) //Demon crown
 {
@@ -91,4 +96,92 @@ void npcAct302(npc *NPC) //Camera Helper NPC
 
 	currentPlayer.x = NPC->x;
 	currentPlayer.y = NPC->y;
+}
+
+void npcAct304(npc *NPC)    // Gaudi (sitting)
+{
+    constexpr array<RECT, 4> rcNPC =
+    {{
+        {0, 176, 24, 192},
+        {24, 176, 48, 192},
+        {48, 176, 72, 192},
+        {72, 176, 96, 192},
+    }};
+
+    switch (NPC->act_no)
+    {
+    case 0:
+        NPC->act_no = 1;
+        NPC->y += pixelsToUnits(10);
+        // Fallthrough
+    case 1:
+        NPC->ani_no = 0;
+        break;
+
+    case 10:
+        NPC->ani_no = 1;
+        break;
+
+    case 20:
+        NPC->act_no = 21;
+        NPC->ani_no = 2;
+        // Fallthrough
+    case 21:
+        NPC->animate(10, 2, 3);
+    }
+
+    NPC->doRects(rcNPC);
+}
+
+void npcAct305(npc *NPC)
+{
+    constexpr array<RECT, 2> rcLeft = {{{160, 144, 176, 160}, {176, 144, 192, 160}}};
+    constexpr array<RECT, 2> rcRight = {{{160, 160, 176, 176}, {176, 160, 192, 176}}};
+
+    switch (NPC->act_no)
+    {
+    case 0:
+        NPC->act_no = 1;
+        NPC->y -= tilesToUnits(1);
+        NPC->ani_wait = random(0, 6);
+        // Fallthrough
+    case 1:
+        NPC->animate(6, 0, 1);
+    }
+
+    NPC->doRects(rcLeft, rcRight);
+}
+
+void npcAct306(npc *NPC) // Balrog, Nurse
+{
+    constexpr array<RECT, 2> rcLeft = {{{240, 96, 280, 128}, {280, 96, 320, 128}}};
+    constexpr array<RECT, 2> rcRight = {{{160, 152, 200, 184}, {200, 152, 240, 184}}};
+
+    switch (NPC->act_no)
+    {
+    case 0:
+        NPC->act_no = 1;
+        NPC->ani_no = 0;
+        NPC->ani_wait = 0;
+        NPC->y += pixelsToUnits(4);
+        // Fallthrough
+    case 1:
+        if (!random(0, 120))
+        {
+            NPC->act_no = 2;
+            NPC->act_wait = 0;
+            NPC->ani_no = 1;
+        }
+        break;
+
+    case 2:
+        if (++NPC->act_wait > 8)
+        {
+            NPC->act_no = 1;
+            NPC->ani_no = 0;
+        }
+        break;
+    }
+
+    NPC->doRects(rcLeft, rcRight);
 }

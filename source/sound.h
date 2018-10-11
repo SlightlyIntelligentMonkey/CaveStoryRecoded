@@ -60,7 +60,7 @@ enum soundEffects
 	SFX_PolarStarShootLevel12 = 0x20,
 	SFX_FireballShoot = 0x21,
 	SFX_FireballBounce = 0x22,
-	SFX_largeExplosion = 0x23,
+	SFX_LargeExplosion = 0x23,
 	SFX_NoAmmo = 0x25,
 	SFX_ItemGet = 0x26,
 	SFX_EnemyShootProjectile = 0x27,

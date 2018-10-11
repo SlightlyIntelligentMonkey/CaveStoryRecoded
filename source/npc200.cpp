@@ -9,6 +9,7 @@
 #include "render.h"
 #include "bullet.h"
 #include "level.h"
+#include "game.h"
 
 using std::array;
 
@@ -356,6 +357,64 @@ void npcAct205(npc *NPC) // Falling Spike, large
 	NPC->y += NPC->ym;
 
 	NPC->doRects(rcNPC);
+}
+
+void npcAct206(npc *NPC) // Counter bomb (enemy)
+{
+    switch (NPC->act_no)
+    {
+    case 0:
+        NPC->act_no = 1;
+        NPC->tgt_x = NPC->x;
+        NPC->tgt_y = NPC->y;
+        NPC->act_wait = random(0, 50);
+        // Fallthrough
+    case 1:
+        if (++NPC->act_wait >= 50)
+        {
+            NPC->act_wait = 0;
+            NPC->act_no = 2;
+            NPC->ym = pixelsToUnits(1.5);
+        }
+        break;
+
+    case 2:
+        if ((currentPlayer.x > NPC->x - tilesToUnits(5) && currentPlayer.x < NPC->x + tilesToUnits(5)) || NPC->shock)
+        {
+            NPC->act_wait = 0;
+            NPC->act_no = 3;
+        }
+        break;
+
+    case 3:
+        if (++NPC->act_wait == 300)
+        {
+            NPC->hit = {tilesToUnits(8), tilesToUnits(6.25), tilesToUnits(8), tilesToUnits(6.25)};
+            NPC->damage = 30;
+            playSound(SFX_LargeExplosion, 1);
+            createSmokeLeft(NPC->x, NPC->y, tilesToUnits(8), 100);
+            viewport.quake = 20;
+            NPC->cond |= 8;
+        }
+        else if (NPC->act_wait < 300 && !(NPC->act_wait % 60) )
+            createNpc(NPC_BalloonCountdown, NPC->x + tilesToUnits(1), NPC->y + pixelsToUnits(4), 0, 0, NPC->act_wait / 60);
+        break;
+    }
+
+    if (NPC->act_no > 1)
+    {
+        NPC->accelerateTowardsYTarget(0x10);
+        NPC->limitYVel(0x100);
+    }
+
+    NPC->x += NPC->xm;
+    NPC->y += NPC->ym;
+
+    constexpr array<RECT, 3> rcNPC = {{{80, 80, 120, 120}, {120, 80, 160, 120}, {160, 80, 200, 120}}};
+
+    NPC->animate(4, 0, 2);
+
+    NPC->doRects(rcNPC);
 }
 
 void npcAct210(npc *NPC) // Beetle, Follow Aqua (enemy)
