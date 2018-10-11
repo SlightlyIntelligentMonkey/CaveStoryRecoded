@@ -105,6 +105,36 @@ void npcAct165(npc *NPC) //Curly (Collapsed)
 		NPC->rect = rcLeft;
 }
 
+void npcAct166(npc *NPC) //gaudi shop dude
+{
+	if (NPC->act_no != 2)
+	{
+		NPC->act_no = 1;
+		NPC->ani_no = 0;
+		NPC->ani_wait = 0;
+	}
+	if (NPC->act_no == 1 && random(0, 120) == 10)
+	{
+		NPC->act_no = 2;
+		NPC->act_wait = 0;
+		NPC->ani_no = 1;
+	}
+
+	LABEL_9:
+	if (++NPC->act_wait > 8)
+	{
+		NPC->act_no = 1;
+		NPC->ani_no = 0;
+	}
+
+	NPC->rect.left = 144 + (NPC->ani_no*40);
+	NPC->rect.top = 104;
+	NPC->rect.right = NPC->rect.left + 40;
+	NPC->rect.bottom = 128;
+
+	return;
+}
+
 void npcAct171(npc *NPC) //Fire whirr
 {
 	array<RECT, 2> rcRight;

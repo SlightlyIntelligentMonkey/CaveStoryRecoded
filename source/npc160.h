@@ -4,6 +4,7 @@
 void npcAct163(npc *NPC);
 void npcAct164(npc *NPC);
 void npcAct165(npc *NPC);
+void npcAct166(npc *NPC);
 
 void npcAct171(npc *NPC);
 void npcAct172(npc *NPC);
