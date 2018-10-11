@@ -8,6 +8,7 @@
 #include "flash.h"
 #include "weapons.h"
 #include "game.h"
+#include "level.h"
 
 using std::array;
 
@@ -43,6 +44,7 @@ void npcAct140(npc *NPC)//rabid toroko
 		NPC->ani_no = 9;
 		NPC->act_wait = 0;
 		NPC->bits &= ~npc_shootable;
+		// Fallthrough
 	case start1:
 		if (++NPC->act_wait > 50)
 		{
@@ -75,6 +77,7 @@ void npcAct140(npc *NPC)//rabid toroko
 		NPC->ani_wait = 0;
 		NPC->act_wait = random(20, 130);
 		NPC->xm = 0;
+		// Fallthrough
 	case decideState://waits a period of time then decides between state 20 and state 50
 		NPC->facePlayer();
 
@@ -94,18 +97,15 @@ void npcAct140(npc *NPC)//rabid toroko
 			--NPC->act_wait;
 		}
 		else if (random(0, 99) & 1)
-		{
 			NPC->act_no = 20;
-		}
 		else
-		{
 			NPC->act_no = 50;
-		}
 		break;
 	case jumpAndThrow:
 		NPC->act_no = jump;
 		NPC->ani_no = 2;
 		NPC->act_wait = 0;
+		// Fallthrough
 	case jump:
 		if (++NPC->act_wait > 10)
 		{
@@ -167,6 +167,7 @@ void npcAct140(npc *NPC)//rabid toroko
 		NPC->act_wait = 0;
 		NPC->ani_no = 4;
 		createNpc(NPC_ProjectileTorokoBlock, 0, 0, 0, 0, 0, NPC);
+		// Fallthrough
 	case windUpGround:
 		if (++NPC->act_wait > 30)
 		{
@@ -191,7 +192,7 @@ void npcAct140(npc *NPC)//rabid toroko
 		for (int i = 0; i <= 7; ++i)
 		{
 			createNpc(NPC_Smoke, NPC->x + (random(-12, 12) << 9), NPC->y + (random(-12, 12) << 9),
-				random(-341, 341), random(-1536, 0), 0, 0, false);
+				random(-341, 341), random(-1536, 0), 0, nullptr, false);
 		}
 		break;
 	case 0x65:
@@ -253,6 +254,7 @@ void npcAct140(npc *NPC)//rabid toroko
 		NPC->act_wait = 0;
 		NPC->ani_no = 12;
 		playSound(29);
+		// Fallthrough
 	case die:
 		if (++NPC->ani_no > 13)
 			NPC->ani_no = 12;
@@ -260,8 +262,8 @@ void npcAct140(npc *NPC)//rabid toroko
 		{
 			for (int i = 0; i <= 3; ++i)
 			{
-				createNpc(NPC_Smoke, NPC->x + (random(-12, 12) << 9), NPC->y + (random(-12, 12) << 9), 
-					random(-341, 341), random(-1536, 0), 0, 0, false);
+				createNpc(NPC_Smoke, NPC->x + (random(-12, 12) << 9), NPC->y + (random(-12, 12) << 9),
+					random(-341, 341), random(-1536, 0), 0, nullptr, false);
 			}
 			NPC->cond = 0;
 		}
@@ -272,7 +274,7 @@ void npcAct140(npc *NPC)//rabid toroko
 	if (NPC->act_no > 100 && NPC->act_no <= 104 && !(NPC->act_wait % 9))
 	{
 		createNpc(NPC_Smoke, NPC->x + (random(-12, 12) << 9), NPC->y + (random(-12, 12) << 9),
-			random(-341, 341), random(-1536, 0), 0, 0, false);
+			random(-341, 341), random(-1536, 0), 0, nullptr, false);
 	}
 
 	NPC->doGravity(32, 1535);
@@ -331,7 +333,7 @@ void npcAct141(npc *NPC) //block toroko throws
 			playSound(12);
 			for (int i = 0; i <= 3; ++i)
 			{
-				createNpc(4, NPC->x, NPC->y, random(-512, 512), random(-512, 512), 0, 0, false);
+				createNpc(4, NPC->x, NPC->y, random(-512, 512), random(-512, 512), 0, nullptr, false);
 			}
 		}
 		else
@@ -348,9 +350,7 @@ void npcAct141(npc *NPC) //block toroko throws
 		if (++NPC->act_wait > 4)
 		{
 			for (int i = 0; i <= 3; ++i)
-			{
-				createNpc(4, NPC->x, NPC->y, random(-512, 512), random(-512, 512), 0, 0, false);
-			}
+				createNpc(NPC_Smoke, NPC->x, NPC->y, random(-512, 512), random(-512, 512), 0, nullptr, false);
 			NPC->code_char = 142;
 			NPC->ani_no = 0;
 			NPC->act_no = 20;
@@ -387,6 +387,7 @@ void npcAct142(npc *NPC) //toroko flowers
 		NPC->act_no = prep;
 		NPC->ani_no = 0;
 		NPC->act_wait = 0;
+		// Fallthrough
 	case prep:
 		if (++NPC->act_wait > 30)
 		{
@@ -935,8 +936,8 @@ void npcAct149(npc *NPC) //moving block
 			playSound(26);
 			for (int i = 0; i <= 3; ++i)
 			{
-				createNpc(NPC_Smoke, NPC->x - 0x2000, NPC->y + (random(-12, 12) << 9),
-					random(-341, 341), random(-1536, 0), 0, 0, false);
+				createNpc(NPC_Smoke, NPC->x - tilesToUnits(1), NPC->y + (random(-12, 12) << 9),
+					random(-341, 341), random(-1536, 0), 0, nullptr, false);
 			}
 		}
 		else
@@ -957,7 +958,7 @@ void npcAct149(npc *NPC) //moving block
 	case 0x14:
 		NPC->bits &= 0x7F;
 		NPC->damage = 0;
-		if (currentPlayer.x > NPC->x - 12800 && currentPlayer.x < NPC->x + 204800 && 
+		if (currentPlayer.x > NPC->x - 12800 && currentPlayer.x < NPC->x + 204800 &&
 			currentPlayer.y < NPC->y + 12800 && currentPlayer.y > NPC->y - 12800)
 		{
 			NPC->act_no = 21;
@@ -976,8 +977,8 @@ void npcAct149(npc *NPC) //moving block
 			playSound(26);
 			for (int i = 0; i <= 3; ++i)
 			{
-				createNpc(NPC_Smoke, NPC->x + 0x2000, NPC->y + (random(-12, 12) << 9), 
-					random(-341, 341), random(-1536, 0), 0, 0, false);
+				createNpc(NPC_Smoke, NPC->x + tilesToUnits(1), NPC->y + (random(-12, 12) << 9),
+					random(-341, 341), random(-1536, 0), 0, nullptr, false);
 			}
 		}
 		else
@@ -1578,7 +1579,7 @@ void npcAct155(npc *NPC) //flying gaudi
 		if (++NPC->act_wait > 30)
 		{
 			temp = random(-6, 6) + getAtan(NPC->x - currentPlayer.x, NPC->y - currentPlayer.y);
-			createNpc(NPC_ProjectileGaudiFlying, NPC->x, NPC->y, 3 * getCos(temp), 3 * getSin(temp), 0, 0, false);
+			createNpc(NPC_ProjectileGaudiFlying, NPC->x, NPC->y, 3 * getCos(temp), 3 * getSin(temp), 0, nullptr, false);
 			if (!(currentPlayer.cond & 2))
 				playSound(39);
 			NPC->act_no = 1;
@@ -1598,13 +1599,12 @@ void npcAct155(npc *NPC) //flying gaudi
 		NPC->count1 = 120;
 		NPC->act_wait = random(70, 150);
 		NPC->ani_no = 14;
+		// Fallthrough
 	case 1:
 		if (++NPC->ani_no > 1)
 			NPC->ani_no = 0;
 		if (NPC->act_wait)
-		{
 			--NPC->act_wait;
-		}
 		else
 		{
 			NPC->act_no = 2;
@@ -1693,7 +1693,7 @@ void npcAct157(npc *NPC)
 	case 0xA:
 		NPC->bits &= 0x7F;
 		NPC->damage = 0;
-		if (currentPlayer.y < NPC->y + 12800 && currentPlayer.y > NPC->y - 204800 && 
+		if (currentPlayer.y < NPC->y + 12800 && currentPlayer.y > NPC->y - 204800 &&
 			currentPlayer.x < NPC->x + 12800 && currentPlayer.x > NPC->x - 12800)
 		{
 			NPC->act_no = 11;
@@ -1713,7 +1713,7 @@ void npcAct157(npc *NPC)
 			for (int i = 0; i <= 3; ++i)
 			{
 				createNpc(NPC_Smoke, NPC->x + (random(-12, 12) << 9), NPC->y - 0x2000,
-					random(-341, 341), random(-1536, 0), 0, 0, false);
+					random(-341, 341), random(-1536, 0), 0, nullptr, false);
 			}
 		}
 		else
@@ -1734,7 +1734,7 @@ void npcAct157(npc *NPC)
 	case 0x14:
 		NPC->bits &= 0x7F;
 		NPC->damage = 0;
-		if (currentPlayer.y > NPC->y - 12800 && currentPlayer.y < NPC->y + 204800 && 
+		if (currentPlayer.y > NPC->y - 12800 && currentPlayer.y < NPC->y + 204800 &&
 			currentPlayer.x < NPC->x + 12800 && currentPlayer.x > NPC->x - 12800)
 		{
 			NPC->act_no = 21;
@@ -1754,7 +1754,7 @@ void npcAct157(npc *NPC)
 			for (int i = 0; i <= 3; ++i)
 			{
 				createNpc(NPC_Smoke, NPC->x + (random(-12, 12) << 9), NPC->y + 0x2000,
-					random(-341, 341), random(-1536, 0), 0, 0, false);
+					random(-341, 341), random(-1536, 0), 0, nullptr, false);
 			}
 		}
 		else

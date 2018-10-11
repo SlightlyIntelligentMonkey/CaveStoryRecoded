@@ -291,71 +291,68 @@ LABEL_34:
 	return;
 }
 
-void npcAct163(npc *NPC) //physician guy
+void npcAct163(npc *NPC) // Dr. Gero
 {
-	if (NPC->act_no != 2)
-	{
-		NPC->act_no = 1;
-		NPC->ani_no = 0;
-		NPC->ani_wait = 0;
-	}
-	if (NPC->act_no == 1)
-	{
-		if (random(0, 120) == 10)
-		{
-			NPC->act_no = 2;
-			NPC->act_wait = 0;
-			NPC->ani_no = 1;
-		}
-		goto LABEL_9;
-	}
+    array<RECT, 2> rcLeft = {{{192, 0, 208, 16}, {208, 0, 224, 16}}};
+    array<RECT, 2> rcRight = {{{192, 16, 208, 32}, {208, 16, 224, 32}}};
 
-	if (++NPC->act_wait > 8)
-	{
-		NPC->act_no = 1;
-		NPC->ani_no = 0;
-	}
+    switch (NPC->act_no)
+    {
+    case 0:
+        NPC->act_no = 1;
+        NPC->ani_no = 0;
+        NPC->ani_wait = 0;
+        // Fallthrough
+    case 1:
+        if (!random(0, 120))
+        {
+            NPC->act_no = 2;
+            NPC->act_wait = 0;
+            NPC->ani_no = 1;
+        }
+        break;
 
-LABEL_9:
+    case 2:
+        if (++NPC->act_wait > 8)
+        {
+            NPC->act_no = 1;
+            NPC->ani_no = 0;
+        }
+    }
 
-	NPC->rect.left = 192 + (NPC->ani_no * 16);
-	NPC->rect.top = (NPC->direct / 2) * 16;
-	NPC->rect.right = NPC->rect.left + 16;
-	NPC->rect.bottom = NPC->rect.top + 16;
-	return;
+    NPC->doRects(rcLeft, rcRight);
 }
 
-void npcAct164(npc *NPC) //nurse guy
+void npcAct164(npc *NPC) // Nurse Hasumi
 {
-	if (NPC->act_no != 2)
-	{
-		NPC->act_no = 1;
-		NPC->ani_no = 0;
-		NPC->ani_wait = 0;
-	}
-	if (NPC->act_no == 1)
-	{
-		if (random(0, 120) == 10)
-		{
-			NPC->act_no = 2;
-			NPC->act_wait = 0;
-			NPC->ani_no = 1;
-		}
-		goto LABEL_9;
-	}
+    array<RECT, 2> rcLeft = {{{224, 0, 240, 16}, {240, 0, 256, 16}}};
+    array<RECT, 2> rcRight = {{{224, 16, 240, 32}, {240, 16, 256, 32}}};
 
-	if (++NPC->act_wait > 8)
-	{
-		NPC->act_no = 1;
-		NPC->ani_no = 0;
-	}
-LABEL_9:
+    switch (NPC->act_no)
+    {
+    case 0:
+        NPC->act_no = 1;
+        NPC->ani_no = 0;
+        NPC->ani_wait = 0;
+        // Fallthrough
+    case 1:
+        if (!random(0, 120))
+        {
+            NPC->act_no = 2;
+            NPC->act_wait = 0;
+            NPC->ani_no = 1;
+        }
+        break;
 
-	NPC->rect.left = 224 + (NPC->ani_no * 16);
-	NPC->rect.top = (NPC->direct / 2) * 16;
-	NPC->rect.right = NPC->rect.left + 16;
-	NPC->rect.bottom = NPC->rect.top + 16;
-	return;
+    case 2:
+        if (++NPC->act_wait > 8)
+        {
+            NPC->act_no = 1;
+            NPC->ani_no = 0;
+        }
+    }
+
+    NPC->doRects(rcLeft, rcRight);
 }
 
 void npcAct165(npc *NPC) //Curly (Collapsed)

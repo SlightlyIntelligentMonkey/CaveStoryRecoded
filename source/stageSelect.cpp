@@ -143,7 +143,7 @@ int stageSelect(int *runEvent)
 		if (isKeyPressed(keyJump))
 		{
 			stopTsc(tsc);
-			loadStageTsc(oldScript.c_str());
+			loadStageTsc(oldScript);
 			*runEvent = permitStage[selectedStage].event;
 			return 1;
 		}
@@ -152,7 +152,7 @@ int stageSelect(int *runEvent)
 		if (isKeyPressed(keyShoot))
 		{
 			stopTsc(tsc);
-			loadStageTsc(oldScript.c_str());
+			loadStageTsc(oldScript);
 			*runEvent = 0;
 			return 1;
 		}

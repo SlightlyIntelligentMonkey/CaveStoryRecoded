@@ -329,7 +329,7 @@ void actBoss_MonsterX(npc *boss)
 			boss->act_wait = 0;
 			boss->act_no = 1001;
 			setFlash(boss->x, boss->y, explosion, 0);
-			playSound(SFX_largeExplosion);
+			playSound(SFX_LargeExplosion);
 		}
 		break;
 	case 1001:
