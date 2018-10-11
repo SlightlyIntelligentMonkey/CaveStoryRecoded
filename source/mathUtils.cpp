@@ -71,9 +71,3 @@ uint8_t getAtan(int x, int y)
 {
 	return static_cast<uint8_t>(atan2(-y, -x) * 0x80 / M_PI);
 }
-
-//returns result of normalized sinc
-double sinc(double x)
-{
-	return (sin(M_PI*x) / (M_PI*x));
-}

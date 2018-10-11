@@ -9,12 +9,13 @@
 constexpr auto M_PI = 3.14159265358979323846;
 #endif
 
+// These functions work with degrees from 0 to 256 so they aren't the pinnacle of accuracy (lol)
 int getSin(uint8_t deg)  attrConst;
 int getCos(uint8_t deg)  attrConst;
 uint8_t getAtan(int x, int y) attrConst;
 
 int random(int32_t mi, int32_t ma);
-template <typename T> T sign(T x)
+template <typename T> int8_t sign(T x)
 {
 	return (x > 0) - (x < 0);
 }
@@ -24,7 +25,11 @@ template <typename T> T sign(T x)
     return std::max(std::min(ma, x), mi);
 }
 
-double sinc(double x) attrConst;
+//returns result of normalized sinc
+template <typename T> T sinc(T x)
+{
+	return (sin(M_PI*x) / (M_PI*x));
+}
 
 template <typename T> T getGCD(T a, T b)
 {
