@@ -120,7 +120,6 @@ void npcAct166(npc *NPC) //gaudi shop dude
 		NPC->ani_no = 1;
 	}
 
-	LABEL_9:
 	if (++NPC->act_wait > 8)
 	{
 		NPC->act_no = 1;
