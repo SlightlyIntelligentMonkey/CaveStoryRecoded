@@ -76,7 +76,7 @@ void decryptTsc(uint8_t *data, size_t size)
 	}
 }
 
-void loadStageTsc(const char *name)
+void loadStageTsc(const string& name)
 {
 	//Load Head.tsc file
 	SDL_RWops *headRW = SDL_RWFromFile("data/Head.tsc", "rb");
@@ -92,7 +92,7 @@ void loadStageTsc(const char *name)
 	headRW->close(headRW);
 
 	//Load stage's tsc file
-	SDL_RWops *bodyRW = SDL_RWFromFile(name, "rb");
+	SDL_RWops *bodyRW = SDL_RWFromFile(name.c_str(), "rb");
 	if (!bodyRW)
 		doError();
 	auto bodySize = static_cast<size_t>(SDL_RWsize(bodyRW));
@@ -109,10 +109,10 @@ void loadStageTsc(const char *name)
 	tsc.path = name;
 }
 
-void loadTsc2(const char *name)
+void loadTsc2(const string& name)
 {
 	//Load tsc file
-	SDL_RWops *bodyRW = SDL_RWFromFile(name, "rb");
+	SDL_RWops *bodyRW = SDL_RWFromFile(name.c_str(), "rb");
 	if (!bodyRW)
 		doError();
 	tsc.size = static_cast<decltype(tsc.size)>(SDL_RWsize(bodyRW));

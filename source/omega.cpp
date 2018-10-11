@@ -15,7 +15,7 @@ void ActBoss01_12() // Knee things
 {
 	RECT rcRight[1];
 	RECT rcLeft[1];
-	
+
 	rcLeft[0] = { 80, 56, 104, 72 };
 	rcRight[0] = { 104, 56, 128, 72 };
 
@@ -79,7 +79,7 @@ void ActBoss01_34() // Feet
 		default:
 			break;
 		}
-		
+
 		bossObj[i].count2 = !(bossObj[i].flag & ground && bossObj[i].y > bossObj[i].tgt_y);
 
 		if (bossObj[i].direct)
@@ -401,7 +401,7 @@ void actBoss_Omega(npc *boss)
 			boss->act_wait = 0;
 			boss->act_no = 160;
 			setFlash(boss->x, boss->y, explosion, 0);
-			playSound(SFX_largeExplosion);
+			playSound(SFX_LargeExplosion);
 		}
 		break;
 
@@ -459,7 +459,7 @@ void actBoss_Omega(npc *boss)
 		boss->act_wait = 0;
 		boss->damage = 0;
 		bossObj[5].damage = 0;
-		
+
 		for (size_t i = 0; i < npcs.size(); i++)
 		{
 			if (npcs[i].cond & npccond_alive)

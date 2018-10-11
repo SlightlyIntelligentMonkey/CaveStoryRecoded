@@ -301,7 +301,7 @@ int openInventory()
 		if (!inventoryActive && (isKeyPressed(keyMenu) || isKeyPressed(keyJump) || isKeyPressed(keyShoot)))
 		{
 			stopTsc(tsc);
-			loadStageTsc(oldScript.c_str());
+			loadStageTsc(oldScript);
 			weaponShiftX = 32;
 			return 1;
 		}
@@ -309,7 +309,7 @@ int openInventory()
 		if (gameFlags & 2 && (isKeyPressed(keyMenu) || isKeyPressed(keyShoot)))
 		{
 			stopTsc(tsc);
-			loadStageTsc(oldScript.c_str());
+			loadStageTsc(oldScript);
 			weaponShiftX = 32;
 			return 1;
 		}

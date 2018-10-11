@@ -41,8 +41,8 @@ extern TSC tsc;
 //Functions
 bool initTsc();
 
-void loadStageTsc(const char *name);
-void loadTsc2(const char *name);
+void loadStageTsc(const std::string& name);
+void loadTsc2(const std::string& name);
 
 int startTscEvent(TSC &ptsc, int no);
 int jumpTscEvent(TSC &ptsc, int no);

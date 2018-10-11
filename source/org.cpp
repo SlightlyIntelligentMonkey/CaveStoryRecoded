@@ -346,7 +346,7 @@ void releaseDrumObject(uint8_t track) {
 	memset(&orgDrums[track], 0, sizeof(DRUM));
 }
 
-const char *drumLookup[8] = {
+constexpr const char *drumLookup[8] = {
 	"data/Sound/96.pxt",
 	"data/Sound/97.pxt",
 	"data/Sound/98.pxt",
@@ -367,7 +367,7 @@ bool initDrumObject(unsigned int wave_no)
 }
 
 // Load musicList from musicList.txt
-void loadMusicList(const char *path)
+void loadMusicList(const string& path)
 {
 	musicList = getLinesFromFile(path);
 }
@@ -812,7 +812,7 @@ void loadOrganya(const string& name)
 }
 
 //Other functions
-const char *orgFolder = "data/Org/";
+constexpr const char *orgFolder = "data/Org/";
 
 void changeOrg(const uint32_t num)
 {
@@ -824,7 +824,7 @@ void changeOrg(const uint32_t num)
 	string path(orgFolder + musicList[num]);
 	orgVolume = 100;
 	orgFadeout = false;
-	loadOrganya(path.c_str());
+	loadOrganya(path);
 }
 
 void resumeOrg()
@@ -837,7 +837,7 @@ void resumeOrg()
 	temp = play_p;
 	orgVolume = 100;
 	orgFadeout = false;
-	loadOrganya(path.c_str());
+	loadOrganya(path);
 	setPlayPointer(prevOrgPos);
 	prevOrgPos = temp;
 }

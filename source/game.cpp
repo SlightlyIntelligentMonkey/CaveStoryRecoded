@@ -160,7 +160,7 @@ void debugFunction()
 {
 	static string cmd;
 	static int debugMode = 0;
-	static TSC dtsc;
+	static TSC debugTSC;
 
 	if (isKeyDown(SDL_SCANCODE_RSHIFT) && isKeyDown(SDL_SCANCODE_BACKSPACE))
 	{
@@ -192,25 +192,27 @@ void debugFunction()
 		{
 			debugMode = 1;
 			cmd.clear();
-			cmd.shrink_to_fit();
+			if (cmd.capacity() > 1024)
+                cmd.shrink_to_fit();
 			cmd += "<";
 		}
 		break;
 	case(1):
 		debugCMDGetInput(cmd);
-		drawString(0, 0, cmd.c_str());
+		drawString(0, 0, cmd);
 		if (isKeyPressed(SDL_SCANCODE_RETURN) || isKeyPressed(SDL_SCANCODE_KP_ENTER))
 		{
 			cmd += "<END";
-			dtsc.data = (uint8_t *)cmd.data();
-			dtsc.mode = 1;
-			dtsc.wait = 5;
-			dtsc.p_read = 0;
+			debugTSC.data = (uint8_t *)cmd.data();
+			debugTSC.mode = 1;
+			debugTSC.wait = 5;
+			debugTSC.p_read = 0;
 			debugMode = 2;
+			logInfo("Running manually entered command : " + cmd);
 		}
 		break;
 	case(2):
-		if (updateTsc(dtsc) == 32)
+		if (updateTsc(debugTSC) == 32)
 			debugMode = 0;
 		break;
 	}
@@ -222,11 +224,11 @@ void debugFunction()
 		string debugStr3 = "There are " + to_string(carets.size()) + " caret slots.";
 		string debugStr4 = "There are " + to_string(valueviews.size()) + " valueview slots";
 		string debugStr5 = "Currently loaded boss is " + to_string(bossObj[0].code_char);
-		drawString(8, screenHeight - 12, debugStr1.c_str());
-		drawString(8, screenHeight - 24, debugStr2.c_str());
-		drawString(8, screenHeight - 36, debugStr3.c_str());
-		drawString(8, screenHeight - 48, debugStr4.c_str());
-		drawString(8, screenHeight - 60, debugStr5.c_str());
+		drawString(8, screenHeight - 12, debugStr1);
+		drawString(8, screenHeight - 24, debugStr2);
+		drawString(8, screenHeight - 36, debugStr3);
+		drawString(8, screenHeight - 48, debugStr4);
+		drawString(8, screenHeight - 60, debugStr5);
 	}
 
 	if (debugFlags & showPosition)

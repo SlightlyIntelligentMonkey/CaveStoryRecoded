@@ -59,7 +59,7 @@ int selectedWeapon;
 int weaponShiftX;
 int weaponExpFlash;
 
-void initWeapons() 
+void initWeapons()
 {
 	memset(weapons, 0, sizeof(weapons));
 	selectedWeapon = 0;
@@ -93,14 +93,14 @@ void actWeapon()
 	}
 }
 
-void giveWeaponAmmo(int num) 
+void giveWeaponAmmo(int num)
 {
 	weapons[selectedWeapon].num += num;
 	if (weapons[selectedWeapon].num > weapons[selectedWeapon].max_num)
 		weapons[selectedWeapon].num = weapons[selectedWeapon].max_num;
 }
 
-int useWeaponAmmo(int num) 
+int useWeaponAmmo(int num)
 {
 	//Some checks
 	if (!weapons[selectedWeapon].max_num)
@@ -145,7 +145,7 @@ int weaponBullets(int arms_code)
 }
 
 //TSC functions
-int tradeWeapons(int code1, int code2, int max_num) 
+int tradeWeapons(int code1, int code2, int max_num)
 {
 	int i;
 	for (i = 0; i < WEAPONS && weapons[i].code != code1; ++i);
@@ -160,10 +160,11 @@ int tradeWeapons(int code1, int code2, int max_num)
 	return 1;
 }
 
-int giveWeapon(int code, int max_num) 
+int giveWeapon(int code, int maxAmmo)
 {
 	int i;
-	for (i = 0; i < WEAPONS && weapons[i].code != code && weapons[i].code; ++i);
+	for (i = 0; i < WEAPONS && weapons[i].code != code && weapons[i].code; ++i)
+        ;
 	if (i == WEAPONS)
 		return 0;
 
@@ -176,15 +177,15 @@ int giveWeapon(int code, int max_num)
 
 	//Set weapon and ammo
 	weapons[i].code = code;
-	weapons[i].max_num += max_num;
-	weapons[i].num += max_num;
+	weapons[i].max_num += maxAmmo;
+	weapons[i].num += maxAmmo;
 
 	if (weapons[i].num > weapons[i].max_num)
 		weapons[i].num = weapons[i].max_num;
 	return 1;
 }
 
-int removeWeapon(int code) 
+int removeWeapon(int code)
 {
 	int i;
 	for (i = 0; i < WEAPONS && weapons[i].code != code; ++i);
@@ -202,7 +203,7 @@ int removeWeapon(int code)
 	return 1;
 }
 
-void clearWeaponExperience() 
+void clearWeaponExperience()
 {
 	for (auto& i : weapons)
 	{
@@ -211,13 +212,13 @@ void clearWeaponExperience()
 	}
 }
 
-void maxWeaponAmmo() 
+void maxWeaponAmmo()
 {
 	for (auto& i : weapons)
 		i.num = i.max_num;
 }
 
-bool checkWeapon(int code) 
+bool checkWeapon(int code)
 {
 	for (const auto& i : weapons)
 	{
@@ -292,7 +293,7 @@ void resetSpurCharge()
 }
 
 //Rotate weapon functions
-int rotateWeaponRight() 
+int rotateWeaponRight()
 {
 	int weaponNo;
 
@@ -316,7 +317,7 @@ int rotateWeaponRight()
 	return weapons[weaponNo].code;
 }
 
-int rotateWeaponLeft() 
+int rotateWeaponLeft()
 {
 	int weaponNo;
 

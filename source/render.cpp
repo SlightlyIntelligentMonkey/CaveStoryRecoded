@@ -74,7 +74,7 @@ static SDL_Surface* loadPNGToSurface(const string& path)
 	return surface;
 }
 
-static SDL_Texture* loadPNGToTexture(SDL_Renderer *localRenderer, const char *path)
+static SDL_Texture* loadPNGToTexture(SDL_Renderer *localRenderer, const string& path)
 {
 	SDL_Texture *texture = nullptr;
 
@@ -294,7 +294,7 @@ void createTextureBuffer(enum TextureNums texture_id, int width, int height)
 }
 
 //Texture and drawing stuff
-void loadImage(const char *file, SDL_Texture **tex)
+void loadImage(const string& file, SDL_Texture **tex)
 {
 	if (tex == nullptr)
 		doCustomError("tex was nullptr in loadImage");
@@ -315,7 +315,7 @@ void loadImage(const char *file, SDL_Texture **tex)
 
 //loads images with limited colors
 uint8_t colorValTbl[] = { 0, 52, 87, 116, 144, 172, 206, 255 };
-void loadImageBad(const char *file, SDL_Texture **tex)
+void loadImageBad(const string& file, SDL_Texture **tex)
 {
 	SDL_Surface *surface;
 
@@ -498,11 +498,8 @@ bool isMultibyte(uint8_t c)  //Shift-JIS
 	return !(c <= 0xDFu || c > 0xEFu);
 }
 
-void drawString(int x, int y, const char *str, const uint8_t *flag)
+void drawString(int x, int y, const string& str, const uint8_t *flag)
 {
-	if (str == nullptr)
-		doCustomError("str was nullptr in drawString");
-
 	RECT rcChar;
 
 	for (int i = 0; ; i++)
