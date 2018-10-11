@@ -291,6 +291,9 @@
     <ClCompile Include="lodepng\lodepng.cpp">
       <Filter>Source Files\libraries</Filter>
     </ClCompile>
+    <ClCompile Include="monsterX.cpp">
+      <Filter>Source Files\classes\boss\act</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="level.h">

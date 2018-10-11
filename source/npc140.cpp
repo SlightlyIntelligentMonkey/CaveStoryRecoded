@@ -1786,3 +1786,116 @@ void npcAct157(npc *NPC)
 	NPC->rect.bottom = 32;
 	return;
 }
+
+void npcAct158(npc *NPC)
+{
+	int dir;
+
+	if(NPC->act_no == 0)
+	{
+		NPC->act_no = 1;
+		switch (NPC->direct)
+		{
+		case(dirLeft):
+			NPC->count1 = 160;
+			break;
+		case(dirUp):
+			NPC->count1 = 224;
+			break;
+		case(dirRight):
+			NPC->count1 = 32;
+			break;
+		case(dirDown):
+			NPC->count1 = 96;
+			break;
+		}
+	}
+
+	NPC->xm = 2 * getCos(NPC->count1);
+	NPC->ym = 2 * getSin(NPC->count1);
+	NPC->y += NPC->ym;
+	NPC->x += NPC->xm;
+	dir = getAtan(NPC->x - currentPlayer.x, NPC->y - currentPlayer.y);
+
+	if (NPC->count1 <= dir)
+	{
+		if (dir - NPC->count1 > 127)
+			NPC->count1--;
+		else
+			NPC->count1++;
+	}
+	else
+	{
+		if (NPC->count1 - dir > 127)
+			NPC->count1++;
+		else
+			NPC->count1--;
+	}
+
+	if (NPC->count1 > 255)
+		NPC->count1 -= 256;
+	if (NPC->count1 < 0)
+		NPC->count1 += 256;
+
+	if (++NPC->ani_wait > 2)
+	{
+		NPC->ani_wait = 0;
+		createCaret(NPC->x, NPC->y, effect_BoosterSmoke, dirAuto);
+	}
+	NPC->ani_no = (NPC->count1 + 16) / 32;
+	if (NPC->ani_no > 7)
+		NPC->ani_no = 7;
+
+	NPC->rect.left = NPC->ani_no*16;
+	NPC->rect.top = 224;
+	NPC->rect.right = NPC->rect.left + 16;
+	NPC->rect.bottom = NPC->rect.top + 16;
+	return;
+}
+
+void npcAct159(npc *NPC)
+{
+	if (NPC->act_no == 1)
+	{
+	LABEL_7:
+		if (++NPC->act_wait > 50)
+		{
+			NPC->act_no = 2;
+			NPC->xm = -256;
+		}
+		if (NPC->act_wait / 2 & 1)
+			NPC->x += 512;
+		else
+			NPC->x -= 512;
+		goto LABEL_15;
+	}
+	if (NPC->act_no != 2)
+	{
+		if (NPC->act_no)
+			goto LABEL_15;
+		NPC->act_no = 1;
+		for (int i = 0; i <= 7; ++i)
+		{
+			createNpc(NPC_Smoke, NPC->x + (random(-16, 16) << 9), NPC->y + (random(-16, 16) << 9),
+				random(-341, 341), random(-341, 341), 0, 0, false);
+		}
+		goto LABEL_7;
+	}
+	++NPC->act_wait;
+	NPC->ym += 64;
+	if (NPC->y > 327680)
+		NPC->cond = 0;
+LABEL_15:
+	NPC->y += NPC->ym;
+	NPC->x += NPC->xm;
+	NPC->rect.left = 144;
+	NPC->rect.top = 128;
+	NPC->rect.right = 192;
+	NPC->rect.bottom = 200;
+	if (NPC->act_wait % 8 == 1)
+	{
+		createNpc(NPC_Smoke, NPC->x + (random(-16, 16) << 9), NPC->y + (random(-16, 16) << 9), 
+			random(-341, 341), random(-341, 341), 0, 0, false);
+	}
+	return;
+}

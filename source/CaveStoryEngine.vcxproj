@@ -249,6 +249,7 @@
     <ClCompile Include="misc.cpp" />
     <ClCompile Include="missile.cpp" />
     <ClCompile Include="missileShoot.cpp" />
+    <ClCompile Include="monsterX.cpp" />
     <ClCompile Include="nemesis.cpp" />
     <ClCompile Include="nemesisShoot.cpp" />
     <ClCompile Include="npc080.cpp" />
