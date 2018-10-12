@@ -237,9 +237,148 @@ void loadLevel(int levelIndex)
 	viewBounds();
 }
 
+void drawForeground(void)
+{
+	RECT rect;
+
+	if (background.mode == 3)
+	{
+		int xOff = viewport.x % pixelsToUnits(32);
+
+		rect.left = 0;
+		rect.right = 32;
+
+		rect.top = 0;
+		rect.bottom = 16;
+		//draws top of water
+		for (int x = viewport.x - xOff; x < viewport.x + pixelsToUnits(screenWidth); x += pixelsToUnits(32))
+			drawTexture(sprites[TEX_BACKGROUND], &rect,
+				unitsToPixels(x - viewport.x), unitsToPixels(gWaterY - viewport.y));
+		//draws bottom of water
+		rect.top = 16;
+		rect.bottom = 32;
+		for (int y = gWaterY; y < viewport.y + pixelsToUnits(screenHeight); y += pixelsToUnits(16))
+		{
+			for (int x = viewport.x - xOff; x < viewport.x + pixelsToUnits(screenWidth); x += pixelsToUnits(32))
+				drawTexture(sprites[TEX_BACKGROUND], &rect, 
+					unitsToPixels(x - viewport.x), unitsToPixels(y - viewport.y));
+		}
+	}
+	return;
+}
+
 void drawBackground(void)
 {
+	RECT rect;
 
+	int skyOff;
+
+	int w, h;
+	SDL_QueryTexture(sprites[TEX_BACKGROUND], nullptr, nullptr, &w, &h);
+
+	rect = { 0, 0, w, h };
+
+	//Update background effect
+	if (gameFlags & 1)
+	{
+		if (backgroundScroll == 5)
+		{
+			backgroundEffect += 0xC00;
+		}
+
+		else if (backgroundScroll >= 5 && backgroundScroll <= 7)
+		{
+			++backgroundEffect;
+			backgroundEffect %= (w * 2);
+		}
+	}
+
+	switch (background.mode)
+	{
+	case 0:
+		for (int x = 0; x < screenWidth; x += w)
+		{
+			for (int y = 0; y < screenHeight; y += h)
+				drawTexture(sprites[TEX_BACKGROUND], &rect, x, y);
+		}
+
+		break;
+
+	case 1:
+		for (int x = -(viewport.x / 0x400 % w); x < screenWidth; x += w)
+		{
+			for (int y = -(viewport.y / 0x400 % h); y < screenHeight; y += h)
+				drawTexture(sprites[TEX_BACKGROUND], &rect, x, y);
+		}
+
+		break;
+
+	case 2:
+		for (int x = -(viewport.x / 0x200 % w); x < screenWidth; x += w)
+		{
+			for (int y = -(viewport.y / 0x200 % h); y < screenHeight; y += h)
+				drawTexture(sprites[TEX_BACKGROUND], &rect, x, y);
+		}
+
+		break;
+
+	case 5:
+		for (int x = -(backgroundEffect / 0x200 % w); x < screenWidth; x += w)
+		{
+			for (int y = 0; y < screenHeight; y += h)
+				drawTexture(sprites[TEX_BACKGROUND], &rect, x, y);
+		}
+
+		break;
+
+	case 6:
+	case 7:
+		//Draw sky
+		rect = { 0, 0, w / 2, 88 };
+
+		skyOff = (((w / 2) - screenWidth) / 2);
+
+		//Draw middle
+		drawTexture(sprites[0x1C], &rect, -skyOff, 0);
+
+		//Repeat stars or whatever
+		rect = { w / 2, 0, w, 88 };
+
+		for (int i = 0; i < screenWidth - (skyOff / 2 + rect.left); i += rect.left)
+		{
+			drawTexture(sprites[TEX_BACKGROUND], &rect, -skyOff + (rect.left + i), 0);
+			drawTexture(sprites[TEX_BACKGROUND], &rect, -skyOff - (rect.left + i), 0);
+		}
+
+		//Cloud layers
+		rect.left = 0;
+		rect.right = w;
+
+		rect.top = 88;
+		rect.bottom = 123;
+		for (int i = 0; i <= (screenWidth / w) + 1; ++i)
+			drawTexture(sprites[TEX_BACKGROUND], &rect, (w * i) - (backgroundEffect / 2) % w, rect.top);
+
+		rect.top = 123;
+		rect.bottom = 146;
+		for (int i = 0; i <= (screenWidth / w) + 1; ++i)
+			drawTexture(sprites[TEX_BACKGROUND], &rect, (w * i) - backgroundEffect % w, rect.top);
+
+		rect.top = 146;
+		rect.bottom = 176;
+		for (int i = 0; i <= (screenWidth / w) + 1; ++i)
+			drawTexture(sprites[TEX_BACKGROUND], &rect, (w * i) - (backgroundEffect * 2) % w, rect.top);
+
+		rect.top = 176;
+		rect.bottom = 240;
+		for (int i = 0; i <= (screenWidth / w) + 1; ++i)
+			drawTexture(sprites[TEX_BACKGROUND], &rect, (w * i) - (backgroundEffect * 4) % w, rect.top);
+
+		break;
+
+	default:
+		break;
+	}
 	return;
 }
 
@@ -247,116 +386,7 @@ void drawLevel(bool foreground)
 {
 	if (!foreground)   //Draw background
 	{
-		RECT rect;
-
-		int skyOff;
-
-		int w, h;
-		SDL_QueryTexture(sprites[0x1C], nullptr, nullptr, &w, &h);
-
-		rect = { 0, 0, w, h };
-
-		//Update background effect
-		if (gameFlags & 1)
-		{
-			if (backgroundScroll == 5)
-			{
-				backgroundEffect += 0xC00;
-			}
-
-			else if (backgroundScroll >= 5 && backgroundScroll <= 7)
-			{
-				++backgroundEffect;
-				backgroundEffect %= (w * 2);
-			}
-		}
-
-		switch (background.mode)
-		{
-		case 0:
-			for (int x = 0; x < screenWidth; x += w)
-			{
-				for (int y = 0; y < screenHeight; y += h)
-					drawTexture(sprites[0x1C], &rect, x, y);
-			}
-
-			break;
-
-		case 1:
-			for (int x = -(viewport.x / 0x400 % w); x < screenWidth; x += w)
-			{
-				for (int y = -(viewport.y / 0x400 % h); y < screenHeight; y += h)
-					drawTexture(sprites[0x1C], &rect, x, y);
-			}
-
-			break;
-
-		case 2:
-			for (int x = -(viewport.x / 0x200 % w); x < screenWidth; x += w)
-			{
-				for (int y = -(viewport.y / 0x200 % h); y < screenHeight; y += h)
-					drawTexture(sprites[0x1C], &rect, x, y);
-			}
-
-			break;
-
-		case 5:
-				for (int x = -(backgroundEffect / 0x200 % w); x < screenWidth; x += w)
-				{
-					for (int y = 0; y < screenHeight; y += h)
-						drawTexture(sprites[0x1C], &rect, x, y);
-				}
-
-				break;
-
-		case 6:
-		case 7:
-				//Draw sky
-				rect = { 0, 0, w / 2, 88 };
-
-			skyOff = (((w / 2) - screenWidth) / 2);
-
-			//Draw middle
-			drawTexture(sprites[0x1C], &rect, -skyOff, 0);
-
-			//Repeat stars or whatever
-			rect = { w / 2, 0, w, 88 };
-
-			for (int i = 0; i < screenWidth - (skyOff / 2 + rect.left); i += rect.left)
-			{
-				drawTexture(sprites[0x1C], &rect, -skyOff + (rect.left + i), 0);
-				drawTexture(sprites[0x1C], &rect, -skyOff - (rect.left + i), 0);
-			}
-
-			//Cloud layers
-			rect.left = 0;
-			rect.right = w;
-
-			rect.top = 88;
-			rect.bottom = 123;
-			for (int i = 0; i <= (screenWidth / w) + 1; ++i)
-				drawTexture(sprites[0x1C], &rect, (w * i) - (backgroundEffect / 2) % w, rect.top);
-
-			rect.top = 123;
-			rect.bottom = 146;
-			for (int i = 0; i <= (screenWidth / w) + 1; ++i)
-				drawTexture(sprites[0x1C], &rect, (w * i) - backgroundEffect % w, rect.top);
-
-			rect.top = 146;
-			rect.bottom = 176;
-			for (int i = 0; i <= (screenWidth / w) + 1; ++i)
-				drawTexture(sprites[0x1C], &rect, (w * i) - (backgroundEffect * 2) % w, rect.top);
-
-			rect.top = 176;
-			rect.bottom = 240;
-			for (int i = 0; i <= (screenWidth / w) + 1; ++i)
-				drawTexture(sprites[0x1C], &rect, (w * i) - (backgroundEffect * 4) % w, rect.top);
-
-			break;
-
-		default:
-			break;
-		}
+		drawBackground();
 	}
 
 	//Animate currents
@@ -448,9 +478,12 @@ void drawLevel(bool foreground)
 		}
 	}
 
-	//Render black bars in foreground
 	if (foreground)
 	{
+		//draw foreground
+		drawForeground();
+
+		//Render black bars in foreground
 		SDL_SetRenderDrawColor(renderer, 0, 0, 32, 255);
 
 		//Left and right

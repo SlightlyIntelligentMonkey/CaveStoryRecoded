@@ -78,3 +78,13 @@ template<typename T> constexpr inline int32_t unitsToTiles(T x)
 {
 	return x / 0x2000;
 }
+
+template<typename T> constexpr inline int32_t tilesToPixels(T x)
+{
+	return x * 16;
+}
+
+template<typename T> constexpr inline int32_t pixelsToTiles(T x)
+{
+	return x / 16;
+}
