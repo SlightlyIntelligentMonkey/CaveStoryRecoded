@@ -91,12 +91,6 @@ void loadRenderJson()
 
 	if (jRender["displayFpsCounter"] == true)
 		displayFpsCounter = true;
-	if (jRender["windowFlags"] == "resizable")
-		windowFlags = SDL_WINDOW_RESIZABLE;
-	else if (jRender["windowFlads"] == "fullscreen")
-		windowFlags = SDL_WINDOW_FULLSCREEN;
-	else
-		windowFlags = 0;
 }
 
 void loadConfigFiles()

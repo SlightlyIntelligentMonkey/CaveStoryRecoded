@@ -7,6 +7,5 @@
 	"scale": 2
   },
   
-  "displayFpsCounter": true,
-  "windowFlags": "window"
+  "displayFpsCounter": true
 }
