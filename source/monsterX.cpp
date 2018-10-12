@@ -171,6 +171,7 @@ void actBoss_MonsterX(npc *boss)
 		boss->act_no = 11;
 		boss->act_wait = 0;
 		boss->count1 = 0;
+		// Fallthrough
 	case 11:
 		if (++boss->act_wait > 100)
 		{
@@ -185,6 +186,7 @@ void actBoss_MonsterX(npc *boss)
 		boss->act_wait = 0;
 		boss->act_no = 101;
 		++boss->count1;
+		// Fallthrough
 	case 101:
 		if (++boss->act_wait == 4)
 			bossObj[9].act_no = 100;
@@ -203,6 +205,7 @@ void actBoss_MonsterX(npc *boss)
 		boss->act_wait = 0;
 		boss->act_no = 201;
 		++boss->count1;
+		// Fallthrough
 	case 201:
 		if (++boss->act_wait == 4)
 			bossObj[9].act_no = 200;
@@ -220,6 +223,7 @@ void actBoss_MonsterX(npc *boss)
 	case 300:
 		boss->act_wait = 0;
 		boss->act_no = 301;
+		// Fallthrough
 	case 301:
 		if (++boss->act_wait == 4)
 			bossObj[9].act_no = 300;
@@ -240,6 +244,7 @@ void actBoss_MonsterX(npc *boss)
 	case 400:
 		boss->act_wait = 0;
 		boss->act_no = 401;
+		// Fallthrough
 	case 401:
 		if (++boss->act_wait == 4)
 			bossObj[9].act_no = 400;
@@ -262,6 +267,7 @@ void actBoss_MonsterX(npc *boss)
 		boss->act_wait = 0;
 		bossObj[1].act_no = 10;
 		bossObj[2].act_no = 10;
+		// Fallthrough
 	case 501:
 		if (++boss->act_wait > 300)
 		{
@@ -280,6 +286,7 @@ void actBoss_MonsterX(npc *boss)
 		boss->count1 = 0;
 		bossObj[1].act_no = 20;
 		bossObj[2].act_no = 20;
+		// Fallthrough
 	case 503:
 		if (++boss->act_wait > 50)
 		{
@@ -295,6 +302,7 @@ void actBoss_MonsterX(npc *boss)
 		boss->count2 = boss->life;
 		bossObj[1].act_no = 30;
 		bossObj[2].act_no = 30;
+		// Fallthrough
 	case 601:
 		++boss->act_wait;
 		if (boss->life < boss->count2 - 200 || boss->act_wait > 300)
@@ -354,7 +362,7 @@ void actBoss_MonsterX(npc *boss)
 	boss->x += ((bossObj[12].x + bossObj[11].x + bossObj[10].x + bossObj[9].x) / 4 - boss->x) / 16;
 
 	monsterXSubNpcHead(&bossObj[7]);
-	
+
 	monsterXSubNpcFishMissileGenerator(&bossObj[13]);
 	monsterXSubNpcFishMissileGenerator(&bossObj[14]);
 	monsterXSubNpcFishMissileGenerator(&bossObj[15]);
@@ -403,6 +411,7 @@ void monsterXSubNpcTreads(npc *NPC)
 		NPC->act_wait = 0;
 		NPC->ani_no = 2;
 		NPC->ani_wait = 0;
+		// Fallthrough
 	case 101:
 		if (++NPC->act_wait > 30)
 			NPC->act_no = 102;
@@ -420,6 +429,7 @@ void monsterXSubNpcTreads(npc *NPC)
 		NPC->act_no = 103;
 		NPC->ani_no = 0;
 		NPC->ani_wait = 0;
+		// Fallthrough
 	case 103:
 		++NPC->act_wait;
 		if (++NPC->ani_wait > 1)
@@ -438,6 +448,7 @@ void monsterXSubNpcTreads(npc *NPC)
 		NPC->act_wait = 0;
 		NPC->ani_no = 4;
 		NPC->ani_wait = 0;
+		// Fallthrough
 	case 201:
 		if (++NPC->act_wait > 30)
 			NPC->act_no = 202;
@@ -449,6 +460,7 @@ void monsterXSubNpcTreads(npc *NPC)
 		if (NPC->ani_no > 5)
 			NPC->ani_no = 4;
 		NPC->xm += 32;
+		// Fallthrough
 	case 202:
 		NPC->bits &= ~npc_bouncy;
 		NPC->act_no = 203;
@@ -471,6 +483,7 @@ void monsterXSubNpcTreads(npc *NPC)
 		NPC->ani_no = 4;
 		NPC->ani_wait = 0;
 		NPC->bits |= npc_bouncy;
+		// Fallthrough
 	case 301:
 		if (++NPC->ani_wait > 0)
 		{
@@ -491,6 +504,7 @@ void monsterXSubNpcTreads(npc *NPC)
 		NPC->ani_no = 2;
 		NPC->ani_wait = 0;
 		NPC->bits |= npc_bouncy;
+		// Fallthrough
 	case 401:
 		if (++NPC->ani_wait > 0)
 		{
@@ -509,7 +523,7 @@ void monsterXSubNpcTreads(npc *NPC)
 	default:
 		break;
 	}
-	
+
 	if ((NPC->act_no == 101 || NPC->act_no == 201 || NPC->act_no == 301 || NPC->act_no == 401)
 		&& NPC->act_wait % 2 == 1)
 	{
@@ -543,7 +557,6 @@ void monsterXSubNpcFishMissileGenerator(npc *NPC)
 {
 	int xp = 0;
 	int yp = 0;
-	int direct = 0;
 
 	if (NPC->act_no == 10)
 	{
@@ -563,29 +576,25 @@ void monsterXSubNpcFishMissileGenerator(npc *NPC)
 		switch (NPC->ani_no)
 		{
 		case 0:
-			direct = 3;
 			xp = -15360;
 			yp = 3072;
 			break;
 		case 1:
-			direct = 2;
 			xp = 15360;
 			yp = 3072;
 			break;
 		case 2:
-			direct = 0;
 			xp = -15360;
 			yp = -3072;
 			break;
 		case 3:
-			direct = 1;
 			xp = 15360;
 			yp = -3072;
 			break;
 		default:
 			break;
 		}
-		createNpc(NPC_ProjectileMonsterX, xp + NPC->x, yp + NPC->y, 0, 0, NPC->direct, 0, false);
+		createNpc(NPC_ProjectileMonsterX, xp + NPC->x, yp + NPC->y, 0, 0, NPC->direct);
 		playSound(SFX_EnemyShootProjectile);
 		NPC->act_wait = 120;
 	}
@@ -602,9 +611,6 @@ LABEL_13:
 
 void monsterXSubNpcCover(npc *NPC)
 {
-	RECT *v1; // eax
-	RECT *v2; // edx
-
 	switch (NPC->act_no)
 	{
 	case 0xA:
@@ -681,8 +687,8 @@ void monsterXSubNpcCover(npc *NPC)
 
 void monsterXSubNpcOrb(npc *NPC)
 {
-	int Y_Vel;
-	int X_Vel;
+	int yVel;
+	int xVel;
 	int temp;
 
 	switch (NPC->act_no)
@@ -712,9 +718,9 @@ void monsterXSubNpcOrb(npc *NPC)
 	{
 		temp = getAtan(NPC->x - currentPlayer.x, NPC->y - currentPlayer.y);
 		temp += random(-2, 2);
-		Y_Vel = 3 * getSin(temp);
-		X_Vel = 3 * getCos(temp);
-		createNpc(NPC_ProjectileGaudiFlying, NPC->x, NPC->y, X_Vel, Y_Vel, 0, 0, 256);
+		yVel = 3 * getSin(temp);
+		xVel = 3 * getCos(temp);
+		createNpc(NPC_ProjectileGaudiFlying, NPC->x, NPC->y, xVel, yVel);
 		playSound(SFX_EnemyShootProjectile);
 		NPC->act_wait = 40;
 	}

@@ -3,7 +3,7 @@
 #include <array>
 #include <algorithm>
 #include "mathUtils.h"
-#include "level.h"
+#include "stage.h"
 #include "game.h"
 #include "render.h"
 

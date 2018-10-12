@@ -27,6 +27,7 @@ void npcAct160(npc *NPC) //poo black
 	case ini:
 		NPC->bits &= ~npc_solidSoft;
 		NPC->act_no = air;
+		// Fallthrough
 	case air:
 		NPC->facePlayer();
 		NPC->ym = 2560;
@@ -47,8 +48,8 @@ void npcAct160(npc *NPC) //poo black
 			killNpcsByType(NPC_ProjectilePoohBlack, 1);
 			for (int i = 0; i <= 3; ++i)
 			{
-				createNpc(NPC_Smoke, NPC->x + (random(-12, 12) << 9), 
-					NPC->y + (random(-12, 12) << 9), random(-341, 341), random(-1536, 0), 0, 0, 256);
+				createNpc(NPC_Smoke, NPC->x + (random(-12, 12) << 9),
+					NPC->y + (random(-12, 12) << 9), random(-341, 341), random(-1536, 0), 0, nullptr, 256);
 			}
 			NPC->act_no = landed;
 			NPC->act_wait = 0;
@@ -78,9 +79,9 @@ void npcAct160(npc *NPC) //poo black
 		superYPos = NPC->y;
 		if (NPC->shock & 1)
 		{
-			createNpc(NPC_ProjectilePoohBlack, NPC->x + (random(-12, 12) << 9), 
-				NPC->y + (random(-12, 12) << 9), random(-1536, 1536), 
-				random(-1536, 1536), 0, 0, false);
+			createNpc(NPC_ProjectilePoohBlack, NPC->x + (random(-12, 12) << 9),
+				NPC->y + (random(-12, 12) << 9), random(-1536, 1536),
+				random(-1536, 1536));
 			if (++NPC->count1 > 30)
 			{
 				NPC->count1 = 0;
@@ -195,7 +196,7 @@ void npcAct162(npc *NPC) //dying poo black
 		if (!(++NPC->count1 & 3))
 		{
 			createNpc(NPC_ProjectilePoohBlack, NPC->x + (random(-12, 12) << 9),
-				NPC->y + (random(-12, 12) << 9), 0, 0, 0, 0, false);
+				NPC->y + (random(-12, 12) << 9));
 		}
 		if (NPC->count1 > 160)
 		{
@@ -213,10 +214,10 @@ void npcAct162(npc *NPC) //dying poo black
 		playSound(72);
 		for (int i = 0; i <= 9; ++i)
 		{
-			createNpc(NPC_Smoke, 
-				NPC->x + (random(-12, 12) << 9), 
-				NPC->y + (random(-12, 12) << 9), 
-				random(-1536, 1536), random(-1536, 1536), 0, 0, false);
+			createNpc(NPC_Smoke,
+				NPC->x + (random(-12, 12) << 9),
+				NPC->y + (random(-12, 12) << 9),
+				random(-1536, 1536), random(-1536, 1536));
 		}
 
 		NPC->facePlayer();
@@ -273,8 +274,8 @@ void npcAct162(npc *NPC) //dying poo black
 		}
 		if (NPC->count1 % 3 == 2)
 		{
-			createNpc(NPC_ProjectilePoohBlack, NPC->x + (random(-12, 12) << 9), 
-				NPC->y - 6144, random(-512, 512), 256, 0, 0, 256);
+			createNpc(NPC_ProjectilePoohBlack, NPC->x + (random(-12, 12) << 9),
+				NPC->y - 6144, random(-512, 512), 256);
 		}
 		if (NPC->count1 % 4 == 2)
 			playSound(21);
@@ -437,6 +438,7 @@ void npcAct167(npc *NPC) //falling booster
 		NPC->act_wait = 0;
 		NPC->ani_no = 0;
 		playSound(29);
+		// Fallthrough
 	case 21:
 		if (++NPC->ani_no > 2)
 			NPC->ani_no = 1;
@@ -445,7 +447,7 @@ void npcAct167(npc *NPC) //falling booster
 			for (int i = 0; i <= 3; ++i)
 			{
 				createNpc(NPC_Smoke, NPC->x + (random(-12, 12) << 9), NPC->y + (random(-12, 12) << 9),
-					random(-341, 341), random(-1536, 0), 0, 0, false);
+					random(-341, 341), random(-1536, 0));
 			}
 			NPC->cond = 0;
 		}
@@ -459,7 +461,7 @@ void npcAct167(npc *NPC) //falling booster
 	NPC->rect.right = NPC->rect.left + 16;
 	NPC->rect.bottom = NPC->rect.top + 16;
 	if (NPC->ani_no == 2)
-		NPC->rect = { 0 };
+		NPC->rect = { 0, 0, 0, 0 };
 	return;
 }
 
@@ -474,6 +476,7 @@ void npcAct168(npc *NPC) //boulder
 		NPC->act_no = 11;
 		NPC->act_wait = 0;
 		NPC->tgt_x = NPC->x;
+		// Fallthrough
 	case 11:
 		++NPC->act_wait;
 		NPC->x = NPC->tgt_x;
@@ -486,6 +489,7 @@ void npcAct168(npc *NPC) //boulder
 		NPC->ym = -1024;
 		NPC->xm = 256;
 		playSound(25);
+		// Fallthrough
 	case 21:
 		NPC->ym += 16;
 		NPC->x += NPC->xm;
@@ -498,8 +502,6 @@ void npcAct168(npc *NPC) //boulder
 		}
 		if (!NPC->act_wait)
 			++NPC->act_wait;
-		break;
-	default:
 		break;
 	}
 
@@ -522,6 +524,7 @@ void npcAct169(npc *NPC)
 		NPC->ani_no = 0;
 		NPC->act_wait = 30;
 		NPC->facePlayer();
+		// Fallthrough
 	case 1:
 		if (!--NPC->act_wait)
 		{
@@ -534,6 +537,7 @@ void npcAct169(npc *NPC)
 		NPC->act_wait = 0;
 		NPC->ani_no = 1;
 		NPC->ani_wait = 0;
+		// Fallthrough
 	case 3:
 		if (++NPC->ani_wait > 3)
 		{
@@ -550,7 +554,7 @@ void npcAct169(npc *NPC)
 		else
 			NPC->xm -= 32;
 
-		if (NPC->act_wait <= 7 || NPC->x - 6144 >= currentPlayer.x || NPC->x + 6144 <= currentPlayer.x || 
+		if (NPC->act_wait <= 7 || NPC->x - 6144 >= currentPlayer.x || NPC->x + 6144 <= currentPlayer.x ||
 			NPC->y - 6144 >= currentPlayer.y || NPC->y + 4096 <= currentPlayer.y)
 		{
 			if (++NPC->act_wait <= 75)
@@ -601,7 +605,7 @@ void npcAct169(npc *NPC)
 		if (++NPC->act_wait <= 29 && NPC->act_wait % 6 == 1)
 		{
 			playSound(39);
-			createNpc(NPC_ProjectileBalrogMissiles, NPC->x, NPC->y, 0, 0, NPC->direct, 0, false);
+			createNpc(NPC_ProjectileBalrogMissiles, NPC->x, NPC->y, 0, 0, NPC->direct);
 		}
 		if (NPC->flag & 8)
 		{
@@ -610,7 +614,7 @@ void npcAct169(npc *NPC)
 			viewport.quake = 30;
 			playSound(26);
 		}
-		if (NPC->act_wait > 7 && NPC->x - 6144 < currentPlayer.x && NPC->x + 6144 > currentPlayer.x && 
+		if (NPC->act_wait > 7 && NPC->x - 6144 < currentPlayer.x && NPC->x + 6144 > currentPlayer.x &&
 			NPC->y - 6144 < currentPlayer.y && NPC->y + 4096 > currentPlayer.y)
 		{
 			NPC->act_no = 10;
@@ -673,6 +677,7 @@ void npcAct169(npc *NPC)
 		NPC->act_no = 21;
 		NPC->act_wait = 0;
 		NPC->ani_no = 7;
+		// Fallthrough
 	case 21:
 		if (++NPC->act_wait > 49)
 			NPC->act_no = 0;

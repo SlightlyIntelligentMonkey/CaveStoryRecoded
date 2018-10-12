@@ -701,6 +701,7 @@ void npcAct191(npc *NPC)
 		NPC->act_no = 10;
 		NPC->tgt_y = NPC->y;
 		NPC->ym = 512;
+		// Fallthrough
 	case 10:
 		if (NPC->y >= NPC->tgt_y)
 			NPC->ym -= 4;
@@ -716,6 +717,7 @@ void npcAct191(npc *NPC)
 	case 20:
 		NPC->act_no = 21;
 		NPC->act_wait = 0;
+		// Fallthrough
 	case 21:
 		if (NPC->y >= NPC->tgt_y)
 			NPC->ym -= 4;

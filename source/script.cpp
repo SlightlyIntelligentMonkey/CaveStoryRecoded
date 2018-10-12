@@ -92,7 +92,7 @@ void loadStageTsc(const string& name)
 	headRW->close(headRW);
 
 	//Load stage's tsc file
-	SDL_RWops *bodyRW = SDL_RWFromFile(string("data/Stage/" + name + ".tsc").c_str(), "rb");
+	SDL_RWops *bodyRW = SDL_RWFromFile(("data/Stage/" + name + ".tsc").c_str(), "rb");
 	if (!bodyRW)
 		doError();
 	auto bodySize = static_cast<size_t>(SDL_RWsize(bodyRW));
