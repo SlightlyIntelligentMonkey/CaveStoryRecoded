@@ -195,7 +195,6 @@ extern std::deque<npc> npcs;
 
 extern int superXPos;
 extern int superYPos;
-extern int gWaterY;
 
 extern int curlyShootWait;
 extern int curlyShootX;

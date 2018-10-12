@@ -745,7 +745,7 @@ void npcAct086(npc *NPC) //Dropped missiles
 			NPC->ani_no = 0;
 	}
 
-	if (backgroundScroll == 5 || backgroundScroll == 6)
+	if (background.mode == 5 || background.mode == 6)
 	{
 		if (!NPC->act_no)
 		{
@@ -806,7 +806,7 @@ void npcAct087(npc *NPC) //Health refill
 			NPC->ani_no = 0;
 	}
 
-	if (backgroundScroll == 5 || backgroundScroll == 6)
+	if (background.mode == 5 || background.mode == 6)
 	{
 		if (NPC->act_no == 0)
 		{

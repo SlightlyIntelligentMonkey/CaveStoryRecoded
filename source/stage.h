@@ -31,7 +31,7 @@ struct BACKGROUND
 	int numX;
 	int numY;
 	int mode;
-	int _fx;
+	int effect;
 	char unknownFiller[12];
 };
 
@@ -48,12 +48,13 @@ extern MAPNAME mapName;
 extern STAGE_TABLE *stageTable;
 
 extern MAP map;
+extern BACKGROUND background;
 
 extern int currentLevel;
 
-extern SDL_Texture *levelTileset;
+extern int gWaterY;
 
-extern uint8_t backgroundScroll;
+extern SDL_Texture *levelTileset;
 extern SDL_Texture *levelBackground;
 
 uint8_t getTileAttribute(int x, int y) attrPure;

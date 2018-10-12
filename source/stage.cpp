@@ -26,13 +26,13 @@ MAPNAME mapName;
 
 //Loaded level stuff
 MAP map;
-
-uint8_t backgroundScroll;
 BACKGROUND background;
 
 //Effect things
-int backgroundEffect = 0;
 int currentEffect = 0;
+
+//water level (used in core area)
+int gWaterY = 0;
 
 //Get stage data
 STAGE_TABLE *stageTable;
@@ -253,7 +253,7 @@ void drawForeground(void)
 		//draws top of water
 		for (int x = viewport.x - xOff; x < viewport.x + pixelsToUnits(screenWidth); x += pixelsToUnits(32))
 			drawTexture(sprites[TEX_BACKGROUND], &rect,
-				unitsToPixels(x - viewport.x), unitsToPixels(gWaterY - viewport.y));
+				unitsToPixels(x) - unitsToPixels(viewport.x), unitsToPixels(gWaterY) - unitsToPixels(viewport.y));
 		//draws bottom of water
 		rect.top = 16;
 		rect.bottom = 32;
@@ -261,7 +261,7 @@ void drawForeground(void)
 		{
 			for (int x = viewport.x - xOff; x < viewport.x + pixelsToUnits(screenWidth); x += pixelsToUnits(32))
 				drawTexture(sprites[TEX_BACKGROUND], &rect, 
-					unitsToPixels(x - viewport.x), unitsToPixels(y - viewport.y));
+					unitsToPixels(x) - unitsToPixels(viewport.x), unitsToPixels(y) - unitsToPixels(viewport.y));
 		}
 	}
 	return;
@@ -281,15 +281,15 @@ void drawBackground(void)
 	//Update background effect
 	if (gameFlags & 1)
 	{
-		if (backgroundScroll == 5)
+		if (background.mode == 5)
 		{
-			backgroundEffect += 0xC00;
+			background.effect += 0xC00;
 		}
 
-		else if (backgroundScroll >= 5 && backgroundScroll <= 7)
+		else if (background.mode >= 5 && background.mode <= 7)
 		{
-			++backgroundEffect;
-			backgroundEffect %= (w * 2);
+			++background.effect;
+			background.effect %= (w * 2);
 		}
 	}
 
@@ -323,7 +323,7 @@ void drawBackground(void)
 		break;
 
 	case 5:
-		for (int x = -(backgroundEffect / 0x200 % w); x < screenWidth; x += w)
+		for (int x = -(background.effect / 0x200 % w); x < screenWidth; x += w)
 		{
 			for (int y = 0; y < screenHeight; y += h)
 				drawTexture(sprites[TEX_BACKGROUND], &rect, x, y);
@@ -357,22 +357,22 @@ void drawBackground(void)
 		rect.top = 88;
 		rect.bottom = 123;
 		for (int i = 0; i <= (screenWidth / w) + 1; ++i)
-			drawTexture(sprites[TEX_BACKGROUND], &rect, (w * i) - (backgroundEffect / 2) % w, rect.top);
+			drawTexture(sprites[TEX_BACKGROUND], &rect, (w * i) - (background.effect / 2) % w, rect.top);
 
 		rect.top = 123;
 		rect.bottom = 146;
 		for (int i = 0; i <= (screenWidth / w) + 1; ++i)
-			drawTexture(sprites[TEX_BACKGROUND], &rect, (w * i) - backgroundEffect % w, rect.top);
+			drawTexture(sprites[TEX_BACKGROUND], &rect, (w * i) - background.effect % w, rect.top);
 
 		rect.top = 146;
 		rect.bottom = 176;
 		for (int i = 0; i <= (screenWidth / w) + 1; ++i)
-			drawTexture(sprites[TEX_BACKGROUND], &rect, (w * i) - (backgroundEffect * 2) % w, rect.top);
+			drawTexture(sprites[TEX_BACKGROUND], &rect, (w * i) - (background.effect * 2) % w, rect.top);
 
 		rect.top = 176;
 		rect.bottom = 240;
 		for (int i = 0; i <= (screenWidth / w) + 1; ++i)
-			drawTexture(sprites[TEX_BACKGROUND], &rect, (w * i) - (backgroundEffect * 4) % w, rect.top);
+			drawTexture(sprites[TEX_BACKGROUND], &rect, (w * i) - (background.effect * 4) % w, rect.top);
 
 		break;
 
@@ -422,13 +422,17 @@ void drawLevel(bool foreground)
 					{
 						tileRect = { (tile % 16) * 16, (tile / 16) * 16, (tile % 16) * 16 + 16, (tile / 16) * 16 + 16 };
 
-						drawTexture(sprites[0x02], &tileRect, (drawX * 16) - viewport.x / 0x200 - 8, (drawY * 16) - viewport.y / 0x200 - 8);
+						drawTexture(sprites[TEX_TILESET], &tileRect, 
+							tilesToPixels(drawX) - unitsToPixels(viewport.x) - 8, 
+							tilesToPixels(drawY) - unitsToPixels(viewport.y) - 8);
 
 						if (attribute == 0x43) //Star block
 						{
 							tileRect = { 256, 48, 272, 64 };
 
-							drawTexture(sprites[0x14], &tileRect, (drawX * 16) - viewport.x / 0x200 - 8, (drawY * 16) - viewport.y / 0x200 - 8);
+							drawTexture(sprites[TEX_NPC_SYM], &tileRect, 
+								tilesToPixels(drawX) - unitsToPixels(viewport.x) - 8, 
+								tilesToPixels(drawY) - unitsToPixels(viewport.y) - 8);
 						}
 					}
 					else
@@ -471,7 +475,9 @@ void drawLevel(bool foreground)
 							return;
 						}
 
-						drawTexture(sprites[0x13], &tileRect, (drawX * 16) - viewport.x / 0x200 - 8, (drawY * 16) - viewport.y / 0x200 - 8);
+						drawTexture(sprites[TEX_CARET], &tileRect, 
+							tilesToPixels(drawX) - unitsToPixels(viewport.x) - 8, 
+							tilesToPixels(drawY) - unitsToPixels(viewport.y) - 8);
 					}
 				}
 			}

@@ -49,7 +49,7 @@ void npcAct000(npc *NPC) //Null
 
 void npcAct001(npc *NPC) //Experience
 {
-	if (backgroundScroll != 5 && backgroundScroll != 6)
+	if (background.mode != 5 && background.mode != 6)
 	{
 		//Set initial velocity
 		if (!NPC->act_no)
