@@ -90,3 +90,4 @@ ipch/
 /source/*.aps
 /source/Config.dat
 /*.cscope_file_list
+/*.layout

@@ -1877,7 +1877,7 @@ void npcAct159(npc *NPC)
 		for (int i = 0; i <= 7; ++i)
 		{
 			createNpc(NPC_Smoke, NPC->x + (random(-16, 16) << 9), NPC->y + (random(-16, 16) << 9),
-				random(-341, 341), random(-341, 341), 0, 0, false);
+				random(-341, 341), random(-341, 341));
 		}
 		goto LABEL_7;
 	}
@@ -1894,8 +1894,8 @@ LABEL_15:
 	NPC->rect.bottom = 200;
 	if (NPC->act_wait % 8 == 1)
 	{
-		createNpc(NPC_Smoke, NPC->x + (random(-16, 16) << 9), NPC->y + (random(-16, 16) << 9), 
-			random(-341, 341), random(-341, 341), 0, 0, false);
+		createNpc(NPC_Smoke, NPC->x + (random(-16, 16) << 9), NPC->y + (random(-16, 16) << 9),
+			random(-341, 341), random(-341, 341));
 	}
 	return;
 }

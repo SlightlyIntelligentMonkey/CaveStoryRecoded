@@ -1,13 +1,104 @@
 #include "npc280.h"
 
 #include <array>
+#include <algorithm>
+#include "mathUtils.h"
+#include "stage.h"
 #include "game.h"
+#include "render.h"
 
 using std::array;
+using std::max;
 
 void npcAct292(npc * /*NPC*/) //Quake
 {
 	viewport.quake = 10;
+}
+
+void npcAct295(npc *NPC) // Cloud
+{
+    array<RECT, 4> rcNPC = {{{0, 0, 208, 64}, {32, 64, 144, 96}, {32, 96, 104, 128}, {104, 96, 144, 128}}};
+
+    switch (NPC->act_no)
+    {
+    case 0:
+        NPC->act_no = 1;
+        NPC->ani_no = NPC->direct % 4;
+        switch (NPC->direct)
+        {
+        case 0:
+            NPC->ym = tilesToUnits(-0.5);
+            NPC->view.right = tilesToUnits(6.5);
+            NPC->view.left = tilesToUnits(6.5);
+            break;
+
+        case 1:
+            NPC->ym = pixelsToUnits(-4);
+            NPC->view.right = tilesToUnits(3.5);
+            NPC->view.left = tilesToUnits(3.5);
+            break;
+
+        case 2:
+            NPC->ym = pixelsToUnits(-2);
+            NPC->view.right = tilesToUnits(2);
+            NPC->view.left = tilesToUnits(2);
+            break;
+
+        case 3:
+            NPC->ym = pixelsToUnits(-1);
+            NPC->view.right = tilesToUnits(1.25);
+            NPC->view.left = tilesToUnits(1.25);
+            break;
+
+        case 4:
+            NPC->xm = pixelsToUnits(-2);
+            NPC->view.right = tilesToUnits(6.5);
+            NPC->view.left = tilesToUnits(6.5);
+            break;
+
+        case 5:
+            NPC->xm = pixelsToUnits(-1);
+            NPC->view.right = tilesToUnits(3.5);
+            NPC->view.left = tilesToUnits(3.5);
+            break;
+
+        case 6:
+            NPC->xm = pixelsToUnits(-0.5);
+            NPC->view.right = tilesToUnits(2);
+            NPC->view.left = tilesToUnits(2);
+            break;
+
+        case 7:
+            NPC->xm = pixelsToUnits(-0.25);
+            NPC->view.right = tilesToUnits(1.25);
+            NPC->view.left = tilesToUnits(1.25);
+            break;
+        }
+        break;
+
+    case 1:
+        NPC->x += NPC->xm;
+        NPC->y += NPC->ym;
+        if (NPC->x < tilesToUnits(-4))
+            NPC->cond = 0;
+        if (NPC->y < tilesToUnits(-2))
+            NPC->cond = 0;
+    }
+
+    NPC->doRects(rcNPC);
+}
+
+void npcAct296(npc *NPC) // Generator - Cloud
+{
+    if (++NPC->act_wait > 16)
+    {
+        NPC->act_wait = random(0, 16);
+        int randDir = random(0, 100) % 4;
+        if (NPC->direct != dirLeft)
+            createNpc(NPC_Cloud, NPC->x, NPC->y + tilesToUnits(random(-7, 7)), 0, 0, randDir + 4, nullptr);
+        else
+            createNpc(NPC_Cloud, NPC->x + tilesToUnits(random(-7, 7)), NPC->y, 0, 0, randDir, nullptr);
+    }
 }
 
 void npcAct297(npc *NPC) //Sue on sky dragon

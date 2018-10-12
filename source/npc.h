@@ -118,7 +118,8 @@ public:
 				this->rect = rcRight.at(this->ani_no);
 			else
 				this->rect = rcLeft.at(this->ani_no);
-		} catch (const std::out_of_range& oops)
+		}
+		catch (const std::out_of_range& oops)
 		{
 			logError("U FUCKED UP THE RECTS LMAO"
 				" (btw it's for NPC " + std::to_string(this->code_char) +
@@ -132,11 +133,11 @@ public:
 		try
 		{
 			this->rect = rcNPC.at(this->ani_no);
-		} catch (const std::out_of_range& oops)
+		} catch (const std::out_of_range& lmaoUFuckedUp)
 		{
 			logError("U FUCKED UP THE RECTS LMAO"
 				" (btw it's for NPC " + std::to_string(this->code_char) +
-				" and you tried to access rect no " + std::to_string(this->ani_no) + ") (exception details : " + oops.what() + ')');
+				" and you tried to access rect no " + std::to_string(this->ani_no) + ") (exception details : " + lmaoUFuckedUp.what() + ')');
 			this->surf = 0x27;
 			this->doRects({ 0, 0, this->view.left >> 8, this->view.top >> 8 });
 		}

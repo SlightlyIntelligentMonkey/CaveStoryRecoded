@@ -149,7 +149,7 @@ void npcAct042(npc *NPC) // Sue
 		NPC->xm = 0;
 	// Fallthrough
 	case 1:
-		if (random(0, 120) == 10)
+		if (!random(0, 120))
 		{
 			NPC->act_no = 2;
 			NPC->act_wait = 0;

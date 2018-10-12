@@ -111,12 +111,13 @@ void actBulletBlade2(bullet *bul)
 
 void actBulletBlade3(bullet *bul)
 {
-	enum bladeStats 
+	enum bladeStats
 	{
 		ini = 0,
 		moving = 1,
 		stationary = 2
 	};
+
 	switch (bul->act_no)
 	{
 	case(ini):
@@ -124,6 +125,7 @@ void actBulletBlade3(bullet *bul)
 		bul->xm = 0;
 		bul->ym = 0;
 		break;
+
 	case(moving):
 		switch (bul->direct)
 		{
@@ -153,9 +155,9 @@ void actBulletBlade3(bullet *bul)
 			playSound(SFX_SpinningProjectile);
 			++bul->count1;
 			if (bul->count1 & 1)
-				createBullet(bullet_BladeSlash, bul->x, bul->y, 0);
+				createBullet(bullet_BladeSlash, bul->x, bul->y, dirLeft);
 			else
-				createBullet(bullet_BladeSlash, bul->x, bul->y, 2);
+				createBullet(bullet_BladeSlash, bul->x, bul->y, dirRight);
 		}
 		if (++bul->count1 == 5)
 			bul->bbits &= 0xFFFFFFFB;
@@ -174,13 +176,9 @@ void actBulletBlade3(bullet *bul)
 		{
 			playSound(SFX_SpinningProjectile);
 			if (random(0, 1) & 1)
-			{
-				createBullet(bullet_BladeSlash, bul->x + (random(-64, 64) << 9), bul->y + (random(-64, 64) << 9), 0);
-			}
+				createBullet(bullet_BladeSlash, bul->x + (random(-64, 64) << 9), bul->y + (random(-64, 64) << 9), dirLeft);
 			else
-			{
-				createBullet(bullet_BladeSlash, bul->x + (random(-64, 64) << 9), bul->y + (random(-64, 64) << 9), 2);
-			}
+				createBullet(bullet_BladeSlash, bul->x + (random(-64, 64) << 9), bul->y + (random(-64, 64) << 9), dirRight);
 		}
 		if (bul->act_wait > 50)
 			bul->cond = 0;
@@ -194,13 +192,9 @@ void actBulletBlade3(bullet *bul)
 	{
 		bul->rect.left = 272 + ((bul->direct/3)*24);
 		if (bul->direct % 2 == 0)
-		{
 			bul->rect.top = (bul->direct / 2) * 24;
-		}
 		else
-		{
 			bul->rect.top = 48;
-		}
 		bul->rect.right = bul->rect.left + 24;
 		bul->rect.bottom = bul->rect.top + 24;
 	}

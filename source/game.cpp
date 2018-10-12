@@ -6,6 +6,7 @@
 #include <SDL_timer.h>
 #include <SDL_render.h>
 #include <SDL_events.h>
+#include <SDL_clipboard.h>
 #include "weapons.h"
 #include "stage.h"
 #include "hud.h"
@@ -153,7 +154,13 @@ void debugCMDGetInput(string &cmd)
 	if (isKeyPressed(SDL_SCANCODE_MINUS) || isKeyPressed(SDL_SCANCODE_KP_MINUS)) { cmd += "-"; }
 	if (isKeyPressed(SDL_SCANCODE_EQUALS) || isKeyPressed(SDL_SCANCODE_KP_PLUS)) { cmd += "+"; }
 
-	if (isKeyPressed(SDL_SCANCODE_BACKSPACE) && cmd.size() != 0) { cmd.erase(cmd.cend()-1); }
+	if (isKeyPressed(SDL_SCANCODE_BACKSPACE) && cmd.size() != 0)
+        cmd.erase(cmd.cend() - 1);
+
+    if (isKeyPressed(SDL_SCANCODE_C) && SDL_GetModState() & KMOD_CTRL)
+        SDL_SetClipboardText(cmd.c_str());
+    if (isKeyPressed(SDL_SCANCODE_V) && SDL_GetModState() & KMOD_CTRL)
+        cmd += SDL_GetClipboardText();
 }
 
 void debugFunction()

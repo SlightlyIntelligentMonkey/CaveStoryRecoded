@@ -121,7 +121,7 @@ void init()
 	logInfo("Finished init");
 }
 
-int main(int /*argc*/, char ** /*argv*/) // TDB : Do something with command-line parameters
+int main(int /*argc*/, char ** /*argv*/) // TBD : Do something with command-line parameters
 {
 	try
 	{

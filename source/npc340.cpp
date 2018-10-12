@@ -6,59 +6,9 @@
 #include "sound.h"
 #include "render.h"
 #include "stage.h"
+#include "game.h"
 
 using std::array;
-
-void npcAct334(npc *NPC) //sweat
-{
-	RECT rcRight[] =
-	{
-		{176, 184, 184, 200},
-		{184, 184, 192, 200}
-	};
-	RECT rcLeft[] =
-	{
-		{160, 184, 168, 200},
-		{168, 184, 176, 200}
-	};
-
-	if (NPC->act_no != 0)
-	{
-		if (NPC->act_no != 10)
-			goto LABEL_12;
-	}
-	else
-	{
-		NPC->act_no = 10;
-		if (NPC->direct)
-		{
-			NPC->x = currentPlayer.x - 5120;
-			NPC->y = currentPlayer.y - 1024;
-		}
-		else
-		{
-			NPC->x += 5120;
-			NPC->y -= 9216;
-		}
-	}
-	if (++NPC->act_wait / 8 & 1)
-		NPC->ani_no = 0;
-	else
-		NPC->ani_no = 1;
-	if (NPC->act_wait > 63)
-		NPC->cond = 0;
-LABEL_12:
-	if (NPC->direct)
-	{
-		NPC->rect = rcRight[NPC->ani_no];
-	}
-	else
-	{
-		NPC->rect = rcLeft[NPC->ani_no];
-	}
-
-	return;
-}
 
 void npcAct347(npc *NPC) // Hoppy (enemy)
 {
@@ -153,6 +103,81 @@ void npcAct349(npc *NPC)
 	}
 
 	NPC->doRects({ 0, 0, 16, 16 });
+}
+
+void npcAct354(npc *NPC) // Invisible deathtrap wall
+{
+    switch (NPC->act_no)
+    {
+    case 0:
+        NPC->hit.bottom = tilesToUnits(17.5);
+        return;
+
+    case 10:
+        NPC->act_no = 11;
+        NPC->act_wait = 0;
+        if (NPC->direct != dirLeft)
+            NPC->x -= tilesToUnits(1);
+        else
+            NPC->x += tilesToUnits(1);
+        // Fallthrough
+    case 11:
+        if (++NPC->act_wait > 100)
+        {
+            NPC->act_wait = 0;
+            viewport.quake = 20;
+            playSound(SFX_LargeObjectHitGround);
+            playSound(SFX_DestroyBreakableBlock);
+            if (NPC->direct != dirLeft)
+                NPC->x += tilesToUnits(1);
+            else
+                NPC->x -= tilesToUnits(1);
+            for (size_t i = 0; i < 20; ++i)
+                changeTile(unitsToTiles(NPC->x), i + unitsToTiles(NPC->y), 109);
+        }
+    }
+}
+
+void npcAct355(npc *NPC) // Balrog, crashing through wall
+{
+    array<RECT, 4> rcNPC = {{{80, 16, 96, 32}, {80, 96, 96, 112}, {128, 16, 144, 32}, {208, 96, 224, 112}}};
+
+    if (!NPC->act_no && NPC->pNpc)
+    {
+        switch (NPC->direct)
+        {
+        case dirLeft:
+            NPC->surf = 16;
+            NPC->ani_no = 0;
+            NPC->x = NPC->pNpc->x - pixelsToUnits(14);
+            NPC->y = NPC->pNpc->y + pixelsToUnits(10);
+            break;
+
+        case dirUp:
+            NPC->surf = 23;
+            NPC->ani_no = 1;
+            NPC->x = NPC->pNpc->x + pixelsToUnits(14);
+            NPC->y = NPC->pNpc->y + pixelsToUnits(10);
+            break;
+
+        case dirRight:
+            NPC->surf = 16;
+            NPC->ani_no = 2;
+            NPC->x = NPC->pNpc->x - pixelsToUnits(7);
+            NPC->y = NPC->pNpc->y - pixelsToUnits(19);
+            break;
+
+        case dirDown:
+            NPC->surf = 23;
+            NPC->ani_no = 3;
+            NPC->x = NPC->pNpc->x + pixelsToUnits(4);
+            NPC->y = NPC->pNpc->y - pixelsToUnits(19);
+        }
+    }
+    else
+        NPC->ani_no = 0;
+
+    NPC->doRects(rcNPC);
 }
 
 void npcAct359(npc *NPC)
