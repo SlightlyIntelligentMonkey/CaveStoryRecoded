@@ -25,6 +25,8 @@ SDL_AudioDeviceID soundDev;
 SDL_AudioSpec soundSpec;
 SDL_AudioSpec want;
 
+int volume = 100;
+
 //Audio callback and things
 void mixSounds(int16_t *stream, int len)
 {
@@ -56,8 +58,8 @@ void mixSounds(int16_t *stream, int len)
 
 					const auto val = (int)(sample1 + (sample2 - sample1) * fmod(sound.pos, 1.0f));
 
-					tempSampleL += val * 2;
-					tempSampleR += val * 2;
+					tempSampleL += (val * 2);
+					tempSampleR += (val * 2);
 				}
 			}
 		}

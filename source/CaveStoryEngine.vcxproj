@@ -249,6 +249,7 @@
     <ClCompile Include="misc.cpp" />
     <ClCompile Include="missile.cpp" />
     <ClCompile Include="missileShoot.cpp" />
+    <ClCompile Include="monsterX.cpp" />
     <ClCompile Include="nemesis.cpp" />
     <ClCompile Include="nemesisShoot.cpp" />
     <ClCompile Include="npc080.cpp" />
@@ -268,7 +269,7 @@
     <ClCompile Include="filesystem.cpp" />
     <ClCompile Include="flags.cpp" />
     <ClCompile Include="input.cpp" />
-    <ClCompile Include="level.cpp" />
+    <ClCompile Include="stage.cpp" />
     <ClCompile Include="main.cpp">
       <CallingConvention Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Cdecl</CallingConvention>
       <CallingConvention Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Cdecl</CallingConvention>
@@ -352,7 +353,7 @@
     <ClInclude Include="main.h" />
     <ClInclude Include="filesystem.h" />
     <ClInclude Include="input.h" />
-    <ClInclude Include="level.h" />
+    <ClInclude Include="stage.h" />
     <ClInclude Include="mathUtils.h" />
     <ClInclude Include="npc.h" />
     <ClInclude Include="npc000.h" />

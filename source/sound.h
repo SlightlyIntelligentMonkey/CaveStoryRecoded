@@ -30,6 +30,8 @@ extern SDL_AudioSpec want;
 //sample rate
 constexpr unsigned int sampleRate = 44100;
 
+extern int volume;
+
 enum soundEffects
 {
 	SFX_YNChangeChoice = 0x1,

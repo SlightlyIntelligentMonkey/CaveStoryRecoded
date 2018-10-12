@@ -2,7 +2,7 @@
 
 #include "bossCollision.h"
 #include "npcCollision.h"
-#include "level.h"
+#include "stage.h"
 
 void bossHitMap()
 {

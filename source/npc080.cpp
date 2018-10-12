@@ -7,7 +7,7 @@
 #include "sound.h"
 #include "game.h"
 #include "render.h"
-#include "level.h"
+#include "stage.h"
 #include "flash.h"
 
 using std::array;
@@ -745,7 +745,7 @@ void npcAct086(npc *NPC) //Dropped missiles
 			NPC->ani_no = 0;
 	}
 
-	if (backgroundScroll == 5 || backgroundScroll == 6)
+	if (background.mode == 5 || background.mode == 6)
 	{
 		if (!NPC->act_no)
 		{
@@ -806,7 +806,7 @@ void npcAct087(npc *NPC) //Health refill
 			NPC->ani_no = 0;
 	}
 
-	if (backgroundScroll == 5 || backgroundScroll == 6)
+	if (background.mode == 5 || background.mode == 6)
 	{
 		if (NPC->act_no == 0)
 		{

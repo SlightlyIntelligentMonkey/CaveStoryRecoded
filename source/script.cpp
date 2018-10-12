@@ -20,7 +20,7 @@
 #include "input.h"
 #include "org.h"
 #include "main.h"
-#include "level.h"
+#include "stage.h"
 #include "flash.h"
 
 using std::string;
@@ -92,7 +92,7 @@ void loadStageTsc(const string& name)
 	headRW->close(headRW);
 
 	//Load stage's tsc file
-	SDL_RWops *bodyRW = SDL_RWFromFile(name.c_str(), "rb");
+	SDL_RWops *bodyRW = SDL_RWFromFile(string("data/Stage/" + name + ".tsc").c_str(), "rb");
 	if (!bodyRW)
 		doError();
 	auto bodySize = static_cast<size_t>(SDL_RWsize(bodyRW));

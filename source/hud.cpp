@@ -1,5 +1,5 @@
 #include "hud.h"
-#include "level.h"
+#include "stage.h"
 #include "weapons.h"
 #include "render.h"
 #include "game.h"

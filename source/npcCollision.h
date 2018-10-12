@@ -1,7 +1,7 @@
 #pragma once
 
 #include "npc.h"
-#include "level.h"
+#include "stage.h"
 
 class npc;
 

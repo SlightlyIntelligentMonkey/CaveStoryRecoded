@@ -3,7 +3,7 @@
 #include <array>
 #include "render.h"
 #include "player.h"
-#include "level.h"
+#include "stage.h"
 #include "caret.h"
 #include "sound.h"
 #include "mathUtils.h"
@@ -87,7 +87,7 @@ void npcAct241(npc *NPC) // Critter, Hopping Red (enemy)
 
 void npcAct242(npc *NPC) // Bat, Red Wave (enemy)
 {
-    if (NPC->x < 0 || NPC->x > tilesToUnits(levelWidth))
+    if (NPC->x < 0 || NPC->x > tilesToUnits(map.width))
     {
 		NPC->init(3, NPC->x, NPC->y, 0, 0, 0, nullptr);
         return;

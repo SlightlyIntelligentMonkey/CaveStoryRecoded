@@ -5,7 +5,7 @@
 #include "render.h"
 #include "game.h"
 #include "common.h"
-#include "level.h"
+#include "stage.h"
 
 namespace balfrogStates
 {
