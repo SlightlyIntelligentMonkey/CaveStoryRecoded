@@ -1,14 +1,15 @@
-#include "loadConfig.h"
-
-#include "game.h"
-#include "org.h"
-#include "filesystem.h"
-#include "player.h"
-#include "render.h"
-
 #include <string>
 #include <fstream>
 #include <json.hpp>
+#include <SDL_render.h>
+
+#include "loadConfig.h"
+#include "game.h"
+#include "org.h"
+#include "sound.h"
+#include "filesystem.h"
+#include "player.h"
+#include "render.h"
 
 using std::string;
 using std::ifstream;

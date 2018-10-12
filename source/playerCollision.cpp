@@ -391,143 +391,143 @@ void playerHitMap()
 			switch (getTileAttribute(currentX, currentY))
 			{
 			//Solid
-			case 0x05u:
-			case 0x41u:
-			case 0x43u:
-			case 0x46u:
+			case 0x05:
+			case 0x41:
+			case 0x43:
+			case 0x46:
 				me->flag |= playerJudgeBlock(rcHit, me, currentX, currentY);
 				break;
 
 			//Spike
-			case 0x42u:
+			case 0x42:
 				me->flag |= playerJudgeSpike(rcHit, me, currentX, currentY);
 				break;
 
 			//Ceiling slopes
-			case 0x50u:
+			case 0x50:
 				me->flag |= playerJudgeTriangleA(rcHit, me, currentX, currentY);
 				break;
 
-			case 0x51u:
+			case 0x51:
 				me->flag |= playerJudgeTriangleB(rcHit, me, currentX, currentY);
 				break;
 
-			case 0x52u:
+			case 0x52:
 				me->flag |= playerJudgeTriangleC(rcHit, me, currentX, currentY);
 				break;
 
-			case 0x53u:
+			case 0x53:
 				me->flag |= playerJudgeTriangleD(rcHit, me, currentX, currentY);
 				break;
 
 			//Floor slopes
-			case 0x54u:
+			case 0x54:
 				me->flag |= playerJudgeTriangleE(rcHit, me, currentX, currentY);
 				break;
 
-			case 0x55u:
+			case 0x55:
 				me->flag |= playerJudgeTriangleF(rcHit, me, currentX, currentY);
 				break;
 
-			case 0x56u:
+			case 0x56:
 				me->flag |= playerJudgeTriangleG(rcHit, me, currentX, currentY);
 				break;
 
-			case 0x57u:
+			case 0x57:
 				me->flag |= playerJudgeTriangleH(rcHit, me, currentX, currentY);
 				break;
 
 			//Water, water solid, and water spike
-			case 0x60u:
+			case 0x60:
 				me->flag |= playerJudgeWater(rcHit, me, currentX, currentY);
 				break;
 
-			case 0x61u:
+			case 0x61:
 				me->flag |= playerJudgeBlock(rcHit, me, currentX, currentY);
 				me->flag |= playerJudgeWater(rcHit, me, currentX, currentY);
 				break;
 
-			case 0x62u:
+			case 0x62:
 				me->flag |= playerJudgeWaterSpike(rcHit, me, currentX, currentY);
 				break;
 
 			//Water slopes
 			//Ceiling slopes
-			case 0x70u:
+			case 0x70:
 				me->flag |= playerJudgeTriangleA(rcHit, me, currentX, currentY);
 				me->flag |= playerJudgeWater(rcHit, me, currentX, currentY);
 				break;
 
-			case 0x71u:
+			case 0x71:
 				me->flag |= playerJudgeTriangleB(rcHit, me, currentX, currentY);
 				me->flag |= playerJudgeWater(rcHit, me, currentX, currentY);
 				break;
 
-			case 0x72u:
+			case 0x72:
 				me->flag |= playerJudgeTriangleC(rcHit, me, currentX, currentY);
 				me->flag |= playerJudgeWater(rcHit, me, currentX, currentY);
 				break;
 
-			case 0x73u:
+			case 0x73:
 				me->flag |= playerJudgeTriangleD(rcHit, me, currentX, currentY);
 				me->flag |= playerJudgeWater(rcHit, me, currentX, currentY);
 				break;
 
 			//Floor slopes
-			case 0x74u:
+			case 0x74:
 				me->flag |= playerJudgeTriangleE(rcHit, me, currentX, currentY);
 				me->flag |= playerJudgeWater(rcHit, me, currentX, currentY);
 				break;
 
-			case 0x75u:
+			case 0x75:
 				me->flag |= playerJudgeTriangleF(rcHit, me, currentX, currentY);
 				me->flag |= playerJudgeWater(rcHit, me, currentX, currentY);
 				break;
 
-			case 0x76u:
+			case 0x76:
 				me->flag |= playerJudgeTriangleG(rcHit, me, currentX, currentY);
 				me->flag |= playerJudgeWater(rcHit, me, currentX, currentY);
 				break;
 
-			case 0x77u:
+			case 0x77:
 				me->flag |= playerJudgeTriangleH(rcHit, me, currentX, currentY);
 				me->flag |= playerJudgeWater(rcHit, me, currentX, currentY);
 				break;
 
 			//Wind
-			case 0x80u:
+			case 0x80:
 				me->flag |= playerJudgeCurrentLeft(rcHit, me, currentX, currentY);
 				break;
 
-			case 0x81u:
+			case 0x81:
 				me->flag |= playerJudgeCurrentUp(rcHit, me, currentX, currentY);
 				break;
 
-			case 0x82u:
+			case 0x82:
 				me->flag |= playerJudgeCurrentRight(rcHit, me, currentX, currentY);
 				break;
 
-			case 0x83u:
+			case 0x83:
 				me->flag |= playerJudgeCurrentDown(rcHit, me, currentX, currentY);
 				break;
 
 			//Water current
-			case 0xA0u:
+			case 0xA0:
 				me->flag |= playerJudgeCurrentLeft(rcHit, me, currentX, currentY);
 				me->flag |= playerJudgeWater(rcHit, me, currentX, currentY);
 				break;
 
-			case 0xA1u:
+			case 0xA1:
 				me->flag |= playerJudgeCurrentUp(rcHit, me, currentX, currentY);
 				me->flag |= playerJudgeWater(rcHit, me, currentX, currentY);
 				break;
 
-			case 0xA2u:
+			case 0xA2:
 				me->flag |= playerJudgeCurrentRight(rcHit, me, currentX, currentY);
 				me->flag |= playerJudgeWater(rcHit, me, currentX, currentY);
 				break;
 
-			case 0xA3u:
+			case 0xA3:
 				me->flag |= playerJudgeCurrentDown(rcHit, me, currentX, currentY);
 				me->flag |= playerJudgeWater(rcHit, me, currentX, currentY);
 				break;
@@ -538,6 +538,9 @@ void playerHitMap()
 			}
 		}
 	}
+
+	if (me->y > gWaterY + 2048)
+		me->flag |= water;
 }
 
 //Npc hit functions

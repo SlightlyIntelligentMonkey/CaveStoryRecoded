@@ -17,7 +17,7 @@
 #include "game.h"
 #include "weapons.h"
 #include "player.h"
-#include "level.h"
+#include "stage.h"
 #include "fade.h"
 #include "script.h"
 #include "org.h"
@@ -291,13 +291,13 @@ int defaultPadMap = SDL_CONTROLLER_BUTTON_B;
 int defaultPadRotLeft = SDL_CONTROLLER_BUTTON_LEFTSHOULDER;
 int defaultPadRotRight = SDL_CONTROLLER_BUTTON_RIGHTSHOULDER;
 
-CONFIG defaultConfigData = { configVersion, false, true, false, keyLeft, keyRight, keyUp, keyDown, keyJump, keyShoot, keyMenu, keyMap, keyRotLeft, keyRotRight, defaultPadLeft, defaultPadRight, defaultPadUp, defaultPadDown, defaultPadJump, defaultPadShoot, defaultPadMenu, defaultPadMap, defaultPadRotLeft, defaultPadRotRight };
+CONFIG defaultConfigData = { configVersion, false, true, keyLeft, keyRight, keyUp, keyDown, keyJump, keyShoot, keyMenu, keyMap, keyRotLeft, keyRotRight, defaultPadLeft, defaultPadRight, defaultPadUp, defaultPadDown, defaultPadJump, defaultPadShoot, defaultPadMenu, defaultPadMap, defaultPadRotLeft, defaultPadRotRight };
 
 void setFromConfig(CONFIG *config)
 {
-	createWindow(screenWidth, screenHeight, screenScale, config->fullscreen);
+	createWindow(screenWidth, screenHeight, screenScale);
 
-	if (config->fullscreen)
+	if (windowFlags == SDL_WINDOW_FULLSCREEN)
 		switchScreenMode();
 
 	if (config->useGamepad)

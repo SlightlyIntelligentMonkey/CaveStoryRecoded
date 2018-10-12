@@ -1,5 +1,5 @@
 #pragma once
-#include "level.h"
+#include "stage.h"
 
 void playerHitMap();
 void playerHitNpcs();

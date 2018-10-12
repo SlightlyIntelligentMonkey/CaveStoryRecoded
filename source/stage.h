@@ -23,21 +23,38 @@ struct MAPNAME
 	char name[32];
 };
 
+struct BACKGROUND
+{
+	int flag;
+	int tileWidth;
+	int tileHeight;
+	int numX;
+	int numY;
+	int mode;
+	int effect;
+	char unknownFiller[12];
+};
+
+struct MAP
+{
+	uint8_t *tile;
+	uint8_t *attribute;
+	int width;
+	int height;
+};
+
 extern MAPNAME mapName;
 
 extern STAGE_TABLE *stageTable;
 
-extern int levelWidth;
-extern int levelHeight;
+extern MAP map;
+extern BACKGROUND background;
 
 extern int currentLevel;
 
-extern uint8_t *levelMap;
-extern uint8_t *levelTileAttributes;
+extern int gWaterY;
 
 extern SDL_Texture *levelTileset;
-
-extern uint8_t backgroundScroll;
 extern SDL_Texture *levelBackground;
 
 uint8_t getTileAttribute(int x, int y) attrPure;
@@ -61,4 +78,14 @@ template<typename T> constexpr inline int32_t tilesToUnits(T x)
 template<typename T> constexpr inline int32_t unitsToTiles(T x)
 {
 	return x / 0x2000;
+}
+
+template<typename T> constexpr inline int32_t tilesToPixels(T x)
+{
+	return x * 16;
+}
+
+template<typename T> constexpr inline int32_t pixelsToTiles(T x)
+{
+	return x / 16;
 }

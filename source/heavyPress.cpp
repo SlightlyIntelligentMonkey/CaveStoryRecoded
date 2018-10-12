@@ -4,7 +4,7 @@
 #include "render.h"
 #include "sound.h"
 #include "mathUtils.h"
-#include "level.h"
+#include "stage.h"
 
 using std::array;
 

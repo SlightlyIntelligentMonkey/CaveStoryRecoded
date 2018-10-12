@@ -5,7 +5,7 @@
 #include "player.h"
 #include "sound.h"
 #include "game.h"
-#include "level.h"
+#include "stage.h"
 #include "render.h"
 
 using std::array;
@@ -1319,7 +1319,7 @@ void npcAct073(npc *NPC) //Water drop
 			NPC->cond = 0;
 	}
 
-	if (NPC->y > tilesToUnits(levelHeight))
+	if (NPC->y > tilesToUnits(map.height))
 		NPC->cond = 0;
 }
 

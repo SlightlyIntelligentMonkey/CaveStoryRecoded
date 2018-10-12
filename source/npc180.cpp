@@ -9,7 +9,7 @@
 #include "render.h"
 #include "bullet.h"
 #include "caret.h"
-#include "level.h"
+#include "stage.h"
 
 using std::array;
 
@@ -691,6 +691,81 @@ void npcAct192(npc *NPC) // Scooter
 	array<RECT, 2> rcRight = { { {224, 80, 256, 96}, {288, 64, 320, 96} }};
 
 	NPC->doRects(rcLeft, rcRight);
+}
+
+void npcAct191(npc *NPC)
+{
+	switch (NPC->act_no)
+	{
+	case 0:
+		NPC->act_no = 10;
+		NPC->tgt_y = NPC->y;
+		NPC->ym = 512;
+		// Fallthrough
+	case 10:
+		if (NPC->y >= NPC->tgt_y)
+			NPC->ym -= 4;
+		else
+			NPC->ym += 4;
+
+		if (NPC->ym < -256)
+			NPC->ym = -256;
+		if (NPC->ym > 256)
+			NPC->ym = 256;
+		NPC->y += NPC->ym;
+		break;
+	case 20:
+		NPC->act_no = 21;
+		NPC->act_wait = 0;
+		// Fallthrough
+	case 21:
+		if (NPC->y >= NPC->tgt_y)
+			NPC->ym -= 4;
+		else
+			NPC->ym += 4;
+
+		if (NPC->ym < -512)
+			NPC->ym = -512;
+		if (NPC->ym > 512)
+			NPC->ym = 512;
+		NPC->y += NPC->ym;
+		if (++NPC->act_wait > 1000)
+			NPC->act_no = 22;
+		break;
+	case 22:
+		if (NPC->y >= 0)
+			NPC->ym -= 4;
+		else
+			NPC->ym += 4;
+		if (NPC->ym < -512)
+			NPC->ym = -512;
+		if (NPC->ym > 512)
+			NPC->ym = 512;
+		NPC->y += NPC->ym;
+		if (NPC->y <= 0x7FFF || superYPos)
+		{
+			NPC->act_no = 21;
+			NPC->act_wait = 0;
+		}
+		break;
+	case 30:
+		if (NPC->y >= 0)
+			NPC->ym -= 4;
+		else
+			NPC->ym += 4;
+		if (NPC->ym < -512)
+			NPC->ym = -512;
+		if (NPC->ym > 256)
+			NPC->ym = 256;
+		NPC->y += NPC->ym;
+		break;
+	default:
+		break;
+	}
+	gWaterY = NPC->y;
+	NPC->rect.right = 0;
+	NPC->rect.bottom = 0;
+	return;
 }
 
 void npcAct193(npc *NPC) // Scooter, crashed

@@ -2,7 +2,7 @@
 
 #include <array>
 #include "player.h"
-#include "level.h"
+#include "stage.h"
 #include "render.h"
 #include "game.h"
 #include "sound.h"
@@ -201,4 +201,55 @@ void npcAct324(npc *NPC)
 void npcAct328(npc *NPC) // Transmogrifier
 {
 	NPC->doRects({96, 0, 128, 48});
+}
+
+void npcAct334(npc *NPC) //sweat
+{
+	RECT rcRight[] =
+	{
+		{176, 184, 184, 200},
+		{184, 184, 192, 200}
+	};
+	RECT rcLeft[] =
+	{
+		{160, 184, 168, 200},
+		{168, 184, 176, 200}
+	};
+
+	if (NPC->act_no != 0)
+	{
+		if (NPC->act_no != 10)
+			goto LABEL_12;
+	}
+	else
+	{
+		NPC->act_no = 10;
+		if (NPC->direct)
+		{
+			NPC->x = currentPlayer.x - 5120;
+			NPC->y = currentPlayer.y - 1024;
+		}
+		else
+		{
+			NPC->x += 5120;
+			NPC->y -= 9216;
+		}
+	}
+	if (++NPC->act_wait / 8 & 1)
+		NPC->ani_no = 0;
+	else
+		NPC->ani_no = 1;
+	if (NPC->act_wait > 63)
+		NPC->cond = 0;
+LABEL_12:
+	if (NPC->direct)
+	{
+		NPC->rect = rcRight[NPC->ani_no];
+	}
+	else
+	{
+		NPC->rect = rcLeft[NPC->ani_no];
+	}
+
+	return;
 }

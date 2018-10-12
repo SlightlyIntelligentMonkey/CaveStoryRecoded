@@ -30,13 +30,13 @@ int prevWidth = 0;
 int prevHeight = 0;
 int prevScale = 0;
 
-int windowFlags = 0;
-
 int charWidth = 24;
 int charHeight = 24;
 int charScale = 2;
 
 int framerate = 20; //17 for 60-ish fps
+
+uint32_t windowFlags = 0;
 
 static SDL_Surface *cursor_surface;
 static SDL_Cursor *cursor;
@@ -94,7 +94,7 @@ static SDL_Texture* loadPNGToTexture(SDL_Renderer *localRenderer, const string& 
 }
 
 //Create window
-int createWindow(int width, int height, int scale, bool fullscreen)
+int createWindow(int width, int height, int scale)
 {
 	const int createWidth = width * scale;
 	const int createHeight = height * scale;
@@ -109,7 +109,7 @@ int createWindow(int width, int height, int scale, bool fullscreen)
 		window = SDL_CreateWindow("Cave Story Engine",
 		                          SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
 		                          createWidth, createHeight,
-		                          0);
+		                          windowFlags);
 
 #ifdef USE_ICONS_SDL2
 		// Set the window icon.
@@ -134,14 +134,14 @@ int createWindow(int width, int height, int scale, bool fullscreen)
 	else
 		SDL_SetWindowSize(window, createWidth, createHeight);
 
-	if (fullscreen)
+	if (windowFlags == SDL_WINDOW_FULLSCREEN)
         SDL_SetWindowFullscreen(window, SDL_WINDOW_FULLSCREEN);
 
 	//Set renderer
 	if (!renderer)
 	{
 		renderer = SDL_CreateRenderer(window, -1, 0);
-	SDL_SetRenderDrawBlendMode(renderer, SDL_BLENDMODE_BLEND);
+		SDL_SetRenderDrawBlendMode(renderer, SDL_BLENDMODE_BLEND);
 
 		if (renderer == nullptr)
 			logError((std::string)"Couldn't create renderer! SDL2 error: " + SDL_GetError());

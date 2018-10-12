@@ -23,6 +23,8 @@ extern int screenScale;
 
 extern int framerate;
 
+extern uint32_t windowFlags;
+
 extern bool displayFpsCounter;
 
 enum TextureNums
@@ -51,7 +53,7 @@ enum TextureNums
 };
 
 //Functions for handling the window
-int createWindow(int width, int height, int scale, bool fullscreen);
+int createWindow(int width, int height, int scale);
 void switchScreenMode();
 bool drawWindow();
 void captureScreen(enum TextureNums texture_id);

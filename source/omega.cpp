@@ -6,7 +6,7 @@
 #include "render.h"
 #include "game.h"
 #include "common.h"
-#include "level.h"
+#include "stage.h"
 #include "flash.h"
 
 #include <cstring>

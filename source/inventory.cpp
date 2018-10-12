@@ -9,7 +9,7 @@
 #include "script.h"
 #include "sound.h"
 #include "render.h"
-#include "level.h"
+#include "stage.h"
 #include "player.h"
 #include "caret.h"
 #include "valueview.h"

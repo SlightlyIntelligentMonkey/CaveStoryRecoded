@@ -8,7 +8,7 @@
 #include <SDL_events.h>
 #include <SDL_clipboard.h>
 #include "weapons.h"
-#include "level.h"
+#include "stage.h"
 #include "hud.h"
 #include "script.h"
 #include "fade.h"
@@ -73,15 +73,15 @@ void init2()
 //Keep view inside the level
 void viewBounds()
 {
-	if ((levelWidth - 1) << 4 > screenWidth)
-		viewport.x = clamp(viewport.x, 0, tilesToUnits(levelWidth - 1) - (screenWidth << 9));
+	if ((map.width - 1) << 4 > screenWidth)
+		viewport.x = clamp(viewport.x, 0, tilesToUnits(map.width - 1) - (screenWidth << 9));
 	else
-		viewport.x = ((levelWidth - 1) << 12) - (screenWidth << 8);
+		viewport.x = ((map.width - 1) << 12) - (screenWidth << 8);
 
-	if ((levelHeight - 1) << 4 > screenHeight)
-		viewport.y = clamp(viewport.y, 0, tilesToUnits(levelHeight - 1) - (screenHeight << 9));
+	if ((map.height - 1) << 4 > screenHeight)
+		viewport.y = clamp(viewport.y, 0, tilesToUnits(map.height - 1) - (screenHeight << 9));
 	else
-		viewport.y = ((levelHeight - 1) << 12) - (screenHeight << 8);
+		viewport.y = ((map.height - 1) << 12) - (screenHeight << 8);
 }
 
 void handleView()

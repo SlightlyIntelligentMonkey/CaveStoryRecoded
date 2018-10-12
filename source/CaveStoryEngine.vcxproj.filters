@@ -72,9 +72,6 @@
     <ClCompile Include="main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="level.cpp">
-      <Filter>Source Files\modules</Filter>
-    </ClCompile>
     <ClCompile Include="filesystem.cpp">
       <Filter>Source Files\modules</Filter>
     </ClCompile>
@@ -291,11 +288,14 @@
     <ClCompile Include="lodepng\lodepng.cpp">
       <Filter>Source Files\libraries</Filter>
     </ClCompile>
+    <ClCompile Include="monsterX.cpp">
+      <Filter>Source Files\classes\boss\act</Filter>
+    </ClCompile>
+    <ClCompile Include="stage.cpp">
+      <Filter>Source Files\modules</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="level.h">
-      <Filter>Source Files\modules</Filter>
-    </ClInclude>
     <ClInclude Include="filesystem.h">
       <Filter>Source Files\modules</Filter>
     </ClInclude>
@@ -484,6 +484,9 @@
     </ClInclude>
     <ClInclude Include="lodepng\lodepng.h">
       <Filter>Source Files\libraries</Filter>
+    </ClInclude>
+    <ClInclude Include="stage.h">
+      <Filter>Source Files\modules</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
