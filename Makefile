@@ -58,6 +58,7 @@ obj/lodepng/lodepng.o: source/lodepng/lodepng.cpp
 obj/icon.o: res/icon.rc res/icon_mini.ico
 	@mkdir -p $(@D)
 	@windres $< $@
+# basically only works on windows though (refer to MakefileAlt)
 	
 include $(wildcard $(DEPS))
 
