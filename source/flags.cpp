@@ -19,12 +19,27 @@ void initFlags()
 	memset(mapFlags, 0, sizeof(mapFlags));
 }
 
+void setBit(uint8_t *buf, size_t x)
+{
+    buf[x >> 3] |= 1 << (x & 7);
+}
+
+void clearBit(uint8_t *buf, size_t x)
+{
+    buf[x >> 3] &= ~(1 << (x & 7));
+}
+
+bool getBit(uint8_t *buf, size_t x)
+{
+    return ((buf[x >> 3] >> (x & 7)) & 1);
+}
+
 void setFlag(size_t a)
 {
     if (a > _countof(tscFlags) * 8)
         logWarning("Tried to set flag " + to_string(a) + " (Out of bounds)");
     else
-        tscFlags[a / 8] |= 1 << (a % 8);
+        setBit(tscFlags, a);
 }
 
 void clearFlag(size_t a)
@@ -32,7 +47,7 @@ void clearFlag(size_t a)
     if (a > _countof(tscFlags) * 8)
         logWarning("Tried to clear flag " + to_string(a) + " (Out of bounds)");
     else
-        tscFlags[a / 8] &= ~(1 << (a % 8));
+        clearBit(tscFlags, a);
 }
 
 bool getFlag(size_t a)
@@ -43,7 +58,7 @@ bool getFlag(size_t a)
         return false;
     }
     else
-        return ((tscFlags[a / 8] >> (a % 8)) & 1) != 0;
+        return getBit(tscFlags, a);
 }
 
 //Skip flags
@@ -52,7 +67,7 @@ void setSkipFlag(size_t a)
     if (a > _countof(skipFlags) * 8)
         logWarning("Tried to set skipFlag " + to_string(a) + " (Out of bounds)");
     else
-        skipFlags[a / 8] |= 1 << (a % 8);
+        setBit(skipFlags, a);
 }
 
 void clearSkipFlag(size_t a)
@@ -60,7 +75,7 @@ void clearSkipFlag(size_t a)
     if (a > _countof(skipFlags) * 8)
         logWarning("Tried to clear skipFlag " + to_string(a) + " (Out of bounds)");
     else
-        skipFlags[a / 8] &= ~(1 << (a % 8));
+        clearBit(skipFlags, a);
 }
 
 bool getSkipFlag(size_t a)
@@ -71,7 +86,7 @@ bool getSkipFlag(size_t a)
         return false;
     }
     else
-        return ((skipFlags[a / 8] >> (a % 8)) & 1) != 0;
+        return getBit(skipFlags, a);
 }
 
 //Map flags
@@ -80,7 +95,7 @@ void setMapFlag(size_t a)
     if (a > _countof(mapFlags) * 8)
         logWarning("Tried to set mapFlag " + to_string(a) + " (Out of bounds)");
     else
-        mapFlags[a / 8] |= 1 << (a % 8);
+        setBit(mapFlags, a);
 }
 
 bool getMapFlag(size_t a)
@@ -91,5 +106,5 @@ bool getMapFlag(size_t a)
         return false;
     }
     else
-        return ((mapFlags[a / 8] >> (a % 8)) & 1) != 0;
+        return getBit(mapFlags, a);
 }

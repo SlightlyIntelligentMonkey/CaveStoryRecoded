@@ -56,10 +56,10 @@ void npcAct001(npc *NPC) //Experience
 		{
 			NPC->act_no = 1;
 			NPC->ani_no = random(0, 4);
-			NPC->xm = random(-0x200, 0x200);
-			NPC->ym = random(-0x400, 0);
+			NPC->xm = random(pixelsToUnits(-1), pixelsToUnits(1));
+			NPC->ym = random(pixelsToUnits(-2), 0);
 
-			if (random(0, 1) != 0)
+			if (random(0, 1))
 				NPC->direct = dirLeft;
 			else
 				NPC->direct = dirRight;
@@ -92,7 +92,7 @@ void npcAct001(npc *NPC) //Experience
 		{
 			playSound(SFX_EXPBounce);
 			if (++NPC->count2 > 2)
-				NPC->y -= 0x200;
+				NPC->y -= pixelsToUnits(1);
 		}
 		else
 		{
@@ -100,14 +100,8 @@ void npcAct001(npc *NPC) //Experience
 		}
 
 		//Limit speed
-		if (NPC->xm < -0x5FF)
-			NPC->xm = -0x5FF;
-		if (NPC->xm > 0x5FF)
-			NPC->xm = 0x5FF;
-		if (NPC->ym < -0x5FF)
-			NPC->ym = -0x5FF;
-		if (NPC->ym > 0x5FF)
-			NPC->ym = 0x5FF;
+		NPC->limitXVel(0x5FF);
+		NPC->limitYVel(0x5FF);
 	}
 	else
 	{
@@ -121,16 +115,16 @@ void npcAct001(npc *NPC) //Experience
 
 		//Fly to the left
 		NPC->xm -= 8;
-		if (NPC->x <= 0x9FFF)
+		if (NPC->x < pixelsToUnits(5))
 			NPC->cond = 0;
 
 		//Limit speed (except applied to x position instead?)
-		if (NPC->x < -0x600)
-			NPC->x = -0x600;
+		if (NPC->x < pixelsToUnits(-3))
+			NPC->x = pixelsToUnits(-3);
 
 		//Bounce off of walls
 		if (NPC->flag & leftWall)
-			NPC->xm = 0x200;
+			NPC->xm = pixelsToUnits(0.5);
 		if (NPC->flag & ceiling)
 			NPC->ym = 0x40;
 		if (NPC->flag & ground)
