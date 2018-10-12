@@ -11,8 +11,6 @@ struct CONFIG {
 	bool useGamepad;
 	bool enableThumbstick;
 
-	bool fullscreen;
-
 	//Keybinds
 	int keyLeft;
 	int keyRight;

@@ -1,14 +1,15 @@
-#include "loadConfig.h"
-
-#include "game.h"
-#include "org.h"
-#include "filesystem.h"
-#include "player.h"
-#include "render.h"
-
 #include <string>
 #include <fstream>
 #include <json.hpp>
+#include <SDL_render.h>
+
+#include "loadConfig.h"
+#include "game.h"
+#include "org.h"
+#include "sound.h"
+#include "filesystem.h"
+#include "player.h"
+#include "render.h"
 
 using std::string;
 using std::ifstream;
@@ -90,6 +91,12 @@ void loadRenderJson()
 
 	if (jRender["displayFpsCounter"] == true)
 		displayFpsCounter = true;
+	if (jRender["windowFlags"] == "resizable")
+		windowFlags = SDL_WINDOW_RESIZABLE;
+	else if (jRender["windowFlads"] == "fullscreen")
+		windowFlags = SDL_WINDOW_FULLSCREEN;
+	else
+		windowFlags = 0;
 }
 
 void loadConfigFiles()
