@@ -17,7 +17,7 @@
 #include "game.h"
 #include "weapons.h"
 #include "player.h"
-#include "level.h"
+#include "stage.h"
 #include "fade.h"
 #include "script.h"
 #include "org.h"

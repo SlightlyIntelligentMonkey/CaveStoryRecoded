@@ -27,8 +27,9 @@ using std::deque;
 
 deque<npc> npcs(0);
 
-int superXPos = 0;	// Used by undead core related NPCs ?
+int superXPos = 0;	// used to communicate between npcs utilized by certain bosses
 int superYPos = 0;
+int gWaterY = 0;
 
 int curlyShootWait = 0;
 int curlyShootX = 0;

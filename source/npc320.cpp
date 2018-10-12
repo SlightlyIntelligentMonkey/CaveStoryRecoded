@@ -2,7 +2,7 @@
 
 #include <array>
 #include "player.h"
-#include "level.h"
+#include "stage.h"
 #include "render.h"
 #include "game.h"
 #include "sound.h"

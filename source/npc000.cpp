@@ -11,7 +11,7 @@
 #include "npcAct.h"
 #include "game.h"
 #include "log.h"
-#include "level.h"
+#include "stage.h"
 
 using std::string;
 using std::to_string;

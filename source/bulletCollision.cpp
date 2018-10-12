@@ -4,7 +4,7 @@
 #include "sound.h"
 #include "main.h"
 #include "caret.h"
-#include "level.h"
+#include "stage.h"
 #include "game.h"
 #include "mathUtils.h"
 #include "player.h"

@@ -1,8 +1,8 @@
-#include "level.h"
-
 #include <string>
 #include <cstring>
 #include <SDL_render.h>
+
+#include "stage.h"
 #include "render.h"
 #include "mathUtils.h"
 #include "game.h"
@@ -25,13 +25,10 @@ int currentLevel;
 MAPNAME mapName;
 
 //Loaded level stuff
-int levelWidth;
-int levelHeight;
-
-uint8_t *levelMap = nullptr;
-uint8_t *levelTileAttributes = nullptr;
+MAP map;
 
 uint8_t backgroundScroll;
+BACKGROUND background;
 
 //Effect things
 int backgroundEffect = 0;
@@ -39,6 +36,7 @@ int currentEffect = 0;
 
 //Get stage data
 STAGE_TABLE *stageTable;
+
 
 void loadStageTable()
 {
@@ -69,10 +67,11 @@ void loadStageTable()
 	}
 }
 
+
 uint8_t getTileAttribute(int xTile, int yTile)
 {
-	if (xTile >= 0 && xTile < levelWidth && yTile >= 0 && yTile < levelHeight)  // Make sure coordinates are valid
-		return levelTileAttributes[levelMap[xTile + yTile * levelWidth]];
+	if (xTile >= 0 && xTile < map.width && yTile >= 0 && yTile < map.height)  // Make sure coordinates are valid
+		return map.attribute[map.tile[xTile + yTile * map.width]];
 
     // Coordinates are invalid
 	return 0;
@@ -80,20 +79,20 @@ uint8_t getTileAttribute(int xTile, int yTile)
 
 void deleteTile(int x, int y)
 {
-	levelMap[x + y * levelWidth] = 0;
+	map.tile[x + y * map.width] = 0;
 }
 
 void shiftTile(int x, int y)
 {
-	--levelMap[x + y * levelWidth];
+	--map.tile[x + y * map.width];
 }
 
 bool changeTile(int x, int y, uint8_t tile)
 {
-	if (levelMap[y * levelWidth + x] == tile)
+	if (map.tile[y * map.width + x] == tile)
 		return false;
 
-	levelMap[x + y * levelWidth] = tile;
+	map.tile[x + y * map.width] = tile;
 
 	for (int i = 0; i < 3; ++i)
 		createNpc(NPC_Smoke, tilesToUnits(x), tilesToUnits(y));
@@ -101,71 +100,49 @@ bool changeTile(int x, int y, uint8_t tile)
 	return true;
 }
 
-void loadLevel(int levelIndex)
+void loadPxm(const string &name)
 {
-    logInfo("Loading level " + to_string(levelIndex));
-	currentLevel = levelIndex;
-
-	//Clear old carets
-	carets.clear();
-	carets.shrink_to_fit();
-
-	//Clear old bullets
-	bullets.clear();
-	bullets.shrink_to_fit();
-
-	//Clear old valueviews
-	valueviews.clear();
-	valueviews.shrink_to_fit();
-
-	//Set up map name
-	mapName.flag = 0;
-	mapName.wait = 0;
-	strcpy(mapName.name, stageTable[levelIndex].name);
-
-	//Load boss
-	initBoss(stageTable[levelIndex].boss);
-
-	//Load pxm
-	const string pxmPath = string("data/Stage/") + stageTable[levelIndex].filename + ".pxm";
+	//frees old map memory
+	delete[] map.tile;
 
 	uint8_t *pxm = nullptr;
-	const int pxmSize = loadFile(pxmPath, &pxm);
+	const int pxmSize = loadFile("data/Stage/" + name + ".pxm", &pxm);
 
-	levelWidth = readLEshort(pxm, 4);
-	levelHeight = readLEshort(pxm, 6);
+	map.width = readLEshort(pxm, 4);
+	map.height = readLEshort(pxm, 6);
 
-	delete[] levelMap;
-
-	levelMap = new uint8_t[pxmSize - 8];
-	memcpy(levelMap, pxm + 8, pxmSize - 8);
+	map.tile = new uint8_t[pxmSize - 8];
+	memcpy(map.tile, pxm + 8, pxmSize - 8);
 
 	//DONE WITH PXM
 	delete[] pxm;
+	return;
+}
 
-	//Load pxa
-	const string pxaPath = string("data/Stage/") + stageTable[levelIndex].tileset + ".pxa";
+void loadPxa(const string &name)
+{
+	//free old tile attribute memory
+	delete[] map.attribute;
 
 	uint8_t *pxa = nullptr;
-	const int pxaSize = loadFile(pxaPath, &pxa);
+	const int pxaSize = loadFile("data/Stage/" + name + ".pxa", &pxa);
 
-	delete[] levelTileAttributes;
-
-	levelTileAttributes = new uint8_t[pxaSize];
-	memcpy(levelTileAttributes, pxa, pxaSize);
+	map.attribute = new uint8_t[pxaSize];
+	memcpy(map.attribute, pxa, pxaSize);
 
 	//DONE WITH PXA
 	delete[] pxa;
+	return;
+}
 
-	//Load pxe
-	const string pxePath = string("data/Stage/") + stageTable[levelIndex].filename + ".pxe";
-
-	uint8_t *pxe = nullptr;
-	loadFile(pxePath, &pxe);
-
+void loadPxe(const string &name)
+{
 	//Clear old npcs
 	npcs.clear();
 	npcs.shrink_to_fit();
+
+	uint8_t *pxe = nullptr;
+	loadFile("data/Stage/" + name + ".pxe", &pxe);
 
 	//Load npcs
 	const int npcAmount = readLElong(pxe, 4);
@@ -194,28 +171,62 @@ void loadLevel(int levelIndex)
 	}
 
 	delete[] pxe;
+	return;
+}
 
-	//Load tileset
-	loadImage(string("data/Stage/Prt") + stageTable[levelIndex].tileset + ".png", &sprites[0x02]);
+void iniBackground(const string &name, int mode)
+{
+	background.mode = mode;
+	background.tileWidth = map.width;
+	background.tileHeight = map.height;
+	background.flag = 1;
+	loadImage("data/" + name + ".png", &sprites[TEX_BACKGROUND]);
+	gWaterY = 0x1E0000;
+	return;
+}
+
+void loadLevel(int levelIndex)
+{
+    logInfo("Loading level " + to_string(levelIndex));
+	currentLevel = levelIndex;
+
+	// -- clears/frees stuff from last map -- //
+	carets.clear();
+	carets.shrink_to_fit();
+
+	bullets.clear();
+	bullets.shrink_to_fit();
+
+	valueviews.clear();
+	valueviews.shrink_to_fit();
+
+	// -- loads some map stuff -- //
+	//Set up map name
+	mapName.flag = 0;
+	mapName.wait = 0;
+	strcpy(mapName.name, stageTable[levelIndex].name);
+
+	//Load boss
+	initBoss(stageTable[levelIndex].boss);
+
+	//load pxm, pxa, pxe, and tsc
+	loadPxm(stageTable[levelIndex].filename);
+	loadPxa(stageTable[levelIndex].tileset);
+	loadPxe(stageTable[levelIndex].filename);
+	loadStageTsc(stageTable[levelIndex].filename);
 
 	//Load background
-	backgroundScroll = stageTable[levelIndex].backgroundScroll;
-	loadImage(string("data/") + stageTable[levelIndex].background + ".png", &sprites[0x1C]);
+	iniBackground(stageTable[levelIndex].background, stageTable[levelIndex].backgroundScroll);
 
-	//Load npc sheets
-	//Load sheet 1
-	const string npcSheet1Path = string("data/Npc/Npc") + stageTable[levelIndex].npc1 + ".png";
+	// -- loads map images -- //
+	//load tileset
+	loadImage(string("data/Stage/Prt") + stageTable[levelIndex].tileset + ".png", &sprites[TEX_TILESET]);
+	//load sheet 1
+	loadImage(string("data/Npc/Npc") + stageTable[levelIndex].npc1 + ".png", &sprites[TEX_NPC_1]);
+	//load sheet 2
+	loadImage(string("data/Npc/Npc") + stageTable[levelIndex].npc2 + ".png", &sprites[TEX_NPC_2]);
 
-	loadImage(npcSheet1Path, &sprites[0x15]);
-
-	// Load sheet 2
-	loadImage(string("data/Npc/Npc") + stageTable[levelIndex].npc2 + ".png", &sprites[0x16]);
-
-	// Load tsc script
-	loadStageTsc(string("data/Stage/") + stageTable[levelIndex].filename + ".tsc");
-
-
-	//Fix viewport
+	// -- fix viewport -- //
 	viewport.x = currentPlayer.x - (screenWidth << 8);
 	viewport.y = currentPlayer.y - (screenHeight << 8);
 	viewport.lookX = &currentPlayer.tgt_x;
@@ -224,6 +235,12 @@ void loadLevel(int levelIndex)
 	viewport.quake2 = 0;
 
 	viewBounds();
+}
+
+void drawBackground(void)
+{
+
+	return;
 }
 
 void drawLevel(bool foreground)
@@ -254,7 +271,7 @@ void drawLevel(bool foreground)
 			}
 		}
 
-		switch (backgroundScroll)
+		switch (background.mode)
 		{
 		case 0:
 			for (int x = 0; x < screenWidth; x += w)
@@ -283,7 +300,7 @@ void drawLevel(bool foreground)
 
 			break;
 
-			case 5:
+		case 5:
 				for (int x = -(backgroundEffect / 0x200 % w); x < screenWidth; x += w)
 				{
 					for (int y = 0; y < screenHeight; y += h)
@@ -292,8 +309,8 @@ void drawLevel(bool foreground)
 
 				break;
 
-			case 6:
-      case 7:
+		case 6:
+		case 7:
 				//Draw sky
 				rect = { 0, 0, w / 2, 88 };
 
@@ -349,27 +366,27 @@ void drawLevel(bool foreground)
 	//Render tiles
 	RECT tileRect;
 
-	const int xFrom = clamp(unitsToTiles(viewport.x + 0x1000), 0, levelWidth);
-	const int xTo = clamp((unitsToTiles((viewport.x + 0x1000) + (screenWidth << 9))) + 1, 0, levelWidth); //add 1 because edge wouldn't appear
+	const int xFrom = clamp(unitsToTiles(viewport.x + 0x1000), 0, map.width);
+	const int xTo = clamp((unitsToTiles((viewport.x + 0x1000) + (screenWidth << 9))) + 1, 0, map.width); //add 1 because edge wouldn't appear
 
-	const int yFrom = clamp(unitsToTiles(viewport.y + 0x1000), 0, levelHeight);
-	const int yTo = clamp((unitsToTiles((viewport.y + 0x1000) + (screenWidth << 9))) + 1, 0, levelHeight); //add 1 because edge wouldn't appear
+	const int yFrom = clamp(unitsToTiles(viewport.y + 0x1000), 0, map.height);
+	const int yTo = clamp((unitsToTiles((viewport.y + 0x1000) + (screenWidth << 9))) + 1, 0, map.height); //add 1 because edge wouldn't appear
 
 	for (int x = xFrom; x < xTo; x++)
 	{
 		for (int y = yFrom; y < yTo; y++)
 		{
-			const int i = x + y * levelWidth;
+			const int i = x + y * map.width;
 
-			const int tile = levelMap[i];
+			const int tile = map.tile[i];
 			if (tile)
 			{
-				const int attribute = levelTileAttributes[tile];
+				const int attribute = map.attribute[tile];
 
 				if ((attribute < 0x20 && !foreground) || (attribute >= 0x40 && foreground))
 				{
-					const int drawX = i % levelWidth;
-					const int drawY = i / levelWidth;
+					const int drawX = i % map.width;
+					const int drawY = i / map.width;
 
 					if (attribute < 0x80)
 					{
@@ -438,14 +455,14 @@ void drawLevel(bool foreground)
 
 		//Left and right
 		const int leftBorder = -(viewport.x / 0x200);
-		const int rightBorder = ((viewport.x / 0x200) + screenWidth) - ((levelWidth - 1) << 4);
+		const int rightBorder = ((viewport.x / 0x200) + screenWidth) - ((map.width - 1) << 4);
 
 		drawRect(0, 0, leftBorder, screenHeight);
 		drawRect(screenWidth - rightBorder, 0, rightBorder, screenHeight);
 
 		//Top and bottom
 		const int topBorder = -(viewport.y / 0x200);
-		const int bottomBorder = ((viewport.y / 0x200) + screenHeight) - ((levelHeight - 1) << 4);
+		const int bottomBorder = ((viewport.y / 0x200) + screenHeight) - ((map.height - 1) << 4);
 
 		drawRect(0, 0, screenWidth, topBorder);
 		drawRect(0, screenHeight - bottomBorder, screenWidth, bottomBorder);

@@ -23,17 +23,33 @@ struct MAPNAME
 	char name[32];
 };
 
+struct BACKGROUND
+{
+	int flag;
+	int tileWidth;
+	int tileHeight;
+	int numX;
+	int numY;
+	int mode;
+	int _fx;
+	char unknownFiller[12];
+};
+
+struct MAP
+{
+	uint8_t *tile;
+	uint8_t *attribute;
+	int width;
+	int height;
+};
+
 extern MAPNAME mapName;
 
 extern STAGE_TABLE *stageTable;
 
-extern int levelWidth;
-extern int levelHeight;
+extern MAP map;
 
 extern int currentLevel;
-
-extern uint8_t *levelMap;
-extern uint8_t *levelTileAttributes;
 
 extern SDL_Texture *levelTileset;
 

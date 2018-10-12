@@ -8,7 +8,7 @@
 #include "weapons.h"
 #include "game.h"
 #include "caret.h"
-#include "level.h"
+#include "stage.h"
 
 using std::array;
 

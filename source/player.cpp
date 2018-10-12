@@ -12,7 +12,7 @@
 #include "valueview.h"
 #include "game.h"
 #include <SDL.h>
-#include "level.h"
+#include "stage.h"
 #include "npc.h"
 
 using std::memset;

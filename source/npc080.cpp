@@ -7,7 +7,7 @@
 #include "sound.h"
 #include "game.h"
 #include "render.h"
-#include "level.h"
+#include "stage.h"
 #include "flash.h"
 
 using std::array;

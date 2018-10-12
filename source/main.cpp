@@ -12,7 +12,7 @@
 #include "game.h"
 #include "loadConfig.h"
 #include "log.h"
-#include "level.h"
+#include "stage.h"
 
 using std::string;
 
