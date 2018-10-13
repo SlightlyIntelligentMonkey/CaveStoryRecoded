@@ -64,7 +64,7 @@ void actBoss_Core(npc *boss)
 
 		//initializes core hitboxes
 		bossObj[hit1].cond = npccond_alive;
-		bossObj[hit1].bits = 12;
+		bossObj[hit1].bits = npc_ignoreSolid | npc_invulnerable;
 		bossObj[hit1].view.left = 0;
 		bossObj[hit1].view.top = 0;
 		bossObj[hit1].hit.right = pixelsToUnits(40);
