@@ -41,8 +41,85 @@ void actBoss_Core(npc *boss)
 
 	switch (boss->act_no)
 	{
+		// -- sets values for boss npcs -- //
 	case 0:
+		boss->act_no = 10;
+		boss->exp = 1;
+		boss->cond = npccond_alive;
+		boss->bits = npc_solidSoft | npc_ignore44 | npc_ignoreSolid;
+		boss->life = 650;
+		boss->hit_voice = 114;
+		boss->x = tilesToUnits(77);
+		boss->y = tilesToUnits(14);
+		boss->xm = 0;
+		boss->ym = 0;
+		boss->code_event = 1000;
+		boss->bits |= npc_ignore44;
 
+		// initializes face and tail
+		bossObj[face].cond = npccond_alive;
+		bossObj[face].act_no = 10;
+		bossObj[tail].cond = npccond_alive;
+		bossObj[tail].act_no = 10;
+
+		//initializes core hitboxes
+		bossObj[hit1].cond = npccond_alive;
+		bossObj[hit1].bits = 12;
+		bossObj[hit1].view.left = 0;
+		bossObj[hit1].view.top = 0;
+		bossObj[hit1].hit.right = pixelsToUnits(40);
+		bossObj[hit1].hit.top = pixelsToUnits(16);
+		bossObj[hit1].hit.bottom = pixelsToUnits(16);
+		bossObj[hit1].count1 = 0;
+
+		memcpy(&bossObj[hit2], &bossObj[hit1], sizeof(npc));
+		bossObj[hit2].hit.right = pixelsToUnits(36);
+		bossObj[hit2].hit.top = pixelsToUnits(24);
+		bossObj[hit2].hit.bottom = pixelsToUnits(24);
+		bossObj[hit2].count1 = 1;
+
+		memcpy(&bossObj[hit3], &bossObj[hit1], sizeof(npc));
+		bossObj[hit3].hit.right = pixelsToUnits(44);
+		bossObj[hit3].hit.top = pixelsToUnits(8);
+		bossObj[hit3].hit.bottom = pixelsToUnits(8);
+		bossObj[hit3].count1 = 2;
+
+		memcpy(&bossObj[hit4], &bossObj[hit1], sizeof(npc));
+		bossObj[hit4].cond |= npc_bouncy;
+		bossObj[hit4].hit.right = pixelsToUnits(20);
+		bossObj[hit4].hit.top = pixelsToUnits(20);
+		bossObj[hit4].hit.bottom = pixelsToUnits(20);
+		bossObj[hit4].count1 = 3;
+
+		// initializes mini cores
+		bossObj[mini1].cond = npccond_alive;
+		bossObj[mini1].act_no = 10;
+		bossObj[mini1].bits = npc_invulnerable | npc_ignoreSolid | npc_shootable;
+		bossObj[mini1].life = 1000;
+		bossObj[mini1].hit_voice = 54;
+		bossObj[mini1].hit.right = pixelsToUnits(24);
+		bossObj[mini1].hit.top = pixelsToUnits(16);
+		bossObj[mini1].hit.bottom = pixelsToUnits(16);
+		bossObj[mini1].view.left = pixelsToUnits(32);
+		bossObj[mini1].view.top = pixelsToUnits(20);
+		bossObj[mini1].x = boss->x - pixelsToUnits(8);
+		bossObj[mini1].y = boss->y - pixelsToUnits(64);
+
+		memcpy(&bossObj[mini2], &bossObj[mini1], sizeof(npc));
+		bossObj[mini2].x = boss->x + pixelsToUnits(16);
+		bossObj[mini2].y = boss->y;
+
+		memcpy(&bossObj[mini3], &bossObj[mini1], sizeof(npc));
+		bossObj[mini3].x = boss->x - pixelsToUnits(8);
+		bossObj[mini3].y = boss->y + pixelsToUnits(64);
+
+		memcpy(&bossObj[mini4], &bossObj[mini1], sizeof(npc));
+		bossObj[mini4].x = boss->x - pixelsToUnits(48);
+		bossObj[mini4].y = boss->y - pixelsToUnits(32);
+
+		memcpy(&bossObj[mini5], &bossObj[mini1], sizeof(npc));
+		bossObj[mini5].x = boss->x - pixelsToUnits(48);
+		bossObj[mini5].y = boss->y + pixelsToUnits(32);
 		break;
 	case 200:
 		boss->act_no = 201;

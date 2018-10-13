@@ -228,6 +228,7 @@
     <ClCompile Include="bullet.cpp" />
     <ClCompile Include="bulletCollision.cpp" />
     <ClCompile Include="caret.cpp" />
+    <ClCompile Include="core.cpp" />
     <ClCompile Include="fade.cpp" />
     <ClCompile Include="fireballShoot.cpp" />
     <ClCompile Include="flash.cpp" />
