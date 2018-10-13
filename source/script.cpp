@@ -713,12 +713,10 @@ bool doTscCommand(int *retVal, bool *bExit, TSC &ptsc)
 		tscCleanup(0, ptsc);
 		break;
 	case('<FOB'):
-		if (!notifiedAboutFOB && debugFlags & notifyOnNotImplemented)
-		{
-			notifiedAboutFOB = true;
-			showTSCNotImplementedWarning("<FOB is not implemented");
-		}
-
+		xt = getTSCNumber(ptsc, ptsc.p_read + 4);
+		viewport.lookX = &bossObj[xt].x;
+		viewport.lookY = &bossObj[xt].y;
+		viewport.speed = getTSCNumber(ptsc, ptsc.p_read + 9);
 		tscCleanup(2, ptsc);
 		break;
 	case('<FOM'):

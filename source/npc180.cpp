@@ -10,6 +10,7 @@
 #include "bullet.h"
 #include "caret.h"
 #include "stage.h"
+#include "game.h"
 
 using std::array;
 
@@ -429,28 +430,174 @@ void npcAct183(npc * NPC) // Curly Air Bubble
 	}
 }
 
+void npcAct184(npc *NPC) //big moving block in almond
+{
+	switch (NPC->act_no)
+	{
+	case 0:
+		NPC->act_no = 1;
+		NPC->x += 4096;
+		NPC->y += 4096;
+		break;
+	case 10:
+		NPC->act_no = 11;
+		NPC->ani_no = 1;
+		NPC->act_wait = 0;
+		NPC->bits |= npc_ignoreSolid;
+	case 11:
+		switch (NPC->direct)
+		{
+		case dirLeft:
+			NPC->x -= 128;
+			break;
+		case dirUp:
+			NPC->y -= 128;
+			break;
+		case dirRight:
+			NPC->x += 128;
+			break;
+		case dirDown:
+			NPC->y += 128;
+			break;
+		default:
+			break;
+		}
+
+		if (!(++NPC->act_wait & 7))
+			playSound(26);
+		viewport.quake = 20;
+		break;
+	case 20:
+		for (int i = 0; i <= 3; ++i)
+		{
+			createNpc(NPC_Smoke, NPC->x + (random(-12, 12) << 9), NPC->y + 0x2000, 
+				random(-341, 341), random(-1536, 0), 0, 0, false);
+		}
+		NPC->act_no = 1;
+		break;
+	default:
+		break;
+	}
+	if (++NPC->ani_wait > 10)
+	{
+		NPC->ani_wait = 0;
+		++NPC->ani_no;
+	}
+	if (NPC->ani_no > 3)
+		NPC->ani_no = 0;
+
+	NPC->rect.left = (NPC->ani_no - (NPC->ani_no / 3) * 2) * 32;
+	NPC->rect.top = 64;
+	NPC->rect.right = NPC->rect.left + 32;
+	NPC->rect.bottom = NPC->rect.top + 32;
+	return;
+}
+
+void npcAct185(npc *NPC) //lifting doors thing
+{
+	switch (NPC->act_no)
+	{
+	case 0:
+		NPC->act_no = 1;
+		NPC->y += 4096;
+		break;
+	case 10:
+		NPC->act_no = 11;
+		NPC->ani_no = 1;
+		NPC->act_wait = 0;
+		NPC->bits |= npc_ignoreSolid;
+	case 11:
+		switch (NPC->direct)
+		{
+		case dirLeft:
+			NPC->x -= 128;
+			break;
+		case dirUp:
+			NPC->y -= 128;
+			break;
+		case dirRight:
+			NPC->x += 128;
+			break;
+		case dirDown:
+			NPC->y += 128;
+			break;
+		default:
+			break;
+		}
+		++NPC->act_wait;
+		break;
+	case 20:
+		NPC->y -= 12288;
+		NPC->act_no = 1;
+		break;
+	default:
+		break;
+	}
+	NPC->rect.left = 96;
+	NPC->rect.top = 64;
+	NPC->rect.right = 112;
+	NPC->rect.bottom = 96;
+	return;
+}
+
+void npcAct186(npc *NPC) //small moving block that goes down
+{
+	switch (NPC->act_no)
+	{
+	case 0:
+		NPC->act_no = 1;
+		break;
+	case 10:
+		NPC->act_no = 11;
+		NPC->ani_no = 1;
+		NPC->act_wait = 0;
+		NPC->bits |= npc_ignoreSolid;
+	case 11:
+		switch (NPC->direct)
+		{
+		case dirLeft:
+			NPC->x -= 128;
+			break;
+		case dirUp:
+			NPC->y -= 128;
+			break;
+		case dirRight:
+			NPC->x += 128;
+			break;
+		case dirDown:
+			NPC->y += 128;
+			break;
+		default:
+			break;
+		}
+		++NPC->act_wait;
+		break;
+	case 20:
+		break;
+	}
+
+	if (++NPC->ani_wait > 10)
+	{
+		NPC->ani_wait = 0;
+		if (++NPC->ani_no > 3)
+			NPC->ani_no = 0;
+	}
+
+	NPC->rect.left = 48 + ((NPC->ani_no - (NPC->ani_no / 3)*2) * 16);
+	NPC->rect.top = 48;
+	NPC->rect.right = NPC->rect.left + 16;
+	NPC->rect.bottom = NPC->rect.top + 16;
+	return;
+}
+
 void npcAct187(npc *NPC) //Fuzz
 {
 	array<RECT, 2> rcLeft;
+	rcLeft[0] = { 224, 104, 256, 136 };
+	rcLeft[1] = { 256, 104, 288, 136 };
 	array<RECT, 2> rcRight;
-
-	rcLeft[0].left = 224;
-	rcLeft[0].top = 104;
-	rcLeft[0].right = 256;
-	rcLeft[0].bottom = 136;
-	rcLeft[1].left = 256;
-	rcLeft[1].top = 104;
-	rcLeft[1].right = 288;
-	rcLeft[1].bottom = 136;
-
-	rcRight[0].left = 224;
-	rcRight[0].top = 136;
-	rcRight[0].right = 256;
-	rcRight[0].bottom = 168;
-	rcRight[1].left = 256;
-	rcRight[1].top = 136;
-	rcRight[1].right = 288;
-	rcRight[1].bottom = 168;
+	rcRight[0] = { 224, 136, 256, 168 };
+	rcRight[1] = { 256, 136, 288, 168 };
 
 	switch (NPC->act_no)
 	{
@@ -515,25 +662,11 @@ void npcAct188(npc *NPC) //Baby Fuzz
 {
 	uint8_t deg;
 	array<RECT, 2> rcLeft;
+	rcLeft[0] = { 288, 104, 304, 120 };
+	rcLeft[1] = { 304, 104, 320, 120 };
 	array<RECT, 2> rcRight;
-
-	rcLeft[0].left = 288;
-	rcLeft[0].top = 104;
-	rcLeft[0].right = 304;
-	rcLeft[0].bottom = 120;
-	rcLeft[1].left = 304;
-	rcLeft[1].top = 104;
-	rcLeft[1].right = 320;
-	rcLeft[1].bottom = 120;
-
-	rcRight[0].left = 288;
-	rcRight[0].top = 120;
-	rcRight[0].right = 304;
-	rcRight[0].bottom = 136;
-	rcRight[1].left = 304;
-	rcRight[1].top = 120;
-	rcRight[1].right = 320;
-	rcRight[1].bottom = 136;
+	rcRight[0] = { 288, 120, 304, 136 };
+	rcRight[1] = { 304, 120, 320, 136 };
 
 	switch (NPC->act_no)
 	{
@@ -600,6 +733,113 @@ void npcAct188(npc *NPC) //Baby Fuzz
 		NPC->ani_no = 0;
 
 	NPC->doRects(rcLeft, rcRight);
+}
+
+void npcAct190(npc *NPC) //explody robot guy
+{
+	switch (NPC->act_no)
+	{
+	case 0:
+		NPC->ani_no = 0;
+		break;
+	case 10:
+		playSound(SFX_Explosion);
+		for (int i = 0; i <= 7; ++i)
+		{
+			createNpc(NPC_Smoke, NPC->x, NPC->y + (random(-8, 8) << 9), 
+				random(-8, -2) << 9, random(-3, 3) << 9, 0, 0, false);
+		}
+		NPC->cond = 0;
+		break;
+	case 20:
+		if (++NPC->ani_wait > 10)
+		{
+			NPC->ani_wait = 0;
+			++NPC->ani_no;
+		}
+		if (NPC->ani_no > 1)
+			NPC->ani_no = 0;
+		break;
+	}
+	NPC->rect.left = 192+(NPC->ani_no*16);
+	NPC->rect.top = 32;
+	NPC->rect.right = NPC->rect.left + 16;
+	NPC->rect.bottom = NPC->rect.top + 16;
+}
+
+void npcAct191(npc *NPC) //water level controller npc
+{
+	switch (NPC->act_no)
+	{
+	case 0:
+		NPC->act_no = 10;
+		NPC->tgt_y = NPC->y;
+		NPC->ym = 512;
+		// Fallthrough
+	case 10:
+		if (NPC->y >= NPC->tgt_y)
+			NPC->ym -= 4;
+		else
+			NPC->ym += 4;
+
+		if (NPC->ym < -256)
+			NPC->ym = -256;
+		if (NPC->ym > 256)
+			NPC->ym = 256;
+		NPC->y += NPC->ym;
+		break;
+	case 20:
+		NPC->act_no = 21;
+		NPC->act_wait = 0;
+		// Fallthrough
+	case 21:
+		if (NPC->y >= NPC->tgt_y)
+			NPC->ym -= 4;
+		else
+			NPC->ym += 4;
+
+		if (NPC->ym < -512)
+			NPC->ym = -512;
+		if (NPC->ym > 512)
+			NPC->ym = 512;
+		NPC->y += NPC->ym;
+		if (++NPC->act_wait > 1000)
+			NPC->act_no = 22;
+		break;
+	case 22:
+		if (NPC->y >= 0)
+			NPC->ym -= 4;
+		else
+			NPC->ym += 4;
+		if (NPC->ym < -512)
+			NPC->ym = -512;
+		if (NPC->ym > 512)
+			NPC->ym = 512;
+		NPC->y += NPC->ym;
+		if (NPC->y <= 0x7FFF || superYPos)
+		{
+			NPC->act_no = 21;
+			NPC->act_wait = 0;
+		}
+		break;
+	case 30:
+		if (NPC->y >= 0)
+			NPC->ym -= 4;
+		else
+			NPC->ym += 4;
+		if (NPC->ym < -512)
+			NPC->ym = -512;
+		if (NPC->ym > 256)
+			NPC->ym = 256;
+		NPC->y += NPC->ym;
+		break;
+	default:
+		break;
+	}
+	gWaterY = NPC->y;
+	NPC->rect.right = 0;
+	NPC->rect.bottom = 0;
+	return;
 }
 
 void npcAct192(npc *NPC) // Scooter
@@ -691,81 +931,6 @@ void npcAct192(npc *NPC) // Scooter
 	array<RECT, 2> rcRight = { { {224, 80, 256, 96}, {288, 64, 320, 96} }};
 
 	NPC->doRects(rcLeft, rcRight);
-}
-
-void npcAct191(npc *NPC)
-{
-	switch (NPC->act_no)
-	{
-	case 0:
-		NPC->act_no = 10;
-		NPC->tgt_y = NPC->y;
-		NPC->ym = 512;
-		// Fallthrough
-	case 10:
-		if (NPC->y >= NPC->tgt_y)
-			NPC->ym -= 4;
-		else
-			NPC->ym += 4;
-
-		if (NPC->ym < -256)
-			NPC->ym = -256;
-		if (NPC->ym > 256)
-			NPC->ym = 256;
-		NPC->y += NPC->ym;
-		break;
-	case 20:
-		NPC->act_no = 21;
-		NPC->act_wait = 0;
-		// Fallthrough
-	case 21:
-		if (NPC->y >= NPC->tgt_y)
-			NPC->ym -= 4;
-		else
-			NPC->ym += 4;
-
-		if (NPC->ym < -512)
-			NPC->ym = -512;
-		if (NPC->ym > 512)
-			NPC->ym = 512;
-		NPC->y += NPC->ym;
-		if (++NPC->act_wait > 1000)
-			NPC->act_no = 22;
-		break;
-	case 22:
-		if (NPC->y >= 0)
-			NPC->ym -= 4;
-		else
-			NPC->ym += 4;
-		if (NPC->ym < -512)
-			NPC->ym = -512;
-		if (NPC->ym > 512)
-			NPC->ym = 512;
-		NPC->y += NPC->ym;
-		if (NPC->y <= 0x7FFF || superYPos)
-		{
-			NPC->act_no = 21;
-			NPC->act_wait = 0;
-		}
-		break;
-	case 30:
-		if (NPC->y >= 0)
-			NPC->ym -= 4;
-		else
-			NPC->ym += 4;
-		if (NPC->ym < -512)
-			NPC->ym = -512;
-		if (NPC->ym > 256)
-			NPC->ym = 256;
-		NPC->y += NPC->ym;
-		break;
-	default:
-		break;
-	}
-	gWaterY = NPC->y;
-	NPC->rect.right = 0;
-	NPC->rect.bottom = 0;
-	return;
 }
 
 void npcAct193(npc *NPC) // Scooter, crashed

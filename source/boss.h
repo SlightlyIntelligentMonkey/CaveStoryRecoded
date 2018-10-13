@@ -14,7 +14,7 @@ void drawBoss();
 void actBoss_Omega(npc *boss);
 void actBoss_Balfrog(npc *boss);
 void actBoss_MonsterX(npc *boss);
-//void actBoss_Core(npc *boss);
+void actBoss_Core(npc *boss);
 //void actBoss_Ironhead(npc *boss);
 //void actBoss_Twin(npc *boss);
 //void actBoss_Undead(npc *boss);
