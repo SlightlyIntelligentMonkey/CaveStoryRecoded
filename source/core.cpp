@@ -128,6 +128,25 @@ void actBoss_Core(npc *boss)
 		superYPos = 0;
 		//CutNoise();
 	case 201:
+		boss->tgt_x = currentPlayer.x;
+		boss->tgt_y = currentPlayer.y;
+		if (++boss->act_wait > 400)
+		{
+			++boss->count1;
+			playSound(SFX_CoreThrust);
+			if (boss->count1 <= 3)
+			{
+				boss->act_no = 210;
+			}
+			else
+			{
+				boss->count1 = 0;
+				boss->act_no = 220;
+			}
+			bossObj[face].ani_no = 0;
+			bossObj[tail].ani_no = 0;
+			bShock = true;
+		}
 		break;
 	case 210:
 		boss->act_no = 211;
@@ -135,6 +154,44 @@ void actBoss_Core(npc *boss)
 		boss->count2 = boss->life;
 		bossObj[hit4].bits |= npc_shootable;
 	case 211:
+		boss->tgt_x = currentPlayer.x;
+		boss->tgt_y = currentPlayer.y;
+		if (boss->shock)
+		{
+			if ((++flash >> 1) & 1)
+			{
+				bossObj[face].ani_no = 0;
+				bossObj[tail].ani_no = 0;
+			}
+			else
+			{
+				bossObj[face].ani_no = 1;
+				bossObj[tail].ani_no = 1;
+			}
+		}
+		else
+		{
+			bossObj[face].ani_no = 0;
+			bossObj[tail].ani_no = 0;
+		}
+		if (++boss->act_wait % 100 == 1)
+		{
+			curlyShootWait = random(80, 100);
+			curlyShootX = bossObj[hit4].x;
+			curlyShootY = bossObj[hit4].y;
+		}
+		if (boss->act_wait <= 199 && boss->act_wait % 20 == 1)
+		{
+			createNpc(NPC_ProjectileCoreWisp, boss->x + (random(-48, -16) << 9), 
+				boss->y + (random(-64, 64) << 9), 0, 0, 0, 0, false);
+		}
+		if (boss->act_wait > 400 || boss->life < boss->count2 - 200)
+		{
+			boss->act_no = 200;
+			bossObj[face].ani_no = 2;
+			bossObj[tail].ani_no = 0;
+			bShock = 1;
+		}
 		break;
 	case 220:
 		boss->act_no = 221;
@@ -200,6 +257,13 @@ void actBoss_Core(npc *boss)
 		bossObj[mini4].act_no = 200;
 		bossObj[mini5].act_no = 200;
 		viewport.quake = 20;
+		for (int i = 0; i <= 31; ++i)
+		{
+			createNpc(NPC_Smoke, boss->x + (random(-128, 128) << 9), boss->y + (random(-64, 64) << 9), 
+				random(-128, 128) << 9, random(-128, 128) << 9, 0, 0, false);
+		}
+		for (int i = 0; i <= 11; ++i)
+			bossObj[i].bits &= 0xFFDBu;
 	case 501:
 		if (++boss->act_wait & 0xF)
 		{
