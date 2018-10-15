@@ -400,28 +400,28 @@ int gameUpdateMenu()
 {
     logInfo("Started gameUpdateMenu");
 
-	int select = 0;
 	int anime = 0;
 
 	const int version[4] = { 1, 0, 0, 6 };
 
-	RECT rcVersion = { 152, 80, 208, 88 };
-	RECT rcPeriod = { 152, 88, 208, 96 };
+	constexpr RECT rcVersion = { 152, 80, 208, 88 };
+	constexpr RECT rcPeriod = { 152, 88, 208, 96 };
 
-	RECT rcTitle = { 0, 0, 144, 32 };
-	RECT rcNew = { 144, 0, 176, 16 };
-	RECT rcLoad = { 144, 16, 176, 32 };
-	RECT rcPixel = { 0, 0, 160, 16 };
+	constexpr RECT rcTitle = { 0, 0, 144, 32 };
+	constexpr RECT rcNew = { 144, 0, 176, 16 };
+	constexpr RECT rcLoad = { 144, 16, 176, 32 };
+	constexpr RECT rcPixel = { 0, 0, 160, 16 };
 
 	uint32_t frame = 0;
 	const uint8_t frameOrder[] = { 0, 1, 0, 2 };
 
 	changeOrg(mus_CaveStory);
 
+	bool select;
 	if (fileExists("Profile.dat"))
-		select = 1;
+		select = true;
 	else
-		select = 0;
+		select = false;
 
 	while (true)
 	{
@@ -450,7 +450,7 @@ int gameUpdateMenu()
 		if (isKeyPressed(keyUp) || isKeyPressed(keyDown))
 		{
 			playSound(SFX_YNChangeChoice);
-			select ^= 1;
+			select = !select;
 		}
 
 		if (++anime >= 40)
@@ -495,7 +495,7 @@ int gameUpdateMenu()
 			return 0;
 	}
 
-	if (select == 0)
+	if (!select)
 		initGame();
 	else
 		loadProfile();

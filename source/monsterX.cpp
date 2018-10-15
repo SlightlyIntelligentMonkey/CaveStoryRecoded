@@ -37,7 +37,7 @@ void actBoss_MonsterX(npc *boss)
 		boss->hit.top = 12288;
 		boss->hit.right = 12288;
 		boss->hit.bottom = 12288;
-		boss->bits = -32248;
+		boss->bits = 0x8208;
 		boss->size = 3;
 		boss->code_event = 1000;
 		boss->ani_no = 0;
@@ -385,13 +385,12 @@ void actBoss_MonsterX(npc *boss)
 	{
 		boss->act_no = 1000;
 		boss->act_wait = 0;
-		boss->shock = -106;
+		boss->shock = 0x96;
 		bossObj[9].act_no = 300;
 		bossObj[10].act_no = 300;
 		bossObj[11].act_no = 300;
 		bossObj[12].act_no = 300;
 	}
-	return;
 }
 
 void treads(npc *NPC)
