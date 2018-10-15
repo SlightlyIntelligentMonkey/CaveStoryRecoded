@@ -49,7 +49,7 @@ void npcAct160(npc *NPC) //poo black
 			for (int i = 0; i <= 3; ++i)
 			{
 				createNpc(NPC_Smoke, NPC->x + (random(-12, 12) << 9),
-					NPC->y + (random(-12, 12) << 9), random(-341, 341), random(-1536, 0), 0, nullptr, 256);
+					NPC->y + (random(-12, 12) << 9), random(-341, 341), random(-1536, 0));
 			}
 			NPC->act_no = landed;
 			NPC->act_wait = 0;
