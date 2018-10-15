@@ -1439,3 +1439,81 @@ void npcAct177(npc *NPC)
 
 	NPC->doRects(rect);
 }
+
+void npcAct178(npc *NPC) //core spinner
+{
+	RECT rect[3];
+	rect[0] = { 0, 224, 16, 240 };
+	rect[1] = { 16, 224, 32, 240 };
+	rect[2] = { 32, 224, 48, 240 };
+
+	if (NPC->flag & 0xFF)
+	{
+		createCaret(NPC->x, NPC->y, effect_RisingDisc, 0);
+		NPC->cond = 0;
+	}
+	if (NPC->flag & water)
+	{
+		NPC->y += NPC->ym / 2;
+		NPC->x += NPC->xm / 2;
+	}
+	else
+	{
+		NPC->y += NPC->ym;
+		NPC->x += NPC->xm;
+	}
+
+	if (++NPC->ani_wait > 1)
+	{
+		NPC->ani_wait = 0;
+		++NPC->ani_no;
+	}
+	if (NPC->ani_no > 2)
+		NPC->ani_no = 0;
+
+	NPC->rect = rect[NPC->ani_no];
+
+	if (++NPC->count1 > 150)
+	{
+		killNpc(NPC);
+		createCaret(NPC->x, NPC->y, effect_RisingDisc, 0);
+	}
+	return;
+}
+
+void npcAct179(npc *NPC) //core wisp
+{
+	RECT rect[3];
+	rect[0] = { 48, 224, 72, 240 };
+	rect[1] = { 72, 224, 96, 240 };
+	rect[2] = { 96, 224, 120, 240 };
+
+	if (NPC->flag & 0xFF)
+	{
+		NPC->cond = 0;
+		createCaret(NPC->x, NPC->y, effect_RisingDisc, 0);
+	}
+	NPC->xm -= 32;
+	NPC->ym = 0;
+	if (NPC->xm < -1024)
+		NPC->xm = -1024;
+	NPC->y += NPC->ym;
+	NPC->x += NPC->xm;
+
+	if (++NPC->ani_wait > 1)
+	{
+		NPC->ani_wait = 0;
+		++NPC->ani_no;
+	}
+	if (NPC->ani_no > 2)
+		NPC->ani_no = 0;
+
+	NPC->rect = rect[NPC->ani_no];
+
+	if (++NPC->count1 > 300)
+	{
+		killNpc(NPC);
+		createCaret(NPC->x, NPC->y, effect_RisingDisc, 0);
+	}
+	return;
+}
