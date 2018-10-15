@@ -473,7 +473,6 @@ bool doTscCommand(int *retVal, bool *bExit, TSC &ptsc)
 	static bool notifiedAboutCPS = false;
 	static bool notifiedAboutCRE = false;
 	static bool notifiedAboutCSS = false;
-	static bool notifiedAboutFOB = false;
 	static bool notifiedAboutINP = false;
 	static bool notifiedAboutSIL = false;
 	static bool notifiedAboutSPS = false;
