@@ -294,6 +294,9 @@
     <ClCompile Include="stage.cpp">
       <Filter>Source Files\modules</Filter>
     </ClCompile>
+    <ClCompile Include="core.cpp">
+      <Filter>Source Files\classes\boss\act</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="filesystem.h">

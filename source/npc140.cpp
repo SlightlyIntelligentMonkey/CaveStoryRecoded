@@ -1233,6 +1233,21 @@ void npcAct151(npc *NPC) //Blue robot standing
 	NPC->doRects(rcLeft, rcRight);
 }
 
+void npcAct152(npc *NPC) //used in almond for shooting the door
+{
+	if (!NPC->act_no)
+	{
+		if (NPC->direct == 2)
+			NPC->y += 0x2000;
+		NPC->act_no = 1;
+	}
+	NPC->rect.left = 0;
+	NPC->rect.top = 0;
+	NPC->rect.right = 0;
+	NPC->rect.bottom = 0;
+	return;
+}
+
 void npcAct153(npc *NPC)
 {
 	array<RECT, 21> rcLeft =

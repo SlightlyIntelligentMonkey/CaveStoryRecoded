@@ -25,8 +25,6 @@ SDL_AudioDeviceID soundDev;
 SDL_AudioSpec soundSpec;
 SDL_AudioSpec want;
 
-int volume = 100;
-
 //Audio callback and things
 void mixSounds(int16_t *stream, int len)
 {

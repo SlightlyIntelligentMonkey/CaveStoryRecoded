@@ -6,11 +6,11 @@
 #include "mathUtils.h"
 #include "flash.h"
 
-void monsterXSubNpcTreads(npc *NPC);
-void monsterXSubNpcFishMissileGenerator(npc *NPC);
-void monsterXSubNpcCover(npc *NPC);
-void monsterXSubNpcOrb(npc *NPC);
-void monsterXSubNpcHead(npc *NPC);
+void treads(npc *NPC);
+void fishMissileGenerator(npc *NPC);
+void cover(npc *NPC);
+void orb(npc *NPC);
+void head(npc *NPC);
 
 enum states
 {
@@ -37,7 +37,7 @@ void actBoss_MonsterX(npc *boss)
 		boss->hit.top = 12288;
 		boss->hit.right = 12288;
 		boss->hit.bottom = 12288;
-		boss->bits = -32248;
+		boss->bits = 0x8208;
 		boss->size = 3;
 		boss->code_event = 1000;
 		boss->ani_no = 0;
@@ -355,46 +355,45 @@ void actBoss_MonsterX(npc *boss)
 	}
 
 	//run through sub npc ais
-	monsterXSubNpcTreads(&bossObj[9]);
-	monsterXSubNpcTreads(&bossObj[10]);
-	monsterXSubNpcTreads(&bossObj[11]);
-	monsterXSubNpcTreads(&bossObj[12]);
+	treads(&bossObj[9]);
+	treads(&bossObj[10]);
+	treads(&bossObj[11]);
+	treads(&bossObj[12]);
 	boss->x += ((bossObj[12].x + bossObj[11].x + bossObj[10].x + bossObj[9].x) / 4 - boss->x) / 16;
 
-	monsterXSubNpcHead(&bossObj[7]);
+	head(&bossObj[7]);
 
-	monsterXSubNpcFishMissileGenerator(&bossObj[13]);
-	monsterXSubNpcFishMissileGenerator(&bossObj[14]);
-	monsterXSubNpcFishMissileGenerator(&bossObj[15]);
-	monsterXSubNpcFishMissileGenerator(&bossObj[16]);
+	fishMissileGenerator(&bossObj[13]);
+	fishMissileGenerator(&bossObj[14]);
+	fishMissileGenerator(&bossObj[15]);
+	fishMissileGenerator(&bossObj[16]);
 
-	monsterXSubNpcCover(&bossObj[1]);
-	monsterXSubNpcCover(&bossObj[2]);
+	cover(&bossObj[1]);
+	cover(&bossObj[2]);
 
 	if (bossObj[3].cond)
-		monsterXSubNpcOrb(&bossObj[3]);
+		orb(&bossObj[3]);
 	if (bossObj[4].cond)
-		monsterXSubNpcOrb(&bossObj[4]);
+		orb(&bossObj[4]);
 	if (bossObj[5].cond)
-		monsterXSubNpcOrb(&bossObj[5]);
+		orb(&bossObj[5]);
 	if (bossObj[6].cond)
-		monsterXSubNpcOrb(&bossObj[6]);
+		orb(&bossObj[6]);
 
 	//check if dead
 	if (!boss->life && boss->act_no < 1000)
 	{
 		boss->act_no = 1000;
 		boss->act_wait = 0;
-		boss->shock = -106;
+		boss->shock = 0x96;
 		bossObj[9].act_no = 300;
 		bossObj[10].act_no = 300;
 		bossObj[11].act_no = 300;
 		bossObj[12].act_no = 300;
 	}
-	return;
 }
 
-void monsterXSubNpcTreads(npc *NPC)
+void treads(npc *NPC)
 {
 	int spriteX[] = { 0, 0, 72, 144, 72, 144 };
 	int spriteY[] = { 0, 32, 0, 0, 32, 32 };
@@ -553,7 +552,7 @@ void monsterXSubNpcTreads(npc *NPC)
 	NPC->rect.bottom = NPC->rect.top + 32;
 }
 
-void monsterXSubNpcFishMissileGenerator(npc *NPC)
+void fishMissileGenerator(npc *NPC)
 {
 	int xp = 0;
 	int yp = 0;
@@ -609,7 +608,7 @@ LABEL_13:
 	NPC->rect.bottom = NPC->rect.top + 32;
 }
 
-void monsterXSubNpcCover(npc *NPC)
+void cover(npc *NPC)
 {
 	switch (NPC->act_no)
 	{
@@ -685,7 +684,7 @@ void monsterXSubNpcCover(npc *NPC)
 	NPC->y = bossObj[0].y;
 }
 
-void monsterXSubNpcOrb(npc *NPC)
+void orb(npc *NPC)
 {
 	int yVel;
 	int xVel;
@@ -754,7 +753,7 @@ LABEL_14:
 }
 
 
-void monsterXSubNpcHead(npc *NPC)
+void head(npc *NPC)
 {
 	switch (NPC->act_no)
 	{

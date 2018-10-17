@@ -707,6 +707,27 @@ void npcAct216(npc *NPC) // Debug cat
 	NPC->doRects({ 256, 192, 272, 216 });
 }
 
+void npcAct218(npc *NPC) //big energy shot from core
+{
+	RECT rect[2];
+	rect[0] = { 256, 120, 288, 152 };
+	rect[1] = { 288, 120, 320, 152 };
+
+	NPC->x += NPC->xm;
+	NPC->y += NPC->ym;
+	if (++NPC->act_wait > 200)
+		NPC->cond = 0;
+	if (++NPC->ani_wait > 2)
+	{
+		NPC->ani_wait = 0;
+		++NPC->ani_no;
+	}
+	if (NPC->ani_no > 1)
+		NPC->ani_no = 0;
+	NPC->rect = rect[NPC->ani_no];
+	return;
+}
+
 void npcAct219(npc *NPC) // Generator - Smoke/Underwater Current
 {
     if (NPC->direct != dirLeft)
