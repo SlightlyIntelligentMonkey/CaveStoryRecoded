@@ -31,11 +31,7 @@ MAIN += blade bubbler fireball missile polarStar machineGun misc nemesis snake s
 # npc acts
 MAIN += npcAct npc000 npc020 npc040 npc060 npc080 npc100 npc120 npc140 npc160 npc180 npc200 npc220 npc240 npc260 npc280 npc300 npc320 npc340
 # boss acts
-<<<<<<< HEAD
 MAIN += balfrog heavyPress monsterX omega core
-=======
-MAIN += balfrog core heavyPress monsterX omega
->>>>>>> 1afe1376f7f81c97b19b02e2b40ef0f4d5b9e5a4
 
 OBJS := $(addprefix obj/, $(addsuffix .o, $(MAIN)))
 DEPS := $(addsuffix .d, $(OBJS))
