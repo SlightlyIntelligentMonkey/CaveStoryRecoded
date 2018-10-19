@@ -444,6 +444,7 @@ void npcAct184(npc *NPC) //big moving block in almond
 		NPC->ani_no = 1;
 		NPC->act_wait = 0;
 		NPC->bits |= npc_ignoreSolid;
+		// Fallthrough
 	case 11:
 		switch (NPC->direct)
 		{
@@ -471,7 +472,7 @@ void npcAct184(npc *NPC) //big moving block in almond
 		for (int i = 0; i <= 3; ++i)
 		{
 			createNpc(NPC_Smoke, NPC->x + (random(-12, 12) << 9), NPC->y + 0x2000, 
-				random(-341, 341), random(-1536, 0), 0, 0, false);
+				random(-341, 341), random(-1536, 0), 0, nullptr, false);
 		}
 		NPC->act_no = 1;
 		break;
@@ -506,6 +507,7 @@ void npcAct185(npc *NPC) //lifting doors thing
 		NPC->ani_no = 1;
 		NPC->act_wait = 0;
 		NPC->bits |= npc_ignoreSolid;
+		// Fallthrough
 	case 11:
 		switch (NPC->direct)
 		{
@@ -552,6 +554,7 @@ void npcAct186(npc *NPC) //small moving block that goes down
 		NPC->ani_no = 1;
 		NPC->act_wait = 0;
 		NPC->bits |= npc_ignoreSolid;
+		// Fallthrough
 	case 11:
 		switch (NPC->direct)
 		{
@@ -747,7 +750,7 @@ void npcAct190(npc *NPC) //explody robot guy
 		for (int i = 0; i <= 7; ++i)
 		{
 			createNpc(NPC_Smoke, NPC->x, NPC->y + (random(-8, 8) << 9), 
-				random(-8, -2) << 9, random(-3, 3) << 9, 0, 0, false);
+				random(-8, -2) << 9, random(-3, 3) << 9, 0, nullptr, false);
 		}
 		NPC->cond = 0;
 		break;

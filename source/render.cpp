@@ -290,7 +290,7 @@ void createTextureBuffer(enum TextureNums texture_id, int width, int height)
 	if (sprites[texture_id] != nullptr)
 		SDL_DestroyTexture(sprites[texture_id]);
 
-	sprites[texture_id] = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_RGB888, SDL_TEXTUREACCESS_TARGET, width, height);//SDL_CreateTextureFromSurface(renderer, surface);
+	sprites[texture_id] = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_RGB888, SDL_TEXTUREACCESS_TARGET, width, height);
 }
 
 //Texture and drawing stuff

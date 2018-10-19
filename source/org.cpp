@@ -78,11 +78,11 @@ void organyaReleaseNote()
 }
 
 //sound function things
-typedef struct {
-	short wave_size;
-	short oct_par;
-	short oct_size;
-}OCTWAVE;
+struct OCTWAVE {
+	int16_t wave_size;
+	int16_t oct_par;
+	int16_t oct_size;
+};
 
 OCTWAVE oct_wave[8] = {
 	{ 256,  1,  4 }, //0 Oct

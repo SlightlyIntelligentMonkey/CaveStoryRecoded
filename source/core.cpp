@@ -43,7 +43,6 @@ void actBoss_Core(npc *boss)
 {
 	static int flash = 0;
 	int deg;
-	bool bShock = false;
 
 	switch (boss->act_no)
 	{
@@ -133,6 +132,7 @@ void actBoss_Core(npc *boss)
 		bossObj[hit4].bits &= ~npc_shootable;
 		superYPos = 0;
 		//CutNoise();
+		// Fallthrough
 	case 201:
 		boss->tgt_x = currentPlayer.x;
 		boss->tgt_y = currentPlayer.y;
@@ -151,7 +151,6 @@ void actBoss_Core(npc *boss)
 			}
 			bossObj[face].ani_no = 0;
 			bossObj[tail].ani_no = 0;
-			bShock = true;
 		}
 		break;
 	case iniShootWisp:
@@ -160,6 +159,7 @@ void actBoss_Core(npc *boss)
 		boss->count2 = boss->life;
 		bossObj[hit4].bits |= npc_shootable;
 	case shootWisp:
+		// Fallthrough
 		boss->tgt_x = currentPlayer.x;
 		boss->tgt_y = currentPlayer.y;
 		if (boss->shock)
@@ -189,14 +189,13 @@ void actBoss_Core(npc *boss)
 		if (boss->act_wait <= 199 && boss->act_wait % 20 == 1)
 		{
 			createNpc(NPC_ProjectileCoreWisp, boss->x + (random(-48, -16) << 9), 
-				boss->y + (random(-64, 64) << 9), 0, 0, 0, 0, false);
+				boss->y + (random(-64, 64) << 9), 0, 0, 0, nullptr, false);
 		}
 		if (boss->act_wait > 400 || boss->life < boss->count2 - 200)
 		{
 			boss->act_no = 200;
 			bossObj[face].ani_no = 2;
 			bossObj[tail].ani_no = 0;
-			bShock = 1;
 		}
 		break;
 	case iniShootBigAssEnergyBall:
@@ -207,9 +206,10 @@ void actBoss_Core(npc *boss)
 		viewport.quake = 100;
 		//SetNoise(1, 1000);
 	case shootBigAssEnergyBall:
+		// Fallthrough
 		++boss->act_wait;
 		createNpc(NPC_UnderwaterCurrent, currentPlayer.x + (random(-50, 150) << 10),
-			currentPlayer.y + (random(-160, 160) << 9), 0, 0, 0, 0, false);
+			currentPlayer.y + (random(-160, 160) << 9), 0, 0, 0, nullptr, false);
 		currentPlayer.xm -= 32;
 		currentPlayer.cond |= npc_shootable;
 
@@ -236,7 +236,7 @@ void actBoss_Core(npc *boss)
 		{
 			deg = getAtan(boss->x - currentPlayer.x, boss->y - currentPlayer.y);
 			createNpc(NPC_ProjectileCoreLargeEnergyBall, 
-				boss->x - 20480, boss->y, 3 * getCos(deg), 3 * getSin(deg), 0, 0, 256);
+				boss->x - 20480, boss->y, 3 * getCos(deg), 3 * getSin(deg));
 			playSound(SFX_Lightning);
 		}
 		if (boss->act_wait > 400)
@@ -244,7 +244,6 @@ void actBoss_Core(npc *boss)
 			boss->act_no = 200;
 			bossObj[face].ani_no = 2;
 			bossObj[tail].ani_no = 0;
-			bShock = true;
 		}
 		break;
 	case iniDeathAnimation:
@@ -266,15 +265,17 @@ void actBoss_Core(npc *boss)
 		for (int i = 0; i <= 31; ++i)
 		{
 			createNpc(NPC_Smoke, boss->x + (random(-128, 128) << 9), boss->y + (random(-64, 64) << 9), 
-				random(-128, 128) << 9, random(-128, 128) << 9, 0, 0, false);
+				random(-128, 128) << 9, random(-128, 128) << 9, 0, nullptr, false);
 		}
 		for (int i = 0; i <= 11; ++i)
 			bossObj[i].bits &= 0xFFDBu;
 	case deathAnimation:
+
+		// Fallthrough
 		if (++boss->act_wait & 0xF)
 		{
 			createNpc(NPC_Smoke, boss->x + (random(-64, 64) << 9), boss->y + (random(-32, 32) << 9), 
-				random(-128, 128) << 9, random(-128, 128) << 9, 0, 0, false);
+				random(-128, 128) << 9, random(-128, 128) << 9, 0, nullptr, false);
 		}
 
 		if (boss->act_wait / 2 & 1)
@@ -350,6 +351,7 @@ void coreFace(npc *NPC)
 		NPC->bits = npc_ignoreSolid;
 		NPC->view.left = 18432;
 		NPC->view.top = 28672;
+		// Fallthrough
 	case 11:
 		NPC->x = bossObj[core].x - 18432;
 		NPC->y = bossObj[core].y;
@@ -357,6 +359,7 @@ void coreFace(npc *NPC)
 	case 50:
 		NPC->act_no = 51;
 		NPC->act_wait = 112;
+		// Fallthrough
 	case 51:
 		if (!--NPC->act_wait)
 		{
@@ -393,6 +396,7 @@ void coreTail(npc *NPC)
 		NPC->bits = 8;
 		NPC->view.left = 22528;
 		NPC->view.top = 28672;
+		// Fallthrough
 	case 11:
 		NPC->x = bossObj[core].x + 22528;
 		NPC->y = bossObj[core].y;
@@ -400,6 +404,7 @@ void coreTail(npc *NPC)
 	case 50:
 		NPC->act_no = 51;
 		NPC->act_wait = 112;
+		// Fallthrough
 	case 51:
 		if (!--NPC->act_wait)
 		{
@@ -443,6 +448,7 @@ void miniCore(npc *NPC)
 		NPC->tgt_x = bossObj[core].x + (random(-128, 32) << 9);
 		NPC->tgt_y = bossObj[core].y + (random(-64, 64) << 9);
 		NPC->bits |= npc_shootable;
+		// Fallthrough
 	case 101:
 		NPC->x += (NPC->tgt_x - NPC->x) / 16;
 		NPC->y += (NPC->tgt_y - NPC->y) / 16;
@@ -452,6 +458,7 @@ void miniCore(npc *NPC)
 	case 120:
 		NPC->act_no = 121;
 		NPC->act_wait = 0;
+		// Fallthrough
 	case 121:
 		if (++NPC->act_wait / 2 % 2)
 			NPC->ani_no = 0;
@@ -466,6 +473,7 @@ void miniCore(npc *NPC)
 		NPC->act_wait = 0;
 		NPC->tgt_x = NPC->x + (random(24, 48) << 9);
 		NPC->tgt_y = NPC->y + (random(-4, 4) << 9);
+		// Fallthrough
 	case 131:
 		NPC->x += (NPC->tgt_x - NPC->x) / 16;
 		NPC->y += (NPC->tgt_y - NPC->y) / 16;
@@ -479,7 +487,7 @@ void miniCore(npc *NPC)
 			deg = getAtan(NPC->x - currentPlayer.x, NPC->y - currentPlayer.y);
 			deg += random(-2, 2);
 			createNpc(NPC_ProjectileCoreSpinner, NPC->x, NPC->y,
-				2 * getCos(deg), 2 * getSin(deg), 0, 0, false);
+				2 * getCos(deg), 2 * getSin(deg), 0, nullptr, false);
 			playSound(SFX_EnemyShootProjectile);
 		}
 		break;
@@ -492,6 +500,7 @@ void miniCore(npc *NPC)
 		NPC->ani_no = 2;
 		NPC->xm = 0;
 		NPC->ym = 0;
+		// Fallthrough
 	case 201:
 		NPC->xm += 32;
 		NPC->x += NPC->xm;
