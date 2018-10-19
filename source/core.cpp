@@ -30,7 +30,13 @@ void coreHit(npc *NPC);
 
 enum coreStates
 {
-
+	ini = 0,
+	iniShootWisp = 210,
+	shootWisp = 211,
+	iniShootBigAssEnergyBall = 220,
+	shootBigAssEnergyBall = 221,
+	iniDeathAnimation = 500,
+	deathAnimation = 501
 };
 
 void actBoss_Core(npc *boss)
@@ -136,24 +142,24 @@ void actBoss_Core(npc *boss)
 			playSound(SFX_CoreThrust);
 			if (boss->count1 <= 3)
 			{
-				boss->act_no = 210;
+				boss->act_no = iniShootWisp;
 			}
 			else
 			{
 				boss->count1 = 0;
-				boss->act_no = 220;
+				boss->act_no = iniShootBigAssEnergyBall;
 			}
 			bossObj[face].ani_no = 0;
 			bossObj[tail].ani_no = 0;
 			bShock = true;
 		}
 		break;
-	case 210:
-		boss->act_no = 211;
+	case iniShootWisp:
+		boss->act_no = shootWisp;
 		boss->act_wait = 0;
 		boss->count2 = boss->life;
 		bossObj[hit4].bits |= npc_shootable;
-	case 211:
+	case shootWisp:
 		boss->tgt_x = currentPlayer.x;
 		boss->tgt_y = currentPlayer.y;
 		if (boss->shock)
@@ -193,14 +199,14 @@ void actBoss_Core(npc *boss)
 			bShock = 1;
 		}
 		break;
-	case 220:
-		boss->act_no = 221;
+	case iniShootBigAssEnergyBall:
+		boss->act_no = shootBigAssEnergyBall;
 		boss->act_wait = 0;
 		superYPos = 1;
 		bossObj[hit4].bits |= npc_shootable;
 		viewport.quake = 100;
 		//SetNoise(1, 1000);
-	case 221:
+	case shootBigAssEnergyBall:
 		++boss->act_wait;
 		createNpc(NPC_UnderwaterCurrent, currentPlayer.x + (random(-50, 150) << 10),
 			currentPlayer.y + (random(-160, 160) << 9), 0, 0, 0, 0, false);
@@ -241,9 +247,9 @@ void actBoss_Core(npc *boss)
 			bShock = true;
 		}
 		break;
-	case 500:
+	case iniDeathAnimation:
 		//CutNoise();
-		boss->act_no = 501;
+		boss->act_no = deathAnimation;
 		boss->act_wait = 0;
 		boss->xm = 0;
 		boss->ym = 0;
@@ -264,7 +270,7 @@ void actBoss_Core(npc *boss)
 		}
 		for (int i = 0; i <= 11; ++i)
 			bossObj[i].bits &= 0xFFDBu;
-	case 501:
+	case deathAnimation:
 		if (++boss->act_wait & 0xF)
 		{
 			createNpc(NPC_Smoke, boss->x + (random(-64, 64) << 9), boss->y + (random(-32, 32) << 9), 
