@@ -263,7 +263,7 @@ void actBoss_Core(npc *boss)
 				random(-128, 128) << 9, random(-128, 128) << 9, 0, 0, false);
 		}
 		for (int i = 0; i <= 11; ++i)
-			bossObj[i].bits &= 0xFFDBu;
+			bossObj[i].bits &= ~(npc_invulnerable | npc_shootable);
 	case 501:
 		if (++boss->act_wait & 0xF)
 		{
