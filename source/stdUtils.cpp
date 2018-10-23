@@ -5,10 +5,11 @@
 
 using std::string;
 using std::stringstream;
+using std::hex;
 
 string hexToString(unsigned int i)
 {
 	stringstream s;
-	s << std::hex << i;
+	s << hex << i;
 	return s.str();
 }
