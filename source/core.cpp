@@ -272,11 +272,7 @@ void actBoss_Core(npc *boss)
 				random(-128, 128) << 9, random(-128, 128) << 9, 0, nullptr, false);
 		}
 		for (int i = 0; i <= 11; ++i)
-<<<<<<< HEAD
 			bossObj[i].bits &= 0xFFDBu;
-=======
-			bossObj[i].bits &= ~(npc_invulnerable | npc_shootable);
->>>>>>> e092973755578826a573100b4894cb2f6454489a
 		// Fallthrough
 	case deathAnimation:
 		if (++boss->act_wait & 0xF)
@@ -290,12 +286,12 @@ void actBoss_Core(npc *boss)
 		else
 			boss->x += 512;
 
-		if (boss->x > 516095)
+		if (boss->x > tilesToUnits(63))
 			boss->x -= 128;
 		else
 			boss->x += 128;
 
-		if (boss->y > 90111)
+		if (boss->y > tilesToUnits(11))
 			boss->y -= 128;
 		else
 			boss->y += 128;
@@ -350,9 +346,9 @@ void actBoss_Core(npc *boss)
 			bossObj[mini5].act_no = 120;
 			break;
 		}
-		if (boss->x < boss->tgt_x + 81920)
+		if (boss->x < boss->tgt_x + tilesToUnits(10))
 			boss->xm += 4;
-		if (boss->x > boss->tgt_x + 81920)
+		if (boss->x > boss->tgt_x + tilesToUnits(10))
 			boss->xm -= 4;
 		if (boss->y < boss->tgt_y)
 			boss->ym += 4;
