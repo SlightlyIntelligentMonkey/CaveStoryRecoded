@@ -43,6 +43,7 @@ void actBoss_Core(npc *boss)
 {
 	static int flash = 0;
 	int deg;
+	bool bShock = false;
 
 	switch (boss->act_no)
 	{
@@ -151,6 +152,7 @@ void actBoss_Core(npc *boss)
 			}
 			bossObj[face].ani_no = 0;
 			bossObj[tail].ani_no = 0;
+			bShock = 1;
 		}
 		break;
 	case iniShootWisp:
@@ -196,6 +198,7 @@ void actBoss_Core(npc *boss)
 			boss->act_no = 200;
 			bossObj[face].ani_no = 2;
 			bossObj[tail].ani_no = 0;
+			bShock = 1;
 		}
 		break;
 	case iniShootBigAssEnergyBall:
@@ -244,6 +247,7 @@ void actBoss_Core(npc *boss)
 			boss->act_no = 200;
 			bossObj[face].ani_no = 2;
 			bossObj[tail].ani_no = 0;
+			bShock = 1;
 		}
 		break;
 	case iniDeathAnimation:
@@ -268,7 +272,11 @@ void actBoss_Core(npc *boss)
 				random(-128, 128) << 9, random(-128, 128) << 9, 0, nullptr, false);
 		}
 		for (int i = 0; i <= 11; ++i)
+<<<<<<< HEAD
 			bossObj[i].bits &= 0xFFDBu;
+=======
+			bossObj[i].bits &= ~(npc_invulnerable | npc_shootable);
+>>>>>>> e092973755578826a573100b4894cb2f6454489a
 		// Fallthrough
 	case deathAnimation:
 		if (++boss->act_wait & 0xF)
@@ -305,6 +313,51 @@ void actBoss_Core(npc *boss)
 		break;
 	default:
 		break;
+	}
+
+	if (bShock)
+	{
+		viewport.quake = 20;
+		bossObj[mini1].act_no = 100;
+		bossObj[mini2].act_no = 100;
+		bossObj[mini3].act_no = 100;
+		bossObj[mini4].act_no = 100;
+		bossObj[mini5].act_no = 100;
+		playSound(26);
+		for (int i = 0; i <= 7; ++i)
+		{
+			createNpc(NPC_Smoke, bossObj[face].x + (random(-32, 16) << 9), bossObj[face].y, 
+				random(-512, 512), random(-256, 256), 0, nullptr, false);
+		}
+	}
+	if (boss->act_no >= 200 && boss->act_no < 300)
+	{
+		switch (boss->act_wait)
+		{
+		case 80:
+			bossObj[mini1].act_no = 120;
+			break;
+		case 110:
+			bossObj[mini2].act_no = 120;
+			break;
+		case 140:
+			bossObj[mini3].act_no = 120;
+			break;
+		case 170:
+			bossObj[mini4].act_no = 120;
+			break;
+		case 200:
+			bossObj[mini5].act_no = 120;
+			break;
+		}
+		if (boss->x < boss->tgt_x + 81920)
+			boss->xm += 4;
+		if (boss->x > boss->tgt_x + 81920)
+			boss->xm -= 4;
+		if (boss->y < boss->tgt_y)
+			boss->ym += 4;
+		if (boss->y > boss->tgt_y)
+			boss->ym -= 4;
 	}
 
 	if (boss->xm > 128)
@@ -438,7 +491,7 @@ void miniCore(npc *NPC)
 	{
 	case 10:
 		NPC->ani_no = 2;
-		NPC->bits &= 0xFFDFu;
+		NPC->bits &= ~npc_shootable;
 		break;
 	case 100:
 		NPC->act_no = 101;
