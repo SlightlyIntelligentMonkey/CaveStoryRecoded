@@ -205,8 +205,8 @@ void actBoss_Core(npc *boss)
 		bossObj[hit4].bits |= npc_shootable;
 		viewport.quake = 100;
 		//SetNoise(1, 1000);
-	case shootBigAssEnergyBall:
 		// Fallthrough
+	case shootBigAssEnergyBall:
 		++boss->act_wait;
 		createNpc(NPC_UnderwaterCurrent, currentPlayer.x + (random(-50, 150) << 10),
 			currentPlayer.y + (random(-160, 160) << 9), 0, 0, 0, nullptr, false);
@@ -269,9 +269,8 @@ void actBoss_Core(npc *boss)
 		}
 		for (int i = 0; i <= 11; ++i)
 			bossObj[i].bits &= 0xFFDBu;
-	case deathAnimation:
-
 		// Fallthrough
+	case deathAnimation:
 		if (++boss->act_wait & 0xF)
 		{
 			createNpc(NPC_Smoke, boss->x + (random(-64, 64) << 9), boss->y + (random(-32, 32) << 9), 
