@@ -3,7 +3,7 @@ WARNINGS := -pedantic -Wall -Wextra -Walloc-zero -Wbool-compare -Wcast-align -Wc
 OPTIMISATIONS := -O3 -frename-registers
 # OPTIMISATIONS += -flto
 
-COMPILE_CPP = $(CXX) $(OPTIMISATIONS) $(WARNINGS) -std=c++17 -I/mingw32/include/SDL2/ -IJson_Modern_Cpp -c -DUSE_ICONS_WINDOWS -MMD -MP -MF $@.d
+COMPILE_CPP = $(CXX) $(OPTIMISATIONS) $(WARNINGS) `sdl2-config --cflags` -std=c++17 -I/mingw32/include/SDL2/ -IJson_Modern_Cpp -c -DUSE_ICONS_WINDOWS -MMD -MP -MF $@.d
 # Replace mingw32 with usr for Unix build
 
 LINK_CPP := $(CXX) $(OPTIMISATIONS) $(WARNINGS) -s -static `sdl2-config --static-libs`
