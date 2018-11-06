@@ -19,19 +19,27 @@ void initFlags()
 	memset(mapFlags, 0, sizeof(mapFlags));
 }
 
-void setBit(uint8_t *buf, size_t x)
+inline void setBit(uint8_t *buf, size_t x)
 {
     buf[x >> 3] |= 1 << (x & 7);
 }
 
-void clearBit(uint8_t *buf, size_t x)
+inline void clearBit(uint8_t *buf, size_t x)
 {
     buf[x >> 3] &= ~(1 << (x & 7));
 }
 
-bool getBit(uint8_t *buf, size_t x)
+inline bool getBit(uint8_t *buf, size_t x)
 {
-    return ((buf[x >> 3] >> (x & 7)) & 1);
+    return (buf[x >> 3] >> (x & 7)) & 1;
+}
+
+inline void flipBit(uint8_t *buf, size_t x)
+{
+    if (getBit(buf, x))
+        clearBit(buf, x);
+    else
+        setBit(buf, x);
 }
 
 void setFlag(size_t a)

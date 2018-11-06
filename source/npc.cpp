@@ -531,6 +531,22 @@ void npc::limitYVel(int maxVel)
         this->ym = -maxVel;
 }
 
+void npc::limitXVel2(int maxVel)
+{
+    if (this->xm2 > maxVel)
+        this->xm2 = maxVel;
+    else if (this->xm2 < -maxVel)
+        this->xm2 = -maxVel;
+}
+
+void npc::limitYVel2(int maxVel)
+{
+    if (this->ym2 > maxVel)
+        this->ym2 = maxVel;
+    else if (this->ym2 < -maxVel)
+        this->ym2 = -maxVel;
+}
+
 void npc::moveInDir(int vel)
 {
     if (this->direct == dirLeft)

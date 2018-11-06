@@ -152,6 +152,9 @@ public:
 	void limitXVel(int maxVel);
 	void limitYVel(int maxVel);
 
+	void limitXVel2(int maxVel);
+	void limitYVel2(int maxVel);
+
 	void moveInDir(int vel);
 
 	void accelerateTowardsXTarget(int vel);
