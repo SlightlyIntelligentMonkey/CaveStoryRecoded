@@ -8,6 +8,7 @@
 #include "common.h"
 #include "input.h"
 #include "log.h"
+#include "filesystem.h"
 
 using std::string;
 
@@ -88,6 +89,24 @@ static SDL_Texture* loadPNGToTexture(SDL_Renderer *localRenderer, const string& 
 			doCustomError((std::string)"loadPNGToTexture failed!\n\nSDL2 error: " + SDL_GetError());
 
 		SDL_FreeSurface(surface);
+	}
+
+	return texture;
+}
+
+static SDL_Texture* loadBMPToTexture(SDL_Renderer *rend, const string& path)
+{
+	SDL_Texture *texture = nullptr;
+	SDL_Surface *surf = SDL_LoadBMP(path.c_str());
+	if (surf)
+	{
+		SDL_SetColorKey(surf, 1, 0);
+		texture = SDL_CreateTextureFromSurface(rend, surf);
+
+		if (texture == nullptr)
+			doCustomError((std::string)"loadBMPToTexture failed!\n\nSDL2 error: " + SDL_GetError());
+
+		SDL_FreeSurface(surf);
 	}
 
 	return texture;
@@ -302,7 +321,13 @@ void loadImage(const string& file, SDL_Texture **tex)
 	//Destroy previously existing texture and load new one
 	if (*tex != nullptr)
 		SDL_DestroyTexture(*tex);
-	*tex = loadPNGToTexture(renderer, file);
+
+	//loads either a png or bmp
+	if(fileExists(file + ".png"))
+		*tex = loadPNGToTexture(renderer, file + ".png");
+	if (fileExists(file + ".bmp"))
+		*tex = loadBMPToTexture(renderer, file + ".bmp");
+	
 
 	//Error if anything failed
 	if (*tex == nullptr)

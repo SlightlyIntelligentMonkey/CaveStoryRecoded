@@ -654,6 +654,14 @@ void npcAct065(npc *NPC) //First Cave Bat
 		NPC->act_no = 1;
 		NPC->act_wait = random(0, 50);
 	// Fallthrough
+	case 1:
+		if (++NPC->act_wait >= 50)
+		{
+			NPC->act_wait = 0;
+			NPC->act_no = 2;
+			NPC->ym = pixelsToUnits(1.5);
+		}
+		break;
 	case 2:
 		//Face towards player
 		if (currentPlayer.x >= NPC->x)
@@ -664,14 +672,10 @@ void npcAct065(npc *NPC) //First Cave Bat
 		//Fly up and down
 		NPC->accelerateTowardsYTarget(0x10);
 		NPC->limitYVel(pixelsToUnits(1.5));
+		break;
 	}
 
-	if (action == 1 && ++NPC->act_wait >= 50)
-	{
-		NPC->act_wait = 0;
-		NPC->act_no = 2;
-		NPC->ym = pixelsToUnits(1.5);
-	}
+
 
 	//Move bat
 	NPC->x += NPC->xm;

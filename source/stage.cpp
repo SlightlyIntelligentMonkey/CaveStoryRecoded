@@ -180,7 +180,7 @@ void iniBackground(const string &name, int mode)
 	background.tileWidth = map.width;
 	background.tileHeight = map.height;
 	background.flag = 1;
-	loadImage("data/" + name + ".png", &sprites[TEX_BACKGROUND]);
+	loadImage("data/" + name, &sprites[TEX_BACKGROUND]);
 	gWaterY = 0x1E0000;
 	return;
 }
@@ -220,11 +220,11 @@ void loadLevel(int levelIndex)
 
 	// -- loads map images -- //
 	//load tileset
-	loadImage(string("data/Stage/Prt") + stageTable[levelIndex].tileset + ".png", &sprites[TEX_TILESET]);
+	loadImage(string("data/Stage/Prt") + stageTable[levelIndex].tileset, &sprites[TEX_TILESET]);
 	//load sheet 1
-	loadImage(string("data/Npc/Npc") + stageTable[levelIndex].npc1 + ".png", &sprites[TEX_NPC_1]);
+	loadImage(string("data/Npc/Npc") + stageTable[levelIndex].npc1, &sprites[TEX_NPC_1]);
 	//load sheet 2
-	loadImage(string("data/Npc/Npc") + stageTable[levelIndex].npc2 + ".png", &sprites[TEX_NPC_2]);
+	loadImage(string("data/Npc/Npc") + stageTable[levelIndex].npc2, &sprites[TEX_NPC_2]);
 
 	// -- fix viewport -- //
 	viewport.x = currentPlayer.x - (screenWidth << 8);
