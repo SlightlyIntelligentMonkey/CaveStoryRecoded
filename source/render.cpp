@@ -323,10 +323,10 @@ void loadImage(const string& file, SDL_Texture **tex)
 		SDL_DestroyTexture(*tex);
 
 	//loads either a png or bmp
-	if(fileExists(file + ".png"))
-		*tex = loadPNGToTexture(renderer, file + ".png");
-	if (fileExists(file + ".bmp"))
-		*tex = loadBMPToTexture(renderer, file + ".bmp");
+	if(fileExists("data/" + file + ".png"))
+		*tex = loadPNGToTexture(renderer, "data/" + file + ".png");
+	if (fileExists("data/" + file + ".bmp"))
+		*tex = loadBMPToTexture(renderer, "data/" + file + ".bmp");
 	
 
 	//Error if anything failed

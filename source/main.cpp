@@ -47,32 +47,32 @@ SDL_Texture* sprites[0x28];
 
 void loadInitialSprites()
 {
-	loadImage("data/Title", &sprites[TEX_TITLE]);
-	loadImage("data/Pixel", &sprites[TEX_PIXEL]);
+	loadImage("Title", &sprites[TEX_TITLE]);
+	loadImage("Pixel", &sprites[TEX_PIXEL]);
 
-	loadImage("data/Fade", &sprites[TEX_FADE]);
+	loadImage("Fade", &sprites[TEX_FADE]);
 
-	loadImage("data/ItemImage", &sprites[TEX_ITEMIMAGE]);
+	loadImage("ItemImage", &sprites[TEX_ITEMIMAGE]);
 
-	loadImage("data/Arms", &sprites[TEX_ARMS]);
-	loadImage("data/ArmsImage", &sprites[TEX_ARMSIMAGE]);
+	loadImage("Arms", &sprites[TEX_ARMS]);
+	loadImage("ArmsImage", &sprites[TEX_ARMSIMAGE]);
 
-	loadImage("data/StageImage", &sprites[TEX_STAGEIMAGE]);
+	loadImage("StageImage", &sprites[TEX_STAGEIMAGE]);
 
-	loadImage("data/MyChar", &sprites[TEX_MYCHAR]);
+	loadImage("MyChar", &sprites[TEX_MYCHAR]);
 
-	loadImage("data/Bullet", &sprites[TEX_BULLET]);
-	loadImage("data/Caret", &sprites[TEX_CARET]);
+	loadImage("Bullet", &sprites[TEX_BULLET]);
+	loadImage("Caret", &sprites[TEX_CARET]);
 
-	loadImage("data/Npc/NpcSym", &sprites[TEX_NPC_SYM]);
+	loadImage("Npc/NpcSym", &sprites[TEX_NPC_SYM]);
 
-	loadImage("data/Npc/NpcRegu", &sprites[TEX_NPC_REGU]);
+	loadImage("Npc/NpcRegu", &sprites[TEX_NPC_REGU]);
 
-	loadImage("data/TextBox", &sprites[TEX_TEXTBOX]);
-	loadImage("data/Face", &sprites[TEX_FACE]);
+	loadImage("TextBox", &sprites[TEX_TEXTBOX]);
+	loadImage("Face", &sprites[TEX_FACE]);
 
-	loadImage("data/Font", &sprites[0x26]);
-	loadImage("data/Missing", &sprites[0x27]);
+	loadImage("Font", &sprites[0x26]);
+	loadImage("Missing", &sprites[0x27]);
 
 }
 
@@ -158,7 +158,7 @@ void init()
 	}
 
 	//draws loading
-	loadImage("data/Loading", &sprites[TEX_LOADING]);   // Load the loading sprite now so that we can display it
+	loadImage("Loading", &sprites[TEX_LOADING]);   // Load the loading sprite now so that we can display it
 	SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
 	SDL_RenderClear(renderer);
 	drawTexture(sprites[TEX_LOADING], nullptr, screenWidth >> 1, screenHeight >> 1);
