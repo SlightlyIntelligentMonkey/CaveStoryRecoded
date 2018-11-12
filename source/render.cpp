@@ -35,7 +35,7 @@ int charWidth = 24;
 int charHeight = 24;
 int charScale = 2;
 
-int framerate = 20; //17 for 60-ish fps
+int framewait = 20; //17 for 60-ish fps
 
 uint32_t windowFlags = 0;
 
@@ -262,16 +262,16 @@ bool drawWindow()
 		if (!handleEvents())
 			return false;
 
-		//Framerate limiter
+		//framerate limiter
 		static uint32_t timePrev;
 		const uint32_t timeNow = SDL_GetTicks();
 
-		if (timeNow >= timePrev + framerate)
+		if (timeNow >= timePrev + framewait)
 		{
 			if (timeNow >= timePrev + 100)
 				timePrev = timeNow;	// If the timer is freakishly out of sync, panic and reset it, instead of spamming frames for who-knows how long
 			else
-				timePrev += framerate;
+				timePrev += framewait;
 			break;
 		}
 
@@ -417,8 +417,8 @@ void drawTexture(SDL_Texture *texture, const RECT *rect, int x, int y)
 		int w, h;
 		SDL_QueryTexture(texture, nullptr, nullptr, &w, &h);
 
-		rcDraw.x = x * screenScale;
-		rcDraw.y = y * screenScale;
+		rcDraw.x = (x-(w/2)) * screenScale;
+		rcDraw.y = (y-(h/2)) * screenScale;
 		rcDraw.w = w * screenScale;
 		rcDraw.h = h * screenScale;
 

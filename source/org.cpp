@@ -112,7 +112,7 @@ void mixOrg(int16_t *stream, int len)
 				{
 					//Update
 					const int samplesPerBeat = sampleRate * org.wait / 1000;
-					const int samplesPerFrame = sampleRate * framerate / 1000;
+					const int samplesPerFrame = sampleRate * framewait / 1000;
 
 					if (org.samples-- == 0)
 					{

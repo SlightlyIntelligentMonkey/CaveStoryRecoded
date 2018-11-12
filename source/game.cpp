@@ -184,9 +184,9 @@ void debugFunction()
 		if (isKeyPressed(SDL_SCANCODE_R))
 			debugFlags ^= showHurtRects;
 		if (isKeyPressed(SDL_SCANCODE_EQUALS))
-			framerate--;
+			framewait--;
 		if (isKeyPressed(SDL_SCANCODE_MINUS))
-			framerate++;
+			framewait++;
 		if (isKeyPressed(SDL_SCANCODE_P))
 			debugFlags ^= showPosition;
 	}
@@ -408,8 +408,8 @@ int gameUpdateMenu()
 	constexpr RECT rcPeriod = { 152, 88, 208, 96 };
 
 	constexpr RECT rcTitle = { 0, 0, 144, 32 };
-	constexpr RECT rcNew = { 144, 0, 176, 16 };
-	constexpr RECT rcLoad = { 144, 16, 176, 32 };
+	constexpr RECT rcNew = { 144, 0, 180, 16 };
+	constexpr RECT rcLoad = { 144, 16, 180, 32 };
 	constexpr RECT rcPixel = { 0, 0, 160, 16 };
 
 	uint32_t frame = 0;
@@ -609,7 +609,6 @@ int mainGameLoop()
 		}
 	}
 
-	saveConfig();
 	return 0;
 }
 

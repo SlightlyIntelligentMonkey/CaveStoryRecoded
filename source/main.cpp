@@ -8,7 +8,6 @@
 #include "flags.h"
 #include "player.h"
 #include "render.h"
-#include "filesystem.h"
 #include "game.h"
 #include "loadConfig.h"
 #include "log.h"
@@ -92,14 +91,77 @@ void init()
 		doCustomError("Couldn't initiate SDL");
 
 	loadConfigFiles();
-	loadConfig();
+	CONFIG *config = loadConfigdat();
+	
+	if (config != nullptr)
+	{
+		if (config->attack_button_mode == 1)
+		{
+			keyJump = SDL_SCANCODE_X;
+			keyShoot = SDL_SCANCODE_Z;
+		}
+		else
+		{
+			keyJump = SDL_SCANCODE_Z;
+			keyShoot = SDL_SCANCODE_X;
+		}
+		/* no ok button/key currently implemented
+		if (config->ok_button_mode == 1)
+		{
+			keyOk = keyShoot;
+			keyCancel = keyJump;
+		}
+		else
+		{
+			keyOk = keyJump;
+			keyCancel = keyShoot;
+		}
+		*/
+		if (config->move_button_mode == 1)
+		{
+			keyLeft = SDL_SCANCODE_COMMA;
+			keyRight = SDL_SCANCODE_SLASH;
+			keyDown = SDL_SCANCODE_PERIOD;
+			keyUp = SDL_SCANCODE_SEMICOLON;
+		}
+		else
+		{
+			keyLeft = SDL_SCANCODE_LEFT;
+			keyRight = SDL_SCANCODE_RIGHT;
+			keyDown = SDL_SCANCODE_DOWN;
+			keyUp = SDL_SCANCODE_UP;
+		}
+
+		switch (config->display_mode)
+		{
+		case(0):
+			createWindow(320, 240, 2);
+			switchScreenMode();
+			break;
+		case(1):
+			createWindow(320, 240, 1);
+			break;
+		case(2):
+			createWindow(320, 240, 2);
+			break;
+		default:
+			createWindow(320, 240, 2);
+			switchScreenMode();
+			break;
+		}
+
+		free(config);
+	}
+	else
+	{
+		createWindow(screenWidth, screenHeight, screenScale);
+	}
 
 	//draws loading
 	loadImage("data/Loading", &sprites[TEX_LOADING]);   // Load the loading sprite now so that we can display it
 	SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
 	SDL_RenderClear(renderer);
-	RECT rcLoad = { 0, 0, 64, 8 };
-	drawTexture(sprites[TEX_LOADING], &rcLoad, (screenWidth >> 1) - (rcLoad.right >> 1), (screenHeight >> 1) - (rcLoad.bottom >> 1));
+	drawTexture(sprites[TEX_LOADING], nullptr, screenWidth >> 1, screenHeight >> 1);
 	SDL_RenderPresent(renderer);
 
 	initTsc();

@@ -1,0 +1,27 @@
+{
+	"debugFlags": {
+		"showSlots": false,
+		"showNPCId ": false,
+		"showBULId": false,
+		"showCARId": false,
+		"notifyOnNotImplemented": true,
+		"showNPCHealth": false
+	},
+	
+	"disableOrg": false,
+	
+	"profileName": "Profile.dat",
+	"profileCode": "Do041220",
+	
+	"disableDamage": false,
+	
+	"millisecondsPerFrame": 20,
+  
+	"screen": {
+		"width": 320,
+		"height": 240,
+		"scale": 2
+	},
+
+	"displayFpsCounter": true
+}

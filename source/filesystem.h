@@ -4,40 +4,6 @@
 #include <string>
 #include "common.h"
 
-struct CONFIG {
-	int version;
-
-	//Gamepad bools
-	bool useGamepad;
-	bool enableThumbstick;
-
-	//Keybinds
-	int keyLeft;
-	int keyRight;
-	int keyUp;
-	int keyDown;
-	int keyJump;
-	int keyShoot;
-	int keyMenu;
-	int keyMap;
-
-	int keyRotLeft;
-	int keyRotRight;
-
-	//Gamepad keybinds
-	int padLeft;
-	int padRight;
-	int padUp;
-	int padDown;
-	int padJump;
-	int padShoot;
-	int padMenu;
-	int padMap;
-
-	int padRotLeft;
-	int padRotRight;
-};
-
 uint16_t readLEshort(const uint8_t *data, size_t offset) attrPure;
 uint32_t readLElong(const uint8_t *data, size_t offset) attrPure;
 
@@ -52,13 +18,6 @@ void writeFile(const std::string& name, const void *data, size_t amount);
 
 void loadProfile();
 void saveProfile();
-
-extern CONFIG *currentConfig;
-
-void setFromConfig(CONFIG *config);
-
-void loadConfig();
-void saveConfig();
 
 std::vector<std::string> getLinesFromFile(const std::string& fileName);
 

@@ -8,19 +8,19 @@
 
 using std::memcpy;
 
+bool useGamepad = false;
 SDL_GameController* currentGamepad = NULL;
 
-int keyLeft = SDL_SCANCODE_LEFT;
-int keyRight = SDL_SCANCODE_RIGHT;
-int keyUp = SDL_SCANCODE_UP;
-int keyDown = SDL_SCANCODE_DOWN;
-int keyJump = SDL_SCANCODE_Z;
-int keyShoot = SDL_SCANCODE_X;
-int keyMenu = SDL_SCANCODE_Q;
-int keyMap = SDL_SCANCODE_W;
-
-int keyRotLeft = SDL_SCANCODE_A;
-int keyRotRight = SDL_SCANCODE_S;
+int keyLeft;
+int keyRight;
+int keyUp;
+int keyDown;
+int keyJump;
+int keyShoot;
+int keyMenu;
+int keyMap;
+int keyRotLeft;
+int keyRotRight;
 
 static uint8_t key_prev[SDL_NUM_SCANCODES] = { 0 };
 static uint8_t key[SDL_NUM_SCANCODES] = { 0 };
@@ -58,7 +58,7 @@ void getKeys()
 
 bool isKeyDown(int keynum)
 {
-	if (currentConfig->useGamepad)
+	if (useGamepad)
 		return controller_buttons_held[keynum];
 	else
 		return (key[keynum] == 1);
@@ -66,7 +66,7 @@ bool isKeyDown(int keynum)
 
 bool isKeyPressed(int keynum)
 {
-	if (currentConfig->useGamepad)
+	if (useGamepad)
 		return controller_buttons_pressed[keynum];
 	else
 		return (key_prev[keynum] == 0 && key[keynum] == 1);

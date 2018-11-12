@@ -6,12 +6,8 @@
 #include <cstdio>
 #include <cstdlib>
 #include <sys/stat.h>
-#include <SDL_keyboard.h>
-#include <SDL_gamecontroller.h>
 #include <SDL_rwops.h>
-#include <SDL_messagebox.h>
 #include "main.h"
-#include "input.h"
 #include "render.h"
 #include "flags.h"
 #include "game.h"
@@ -272,104 +268,6 @@ void saveProfile()
 
 	//Save to file
 	writeFile(profileName, profile, 0x604);
-}
-
-//Save and load config.dat thing
-string configName = "Config.dat";
-CONFIG *currentConfig;
-int configVersion = 2;
-
-int defaultPadLeft = SDL_CONTROLLER_BUTTON_DPAD_LEFT;
-int defaultPadRight = SDL_CONTROLLER_BUTTON_DPAD_RIGHT;
-int defaultPadUp = SDL_CONTROLLER_BUTTON_DPAD_UP;
-int defaultPadDown = SDL_CONTROLLER_BUTTON_DPAD_DOWN;
-int defaultPadJump = SDL_CONTROLLER_BUTTON_A;
-int defaultPadShoot = SDL_CONTROLLER_BUTTON_X;
-int defaultPadMenu = SDL_CONTROLLER_BUTTON_Y;
-int defaultPadMap = SDL_CONTROLLER_BUTTON_B;
-
-int defaultPadRotLeft = SDL_CONTROLLER_BUTTON_LEFTSHOULDER;
-int defaultPadRotRight = SDL_CONTROLLER_BUTTON_RIGHTSHOULDER;
-
-CONFIG defaultConfigData = { configVersion, false, true, keyLeft, keyRight, keyUp, keyDown, keyJump, keyShoot, keyMenu, keyMap, keyRotLeft, keyRotRight, defaultPadLeft, defaultPadRight, defaultPadUp, defaultPadDown, defaultPadJump, defaultPadShoot, defaultPadMenu, defaultPadMap, defaultPadRotLeft, defaultPadRotRight };
-
-void setFromConfig(CONFIG *config)
-{
-	createWindow(screenWidth, screenHeight, screenScale);
-
-	if (windowFlags == SDL_WINDOW_FULLSCREEN)
-		switchScreenMode();
-
-	if (config->useGamepad)
-	{
-		keyLeft = config->padLeft;
-		keyRight = config->padRight;
-		keyUp = config->padUp;
-		keyDown = config->padDown;
-		keyJump = config->padJump;
-		keyShoot = config->padShoot;
-		keyMenu = config->padMenu;
-		keyMap = config->padMap;
-
-		keyRotLeft = config->padRotLeft;
-		keyRotRight = config->padRotRight;
-	}
-	else
-	{
-		keyLeft = config->keyLeft;
-		keyRight = config->keyRight;
-		keyUp = config->keyUp;
-		keyDown = config->keyDown;
-		keyJump = config->keyJump;
-		keyShoot = config->keyShoot;
-		keyMenu = config->keyMenu;
-		keyMap = config->keyMap;
-
-		keyRotLeft = config->keyRotLeft;
-		keyRotRight = config->keyRotRight;
-	}
-
-	currentConfig = config;
-
-	saveConfig();
-}
-
-void defaultConfig()
-{
-	setFromConfig(&defaultConfigData);
-}
-
-void loadConfig()
-{
-	if (!fileExists(configName))
-	{
-		return defaultConfig();
-	}
-	else
-	{
-		CONFIG *config;
-		size_t configSize = loadFile(configName, (uint8_t**)&config);
-
-		if (configSize < sizeof(config->version) || config->version != configVersion)
-		{
-			SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_WARNING, "Invalid config.dat", "Version isn't valid", nullptr);
-			return defaultConfig();
-		}
-		else if (configSize != sizeof(CONFIG))
-		{
-			SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_WARNING, "Invalid config.dat", "Not valid size.", nullptr);
-			return defaultConfig();
-		}
-
-		setFromConfig(config);
-	}
-}
-
-void saveConfig()
-{
-	uint8_t *writeData = (uint8_t*)malloc(sizeof(*currentConfig));
-	memcpy(writeData, currentConfig, sizeof(*currentConfig));
-	writeFile(configName, writeData, sizeof(*currentConfig));
 }
 
 /// Return a vector of strings containing the contents of the file who's name is given as argument
