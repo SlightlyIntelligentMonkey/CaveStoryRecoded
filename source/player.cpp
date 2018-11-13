@@ -198,23 +198,23 @@ void player::actNormal(bool bKey)
 
 		if (flag & water)
 		{
-			max_dash = 0x196;
-			gravity1 = 0x28;
-			gravity2 = 0x10;
-			jump = 0x280;
-			dash1 = 0x2A;
-			dash2 = 0x10;
-			resist = 0x19;
+			max_dash = 406;
+			gravity1 = 40;
+			gravity2 = 16;
+			jump = 640;
+			dash1 = 42;
+			dash2 = 16;
+			resist = 25;
 		}
 		else
 		{
-			max_dash = 0x32C;
-			gravity1 = 0x50;
-			gravity2 = 0x20;
-			jump = 0x500;
-			dash1 = 0x55;
-			dash2 = 0x20;
-			resist = 0x33;
+			max_dash = 812;
+			gravity1 = 80;
+			gravity2 = 32;
+			jump = 1280;
+			dash1 = 85;
+			dash2 = 32;
+			resist = 51;
 		}
 
 		ques = 0;

@@ -19,9 +19,6 @@
     <Filter Include="Source Files\modules\sound">
       <UniqueIdentifier>{b5c05ef0-304a-407a-8aa8-b2ea2bbd4ed1}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\modules\drawing">
-      <UniqueIdentifier>{f67e1619-7260-48d0-85ab-0e7d7bde77b4}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Source Files\modules\collision">
       <UniqueIdentifier>{60184d26-58a8-46b5-a929-e52d1fe5c897}</UniqueIdentifier>
     </Filter>
@@ -66,6 +63,9 @@
     </Filter>
     <Filter Include="Source Files\libraries">
       <UniqueIdentifier>{9d52d30d-d566-4716-b62d-904ce5c1ece2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\modules\drawing">
+      <UniqueIdentifier>{f67e1619-7260-48d0-85ab-0e7d7bde77b4}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
