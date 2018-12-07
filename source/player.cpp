@@ -277,16 +277,10 @@ void player::actNormal(bool bKey)
 
 			//Ending boost (2.0)
 			if (equip & equip_booster20 && boost_sw && (!isKeyDown(keyJump) || !boost_cnt))
-			{
 				if (boost_sw == 1)
-				{
 					xm /= 2;
-				}
 				else if (boost_sw == 2)
-				{
 					ym /= 2;
-				}
-			}
 
 			if (!boost_cnt || !isKeyDown(keyJump))
 				boost_sw = 0;
@@ -369,9 +363,7 @@ void player::actNormal(bool bKey)
 			}
 		}
 		else if (flag & windUp) //Gravity when in wind
-		{
 			ym += gravity1;
-		}
 		else if (equip & equip_booster08 && boost_sw && ym > pixelsToUnits(-2)) //Booster 8.0
 		{
 			ym -= 0x20;
@@ -386,13 +378,9 @@ void player::actNormal(bool bKey)
 				ym = pixelsToUnits(1);
 		}
 		else if (ym < 0 && bKey && isKeyDown(keyJump)) //Hold gravity
-		{
 			ym += gravity2;
-		}
 		else //Normal gravity
-		{
 			ym += gravity1;
-		}
 
 		//Keep Quote down on slopes
 		if (!bKey || !isKeyPressed(keyJump))

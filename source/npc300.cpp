@@ -185,3 +185,65 @@ void npcAct306(npc *NPC) // Balrog, Nurse
 
     NPC->doRects(rcLeft, rcRight);
 }
+
+void npcAct309(npc *NPC)
+{
+    constexpr array<RECT, 2> rcLeft = {{{0, 0, 16, 16}, {16, 0, 32, 16}}};
+    constexpr array<RECT, 2> rcRight = {{{0, 16, 16, 32}, {16, 16, 32, 32}}};
+
+    switch (NPC->act_no)
+    {
+    case 0:
+        NPC->act_no = 1;
+        // Fallthrough
+    case 1:
+        if ((NPC->direct != dirLeft &&
+             (currentPlayer.x >= NPC->x + tilesToUnits(18) || currentPlayer.x <= NPC->x + tilesToPixels(17)))
+            || (NPC->direct == dirLeft &&
+                (currentPlayer.x <= NPC->x - tilesToPixels(18) || currentPlayer.x >= NPC->x - tilesToPixels(17))))
+            return;
+        NPC->act_no = 10;
+        break;
+
+    case 10:
+        NPC->act_no = 11;
+        NPC->bits |= npc_shootable;
+        NPC->damage = 5;
+        // Fallthrough
+    case 11:
+        NPC->facePlayer();
+
+        if (NPC->direct != dirLeft)
+            NPC->xm2 += 0x10;
+        else
+            NPC->xm2 -= 0x10;
+
+        if (NPC->y <= currentPlayer.y)
+            NPC->ym2 += 0x10;
+        else
+            NPC->ym2 -= 0x10;
+
+        if ((NPC->xm2 < 0 && NPC->flag & leftWall) || (NPC->xm2 > 0 && NPC->flag & rightWall))
+            NPC->xm2 = -NPC->xm2;
+
+        if ((NPC->ym2 < 0 && NPC->flag & ceiling) || (NPC->ym2 > 0 && NPC->flag & ground))
+            NPC->ym2 = -NPC->ym2;
+
+        NPC->limitXVel2(0x5FF);
+        NPC->limitYVel2(0x5FF);
+
+        NPC->x += NPC->xm2;
+        NPC->y += NPC->ym2;
+
+        NPC->animate(1, 0, 1);
+        break;
+    }
+
+    NPC->doRects(rcLeft, rcRight);
+
+    if (NPC->life <= 996)
+    {
+        NPC->code_char = NPC_EnemyButeDefeated;
+        NPC->act_no = 0;
+    }
+}
