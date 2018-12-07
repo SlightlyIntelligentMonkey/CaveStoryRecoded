@@ -1,6 +1,7 @@
 #include "main.h"
 
 #include <string>
+#include <typeinfo>
 #include "SDL.h"
 #include "sound.h"
 #include "script.h"
@@ -15,6 +16,7 @@
 #include "stage.h"
 
 using std::string;
+using std::to_string;
 
 // Some global functions
 
@@ -121,6 +123,35 @@ void init()
 	logInfo("Finished init");
 }
 
+[[noreturn]] void handleExceptionAndAbort()
+{
+	try
+	{
+		throw;
+	} catch (std::exception& e)
+	{
+        doCustomError("Exception thrown : " + string(e.what()));
+	} catch (const int i)
+	{
+		doCustomError("int exception : " + to_string(i));
+	} catch (const long l)
+	{
+		doCustomError("long exception : " + to_string(l));
+	} catch (const char *p)
+	{
+	    if (p)
+            doCustomError("char * exception : " + string(p));
+        else
+            doCustomError("Someone threw a nullptr char *");
+	} catch (const void *p)
+	{
+        doCustomError("Someone threw a pointer to " + to_string(reinterpret_cast<uintptr_t>(p)));
+	} catch (...)
+	{
+		doCustomError("Nope, sorry, no idea wtf happened");
+	}
+}
+
 int main(int /*argc*/, char ** /*argv*/) // TBD : Do something with command-line parameters
 {
 	try
@@ -132,8 +163,8 @@ int main(int /*argc*/, char ** /*argv*/) // TBD : Do something with command-line
 		doQuit();
 		return 0;
 	}
-	catch (const std::exception& e)
+	catch (...)
 	{
-		doCustomError(e.what());
+        handleExceptionAndAbort();
 	}
 }

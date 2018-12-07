@@ -342,9 +342,7 @@ void defaultConfig()
 void loadConfig()
 {
 	if (!fileExists(configName))
-	{
 		return defaultConfig();
-	}
 	else
 	{
 		CONFIG *config;

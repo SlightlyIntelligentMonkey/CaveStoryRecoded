@@ -95,9 +95,7 @@ int bulletJudgeBlock2(int x, int y, const uint8_t *atrb, bullet *bul) //For judg
 			hit |= leftWall;
 	}
 	else if (bul->x - bul->blockXL < workX && bul->y - bul->blockYL < workY - 0x600)
-	{
 		hit |= leftWall;
-	}
 
 	//Check if hitting right wall
 	if (block[1] && block[3])
@@ -127,9 +125,7 @@ int bulletJudgeBlock2(int x, int y, const uint8_t *atrb, bullet *bul) //For judg
 			hit |= ceiling;
 	}
 	else if (bul->y - bul->blockYL < workY && bul->x - bul->blockXL < workX - 0x600)
-	{
 		hit |= ceiling;
-	}
 
 	//Check if hitting ground
 	if (block[2] && block[3])
@@ -143,9 +139,7 @@ int bulletJudgeBlock2(int x, int y, const uint8_t *atrb, bullet *bul) //For judg
 			hit |= ground;
 	}
 	else if (bul->y + bul->blockYL > workY && bul->x - bul->blockXL < workX - 1536)
-	{
 		hit |= ground;
-	}
 
 	//Push out of walls if solid
 	if (bul->bbits & bullet_goThroughWalls)
