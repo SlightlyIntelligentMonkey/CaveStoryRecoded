@@ -1,4 +1,5 @@
 #include <string>
+#include <limits>
 #include <fstream>
 #include <json.hpp>
 #include <SDL_render.h>
@@ -45,34 +46,49 @@ json loadJsonFromFile(const string& path)
 	return j;
 }
 
-const int defaultKeyLeft = SDL_SCANCODE_LEFT;
-const int defaultKeyRight = SDL_SCANCODE_RIGHT;
-const int defaultKeyUp = SDL_SCANCODE_UP;
-const int defaultKeyDown = SDL_SCANCODE_DOWN;
-const int defaultKeyJump = SDL_SCANCODE_Z;
-const int defaultKeyShoot = SDL_SCANCODE_X;
-const int defaultKeyMenu = SDL_SCANCODE_Q;
-const int defaultKeyMap = SDL_SCANCODE_W;
-const int defaultKeyRotLeft = SDL_SCANCODE_A;
-const int defaultKeyRotRight = SDL_SCANCODE_S;
+/*constexpr int defaultPadLeft = SDL_CONTROLLER_BUTTON_DPAD_LEFT;
+constexpr int defaultPadRight = SDL_CONTROLLER_BUTTON_DPAD_RIGHT;
+constexpr int defaultPadUp = SDL_CONTROLLER_BUTTON_DPAD_UP;
+constexpr int defaultPadDown = SDL_CONTROLLER_BUTTON_DPAD_DOWN;
+constexpr int defaultPadJump = SDL_CONTROLLER_BUTTON_A;
+constexpr int defaultPadShoot = SDL_CONTROLLER_BUTTON_X;
+constexpr int defaultPadMenu = SDL_CONTROLLER_BUTTON_Y;
+constexpr int defaultPadMap = SDL_CONTROLLER_BUTTON_B;
+constexpr int defaultPadRotLeft = SDL_CONTROLLER_BUTTON_LEFTSHOULDER;
+constexpr int defaultPadRotRight = SDL_CONTROLLER_BUTTON_RIGHTSHOULDER;*/
 
-const int defaultPadLeft = SDL_CONTROLLER_BUTTON_DPAD_LEFT;
-const int defaultPadRight = SDL_CONTROLLER_BUTTON_DPAD_RIGHT;
-const int defaultPadUp = SDL_CONTROLLER_BUTTON_DPAD_UP;
-const int defaultPadDown = SDL_CONTROLLER_BUTTON_DPAD_DOWN;
-const int defaultPadJump = SDL_CONTROLLER_BUTTON_A;
-const int defaultPadShoot = SDL_CONTROLLER_BUTTON_X;
-const int defaultPadMenu = SDL_CONTROLLER_BUTTON_Y;
-const int defaultPadMap = SDL_CONTROLLER_BUTTON_B;
-const int defaultPadRotLeft = SDL_CONTROLLER_BUTTON_LEFTSHOULDER;
-const int defaultPadRotRight = SDL_CONTROLLER_BUTTON_RIGHTSHOULDER;
+template<typename T> void safeGet(const json& j, const string& name, T& varTbc)
+{
+	if (typeid(T) == typeid(string))
+	{
+		auto tmp = j[name];
+		if (tmp.is_string())
+			varTbc = tmp;
+	}
+	else if (typeid(T) == typeid(bool))
+    {
+        if (j[name] == true)
+            varTbc = true;
+    }
+    else if (std::numeric_limits<T>::is_integer)
+    {
+        auto tmp = j[name];
+        if (tmp.is_number())
+            varTbc = tmp;
+    }
+    else
+    {
+        // I dunno how to make this fail here at compile-time
+        throw std::runtime_error("Bad type for safeGet");
+    }
+}
 
 void loadConfigFiles()
 {
-	auto jconfig = loadJsonFromFile("config.json");
+	auto jConfig = loadJsonFromFile("config.json");
 
 	debugFlags = 0;
-	auto jDbgFlgs = jconfig["debugFlags"];
+	auto jDbgFlgs = jConfig["debugFlags"];
 	if (jDbgFlgs["showSlots"] == true)
 		debugFlags |= showSlots;
 	if (jDbgFlgs["showNPCId"] == true)
@@ -84,44 +100,30 @@ void loadConfigFiles()
 	if (jDbgFlgs["showNPCHealth"] == true)
 		debugFlags |= showNPCHealth;
 
-	disableOrg = false;
+    safeGet(jConfig, "profileName", profileName);
+    safeGet(jConfig, "profileCode", profileCode);
+    safeGet(jConfig, "disableDamage", disableDamage);
+    safeGet(jConfig, "disableOrg", disableOrg);
+    safeGet(jConfig, "millisecondsPerFrame", framewait);
 
-	if (jconfig["disableOrg"] == true)
-		disableOrg = true;
+    auto jScreen = jConfig["screen"];
+    safeGet(jScreen, "width", screenWidth);
+    safeGet(jScreen, "height", screenHeight);
+    safeGet(jScreen, "scale", screenScale);
 
-	if (jconfig["profileName"].is_string())
-		profileName = jconfig["profileName"];
+    safeGet(jConfig, "displayFpsCounter", displayFpsCounter);
+    safeGet(jConfig, "useGamepad", useGamepad);
 
-	if (jconfig["profileCode"].is_string())
-		profileCode = jconfig["profileCode"];
+	auto jKeys = jConfig["keys"];
 
-	if (jconfig["disableDamage"] == true)
-		disableDamage = true;
-
-	if (jconfig["millisecondsPerFrame"].is_number())
-		framewait = jconfig["millisecondsPerFrame"];
-
-	if (jconfig["width"].is_number())
-		screenWidth = jconfig["width"];
-	if (jconfig["height"].is_number())
-		screenHeight = jconfig["height"];
-	if (jconfig["scale"].is_number())
-		screenScale = jconfig["scale"];
-
-	if (jconfig["displayFpsCounter"] == true)
-		displayFpsCounter = true;
-
-	if (jconfig["useGamepad"] == true)
-		useGamepad = true;
-
-	keyLeft = defaultKeyLeft;
-	keyRight = defaultKeyRight;
-	keyUp = defaultKeyUp;
-	keyDown = defaultKeyDown;
-	keyJump = defaultKeyJump;
-	keyShoot = defaultKeyShoot;
-	keyMenu = defaultKeyMenu;
-	keyMap = defaultKeyMap;
-	keyRotLeft = defaultKeyRotLeft;
-	keyRotRight = defaultKeyRotRight;
+	safeGet(jKeys, "keyLeft", keyLeft);
+	safeGet(jKeys, "keyRight", keyRight);
+    safeGet(jKeys, "keyUp", keyUp);
+    safeGet(jKeys, "keyDown", keyDown);
+    safeGet(jKeys, "keyJump", keyJump);
+    safeGet(jKeys, "keyShoot", keyShoot);
+    safeGet(jKeys, "keyMenu", keyMenu);
+    safeGet(jKeys, "keyMap", keyMap);
+    safeGet(jKeys, "keyRotLeft", keyRotLeft);
+    safeGet(jKeys, "keyRotRight", keyRotRight);
 }
