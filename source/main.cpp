@@ -9,7 +9,6 @@
 #include "flags.h"
 #include "player.h"
 #include "render.h"
-#include "filesystem.h"
 #include "game.h"
 #include "loadConfig.h"
 #include "log.h"
@@ -50,32 +49,32 @@ SDL_Texture* sprites[0x28];
 
 void loadInitialSprites()
 {
-	loadImage("data/Title.png", &sprites[TEX_TITLE]);
-	loadImage("data/Pixel.png", &sprites[TEX_PIXEL]);
+	loadImage("Title", &sprites[TEX_TITLE]);
+	loadImage("Pixel", &sprites[TEX_PIXEL]);
 
-	loadImage("data/Fade.png", &sprites[TEX_FADE]);
+	loadImage("Fade", &sprites[TEX_FADE]);
 
-	loadImage("data/ItemImage.png", &sprites[TEX_ITEMIMAGE]);
+	loadImage("ItemImage", &sprites[TEX_ITEMIMAGE]);
 
-	loadImage("data/Arms.png", &sprites[TEX_ARMS]);
-	loadImage("data/ArmsImage.png", &sprites[TEX_ARMSIMAGE]);
+	loadImage("Arms", &sprites[TEX_ARMS]);
+	loadImage("ArmsImage", &sprites[TEX_ARMSIMAGE]);
 
-	loadImage("data/StageImage.png", &sprites[TEX_STAGEIMAGE]);
+	loadImage("StageImage", &sprites[TEX_STAGEIMAGE]);
 
-	loadImage("data/MyChar.png", &sprites[TEX_MYCHAR]);
+	loadImage("MyChar", &sprites[TEX_MYCHAR]);
 
-	loadImage("data/Bullet.png", &sprites[TEX_BULLET]);
-	loadImage("data/Caret.png", &sprites[TEX_CARET]);
+	loadImage("Bullet", &sprites[TEX_BULLET]);
+	loadImage("Caret", &sprites[TEX_CARET]);
 
-	loadImage("data/Npc/NpcSym.png", &sprites[TEX_NPC_SYM]);
+	loadImage("Npc/NpcSym", &sprites[TEX_NPC_SYM]);
 
-	loadImage("data/Npc/NpcRegu.png", &sprites[TEX_NPC_REGU]);
+	loadImage("Npc/NpcRegu", &sprites[TEX_NPC_REGU]);
 
-	loadImage("data/TextBox.png", &sprites[TEX_TEXTBOX]);
-	loadImage("data/Face.png", &sprites[TEX_FACE]);
+	loadImage("TextBox", &sprites[TEX_TEXTBOX]);
+	loadImage("Face", &sprites[TEX_FACE]);
 
-	loadImage("data/Font.png", &sprites[0x26]);
-	loadImage("data/Missing.png", &sprites[0x27]);
+	loadImage("Font", &sprites[0x26]);
+	loadImage("Missing", &sprites[0x27]);
 
 }
 
@@ -94,14 +93,77 @@ void init()
 		doCustomError("Couldn't initiate SDL");
 
 	loadConfigFiles();
-	loadConfig();
+	CONFIG *config = loadConfigdat();
+	
+	if (config != nullptr)
+	{
+		if (config->attack_button_mode == 1)
+		{
+			keyJump = SDL_SCANCODE_X;
+			keyShoot = SDL_SCANCODE_Z;
+		}
+		else
+		{
+			keyJump = SDL_SCANCODE_Z;
+			keyShoot = SDL_SCANCODE_X;
+		}
+		/* no ok button/key currently implemented
+		if (config->ok_button_mode == 1)
+		{
+			keyOk = keyShoot;
+			keyCancel = keyJump;
+		}
+		else
+		{
+			keyOk = keyJump;
+			keyCancel = keyShoot;
+		}
+		*/
+		if (config->move_button_mode == 1)
+		{
+			keyLeft = SDL_SCANCODE_COMMA;
+			keyRight = SDL_SCANCODE_SLASH;
+			keyDown = SDL_SCANCODE_PERIOD;
+			keyUp = SDL_SCANCODE_SEMICOLON;
+		}
+		else
+		{
+			keyLeft = SDL_SCANCODE_LEFT;
+			keyRight = SDL_SCANCODE_RIGHT;
+			keyDown = SDL_SCANCODE_DOWN;
+			keyUp = SDL_SCANCODE_UP;
+		}
+
+		switch (config->display_mode)
+		{
+		case(0):
+			createWindow(320, 240, 2);
+			switchScreenMode();
+			break;
+		case(1):
+			createWindow(320, 240, 1);
+			break;
+		case(2):
+			createWindow(320, 240, 2);
+			break;
+		default:
+			createWindow(320, 240, 2);
+			switchScreenMode();
+			break;
+		}
+
+		free(config);
+	}
+	else
+	{
+		createWindow(screenWidth, screenHeight, screenScale);
+	}
 
 	//draws loading
-	loadImage("data/Loading.png", &sprites[TEX_LOADING]);   // Load the loading sprite now so that we can display it
+	loadImage("Loading", &sprites[TEX_LOADING]);   // Load the loading sprite now so that we can display it
 	SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
 	SDL_RenderClear(renderer);
-	RECT rcLoad = { 0, 0, 64, 8 };
-	drawTexture(sprites[TEX_LOADING], &rcLoad, (screenWidth >> 1) - (rcLoad.right >> 1), (screenHeight >> 1) - (rcLoad.bottom >> 1));
+	drawTexture(sprites[TEX_LOADING], nullptr, screenWidth >> 1, screenHeight >> 1);
 	SDL_RenderPresent(renderer);
 
 	initTsc();

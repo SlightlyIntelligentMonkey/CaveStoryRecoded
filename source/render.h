@@ -21,7 +21,7 @@ extern int screenHeight;
 
 extern int screenScale;
 
-extern int framerate;
+extern int framewait;
 
 extern uint32_t windowFlags;
 

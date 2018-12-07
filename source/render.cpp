@@ -8,6 +8,7 @@
 #include "common.h"
 #include "input.h"
 #include "log.h"
+#include "filesystem.h"
 
 using std::string;
 
@@ -34,7 +35,7 @@ int charWidth = 24;
 int charHeight = 24;
 int charScale = 2;
 
-int framerate = 20; //17 for 60-ish fps
+int framewait = 20; //17 for 60-ish fps
 
 uint32_t windowFlags = 0;
 
@@ -88,6 +89,24 @@ static SDL_Texture* loadPNGToTexture(SDL_Renderer *localRenderer, const string& 
 			doCustomError((std::string)"loadPNGToTexture failed!\n\nSDL2 error: " + SDL_GetError());
 
 		SDL_FreeSurface(surface);
+	}
+
+	return texture;
+}
+
+static SDL_Texture* loadBMPToTexture(SDL_Renderer *rend, const string& path)
+{
+	SDL_Texture *texture = nullptr;
+	SDL_Surface *surf = SDL_LoadBMP(path.c_str());
+	if (surf)
+	{
+		SDL_SetColorKey(surf, 1, 0);
+		texture = SDL_CreateTextureFromSurface(rend, surf);
+
+		if (texture == nullptr)
+			doCustomError((std::string)"loadBMPToTexture failed!\n\nSDL2 error: " + SDL_GetError());
+
+		SDL_FreeSurface(surf);
 	}
 
 	return texture;
@@ -243,16 +262,16 @@ bool drawWindow()
 		if (!handleEvents())
 			return false;
 
-		//Framerate limiter
+		//framerate limiter
 		static uint32_t timePrev;
 		const uint32_t timeNow = SDL_GetTicks();
 
-		if (timeNow >= timePrev + framerate)
+		if (timeNow >= timePrev + framewait)
 		{
 			if (timeNow >= timePrev + 100)
 				timePrev = timeNow;	// If the timer is freakishly out of sync, panic and reset it, instead of spamming frames for who-knows how long
 			else
-				timePrev += framerate;
+				timePrev += framewait;
 			break;
 		}
 
@@ -302,7 +321,13 @@ void loadImage(const string& file, SDL_Texture **tex)
 	//Destroy previously existing texture and load new one
 	if (*tex != nullptr)
 		SDL_DestroyTexture(*tex);
-	*tex = loadPNGToTexture(renderer, file);
+
+	//loads either a png or bmp
+	if(fileExists("data/" + file + ".png"))
+		*tex = loadPNGToTexture(renderer, "data/" + file + ".png");
+	if (fileExists("data/" + file + ".bmp"))
+		*tex = loadBMPToTexture(renderer, "data/" + file + ".bmp");
+	
 
 	//Error if anything failed
 	if (*tex == nullptr)
@@ -392,8 +417,8 @@ void drawTexture(SDL_Texture *texture, const RECT *rect, int x, int y)
 		int w, h;
 		SDL_QueryTexture(texture, nullptr, nullptr, &w, &h);
 
-		rcDraw.x = x * screenScale;
-		rcDraw.y = y * screenScale;
+		rcDraw.x = (x-(w/2)) * screenScale;
+		rcDraw.y = (y-(h/2)) * screenScale;
 		rcDraw.w = w * screenScale;
 		rcDraw.h = h * screenScale;
 

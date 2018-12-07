@@ -106,7 +106,7 @@ void launchSuperMissile(int level)
 			bulletId = bullet_SuperMissileLauncherLevel2;
 			break;
 		case(3):
-			if (weaponBullets(10) >= 3 || weaponBullets(11) >= 3) { return; }
+			if (weaponBullets(10) > 3 || weaponBullets(11) > 3) { return; }
 			bulletId = bullet_SuperMissileLauncherLevel3;
 			break;
 		}
