@@ -15,10 +15,14 @@
 #include "player.h"
 #include "render.h"
 #include "input.h"
+#include "log.h"
+#include "main.h"
 
 using std::string;
 using std::ifstream;
 using nlohmann::json;
+using nlohmann::detail::parse_error;
+using std::to_string;
 
 //Save and load config.dat (original cvae story) thing
 string configName = "Config.dat";
@@ -42,7 +46,19 @@ json loadJsonFromFile(const string& path)
 		return json();
 	ifstream file(path);
 	json j;
-	file >> j;
+	logInfo("Opening " + path);
+	try
+	{
+        file >> j;
+	}
+	catch (const parse_error& e)
+	{
+        doCustomError("Exception while loading \"" + path + "\" at byte " + to_string(e.byte) + ". Exception details : " + e.what());
+	}
+	catch (const std::exception& e)
+	{
+	    doCustomError("Exception while loading \"" + path + "\". Exception details : " + e.what());
+	}
 	return j;
 }
 
@@ -59,28 +75,23 @@ constexpr int defaultPadRotRight = SDL_CONTROLLER_BUTTON_RIGHTSHOULDER;*/
 
 template<typename T> void safeGet(const json& j, const string& name, T& varTbc)
 {
-	if (typeid(T) == typeid(string))
+	if constexpr(std::is_same_v<T, string>)
 	{
-		auto tmp = j[name];
-		if (tmp.is_string())
-			varTbc = tmp;
+		if (j[name].is_string())
+			varTbc = j[name];
 	}
-	else if (typeid(T) == typeid(bool))
+	else if constexpr(std::is_same_v<T, bool>)
     {
-        if (j[name] == true)
-            varTbc = true;
+        if (j[name].is_boolean())
+            varTbc = j[name];
     }
-    else if (std::numeric_limits<T>::is_integer)
+    else if constexpr(std::numeric_limits<T>::is_integer)
     {
-        auto tmp = j[name];
-        if (tmp.is_number())
-            varTbc = tmp;
+        if (j[name].is_number())
+            varTbc = j[name];
     }
     else
-    {
-        // I dunno how to make this fail here at compile-time
-        throw std::runtime_error("Bad type for safeGet");
-    }
+        static_assert(std::is_same_v<T, void>, "This type is not supported");   // Best I can think of right now. There are probably better ways, but this works I suppose
 }
 
 void loadConfigFiles()
@@ -105,14 +116,14 @@ void loadConfigFiles()
     safeGet(jConfig, "disableDamage", disableDamage);
     safeGet(jConfig, "disableOrg", disableOrg);
     safeGet(jConfig, "millisecondsPerFrame", framewait);
+    safeGet(jConfig, "displayFpsCounter", displayFpsCounter);
+    safeGet(jConfig, "useGamepad", useGamepad);
 
     auto jScreen = jConfig["screen"];
     safeGet(jScreen, "width", screenWidth);
     safeGet(jScreen, "height", screenHeight);
     safeGet(jScreen, "scale", screenScale);
 
-    safeGet(jConfig, "displayFpsCounter", displayFpsCounter);
-    safeGet(jConfig, "useGamepad", useGamepad);
 
 	auto jKeys = jConfig["keys"];
 

@@ -199,8 +199,6 @@ void debugFunction()
 		{
 			debugMode = 1;
 			cmd.clear();
-			if (cmd.capacity() > 1024)
-                cmd.shrink_to_fit();
 			cmd += "<";
 		}
 		break;

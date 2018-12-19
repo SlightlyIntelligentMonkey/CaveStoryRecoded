@@ -16,6 +16,7 @@
 				</Compiler>
 			</Target>
 		</Build>
+		<Unit filename="Json_Modern_Cpp/json.hpp" />
 		<Unit filename="source/CaveStoryEngine.rc">
 			<Option compilerVar="WINDRES" />
 		</Unit>

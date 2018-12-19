@@ -22,7 +22,7 @@ OPTIMISATIONS := -O3 -frename-registers
 # OPTIMISATIONS += -flto
 # Link-time optimizing makes the linking super long so it's are unactivated by default
 
-CXXFLAGS := $(CXX) $(OPTIMISATIONS) $(WARNINGS) `sdl2-config --cflags` -std=c++17 -IJson_Modern_Cpp -c -MMD -MP -MF $@.d
+CXXFLAGS = $(CXX) $(OPTIMISATIONS) $(WARNINGS) `sdl2-config --cflags` -std=c++17 -IJson_Modern_Cpp -c -MMD -MP -MF $@.d
 LDFLAGS := $(CXX) $(OPTIMISATIONS) $(WARNINGS) -s
 
 ifeq ($(detected_OS),Windows)
