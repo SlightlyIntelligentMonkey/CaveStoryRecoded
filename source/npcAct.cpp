@@ -18,6 +18,7 @@
 #include "npc300.h"
 #include "npc320.h"
 #include "npc340.h"
+#include "npc360.h"
 
 const npcAct npcActs[361] =
 {
@@ -357,7 +358,7 @@ const npcAct npcActs[361] =
 	&npcActNone,
 	&npcAct334,
 	&npcActNone,
-	&npcActNone,
+	&npcAct336,
 	&npcActNone,
 	&npcActNone,
 	&npcActNone,
@@ -381,5 +382,5 @@ const npcAct npcActs[361] =
 	&npcActNone,
 	&npcActNone,
 	&npcAct359,
-	&npcActNone,
+	&npcAct360,
 };

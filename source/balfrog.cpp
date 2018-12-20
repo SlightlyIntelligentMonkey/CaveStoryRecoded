@@ -365,8 +365,8 @@ void actBoss_Balfrog(npc *boss)
 			viewport.quake = 60;
 			boss->act_no = 100;
 			boss->ani_no = 1;
-			boss->view.top = 24576;
-			boss->view.bottom = 0x2000;
+			boss->view.top = tilesToUnits(3);
+			boss->view.bottom = tilesToUnits(1);
 			for (int i = 0; i <= 1; ++i)
 				createNpc(NPC_EnemyFrog, random(4, 16) << 13, random(0, 4) << 13, 0, 0, dirAuto);
 			for (int i = 0; i <= 5; ++i)

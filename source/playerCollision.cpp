@@ -119,7 +119,7 @@ int playerJudgeTriangleB(const RECT *rcHit, player *me, int tx, int ty)
 	if (me->x > (2 * tx - 1) << 12
 	        && me->x < (2 * tx + 1) << 12
 	        && me->y - rcHit->top < tilesToUnits(ty) - (-0x2000 * tx + me->x) / 2 - 0x800
-	        && me->y + rcHit->bottom >(2 * ty - 1) << 12)
+	        && me->y + rcHit->bottom > (2 * ty - 1) << 12)
 	{
 		if (!(me->cond & player_removed) && me->ym < -0x200)
 			putLittleStar(rcHit, me);
@@ -141,7 +141,7 @@ int playerJudgeTriangleC(const RECT *rcHit, player *me, int tx, int ty)
 	if (me->x > (2 * tx - 1) << 12
 	        && me->x < (2 * tx + 1) << 12
 	        && me->y - rcHit->top < tilesToUnits(ty) + (-0x2000 * tx + me->x) / 2 - 0x800
-	        && me->y + rcHit->bottom >(2 * ty - 1) << 12)
+	        && me->y + rcHit->bottom > (2 * ty - 1) << 12)
 	{
 		if (!(me->cond & player_removed) && me->ym < -0x200)
 			putLittleStar(rcHit, me);
@@ -163,7 +163,7 @@ int playerJudgeTriangleD(const RECT *rcHit, player *me, int tx, int ty)
 	if (me->x > (2 * tx - 1) << 12
 	        && me->x < (2 * tx + 1) << 12
 	        && me->y - rcHit->top < tilesToUnits(ty) + (-0x2000 * tx + me->x) / 2 + 0x800
-	        && me->y + rcHit->bottom >(2 * ty - 1) << 12)
+	        && me->y + rcHit->bottom > (2 * ty - 1) << 12)
 	{
 		if (!(me->cond & player_removed) && me->ym < -0x200)
 			putLittleStar(rcHit, me);
@@ -203,7 +203,7 @@ int playerJudgeTriangleE(const RECT *rcHit, player *me, int tx, int ty)
 int playerJudgeTriangleF(const RECT *rcHit, player *me, int tx, int ty)
 {
 	if (me->x < (2 * tx + 1) << 12
-	        && me->x >(2 * tx - 1) << 12
+	        && me->x > (2 * tx - 1) << 12
 	        && me->y + rcHit->bottom > tilesToUnits(ty) + (-0x2000 * tx + me->x) / 2 + 0x800
 	        && me->y - rcHit->top < (2 * ty + 1) << 12)
 	{
@@ -331,9 +331,9 @@ int playerJudgeCurrentUp(const RECT *rcHit, const player *me, int tx, int ty) at
 int playerJudgeCurrentUp(const RECT *rcHit, const player *me, int tx, int ty)
 {
 	if (me->x - rcHit->left < (4 * (2 * tx + 1) - 1) << 10
-	        && me->x + rcHit->right >(4 * (2 * tx - 1) + 1) << 10
+	        && me->x + rcHit->right > (4 * (2 * tx - 1) + 1) << 10
 	        && me->y - rcHit->top < (4 * (2 * ty + 1) - 1) << 10
-	        && me->y + rcHit->bottom >(4 * (2 * ty - 1) + 1) << 10)
+	        && me->y + rcHit->bottom > (4 * (2 * ty - 1) + 1) << 10)
 	{
 		return windUp;
 	}
@@ -346,9 +346,9 @@ int playerJudgeCurrentRight(const RECT *rcHit, const player *me, int tx, int ty)
 int playerJudgeCurrentRight(const RECT *rcHit, const player *me, int tx, int ty)
 {
 	if (me->x - rcHit->left < (4 * (2 * tx + 1) - 1) << 10
-	        && me->x + rcHit->right >(4 * (2 * tx - 1) + 1) << 10
+	        && me->x + rcHit->right > (4 * (2 * tx - 1) + 1) << 10
 	        && me->y - rcHit->top < (4 * (2 * ty + 1) - 1) << 10
-	        && me->y + rcHit->bottom >(4 * (2 * ty - 1) + 1) << 10)
+	        && me->y + rcHit->bottom > (4 * (2 * ty - 1) + 1) << 10)
 	{
 		return windRight;
 	}
@@ -361,9 +361,9 @@ attrPure int playerJudgeCurrentDown(const RECT *rcHit, const player *me, int tx,
 int playerJudgeCurrentDown(const RECT *rcHit, const player *me, int tx, int ty)
 {
 	if (me->x - rcHit->left < (4 * (2 * tx + 1) - 1) << 10
-	        && me->x + rcHit->right >(4 * (2 * tx - 1) + 1) << 10
+	        && me->x + rcHit->right > (4 * (2 * tx - 1) + 1) << 10
 	        && me->y - rcHit->top < (4 * (2 * ty + 1) - 1) << 10
-	        && me->y + rcHit->bottom >(4 * (2 * ty - 1) + 1) << 10)
+	        && me->y + rcHit->bottom > (4 * (2 * ty - 1) + 1) << 10)
 	{
 		return windDown;
 	}

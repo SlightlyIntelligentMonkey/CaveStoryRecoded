@@ -123,6 +123,8 @@
 		<Unit filename="source/npc320.h" />
 		<Unit filename="source/npc340.cpp" />
 		<Unit filename="source/npc340.h" />
+		<Unit filename="source/npc360.cpp" />
+		<Unit filename="source/npc360.h" />
 		<Unit filename="source/npcAct.cpp" />
 		<Unit filename="source/npcAct.h" />
 		<Unit filename="source/npcCollision.cpp" />

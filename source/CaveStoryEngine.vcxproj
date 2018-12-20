@@ -266,6 +266,7 @@
     <ClCompile Include="npc300.cpp" />
     <ClCompile Include="npc320.cpp" />
     <ClCompile Include="npc340.cpp" />
+    <ClCompile Include="npc360.cpp" />
     <ClCompile Include="npcCollision.cpp" />
     <ClCompile Include="filesystem.cpp" />
     <ClCompile Include="flags.cpp" />
@@ -350,6 +351,7 @@
     <ClInclude Include="weapons.h" />
     <ClInclude Include="hud.h" />
     <ClInclude Include="npc340.h" />
+    <ClInclude Include="npc360.h" />
     <ClInclude Include="npcCollision.h" />
     <ClInclude Include="main.h" />
     <ClInclude Include="filesystem.h" />

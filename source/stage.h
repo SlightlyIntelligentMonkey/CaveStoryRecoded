@@ -68,24 +68,32 @@ void loadStageTable();
 void loadLevel(int levelIndex);
 void drawLevel(bool foreground);
 
-// Note : 1 tile is 0x2000 units
-
 template<typename T> constexpr inline int32_t tilesToUnits(T x)
 {
-    return x * 0x2000;
+    return x * 0x2000;  // x * 8192 or x << 13
 }
 
 template<typename T> constexpr inline int32_t unitsToTiles(T x)
 {
-	return x / 0x2000;
+	return x / 0x2000;  // x / 8192 or x >> 13
 }
 
 template<typename T> constexpr inline int32_t tilesToPixels(T x)
 {
-	return x * 16;
+	return x * 0x10;    // x * 16 or x << 4
 }
 
 template<typename T> constexpr inline int32_t pixelsToTiles(T x)
 {
-	return x / 16;
+	return x / 0x10;    // x / 16 or x >> 4
+}
+
+template <typename T> constexpr inline int32_t pixelsToUnits(T x)
+{
+	return x * 0x200;   // x * 512 or x >> 9
+}
+
+template <typename T> constexpr inline T unitsToPixels(T x)
+{
+	return x / 0x200;   // x / 512 or x << 9
 }

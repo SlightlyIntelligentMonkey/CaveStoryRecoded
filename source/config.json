@@ -28,17 +28,21 @@
 	},
 
 	"displayFpsCounter": true,
+
+
+	"useGamepad": false,
+	
 	
 	"keys": {
-		"keyLeft" = 80,
-		"keyRight" = 79,
-		"keyUp" = 82,
-		"keyDown" = 81,
-		"keyJump" = 29,
-		"keyShoot" = 27,
-		"keyMenu" = 20,
-		"keyMap" = 26,
-		"keyRotLeft" = 4,
-		"keyRotRight" = 22,
+		"keyLeft": 80,
+		"keyRight": 79,
+		"keyUp": 82,
+		"keyDown": 81,
+		"keyJump": 29,
+		"keyShoot": 27,
+		"keyMenu": 20,
+		"keyMap": 26,
+		"keyRotLeft": 4,
+		"keyRotRight": 22,
 	}
 }

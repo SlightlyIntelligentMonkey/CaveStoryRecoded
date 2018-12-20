@@ -6,6 +6,7 @@
 #include "render.h"
 #include "game.h"
 #include "sound.h"
+#include "mathUtils.h"
 
 using std::array;
 
@@ -205,16 +206,16 @@ void npcAct328(npc *NPC) // Transmogrifier
 
 void npcAct334(npc *NPC) //sweat
 {
-	RECT rcRight[] =
-	{
+	std::array<RECT, 2> rcRight =
+	{{
 		{176, 184, 184, 200},
 		{184, 184, 192, 200}
-	};
-	RECT rcLeft[] =
-	{
+	}};
+	std::array<RECT, 2> rcLeft =
+	{{
 		{160, 184, 168, 200},
 		{168, 184, 176, 200}
-	};
+	}};
 
 	if (NPC->act_no != 0)
 	{
@@ -242,14 +243,18 @@ void npcAct334(npc *NPC) //sweat
 	if (NPC->act_wait > 63)
 		NPC->cond = 0;
 LABEL_12:
-	if (NPC->direct)
-	{
-		NPC->rect = rcRight[NPC->ani_no];
-	}
-	else
-	{
-		NPC->rect = rcLeft[NPC->ani_no];
-	}
+	NPC->doRects(rcLeft, rcRight);
 
 	return;
+}
+
+void npcAct336(npc *NPC)    // Generator - Ikachan
+{
+    if (NPC->act_no == 0)
+    {
+        if (currentPlayer.shock)
+            NPC->cond = 0;
+    }
+    else if (NPC->act_no == 10 && ++NPC->act_wait % 4 == 1)
+        createNpc(NPC_Ikachan, NPC->x, NPC->y + tilesToUnits(random(0, 13)));
 }

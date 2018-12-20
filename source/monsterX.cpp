@@ -5,6 +5,7 @@
 #include "player.h"
 #include "mathUtils.h"
 #include "flash.h"
+#include "stage.h"
 
 void treads(npc *NPC);
 void fishMissileGenerator(npc *NPC);
@@ -95,7 +96,7 @@ void actBoss_MonsterX(npc *boss)
 		bossObj[7].hit.left = 4096;
 		bossObj[7].hit.top = 12288;
 		bossObj[7].hit.right = 4096;
-		bossObj[7].hit.bottom = 0x2000;
+		bossObj[7].hit.bottom = tilesToUnits(1);
 		bossObj[7].bits = 8;
 		bossObj[7].size = 3;
 		bossObj[7].ani_no = 0;
@@ -114,7 +115,7 @@ void actBoss_MonsterX(npc *boss)
 		bossObj[9].hit.left = 14336;
 		bossObj[9].hit.top = 4096;
 		bossObj[9].hit.right = 14336;
-		bossObj[9].hit.bottom = 0x2000;
+		bossObj[9].hit.bottom = tilesToUnits(1);
 		bossObj[9].bits = npc_solidSoft | npc_invulnerable | npc_ignoreSolid | npc_rearTop;
 		bossObj[9].size = 3;
 
@@ -127,7 +128,7 @@ void actBoss_MonsterX(npc *boss)
 		bossObj[11].y = 0x20000;
 		bossObj[11].view.top = 12288;
 		bossObj[11].view.bottom = 4096;
-		bossObj[11].hit.top = 0x2000;
+		bossObj[11].hit.top = tilesToUnits(1);
 		bossObj[11].hit.bottom = 4096;
 
 		memcpy(&bossObj[12], &bossObj[11], sizeof(npc));
