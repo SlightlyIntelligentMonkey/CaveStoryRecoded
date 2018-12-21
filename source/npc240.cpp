@@ -589,7 +589,7 @@ void npcAct247(npc *NPC)
     NPC->doRects(rcLeft, rcRight);
 }
 
-void npcAct251(npc *NPC)
+void npcAct251(npc *NPC) // Misery black lightning (projectile)
 {
     constexpr array<RECT, 2> rcNPC = {{{80, 32, 96, 64}, {96, 32, 112, 64}}};
 

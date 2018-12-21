@@ -24,20 +24,18 @@ using nlohmann::json;
 using nlohmann::detail::parse_error;
 using std::to_string;
 
-//Save and load config.dat (original cvae story) thing
+//Save and load config.dat (config file for the original Cave Story)
 string configName = "Config.dat";
 
-CONFIG *loadConfigdat()
+CONFIG *loadConfigDat()
 {
-	FILE *fp = fopen("Config.dat", "rb");
+	FILE *fp = fopen(configName.c_str(), "rb");
 	if (fp == nullptr)
 		return nullptr;
-	else
-	{
-		CONFIG *config = (CONFIG*)malloc(sizeof(CONFIG));
-		fread(config, 1, sizeof(CONFIG), fp);
-		return config;
-	}
+
+	CONFIG *config = (CONFIG*)malloc(sizeof(CONFIG));
+	fread(config, 1, sizeof(CONFIG), fp);
+	return config;
 }
 
 json loadJsonFromFile(const string& path)
@@ -52,7 +50,7 @@ json loadJsonFromFile(const string& path)
         file >> j;
 	}
 	catch (const parse_error& e)
-	{
+    {
         doCustomError("Exception while loading \"" + path + "\" at byte " + to_string(e.byte) + ". Exception details : " + e.what());
 	}
 	catch (const std::exception& e)
@@ -111,6 +109,7 @@ void loadConfigFiles()
 	if (jDbgFlgs["showNPCHealth"] == true)
 		debugFlags |= showNPCHealth;
 
+    safeGet(jConfig, "configName", configName);
     safeGet(jConfig, "profileName", profileName);
     safeGet(jConfig, "profileCode", profileCode);
     safeGet(jConfig, "disableDamage", disableDamage);

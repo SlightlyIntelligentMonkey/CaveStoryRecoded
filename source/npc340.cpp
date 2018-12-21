@@ -10,7 +10,7 @@
 
 using std::array;
 
-void npcAct341(npc *NPC)
+void npcAct341(npc *NPC) // Ballos head
 {
 	constexpr array<RECT, 3> rcNPC = {{{288, 32, 320, 48}, {288, 48, 320, 64}, {288, 64, 320, 80}}};
 
@@ -26,7 +26,7 @@ void npcAct341(npc *NPC)
     NPC->doRects(rcNPC);
 }
 
-void npcAct344(npc *NPC)
+void npcAct344(npc *NPC) // Ballos 2nd form display box
 {
     NPC->doRects({272, 0, 296, 16}, {296, 0, 320, 16});
 
@@ -126,7 +126,7 @@ void npcAct347(npc *NPC) // Hoppy (enemy)
     NPC->doRects(rcNPC);
 }
 
-void npcAct348(npc *NPC)
+void npcAct348(npc *NPC) // Generator - Ballos spikes
 {
     if (!NPC->act_no)
         NPC->act_no = 1;
