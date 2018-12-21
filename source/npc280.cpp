@@ -10,7 +10,7 @@
 using std::array;
 using std::max;
 
-void npcAct291(npc *NPC)
+void npcAct291(npc *NPC) // Mini Undead Core, stationary
 {
     if (!NPC->act_no)
     {
@@ -31,9 +31,31 @@ void npcAct292(npc * /*NPC*/) //Quake
 	viewport.quake = 10;
 }
 
+void npcAct293(npc *NPC) // Undead Core large energy ball (projectile)
+{
+    constexpr array<RECT, 2> rcNPC = {{{240, 200, 280, 240}, {280, 200, 320, 240}}};
+
+    if (!NPC->act_no)
+        NPC->act_no = 1;
+
+    if (NPC->act_no == 1)
+    {
+        NPC->animate(0, 0, 1);
+
+        createNpc(NPC_Smoke, NPC->x + pixelsToUnits(random(0, 16)), NPC->y + pixelsToUnits(random(-16, 16)));
+
+        NPC->x -= tilesToUnits(0.5);
+
+        if (NPC->x < tilesToUnits(-2))
+            NPC->cond = 0;
+    }
+
+    NPC->doRects(rcNPC);
+}
+
 void npcAct295(npc *NPC) // Cloud
 {
-    array<RECT, 4> rcNPC = {{{0, 0, 208, 64}, {32, 64, 144, 96}, {32, 96, 104, 128}, {104, 96, 144, 128}}};
+    constexpr array<RECT, 4> rcNPC = {{{0, 0, 208, 64}, {32, 64, 144, 96}, {32, 96, 104, 128}, {104, 96, 144, 128}}};
 
     switch (NPC->act_no)
     {
