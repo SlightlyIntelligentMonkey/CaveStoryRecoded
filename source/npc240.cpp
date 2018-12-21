@@ -589,6 +589,29 @@ void npcAct247(npc *NPC)
     NPC->doRects(rcLeft, rcRight);
 }
 
+void npcAct251(npc *NPC)
+{
+    constexpr array<RECT, 2> rcNPC = {{{80, 32, 96, 64}, {96, 32, 112, 64}}};
+
+    if (!NPC->act_no)
+        NPC->act_no = 1;
+
+    if (NPC->act_no == 1)
+    {
+        NPC->animate(0, 0, 1);
+
+        NPC->y += tilesToUnits(0.5);
+
+        if (NPC->flag & solid)
+        {
+            createSmokeLeft(NPC->x, NPC->y, NPC->view.right, 3);
+            NPC->cond = 0;
+        }
+    }
+
+    NPC->doRects(rcNPC);
+}
+
 void npcAct253(npc *NPC) // Energy Capsule
 {
 	if (!NPC->act_no)

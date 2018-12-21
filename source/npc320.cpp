@@ -204,6 +204,14 @@ void npcAct328(npc *NPC) // Transmogrifier
 	NPC->doRects({96, 0, 128, 48});
 }
 
+void npcAct329(npc *NPC) // Building fan
+{
+    if (++NPC->act_wait / 2 % 2)
+        NPC->rect = {48, 0, 64, 16};
+    else
+        NPC->rect = {64, 0, 80, 16};
+}
+
 void npcAct334(npc *NPC) //sweat
 {
 	std::array<RECT, 2> rcRight =
@@ -257,4 +265,23 @@ void npcAct336(npc *NPC)    // Generator - Ikachan
     }
     else if (NPC->act_no == 10 && ++NPC->act_wait % 4 == 1)
         createNpc(NPC_Ikachan, NPC->x, NPC->y + tilesToUnits(random(0, 13)));
+}
+
+void npcAct339(npc *NPC) // Generator - Green Devil
+{
+    if (!NPC->act_no)
+    {
+        NPC->act_no = 1;
+        NPC->act_wait = random(0, 40);
+    }
+    else if (NPC->act_no != 1)
+        return;
+
+    if (NPC->act_wait)
+        --NPC->act_wait;
+    else
+    {
+        NPC->act_no = 0;
+        createNpc(NPC_EnemyGreenDevil, NPC->x, NPC->y + pixelsToUnits(random(-16, 16)), 0, 0, NPC->direct);
+    }
 }

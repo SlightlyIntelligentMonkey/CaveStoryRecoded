@@ -90,10 +90,10 @@ template<typename T> constexpr inline int32_t pixelsToTiles(T x)
 
 template <typename T> constexpr inline int32_t pixelsToUnits(T x)
 {
-	return x * 0x200;   // x * 512 or x >> 9
+	return x * 0x200;   // x * 512 or x << 9
 }
 
 template <typename T> constexpr inline T unitsToPixels(T x)
 {
-	return x / 0x200;   // x / 512 or x << 9
+	return x / 0x200;   // x / 512 or x >> 9
 }

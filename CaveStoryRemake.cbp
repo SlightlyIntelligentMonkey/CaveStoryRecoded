@@ -60,8 +60,6 @@
 		<Unit filename="source/input.cpp" />
 		<Unit filename="source/input.h" />
 		<Unit filename="source/inventory.cpp" />
-		<Unit filename="source/level.cpp" />
-		<Unit filename="source/level.h" />
 		<Unit filename="source/loadConfig.cpp" />
 		<Unit filename="source/loadConfig.h" />
 		<Unit filename="source/lodepng/lodepng.cpp" />

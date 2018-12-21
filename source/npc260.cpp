@@ -843,6 +843,25 @@ void npcAct268(npc *NPC)
 	NPC->doRects(rcLeft, rcRight);
 }
 
+void npcAct272(npc *NPC) // Generator - Underwater Block
+{
+    if (!NPC->act_no)
+    {
+        NPC->act_no = 1;
+        NPC->act_wait = random(0, 200);
+    }
+    else if (NPC->act_no != 1)
+        return;
+
+    if (NPC->act_wait)
+        --NPC->act_wait;
+    else
+    {
+        NPC->act_no = 0;
+        createNpc(NPC_UnderwaterBlock, NPC->x, NPC->y + (unitsToPixels(random(-0x20, 0x20))), 0, 0, NPC->direct);
+    }
+}
+
 void npcAct278(npc * NPC)
 {
 	constexpr RECT rcLittleMan[2] = { {0, 120, 8, 128}, {8, 120, 16, 128} };

@@ -10,6 +10,22 @@
 using std::array;
 using std::max;
 
+void npcAct291(npc *NPC)
+{
+    if (!NPC->act_no)
+    {
+        NPC->act_no = 20;
+        if (NPC->direct == dirRight)
+        {
+            NPC->bits &= ~npc_solidHard;
+            NPC->ani_no = 1;
+        }
+    }
+
+    constexpr std::array<RECT, 2> rcNPC = {{{256, 80, 320, 120}, {256, 0, 320, 40}}};
+    NPC->doRects(rcNPC);
+}
+
 void npcAct292(npc * /*NPC*/) //Quake
 {
 	viewport.quake = 10;
