@@ -6,6 +6,7 @@
 #include "mathUtils.h"
 #include "render.h"
 #include "caret.h"
+#include "stage.h"
 
 using std::array;
 
