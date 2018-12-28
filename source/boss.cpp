@@ -17,15 +17,10 @@ using std::to_string;
 
 npc bossObj[BOSSNPCS];
 
-void actBoss_Nothing(npc *boss)
-{
-
-}
-
 using bossAct = void(*)(npc *);
 const bossAct bossActs[10] =
 {
-	&actBoss_Nothing,
+	[](npc *) {},
 	&actBoss_Omega,
 	&actBoss_Balfrog,
 	&actBoss_MonsterX,
