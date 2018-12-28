@@ -152,7 +152,7 @@ void init()
 			break;
 		}
 
-		free(config);
+		delete config;
 	}
 	else
 		createWindow(screenWidth, screenHeight, screenScale);

@@ -33,7 +33,7 @@ CONFIG *loadConfigDat()
 	if (fp == nullptr)
 		return nullptr;
 
-	CONFIG *config = (CONFIG*)malloc(sizeof(CONFIG));
+	CONFIG *config = new CONFIG;
 	fread(config, 1, sizeof(CONFIG), fp);
 	return config;
 }
