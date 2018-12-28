@@ -71,7 +71,7 @@ void npcAct140(npc *NPC)//rabid toroko
 		}
 		break;
 	case iniState://initializes the decideState
-		NPC->bits = NPC->bits;
+		NPC->bits = NPC->bits; // wot
 		NPC->act_no = decideState;
 		NPC->ani_no = 0;
 		NPC->ani_wait = 0;
