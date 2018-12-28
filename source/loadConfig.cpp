@@ -35,6 +35,7 @@ CONFIG *loadConfigDat()
 
 	CONFIG *config = new CONFIG;
 	fread(config, 1, sizeof(CONFIG), fp);
+	fclose(fp);
 	return config;
 }
 

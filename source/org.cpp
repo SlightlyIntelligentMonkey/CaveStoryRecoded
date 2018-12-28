@@ -710,7 +710,6 @@ void loadOrganya(const string& name)
 	if (!ver) {
 		SDL_RWclose(fp);
 		doCustomError("File given is invalid version, or isn't a proper Organya file");
-		return;
 	}
 
 	//Set song information
