@@ -10,6 +10,7 @@
 #include "bossCollision.h"
 #include "bulletCollision.h"
 #include "log.h"
+#include "stage.h"
 
 using std::string;
 using std::to_string;
@@ -19,7 +20,7 @@ npc bossObj[BOSSNPCS];
 using bossAct = void(*)(npc *);
 const bossAct bossActs[10] =
 {
-	static_cast<bossAct>(nullptr),
+	[](npc *) {},
 	&actBoss_Omega,
 	&actBoss_Balfrog,
 	&actBoss_MonsterX,
@@ -55,7 +56,7 @@ void updateBoss()
 				--bossObj[bos].shock;
 		}
 	}
-	else if (bossActs[bossObj[0].code_char] == nullptr && bossObj[0].code_char != 0)
+	else if (bossActs[bossObj[0].code_char] == nullptr)
     {
 		static bool wasNotifiedAbout[_countof(bossActs)] = { 0 };
 

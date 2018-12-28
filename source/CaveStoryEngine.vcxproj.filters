@@ -111,6 +111,9 @@
     <ClCompile Include="npc340.cpp">
       <Filter>Source Files\classes\npc\act</Filter>
     </ClCompile>
+    <ClCompile Include="npc360.cpp">
+      <Filter>Source Files\classes\npc\act</Filter>
+    </ClCompile>
     <ClCompile Include="npcAct.cpp">
       <Filter>Source Files\classes\npc\act</Filter>
     </ClCompile>
@@ -330,6 +333,9 @@
       <Filter>Source Files\classes\npc\act</Filter>
     </ClInclude>
     <ClInclude Include="npc340.h">
+      <Filter>Source Files\classes\npc\act</Filter>
+    </ClInclude>
+    <ClInclude Include="npc360.h">
       <Filter>Source Files\classes\npc\act</Filter>
     </ClInclude>
     <ClInclude Include="npcAct.h">

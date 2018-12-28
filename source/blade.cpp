@@ -3,6 +3,7 @@
 #include "caret.h"
 #include "sound.h"
 #include "mathUtils.h"
+#include "stage.h"
 
 void actBulletBlade1(bullet *bul)
 {
@@ -222,9 +223,9 @@ void actBulletSlash(bullet *bul)
 		bul->act_no = 1;
 		bul->y -= 6144;
 		if (bul->direct)
-			bul->x = bul->x - 0x2000;
+			bul->x = bul->x - tilesToUnits(1);
 		else
-			bul->x = bul->x + 0x2000;
+			bul->x = bul->x + tilesToUnits(1);
 	}
 
 	if (++bul->ani_wait > 2)

@@ -93,8 +93,8 @@ void init()
 		doCustomError("Couldn't initiate SDL");
 
 	loadConfigFiles();
-	CONFIG *config = loadConfigdat();
-	
+	CONFIG *config = loadConfigDat();
+
 	if (config != nullptr)
 	{
 		if (config->attack_button_mode == 1)
@@ -152,12 +152,10 @@ void init()
 			break;
 		}
 
-		free(config);
+		delete config;
 	}
 	else
-	{
 		createWindow(screenWidth, screenHeight, screenScale);
-	}
 
 	//draws loading
 	loadImage("Loading", &sprites[TEX_LOADING]);   // Load the loading sprite now so that we can display it

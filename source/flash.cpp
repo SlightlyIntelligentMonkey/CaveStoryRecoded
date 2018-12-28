@@ -4,6 +4,7 @@
 #include "flash.h"
 #include "render.h"
 #include "game.h"
+#include "stage.h"
 
 
 struct FLASH
@@ -93,8 +94,6 @@ void flashExplosion()
 	if (explosionEnd != true)
 		drawRect(unitsToPixels(flash.x - pixelsToUnits(flash.vW/2) - viewport.x), 0, flash.vW, screenHeight);
 	drawRect(0, unitsToPixels(flash.y - pixelsToUnits(flash.hH/2) - viewport.y), screenWidth, flash.hH);
-
-	return;
 }
 
 void flashNormal()

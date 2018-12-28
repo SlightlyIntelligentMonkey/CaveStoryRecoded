@@ -11,16 +11,16 @@ using std::memcpy;
 bool useGamepad = false;
 SDL_GameController* currentGamepad = NULL;
 
-int keyLeft;
-int keyRight;
-int keyUp;
-int keyDown;
-int keyJump;
-int keyShoot;
-int keyMenu;
-int keyMap;
-int keyRotLeft;
-int keyRotRight;
+int keyLeft = SDL_SCANCODE_LEFT;
+int keyRight = SDL_SCANCODE_RIGHT;
+int keyUp = SDL_SCANCODE_UP;
+int keyDown = SDL_SCANCODE_DOWN;
+int keyJump = SDL_SCANCODE_Z;
+int keyShoot = SDL_SCANCODE_X;
+int keyMenu = SDL_SCANCODE_Q;
+int keyMap = SDL_SCANCODE_W;
+int keyRotLeft = SDL_SCANCODE_A;
+int keyRotRight = SDL_SCANCODE_S;
 
 static uint8_t key_prev[SDL_NUM_SCANCODES] = { 0 };
 static uint8_t key[SDL_NUM_SCANCODES] = { 0 };

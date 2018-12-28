@@ -243,7 +243,7 @@ void drawForeground(void)
 
 	if (background.mode == 3)
 	{
-		int xOff = viewport.x % pixelsToUnits(32);
+		const int xOff = viewport.x % pixelsToUnits(32);
 
 		rect.left = 0;
 		rect.right = 32;

@@ -277,10 +277,12 @@ void player::actNormal(bool bKey)
 
 			//Ending boost (2.0)
 			if (equip & equip_booster20 && boost_sw && (!isKeyDown(keyJump) || !boost_cnt))
+            {
 				if (boost_sw == 1)
 					xm /= 2;
 				else if (boost_sw == 2)
 					ym /= 2;
+            }
 
 			if (!boost_cnt || !isKeyDown(keyJump))
 				boost_sw = 0;

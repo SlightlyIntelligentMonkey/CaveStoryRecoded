@@ -54,7 +54,7 @@ void mixSounds(int16_t *stream, int len)
 					if (sound.pos < sound.length - 1)
 						sample2 = (sound.wave[s_offset_1 + 1] - 0x80) << 7;
 
-					const auto val = (int)(sample1 + (sample2 - sample1) * fmod(sound.pos, 1.0f));
+					const auto val = static_cast<int>(sample1 + (sample2 - sample1) * fmod(sound.pos, 1.0f));
 
 					tempSampleL += (val * 2);
 					tempSampleR += (val * 2);
@@ -134,7 +134,7 @@ void loadSounds()
 void freeSounds()
 {
 	for (auto& sound : sounds)
-		free(sound.wave);
+		delete[] sound.wave;
 }
 
 void playSound(size_t sound_no, int /*soundMode*/)

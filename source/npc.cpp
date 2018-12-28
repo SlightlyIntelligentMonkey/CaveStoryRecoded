@@ -609,7 +609,7 @@ void npc::init(int setCode, int setX, int setY, int setXm, int setYm, int setDir
 
 void npc::update()
 {
-	if (this->code_char >= 0 && (size_t)this->code_char <= _countof(npcActs))
+	if (this->code_char >= 0 && static_cast<size_t>(this->code_char) <= _countof(npcActs))
 		npcActs[this->code_char](this);
 
 	if (this->shock > 0)

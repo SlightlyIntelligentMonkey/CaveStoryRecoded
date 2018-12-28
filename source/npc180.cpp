@@ -349,8 +349,8 @@ void curlyNPCCommonBulletSpawn(const npc *NPC, int bulletCode)
 
 void npcAct181(npc *NPC) // Curly Machine Gun bullet spawner (projectile)
 {
-	array<RECT, 2> rcLeft = { { { 184, 152, 200, 168 }, { 200, 152, 216, 168 } } };
-	array<RECT, 2> rcRight = { { { 184, 168, 200, 184 }, { 200, 168, 216, 184 } } };
+	constexpr array<RECT, 2> rcLeft = { { { 184, 152, 200, 168 }, { 200, 152, 216, 168 } } };
+	constexpr array<RECT, 2> rcRight = { { { 184, 168, 200, 184 }, { 200, 168, 216, 184 } } };
 
 	if (NPC->pNpc)
 	{
@@ -378,8 +378,8 @@ void npcAct181(npc *NPC) // Curly Machine Gun bullet spawner (projectile)
 
 void npcAct182(npc * NPC) // Curly Polar Star bullet spawner (projectile)
 {
-	array<RECT, 2> rcLeft = { { { 184, 152, 200, 168 }, { 200, 152, 216, 168 } } };
-	array<RECT, 2> rcRight = { { { 184, 168, 200, 184 }, { 200, 168, 216, 184 } } };
+	constexpr array<RECT, 2> rcLeft = { { { 184, 152, 200, 168 }, { 200, 152, 216, 168 } } };
+	constexpr array<RECT, 2> rcRight = { { { 184, 168, 200, 184 }, { 200, 168, 216, 184 } } };
 
 	if (NPC->pNpc)
 	{
@@ -408,7 +408,7 @@ void npcAct182(npc * NPC) // Curly Polar Star bullet spawner (projectile)
 
 void npcAct183(npc * NPC) // Curly Air Bubble
 {
-	array<RECT, 2> rcNPC = { { {56, 96, 80, 120}, {80, 96, 104, 120} } };
+	constexpr array<RECT, 2> rcNPC = { { {56, 96, 80, 120}, {80, 96, 104, 120} } };
 
 	if (NPC->pNpc)
 	{
@@ -930,8 +930,8 @@ void npcAct192(npc *NPC) // Scooter
 			createCaret(NPC->x + pixelsToUnits(10), NPC->y + pixelsToUnits(10), effect_BoosterSmoke, dirRight);
 	}
 
-	array<RECT, 2> rcLeft = { { {224, 64, 256, 80}, {256, 64, 288, 96} } };
-	array<RECT, 2> rcRight = { { {224, 80, 256, 96}, {288, 64, 320, 96} }};
+	constexpr array<RECT, 2> rcLeft = { { {224, 64, 256, 80}, {256, 64, 288, 96} } };
+	constexpr array<RECT, 2> rcRight = { { {224, 80, 256, 96}, {288, 64, 320, 96} }};
 
 	NPC->doRects(rcLeft, rcRight);
 }

@@ -10,6 +10,41 @@
 
 using std::array;
 
+void npcAct341(npc *NPC) // Ballos head
+{
+	constexpr array<RECT, 3> rcNPC = {{{288, 32, 320, 48}, {288, 48, 320, 64}, {288, 64, 320, 80}}};
+
+    if (NPC->pNpc)
+    {
+        if (NPC->pNpc->act_no == 11 && NPC->pNpc->act_wait > 50)
+            NPC->animate(4, 2, 2);
+
+        if (NPC->pNpc->ani_no != 0)
+            NPC->cond = 0;
+    }
+
+    NPC->doRects(rcNPC);
+}
+
+void npcAct344(npc *NPC) // Ballos 2nd form display box
+{
+    NPC->doRects({272, 0, 296, 16}, {296, 0, 320, 16});
+
+    if (NPC->pNpc)
+    {
+        if (NPC->direct != dirLeft)
+            NPC->x = NPC->pNpc->x + tilesToUnits(1.5);
+        else
+            NPC->x = NPC->pNpc->x - tilesToUnits(1.5);
+    }
+
+    if (++NPC->act_wait > secondsToFrames(2))
+        NPC->cond = 0;
+
+    if (NPC->pNpc)
+        NPC->y = NPC->pNpc->y - tilesToUnits(2.25);
+}
+
 void npcAct347(npc *NPC) // Hoppy (enemy)
 {
     enum
@@ -86,7 +121,36 @@ void npcAct347(npc *NPC) // Hoppy (enemy)
         break;
     }
 
-	array<RECT, 4> rcNPC = { {{256, 48, 272, 64}, {272, 48, 288, 64}, {288, 48, 304, 64}, {304, 48, 320, 64}} };
+	constexpr array<RECT, 4> rcNPC = { {{256, 48, 272, 64}, {272, 48, 288, 64}, {288, 48, 304, 64}, {304, 48, 320, 64}} };
+
+    NPC->doRects(rcNPC);
+}
+
+void npcAct348(npc *NPC) // Generator - Ballos spikes
+{
+    if (!NPC->act_no)
+        NPC->act_no = 1;
+
+    if (NPC->act_no == 1)
+    {
+        if (++NPC->act_wait >= 0x80)
+        {
+            NPC->act_no = 10;
+            NPC->ani_no = 0;
+            NPC->damage = 2;
+        }
+        else
+        {
+            NPC->y -= pixelsToUnits(0.25);
+
+            if (NPC->act_wait / 2 % 2)
+                NPC->ani_no = 1;
+            else
+                NPC->ani_no = 0;
+        }
+    }
+
+    constexpr array<RECT, 2> rcNPC = {{{128, 152, 160, 176}, {160, 152, 192, 176}}};
 
     NPC->doRects(rcNPC);
 }
@@ -140,7 +204,7 @@ void npcAct354(npc *NPC) // Invisible deathtrap wall
 
 void npcAct355(npc *NPC) // Balrog, crashing through wall
 {
-    array<RECT, 4> rcNPC = {{{80, 16, 96, 32}, {80, 96, 96, 112}, {128, 16, 144, 32}, {208, 96, 224, 112}}};
+    constexpr array<RECT, 4> rcNPC = {{{80, 16, 96, 32}, {80, 96, 96, 112}, {128, 16, 144, 32}, {208, 96, 224, 112}}};
 
     if (!NPC->act_no && NPC->pNpc)
     {

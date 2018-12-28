@@ -22,7 +22,7 @@ OPTIMISATIONS := -O3 -frename-registers
 # OPTIMISATIONS += -flto
 # Link-time optimizing makes the linking super long so it's are unactivated by default
 
-CXXFLAGS := $(CXX) $(OPTIMISATIONS) $(WARNINGS) `sdl2-config --cflags` -std=c++17 -IJson_Modern_Cpp -c -MMD -MP -MF $@.d
+CXXFLAGS = $(CXX) $(OPTIMISATIONS) $(WARNINGS) `sdl2-config --cflags` -std=c++17 -IJson_Modern_Cpp -c -MMD -MP -MF $@.d
 LDFLAGS := $(CXX) $(OPTIMISATIONS) $(WARNINGS) -s
 
 ifeq ($(detected_OS),Windows)
@@ -52,7 +52,7 @@ MAIN += bladeThrow bubblePew fireballShoot machineGunShoot missileShoot nemesisS
 # bullet acts
 MAIN += blade bubbler fireball missile polarStar machineGun misc nemesis snake spur
 # npc acts
-MAIN += npcAct npc000 npc020 npc040 npc060 npc080 npc100 npc120 npc140 npc160 npc180 npc200 npc220 npc240 npc260 npc280 npc300 npc320 npc340
+MAIN += npcAct npc000 npc020 npc040 npc060 npc080 npc100 npc120 npc140 npc160 npc180 npc200 npc220 npc240 npc260 npc280 npc300 npc320 npc340 npc360
 # boss acts
 MAIN += balfrog heavyPress monsterX omega core
 

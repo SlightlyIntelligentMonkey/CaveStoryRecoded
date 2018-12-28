@@ -10,14 +10,52 @@
 using std::array;
 using std::max;
 
+void npcAct291(npc *NPC) // Mini Undead Core, stationary
+{
+    if (!NPC->act_no)
+    {
+        NPC->act_no = 20;
+        if (NPC->direct == dirRight)
+        {
+            NPC->bits &= ~npc_solidHard;
+            NPC->ani_no = 1;
+        }
+    }
+
+    constexpr std::array<RECT, 2> rcNPC = {{{256, 80, 320, 120}, {256, 0, 320, 40}}};
+    NPC->doRects(rcNPC);
+}
+
 void npcAct292(npc * /*NPC*/) //Quake
 {
 	viewport.quake = 10;
 }
 
+void npcAct293(npc *NPC) // Undead Core large energy ball (projectile)
+{
+    constexpr array<RECT, 2> rcNPC = {{{240, 200, 280, 240}, {280, 200, 320, 240}}};
+
+    if (!NPC->act_no)
+        NPC->act_no = 1;
+
+    if (NPC->act_no == 1)
+    {
+        NPC->animate(0, 0, 1);
+
+        createNpc(NPC_Smoke, NPC->x + pixelsToUnits(random(0, 16)), NPC->y + pixelsToUnits(random(-16, 16)));
+
+        NPC->x -= tilesToUnits(0.5);
+
+        if (NPC->x < tilesToUnits(-2))
+            NPC->cond = 0;
+    }
+
+    NPC->doRects(rcNPC);
+}
+
 void npcAct295(npc *NPC) // Cloud
 {
-    array<RECT, 4> rcNPC = {{{0, 0, 208, 64}, {32, 64, 144, 96}, {32, 96, 104, 128}, {104, 96, 144, 128}}};
+    constexpr array<RECT, 4> rcNPC = {{{0, 0, 208, 64}, {32, 64, 144, 96}, {32, 96, 104, 128}, {104, 96, 144, 128}}};
 
     switch (NPC->act_no)
     {
@@ -93,7 +131,7 @@ void npcAct296(npc *NPC) // Generator - Cloud
     if (++NPC->act_wait > 16)
     {
         NPC->act_wait = random(0, 16);
-        int randDir = random(0, 100) % 4;
+        const int randDir = random(0, 100) % 4;
         if (NPC->direct != dirLeft)
             createNpc(NPC_Cloud, NPC->x, NPC->y + tilesToUnits(random(-7, 7)), 0, 0, randDir + 4, nullptr);
         else

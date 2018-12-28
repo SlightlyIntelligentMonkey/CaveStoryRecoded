@@ -51,7 +51,7 @@ void npcJudgeTriangleA(const RECT *rcHit, npc *NPC, int tx, int ty)
 	if (NPC->x > (2 * tx - 1) << 12
 	        && NPC->x < (2 * tx + 1) << 12
 	        && NPC->y - rcHit->top < tilesToUnits(ty) - (-0x2000 * tx + NPC->x) / 2 + 0x800
-	        && NPC->y + rcHit->bottom >(2 * ty - 1) << 12)
+	        && NPC->y + rcHit->bottom > (2 * ty - 1) << 12)
 	{
 		if (NPC->ym < 0)
 			NPC->ym = 0;
@@ -67,7 +67,7 @@ void npcJudgeTriangleB(const RECT *rcHit, npc *NPC, int tx, int ty)
 	if (NPC->x > (2 * tx - 1) << 12
 	        && NPC->x < (2 * tx + 1) << 12
 	        && NPC->y - rcHit->top < tilesToUnits(ty) - (-0x2000 * tx + NPC->x) / 2 - 0x800
-	        && NPC->y + rcHit->bottom >(2 * ty - 1) << 12)
+	        && NPC->y + rcHit->bottom > (2 * ty - 1) << 12)
 	{
 		if (NPC->ym < 0)
 			NPC->ym = 0;
@@ -83,7 +83,7 @@ void npcJudgeTriangleC(const RECT *rcHit, npc *NPC, int tx, int ty)
 	if (NPC->x > (2 * tx - 1) << 12
 	        && NPC->x < (2 * tx + 1) << 12
 	        && NPC->y - rcHit->top < tilesToUnits(ty) + (-0x2000 * tx + NPC->x) / 2 - 0x800
-	        && NPC->y + rcHit->bottom >(2 * ty - 1) << 12)
+	        && NPC->y + rcHit->bottom > (2 * ty - 1) << 12)
 	{
 		if (NPC->ym < 0)
 			NPC->ym = 0;
@@ -99,7 +99,7 @@ void npcJudgeTriangleD(const RECT *rcHit, npc *NPC, int tx, int ty)
 	if (NPC->x > (2 * tx - 1) << 12
 	        && NPC->x < (2 * tx + 1) << 12
 	        && NPC->y - rcHit->top < tilesToUnits(ty) + (-0x2000 * tx + NPC->x) / 2 + 0x800
-	        && NPC->y + rcHit->bottom >(2 * ty - 1) << 12)
+	        && NPC->y + rcHit->bottom > (2 * ty - 1) << 12)
 	{
 		if (NPC->ym < 0)
 			NPC->ym = 0;

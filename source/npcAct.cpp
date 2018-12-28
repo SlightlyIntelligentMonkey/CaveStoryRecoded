@@ -18,6 +18,7 @@
 #include "npc300.h"
 #include "npc320.h"
 #include "npc340.h"
+#include "npc360.h"
 
 const npcAct npcActs[361] =
 {
@@ -272,7 +273,7 @@ const npcAct npcActs[361] =
 	&npcActNone,
 	&npcActNone,
 	&npcActNone,
-	&npcActNone,
+	&npcAct251,
 	&npcActNone,
 	&npcAct253,
 	&npcAct254,
@@ -293,7 +294,7 @@ const npcAct npcActs[361] =
 	&npcActNone,
 	&npcActNone,
 	&npcActNone,
-	&npcActNone,
+	&npcAct272,
 	&npcActNone,
 	&npcActNone,
 	&npcActNone,
@@ -312,7 +313,7 @@ const npcAct npcActs[361] =
 	&npcActNone,
 	&npcActNone,
 	&npcActNone,
-	&npcActNone,
+	&npcAct291,
 	&npcAct292,
 	&npcActNone,
 	&npcActNone,
@@ -350,22 +351,22 @@ const npcAct npcActs[361] =
 	&npcActNone,
 	&npcActNone,
 	&npcAct328,
-	&npcActNone,
+	&npcAct329,
 	&npcActNone,
 	&npcActNone,
 	&npcActNone,
 	&npcActNone,
 	&npcAct334,
 	&npcActNone,
+	&npcAct336,
 	&npcActNone,
 	&npcActNone,
+	&npcAct339,
+	&npcActNone,
+	&npcAct341,
 	&npcActNone,
 	&npcActNone,
-	&npcActNone,
-	&npcActNone,
-	&npcActNone,
-	&npcActNone,
-	&npcActNone,
+	&npcAct344,
 	&npcActNone,
 	&npcActNone,
 	&npcAct347,
@@ -381,5 +382,5 @@ const npcAct npcActs[361] =
 	&npcActNone,
 	&npcActNone,
 	&npcAct359,
-	&npcActNone,
+	&npcAct360,
 };

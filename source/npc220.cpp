@@ -12,8 +12,8 @@ using std::array;
 
 void npcAct220(npc *NPC) // Shovel Brigade, standing
 {
-	array<RECT, 2> rcLeft = { { {0, 64, 16, 80}, {16, 64, 32, 80} } };
-	array<RECT, 2> rcRight = { { {0, 80, 16, 96}, {16, 80, 32, 96} } };
+	constexpr array<RECT, 2> rcLeft = { { {0, 64, 16, 80}, {16, 64, 32, 80} } };
+	constexpr array<RECT, 2> rcRight = { { {0, 80, 16, 96}, {16, 80, 32, 96} } };
 
 	enum
 	{
@@ -68,8 +68,8 @@ void npcAct222(npc *NPC) // Prison bars
 
 void npcAct223(npc *NPC) // Momorin
 {
-	array<RECT, 3> rcLeft = { {{80, 192, 96, 216}, {96, 192, 112, 216}, {112, 192, 128, 216}} };
-	array<RECT, 3> rcRight = { {{80, 216, 96, 240}, {96, 216, 112, 240}, {112, 216, 128, 240}} };
+	constexpr array<RECT, 3> rcLeft = { {{80, 192, 96, 216}, {96, 192, 112, 216}, {112, 192, 128, 216}} };
+	constexpr array<RECT, 3> rcRight = { {{80, 216, 96, 240}, {96, 216, 112, 240}, {112, 216, 128, 240}} };
 
     switch (NPC->act_no)
     {
@@ -111,8 +111,8 @@ void npcAct223(npc *NPC) // Momorin
 
 void npcAct224(npc *NPC) // Chie
 {
-	array<RECT, 2> rcLeft = { {{112, 32, 128, 48}, {128, 32, 144, 48}} };
-	array<RECT, 2> rcRight = { {{112, 48, 128, 64}, {128, 48, 144, 64}} };
+	constexpr array<RECT, 2> rcLeft = { {{112, 32, 128, 48}, {128, 32, 144, 48}} };
+	constexpr array<RECT, 2> rcRight = { {{112, 48, 128, 64}, {128, 48, 144, 64}} };
 
 	enum
 	{
@@ -162,8 +162,8 @@ void npcAct224(npc *NPC) // Chie
 
 void npcAct225(npc *NPC) // Megane
 {
-	array<RECT, 2> rcLeft = { {{64, 64, 80, 80}, {80, 64, 96, 80}} };
-	array<RECT, 2> rcRight = { {{64, 80, 80, 96}, {80, 80, 96, 96}} };
+	constexpr array<RECT, 2> rcLeft = { {{64, 64, 80, 80}, {80, 64, 96, 80}} };
+	constexpr array<RECT, 2> rcRight = { {{64, 80, 80, 96}, {80, 80, 96, 96}} };
 
 	enum
 	{
@@ -289,8 +289,8 @@ void npcAct227(npc *NPC) // Bucket
 
 void npcAct228(npc *NPC) // Droll, guarding
 {
-	array<RECT, 4> rcLeft = { {{0, 0, 32, 40}, {32, 0, 64, 40}, {64, 0, 96, 40}, {96, 0, 128, 40}} };
-	array<RECT, 4> rcRight = { {{0, 40, 32, 80}, {32, 40, 64, 80}, {64, 40, 96, 80}, {96, 40, 128, 80}} };
+	constexpr array<RECT, 4> rcLeft = { {{0, 0, 32, 40}, {32, 0, 64, 40}, {64, 0, 96, 40}, {96, 0, 128, 40}} };
+	constexpr array<RECT, 4> rcRight = { {{0, 40, 32, 80}, {32, 40, 64, 80}, {64, 40, 96, 80}, {96, 40, 128, 80}} };
 
     enum
     {
@@ -537,8 +537,8 @@ void npcAct232(npc *NPC) // Orangebell (enemy)
     NPC->x += NPC->xm;
     NPC->y += NPC->ym;
 
-	array<RECT, 3> rcLeft = { {{128, 0, 160, 32}, {160, 0, 192, 32}, {192, 0, 224, 32}} };
-	array<RECT, 3> rcRight = { {{128, 32, 160, 64}, {160, 32, 192, 64}, {192, 32, 224, 64}} };
+	constexpr array<RECT, 3> rcLeft = { {{128, 0, 160, 32}, {160, 0, 192, 32}, {192, 0, 224, 32}} };
+	constexpr array<RECT, 3> rcRight = { {{128, 32, 160, 64}, {160, 32, 192, 64}, {192, 32, 224, 64}} };
     NPC->doRects(rcLeft, rcRight);
 }
 

@@ -27,9 +27,9 @@ int bulletJudgeBlock(int x, int y, bullet *bul) //For judging breakable blocks
 
 	//Check if hit tile
 	if (bul->x - bul->blockXL < (2 * x + 1) << 12
-		&& bul->blockXL + bul->x >(2 * x - 1) << 12
+		&& bul->blockXL + bul->x > (2 * x - 1) << 12
 		&& bul->y - bul->blockYL < (2 * y + 1) << 12
-		&& bul->blockYL + bul->y >(2 * y - 1) << 12)
+		&& bul->blockYL + bul->y > (2 * y - 1) << 12)
 	{
 		hit = 0x200;
 	}
@@ -91,10 +91,10 @@ int bulletJudgeBlock2(int x, int y, const uint8_t *atrb, bullet *bul) //For judg
 	}
 	else if (!block[0] || block[2])
 	{
-		if (!block[0] && block[2] && bul->x - bul->blockXL < workX && bul->blockYL + bul->y > workY + 0x600)
+		if (!block[0] && block[2] && bul->x - bul->blockXL < workX && bul->blockYL + bul->y > workY + pixelsToUnits(3))
 			hit |= leftWall;
 	}
-	else if (bul->x - bul->blockXL < workX && bul->y - bul->blockYL < workY - 0x600)
+	else if (bul->x - bul->blockXL < workX && bul->y - bul->blockYL < workY - pixelsToUnits(3))
 		hit |= leftWall;
 
 	//Check if hitting right wall
@@ -105,10 +105,10 @@ int bulletJudgeBlock2(int x, int y, const uint8_t *atrb, bullet *bul) //For judg
 	}
 	else if (!block[1] || block[3])
 	{
-		if (!block[1] && block[3] && bul->x + bul->blockXL > workX && bul->blockYL + bul->y > workY + 0x600)
+		if (!block[1] && block[3] && bul->x + bul->blockXL > workX && bul->blockYL + bul->y > workY + pixelsToUnits(3))
 			hit |= rightWall;
 	}
-	else if (bul->x + bul->blockXL > workX && bul->y - bul->blockYL < workY - 0x600)
+	else if (bul->x + bul->blockXL > workX && bul->y - bul->blockYL < workY - pixelsToUnits(3))
 	{
 		hit |= rightWall;
 	}
@@ -121,10 +121,10 @@ int bulletJudgeBlock2(int x, int y, const uint8_t *atrb, bullet *bul) //For judg
 	}
 	else if (!block[0] || block[1])
 	{
-		if (!block[0] && block[1] && bul->y - bul->blockYL < workY && bul->blockXL + bul->x > workX + 0x600)
+		if (!block[0] && block[1] && bul->y - bul->blockYL < workY && bul->blockXL + bul->x > workX + pixelsToUnits(3))
 			hit |= ceiling;
 	}
-	else if (bul->y - bul->blockYL < workY && bul->x - bul->blockXL < workX - 0x600)
+	else if (bul->y - bul->blockYL < workY && bul->x - bul->blockXL < workX - pixelsToUnits(3))
 		hit |= ceiling;
 
 	//Check if hitting ground
@@ -135,10 +135,10 @@ int bulletJudgeBlock2(int x, int y, const uint8_t *atrb, bullet *bul) //For judg
 	}
 	else if (!block[2] || block[3])
 	{
-		if (!block[2] && block[3] && bul->y + bul->blockYL > workY && bul->blockXL + bul->x > workX + 1536)
+		if (!block[2] && block[3] && bul->y + bul->blockYL > workY && bul->blockXL + bul->x > workX + pixelsToUnits(3))
 			hit |= ground;
 	}
-	else if (bul->y + bul->blockYL > workY && bul->x - bul->blockXL < workX - 1536)
+	else if (bul->y + bul->blockYL > workY && bul->x - bul->blockXL < workX - pixelsToUnits(3))
 		hit |= ground;
 
 	//Push out of walls if solid
@@ -167,12 +167,12 @@ int bulletJudgeTriangleA(int x, int y, bullet *bul)
 	int hit = 0;
 
 	if (bul->x < (2 * x + 1) << 12
-		&& bul->x >(2 * x - 1) << 12
-		&& bul->y - 0x400 < tilesToUnits(y) - (-0x2000 * x + bul->x) / 2 + 0x800
-		&& bul->y + 0x400 > (2 * y - 1) << 12)
+		&& bul->x > (2 * x - 1) << 12
+		&& bul->y - pixelsToUnits(2) < tilesToUnits(y) - (tilesToUnits(-1) * x + bul->x) / 2 + pixelsToUnits(4)
+		&& bul->y + pixelsToUnits(2) > (2 * y - 1) << 12)
 	{
 		if (bul->bbits & bullet_goThroughWalls)
-			bul->y = tilesToUnits(y) - (-0x2000 * x + bul->x) / 2 + 0xC00;
+			bul->y = tilesToUnits(y) - (tilesToUnits(-1) * x + bul->x) / 2 + pixelsToUnits(6);
 		else
 			bulletVanish(bul);
 
@@ -187,12 +187,12 @@ int bulletJudgeTriangleB(int x, int y, bullet *bul)
 	int hit = 0;
 
 	if (bul->x < (2 * x + 1) << 12
-		&& bul->x >(2 * x - 1) << 12
-		&& bul->y - 0x400 < tilesToUnits(y) - (-0x2000 * x + bul->x) / 2 - 0x800
-		&& bul->y + 0x400 > (2 * y - 1) << 12)
+		&& bul->x > (2 * x - 1) << 12
+		&& bul->y - pixelsToUnits(2) < tilesToUnits(y) - (tilesToUnits(-1) * x + bul->x) / 2 - pixelsToUnits(4)
+		&& bul->y + pixelsToUnits(2) > (2 * y - 1) << 12)
 	{
 		if (bul->bbits & bullet_goThroughWalls)
-			bul->y = tilesToUnits(y) - (-0x2000 * x + bul->x) / 2 - 0x400;
+			bul->y = tilesToUnits(y) - (tilesToUnits(-1) * x + bul->x) / 2 - pixelsToUnits(2);
 		else
 			bulletVanish(bul);
 
@@ -207,12 +207,12 @@ int bulletJudgeTriangleC(int x, int y, bullet *bul)
 	int hit = 0;
 
 	if (bul->x < (2 * x + 1) << 12
-		&& bul->x >(2 * x - 1) << 12
-		&& bul->y - 0x400 < tilesToUnits(y) + (-0x2000 * x + bul->x) / 2 - 0x800
-		&& bul->y + 0x400 > (2 * y - 1) << 12)
+		&& bul->x > (2 * x - 1) << 12
+		&& bul->y - pixelsToUnits(2) < tilesToUnits(y) + (tilesToUnits(-1) * x + bul->x) / 2 - pixelsToUnits(4)
+		&& bul->y + pixelsToUnits(2) > (2 * y - 1) << 12)
 	{
 		if (bul->bbits & bullet_goThroughWalls)
-			bul->y = tilesToUnits(y) + (-8192 * x + bul->x) / 2 - 0x400;
+			bul->y = tilesToUnits(y) + (tilesToUnits(-1) * x + bul->x) / 2 - pixelsToUnits(2);
 		else
 			bulletVanish(bul);
 
@@ -227,12 +227,12 @@ int bulletJudgeTriangleD(int x, int y, bullet *bul)
 	int hit = 0;
 
 	if (bul->x < (2 * x + 1) << 12
-		&& bul->x >(2 * x - 1) << 12
-		&& bul->y - 0x400 < tilesToUnits(y) + (-0x2000 * x + bul->x) / 2 + 0x800
-		&& bul->y + 0x400 > (2 * y - 1) << 12)
+		&& bul->x > (2 * x - 1) << 12
+		&& bul->y - pixelsToUnits(2) < tilesToUnits(y) + (tilesToUnits(-1) * x + bul->x) / 2 + pixelsToUnits(4)
+		&& bul->y + pixelsToUnits(2) > (2 * y - 1) << 12)
 	{
 		if (bul->bbits & bullet_goThroughWalls)
-			bul->y = tilesToUnits(y) + (-8192 * x + bul->x) / 2 + 0xC00;
+			bul->y = tilesToUnits(y) + (tilesToUnits(-1) * x + bul->x) / 2 + pixelsToUnits(6);
 		else
 			bulletVanish(bul);
 
@@ -247,12 +247,12 @@ int bulletJudgeTriangleE(int x, int y, bullet *bul)
 	int hit = 0;
 
 	if (bul->x < (2 * x + 1) << 12
-		&& bul->x - 0x200 >(2 * x - 1) << 12
-		&& bul->y + 0x400 > tilesToUnits(y) + (-0x2000 * x + bul->x) / 2 - 0x800
-		&& bul->y - 0x400 < (2 * y + 1) << 12)
+		&& bul->x - pixelsToUnits(1) > (2 * x - 1) << 12
+		&& bul->y + pixelsToUnits(2) > tilesToUnits(y) + (tilesToUnits(-1) * x + bul->x) / 2 - pixelsToUnits(4)
+		&& bul->y - pixelsToUnits(2) < (2 * y + 1) << 12)
 	{
 		if (bul->bbits & bullet_goThroughWalls)
-			bul->y = tilesToUnits(y) + (-0x2000 * x + bul->x) / 2 - 0xC00;
+			bul->y = tilesToUnits(y) + (tilesToUnits(-1) * x + bul->x) / 2 - pixelsToUnits(6);
 		else
 			bulletVanish(bul);
 
@@ -267,12 +267,12 @@ int bulletJudgeTriangleF(int x, int y, bullet *bul)
 	int hit = 0;
 
 	if (bul->x < (2 * x + 1) << 12
-		&& bul->x - 0x200 >(2 * x - 1) << 12
-		&& bul->y + 0x400 > tilesToUnits(y) + (-0x2000 * x + bul->x) / 2 + 0x800
-		&& bul->y - 0x400 < (2 * y + 1) << 12)
+		&& bul->x - pixelsToUnits(1) > (2 * x - 1) << 12
+		&& bul->y + pixelsToUnits(2) > tilesToUnits(y) + (tilesToUnits(-1) * x + bul->x) / 2 + pixelsToUnits(4)
+		&& bul->y - pixelsToUnits(2) < (2 * y + 1) << 12)
 	{
 		if (bul->bbits & bullet_goThroughWalls)
-			bul->y = tilesToUnits(y) + (-0x2000 * x + bul->x) / 2 + 0x400;
+			bul->y = tilesToUnits(y) + (tilesToUnits(-1) * x + bul->x) / 2 + pixelsToUnits(2);
 		else
 			bulletVanish(bul);
 
@@ -287,12 +287,12 @@ int bulletJudgeTriangleG(int x, int y, bullet *bul)
 	int hit = 0;
 
 	if (bul->x < (2 * x + 1) << 12
-		&& bul->x - 0x200 >(2 * x - 1) << 12
-		&& bul->y + 0x400 > tilesToUnits(y) - (-0x2000 * x + bul->x) / 2 + 0x800
-		&& bul->y - 0x400 < (2 * y + 1) << 12)
+		&& bul->x - pixelsToUnits(1) >(2 * x - 1) << 12
+		&& bul->y + pixelsToUnits(2) > tilesToUnits(y) - (tilesToUnits(-1) * x + bul->x) / 2 + pixelsToUnits(4)
+		&& bul->y - pixelsToUnits(2) < (2 * y + 1) << 12)
 	{
 		if (bul->bbits & bullet_goThroughWalls)
-			bul->y = tilesToUnits(y) - (-0x2000 * x + bul->x) / 2 + 0x400;
+			bul->y = tilesToUnits(y) - (tilesToUnits(-1) * x + bul->x) / 2 + pixelsToUnits(2);
 		else
 			bulletVanish(bul);
 
@@ -307,12 +307,12 @@ int bulletJudgeTriangleH(int x, int y, bullet *bul)
 	int hit = 0;
 
 	if (bul->x < (2 * x + 1) << 12
-		&& bul->x - 0x200 >(2 * x - 1) << 12
-		&& bul->y + 0x400 > tilesToUnits(y) - (-0x2000 * x + bul->x) / 2 - 0x800
-		&& bul->y - 0x400 < (2 * y + 1) << 12)
+		&& bul->x - 0x200 > (2 * x - 1) << 12
+		&& bul->y + pixelsToUnits(2) > tilesToUnits(y) - (tilesToUnits(-1) * x + bul->x) / 2 - pixelsToUnits(4)
+		&& bul->y - pixelsToUnits(2) < (2 * y + 1) << 12)
 	{
 		if (bul->bbits & bullet_goThroughWalls)
-			bul->y = tilesToUnits(y) - (-0x2000 * x + bul->x) / 2 - 0xC00;
+			bul->y = tilesToUnits(y) - (tilesToUnits(-1) * x + bul->x) / 2 - pixelsToUnits(6);
 		else
 			bulletVanish(bul);
 

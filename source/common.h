@@ -23,6 +23,7 @@ enum Collisions
 	ground = 0x8, //Touching the ground
 	slopeRight = 0x10, //On a slope that goes up to the right (used to keep Quote on the slope)
 	slopeLeft = 0x20, //On a slope that goes up to the left (used to keep Quote on the slope)
+    solid = 0xFF,    //Touching some solid surface
 	water = 0x100, //In water
 	spike = 0x400, //In spike tile
 	bloodWater = 0x800, //Set by water spikes, if wasn't in water, water particles will be blood (used in Last Cave)

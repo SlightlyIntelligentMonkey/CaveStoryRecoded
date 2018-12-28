@@ -5,6 +5,7 @@
 #include "player.h"
 #include "mathUtils.h"
 #include "flash.h"
+#include "stage.h"
 
 void treads(npc *NPC);
 void fishMissileGenerator(npc *NPC);
@@ -95,7 +96,7 @@ void actBoss_MonsterX(npc *boss)
 		bossObj[7].hit.left = 4096;
 		bossObj[7].hit.top = 12288;
 		bossObj[7].hit.right = 4096;
-		bossObj[7].hit.bottom = 0x2000;
+		bossObj[7].hit.bottom = tilesToUnits(1);
 		bossObj[7].bits = 8;
 		bossObj[7].size = 3;
 		bossObj[7].ani_no = 0;
@@ -114,7 +115,7 @@ void actBoss_MonsterX(npc *boss)
 		bossObj[9].hit.left = 14336;
 		bossObj[9].hit.top = 4096;
 		bossObj[9].hit.right = 14336;
-		bossObj[9].hit.bottom = 0x2000;
+		bossObj[9].hit.bottom = tilesToUnits(1);
 		bossObj[9].bits = npc_solidSoft | npc_invulnerable | npc_ignoreSolid | npc_rearTop;
 		bossObj[9].size = 3;
 
@@ -127,7 +128,7 @@ void actBoss_MonsterX(npc *boss)
 		bossObj[11].y = 0x20000;
 		bossObj[11].view.top = 12288;
 		bossObj[11].view.bottom = 4096;
-		bossObj[11].hit.top = 0x2000;
+		bossObj[11].hit.top = tilesToUnits(1);
 		bossObj[11].hit.bottom = 4096;
 
 		memcpy(&bossObj[12], &bossObj[11], sizeof(npc));
@@ -395,8 +396,8 @@ void actBoss_MonsterX(npc *boss)
 
 void treads(npc *NPC)
 {
-	int spriteX[] = { 0, 0, 72, 144, 72, 144 };
-	int spriteY[] = { 0, 32, 0, 0, 32, 32 };
+	constexpr int spriteX[] = { 0, 0, 72, 144, 72, 144 };
+	constexpr int spriteY[] = { 0, 32, 0, 0, 32, 32 };
 
 	switch (NPC->act_no)
 	{
@@ -411,6 +412,7 @@ void treads(npc *NPC)
 		NPC->ani_no = 2;
 		NPC->ani_wait = 0;
 		// Fallthrough
+
 	case 101:
 		if (++NPC->act_wait > 30)
 			NPC->act_no = 102;
@@ -429,6 +431,7 @@ void treads(npc *NPC)
 		NPC->ani_no = 0;
 		NPC->ani_wait = 0;
 		// Fallthrough
+
 	case 103:
 		++NPC->act_wait;
 		if (++NPC->ani_wait > 1)
@@ -440,6 +443,7 @@ void treads(npc *NPC)
 			NPC->ani_no = 0;
 		NPC->xm -= 32;
 		break;
+
 	case 200:
 		NPC->bits |= npc_bouncy;
 		NPC->bits |= npc_rearTop;
@@ -448,6 +452,7 @@ void treads(npc *NPC)
 		NPC->ani_no = 4;
 		NPC->ani_wait = 0;
 		// Fallthrough
+
 	case 201:
 		if (++NPC->act_wait > 30)
 			NPC->act_no = 202;
@@ -460,12 +465,14 @@ void treads(npc *NPC)
 			NPC->ani_no = 4;
 		NPC->xm += 32;
 		// Fallthrough
+
 	case 202:
 		NPC->bits &= ~npc_bouncy;
 		NPC->act_no = 203;
 		NPC->ani_no = 0;
 		NPC->ani_wait = 0;
 		break;
+
 	case 203:
 		++NPC->act_wait;
 		if (++NPC->ani_wait > 1)
@@ -477,12 +484,14 @@ void treads(npc *NPC)
 			NPC->ani_no = 0;
 		NPC->xm += 32;
 		break;
+
 	case 300:
 		NPC->act_no = 301;
 		NPC->ani_no = 4;
 		NPC->ani_wait = 0;
 		NPC->bits |= npc_bouncy;
 		// Fallthrough
+
 	case 301:
 		if (++NPC->ani_wait > 0)
 		{
@@ -498,12 +507,14 @@ void treads(npc *NPC)
 			NPC->act_no = 10;
 		}
 		break;
+
 	case 400:
 		NPC->act_no = 401;
 		NPC->ani_no = 2;
 		NPC->ani_wait = 0;
 		NPC->bits |= npc_bouncy;
 		// Fallthrough
+
 	case 401:
 		if (++NPC->ani_wait > 0)
 		{

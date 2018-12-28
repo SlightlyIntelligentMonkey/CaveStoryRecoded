@@ -16,6 +16,7 @@
 				</Compiler>
 			</Target>
 		</Build>
+		<Unit filename="Json_Modern_Cpp/json.hpp" />
 		<Unit filename="source/CaveStoryEngine.rc">
 			<Option compilerVar="WINDRES" />
 		</Unit>
@@ -39,6 +40,7 @@
 		<Unit filename="source/caret.cpp" />
 		<Unit filename="source/caret.h" />
 		<Unit filename="source/common.h" />
+		<Unit filename="source/core.cpp" />
 		<Unit filename="source/fade.cpp" />
 		<Unit filename="source/fade.h" />
 		<Unit filename="source/filesystem.cpp" />
@@ -58,8 +60,6 @@
 		<Unit filename="source/input.cpp" />
 		<Unit filename="source/input.h" />
 		<Unit filename="source/inventory.cpp" />
-		<Unit filename="source/level.cpp" />
-		<Unit filename="source/level.h" />
 		<Unit filename="source/loadConfig.cpp" />
 		<Unit filename="source/loadConfig.h" />
 		<Unit filename="source/lodepng/lodepng.cpp" />
@@ -79,6 +79,7 @@
 		<Unit filename="source/missile.cpp" />
 		<Unit filename="source/missile.h" />
 		<Unit filename="source/missileShoot.cpp" />
+		<Unit filename="source/monsterX.cpp" />
 		<Unit filename="source/nemesis.cpp" />
 		<Unit filename="source/nemesis.h" />
 		<Unit filename="source/nemesisShoot.cpp" />
@@ -120,6 +121,8 @@
 		<Unit filename="source/npc320.h" />
 		<Unit filename="source/npc340.cpp" />
 		<Unit filename="source/npc340.h" />
+		<Unit filename="source/npc360.cpp" />
+		<Unit filename="source/npc360.h" />
 		<Unit filename="source/npcAct.cpp" />
 		<Unit filename="source/npcAct.h" />
 		<Unit filename="source/npcCollision.cpp" />
@@ -150,6 +153,8 @@
 		<Unit filename="source/spur.cpp" />
 		<Unit filename="source/spur.h" />
 		<Unit filename="source/spurShoot.cpp" />
+		<Unit filename="source/stage.cpp" />
+		<Unit filename="source/stage.h" />
 		<Unit filename="source/stageSelect.cpp" />
 		<Unit filename="source/stdUtils.cpp" />
 		<Unit filename="source/stdUtils.h" />
