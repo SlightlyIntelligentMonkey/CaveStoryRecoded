@@ -489,7 +489,7 @@ void npc::doGravity(int gravity, int maxYVel)
 		this->ym = maxYVel;
 }
 
-void npc::doRects(RECT rcLeft, RECT rcRight)
+void npc::doRects(const RECT& rcLeft, const RECT& rcRight)
 {
     if (this->direct != dirLeft)
         this->rect = rcRight;
@@ -497,7 +497,7 @@ void npc::doRects(RECT rcLeft, RECT rcRight)
         this->rect = rcLeft;
 }
 
-void npc::doRects(RECT rcNPC)
+void npc::doRects(const RECT& rcNPC)
 {
     this->rect = rcNPC;
 }

@@ -141,8 +141,8 @@ public:
 		}
 	}
 
-	void doRects(RECT rcLeft, RECT rcRight);
-	void doRects(RECT rcNPC);
+	void doRects(const RECT& rcLeft, const RECT& rcRight);
+	void doRects(const RECT& rcNPC);
 
 	void facePlayer();
 	attrPure int getXDistToPlayer();

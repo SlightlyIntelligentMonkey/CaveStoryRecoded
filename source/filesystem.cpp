@@ -88,13 +88,26 @@ int loadFile(const string& name, uint8_t **data)
 
 	//Get filesize
 	if (fseek(file, 0, SEEK_END) == -1)
+	{
+		if (fclose(file) == EOF)
+			throw std::runtime_error("Could not close " + name + " after failure of seek");
 		throw std::runtime_error("Could not seek in " + name);
+	}
+
 	const int filesize = ftell(file);
 	if (filesize == -1L)
+	{
+		if (fclose(file) == EOF)
+			throw std::runtime_error("Could not close " + name + " after failure to find size");
 		throw std::runtime_error("Could not find size of " + name);
+	}
 
 	if (fseek(file, 0, SEEK_SET) == -1)
+	{
+		if (fclose(file) == EOF)
+			throw std::runtime_error("Could not close " + name + " after failure of seek");
 		throw std::runtime_error("Could not seek in " + name);
+	}
 
 	//Load data
 	*data = new uint8_t[filesize];
