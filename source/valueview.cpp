@@ -1,4 +1,4 @@
-#include "valueview.h"
+﻿#include "valueview.h"
 
 #include <vector>
 #include <cstring>

@@ -1,4 +1,4 @@
-#include "npc160.h"
+﻿#include "npc160.h"
 
 #include <array>
 #include "sound.h"
@@ -65,7 +65,7 @@ void npcAct160(npc *NPC) //poo black
 
 		break;
 	case landed:
-		NPC->damage = 20;
+		NPC->damage = 20; // wot
 		NPC->damage = 0;
 		if (++NPC->act_wait > 24)
 		{
