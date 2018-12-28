@@ -91,3 +91,4 @@ ipch/
 /source/Config.dat
 /*.cscope_file_list
 /*.layout
+/*.d

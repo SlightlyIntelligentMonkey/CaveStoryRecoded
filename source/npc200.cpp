@@ -725,7 +725,6 @@ void npcAct218(npc *NPC) //big energy shot from core
 	if (NPC->ani_no > 1)
 		NPC->ani_no = 0;
 	NPC->rect = rect[NPC->ani_no];
-	return;
 }
 
 void npcAct219(npc *NPC) // Generator - Smoke/Underwater Current

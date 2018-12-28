@@ -1,4 +1,4 @@
-#include "npc040.h"
+﻿#include "npc040.h"
 
 #include <array>
 #include "player.h"
@@ -800,7 +800,7 @@ void npcAct049(npc *NPC) //Skull heads
 	int xm;
 	int ym;
 
-	if (NPC->act_no > 9 && NPC->pNpc->code_char == 3)
+	if (NPC->act_no > 9 && NPC->pNpc && NPC->pNpc->code_char == 3)
 	{
 		NPC->act_no = 3;
 		NPC->xm = 0;

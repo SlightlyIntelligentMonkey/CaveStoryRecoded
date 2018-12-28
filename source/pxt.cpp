@@ -278,59 +278,53 @@ int loadSound(const string& path, uint8_t **buf, size_t *length)
 			uint8_t *dest = new uint8_t[size];
 			uint8_t *pBlock = new uint8_t[size];
 
-			if (dest && pBlock)
+			//Set buffers to default value of 0x80
+			memset(dest, 0x80, size);
+			memset(pBlock, 0x80, size);
+
+			for (int i = 0; i < 4; ++i)
 			{
-				//Set buffers to default value of 0x80
-				memset(dest, 0x80, size);
-				memset(pBlock, 0x80, size);
-
-				for (int i = 0; i < 4; ++i)
-				{
-					//Get wave data
-					if (!makePixelWaveData(lineNumbers[i], dest))
-					{
-						delete[] dest;
-						delete[] pBlock;
-						return -1;
-					}
-
-					//Put data into buffer
-					for (int j = 0; j < lineNumbers[i][1]; ++j)
-					{
-						if (dest[j] + pBlock[j] - 0x100 >= -0x7F)
-						{
-							if (dest[j] + pBlock[j] - 0x100 <= 0x7F)
-								pBlock[j] += dest[j] + -0x80;
-							else
-								pBlock[j] = (uint8_t)-1;
-						}
-						else
-							pBlock[j] = 0;
-					}
-				}
-
-				//Put data from buffers into main sound buffer
-				*buf = new uint8_t[size];
-
-				if (!*buf)
+				//Get wave data
+				if (!makePixelWaveData(lineNumbers[i], dest))
 				{
 					delete[] dest;
 					delete[] pBlock;
-					return -2;
+					return -1;
 				}
 
-				*length = size;
-				memcpy(*buf, pBlock, size);
+				//Put data into buffer
+				for (int j = 0; j < lineNumbers[i][1]; ++j)
+				{
+					if (dest[j] + pBlock[j] - 0x100 >= -0x7F)
+					{
+						if (dest[j] + pBlock[j] - 0x100 <= 0x7F)
+							pBlock[j] += dest[j] + -0x80;
+						else
+							pBlock[j] = (uint8_t)-1;
+					}
+					else
+						pBlock[j] = 0;
+				}
+			}
 
-				//Free the two buffers
+			//Put data from buffers into main sound buffer
+			*buf = new uint8_t[size];
+
+			if (!*buf)
+			{
 				delete[] dest;
 				delete[] pBlock;
-
-				return 1;
+				return -2;
 			}
+
+			*length = size;
+			memcpy(*buf, pBlock, size);
+
+			//Free the two buffers
 			delete[] dest;
 			delete[] pBlock;
-			return -3;
+
+			return 1;
 		}
 		else
 			return -4;

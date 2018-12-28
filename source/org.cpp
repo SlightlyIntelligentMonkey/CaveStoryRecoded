@@ -289,7 +289,7 @@ void releaseOrganyaObject(uint8_t track) {
 	memset(orgWaves[track], 0, sizeof(orgWaves[track]));
 }
 
-bool makeSoundObject8(char *wavep, uint8_t track, bool pipi)
+bool makeSoundObject8(const char *wavep, uint8_t track, bool pipi)
 {
 	size_t i, j, k;
 	size_t wave_size;
