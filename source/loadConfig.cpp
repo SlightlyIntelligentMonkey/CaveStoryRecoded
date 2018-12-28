@@ -60,17 +60,6 @@ json loadJsonFromFile(const string& path)
 	return j;
 }
 
-/*constexpr int defaultPadLeft = SDL_CONTROLLER_BUTTON_DPAD_LEFT;
-constexpr int defaultPadRight = SDL_CONTROLLER_BUTTON_DPAD_RIGHT;
-constexpr int defaultPadUp = SDL_CONTROLLER_BUTTON_DPAD_UP;
-constexpr int defaultPadDown = SDL_CONTROLLER_BUTTON_DPAD_DOWN;
-constexpr int defaultPadJump = SDL_CONTROLLER_BUTTON_A;
-constexpr int defaultPadShoot = SDL_CONTROLLER_BUTTON_X;
-constexpr int defaultPadMenu = SDL_CONTROLLER_BUTTON_Y;
-constexpr int defaultPadMap = SDL_CONTROLLER_BUTTON_B;
-constexpr int defaultPadRotLeft = SDL_CONTROLLER_BUTTON_LEFTSHOULDER;
-constexpr int defaultPadRotRight = SDL_CONTROLLER_BUTTON_RIGHTSHOULDER;*/
-
 template<typename T> void safeGet(const json& j, const string& name, T& varTbc)
 {
 	if constexpr(std::is_same_v<T, string>)

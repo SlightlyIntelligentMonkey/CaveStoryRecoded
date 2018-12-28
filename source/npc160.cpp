@@ -294,8 +294,8 @@ LABEL_34:
 
 void npcAct163(npc *NPC) // Dr. Gero
 {
-    array<RECT, 2> rcLeft = {{{192, 0, 208, 16}, {208, 0, 224, 16}}};
-    array<RECT, 2> rcRight = {{{192, 16, 208, 32}, {208, 16, 224, 32}}};
+    constexpr array<RECT, 2> rcLeft = {{{192, 0, 208, 16}, {208, 0, 224, 16}}};
+    constexpr array<RECT, 2> rcRight = {{{192, 16, 208, 32}, {208, 16, 224, 32}}};
 
     switch (NPC->act_no)
     {
@@ -326,8 +326,8 @@ void npcAct163(npc *NPC) // Dr. Gero
 
 void npcAct164(npc *NPC) // Nurse Hasumi
 {
-    array<RECT, 2> rcLeft = {{{224, 0, 240, 16}, {240, 0, 256, 16}}};
-    array<RECT, 2> rcRight = {{{224, 16, 240, 32}, {240, 16, 256, 32}}};
+    constexpr array<RECT, 2> rcLeft = {{{224, 0, 240, 16}, {240, 0, 256, 16}}};
+    constexpr array<RECT, 2> rcRight = {{{224, 16, 240, 32}, {240, 16, 256, 32}}};
 
     switch (NPC->act_no)
     {
@@ -514,8 +514,8 @@ void npcAct168(npc *NPC) //boulder
 
 void npcAct169(npc *NPC)
 {
-	int spriteX[] = { 0,  0, 0, 40, 0, 80, 120, 120, 80 };
-	int spriteY[] = { 0, 48, 0, 48, 0, 48,  48, 0, 0 };
+	constexpr int spriteX[] = { 0,  0, 0, 40, 0, 80, 120, 120, 80 };
+	constexpr int spriteY[] = { 0, 48, 0, 48, 0, 48,  48, 0, 0 };
 
 	switch (NPC->act_no)
 	{

@@ -25,14 +25,14 @@ void npcAct100(npc * NPC) // Grate
 
 void npcAct101(npc *NPC) // Power Controls, screen
 {
-	array<RECT, 3> rcNPC{ {{240, 136, 256, 152}, {240, 136, 256, 152}, {256, 136, 272, 152}} };
+	constexpr array<RECT, 3> rcNPC{ {{240, 136, 256, 152}, {240, 136, 256, 152}, {256, 136, 272, 152}} };
     NPC->animate(3, 0, 2);
     NPC->doRects(rcNPC);
 }
 
 void npcAct102(npc *NPC) // Power Controls, power flow
 {
-	array<RECT, 4> rcNPC = { {{208, 120, 224, 136}, {224, 120, 240, 136}, {240, 120, 256, 136}, {256, 120, 272, 136}} };
+	constexpr array<RECT, 4> rcNPC = { {{208, 120, 224, 136}, {224, 120, 240, 136}, {240, 120, 256, 136}, {256, 120, 272, 136}} };
 
     if (!NPC->act_no)
     {
@@ -46,8 +46,8 @@ void npcAct102(npc *NPC) // Power Controls, power flow
 
 void npcAct103(npc *NPC) // Manann red blast (projectile)
 {
-	array<RECT, 3> rcLeft = { {{192, 96, 208, 120}, {208, 96, 224, 120}, {224, 96, 240, 120}} };
-	array<RECT, 3> rcRight = { {{192, 120, 208, 144}, {208, 120, 224, 144}, {224, 120, 240, 144}} };
+	constexpr array<RECT, 3> rcLeft = { {{192, 96, 208, 120}, {208, 96, 224, 120}, {224, 96, 240, 120}} };
+	constexpr array<RECT, 3> rcRight = { {{192, 120, 208, 144}, {208, 120, 224, 144}, {224, 120, 240, 144}} };
 
     if (NPC->act_no == 1 || !NPC->act_no)
     {
@@ -71,8 +71,8 @@ void npcAct103(npc *NPC) // Manann red blast (projectile)
 
 void npcAct104(npc *NPC) // Frog (enemy)
 {
-	array<RECT, 3> rcLeft = { { { 0, 112, 32, 144 },{ 32, 112, 64, 144 },{ 64, 112, 96, 144 } } };
-	array<RECT, 3> rcRight = { { { 0, 144, 32, 176 },{ 32, 144, 64, 176 },{ 64, 144, 96, 176 } } };
+	constexpr array<RECT, 3> rcLeft = { { { 0, 112, 32, 144 },{ 32, 112, 64, 144 },{ 64, 112, 96, 144 } } };
+	constexpr array<RECT, 3> rcRight = { { { 0, 144, 32, 176 },{ 32, 144, 64, 176 },{ 64, 144, 96, 176 } } };
 
 	enum
 	{
@@ -194,7 +194,7 @@ void npcAct104(npc *NPC) // Frog (enemy)
 
 void npcAct105(npc *NPC) // Speech balloon 'Hey' low
 {
-	array<RECT, 2> rcNPC = { {{128, 32, 144, 48}, {128, 38, 128, 32}} };
+	constexpr array<RECT, 2> rcNPC = { {{128, 32, 144, 48}, {128, 38, 128, 32}} };
 
     if (++NPC->act_wait > 30)
         NPC->cond = 0;
@@ -241,8 +241,8 @@ void npcAct107(npc *NPC) // Malco
 		NPC->ani_wait = 0;
 		for (size_t i = 0; i < 4; ++i)
 		{
-			auto xVel = random(-0x155, 0x155);
-			auto yVel = random(-0x600, 0x600);
+			const auto xVel = random(-0x155, 0x155);
+			const auto yVel = random(-0x600, 0x600);
 			createNpc(NPC_Smoke, NPC->x, NPC->y, xVel, yVel);
 		}
 		// Fallthrough
@@ -293,8 +293,8 @@ void npcAct107(npc *NPC) // Malco
 		playSound(SFX_DestroyBreakableBlock);
 		for (size_t i = 0; i < 8; ++i)
 		{
-			auto yVel = random(pixelsToUnits(-3), 0);
-			auto xVel = random(-0x155, 0x155);
+			const auto yVel = random(pixelsToUnits(-3), 0);
+			const auto xVel = random(-0x155, 0x155);
 			createNpc(NPC_Smoke, NPC->x, NPC->y, xVel, yVel);
 		}
 		// Fallthrough
@@ -389,8 +389,8 @@ void npcAct108(npc *NPC) //balfrog projectile
 
 void npcAct109(npc *NPC) // Malco, damaged
 {
-	array<RECT, 2> rcLeft = { {{240, 0, 256, 24}, {256, 0, 272, 24}} };
-	array<RECT, 2> rcRight = { {{240, 24, 256, 48}, {256, 24, 272, 48}} };
+	constexpr array<RECT, 2> rcLeft = { {{240, 0, 256, 24}, {256, 0, 272, 24}} };
+	constexpr array<RECT, 2> rcRight = { {{240, 24, 256, 48}, {256, 24, 272, 48}} };
 
     enum
     {
@@ -449,8 +449,8 @@ void npcAct109(npc *NPC) // Malco, damaged
 
 void npcAct110(npc *NPC)
 {
-	array<RECT, 3> rcLeft = { {{96, 128, 112, 144}, {112, 128, 128, 144}, {128, 128, 144, 144}} };
-	array<RECT, 3> rcRight = {{ {96, 144, 112, 160}, {112, 144, 128, 160}, {128, 144, 144, 160} } };
+	constexpr array<RECT, 3> rcLeft = { {{96, 128, 112, 144}, {112, 128, 128, 144}, {128, 128, 144, 144}} };
+	constexpr array<RECT, 3> rcRight = {{ {96, 144, 112, 160}, {112, 144, 128, 160}, {128, 144, 144, 160} } };
 
     enum
     {
@@ -845,7 +845,7 @@ void npcAct113(npc *NPC) // Professor Booster
 
 void npcAct114(npc *NPC) // Press (enemy)
 {
-	array<RECT, 3> rcNPC = { {{144, 112, 160, 136}, {160, 112, 176, 136}, {176, 112, 192, 136}} };
+	constexpr array<RECT, 3> rcNPC = { {{144, 112, 160, 136}, {160, 112, 176, 136}, {176, 112, 192, 136}} };
 
     switch (NPC->act_no)
     {
@@ -881,8 +881,8 @@ void npcAct114(npc *NPC) // Press (enemy)
             {
                 for (int i = 0; i < 4; ++i)
                 {
-                    auto xVel = random(-0x600, 0);
-                    auto yVel = random(-0x155, 0x155);
+                    const auto xVel = random(-0x600, 0);
+                    const auto yVel = random(-0x155, 0x155);
                     createNpc(NPC_Smoke, NPC->x, NPC->y, xVel, yVel);
                 }
                 playSound(SFX_LargeObjectHitGround);
@@ -1008,10 +1008,10 @@ void npcAct115(npc *NPC) // Ravil (enemy)
     case jumpingFromFireplace:
         for (size_t i = 0; i < 8; ++i)
         {
-            auto xPos = NPC->x + pixelsToUnits(random(-12, 12));
-            auto yPos = NPC->y + pixelsToUnits(random(-12, 12));
-            auto xVel = random(-0x155, 0x155);
-            auto yVel = random(pixelsToUnits(-3), 0);
+            const auto xPos = NPC->x + pixelsToUnits(random(-12, 12));
+            const auto yPos = NPC->y + pixelsToUnits(random(-12, 12));
+            const auto xVel = random(-0x155, 0x155);
+            const auto yVel = random(pixelsToUnits(-3), 0);
             createNpc(NPC_Smoke, xPos, yPos, xVel, yVel);
         }
         NPC->ani_no = 0;

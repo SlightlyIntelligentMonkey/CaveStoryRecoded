@@ -94,7 +94,7 @@ void npcAct322(npc *NPC) // Deleet (enemy)
 
 void npcAct323(npc *NPC)
 {
-	array<RECT, 4> rcNPC = { {{216, 32, 232, 56}, {232, 32, 248, 56}, {216, 56, 232, 80}, {232, 56, 248, 80}} };
+	constexpr array<RECT, 4> rcNPC = { {{216, 32, 232, 56}, {232, 32, 248, 56}, {216, 56, 232, 80}, {232, 56, 248, 80}} };
 
 	NPC->animate(3, 0, 3);
 
@@ -214,12 +214,12 @@ void npcAct329(npc *NPC) // Building fan
 
 void npcAct334(npc *NPC) //sweat
 {
-	std::array<RECT, 2> rcRight =
+	constexpr std::array<RECT, 2> rcRight =
 	{{
 		{176, 184, 184, 200},
 		{184, 184, 192, 200}
 	}};
-	std::array<RECT, 2> rcLeft =
+	constexpr std::array<RECT, 2> rcLeft =
 	{{
 		{160, 184, 168, 200},
 		{168, 184, 176, 200}

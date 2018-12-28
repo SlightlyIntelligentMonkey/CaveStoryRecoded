@@ -698,8 +698,8 @@ void npcAct084(npc *NPC) //Basu 1 projectile
 
 void npcAct085(npc * NPC) // Terminal
 {
-	array<RECT, 3> rcLeft = { { {256, 96, 272, 120}, {256, 96, 272, 120}, {272, 96, 288, 120} } };
-	array<RECT, 3> rcRight = { { {256, 96, 272, 120}, {288, 96, 304, 120}, {304, 96, 320, 120} } };
+	constexpr array<RECT, 3> rcLeft = { { {256, 96, 272, 120}, {256, 96, 272, 120}, {272, 96, 288, 120} } };
+	constexpr array<RECT, 3> rcRight = { { {256, 96, 272, 120}, {288, 96, 304, 120}, {304, 96, 320, 120} } };
 
 	if (NPC->act_no == 0)
 	{
@@ -1214,7 +1214,7 @@ void npcAct091(npc *NPC) // Cage
 
 void npcAct092(npc * NPC) // Sue (Computer)
 {
-	array<RECT, 3> rcNPC = { { {272, 216, 288, 240}, {288, 216, 304, 240}, {304, 216, 320, 240} } };
+	constexpr array<RECT, 3> rcNPC = { { {272, 216, 288, 240}, {288, 216, 304, 240}, {304, 216, 320, 240} } };
 
 	enum
 	{
@@ -1359,7 +1359,7 @@ void npcAct093(npc * NPC)
 
 void npcAct094(npc * NPC)
 {
-	array<RECT, 5> rcNPC = { { {272, 0, 320, 24}, {272, 24, 320, 48}, {272, 48, 320, 73}, {272, 72, 320, 96}, {272, 96, 320, 120} } };
+	constexpr array<RECT, 5> rcNPC = { { {272, 0, 320, 24}, {272, 24, 320, 48}, {272, 48, 320, 73}, {272, 72, 320, 96}, {272, 96, 320, 120} } };
 
 	enum
 	{
@@ -1482,8 +1482,8 @@ void npcAct094(npc * NPC)
 
 void npcAct095(npc * NPC)
 {
-	array<RECT, 4> rcLeft = { { {208, 64, 224, 80}, {224, 64, 240, 80}, {240, 64, 256, 80}, {256, 64, 272, 80} } };
-	array<RECT, 4> rcRight = { { {208, 80, 224, 96}, {224, 80, 240, 96}, {240, 80, 256, 96}, {256, 80, 272, 96} } };
+	constexpr array<RECT, 4> rcLeft = { { {208, 64, 224, 80}, {224, 64, 240, 80}, {240, 64, 256, 80}, {256, 64, 272, 80} } };
+	constexpr array<RECT, 4> rcRight = { { {208, 80, 224, 96}, {224, 80, 240, 96}, {240, 80, 256, 96}, {256, 80, 272, 96} } };
 
 	switch (NPC->act_no)
 	{

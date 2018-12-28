@@ -235,7 +235,7 @@ uint32_t calculateFPS()
 		hasFunctionBeenExecuted = true;
 	}
 
-	uint32_t tickCount = SDL_GetTicks();
+	const uint32_t tickCount = SDL_GetTicks();
 	static uint32_t timeElapsed = 0;
 	++timeElapsed;
 
@@ -353,7 +353,7 @@ void loadImageBad(const string& file, SDL_Texture **tex)
 	surface = loadPNGToSurface(file);
 	if (surface->format->palette != nullptr)
 	{
-		SDL_Color *colors = static_cast<SDL_Color*>(calloc(4, surface->format->palette->ncolors));
+		SDL_Color *colors = new SDL_Color[4 * surface->format->palette->ncolors]();
 		for (int c = 0; c < surface->format->palette->ncolors; c++)
 		{
 			colors[c].r = colorValTbl[(surface->format->palette->colors[c].r * (sizeof(colorValTbl) - 1)) / 0xFF];
@@ -362,11 +362,11 @@ void loadImageBad(const string& file, SDL_Texture **tex)
 			colors[c].a = surface->format->palette->colors[c].a;
 		}
 		SDL_SetPaletteColors(surface->format->palette, colors, 0, surface->format->palette->ncolors);
-		free(colors);
+		delete[] colors;
 	}
 	else
 	{
-		uint8_t *pixel = reinterpret_cast<uint8_t*>(surface->pixels);
+		uint8_t *pixel = static_cast<uint8_t*>(surface->pixels);
 		for (int p = 0; p < surface->w*surface->h; p++)
 			if (pixel[p])
 				pixel[p] = colorValTbl[(pixel[p] * (sizeof(colorValTbl) - 1)) / 0xFF];

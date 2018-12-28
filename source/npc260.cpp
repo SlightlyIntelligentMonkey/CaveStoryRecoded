@@ -453,8 +453,8 @@ void npcAct267(npc *NPC) // Muscle Doctor (boss)
         NPC->ani_no = 6;
         if (++NPC->act_wait > 20 && NPC->act_wait % 3 == 1)
         {
-            auto xVel = 4 * random(pixelsToUnits(0.5), pixelsToUnits(1));
-            auto yVel = random(pixelsToUnits(-1), pixelsToUnits(1));
+            const auto xVel = 4 * random(pixelsToUnits(0.5), pixelsToUnits(1));
+            const auto yVel = random(pixelsToUnits(-1), pixelsToUnits(1));
             if (NPC->direct != dirLeft)
                 createNpc(NPC_EnemyBatRedEnergy, NPC->x + tilesToUnits(0.5), NPC->y - tilesToUnits(0.25), xVel, yVel, dirRight);
             else
@@ -814,8 +814,8 @@ void npcAct268(npc *NPC)
 			auto angle = (NPC->direct != dirLeft) ? -8 : -120;
 			angle += random(-0x10, 0x10);
 
-			auto xVel = 5 * getCos(angle);
-			auto yVel = 5 * getSin(angle);
+			const auto xVel = 5 * getCos(angle);
+			const auto yVel = 5 * getSin(angle);
 			createNpc(NPC_ProjectileBalrogEnergyBallInvincible, NPC->x, NPC->y + pixelsToUnits(4), xVel, yVel);
 			playSound(SFX_DestroyBreakableBlock);
 		}

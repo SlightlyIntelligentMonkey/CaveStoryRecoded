@@ -131,7 +131,7 @@ void npcAct296(npc *NPC) // Generator - Cloud
     if (++NPC->act_wait > 16)
     {
         NPC->act_wait = random(0, 16);
-        int randDir = random(0, 100) % 4;
+        const int randDir = random(0, 100) % 4;
         if (NPC->direct != dirLeft)
             createNpc(NPC_Cloud, NPC->x, NPC->y + tilesToUnits(random(-7, 7)), 0, 0, randDir + 4, nullptr);
         else

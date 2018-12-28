@@ -25,30 +25,30 @@ void initLogFile()
     else
         logFile.open(logFileName, fstream::out);
 
-    auto now = time(nullptr);
+    const auto now = time(nullptr);
     logFile << "New session started at : " << put_time(localtime(&now), "%c") << endl;
 }
 
 void logDebug(const string& str)
 {
-    auto now = time(nullptr);
+    const auto now = time(nullptr);
     logFile << '<' << put_time(localtime(&now), "%c") << '>' << " : Debug : " << str << endl;
 }
 
 void logInfo(const string& str)
 {
-    auto now = time(nullptr);
+    const auto now = time(nullptr);
     logFile << '<' << put_time(localtime(&now), "%c") << '>' << " : Information : " << str << endl;
 }
 
 void logWarning(const string& str)
 {
-    auto now = time(nullptr);
+    const auto now = time(nullptr);
     logFile << '<' << put_time(localtime(&now), "%c") << '>' << " : Warning : " << str << endl;
 }
 
 void logError(const string& str)
 {
-    auto now = time(nullptr);
+    const auto now = time(nullptr);
     logFile << '<' << put_time(localtime(&now), "%c") << '>' << " : Error : " << str << endl;
 }

@@ -168,7 +168,7 @@ void npcAct060(npc *NPC) //Toroko
 
 void npcAct061(npc *NPC) //King
 {
-	array<RECT, 11> rcLeft =
+	constexpr array<RECT, 11> rcLeft =
 	{{
         { 224, 32, 240, 48 },
         { 240, 32, 256, 48 },
@@ -183,7 +183,7 @@ void npcAct061(npc *NPC) //King
         { 96, 32, 112, 48 },
     }};
 
-	array<RECT, 11> rcRight =
+	constexpr array<RECT, 11> rcRight =
 	{{
         { 224, 48, 240, 64 },
         { 240, 48, 256, 64 },
@@ -375,7 +375,7 @@ void npcAct061(npc *NPC) //King
 
 void npcAct062(npc *NPC) // Kazuma, facing away
 {
-	array<RECT, 3> rcNPC = { { {272, 192, 288, 216}, {288, 192, 304, 216}, {304, 192, 320, 216} } };
+	constexpr array<RECT, 3> rcNPC = { { {272, 192, 288, 216}, {288, 192, 304, 216}, {304, 192, 320, 216} } };
 
 	enum
 	{
@@ -1235,7 +1235,7 @@ void npcAct069(npc *NPC) //Pignon
 
 void npcAct070(npc * NPC) // Sparkling Item
 {
-	array<RECT, 4> rcNPC = { { {96, 48, 112, 64}, {112, 48, 128, 64}, {128, 48, 144, 64}, {144, 48, 160, 64} } };
+	constexpr array<RECT, 4> rcNPC = { { {96, 48, 112, 64}, {112, 48, 128, 64}, {128, 48, 144, 64}, {144, 48, 160, 64} } };
 
 	NPC->animate(3, 0, 3);
 	NPC->doRects(rcNPC);
@@ -1259,8 +1259,8 @@ void npcAct071(npc * NPC) // Chinfish (enemy)
 	NPC->x += NPC->xm;
 	NPC->y += NPC->ym;
 
-	array<RECT, 3> rcLeft = { { {64, 32, 80, 48}, {80, 32, 96, 48}, {92, 32, 112, 48} } };
-	array<RECT, 3> rcRight = { { {64, 48, 80, 64}, {80, 48, 96, 64}, {96, 48, 112, 64} } };
+	constexpr array<RECT, 3> rcLeft = { { {64, 32, 80, 48}, {80, 32, 96, 48}, {92, 32, 112, 48} } };
+	constexpr array<RECT, 3> rcRight = { { {64, 48, 80, 64}, {80, 48, 96, 64}, {96, 48, 112, 64} } };
 
 	NPC->animate(4, 0, 1);
 	if (NPC->shock)
@@ -1405,7 +1405,7 @@ void npcAct074(npc *NPC) //Jack
 
 void npcAct075(npc * NPC) // Kanpachi
 {
-	array<RECT, 2> rcNPC = { { {272, 32, 296, 56}, {296, 32, 320, 56} } };
+	constexpr array<RECT, 2> rcNPC = { { {272, 32, 296, 56}, {296, 32, 320, 56} } };
 
 	if (NPC->act_no)
 	{
@@ -1475,8 +1475,8 @@ void npcAct078(npc *NPC) //Pot
 
 void npcAct079(npc *NPC) // Mahin
 {
-	array<RECT, 3> rcLeft = { { { 0, 0, 16, 16 }, { 16, 0, 32, 16 }, { 32, 0, 48, 16 } } };
-	array<RECT, 3> rcRight = { { { 0, 16, 16, 32 }, { 16, 16, 32, 32 }, { 32, 16, 48, 32 } } };
+	constexpr array<RECT, 3> rcLeft = { { { 0, 0, 16, 16 }, { 16, 0, 32, 16 }, { 32, 0, 48, 16 } } };
+	constexpr array<RECT, 3> rcRight = { { { 0, 16, 16, 32 }, { 16, 16, 32, 32 }, { 32, 16, 48, 32 } } };
 
 	if (!NPC->act_no)
 	{
