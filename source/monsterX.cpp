@@ -1,3 +1,5 @@
+#include <string.h>
+
 #include "npc.h"
 #include "boss.h"
 #include "game.h"
