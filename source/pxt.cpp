@@ -216,7 +216,7 @@ int makePixelWaveData(const std::vector<long double>& pxtData, uint8_t *data)
 					+ 64)
 				/ 64)
 			/ 64
-			+ -128;
+			+ 128;	// This was originally -128, but casting a negative double to an unsigned char results in undefined behaviour
 
 		long double newMainOffset;
 		if (waveModelTable[(size_t)pxtData[6]][v2] >= 0)
