@@ -61,6 +61,7 @@ json loadJsonFromFile(const string& path)
 	return j;
 }
 
+#if __cplusplus >= 201703L
 template<typename T> void safeGet(const json& j, const string& name, T& varTbc)
 {
 	if constexpr(std::is_same_v<T, string>)
@@ -81,6 +82,26 @@ template<typename T> void safeGet(const json& j, const string& name, T& varTbc)
     else
         static_assert(std::is_same_v<T, void>, "This type is not supported");   // Best I can think of right now. There are probably better ways, but this works I suppose
 }
+#else
+// C++11-friendly replacement
+void safeGet(const json& j, const string& name, string& varTbc)
+{
+    if (j[name].is_string())
+        varTbc = j[name];
+}
+
+void safeGet(const json& j, const string& name, bool& varTbc)
+{
+    if (j[name].is_boolean())
+        varTbc = j[name];
+}
+
+void safeGet(const json& j, const string& name, int& varTbc)
+{
+    if (j[name].is_number())
+        varTbc = j[name];
+}
+#endif
 
 void loadConfigFiles()
 {
