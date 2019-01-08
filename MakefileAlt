@@ -1,7 +1,7 @@
 WARNINGS = -pedantic -Wall -Wextra -Wno-multichar -Wno-unused-parameter
 
 CXXFLAGS = -O3 $(WARNINGS) -DUSE_ICONS_SDL2 -DLODEPNG_NO_COMPILE_ENCODER -DLODEPNG_NO_COMPILE_CPP
-ALL_CXXFLAGS = -std=c++17 `sdl2-config --cflags` -IJson_Modern_Cpp $(CXXFLAGS) -MMD -MP -MF $@.d
+ALL_CXXFLAGS = -std=c++11 `sdl2-config --cflags` -IJson_Modern_Cpp $(CXXFLAGS) -MMD -MP -MF $@.d
 LDFLAGS = -s
 ALL_LDFLAGS = `sdl2-config --libs` $(LDFLAGS)
 LIBS = 
