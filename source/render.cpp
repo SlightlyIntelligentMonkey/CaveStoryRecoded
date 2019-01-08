@@ -9,6 +9,9 @@
 #include "input.h"
 #include "log.h"
 #include "filesystem.h"
+#ifdef USE_ICONS_SDL2
+#include "icon_mini.h"
+#endif
 
 using std::string;
 
@@ -41,11 +44,6 @@ uint32_t windowFlags = 0;
 
 static SDL_Surface *cursor_surface;
 static SDL_Cursor *cursor;
-
-#ifdef USE_ICONS_SDL2
-extern const unsigned char binary_res_icon_mini_png_start[];
-extern const unsigned char binary_res_icon_mini_png_end[];
-#endif
 
 static SDL_Surface* loadPNGToSurface(const string& path)
 {
@@ -136,7 +134,7 @@ int createWindow(int width, int height, int scale)
 		unsigned char *pixel_buffer;
 		unsigned int width;
 		unsigned int height;
-		if (!lodepng_decode32(&pixel_buffer, &width, &height, binary_res_icon_mini_png_start, binary_res_icon_mini_png_end - binary_res_icon_mini_png_start))
+		if (!lodepng_decode32(&pixel_buffer, &width, &height, res_icon_mini_png, res_icon_mini_png_len))
 		{
 			SDL_Surface *surface = SDL_CreateRGBSurfaceWithFormatFrom(pixel_buffer, width, height, 0, width * 4, SDL_PIXELFORMAT_RGBA32);
 

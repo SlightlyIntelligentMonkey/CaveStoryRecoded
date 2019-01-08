@@ -34,9 +34,6 @@ MAIN += balfrog core heavyPress monsterX omega
 OBJS := $(addprefix obj/, $(addsuffix .o, $(MAIN)))
 DEPS := $(addsuffix .d, $(OBJS))
 
-# Embed a bitmap in the binary, and load it with SDL
-OBJS += obj/icon_mini.o
-
 all: bin/CaveStoryEngine
 
 bin/CaveStoryEngine: $(OBJS)
@@ -48,9 +45,8 @@ obj/%.o: source/%.cpp
 	@mkdir -p $(@D)
 	@$(CXX) $(ALL_CXXFLAGS) $< -o $@ -c
 
-obj/icon_mini.o: res/icon_mini.png
-	@mkdir -p $(@D)
-	@$(LD) -r -b binary -o $@ $<
+source/icon_mini.h: res/icon_mini.png
+	@xxd -i $< $@
 
 include $(wildcard $(DEPS))
 
