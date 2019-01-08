@@ -4,10 +4,10 @@ void npcJudgeBlock(const RECT *rcHit, npc *NPC, int tx, int ty)
 {
 	if (NPC->y - rcHit->top < ((2 * ty + 1) << 12) - 0x600
 	        && NPC->y + rcHit->bottom > ((2 * ty - 1) << 12) + 0x600
-	        && NPC->x - rcHit->right < (2 * tx + 1) << 12
-	        && NPC->x - rcHit->right > tilesToUnits(tx))
+	        && NPC->x - rcHit->left < (2 * tx + 1) << 12
+	        && NPC->x - rcHit->left > tilesToUnits(tx))
 	{
-		NPC->x = ((2 * tx + 1) << 12) + rcHit->right;
+		NPC->x = ((2 * tx + 1) << 12) + rcHit->left;
 
 		NPC->flag |= leftWall;
 	}
@@ -22,7 +22,7 @@ void npcJudgeBlock(const RECT *rcHit, npc *NPC, int tx, int ty)
 		NPC->flag |= rightWall;
 	}
 
-	if (NPC->x - rcHit->right < ((2 * tx + 1) << 12) - 0x600
+	if (NPC->x - rcHit->left < ((2 * tx + 1) << 12) - 0x600
 	        && NPC->x + rcHit->right > ((2 * tx - 1) << 12) + 0x600
 	        && NPC->y - rcHit->top < (2 * ty + 1) << 12
 	        && NPC->y - rcHit->top > tilesToUnits(ty))
@@ -33,7 +33,7 @@ void npcJudgeBlock(const RECT *rcHit, npc *NPC, int tx, int ty)
 		NPC->flag |= ceiling;
 	}
 
-	if (NPC->x - rcHit->right < ((2 * tx + 1) << 12) - 0x600
+	if (NPC->x - rcHit->left < ((2 * tx + 1) << 12) - 0x600
 	        && NPC->x + rcHit->right > ((2 * tx - 1) << 12) + 0x600
 	        && NPC->y + rcHit->bottom > (2 * ty - 1) << 12
 	        && NPC->y + rcHit->bottom < tilesToUnits(ty))
