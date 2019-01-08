@@ -1211,7 +1211,7 @@ void npcAct012(npc *NPC) //Balrog cutscene
 
 void npcAct013(npc *NPC) // Forcefield
 {
-	array<RECT, 4> rcNPC = { {{128, 0, 144, 16 }, {144, 0, 160, 16 }, {160, 0, 176, 16}, {176, 0, 192, 16 } } };
+	constexpr array<RECT, 4> rcNPC = { {{128, 0, 144, 16 }, {144, 0, 160, 16 }, {160, 0, 176, 16}, {176, 0, 192, 16 } } };
 
 	if (++NPC->ani_wait > 0)
 	{
@@ -1227,7 +1227,7 @@ void npcAct013(npc *NPC) // Forcefield
 
 void npcAct014(npc * NPC) // Santa's Key
 {
-	array<RECT, 3> rcNPC = { { {192, 0, 208, 16}, {208, 0, 224, 16}, {224, 0, 240, 16} } };
+	constexpr array<RECT, 3> rcNPC = { { {192, 0, 208, 16}, {208, 0, 224, 16}, {224, 0, 240, 16} } };
 
 	if (!NPC->act_no)
 	{

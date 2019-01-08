@@ -489,7 +489,7 @@ void npc::doGravity(int gravity, int maxYVel)
 		this->ym = maxYVel;
 }
 
-void npc::doRects(RECT rcLeft, RECT rcRight)
+void npc::doRects(const RECT& rcLeft, const RECT& rcRight)
 {
     if (this->direct != dirLeft)
         this->rect = rcRight;
@@ -497,7 +497,7 @@ void npc::doRects(RECT rcLeft, RECT rcRight)
         this->rect = rcLeft;
 }
 
-void npc::doRects(RECT rcNPC)
+void npc::doRects(const RECT& rcNPC)
 {
     this->rect = rcNPC;
 }
@@ -529,6 +529,22 @@ void npc::limitYVel(int maxVel)
         this->ym = maxVel;
     else if (this->ym < -maxVel)
         this->ym = -maxVel;
+}
+
+void npc::limitXVel2(int maxVel)
+{
+    if (this->xm2 > maxVel)
+        this->xm2 = maxVel;
+    else if (this->xm2 < -maxVel)
+        this->xm2 = -maxVel;
+}
+
+void npc::limitYVel2(int maxVel)
+{
+    if (this->ym2 > maxVel)
+        this->ym2 = maxVel;
+    else if (this->ym2 < -maxVel)
+        this->ym2 = -maxVel;
 }
 
 void npc::moveInDir(int vel)
@@ -593,7 +609,7 @@ void npc::init(int setCode, int setX, int setY, int setXm, int setYm, int setDir
 
 void npc::update()
 {
-	if (this->code_char >= 0 && (size_t)this->code_char <= _countof(npcActs))
+	if (this->code_char >= 0 && static_cast<size_t>(this->code_char) <= _countof(npcActs))
 		npcActs[this->code_char](this);
 
 	if (this->shock > 0)

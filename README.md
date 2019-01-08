@@ -1,9 +1,7 @@
-# Cave Story Engine
+# Cave Story Recoded
 An open-source Cave Story Engine.
 
-Essentially 1:1 to the original game.
-
-(And not broken like NXEngine)
+Attempts to have complete 1:1 compatibility to the original game (except for binary compat, that's pretty much impossible).
 
 ## Build Instructions For Windows 
 

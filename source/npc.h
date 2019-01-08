@@ -121,9 +121,8 @@ public:
 		}
 		catch (const std::out_of_range& oops)
 		{
-			logError("U FUCKED UP THE RECTS LMAO"
-				" (btw it's for NPC " + std::to_string(this->code_char) +
-				" and you tried to access rect no " + std::to_string(this->ani_no) + ") (exception details : " + oops.what() + ')');
+			logError("Out of range exception when trying to handle rects (NPC number " + std::to_string(this->code_char) +
+				" and attempted access to rect number " + std::to_string(this->ani_no) + ") (exception details : " + oops.what() + ')');
 			this->surf = 0x27;
 			this->doRects({ 0, 0, this->view.left >> 8, this->view.top >> 8 });
 		}
@@ -135,22 +134,24 @@ public:
 			this->rect = rcNPC.at(this->ani_no);
 		} catch (const std::out_of_range& lmaoUFuckedUp)
 		{
-			logError("U FUCKED UP THE RECTS LMAO"
-				" (btw it's for NPC " + std::to_string(this->code_char) +
-				" and you tried to access rect no " + std::to_string(this->ani_no) + ") (exception details : " + lmaoUFuckedUp.what() + ')');
+			logError("Out of range exception when trying to handle rects (NPC number "  + std::to_string(this->code_char) +
+				" and attempted access to rect number " + std::to_string(this->ani_no) + ") (exception details : " + lmaoUFuckedUp.what() + ')');
 			this->surf = 0x27;
 			this->doRects({ 0, 0, this->view.left >> 8, this->view.top >> 8 });
 		}
 	}
 
-	void doRects(RECT rcLeft, RECT rcRight);
-	void doRects(RECT rcNPC);
+	void doRects(const RECT& rcLeft, const RECT& rcRight);
+	void doRects(const RECT& rcNPC);
 
 	void facePlayer();
 	attrPure int getXDistToPlayer();
 
 	void limitXVel(int maxVel);
 	void limitYVel(int maxVel);
+
+	void limitXVel2(int maxVel);
+	void limitYVel2(int maxVel);
 
 	void moveInDir(int vel);
 

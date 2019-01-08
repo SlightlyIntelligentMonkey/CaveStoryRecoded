@@ -6,6 +6,7 @@
 #include "render.h"
 #include "game.h"
 #include "sound.h"
+#include "mathUtils.h"
 
 using std::array;
 
@@ -93,7 +94,7 @@ void npcAct322(npc *NPC) // Deleet (enemy)
 
 void npcAct323(npc *NPC)
 {
-	array<RECT, 4> rcNPC = { {{216, 32, 232, 56}, {232, 32, 248, 56}, {216, 56, 232, 80}, {232, 56, 248, 80}} };
+	constexpr array<RECT, 4> rcNPC = { {{216, 32, 232, 56}, {232, 32, 248, 56}, {216, 56, 232, 80}, {232, 56, 248, 80}} };
 
 	NPC->animate(3, 0, 3);
 
@@ -203,18 +204,26 @@ void npcAct328(npc *NPC) // Transmogrifier
 	NPC->doRects({96, 0, 128, 48});
 }
 
+void npcAct329(npc *NPC) // Building fan
+{
+    if (++NPC->act_wait / 2 % 2)
+        NPC->rect = {48, 0, 64, 16};
+    else
+        NPC->rect = {64, 0, 80, 16};
+}
+
 void npcAct334(npc *NPC) //sweat
 {
-	RECT rcRight[] =
-	{
+	constexpr std::array<RECT, 2> rcRight =
+	{{
 		{176, 184, 184, 200},
 		{184, 184, 192, 200}
-	};
-	RECT rcLeft[] =
-	{
+	}};
+	constexpr std::array<RECT, 2> rcLeft =
+	{{
 		{160, 184, 168, 200},
 		{168, 184, 176, 200}
-	};
+	}};
 
 	if (NPC->act_no != 0)
 	{
@@ -242,14 +251,37 @@ void npcAct334(npc *NPC) //sweat
 	if (NPC->act_wait > 63)
 		NPC->cond = 0;
 LABEL_12:
-	if (NPC->direct)
-	{
-		NPC->rect = rcRight[NPC->ani_no];
-	}
-	else
-	{
-		NPC->rect = rcLeft[NPC->ani_no];
-	}
+	NPC->doRects(rcLeft, rcRight);
 
 	return;
+}
+
+void npcAct336(npc *NPC)    // Generator - Ikachan
+{
+    if (NPC->act_no == 0)
+    {
+        if (currentPlayer.shock)
+            NPC->cond = 0;
+    }
+    else if (NPC->act_no == 10 && ++NPC->act_wait % 4 == 1)
+        createNpc(NPC_Ikachan, NPC->x, NPC->y + tilesToUnits(random(0, 13)));
+}
+
+void npcAct339(npc *NPC) // Generator - Green Devil
+{
+    if (!NPC->act_no)
+    {
+        NPC->act_no = 1;
+        NPC->act_wait = random(0, 40);
+    }
+    else if (NPC->act_no != 1)
+        return;
+
+    if (NPC->act_wait)
+        --NPC->act_wait;
+    else
+    {
+        NPC->act_no = 0;
+        createNpc(NPC_EnemyGreenDevil, NPC->x, NPC->y + pixelsToUnits(random(-16, 16)), 0, 0, NPC->direct);
+    }
 }

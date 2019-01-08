@@ -9,6 +9,9 @@
 #include "input.h"
 #include "log.h"
 #include "filesystem.h"
+#ifdef USE_ICONS_SDL2
+#include "icon_mini.h"
+#endif
 
 using std::string;
 
@@ -41,11 +44,6 @@ uint32_t windowFlags = 0;
 
 static SDL_Surface *cursor_surface;
 static SDL_Cursor *cursor;
-
-#ifdef USE_ICONS_SDL2
-extern const unsigned char binary_res_icon_mini_png_start[];
-extern const unsigned char binary_res_icon_mini_png_end[];
-#endif
 
 static SDL_Surface* loadPNGToSurface(const string& path)
 {
@@ -136,7 +134,7 @@ int createWindow(int width, int height, int scale)
 		unsigned char *pixel_buffer;
 		unsigned int width;
 		unsigned int height;
-		if (!lodepng_decode32(&pixel_buffer, &width, &height, binary_res_icon_mini_png_start, binary_res_icon_mini_png_end - binary_res_icon_mini_png_start))
+		if (!lodepng_decode32(&pixel_buffer, &width, &height, res_icon_mini_png, res_icon_mini_png_len))
 		{
 			SDL_Surface *surface = SDL_CreateRGBSurfaceWithFormatFrom(pixel_buffer, width, height, 0, width * 4, SDL_PIXELFORMAT_RGBA32);
 
@@ -235,7 +233,7 @@ uint32_t calculateFPS()
 		hasFunctionBeenExecuted = true;
 	}
 
-	uint32_t tickCount = SDL_GetTicks();
+	const uint32_t tickCount = SDL_GetTicks();
 	static uint32_t timeElapsed = 0;
 	++timeElapsed;
 
@@ -353,7 +351,7 @@ void loadImageBad(const string& file, SDL_Texture **tex)
 	surface = loadPNGToSurface(file);
 	if (surface->format->palette != nullptr)
 	{
-		SDL_Color *colors = static_cast<SDL_Color*>(calloc(4, surface->format->palette->ncolors));
+		SDL_Color *colors = new SDL_Color[4 * surface->format->palette->ncolors]();
 		for (int c = 0; c < surface->format->palette->ncolors; c++)
 		{
 			colors[c].r = colorValTbl[(surface->format->palette->colors[c].r * (sizeof(colorValTbl) - 1)) / 0xFF];
@@ -362,11 +360,11 @@ void loadImageBad(const string& file, SDL_Texture **tex)
 			colors[c].a = surface->format->palette->colors[c].a;
 		}
 		SDL_SetPaletteColors(surface->format->palette, colors, 0, surface->format->palette->ncolors);
-		free(colors);
+		delete[] colors;
 	}
 	else
 	{
-		uint8_t *pixel = reinterpret_cast<uint8_t*>(surface->pixels);
+		uint8_t *pixel = static_cast<uint8_t*>(surface->pixels);
 		for (int p = 0; p < surface->w*surface->h; p++)
 			if (pixel[p])
 				pixel[p] = colorValTbl[(pixel[p] * (sizeof(colorValTbl) - 1)) / 0xFF];

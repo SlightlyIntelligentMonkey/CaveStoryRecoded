@@ -71,7 +71,7 @@ void npcAct140(npc *NPC)//rabid toroko
 		}
 		break;
 	case iniState://initializes the decideState
-		NPC->bits = NPC->bits;
+		NPC->bits = NPC->bits; // wot
 		NPC->act_no = decideState;
 		NPC->ani_no = 0;
 		NPC->ani_wait = 0;
@@ -1250,7 +1250,7 @@ void npcAct152(npc *NPC) //used in almond for shooting the door
 
 void npcAct153(npc *NPC)
 {
-	array<RECT, 21> rcLeft =
+	constexpr array<RECT, 21> rcLeft =
 	{ {
 		{ 0, 0, 24, 24 },
 		{ 24, 0, 48, 24 },
@@ -1275,7 +1275,7 @@ void npcAct153(npc *NPC)
 		{ 96, 48, 120, 72 }
 	} };
 
-	array<RECT, 21> rcRight =
+	constexpr array<RECT, 21> rcRight =
 	{ {
 		{ 0, 24, 24, 48 },
 		{ 24, 24, 48, 48 },
@@ -1469,7 +1469,7 @@ void npcAct153(npc *NPC)
 
 void npcAct154(npc *NPC)
 {
-	array<RECT, 21> rcLeft =
+	constexpr array<RECT, 21> rcLeft =
 	{ {
 		{ 0, 0, 24, 24 },
 		{ 24, 0, 48, 24 },
@@ -1494,7 +1494,7 @@ void npcAct154(npc *NPC)
 		{ 96, 48, 120, 72 }
 	} };
 
-	array<RECT, 21> rcRight =
+	constexpr array<RECT, 21> rcRight =
 	{ {
 		{ 0, 24, 24, 48 },
 		{ 24, 24, 48, 48 },
@@ -1578,11 +1578,11 @@ void npcAct154(npc *NPC)
 
 void npcAct155(npc *NPC) //flying gaudi
 {
-	unsigned __int8 deg;
+	uint8_t deg;
 	int temp = 0;
 
-	int rcX[4] = { 0, 24, 288, 24 };
-	int rcY[4] = { 48, 48, 0, 48};
+	constexpr int rcX[4] = { 0, 24, 288, 24 };
+	constexpr int rcY[4] = { 48, 48, 0, 48};
 
 	if (!NPC->isPlayerWithinDistance(163840, 122880))
 		return;

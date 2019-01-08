@@ -1,6 +1,7 @@
 #include "main.h"
 
 #include <string>
+#include <typeinfo>
 #include "SDL.h"
 #include "sound.h"
 #include "script.h"
@@ -14,6 +15,7 @@
 #include "stage.h"
 
 using std::string;
+using std::to_string;
 
 // Some global functions
 
@@ -91,8 +93,8 @@ void init()
 		doCustomError("Couldn't initiate SDL");
 
 	loadConfigFiles();
-	CONFIG *config = loadConfigdat();
-	
+	CONFIG *config = loadConfigDat();
+
 	if (config != nullptr)
 	{
 		if (config->attack_button_mode == 1)
@@ -150,12 +152,10 @@ void init()
 			break;
 		}
 
-		free(config);
+		delete config;
 	}
 	else
-	{
 		createWindow(screenWidth, screenHeight, screenScale);
-	}
 
 	//draws loading
 	loadImage("Loading", &sprites[TEX_LOADING]);   // Load the loading sprite now so that we can display it
@@ -183,6 +183,35 @@ void init()
 	logInfo("Finished init");
 }
 
+[[noreturn]] void handleExceptionAndAbort()
+{
+	try
+	{
+		throw;
+	} catch (std::exception& e)
+	{
+        doCustomError("Exception thrown : " + string(e.what()));
+	} catch (const int i)
+	{
+		doCustomError("int exception : " + to_string(i));
+	} catch (const long l)
+	{
+		doCustomError("long exception : " + to_string(l));
+	} catch (const char *p)
+	{
+	    if (p)
+            doCustomError("char * exception : " + string(p));
+        else
+            doCustomError("Someone threw a nullptr char *");
+	} catch (const void *p)
+	{
+        doCustomError("Someone threw a pointer to " + to_string(reinterpret_cast<uintptr_t>(p)));
+	} catch (...)
+	{
+		doCustomError("Nope, sorry, no idea wtf happened");
+	}
+}
+
 int main(int /*argc*/, char ** /*argv*/) // TBD : Do something with command-line parameters
 {
 	try
@@ -194,8 +223,8 @@ int main(int /*argc*/, char ** /*argv*/) // TBD : Do something with command-line
 		doQuit();
 		return 0;
 	}
-	catch (const std::exception& e)
+	catch (...)
 	{
-		doCustomError(e.what());
+        handleExceptionAndAbort();
 	}
 }

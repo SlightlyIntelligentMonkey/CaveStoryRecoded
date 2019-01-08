@@ -1,3 +1,5 @@
+#include <string.h>
+
 #include "boss.h"
 #include "npc.h"
 #include "player.h"
@@ -160,8 +162,8 @@ void actBoss_Core(npc *boss)
 		boss->act_wait = 0;
 		boss->count2 = boss->life;
 		bossObj[hit4].bits |= npc_shootable;
-	case shootWisp:
 		// Fallthrough
+	case shootWisp:
 		boss->tgt_x = currentPlayer.x;
 		boss->tgt_y = currentPlayer.y;
 		if (boss->shock)
@@ -190,7 +192,7 @@ void actBoss_Core(npc *boss)
 		}
 		if (boss->act_wait <= 199 && boss->act_wait % 20 == 1)
 		{
-			createNpc(NPC_ProjectileCoreWisp, boss->x + (random(-48, -16) << 9), 
+			createNpc(NPC_ProjectileCoreWisp, boss->x + (random(-48, -16) << 9),
 				boss->y + (random(-64, 64) << 9), 0, 0, 0, nullptr, false);
 		}
 		if (boss->act_wait > 400 || boss->life < boss->count2 - 200)
@@ -238,7 +240,7 @@ void actBoss_Core(npc *boss)
 		if (boss->act_wait == 300 || boss->act_wait == 350 || boss->act_wait == 400)
 		{
 			deg = getAtan(boss->x - currentPlayer.x, boss->y - currentPlayer.y);
-			createNpc(NPC_ProjectileCoreLargeEnergyBall, 
+			createNpc(NPC_ProjectileCoreLargeEnergyBall,
 				boss->x - 20480, boss->y, 3 * getCos(deg), 3 * getSin(deg));
 			playSound(SFX_Lightning);
 		}
@@ -268,7 +270,7 @@ void actBoss_Core(npc *boss)
 		viewport.quake = 20;
 		for (int i = 0; i <= 31; ++i)
 		{
-			createNpc(NPC_Smoke, boss->x + (random(-128, 128) << 9), boss->y + (random(-64, 64) << 9), 
+			createNpc(NPC_Smoke, boss->x + (random(-128, 128) << 9), boss->y + (random(-64, 64) << 9),
 				random(-128, 128) << 9, random(-128, 128) << 9, 0, nullptr, false);
 		}
 		for (int i = 0; i <= 11; ++i)
@@ -277,7 +279,7 @@ void actBoss_Core(npc *boss)
 	case deathAnimation:
 		if (++boss->act_wait & 0xF)
 		{
-			createNpc(NPC_Smoke, boss->x + (random(-64, 64) << 9), boss->y + (random(-32, 32) << 9), 
+			createNpc(NPC_Smoke, boss->x + (random(-64, 64) << 9), boss->y + (random(-32, 32) << 9),
 				random(-128, 128) << 9, random(-128, 128) << 9, 0, nullptr, false);
 		}
 
@@ -322,7 +324,7 @@ void actBoss_Core(npc *boss)
 		playSound(26);
 		for (int i = 0; i <= 7; ++i)
 		{
-			createNpc(NPC_Smoke, bossObj[face].x + (random(-32, 16) << 9), bossObj[face].y, 
+			createNpc(NPC_Smoke, bossObj[face].x + (random(-32, 16) << 9), bossObj[face].y,
 				random(-512, 512), random(-256, 256), 0, nullptr, false);
 		}
 	}
@@ -423,7 +425,7 @@ void coreFace(npc *NPC)
 	default:
 		break;
 	}
-	
+
 	NPC->rect = rect[NPC->ani_no];
 	if (NPC->act_no == 51)
 		NPC->rect.bottom = NPC->act_wait + NPC->rect.top;

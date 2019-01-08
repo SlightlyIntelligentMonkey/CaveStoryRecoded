@@ -72,18 +72,6 @@ void drawRect(int x, int y, int w, int h);
 
 void createTextureBuffer(enum TextureNums texture_id, int width, int height);
 
-// 1 pixel is 0x200 units
-
-template <typename T> constexpr inline int32_t pixelsToUnits(T x)
-{
-	return x * 0x200;
-}
-
-template <typename T> constexpr inline T unitsToPixels(T x)
-{
-	return x / 0x200;
-}
-
 template <typename T> constexpr inline int32_t secondsToFrames(T x)
 {
     return x * 50;

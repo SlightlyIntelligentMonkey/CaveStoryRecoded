@@ -39,7 +39,7 @@ void npcAct021(npc *NPC) //Open chest
 
 void npcAct022(npc *NPC) //Teleporter
 {
-	array<RECT, 2> rcNPC = { {{240, 16, 264, 48}, {248, 152, 272, 184}} };
+	constexpr array<RECT, 2> rcNPC = { {{240, 16, 264, 48}, {248, 152, 272, 184}} };
 
 	if (NPC->act_no)
 	{
@@ -60,7 +60,7 @@ void npcAct023(npc *NPC) //Teleporter lights
 
 void npcAct024(npc *NPC) // Power Critter (enemy)
 {
-	array<RECT, 6> rcLeft =
+	constexpr array<RECT, 6> rcLeft =
 	{{
         {0, 0, 24, 24},
         {24, 0, 48, 24},
@@ -70,7 +70,7 @@ void npcAct024(npc *NPC) // Power Critter (enemy)
         {120, 0, 144, 24},
     }};
 
-	array<RECT, 6> rcRight =
+	constexpr array<RECT, 6> rcRight =
 	{{
         {0, 24, 24, 48},
 	    {24, 24, 48, 48},
@@ -202,9 +202,6 @@ void npcAct025(npc *NPC) //egg corridor lift thing
 		NPC->x += tilesToUnits(0.5);
 //Fallthrough
 	case 1:
-    case 3:
-    case 5:
-    case 7:
 		if (++NPC->act_wait > 150)
 		{
 			NPC->act_wait = 0;
@@ -212,9 +209,6 @@ void npcAct025(npc *NPC) //egg corridor lift thing
 		}
 		break;
 	case 2:
-    case 4:
-    case 6:
-    case 8:
 		if (++NPC->act_wait > 64)
 		{
 			NPC->act_wait = 0;
@@ -223,12 +217,64 @@ void npcAct025(npc *NPC) //egg corridor lift thing
 		else
 			NPC->y -= 0x200;
 		break;
+	case 3:
+		if (++NPC->act_wait > 150)
+		{
+			NPC->act_wait = 0;
+			++NPC->act_no;
+		}
+		break;
+	case 4:
+		if (++NPC->act_wait > 64)
+		{
+			NPC->act_wait = 0;
+			++NPC->act_no;
+		}
+		else
+			NPC->y -= 0x200;
+		break;
+	case 5:
+		if (++NPC->act_wait > 150)
+		{
+			NPC->act_wait = 0;
+			++NPC->act_no;
+		}
+		break;
+	case 6:
+		if (++NPC->act_wait > 64)
+		{
+			NPC->act_wait = 0;
+			++NPC->act_no;
+		}
+		else
+			NPC->y += 0x200;
+		break;
+	case 7:
+		if (++NPC->act_wait > 150)
+		{
+			NPC->act_wait = 0;
+			++NPC->act_no;
+		}
+		break;
+	case 8:
+		if (++NPC->act_wait > 64)
+		{
+			NPC->act_wait = 0;
+			NPC->act_no = 1;
+		}
+		else
+			NPC->y += 0x200;
+		break;
 	default:
 		break;
 	}
 
-	if (NPC->act_no <= 8 && (1 << NPC->act_no) & 0x154)
+	switch (NPC->act_no)
 	{
+	case 2:
+	case 4:
+	case 6:
+	case 8:
 		if (++NPC->ani_wait > 1)
 		{
 			NPC->ani_wait = 0;
@@ -236,6 +282,9 @@ void npcAct025(npc *NPC) //egg corridor lift thing
 		}
 		if (NPC->ani_no > 1)
 			NPC->ani_no = 0;
+		break;
+	default:
+		break;
 	}
 
 	NPC->doRects({256, 64 + (16 * NPC->ani_no), 288, 80 + (16 * NPC->ani_no)});
@@ -467,8 +516,8 @@ void npcAct028(npc *NPC)
 
 void npcAct029(npc *NPC) // Cthulhu
 {
-	array<RECT, 2> rcLeft = { { {0, 192, 16, 216}, {16, 192, 32, 216} } };
-	array<RECT, 2> rcRight = { { {0, 216, 16, 240}, {16, 216, 32, 240} } };
+	constexpr array<RECT, 2> rcLeft = { { {0, 192, 16, 216}, {16, 192, 32, 216} } };
+	constexpr array<RECT, 2> rcRight = { { {0, 216, 16, 240}, {16, 216, 32, 240} } };
 
 	if (NPC->act_no != 0)
 	{
@@ -490,7 +539,7 @@ doRects:
 
 void npcAct030(npc *NPC) // Hermit Gunsmith
 {
-	array<RECT, 3> rcNPC = { { { 48, 0, 64, 16 }, { 48, 16, 64, 32 }, { 0, 32, 16, 48 } } };
+	constexpr array<RECT, 3> rcNPC = { { { 48, 0, 64, 16 }, { 48, 16, 64, 32 }, { 0, 32, 16, 48 } } };
 
 	if (NPC->direct == dirLeft)	// Wherever he's awoken depends on his direction, it would seem
 	{
@@ -536,8 +585,8 @@ doRects:
 
 void npcAct031(npc *NPC) // Bat, Black Hanging (enemy)
 {
-	array<RECT, 5> rcLeft = { {{0, 80, 16, 96}, {16, 80, 32, 96}, {32, 80, 48, 96}, {48, 80, 65, 96}, {64, 80, 80, 96}} };
-	array<RECT, 5> rcRight = { {{0, 96, 16, 112}, {16, 96, 32, 112}, {32, 96, 48, 112}, {48, 96, 64, 112}, {64, 96, 80, 112}} };
+	constexpr array<RECT, 5> rcLeft = { {{0, 80, 16, 96}, {16, 80, 32, 96}, {32, 80, 48, 96}, {48, 80, 65, 96}, {64, 80, 80, 96}} };
+	constexpr array<RECT, 5> rcRight = { {{0, 96, 16, 112}, {16, 96, 32, 112}, {32, 96, 48, 112}, {48, 96, 64, 112}, {64, 96, 80, 112}} };
 
     enum
     {
@@ -628,7 +677,7 @@ void npcAct031(npc *NPC) // Bat, Black Hanging (enemy)
 
 void npcAct032(npc *NPC) //Life Capsule
 {
-	array<RECT, 2> rcNPC = { {{32, 96, 48, 112}, {48, 96, 64, 112}} };
+	constexpr array<RECT, 2> rcNPC = { {{32, 96, 48, 112}, {48, 96, 64, 112}} };
 
     NPC->animate(2, 0, 1);
 
@@ -649,7 +698,7 @@ void npcAct033(npc *NPC) // Balrog energy ball bouncing (projectile)
     NPC->y += NPC->ym;
     NPC->x += NPC->xm;
 
-	array<RECT, 2> rcNPC = { {{240, 64, 256, 80}, {240, 80, 256, 96}} };
+	constexpr array<RECT, 2> rcNPC = { {{240, 64, 256, 80}, {240, 80, 256, 96}} };
     NPC->animate(2, 0, 1);
 
     NPC->doRects(rcNPC);
@@ -734,8 +783,8 @@ void npcAct035(npc * NPC) // Manann (enemy)
 		break;
 	}
 
-	array<RECT, 4> rcLeft = { { {96, 64, 120, 96}, {120, 64, 144, 96}, {144, 64, 168, 98}, {168, 64, 192, 96} } };
-	array<RECT, 4> rcRight = { { {96, 96, 120, 128}, {120, 96, 144, 128}, {144, 96, 168, 128}, {168, 96, 192, 128} } };
+	constexpr array<RECT, 4> rcLeft = { { {96, 64, 120, 96}, {120, 64, 144, 96}, {144, 64, 168, 98}, {168, 64, 192, 96} } };
+	constexpr array<RECT, 4> rcRight = { { {96, 96, 120, 128}, {120, 96, 144, 128}, {144, 96, 168, 128}, {168, 96, 192, 128} } };
 
 	NPC->doRects(rcLeft, rcRight);
 }
@@ -776,8 +825,8 @@ void npcAct036(npc *NPC) // Balrog, Flying (boss)
             NPC->act_wait = 0;
             int16_t angle = getAtan(NPC->x - currentPlayer.x, NPC->y + pixelsToUnits(4) - currentPlayer.y);
             angle += random(-0x10, 0x10);
-            auto xVel = getCos(angle);
-            auto yVel = getSin(angle);
+            const auto xVel = getCos(angle);
+            const auto yVel = getSin(angle);
             createNpc(NPC_ProjectileBalrogEnergyBallInvincible, NPC->x, NPC->y + pixelsToUnits(4), xVel, yVel);
             playSound(SFX_EnemyShootProjectile);
             if (!NPC->count1)
@@ -851,18 +900,18 @@ void npcAct036(npc *NPC) // Balrog, Flying (boss)
 
             for (size_t i = 0; i < 8; ++i)
             {
-                auto yVel = random(pixelsToUnits(-3), 0);
-                auto xVel = random(-0x155, 0x155);
-                auto yPos = NPC->y + pixelsToUnits(random(-12, 12));
-                auto xPos = NPC->x + pixelsToUnits(random(-12, -12));
+                const auto yVel = random(pixelsToUnits(-3), 0);
+                const auto xVel = random(-0x155, 0x155);
+                const auto yPos = NPC->y + pixelsToUnits(random(-12, 12));
+                const auto xPos = NPC->x + pixelsToUnits(random(-12, -12));
                 createNpc(NPC_Smoke, xPos, yPos, xVel, yVel);
             }
             for (size_t i = 0; i < 8; ++i)
             {
-                auto yVel = random(pixelsToUnits(-2), 0);
-                auto xVel = random(pixelsToUnits(-2), pixelsToUnits(2));
-                auto yPos = NPC->y + pixelsToUnits(random(-12, 12));
-                auto xPos = NPC->x + pixelsToUnits(random(-12, -12));
+                const auto yVel = random(pixelsToUnits(-2), 0);
+                const auto xVel = random(pixelsToUnits(-2), pixelsToUnits(2));
+                const auto yPos = NPC->y + pixelsToUnits(random(-12, 12));
+                const auto xPos = NPC->x + pixelsToUnits(random(-12, -12));
                 createNpc(NPC_ProjectileBalrogEnergyBounce, xPos, yPos, xVel, yVel);
             }
         }
@@ -911,7 +960,7 @@ void npcAct036(npc *NPC) // Balrog, Flying (boss)
 
 void npcAct037(npc *NPC) //Sign
 {
-	array<RECT, 2> rcNPC = { {{ 192, 64, 208, 80 }, { 208, 64, 224, 80 }} };
+	constexpr array<RECT, 2> rcNPC = { {{ 192, 64, 208, 80 }, { 208, 64, 224, 80 }} };
 
 	NPC->animate(1, 0, 1);
 
@@ -920,7 +969,7 @@ void npcAct037(npc *NPC) //Sign
 
 void npcAct038(npc * NPC)
 {
-	array<RECT, 4> rcNPC = { { {128, 64, 144, 80}, {144, 64, 160, 80}, {160, 64, 176, 80}, {176, 64, 192, 80} } };
+	constexpr array<RECT, 4> rcNPC = { { {128, 64, 144, 80}, {144, 64, 160, 80}, {160, 64, 176, 80}, {176, 64, 192, 80} } };
 
 	if (NPC->act_no != 0)
 	{
@@ -943,7 +992,7 @@ void npcAct038(npc * NPC)
 
 void npcAct039(npc *NPC) //Save Sign
 {
-	array<RECT, 2> rcNPC = { {{224, 64, 240, 80}, {240, 64, 256, 80}} };
+	constexpr array<RECT, 2> rcNPC = { {{224, 64, 240, 80}, {240, 64, 256, 80}} };
 
 	NPC->ani_no = (NPC->direct == dirLeft) ? 0 : 1;
 

@@ -74,7 +74,7 @@ void organyaReleaseNote()
 		free(i.note_p); //delete org.tdata[i].note_p;
 
 	for (auto& i : orgDrums)
-		free(i.wave);
+		delete[] i.wave;
 }
 
 //sound function things
@@ -142,8 +142,8 @@ void mixOrg(int16_t *stream, int len)
 				}
 
 				//Put current stream sample into temp samples (org's done first so this is typically 0 anyways)
-				auto tempSampleL = (int32_t)stream[2 * i];
-				auto tempSampleR = (int32_t)stream[2 * i + 1];
+				auto tempSampleL = static_cast<int32_t>(stream[2 * i]);
+				auto tempSampleR = static_cast<int32_t>(stream[2 * i + 1]);
 
 				//Play waves
 				for (int wave = 0; wave < 8; wave++)
@@ -176,10 +176,10 @@ void mixOrg(int16_t *stream, int len)
 									if (orgWaves[wave][j][k].loops || s_offset_1 < orgWaves[wave][j][k].length - 1)
 										sample2 = orgWaves[wave][j][k].wave[(s_offset_1 + 1) % orgWaves[wave][j][k].length] << 7;
 
-									const auto val = (int)(sample1 + (sample2 - sample1) * fmod(orgWaves[wave][j][k].pos, 1.0f));
+									const auto val = static_cast<int>(sample1 + (sample2 - sample1) * fmod(orgWaves[wave][j][k].pos, 1.0f));
 
-									tempSampleL += (int32_t)((long double)val * orgWaves[wave][j][k].volume * orgWaves[wave][j][k].volume_l);
-									tempSampleR += (int32_t)((long double)val * orgWaves[wave][j][k].volume * orgWaves[wave][j][k].volume_r);
+									tempSampleL += static_cast<int32_t>((long double)val * orgWaves[wave][j][k].volume * orgWaves[wave][j][k].volume_l);
+									tempSampleR += static_cast<int32_t>((long double)val * orgWaves[wave][j][k].volume * orgWaves[wave][j][k].volume_r);
 								}
 							}
 						}
@@ -207,10 +207,10 @@ void mixOrg(int16_t *stream, int len)
 							if (s_offset_1 < orgDrums[wave].length - 1)
 								sample2 = (orgDrums[wave].wave[s_offset_1 + 1] - 0x80) << 7;
 
-							const auto val = (int)(sample1 + (sample2 - sample1) * fmod(orgDrums[wave].pos, 1.0f));
+							const auto val = static_cast<int>(sample1 + (sample2 - sample1) * fmod(orgDrums[wave].pos, 1.0f));
 
-							tempSampleL += (int32_t)((long double)val * orgDrums[wave].volume * orgDrums[wave].volume_l);
-							tempSampleR += (int32_t)((long double)val * orgDrums[wave].volume * orgDrums[wave].volume_r);
+							tempSampleL += static_cast<int32_t>((long double)val * orgDrums[wave].volume * orgDrums[wave].volume_l);
+							tempSampleR += static_cast<int32_t>((long double)val * orgDrums[wave].volume * orgDrums[wave].volume_r);
 						}
 					}
 				}
@@ -264,7 +264,7 @@ bool loadWave100()
 {
 	//Allocate data
 	if (wave_data == nullptr)
-		wave_data = (char *)malloc(0x100 * 100);
+		wave_data = new char[0x100 * 100];
 
 	FILE *fp;
 	if ((fp = fopen("data/Wave100.dat", "rb")) == nullptr)
@@ -277,22 +277,19 @@ bool loadWave100()
 
 bool deleteWave100()
 {
-	free(wave_data);
+	delete[] wave_data;
 	return true;
 }
 
 //Make Organya Wave
 void releaseOrganyaObject(uint8_t track) {
-	for (int i = 0; i < 8; i++) {
+	for (int i = 0; i < 8; i++)
 		for (int j = 0; j < 2; j++)
-		{
-			free(orgWaves[track][i][j].wave);
-		}
-	}
+			delete[] orgWaves[track][i][j].wave;
 	memset(orgWaves[track], 0, sizeof(orgWaves[track]));
 }
 
-bool makeSoundObject8(char *wavep, uint8_t track, bool pipi)
+bool makeSoundObject8(const char *wavep, uint8_t track, bool pipi)
 {
 	size_t i, j, k;
 	size_t wave_size;
@@ -308,14 +305,14 @@ bool makeSoundObject8(char *wavep, uint8_t track, bool pipi)
 				data_size = wave_size;
 
 			//Allocate wave
-			orgWaves[track][j][k].wave = (int8_t*)malloc(data_size);
+			orgWaves[track][j][k].wave = new int8_t[data_size];
 			orgWaves[track][j][k].length = data_size;
 
 			//Copy data to wave
 			size_t wavePos = 0;
 			for (i = 0; i < data_size; i++) {
 				orgWaves[track][j][k].wave[i] = *(wavep + wavePos);
-				wavePos += (uint16_t)(0x100 / wave_size);
+				wavePos += static_cast<uint16_t>(0x100 / wave_size);
 				if (wavePos >= 0x100)
 					wavePos -= 0x100;
 			}
@@ -342,7 +339,7 @@ bool makeOrganyaWave(uint8_t track, uint8_t wave_no, bool pipi)
 
 //Init drum object
 void releaseDrumObject(uint8_t track) {
-	free(orgDrums[track].wave);
+	delete[] orgDrums[track].wave;
 	memset(&orgDrums[track], 0, sizeof(DRUM));
 }
 
@@ -573,7 +570,7 @@ void clearPlayNp()
 	memset(play_np, 0, sizeof(play_np));
 
 	for (int i = 0; i < 16; i++)
-		play_np[i] = (NOTELIST*)malloc(sizeof(NOTELIST));
+		play_np[i] = new NOTELIST;
 }
 
 void setPlayPointer(int32_t x)
@@ -713,7 +710,6 @@ void loadOrganya(const string& name)
 	if (!ver) {
 		SDL_RWclose(fp);
 		doCustomError("File given is invalid version, or isn't a proper Organya file");
-		return;
 	}
 
 	//Set song information

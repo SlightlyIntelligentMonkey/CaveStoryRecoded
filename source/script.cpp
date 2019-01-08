@@ -259,7 +259,7 @@ void clearTextLine(TSC &ptsc)
 }
 
 //TSC Update
-void tscCheck(TSC &ptsc)
+void tscCheck(const TSC &ptsc)
 {
 	//End tsc if in END state, continue if not
 	if (ptsc.mode)
@@ -292,7 +292,7 @@ void tscPutNumber(TSC &ptsc, int index)
 	{
 		if (a / table[i] || bZero)
 		{
-			int b = a / table[i];
+			const int b = a / table[i];
 			str[offset] = b + 48;
 			bZero = 1;
 			a -= b * table[i];
@@ -313,7 +313,7 @@ void tscPutNumber(TSC &ptsc, int index)
 	}
 }
 
-static inline void showTSCNotImplementedWarning(const string& message) noexcept
+static inline void showTSCNotImplementedWarning(const string& message)
 {
 	SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_WARNING, "Unimplemented command", message.c_str(), nullptr);
 	logWarning(message);
@@ -845,7 +845,7 @@ bool doTscCommand(int *retVal, bool *bExit, TSC &ptsc)
 		tscCleanup(0, ptsc);
 		break;
 	case('<MNP'):
-        moveNPC(getTSCNumber(ptsc, ptsc.p_read + 4), getTSCNumber(ptsc, ptsc.p_read + 9) << 9, getTSCNumber(ptsc, ptsc.p_read + 14) << 9,
+        moveNPC(getTSCNumber(ptsc, ptsc.p_read + 4), getTSCNumber(ptsc, ptsc.p_read + 9) << 13, getTSCNumber(ptsc, ptsc.p_read + 14) << 13,
                 getTSCNumber(ptsc, ptsc.p_read + 19));
 		tscCleanup(4, ptsc);
 		break;
@@ -1122,7 +1122,7 @@ int updateTsc(TSC &ptsc)
 	char str[72];
 	char c[3];
 
-	int mode = doTscModes(&bExit, ptsc);
+	const int mode = doTscModes(&bExit, ptsc);
     if (mode)
         return mode;
 

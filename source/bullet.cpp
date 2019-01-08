@@ -211,6 +211,7 @@ void bullet::init(int setCode, int setX, int setY, uint8_t setDir, int weaponId)
 #include "blade.h"
 #include "nemesis.h"
 #include "spur.h"
+#include "stage.h"
 
 bulletAct bulletActs[46] =
 {
