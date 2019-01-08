@@ -1338,7 +1338,12 @@ void npcAct093(npc * NPC)
 		// Fallthrough
 	case walking:
 		NPC->animate(4, 2, 5);
-		NPC->moveInDir(pixelsToUnits(1));
+
+		if (NPC->direct != dirLeft)
+			NPC->x += pixelsToUnits(1);
+		else
+			NPC->x -= pixelsToUnits(1);
+
 		break;
 
 	case sleeping:
