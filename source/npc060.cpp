@@ -495,7 +495,10 @@ void npcAct063(npc *NPC) // Toroko, panicking
 		if (NPC->act_wait > 35)
 			NPC->bits |= npc_shootable;
 
-        NPC->moveInDir(0x40);
+		if (NPC->direct != dirLeft)
+			NPC->xm += 64;
+		else
+			NPC->xm -= 64;
 
 		if (NPC->shock)
 		{
