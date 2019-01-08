@@ -269,7 +269,7 @@ void npcAct025(npc *NPC) //egg corridor lift thing
 		break;
 	}
 
-	switch (NPC->act_no)// <= 8 && (1 << NPC->act_no) & 0x154)
+	switch (NPC->act_no)
 	{
 	case 2:
 	case 4:
