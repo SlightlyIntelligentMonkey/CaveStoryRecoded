@@ -60,9 +60,6 @@ OBJS := $(addprefix obj/, $(addsuffix .o, $(MAIN)))
 ifeq ($(detected_OS),Windows)
 	# Embed icons as resources, and load them natively
 	OBJS += obj/icon.o
-else
-	# Embed a bitmap in the binary, and load it with SDL
-	OBJS += obj/icon_mini.o
 endif
 DEPS := $(addsuffix .d, $(OBJS))
 
@@ -86,9 +83,8 @@ obj/icon.o: res/icon.rc res/icon_mini.ico
 	@mkdir -p $(@D)
 	@windres $< $@
 else
-obj/icon_mini.o: res/icon_mini.png
-	@mkdir -p $(@D)
-	@$(LD) -r -b binary -o $@ $<
+source/icon_mini.h: res/icon_mini.png
+	@xxd -i $< $@
 endif
 	
 include $(wildcard $(DEPS))
