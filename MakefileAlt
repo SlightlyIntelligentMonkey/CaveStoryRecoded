@@ -1,7 +1,7 @@
 WARNINGS = -pedantic -Wall -Wextra -Wno-multichar -Wno-unused-parameter
 
 CXXFLAGS = -O3 $(WARNINGS) -DUSE_ICONS_SDL2 -DLODEPNG_NO_COMPILE_ENCODER -DLODEPNG_NO_COMPILE_CPP
-ALL_CXXFLAGS = -std=c++17 `sdl2-config --cflags` -IJson_Modern_Cpp $(CXXFLAGS) -MMD -MP -MF $@.d
+ALL_CXXFLAGS = -std=c++11 `sdl2-config --cflags` -IJson_Modern_Cpp $(CXXFLAGS) -MMD -MP -MF $@.d
 LDFLAGS = -s
 ALL_LDFLAGS = `sdl2-config --libs` $(LDFLAGS)
 LIBS = 
@@ -34,9 +34,6 @@ MAIN += balfrog core heavyPress monsterX omega
 OBJS := $(addprefix obj/, $(addsuffix .o, $(MAIN)))
 DEPS := $(addsuffix .d, $(OBJS))
 
-# Embed a bitmap in the binary, and load it with SDL
-OBJS += obj/icon_mini.o
-
 all: bin/CaveStoryEngine
 
 bin/CaveStoryEngine: $(OBJS)
@@ -48,9 +45,8 @@ obj/%.o: source/%.cpp
 	@mkdir -p $(@D)
 	@$(CXX) $(ALL_CXXFLAGS) $< -o $@ -c
 
-obj/icon_mini.o: res/icon_mini.png
-	@mkdir -p $(@D)
-	@$(LD) -r -b binary -o $@ $<
+source/icon_mini.h: res/icon_mini.png
+	@xxd -i $< $@
 
 include $(wildcard $(DEPS))
 
