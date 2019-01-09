@@ -108,7 +108,14 @@ void initAudio()
 constexpr const char *hexNibble[16] = {"0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "A", "B", "C", "D", "E", "F"};
 void loadSounds()
 {
-	memset(sounds, 0, sizeof(sounds));
+	for (unsigned int i = 0; i < sizeof(sounds) / sizeof(sounds[0]); ++i)
+	{
+		sounds[i].wave = NULL;
+		sounds[i].length = 0;
+		sounds[i].playing = false;
+		sounds[i].length = 0.0L;
+	}
+
 	for (size_t n1 = 0; n1 < 16; n1++)
 	{
 		for (size_t n2 = 0; n2 < 16; n2++)
