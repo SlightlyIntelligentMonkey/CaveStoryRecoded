@@ -42,7 +42,8 @@ void mixSounds(int16_t *stream, int len)
 
 				// Perform sound interpolation
 				const int sample1 = (sound.wave[position] - 0x80) << 7;
-				const int sample2 = (sound.pos < sound.length - 1) ? (sound.wave[position + 1] - 0x80) << 7 : 0;
+				const int sample2 = (sound.loops || sound.pos < sound.length - 1) ? (sound.wave[(position + 1) % sound.length] - 0x80) << 7 : 0;
+
 				const int val = static_cast<int>(sample1 + (sample2 - sample1) * fmod(sound.pos, 1.0f));
 
 				tempSampleL += (val * 2);
@@ -52,8 +53,8 @@ void mixSounds(int16_t *stream, int len)
 
 				if (sound.pos >= sound.length)
 				{
-					if (sound.loop)
-						sound.pos = 0.0L;
+					if (sound.loops)
+						sound.pos = fmod(sound.pos, sound.length);
 					else
 						sound.playing = false;
 				}
@@ -112,7 +113,7 @@ void loadSounds()
 		sound.length = 0;
 		sound.playing = false;
 		sound.length = 0.0L;
-		sound.loop = false;
+		sound.loops = false;
 	}
 
 	for (unsigned int n1 = 0; n1 < 0x10; n1++)
@@ -154,13 +155,13 @@ void playSound(size_t sound_no, int soundMode)
 				sounds[sound_no].pos = 0;
 				sounds[sound_no].playing = true;
 			}
-			sounds[sound_no].loop = true;
+			sounds[sound_no].loops = true;
 			break;
 		case 1:
 			// Play sound (if sound if already playing, restart it)
 			sounds[sound_no].pos = 0;
 			sounds[sound_no].playing = true;
-			sounds[sound_no].loop = false;
+			sounds[sound_no].loops = false;
 			break;
 		case 0:
 			// Stop sound

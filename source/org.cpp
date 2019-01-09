@@ -152,34 +152,38 @@ void mixOrg(int16_t *stream, int len)
 					{
 						for (int k = 0; k < 2; k++)
 						{
-							const long double waveSamples = (long double)orgWaves[wave][j][k].freq / (long double)sampleRate;
+							WAVE& wave_sound = orgWaves[wave][j][k];
 
-							if (orgWaves[wave][j][k].playing)
+							const long double waveSamples = (long double)wave_sound.freq / (long double)sampleRate;
+
+							if (wave_sound.playing)
 							{
-								orgWaves[wave][j][k].pos = (orgWaves[wave][j][k].pos + waveSamples);
+								const size_t s_offset_1 = (size_t)floor(wave_sound.pos);
 
-								if (orgWaves[wave][j][k].loops)
-									orgWaves[wave][j][k].pos = fmod(orgWaves[wave][j][k].pos, (long double)orgWaves[wave][j][k].length);
+								const int sample1 = wave_sound.wave[s_offset_1] << 7;
+								int sample2 = 0;
 
-								if (orgWaves[wave][j][k].loops == false && orgWaves[wave][j][k].pos >= orgWaves[wave][j][k].length)
+								if (wave_sound.loops || s_offset_1 < wave_sound.length - 1)
+									sample2 = wave_sound.wave[(s_offset_1 + 1) % wave_sound.length] << 7;
+
+								const auto val = static_cast<int>(sample1 + (sample2 - sample1) * fmod(wave_sound.pos, 1.0f));
+
+								tempSampleL += static_cast<int32_t>((long double)val * wave_sound.volume * wave_sound.volume_l);
+								tempSampleR += static_cast<int32_t>((long double)val * wave_sound.volume * wave_sound.volume_r);
+
+								wave_sound.pos += waveSamples;
+
+								if (wave_sound.pos >= wave_sound.length)
 								{
-									orgWaves[wave][j][k].playing = false;
-									orgWaves[wave][j][k].pos = 0;
-								}
-								else
-								{
-									const size_t s_offset_1 = (size_t)floor(orgWaves[wave][j][k].pos);
-
-									const int sample1 = orgWaves[wave][j][k].wave[s_offset_1] << 7;
-									int sample2 = 0;
-
-									if (orgWaves[wave][j][k].loops || s_offset_1 < orgWaves[wave][j][k].length - 1)
-										sample2 = orgWaves[wave][j][k].wave[(s_offset_1 + 1) % orgWaves[wave][j][k].length] << 7;
-
-									const auto val = static_cast<int>(sample1 + (sample2 - sample1) * fmod(orgWaves[wave][j][k].pos, 1.0f));
-
-									tempSampleL += static_cast<int32_t>((long double)val * orgWaves[wave][j][k].volume * orgWaves[wave][j][k].volume_l);
-									tempSampleR += static_cast<int32_t>((long double)val * orgWaves[wave][j][k].volume * orgWaves[wave][j][k].volume_r);
+									if (wave_sound.loops)
+									{
+										wave_sound.pos = fmod(wave_sound.pos, wave_sound.length);
+									}
+									else
+									{
+										wave_sound.playing = false;
+										wave_sound.pos = 0;
+									}
 								}
 							}
 						}
@@ -193,25 +197,24 @@ void mixOrg(int16_t *stream, int len)
 
 					if (orgDrums[wave].playing)
 					{
-						orgDrums[wave].pos = (orgDrums[wave].pos + waveSamples);
+						const size_t s_offset_1 = (size_t)floor(orgDrums[wave].pos);
+
+						const int sample1 = (orgDrums[wave].wave[s_offset_1] - 0x80) << 7;
+						int sample2 = 0;
+
+						if (s_offset_1 < orgDrums[wave].length - 1)
+							sample2 = (orgDrums[wave].wave[s_offset_1 + 1] - 0x80) << 7;
+
+						const auto val = static_cast<int>(sample1 + (sample2 - sample1) * fmod(orgDrums[wave].pos, 1.0f));
+
+						tempSampleL += static_cast<int32_t>((long double)val * orgDrums[wave].volume * orgDrums[wave].volume_l);
+						tempSampleR += static_cast<int32_t>((long double)val * orgDrums[wave].volume * orgDrums[wave].volume_r);
+
+						orgDrums[wave].pos += waveSamples;
 
 						if (orgDrums[wave].pos >= orgDrums[wave].length)
 							orgDrums[wave].playing = false;
-						else
-						{
-							const size_t s_offset_1 = (size_t)floor(orgDrums[wave].pos);
 
-							const int sample1 = (orgDrums[wave].wave[s_offset_1] - 0x80) << 7;
-							int sample2 = 0;
-
-							if (s_offset_1 < orgDrums[wave].length - 1)
-								sample2 = (orgDrums[wave].wave[s_offset_1 + 1] - 0x80) << 7;
-
-							const auto val = static_cast<int>(sample1 + (sample2 - sample1) * fmod(orgDrums[wave].pos, 1.0f));
-
-							tempSampleL += static_cast<int32_t>((long double)val * orgDrums[wave].volume * orgDrums[wave].volume_l);
-							tempSampleR += static_cast<int32_t>((long double)val * orgDrums[wave].volume * orgDrums[wave].volume_r);
-						}
 					}
 				}
 
