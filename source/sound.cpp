@@ -28,33 +28,30 @@ SDL_AudioSpec want;
 //Audio callback and things
 void mixSounds(int16_t *stream, int len)
 {
-	for (int i = 0; i < len; i++)
+	for (int i = 0; i < len; ++i)
 	{
 		//Put current stream sample into temp samples
-		auto tempSampleL = (int32_t)stream[i * 2];
-		auto tempSampleR = (int32_t)stream[i * 2 + 1];
+		int32_t tempSampleL = stream[i * 2];
+		int32_t tempSampleR = stream[i * 2 + 1];
 
 		for (auto& sound : sounds)
 		{
-			const long double waveSamples = 22050.0 / (double)sampleRate;
-
 			if (sound.playing)
 			{
-				sound.pos += waveSamples;
+				sound.pos += 22050.0L / sampleRate;
 
 				if (sound.pos >= sound.length)
+				{
 					sound.playing = false;
+				}
 				else
 				{
-					const size_t s_offset_1 = (size_t)floor(sound.pos);
+					const size_t position = floor(sound.pos);
 
-					const int sample1 = (sound.wave[s_offset_1] - 0x80) << 7;
-					int sample2 = 0;
-
-					if (sound.pos < sound.length - 1)
-						sample2 = (sound.wave[s_offset_1 + 1] - 0x80) << 7;
-
-					const auto val = static_cast<int>(sample1 + (sample2 - sample1) * fmod(sound.pos, 1.0f));
+					// Perform sound interpolation
+					const int sample1 = (sound.wave[position] - 0x80) << 7;
+					const int sample2 = (sound.pos < sound.length - 1) ? (sound.wave[position + 1] - 0x80) << 7 : 0;
+					const int val = static_cast<int>(sample1 + (sample2 - sample1) * fmod(sound.pos, 1.0f));
 
 					tempSampleL += (val * 2);
 					tempSampleR += (val * 2);
@@ -105,23 +102,22 @@ void initAudio()
 	SDL_PauseAudioDevice(soundDev, 0);
 }
 
-constexpr const char *hexNibble[16] = {"0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "A", "B", "C", "D", "E", "F"};
 void loadSounds()
 {
 	for (unsigned int i = 0; i < sizeof(sounds) / sizeof(sounds[0]); ++i)
 	{
-		sounds[i].wave = NULL;
+		sounds[i].wave = nullptr;
 		sounds[i].length = 0;
 		sounds[i].playing = false;
 		sounds[i].length = 0.0L;
 	}
 
-	for (size_t n1 = 0; n1 < 16; n1++)
+	for (unsigned int n1 = 0; n1 < 0x10; n1++)
 	{
-		for (size_t n2 = 0; n2 < 16; n2++)
+		for (unsigned int n2 = 0; n2 < 0x10; n2++)
 		{
 			char path[0x100];
-			sprintf(path, "data/Sound/%s%s.pxt", hexNibble[n1], hexNibble[n2]);
+			sprintf(path, "data/Sound/%X%X.pxt", n1, n2);
 
 			if (fileExists(path))
 			{
