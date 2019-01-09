@@ -15,6 +15,7 @@ struct SOUND {
 	size_t length;
 	bool playing;
 	long double pos;
+	bool loop;
 };
 
 extern SOUND sounds[0x100];

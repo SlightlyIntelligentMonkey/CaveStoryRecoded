@@ -38,24 +38,26 @@ void mixSounds(int16_t *stream, int len)
 		{
 			if (sound.playing)
 			{
+				const size_t position = floor(sound.pos);
+
+				// Perform sound interpolation
+				const int sample1 = (sound.wave[position] - 0x80) << 7;
+				const int sample2 = (sound.pos < sound.length - 1) ? (sound.wave[position + 1] - 0x80) << 7 : 0;
+				const int val = static_cast<int>(sample1 + (sample2 - sample1) * fmod(sound.pos, 1.0f));
+
+				tempSampleL += (val * 2);
+				tempSampleR += (val * 2);
+
 				sound.pos += 22050.0L / sampleRate;
 
 				if (sound.pos >= sound.length)
 				{
-					sound.playing = false;
+					if (sound.loop)
+						sound.pos = 0.0L;
+					else
+						sound.playing = false;
 				}
-				else
-				{
-					const size_t position = floor(sound.pos);
 
-					// Perform sound interpolation
-					const int sample1 = (sound.wave[position] - 0x80) << 7;
-					const int sample2 = (sound.pos < sound.length - 1) ? (sound.wave[position + 1] - 0x80) << 7 : 0;
-					const int val = static_cast<int>(sample1 + (sample2 - sample1) * fmod(sound.pos, 1.0f));
-
-					tempSampleL += (val * 2);
-					tempSampleR += (val * 2);
-				}
 			}
 		}
 
@@ -104,12 +106,13 @@ void initAudio()
 
 void loadSounds()
 {
-	for (unsigned int i = 0; i < sizeof(sounds) / sizeof(sounds[0]); ++i)
+	for (auto& sound : sounds)
 	{
-		sounds[i].wave = nullptr;
-		sounds[i].length = 0;
-		sounds[i].playing = false;
-		sounds[i].length = 0.0L;
+		sound.wave = nullptr;
+		sound.length = 0;
+		sound.playing = false;
+		sound.length = 0.0L;
+		sound.loop = false;
 	}
 
 	for (unsigned int n1 = 0; n1 < 0x10; n1++)
@@ -140,8 +143,28 @@ void freeSounds()
 		delete[] sound.wave;
 }
 
-void playSound(size_t sound_no, int /*soundMode*/)
+void playSound(size_t sound_no, int soundMode)
 {
-	sounds[sound_no].pos = 0;
-	sounds[sound_no].playing = true;
+	switch (soundMode)
+	{
+		case -1:
+			// Play and loop (if sound is already playing, just set the loop flag)
+			if (sounds[sound_no].playing == false)
+			{
+				sounds[sound_no].pos = 0;
+				sounds[sound_no].playing = true;
+			}
+			sounds[sound_no].loop = true;
+			break;
+		case 1:
+			// Play sound (if sound if already playing, restart it)
+			sounds[sound_no].pos = 0;
+			sounds[sound_no].playing = true;
+			sounds[sound_no].loop = false;
+			break;
+		case 0:
+			// Stop sound
+			sounds[sound_no].playing = false;
+			break;
+	}
 }
