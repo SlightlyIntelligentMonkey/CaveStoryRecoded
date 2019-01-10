@@ -2,7 +2,7 @@
 <CodeBlocks_project_file>
 	<FileVersion major="1" minor="6" />
 	<Project>
-		<Option title="CaveStoryRemake" />
+		<Option title="CaveStoryRecoded" />
 		<Option pch_mode="2" />
 		<Option compiler="null" />
 		<Build>
@@ -20,8 +20,6 @@
 		<Unit filename="source/CaveStoryEngine.rc">
 			<Option compilerVar="WINDRES" />
 		</Unit>
-		<Unit filename="source/ORIG_org.cpp" />
-		<Unit filename="source/ORIG_org.h" />
 		<Unit filename="source/balfrog.cpp" />
 		<Unit filename="source/blade.cpp" />
 		<Unit filename="source/blade.h" />
