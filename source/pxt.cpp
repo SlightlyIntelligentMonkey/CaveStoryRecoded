@@ -7,10 +7,13 @@
 #include "main.h"
 #include "mathUtils.h"
 #include "filesystem.h"
+#include "sound.h"
 
 using std::vector;
 using std::string;
 using std::to_string;
+
+SOUND *sounds[0x100];
 
 //For pxt
 int8_t waveModelTable[6][256];
@@ -245,7 +248,7 @@ int makePixelWaveData(const std::vector<long double>& pxtData, uint8_t *data)
 	return 1;
 }
 
-int loadSound(const string& path, uint8_t **buf, size_t *length)
+int loadSound(const string& path, int no)
 {
 	if (fileExists(path))
 	{
@@ -274,6 +277,8 @@ int loadSound(const string& path, uint8_t **buf, size_t *length)
 					size = (size_t)lineNumbers[i][1];
 			}
 
+			sounds[no] = SoundObject_Create(size, 22050);
+
 			//Allocate buffers
 			uint8_t *dest = new uint8_t[size];
 			uint8_t *pBlock = new uint8_t[size];
@@ -300,7 +305,7 @@ int loadSound(const string& path, uint8_t **buf, size_t *length)
 						if (dest[j] + pBlock[j] - 0x100 <= 0x7F)
 							pBlock[j] += dest[j] + -0x80;
 						else
-							pBlock[j] = (uint8_t)-1;
+							pBlock[j] = 0xFF;
 					}
 					else
 						pBlock[j] = 0;
@@ -308,17 +313,10 @@ int loadSound(const string& path, uint8_t **buf, size_t *length)
 			}
 
 			//Put data from buffers into main sound buffer
-			*buf = new uint8_t[size];
+			uint8_t *object_buffer;
+			SoundObject_GetBuffer(sounds[no], &object_buffer, nullptr);
 
-			if (!*buf)
-			{
-				delete[] dest;
-				delete[] pBlock;
-				return -2;
-			}
-
-			*length = size;
-			memcpy(*buf, pBlock, size);
+			memcpy(object_buffer, pBlock, size);
 
 			//Free the two buffers
 			delete[] dest;

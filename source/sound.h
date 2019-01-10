@@ -3,30 +3,8 @@
 #include <cstdint>
 #include <cstddef>
 
-void initAudio();
-void loadSounds();
-void freeSounds();
-
-void playSound(size_t sound_no, int soundMode = 1);
-
 //Sound struct
-struct SOUND {
-	uint8_t *wave; //Dynamic size
-	size_t length;
-	bool playing;
-	long double pos;
-	bool loops;
-};
-
-extern SOUND sounds[0x100];
-
-//sound device things
-using SDL_AudioDeviceID = uint32_t;
-struct SDL_AudioSpec;
-
-extern SDL_AudioDeviceID soundDev;
-extern SDL_AudioSpec soundSpec;
-extern SDL_AudioSpec want;
+struct SOUND;
 
 //sample rate
 constexpr unsigned int sampleRate = 44100;
@@ -196,3 +174,18 @@ enum soundEffects
 	SFX_Silence75 = 0x9,
 };
 
+SOUND* SoundObject_Create(size_t size, unsigned long freq);
+void SoundObject_Destroy(SOUND *sound);
+void SoundObject_GetBuffer(SOUND *sound, uint8_t **buffer, size_t *size);
+void SoundObject_SetPosition(SOUND *sound, size_t pos);
+void SoundObject_SetFrequency(SOUND *sound, unsigned long freq);
+void SoundObject_SetVolume(SOUND *sound, long volume);
+void SoundObject_SetPan(SOUND *sound, long pan);
+void SoundObject_Play(SOUND *sound, bool loop);
+void SoundObject_Stop(SOUND *sound);
+
+void initAudio();
+void loadSounds();
+void freeSounds();
+
+void playSound(size_t sound_no, int soundMode = 1);

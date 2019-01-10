@@ -1,5 +1,6 @@
 ﻿#include "sound.h"
 
+#include <list>
 #include <vector>
 #include <string>
 #include <fstream>
@@ -17,13 +18,108 @@
 #include "main.h"
 
 using std::string;
+using std::list;
+
+//Sound struct
+struct SOUND {
+	uint8_t *wave; //Dynamic size
+	size_t length;
+	bool playing;
+	long double pos;
+	bool loops;
+	unsigned long freq;
+	long double volume;
+	long double volume_l;
+	long double volume_r;
+};
 
 //Variable things
-SOUND sounds[0x100];
+list<SOUND> sound_objects;
 
 SDL_AudioDeviceID soundDev;
 SDL_AudioSpec soundSpec;
 SDL_AudioSpec want;
+
+SOUND* SoundObject_Create(size_t size, unsigned long freq)
+{
+	SOUND sound;
+	sound.wave = new uint8_t[size];
+	sound.length = size;
+	sound.playing = false;
+	sound.pos = 0.0L;
+	sound.loops = false;
+	sound.freq = freq;
+	sound.volume = 1.0L;
+	sound.volume_l = 1.0L;
+	sound.volume_r = 1.0L;
+	sound_objects.push_front(sound);
+	return &sound_objects.front();
+}
+
+void SoundObject_Destroy(SOUND *sound)
+{
+	if (sound)
+	{
+		delete[] sound->wave;
+
+		for (auto it = sound_objects.begin(); it != sound_objects.end(); ++it)
+		{
+			if (&*it == sound)
+			{
+				sound_objects.erase(it);
+				break;
+			}
+		}
+	}
+}
+
+void SoundObject_GetBuffer(SOUND *sound, uint8_t **buffer, size_t *size)
+{
+	if (buffer != nullptr)
+		*buffer = sound->wave;
+
+	if (size != nullptr)
+		*size = sound->length;
+}
+
+void SoundObject_SetPosition(SOUND *sound, size_t pos)
+{
+	sound->pos = pos;
+}
+
+void SoundObject_SetFrequency(SOUND *sound, unsigned long freq)
+{
+	sound->freq = freq;
+}
+
+static long double MillibelToVolume(long volume)
+{
+	volume = clamp(volume, (long)-10000, (long)0);
+	return pow(10, volume / 2000.0);
+}
+
+void SoundObject_SetVolume(SOUND *sound, long volume)
+{
+	// Volume is in hundredths of a decibel, from 0 to -10000
+	sound->volume = MillibelToVolume(volume);
+}
+
+void SoundObject_SetPan(SOUND *sound, long pan)
+{
+	sound->volume_l = MillibelToVolume(-pan);
+	sound->volume_r = MillibelToVolume(pan);
+}
+
+void SoundObject_Play(SOUND *sound, bool loop)
+{
+	sound->playing = true;
+	sound->loops = loop;
+}
+
+void SoundObject_Stop(SOUND *sound)
+{
+	sound->playing = false;
+}
 
 //Audio callback and things
 void mixSounds(int16_t *stream, int len)
@@ -34,31 +130,35 @@ void mixSounds(int16_t *stream, int len)
 		int32_t tempSampleL = stream[i * 2];
 		int32_t tempSampleR = stream[i * 2 + 1];
 
-		for (auto& sound : sounds)
+		for (auto& sound : sound_objects)
 		{
 			if (sound.playing)
 			{
-				const size_t position = floor(sound.pos);
-
-				// Perform sound interpolation
-				const int sample1 = (sound.wave[position] - 0x80) << 7;
-				const int sample2 = (sound.loops || sound.pos < sound.length - 1) ? (sound.wave[(position + 1) % sound.length] - 0x80) << 7 : 0;
-
-				const int val = static_cast<int>(sample1 + (sample2 - sample1) * fmod(sound.pos, 1.0f));
-
-				tempSampleL += (val * 2);
-				tempSampleR += (val * 2);
-
-				sound.pos += 22050.0L / sampleRate;
-
 				if (sound.pos >= sound.length)
 				{
 					if (sound.loops)
+					{
 						sound.pos = fmod(sound.pos, sound.length);
+					}
 					else
-						sound.playing = false;
+					{
+						SoundObject_Stop(&sound);
+						continue;
+					}
 				}
 
+				const size_t position = floor(sound.pos);
+
+				// Perform sound interpolation
+				const int sample1 = (sound.wave[position] - 0x80) << 8;
+				const int sample2 = (sound.loops || sound.pos < sound.length - 1) ? (sound.wave[(position + 1) % sound.length] - 0x80) << 8 : 0;
+
+				const int val = static_cast<int>(sample1 + (sample2 - sample1) * fmod(sound.pos, 1.0f));
+
+				tempSampleL += (val * sound.volume * sound.volume_l);
+				tempSampleR += (val * sound.volume * sound.volume_r);
+
+				sound.pos += (long double)sound.freq / sampleRate;
 			}
 		}
 
@@ -72,8 +172,8 @@ void audio_callback(void * /*userdata*/, Uint8 *stream, int len) // TBD : Handle
 {
 	memset(stream, 0, len);
 
+	updateOrg(len / 4);
 	mixSounds(reinterpret_cast<int16_t*>(stream), len / 4);
-	mixOrg(reinterpret_cast<int16_t*>(stream), len / 4);
 }
 
 void initAudio()
@@ -107,15 +207,6 @@ void initAudio()
 
 void loadSounds()
 {
-	for (auto& sound : sounds)
-	{
-		sound.wave = nullptr;
-		sound.length = 0;
-		sound.playing = false;
-		sound.length = 0.0L;
-		sound.loops = false;
-	}
-
 	for (unsigned int n1 = 0; n1 < 0x10; n1++)
 	{
 		for (unsigned int n2 = 0; n2 < 0x10; n2++)
@@ -125,9 +216,7 @@ void loadSounds()
 
 			if (fileExists(path))
 			{
-				SOUND *sound = &sounds[(n1 << 4) + n2];
-
-				if (loadSound(path, &sound->wave, &sound->length) <= 0)
+				if (loadSound(path, (n1 << 4) + n2) <= 0)
 				{
 					char error[0x100];
 					sprintf(error, "Failed to load PXT at %s", path);
@@ -141,7 +230,7 @@ void loadSounds()
 void freeSounds()
 {
 	for (auto& sound : sounds)
-		delete[] sound.wave;
+		SoundObject_Destroy(sound);
 }
 
 void playSound(size_t sound_no, int soundMode)
@@ -150,22 +239,17 @@ void playSound(size_t sound_no, int soundMode)
 	{
 		case -1:
 			// Play and loop (if sound is already playing, just set the loop flag)
-			if (sounds[sound_no].playing == false)
-			{
-				sounds[sound_no].pos = 0;
-				sounds[sound_no].playing = true;
-			}
-			sounds[sound_no].loops = true;
+			SoundObject_Play(sounds[sound_no], true);
 			break;
 		case 1:
 			// Play sound (if sound if already playing, restart it)
-			sounds[sound_no].pos = 0;
-			sounds[sound_no].playing = true;
-			sounds[sound_no].loops = false;
+			SoundObject_Stop(sounds[sound_no]);
+			SoundObject_SetPosition(sounds[sound_no], 0);
+			SoundObject_Play(sounds[sound_no], false);
 			break;
 		case 0:
 			// Stop sound
-			sounds[sound_no].playing = false;
+			SoundObject_Stop(sounds[sound_no]);
 			break;
 	}
 }
