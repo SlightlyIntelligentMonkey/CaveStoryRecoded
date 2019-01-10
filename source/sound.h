@@ -176,12 +176,13 @@ enum soundEffects
 
 SOUND* SoundObject_Create(size_t size, unsigned long freq);
 void SoundObject_Destroy(SOUND *sound);
-void SoundObject_GetBuffer(SOUND *sound, uint8_t **buffer, size_t *size);
+void SoundObject_Lock(SOUND *sound, uint8_t **buffer, size_t *size);
+void SoundObject_Unlock(SOUND *sound);
 void SoundObject_SetPosition(SOUND *sound, size_t pos);
 void SoundObject_SetFrequency(SOUND *sound, unsigned long freq);
 void SoundObject_SetVolume(SOUND *sound, long volume);
 void SoundObject_SetPan(SOUND *sound, long pan);
-void SoundObject_Play(SOUND *sound, bool loop);
+void SoundObject_Play(SOUND *sound, bool loops);
 void SoundObject_Stop(SOUND *sound);
 
 void initAudio();

@@ -314,9 +314,9 @@ int loadSound(const string& path, int no)
 
 			//Put data from buffers into main sound buffer
 			uint8_t *object_buffer;
-			SoundObject_GetBuffer(sounds[no], &object_buffer, nullptr);
-
+			SoundObject_Lock(sounds[no], &object_buffer, nullptr);
 			memcpy(object_buffer, pBlock, size);
+			SoundObject_Unlock(sounds[no]);
 
 			//Free the two buffers
 			delete[] dest;

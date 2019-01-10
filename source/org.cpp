@@ -224,21 +224,29 @@ bool makeSoundObject8(const char *wavep, uint8_t track, bool pipi)
 			orgWaves[track][j][k] = SoundObject_Create(data_size, 22050);
 
 			//Allocate wave
-			uint8_t *sound_object_buffer;
-			SoundObject_GetBuffer(orgWaves[track][j][k], &sound_object_buffer, nullptr);
+			uint8_t *wp = new uint8_t[data_size];
+			uint8_t *wp_sub = wp;
 
 			//Copy data to wave
 			size_t wavePos = 0;
 			for (i = 0; i < data_size; i++) {
 				int work = wavep[wavePos];
 				work += 0x80;	// Convert to unsigned 8-bit PCM
-				sound_object_buffer[i] = work;
+				*wp_sub = work;
 				wavePos += 0x100 / wave_size;
 				if (wavePos >= 0x100)
 					wavePos -= 0x100;
+				++wp_sub;
 			}
 
+			uint8_t *sound_object_buffer;
+			SoundObject_Lock(orgWaves[track][j][k], &sound_object_buffer, nullptr);
+			memcpy(sound_object_buffer, wp, data_size);
+			SoundObject_Unlock(orgWaves[track][j][k]);
+
 			SoundObject_SetPosition(orgWaves[track][j][k], 0);
+
+			delete[] wp;
 		}
 	}
 

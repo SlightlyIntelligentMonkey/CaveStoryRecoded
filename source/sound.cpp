@@ -52,7 +52,9 @@ SOUND* SoundObject_Create(size_t size, unsigned long freq)
 	sound.volume = 1.0L;
 	sound.volume_l = 1.0L;
 	sound.volume_r = 1.0L;
+	SDL_LockAudioDevice(soundDev);
 	sound_objects.push_front(sound);
+	SDL_UnlockAudioDevice(soundDev);
 	return &sound_objects.front();
 }
 
@@ -60,6 +62,8 @@ void SoundObject_Destroy(SOUND *sound)
 {
 	if (sound)
 	{
+		SDL_LockAudioDevice(soundDev);
+
 		delete[] sound->wave;
 
 		for (auto it = sound_objects.begin(); it != sound_objects.end(); ++it)
@@ -70,11 +74,15 @@ void SoundObject_Destroy(SOUND *sound)
 				break;
 			}
 		}
+
+		SDL_UnlockAudioDevice(soundDev);
 	}
 }
 
-void SoundObject_GetBuffer(SOUND *sound, uint8_t **buffer, size_t *size)
+void SoundObject_Lock(SOUND *sound, uint8_t **buffer, size_t *size)
 {
+	SDL_LockAudioDevice(soundDev);
+
 	if (buffer != nullptr)
 		*buffer = sound->wave;
 
@@ -82,43 +90,60 @@ void SoundObject_GetBuffer(SOUND *sound, uint8_t **buffer, size_t *size)
 		*size = sound->length;
 }
 
+void SoundObject_Unlock(SOUND *sound)
+{
+	SDL_UnlockAudioDevice(soundDev);
+}
+
 void SoundObject_SetPosition(SOUND *sound, size_t pos)
 {
+	SDL_LockAudioDevice(soundDev);
 	sound->pos = pos;
+	SDL_UnlockAudioDevice(soundDev);
 }
 
 void SoundObject_SetFrequency(SOUND *sound, unsigned long freq)
 {
+	SDL_LockAudioDevice(soundDev);
 	sound->freq = freq;
+	SDL_UnlockAudioDevice(soundDev);
 }
 
 static long double MillibelToVolume(long volume)
 {
+	// Volume is in hundredths of decibels, from 0 to -10000
 	volume = clamp(volume, (long)-10000, (long)0);
 	return pow(10, volume / 2000.0);
 }
 
 void SoundObject_SetVolume(SOUND *sound, long volume)
 {
-	// Volume is in hundredths of a decibel, from 0 to -10000
+	SDL_LockAudioDevice(soundDev);
 	sound->volume = MillibelToVolume(volume);
+	SDL_UnlockAudioDevice(soundDev);
 }
 
 void SoundObject_SetPan(SOUND *sound, long pan)
 {
+	SDL_LockAudioDevice(soundDev);
 	sound->volume_l = MillibelToVolume(-pan);
 	sound->volume_r = MillibelToVolume(pan);
+	SDL_UnlockAudioDevice(soundDev);
 }
 
-void SoundObject_Play(SOUND *sound, bool loop)
+void SoundObject_Play(SOUND *sound, bool loops)
 {
+	SDL_LockAudioDevice(soundDev);
 	sound->playing = true;
-	sound->loops = loop;
+	sound->loops = loops;
+	SDL_UnlockAudioDevice(soundDev);
 }
 
 void SoundObject_Stop(SOUND *sound)
 {
+	SDL_LockAudioDevice(soundDev);
 	sound->playing = false;
+	SDL_UnlockAudioDevice(soundDev);
 }
 
 //Audio callback and things
