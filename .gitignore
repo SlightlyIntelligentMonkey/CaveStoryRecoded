@@ -92,3 +92,4 @@ ipch/
 /*.cscope_file_list
 /*.layout
 /*.d
+/.vscode
