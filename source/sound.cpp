@@ -60,7 +60,7 @@ SOUND* SoundObject_Create(size_t size, unsigned long freq)
 
 void SoundObject_Destroy(SOUND *sound)
 {
-	if (sound)
+	if (sound != nullptr)
 	{
 		SDL_LockAudioDevice(soundDev);
 
@@ -81,32 +81,42 @@ void SoundObject_Destroy(SOUND *sound)
 
 void SoundObject_Lock(SOUND *sound, uint8_t **buffer, size_t *size)
 {
-	SDL_LockAudioDevice(soundDev);
+	if (sound != nullptr)
+	{
+		SDL_LockAudioDevice(soundDev);
 
-	if (buffer != nullptr)
-		*buffer = sound->wave;
+		if (buffer != nullptr)
+			*buffer = sound->wave;
 
-	if (size != nullptr)
-		*size = sound->length;
+		if (size != nullptr)
+			*size = sound->length;
+	}
 }
 
 void SoundObject_Unlock(SOUND *sound)
 {
-	SDL_UnlockAudioDevice(soundDev);
+	if (sound != nullptr)
+		SDL_UnlockAudioDevice(soundDev);
 }
 
 void SoundObject_SetPosition(SOUND *sound, size_t pos)
 {
-	SDL_LockAudioDevice(soundDev);
-	sound->pos = pos;
-	SDL_UnlockAudioDevice(soundDev);
+	if (sound != nullptr)
+	{
+		SDL_LockAudioDevice(soundDev);
+		sound->pos = pos;
+		SDL_UnlockAudioDevice(soundDev);
+	}
 }
 
 void SoundObject_SetFrequency(SOUND *sound, unsigned long freq)
 {
-	SDL_LockAudioDevice(soundDev);
-	sound->freq = freq;
-	SDL_UnlockAudioDevice(soundDev);
+	if (sound != nullptr)
+	{
+		SDL_LockAudioDevice(soundDev);
+		sound->freq = freq;
+		SDL_UnlockAudioDevice(soundDev);
+	}
 }
 
 static long double MillibelToVolume(long volume)
@@ -118,32 +128,44 @@ static long double MillibelToVolume(long volume)
 
 void SoundObject_SetVolume(SOUND *sound, long volume)
 {
-	SDL_LockAudioDevice(soundDev);
-	sound->volume = MillibelToVolume(volume);
-	SDL_UnlockAudioDevice(soundDev);
+	if (sound != nullptr)
+	{
+		SDL_LockAudioDevice(soundDev);
+		sound->volume = MillibelToVolume(volume);
+		SDL_UnlockAudioDevice(soundDev);
+	}
 }
 
 void SoundObject_SetPan(SOUND *sound, long pan)
 {
-	SDL_LockAudioDevice(soundDev);
-	sound->volume_l = MillibelToVolume(-pan);
-	sound->volume_r = MillibelToVolume(pan);
-	SDL_UnlockAudioDevice(soundDev);
+	if (sound != nullptr)
+	{
+		SDL_LockAudioDevice(soundDev);
+		sound->volume_l = MillibelToVolume(-pan);
+		sound->volume_r = MillibelToVolume(pan);
+		SDL_UnlockAudioDevice(soundDev);
+	}
 }
 
 void SoundObject_Play(SOUND *sound, bool loops)
 {
-	SDL_LockAudioDevice(soundDev);
-	sound->playing = true;
-	sound->loops = loops;
-	SDL_UnlockAudioDevice(soundDev);
+	if (sound != nullptr)
+	{
+		SDL_LockAudioDevice(soundDev);
+		sound->playing = true;
+		sound->loops = loops;
+		SDL_UnlockAudioDevice(soundDev);
+	}
 }
 
 void SoundObject_Stop(SOUND *sound)
 {
-	SDL_LockAudioDevice(soundDev);
-	sound->playing = false;
-	SDL_UnlockAudioDevice(soundDev);
+	if (sound != nullptr)
+	{
+		SDL_LockAudioDevice(soundDev);
+		sound->playing = false;
+		SDL_UnlockAudioDevice(soundDev);
+	}
 }
 
 //Audio callback and things
@@ -176,7 +198,7 @@ void mixSounds(int16_t *stream, int len)
 
 				// Perform sound interpolation
 				const int sample1 = (sound.wave[position] - 0x80) << 8;
-				const int sample2 = (sound.loops || sound.pos < sound.length - 1) ? (sound.wave[(position + 1) % sound.length] - 0x80) << 8 : 0;
+				const int sample2 = (!sound.loops && position + 1 >= sound.length) ? 0 : (sound.wave[(position + 1) % sound.length] - 0x80) << 8;
 
 				const int val = static_cast<int>(sample1 + (sample2 - sample1) * fmod(sound.pos, 1.0f));
 
@@ -188,8 +210,8 @@ void mixSounds(int16_t *stream, int len)
 		}
 
 		//Put into main stream and clip buffer
-		stream[2 * i] = clamp(tempSampleL, -0x7FFF, 0x7FFF);
-		stream[2 * i + 1] = clamp(tempSampleR, -0x7FFF, 0x7FFF);
+		stream[2 * i] = clamp(tempSampleL, (int32_t)-0x7FFF, (int32_t)0x7FFF);
+		stream[2 * i + 1] = clamp(tempSampleR, (int32_t)-0x7FFF, (int32_t)0x7FFF);
 	}
 }
 
