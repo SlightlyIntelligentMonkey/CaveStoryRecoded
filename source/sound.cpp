@@ -194,7 +194,7 @@ void mixSounds(int16_t *stream, int len)
 					}
 				}
 
-				const size_t position = floor(sound.pos);
+				const size_t position = sound.pos;
 
 				// Perform sound interpolation
 				const int sample1 = (sound.wave[position] - 0x80) << 8;
