@@ -40,6 +40,58 @@ VIEW viewport;
 
 BOSSLIFE bossLife;
 
+void SetFrameTargetMyChar(int wait)
+{
+	viewport.lookX = &currentPlayer.tgt_x;
+	viewport.lookY = &currentPlayer.tgt_y;
+	viewport.speed = wait;
+}
+
+void SetFrameTargetNpChar(int event, int wait)
+{
+	int i;
+
+	// Check if object actually exists
+	for (i = 0; i < (int)npcs.size() && npcs[i].code_event != event; ++i);
+
+	if (i != (int)npcs.size())
+	{
+		viewport.lookX = &npcs[i].x;
+		viewport.lookY = &npcs[i].y;
+		viewport.speed = wait;
+	}
+}
+
+void SetFrameTargetBoss(int no, int wait)
+{
+	viewport.lookX = &bossObj[no].x;
+	viewport.lookY = &bossObj[no].y;
+	viewport.speed = wait;
+}
+
+void SetFrameMyChar(void)
+{
+	const int mc_x = currentPlayer.x;
+	const int mc_y = currentPlayer.y;
+	const short map_w = map.width;
+	const short map_l = map.height;
+
+	viewport.x = mc_x - pixelsToUnits(screenWidth / 2);
+	viewport.y = mc_y - pixelsToUnits(screenHeight / 2);
+
+	if (viewport.x <= -512)
+		viewport.x = 0;
+
+	if (viewport.y <= -512)
+		viewport.y = 0;
+
+	if (viewport.x > tilesToUnits(map_w - pixelsToTiles(screenWidth) - 1))
+		viewport.x = tilesToUnits(map_w - pixelsToTiles(screenWidth) - 1);
+
+	if (viewport.y > tilesToUnits(map_l - pixelsToTiles(screenHeight) - 1))
+		viewport.y = tilesToUnits(map_l - pixelsToTiles(screenHeight) - 1);
+}
+
 //Init game function
 void initGame()
 {
@@ -59,9 +111,11 @@ void initGame()
 
 	//Load stage
 	currentPlayer.init();
-	currentPlayer.setPos(tilesToUnits(10), tilesToUnits(8));
-	loadLevel(13);
-	startTscEvent(tsc, 200);
+	loadLevel(13, 200, 10, 8);
+	SetFrameMyChar();
+	SetFrameTargetMyChar(16);
+	// There's some stuff between these two in the original
+	SetFrameTargetMyChar(16);
 }
 
 //Init other important things
@@ -459,22 +513,22 @@ int gameUpdateMenu()
 		SDL_RenderClear(renderer);
 
 		//Draw version
-		drawTexture(sprites[0x1A], &rcVersion, (screenWidth >> 1) - 60, 216);
-		drawTexture(sprites[0x1A], &rcPeriod, (screenWidth >> 1) - 4, 216);
-		drawNumber(version[0], (screenWidth >> 1) - 20, 216, false);
-		drawNumber(version[1], (screenWidth >> 1) - 4, 216, false);
-		drawNumber(version[2], (screenWidth >> 1) + 12, 216, false);
-		drawNumber(version[3], (screenWidth >> 1) + 28, 216, false);
+		drawTexture(sprites[0x1A], &rcVersion, (screenWidth / 2) - 60, (screenHeight / 2) + 96);
+		drawTexture(sprites[0x1A], &rcPeriod, (screenWidth / 2) - 4, (screenHeight / 2) + 96);
+		drawNumber(version[0], (screenWidth / 2) - 20, (screenHeight / 2) + 96, false);
+		drawNumber(version[1], (screenWidth / 2) - 4, (screenHeight / 2) + 96, false);
+		drawNumber(version[2], (screenWidth / 2) + 12, (screenHeight / 2) + 96, false);
+		drawNumber(version[3], (screenWidth / 2) + 28, (screenHeight / 2) + 96, false);
 
 		//Draw title, new, load, and pixel 12.2004 thing
-		drawTexture(sprites[0x00], &rcTitle, (screenWidth >> 1) - 72, 40);
-		drawTexture(sprites[0x00], &rcNew, (screenWidth >> 1) - 24, 128);
-		drawTexture(sprites[0x00], &rcLoad, (screenWidth >> 1) - 24, 148);
-		drawTexture(sprites[0x01], &rcPixel, (screenWidth >> 1) - 80, 192);
+		drawTexture(sprites[0x00], &rcTitle, (screenWidth / 2) - 72, (screenHeight / 2) - 80);
+		drawTexture(sprites[0x00], &rcNew, (screenWidth / 2) - 24, (screenHeight / 2) + 8);
+		drawTexture(sprites[0x00], &rcLoad, (screenWidth / 2) - 24, (screenHeight / 2) + 28);
+		drawTexture(sprites[0x01], &rcPixel, (screenWidth / 2) - 80, (screenHeight / 2) + 72);
 
 		//Draw the character cursor
 		RECT rcChar = { 0 + (frameOrder[(anime / 10) % 4] << 4), 16, 16 + (frameOrder[(anime / 10) % 4] << 4), 32 };
-		drawTexture(sprites[0x10], &rcChar, (screenWidth >> 1) - 44, 127 + (20 * select));
+		drawTexture(sprites[0x10], &rcChar, (screenWidth / 2) - 44, (screenHeight / 2) + 7 + (20 * select));
 
 		if (!drawWindow())
 			return 0;
@@ -508,8 +562,8 @@ int gameUpdateIntro()
 	init2();
 
 	uint32_t frame = 0;
-	loadLevel(72);
-	startTscEvent(tsc, 100);
+	loadLevel(72, 100, 3, 3);
+	SetFrameTargetMyChar(16);
 	changeOrg(0);
 
 	//Set up fade

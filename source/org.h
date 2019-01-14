@@ -71,7 +71,7 @@ struct DRUM {
 	long double volume_r;
 };
 
-void mixOrg(int16_t *stream, int len);
+void updateOrg(int len);
 
 void initOrganya();
 void loadOrganya(const std::string& name);

@@ -70,6 +70,11 @@ extern VIEW viewport;
 extern int debugFlags;
 
 //Functions
+void SetFrameTargetMyChar(int wait);
+void SetFrameTargetNpChar(int event, int wait);
+void SetFrameTargetBoss(int no, int wait);
+void SetFrameMyChar(void);
+
 void viewBounds();
 void initGame();
 void init2();

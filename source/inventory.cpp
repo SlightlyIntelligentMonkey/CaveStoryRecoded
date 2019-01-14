@@ -145,13 +145,13 @@ void drawInventory()
 	RECT rcBoxBody = { 0, 8, 244, 16 };
 	RECT rcBoxBottom = { 0, 16, 244, 24 };
 
-	drawTexture(sprites[TEX_TEXTBOX], &rcBoxTop, screenWidth / 2 - 122, 8);
+	drawTexture(sprites[TEX_TEXTBOX], &rcBoxTop, screenWidth / 2 - 122, ((screenHeight - 240) / 2) + 8);
 
 	int stripY;
 	for (stripY = 1; stripY < 18; ++stripY)
-		drawTexture(sprites[TEX_TEXTBOX], &rcBoxBody, screenWidth / 2 - 122, 8 * (stripY + 1));
+		drawTexture(sprites[TEX_TEXTBOX], &rcBoxBody, screenWidth / 2 - 122, ((screenHeight - 240) / 2) + 8 * (stripY + 1));
 
-	drawTexture(sprites[TEX_TEXTBOX], &rcBoxBottom, screenWidth / 2 - 122, 8 * (stripY + 1));
+	drawTexture(sprites[TEX_TEXTBOX], &rcBoxBottom, screenWidth / 2 - 122, ((screenHeight - 240) / 2) + 8 * (stripY + 1));
 
 	//Draw title text
 	RECT rcTitle1 = { 80, 48, 144, 56 };
@@ -160,8 +160,8 @@ void drawInventory()
 	if (inventoryTitleY > 16)
 		--inventoryTitleY;
 
-	drawTexture(sprites[TEX_TEXTBOX], &rcTitle1, screenWidth / 2 - 112, inventoryTitleY);
-	drawTexture(sprites[TEX_TEXTBOX], &rcTitle2, screenWidth / 2 - 112, inventoryTitleY + 52);
+	drawTexture(sprites[TEX_TEXTBOX], &rcTitle1, screenWidth / 2 - 112, ((screenHeight - 240) / 2) + inventoryTitleY);
+	drawTexture(sprites[TEX_TEXTBOX], &rcTitle2, screenWidth / 2 - 112, ((screenHeight - 240) / 2) + inventoryTitleY + 52);
 
 	//Draw weapon selection box
 	RECT rcCur1[2];
@@ -171,9 +171,9 @@ void drawInventory()
 	static int inventoryFlash;
 	++inventoryFlash;
 	if (inventoryActive)
-		drawTexture(sprites[TEX_TEXTBOX], &rcCur1[1], 40 * selectedWeapon + screenWidth / 2 - 112, 24);
+		drawTexture(sprites[TEX_TEXTBOX], &rcCur1[1], 40 * selectedWeapon + screenWidth / 2 - 112, ((screenHeight - 240) / 2) + 24);
 	else
-		drawTexture(sprites[TEX_TEXTBOX], &rcCur1[(inventoryFlash >> 1) & 1], 40 * selectedWeapon + screenWidth / 2 - 112, 24);
+		drawTexture(sprites[TEX_TEXTBOX], &rcCur1[(inventoryFlash >> 1) & 1], 40 * selectedWeapon + screenWidth / 2 - 112, ((screenHeight - 240) / 2) + 24);
 
 	//Draw weapons
 	RECT rcLv = { 80, 80, 96, 88 };
@@ -188,21 +188,21 @@ void drawInventory()
 		rcArms.top = 16 * (weapons[i].code / 16);
 		rcArms.bottom = rcArms.top + 16;
 
-		drawTexture(sprites[TEX_ARMSIMAGE], &rcArms, 40 * i + screenWidth / 2 - 112, 24);
-		drawTexture(sprites[TEX_TEXTBOX], &rcPer, 40 * i + screenWidth / 2 - 112, 56);
-		drawTexture(sprites[TEX_TEXTBOX], &rcLv, 40 * i + screenWidth / 2 - 112, 40);
+		drawTexture(sprites[TEX_ARMSIMAGE], &rcArms, 40 * i + screenWidth / 2 - 112, ((screenHeight - 240) / 2) + 24);
+		drawTexture(sprites[TEX_TEXTBOX], &rcPer, 40 * i + screenWidth / 2 - 112, ((screenHeight - 240) / 2) + 56);
+		drawTexture(sprites[TEX_TEXTBOX], &rcLv, 40 * i + screenWidth / 2 - 112, ((screenHeight - 240) / 2) + 40);
 
-		drawNumber(weapons[i].level, 40 * i + screenWidth / 2 - 112, 40, false);
+		drawNumber(weapons[i].level, 40 * i + screenWidth / 2 - 112, ((screenHeight - 240) / 2) + 40, false);
 
 		if (weapons[i].max_num)
 		{
-			drawNumber(weapons[i].num, 40 * i + screenWidth / 2 - 112, 48, false);
-			drawNumber(weapons[i].max_num, 40 * i + screenWidth / 2 - 112, 56, false);
+			drawNumber(weapons[i].num, 40 * i + screenWidth / 2 - 112, ((screenHeight - 240) / 2) + 48, false);
+			drawNumber(weapons[i].max_num, 40 * i + screenWidth / 2 - 112, ((screenHeight - 240) / 2) + 56, false);
 		}
 		else
 		{
-			drawTexture(sprites[TEX_TEXTBOX], &rcNone, 40 * i + screenWidth / 2 - 96, 48);
-			drawTexture(sprites[TEX_TEXTBOX], &rcNone, 40 * i + screenWidth / 2 - 96, 56);
+			drawTexture(sprites[TEX_TEXTBOX], &rcNone, 40 * i + screenWidth / 2 - 96, ((screenHeight - 240) / 2) + 48);
+			drawTexture(sprites[TEX_TEXTBOX], &rcNone, 40 * i + screenWidth / 2 - 96, ((screenHeight - 240) / 2) + 56);
 		}
 	}
 
@@ -217,13 +217,13 @@ void drawInventory()
 			sprites[TEX_TEXTBOX],
 			&rcCur2[(inventoryFlash >> 1) & 1],
 			32 * (selectedItem % 6) + screenWidth / 2 - 112,
-			16 * (selectedItem / 6) + 76);
+			16 * (selectedItem / 6) + ((screenHeight - 240) / 2) + 76);
 	else
 		drawTexture(
 			sprites[TEX_TEXTBOX],
 			&rcCur2[1],
 			32 * (selectedItem % 6) + screenWidth / 2 - 112,
-			16 * (selectedItem / 6) + 76);
+			16 * (selectedItem / 6) + ((screenHeight - 240) / 2) + 76);
 
 	//Draw items
 	RECT rcItem;
@@ -235,7 +235,7 @@ void drawInventory()
 		rcItem.top = 16 * (items[i].code / 8);
 		rcItem.bottom = rcItem.top + 16;
 
-		drawTexture(sprites[TEX_ITEMIMAGE], &rcItem, 32 * (i % 6) + screenWidth / 2 - 112, 16 * (i / 6) + 76);
+		drawTexture(sprites[TEX_ITEMIMAGE], &rcItem, 32 * (i % 6) + screenWidth / 2 - 112, 16 * (i / 6) + ((screenHeight - 240) / 2) + 76);
 	}
 }
 

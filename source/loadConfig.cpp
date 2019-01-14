@@ -24,18 +24,50 @@ using nlohmann::json;
 using nlohmann::detail::parse_error;
 using std::to_string;
 
+struct CONFIG_RAW
+{
+	char proof[32];
+	char font_name[64];
+	uint8_t move_button_mode[4];
+	uint8_t attack_button_mode[4];
+	uint8_t ok_button_mode[4];
+	uint8_t display_mode[4];
+	uint8_t bJoystick[4];
+	uint8_t joystick_button[8][4];
+};
+
 //Save and load config.dat (config file for the original Cave Story)
 string configName = "Config.dat";
 
 CONFIG *loadConfigDat()
 {
-	FILE *fp = fopen(configName.c_str(), "rb");
-	if (fp == nullptr)
-		return nullptr;
+	CONFIG *config = nullptr;
 
-	CONFIG *config = new CONFIG;
-	fread(config, 1, sizeof(CONFIG), fp);
-	fclose(fp);
+	FILE *fp = fopen(configName.c_str(), "rb");
+
+	if (fp != nullptr)
+	{
+		CONFIG_RAW *config_raw = new CONFIG_RAW;
+		const size_t elements_read = fread(config_raw, sizeof(CONFIG), 1, fp);
+		fclose(fp);
+
+		if (elements_read == 1 && !strcmp(config_raw->proof, "DOUKUTSU20041206"))
+		{
+			config = new CONFIG;
+			memcpy(config->proof, config_raw->proof, 32);
+			memcpy(config->font_name, config_raw->font_name + 32, 64);
+			config->move_button_mode = readLElong(config_raw->move_button_mode, 0);
+			config->attack_button_mode = readLElong(config_raw->attack_button_mode, 0);
+			config->ok_button_mode = readLElong(config_raw->ok_button_mode, 0);
+			config->display_mode = readLElong(config_raw->display_mode, 0);
+			config->bJoystick = readLElong(config_raw->bJoystick, 0);
+			for (unsigned int i = 0; i < 8; ++i)
+				config->joystick_button[i] = readLElong(config_raw->joystick_button[i], 0);
+		}
+
+		delete config_raw;
+	}
+
 	return config;
 }
 

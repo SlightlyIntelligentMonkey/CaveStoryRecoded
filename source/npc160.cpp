@@ -6,6 +6,8 @@
 #include "caret.h"
 #include "mathUtils.h"
 #include "game.h"
+#include "render.h"
+#include "stage.h"
 
 using std::array;
 
@@ -951,7 +953,7 @@ void npcAct173(npc *NPC) //Armoured Gaudi
 	rcRight[3].right = 96;
 	rcRight[3].bottom = 176;
 
-	if (NPC->x <= currentPlayer.x + 163840 && NPC->x >= currentPlayer.x - 163840 && NPC->y <= currentPlayer.y + 122880 && NPC->y >= currentPlayer.y - 122880)
+	if (NPC->x <= currentPlayer.x + pixelsToUnits(screenWidth) && NPC->x >= currentPlayer.x - pixelsToUnits(screenWidth) && NPC->y <= currentPlayer.y + pixelsToUnits(screenHeight) && NPC->y >= currentPlayer.y - pixelsToUnits(screenHeight))
 	{
 		switch (NPC->act_no)
 		{
