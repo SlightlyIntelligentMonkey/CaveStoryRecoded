@@ -40,6 +40,58 @@ VIEW viewport;
 
 BOSSLIFE bossLife;
 
+void SetFrameTargetMyChar(int wait)
+{
+	viewport.lookX = &currentPlayer.tgt_x;
+	viewport.lookY = &currentPlayer.tgt_y;
+	viewport.speed = wait;
+}
+
+void SetFrameTargetNpChar(int event, int wait)
+{
+	int i;
+
+	// Check if object actually exists
+	for (i = 0; i < (int)npcs.size() && npcs[i].code_event != event; ++i);
+
+	if (i != (int)npcs.size())
+	{
+		viewport.lookX = &npcs[i].x;
+		viewport.lookY = &npcs[i].y;
+		viewport.speed = wait;
+	}
+}
+
+void SetFrameTargetBoss(int no, int wait)
+{
+	viewport.lookX = &bossObj[no].x;
+	viewport.lookY = &bossObj[no].y;
+	viewport.speed = wait;
+}
+
+void SetFrameMyChar(void)
+{
+	const int mc_x = currentPlayer.x;
+	const int mc_y = currentPlayer.y;
+	const short map_w = map.width;
+	const short map_l = map.height;
+
+	viewport.x = mc_x - pixelsToUnits(screenWidth / 2);
+	viewport.y = mc_y - pixelsToUnits(screenHeight / 2);
+
+	if (viewport.x <= -512)
+		viewport.x = 0;
+
+	if (viewport.y <= -512)
+		viewport.y = 0;
+
+	if (viewport.x > tilesToUnits(map_w - pixelsToTiles(screenWidth) - 1))
+		viewport.x = tilesToUnits(map_w - pixelsToTiles(screenWidth) - 1);
+
+	if (viewport.y > tilesToUnits(map_l - pixelsToTiles(screenHeight) - 1))
+		viewport.y = tilesToUnits(map_l - pixelsToTiles(screenHeight) - 1);
+}
+
 //Init game function
 void initGame()
 {
@@ -60,6 +112,10 @@ void initGame()
 	//Load stage
 	currentPlayer.init();
 	loadLevel(13, 200, 10, 8);
+	SetFrameMyChar();
+	SetFrameTargetMyChar(16);
+	// There's some stuff between these two in the original
+	SetFrameTargetMyChar(16);
 }
 
 //Init other important things
@@ -507,6 +563,7 @@ int gameUpdateIntro()
 
 	uint32_t frame = 0;
 	loadLevel(72, 100, 3, 3);
+	SetFrameTargetMyChar(16);
 	changeOrg(0);
 
 	//Set up fade

@@ -215,11 +215,11 @@ void loadProfile()
 			SDL_RWread(profile, &i, 1, 1);
 
 		loadLevel(level, 0, 0, 1);
-
 		currentPlayer.x = player_x;
 		currentPlayer.y = player_y;
-
 		initFade();
+		SetFrameMyChar();
+		SetFrameTargetMyChar(16);
 
 		//Close RW
 		SDL_RWclose(profile);

@@ -713,32 +713,20 @@ bool doTscCommand(int *retVal, bool *bExit, TSC &ptsc)
 		tscCleanup(0, ptsc);
 		break;
 	case('<FOB'):
-		xt = getTSCNumber(ptsc, ptsc.p_read + 4);
-		viewport.lookX = &bossObj[xt].x;
-		viewport.lookY = &bossObj[xt].y;
-		viewport.speed = getTSCNumber(ptsc, ptsc.p_read + 9);
+		x = getTSCNumber(ptsc, ptsc.p_read + 4);
+		y = getTSCNumber(ptsc, ptsc.p_read + 9);
+		SetFrameTargetBoss(x, y);
 		tscCleanup(2, ptsc);
 		break;
 	case('<FOM'):
-		viewport.lookX = &currentPlayer.tgt_x;
-		viewport.lookY = &currentPlayer.tgt_y;
-		viewport.speed = getTSCNumber(ptsc, ptsc.p_read + 4);
+		z = getTSCNumber(ptsc, ptsc.p_read + 4);
+		SetFrameTargetMyChar(z);
 		tscCleanup(1, ptsc);
 		break;
 	case('<FON'):
-		for (size_t n = 0; n < npcs.size(); n++)
-		{
-			if (npcs[n].cond & npccond_alive)
-			{
-				if (npcs[n].code_event == getTSCNumber(ptsc, ptsc.p_read + 4))
-				{
-					viewport.lookX = &npcs[n].x;
-					viewport.lookY = &npcs[n].y;
-					viewport.speed = getTSCNumber(ptsc, ptsc.p_read + 9);
-					break;
-				}
-			}
-		}
+		x = getTSCNumber(ptsc, ptsc.p_read + 4);
+		y = getTSCNumber(ptsc, ptsc.p_read + 9);
+		SetFrameTargetNpChar(x, y);
 		tscCleanup(2, ptsc);
 		break;
 	case('<FRE'):
