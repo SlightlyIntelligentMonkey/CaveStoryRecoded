@@ -21,7 +21,7 @@ void drawMapName(bool bMini)
 	const auto len = strlen(mapName.name);
 
 	const int x = screenWidth / 2 - len * 3;
-	const int y = 80;
+	const int y = ((screenHeight - 240) / 2) + 80;
 
 	if (bMini)
 	{
@@ -88,11 +88,11 @@ void drawBossHealth()
 
 			rcBr.right = 198 * bossLife.br / bossLife.max;
 
-			drawTexture(sprites[TEX_TEXTBOX], &rcBox1, screenWidth / 2 - 128, 220);
-			drawTexture(sprites[TEX_TEXTBOX], &rcBox2, screenWidth / 2 - 128, 228);
-			drawTexture(sprites[TEX_TEXTBOX], &rcBr, screenWidth / 2 - 88, 224);
-			drawTexture(sprites[TEX_TEXTBOX], &rcLife, screenWidth / 2 - 88, 224);
-			drawTexture(sprites[TEX_TEXTBOX], &rcText, screenWidth / 2 - 120, 224);
+			drawTexture(sprites[TEX_TEXTBOX], &rcBox1, screenWidth / 2 - 128, screenHeight - 20);
+			drawTexture(sprites[TEX_TEXTBOX], &rcBox2, screenWidth / 2 - 128, screenHeight - 12);
+			drawTexture(sprites[TEX_TEXTBOX], &rcBr, screenWidth / 2 - 88, screenHeight - 16);
+			drawTexture(sprites[TEX_TEXTBOX], &rcLife, screenWidth / 2 - 88, screenHeight - 16);
+			drawTexture(sprites[TEX_TEXTBOX], &rcText, screenWidth / 2 - 120, screenHeight - 16);
 		}
 		else
 		{

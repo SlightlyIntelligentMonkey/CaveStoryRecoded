@@ -1342,12 +1342,12 @@ void drawTsc()
 		if (tsc.item) //Display item not 0
 		{
 			//Draw GIT background
-			drawTexture(sprites[TEX_TEXTBOX], &rcItemBox1, (screenWidth / 2) - 40, 128);
-			drawTexture(sprites[TEX_TEXTBOX], &rcItemBox2, (screenWidth / 2) - 40, 144);
-			drawTexture(sprites[TEX_TEXTBOX], &rcItemBox3, (screenWidth / 2) + 32, 128);
-			drawTexture(sprites[TEX_TEXTBOX], &rcItemBox4, (screenWidth / 2) + 32, 136);
-			drawTexture(sprites[TEX_TEXTBOX], &rcItemBox4, (screenWidth / 2) + 32, 144);
-			drawTexture(sprites[TEX_TEXTBOX], &rcItemBox5, (screenWidth / 2) + 32, 152);
+			drawTexture(sprites[TEX_TEXTBOX], &rcItemBox1, (screenWidth / 2) - 40, (screenHeight / 2) + 8);
+			drawTexture(sprites[TEX_TEXTBOX], &rcItemBox2, (screenWidth / 2) - 40, (screenHeight / 2) + 24);
+			drawTexture(sprites[TEX_TEXTBOX], &rcItemBox3, (screenWidth / 2) + 32, (screenHeight / 2) + 8);
+			drawTexture(sprites[TEX_TEXTBOX], &rcItemBox4, (screenWidth / 2) + 32, (screenHeight / 2) + 12);
+			drawTexture(sprites[TEX_TEXTBOX], &rcItemBox4, (screenWidth / 2) + 32, (screenHeight / 2) + 24);
+			drawTexture(sprites[TEX_TEXTBOX], &rcItemBox5, (screenWidth / 2) + 32, (screenHeight / 2) + 32);
 
 			//Move the item image into position
 			if (tsc.item_y < 0x88)
@@ -1360,7 +1360,7 @@ void drawTsc()
 				rcItem.top = 16 * ((tsc.item - 1000) / 8);
 				rcItem.bottom = 16 * ((tsc.item - 1000) / 8) + 16;
 
-				drawTexture(sprites[TEX_ITEMIMAGE], &rcItem, (screenWidth / 2) - 20, tsc.item_y);
+				drawTexture(sprites[TEX_ITEMIMAGE], &rcItem, (screenWidth / 2) - 20, ((screenHeight - 240) / 2) + tsc.item_y);
 			}
 			else //Otherwise, draw weapon
 			{
@@ -1369,7 +1369,7 @@ void drawTsc()
 				rcItem.top = 16 * (tsc.item / 16);
 				rcItem.bottom = 16 * (tsc.item / 16) + 16;
 
-				drawTexture(sprites[TEX_ARMSIMAGE], &rcItem, (screenWidth / 2) - 12, tsc.item_y);
+				drawTexture(sprites[TEX_ARMSIMAGE], &rcItem, (screenWidth / 2) - 12, ((screenHeight - 240) / 2) + tsc.item_y);
 			}
 		}
 
@@ -1381,14 +1381,14 @@ void drawTsc()
 		{
 			int y;
 			if (tsc.wait > 1)
-				y = 144;
+				y = screenHeight - 96;
 			else
-				y = 4 * (38 - tsc.wait);
+				y = (screenHeight - 240) + 4 * (38 - tsc.wait);
 
 			drawTexture(sprites[TEX_TEXTBOX], &rcYesNo, tsc.rcText.left + 164, y);
 
 			if (tsc.wait == 16)
-				drawTexture(sprites[TEX_TEXTBOX], &rcSelection, 41 * tsc.select + tsc.rcText.left + 159, 154);
+				drawTexture(sprites[TEX_TEXTBOX], &rcSelection, 41 * tsc.select + tsc.rcText.left + 159, screenHeight - 86);
 		}
 	}
 }
