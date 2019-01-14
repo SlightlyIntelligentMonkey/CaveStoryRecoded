@@ -899,6 +899,209 @@ void npcAct212(npc *NPC) // Sky Dragon
     }
 }
 
+void npcAct213(npc *NPC) // Night Spirit
+{
+	RECT rc[10];
+
+	rc[0].left = 0;
+	rc[0].top = 0;
+	rc[0].right = 0;
+	rc[0].bottom = 0;
+
+	rc[1].left = 0;
+	rc[1].top = 0;
+	rc[1].right = 48;
+	rc[1].bottom = 48;
+
+	rc[2].left = 48;
+	rc[2].top = 0;
+	rc[2].right = 96;
+	rc[2].bottom = 48;
+
+	rc[3].left = 96;
+	rc[3].top = 0;
+	rc[3].right = 144;
+	rc[3].bottom = 48;
+
+	rc[4].left = 144;
+	rc[4].top = 0;
+	rc[4].right = 192;
+	rc[4].bottom = 48;
+
+	rc[5].left = 192;
+	rc[5].top = 0;
+	rc[5].right = 240;
+	rc[5].bottom = 48;
+
+	rc[6].left = 240;
+	rc[6].top = 0;
+	rc[6].right = 288;
+	rc[6].bottom = 48;
+
+	rc[7].left = 0;
+	rc[7].top = 48;
+	rc[7].right = 48;
+	rc[7].bottom = 96;
+
+	rc[8].left = 48;
+	rc[8].top = 48;
+	rc[8].right = 96;
+	rc[8].bottom = 96;
+
+	rc[9].left = 96;
+	rc[9].top = 48;
+	rc[9].right = 144;
+	rc[9].bottom = 96;
+
+	switch (NPC->act_no)
+	{
+	case 0:
+		NPC->ani_no = 0;
+		NPC->tgt_x = NPC->x;
+		NPC->tgt_y = NPC->y;
+		// fallthrough
+	case 1:
+		if (currentPlayer.y > NPC->y - 0x1000 && currentPlayer.y < NPC->y + 0x1000)
+		{
+			if (NPC->direct != dirLeft)
+				NPC->y += pixelsToUnits(240);
+			else
+				NPC->y -= pixelsToUnits(240);
+
+			NPC->act_no = 10;
+			NPC->act_wait = 0;
+			NPC->ani_no = 1;
+			NPC->ym = 0;
+			NPC->bits |= npc_shootable;
+		}
+
+		break;
+	case 10:
+		if (++NPC->ani_wait > 2)
+		{
+			NPC->ani_wait = 0;
+			++NPC->ani_no;
+		}
+
+		if (++NPC->ani_no > 3)
+			NPC->ani_no = 1;
+
+		if (++NPC->act_wait > 200)
+		{
+			NPC->act_no = 20;
+			NPC->act_wait = 0;
+			NPC->ani_no = 4;
+		}
+
+		break;
+	case 20:
+		if (++NPC->ani_wait > 2)
+		{
+			NPC->ani_wait = 0;
+			++NPC->ani_no;
+		}
+
+		if (NPC->ani_no > 6)
+			NPC->ani_no = 4;
+
+		if (++NPC->act_wait > 50)
+		{
+			NPC->act_no = 30;
+			NPC->act_wait = 0;
+			NPC->ani_no = 7;
+		}
+
+		break;
+	case 30:
+		if (++NPC->ani_wait > 2)
+		{
+			NPC->ani_wait = 0;
+			++NPC->ani_no;
+		}
+
+		if (NPC->ani_no > 9)
+			NPC->ani_no = 7;
+
+		if (++NPC->act_wait % 5 == 1)
+		{
+			int ym = random(-0x200, 0x200);
+			int xm = random(2, 12);
+			createNpc(214, NPC->x, NPC->y, pixelsToUnits(xm) / 4, ym, 0, 0, false /*256*/);
+			playSound(21, 1);
+		}
+
+		if (NPC->act_wait > 50)
+		{
+			NPC->act_no = 10;
+			NPC->act_wait = 0;
+			NPC->ani_no = 1;
+		}
+
+		break;
+	case 40:
+		if (NPC->y >= NPC->tgt_y)
+			NPC->ym -= 0x40;
+		else
+			NPC->ym += 0x40;
+
+		if (NPC->ym < -0x400)
+			NPC->ym = -0x400;
+		if (NPC->ym > 0x400)
+			NPC->ym = 0x400;
+
+		if (NPC->shock)
+			NPC->y += NPC->ym / 2;
+		else
+			NPC->y += NPC->ym;
+
+		if (++NPC->ani_wait > 2)
+		{
+			NPC->ani_wait = 0;
+			++NPC->ani_no;
+		}
+
+		if (NPC->ani_no > 6)
+			NPC->ani_no = 4;
+
+		if (currentPlayer.y < NPC->tgt_y + pixelsToUnits(240) && currentPlayer.y > NPC->tgt_y - pixelsToUnits(240))
+		{
+			NPC->act_no = 20;
+			NPC->act_wait = 0;
+			NPC->ani_no = 4;
+		}
+
+		break;
+	}
+
+	if (NPC->act_no >= 10 && NPC->act_no <= 30)
+	{
+		if (NPC->y >= currentPlayer.y)
+			NPC->ym -= 25;
+		else
+			NPC->ym += 25;
+
+		if (NPC->ym < -0x400)
+			NPC->ym = -0x400;
+		if (NPC->ym > 0x400)
+			NPC->ym = 0x400;
+
+		if (NPC->flag & npc_ignore44)
+			NPC->ym = 0x200;
+		if (NPC->flag & npc_ignoreSolid)
+			NPC->ym = -0x200;
+
+		if (NPC->shock)
+			NPC->y += NPC->ym / 2;
+		else
+			NPC->y += NPC->ym;
+
+		if (currentPlayer.y > NPC->tgt_y + pixelsToUnits(240) || currentPlayer.y < NPC->tgt_y - pixelsToUnits(240))
+			NPC->act_no = 40;
+	}
+
+	NPC->rect = rc[NPC->ani_no];
+}
+
 void npcAct215(npc *NPC) // Sandcroc, White (enemy)
 {
     enum
