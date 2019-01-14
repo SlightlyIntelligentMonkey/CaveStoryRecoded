@@ -166,7 +166,7 @@ void npcAct221(npc *NPC) // Shovel Brigade (walking)
 
 		// fallthrough
 	case 11:
-		if (NPC->direct == dirLeft && (NPC->flag & leftWall)
+		if (NPC->direct == dirLeft && (NPC->flag & leftWall))
 			NPC->direct = dirRight;
 		else if (NPC->direct == dirRight && (NPC->flag & rightWall))
 			NPC->direct = dirLeft;
@@ -690,6 +690,147 @@ void npcAct232(npc *NPC) // Orangebell (enemy)
 	constexpr array<RECT, 3> rcLeft = { {{128, 0, 160, 32}, {160, 0, 192, 32}, {192, 0, 224, 32}} };
 	constexpr array<RECT, 3> rcRight = { {{128, 32, 160, 64}, {160, 32, 192, 64}, {192, 32, 224, 64}} };
     NPC->doRects(rcLeft, rcRight);
+}
+
+void npcAct233(npc *NPC) // Unknown
+{
+	switch (NPC->act_no)
+	{
+	case 0:
+		NPC->act_no = 1;
+		NPC->xm = getCos(random(0, 255));
+		NPC->ym = getSin(random(0, 255));
+		NPC->count1 = 120;
+		NPC->count2 = pixelsToUnits(random(-32, 32));
+		// fallthrough
+	case 1:
+		if (NPC->pNpc->code_char == 232)
+		{
+			NPC->tgt_x = NPC->pNpc->x;
+			NPC->tgt_y = NPC->pNpc->y;
+			NPC->direct = NPC->pNpc->direct;
+		}
+
+		if (NPC->tgt_x < NPC->x)
+			NPC->xm -= 8;
+		if (NPC->tgt_x > NPC->x)
+			NPC->xm += 8;
+
+		if (NPC->count2 + NPC->tgt_y < NPC->y)
+			NPC->ym -= 0x20;
+		if (NPC->count2 + NPC->tgt_y > NPC->y)
+			NPC->ym += 0x20;
+
+		if (NPC->xm > 0x400)
+			NPC->xm = 0x400;
+		if (NPC->xm < -0x400)
+			NPC->xm = -0x400;
+		if (NPC->ym > 0x400)
+			NPC->ym = 0x400;
+		if (NPC->ym < -0x400)
+			NPC->ym = -0x400;
+
+		if (NPC->count1 >= 120)
+		{
+			if (NPC->x - 0x1000 < currentPlayer.x && NPC->x + 0x1000 > currentPlayer.x && NPC->y < currentPlayer.y && NPC->y + pixelsToUnits(176) > currentPlayer.y)
+			{
+				NPC->xm /= 4;
+				NPC->ym = 0;
+				NPC->act_no = 3;
+				NPC->bits &= ~npc_ignoreSolid;
+			}
+		}
+		else
+		{
+			++NPC->count1;
+		}
+
+		break;
+	case 3:
+		NPC->ym += 0x40;
+
+		if (NPC->ym > 0x5FF)
+			NPC->ym = 0x5FF;
+
+		if (NPC->flag & ground)
+		{
+			NPC->ym = 0;
+			NPC->xm *= 2;
+			NPC->count1 = 0;
+			NPC->act_no = 1;
+			NPC->bits |= npc_ignoreSolid;
+		}
+
+		break;
+	}
+
+	NPC->x += NPC->xm;
+	NPC->y += NPC->ym;
+
+	RECT rcLeft[4];
+
+	rcLeft[0].left = 256;
+	rcLeft[0].top = 0;
+	rcLeft[0].right = 272;
+	rcLeft[0].bottom = 16;
+
+	rcLeft[1].left = 272;
+	rcLeft[1].top = 0;
+	rcLeft[1].right = 288;
+	rcLeft[1].bottom = 16;
+
+	rcLeft[2].left = 288;
+	rcLeft[2].top = 0;
+	rcLeft[2].right = 304;
+	rcLeft[2].bottom = 16;
+
+	rcLeft[3].left = 304;
+	rcLeft[3].top = 0;
+	rcLeft[3].right = 320;
+	rcLeft[3].bottom = 16;
+
+	RECT rcRight[4];
+
+	rcRight[0].left = 256;
+	rcRight[0].top = 16;
+	rcRight[0].right = 272;
+	rcRight[0].bottom = 32;
+
+	rcRight[1].left = 272;
+	rcRight[1].top = 16;
+	rcRight[1].right = 288;
+	rcRight[1].bottom = 32;
+
+	rcRight[2].left = 288;
+	rcRight[2].top = 16;
+	rcRight[2].right = 304;
+	rcRight[2].bottom = 32;
+
+	rcRight[3].left = 304;
+	rcRight[3].top = 16;
+	rcRight[3].right = 320;
+	rcRight[3].bottom = 32;
+
+	if (NPC->act_no == 3)
+	{
+		NPC->ani_no = 3;
+	}
+	else
+	{
+		if (++NPC->ani_wait > 1)
+		{
+			NPC->ani_wait = 0;
+			++NPC->ani_no;
+		}
+
+		if (NPC->ani_no > 2)
+			NPC->ani_no = 0;
+	}
+
+	if (NPC->direct != dirLeft)
+		NPC->rect = rcRight[NPC->ani_no];
+	else
+		NPC->rect = rcLeft[NPC->ani_no];
 }
 
 void npcAct234(npc * NPC) // Red Flowers, picked
