@@ -466,8 +466,9 @@ void endTsc(TSC &ptsc, bool *bExit)
 
 bool doTscCommand(int *retVal, bool *bExit, TSC &ptsc)
 {
-    int xt;
-    int yt;
+	int xt;
+	int yt;
+	int w, x, y, z;	// TODO: Merge with the above variables
 
 	static bool notifiedAboutCIL = false;
 	static bool notifiedAboutCPS = false;
@@ -1049,14 +1050,11 @@ bool doTscCommand(int *retVal, bool *bExit, TSC &ptsc)
 		tscCleanup(3, ptsc);
 		break;
 	case('<TRA'):
-		xt = getTSCNumber(ptsc, ptsc.p_read + 9);
-		currentPlayer.setPos(
-		    tilesToUnits(getTSCNumber(ptsc, ptsc.p_read + 14)),
-		    tilesToUnits(getTSCNumber(ptsc, ptsc.p_read + 19)));
-		loadLevel(getTSCNumber(ptsc, ptsc.p_read + 4));
-
-		endTsc(ptsc, bExit);
-		startTscEvent(tsc, xt);
+		z = getTSCNumber(ptsc, ptsc.p_read + 4);
+		w = getTSCNumber(ptsc, ptsc.p_read + 9);
+		x = getTSCNumber(ptsc, ptsc.p_read + 14);
+		y = getTSCNumber(ptsc, ptsc.p_read + 19);
+		loadLevel(z, w, x, y);
 		*retVal = 1;
 		return true;
 	case('<TUR'):

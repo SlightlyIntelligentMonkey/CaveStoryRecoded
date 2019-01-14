@@ -59,9 +59,7 @@ void initGame()
 
 	//Load stage
 	currentPlayer.init();
-	currentPlayer.setPos(tilesToUnits(10), tilesToUnits(8));
-	loadLevel(13);
-	startTscEvent(tsc, 200);
+	loadLevel(13, 200, 10, 8);
 }
 
 //Init other important things
@@ -508,8 +506,7 @@ int gameUpdateIntro()
 	init2();
 
 	uint32_t frame = 0;
-	loadLevel(72);
-	startTscEvent(tsc, 100);
+	loadLevel(72, 100, 3, 3);
 	changeOrg(0);
 
 	//Set up fade

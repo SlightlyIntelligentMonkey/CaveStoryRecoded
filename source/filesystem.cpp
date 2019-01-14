@@ -215,8 +215,7 @@ void loadProfile()
 			SDL_RWread(profile, &i, 1, 1);
 
 		//Now load level
-		loadLevel(level);
-		startTscEvent(tsc, 0);
+		loadLevel(level, 0, 0, 1);
 		initFade();
 
 		//Close RW
