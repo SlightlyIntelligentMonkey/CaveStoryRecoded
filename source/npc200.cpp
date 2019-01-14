@@ -661,6 +661,60 @@ void npcAct208(npc *NPC) // Basu 2
 	}
 }
 
+void npcAct209(npc *NPC) // Basu2 projectile
+{
+	if (NPC->flag & 0xFF)
+	{
+		NPC->cond = 0;
+		createCaret(NPC->x, NPC->y, effect_RisingDisc, dirLeft);
+	}
+
+	NPC->y += NPC->ym;
+	NPC->x += NPC->xm;
+
+	RECT rect_left[4];
+
+	rect_left[0].left = 232;
+	rect_left[0].top = 96;
+	rect_left[0].right = 248;
+	rect_left[0].bottom = 112;
+
+	rect_left[1].left = 200;
+	rect_left[1].top = 112;
+	rect_left[1].right = 216;
+	rect_left[1].bottom = 128;
+
+	rect_left[2].left = 216;
+	rect_left[2].top = 112;
+	rect_left[2].right = 232;
+	rect_left[2].bottom = 128;
+
+	rect_left[3].left = 232;
+	rect_left[3].top = 112;
+	rect_left[3].right = 248;
+	rect_left[3].bottom = 128;
+
+	if (++NPC->ani_wait > 2)
+	{
+		NPC->ani_wait = 0;
+		++NPC->ani_no;
+	}
+
+	if (NPC->ani_no > 3)
+		NPC->ani_no = 0;
+
+	NPC->rect.left = rect_left[NPC->ani_no].left;
+	NPC->rect.top = rect_left[NPC->ani_no].top;
+	NPC->rect.right = rect_left[NPC->ani_no].right;
+	NPC->rect.bottom = rect_left[NPC->ani_no].bottom;
+
+	if (++NPC->count1 > 300)
+	{
+		NPC->cond = 0;
+		createCaret(NPC->x, NPC->y, effect_RisingDisc, dirLeft);
+	}
+}
+
 void npcAct210(npc *NPC) // Beetle, Follow Aqua (enemy)
 {
 	constexpr array<RECT, 2> rcLeft = { {{0, 112, 16, 128}, {16, 112, 32, 128}} };
