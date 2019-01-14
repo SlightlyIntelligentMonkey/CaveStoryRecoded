@@ -876,7 +876,6 @@ void npcAct192(npc *NPC) // Scooter
 		NPC->act_wait = 1;
 		NPC->tgt_x = NPC->x;
 		NPC->tgt_y = NPC->y;
-		playSound(SFX_MissileImpact);
 		// Fallthrough
 	case startEngine + 1:
 		NPC->x = NPC->tgt_x + pixelsToUnits(random(-1, 1));
@@ -896,8 +895,9 @@ void npcAct192(npc *NPC) // Scooter
 	case takeOff + 1:
 		NPC->xm += 0x20;
 		NPC->x += NPC->xm;
+		++NPC->act_wait;
 		NPC->y = NPC->tgt_y + pixelsToUnits(random(-1, 1));
-		if (++NPC->act_wait > 10)
+		if (NPC->act_wait > 10)
 			NPC->direct = dirRight;
 		if (NPC->act_wait > 200)
 			NPC->act_no = outOfControl;
@@ -908,7 +908,7 @@ void npcAct192(npc *NPC) // Scooter
 		NPC->act_wait = 2;
 		NPC->direct = dirLeft;
 		NPC->y -= tilesToUnits(3);
-		NPC->xm = tilesToUnits(0.5);
+		NPC->xm = -tilesToUnits(0.5);
 		// Fallthrough
 	case outOfControl + 1:
 		NPC->x += NPC->xm;
