@@ -972,6 +972,91 @@ void npcAct196(npc *NPC) //Stream floor
     NPC->doRects({112, 64, 155, 80}, {112, 80, 144, 96});
 }
 
+void npcAct197(npc *NPC) //Porcupine fish
+{
+	RECT rc[4];
+
+	rc[0].left = 0;
+	rc[0].top = 0;
+	rc[0].right = 16;
+	rc[0].bottom = 16;
+
+	rc[1].left = 16;
+	rc[1].top = 0;
+	rc[1].right = 32;
+	rc[1].bottom = 16;
+
+	rc[2].left = 32;
+	rc[2].top = 0;
+	rc[2].right = 48;
+	rc[2].bottom = 16;
+
+	rc[3].left = 48;
+	rc[3].top = 0;
+	rc[3].right = 64;
+	rc[3].bottom = 16;
+
+	switch (NPC->act_no)
+	{
+	case 0:
+		NPC->act_no = 10;
+		NPC->ani_wait = 0;
+		NPC->ym = random(-0x200, 0x200);
+		NPC->xm = 0x800;
+		// fallthrough
+	case 10:
+		if (++NPC->ani_wait > 2)
+		{
+			NPC->ani_wait = 0;
+			++NPC->ani_no;
+		}
+
+		if (NPC->ani_no > 1)
+			NPC->ani_no = 0;
+
+		if (NPC->xm < 0)
+		{
+			NPC->damage = 3;
+			NPC->act_no = 20;
+		}
+
+		break;
+	case 20:
+		NPC->damage = 3;
+		if (++NPC->ani_wait > 0)
+		{
+			NPC->ani_wait = 0;
+			++NPC->ani_no;
+		}
+
+		if (NPC->ani_no > 3)
+			NPC->ani_no = 2;
+
+		if (NPC->x < tilesToUnits(3))
+		{
+			NPC->destroy_voice = 0;
+			killNpc(NPC, 1);
+		}
+
+		break;
+	}
+
+	if (NPC->flag & 2)
+		NPC->ym = 0x200;
+	if (NPC->flag & 8)
+		NPC->ym = -0x200;
+
+	NPC->xm -= 12;
+
+	NPC->x += NPC->xm;
+	NPC->y += NPC->ym;
+
+	NPC->rect.left = rc[NPC->ani_no].left;
+	NPC->rect.top = rc[NPC->ani_no].top;
+	NPC->rect.right = rc[NPC->ani_no].right;
+	NPC->rect.bottom = rc[NPC->ani_no].bottom;
+}
+
 void npcAct199(npc *NPC) //Current / fan effect
 {
 	if (!NPC->act_no)
