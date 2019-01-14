@@ -739,6 +739,51 @@ void npcAct247(npc *NPC)
     NPC->doRects(rcLeft, rcRight);
 }
 
+void npcAct248(npc *NPC) // Misery (vanishing)
+{
+	if (NPC->flag & solid)
+	{
+		NPC->cond = 0;
+		createCaret(NPC->x, NPC->y, effect_RisingDisc, dirLeft);
+	}
+
+	NPC->y += NPC->ym;
+	NPC->x += NPC->xm;
+
+	RECT rect_left[3];
+
+	rect_left[0].left = 0;
+	rect_left[0].top = 48;
+	rect_left[0].right = 16;
+	rect_left[0].bottom = 64;
+
+	rect_left[1].left = 16;
+	rect_left[1].top = 48;
+	rect_left[1].right = 32;
+	rect_left[1].bottom = 64;
+
+	rect_left[2].left = 32;
+	rect_left[2].top = 48;
+	rect_left[2].right = 48;
+	rect_left[2].bottom = 64;
+
+	if (++NPC->ani_wait > 1)
+	{
+		NPC->ani_wait = 0;
+
+		if (++NPC->ani_no > 2)
+			NPC->ani_no = 0;
+	}
+
+	NPC->rect = rect_left[NPC->ani_no];
+
+	if (++NPC->count1 > 300)
+	{
+		NPC->cond = 0;
+		createCaret(NPC->x, NPC->y, effect_RisingDisc, dirLeft);
+	}
+}
+
 void npcAct251(npc *NPC) // Misery black lightning (projectile)
 {
     constexpr array<RECT, 2> rcNPC = {{{80, 32, 96, 64}, {96, 32, 112, 64}}};
