@@ -9,6 +9,7 @@
 #include "weapons.h"
 #include "game.h"
 #include "stage.h"
+#include "render.h"
 
 using std::array;
 
