@@ -1254,13 +1254,13 @@ void drawTsc()
 
 		if (tsc.flags & 0x20)
 		{
-			tsc.rcText.top = 32;
-			tsc.rcText.bottom = 80;
+			tsc.rcText.top = ((screenHeight - 240) / 2) + 32;
+			tsc.rcText.bottom = ((screenHeight - 240) / 2) + 80;
 		}
 		else
 		{
-			tsc.rcText.top = screenHeight - 56;
-			tsc.rcText.bottom = screenHeight - 8;
+			tsc.rcText.top = ((screenHeight - 240) / 2) + 184;
+			tsc.rcText.bottom = ((screenHeight - 240) / 2) + 232;
 		}
 
 		//Draw message box background (if not MS2)
@@ -1369,14 +1369,14 @@ void drawTsc()
 		{
 			int y;
 			if (tsc.wait > 1)
-				y = screenHeight - 96;
+				y = ((screenHeight - 240) / 2) + 144;
 			else
-				y = (screenHeight - 240) + 4 * (38 - tsc.wait);
+				y = ((screenHeight - 240) / 2) + 4 * (38 - tsc.wait);
 
 			drawTexture(sprites[TEX_TEXTBOX], &rcYesNo, tsc.rcText.left + 164, y);
 
 			if (tsc.wait == 16)
-				drawTexture(sprites[TEX_TEXTBOX], &rcSelection, 41 * tsc.select + tsc.rcText.left + 159, screenHeight - 86);
+				drawTexture(sprites[TEX_TEXTBOX], &rcSelection, 41 * tsc.select + tsc.rcText.left + 159, ((screenHeight - 240) / 2) + 154);
 		}
 	}
 }
