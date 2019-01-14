@@ -1155,6 +1155,53 @@ void npcAct236(npc *NPC) //Gunfish
 		NPC->rect = rcLeft[NPC->ani_no];
 }
 
+void npcAct237(npc *NPC) //Gunfish projectile
+{
+	bool bHit;
+
+	switch (NPC->act_no)
+	{
+	case 0:
+		NPC->act_no = 1;
+		// fallthrough
+	case 1:
+		bHit = false;
+
+		++NPC->act_wait;
+
+		if (NPC->flag & solid)
+			bHit = true;
+
+		if (NPC->act_wait > 10 && (NPC->flag & water))
+			bHit = true;
+
+		if (bHit)
+		{
+			for (int i = 0; i < 5; ++i)
+				createCaret(NPC->x, NPC->y, effect_fountainDisk, dirLeft);
+
+			playSound(21, 1);
+			NPC->cond = 0;
+			return;
+		}
+
+		break;
+	}
+
+	NPC->ym += 0x20;
+
+	if (NPC->ym > 0x5FF)
+		NPC->ym = 0x5FF;
+
+	NPC->x += NPC->xm;
+	NPC->y += NPC->ym;
+
+	NPC->rect.left = 312;
+	NPC->rect.top = 32;
+	NPC->rect.right = 320;
+	NPC->rect.bottom = 40;
+}
+
 void npcAct238(npc *NPC) //Killer press
 {
 	array<RECT, 3> rcNPC;
