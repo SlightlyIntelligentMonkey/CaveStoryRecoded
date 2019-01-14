@@ -118,7 +118,7 @@ void npcAct201(npc * NPC) // Dragon Zombie, dead
 
 void npcAct202(npc * NPC) // Dragon Zombie fire (projectile)
 {
-	if (NPC->flag & 0xFF)
+	if (NPC->flag & solid)
 	{
 		NPC->cond = 0;
 		createCaret(NPC->x, NPC->y, effect_RisingDisc);
@@ -266,7 +266,7 @@ void npcAct204(npc * NPC) // Falling Spike, small
 
 	case falling:
 		NPC->ym += 0x20;
-		if (!(NPC->flag & 0xFF))
+		if (!(NPC->flag & solid))
 			break;
 		if (!(currentPlayer.cond & player_removed))
 			playSound(SFX_DestroyBreakableBlock);
@@ -328,7 +328,7 @@ void npcAct205(npc *NPC) // Falling Spike, large
 			NPC->damage = 127;
 		}
 
-		if (++NPC->act_wait <= 8 || !(NPC->flag & 0xFF))
+		if (++NPC->act_wait <= 8 || !(NPC->flag & solid))
 			break;
 
 		NPC->bits |= npc_solidHard;
@@ -563,9 +563,9 @@ void npcAct208(npc *NPC) // Basu 2
 			NPC->xm -= 0x10;
 		}
 
-		if (NPC->flag & npc_solidSoft)
+		if (NPC->flag & leftWall)
 			NPC->xm = 0x200;
-		if (NPC->flag & npc_invulnerable)
+		if (NPC->flag & rightWall)
 			NPC->xm = -0x200;
 
 		if (NPC->y >= NPC->tgt_y)
@@ -663,7 +663,7 @@ void npcAct208(npc *NPC) // Basu 2
 
 void npcAct209(npc *NPC) // Basu2 projectile
 {
-	if (NPC->flag & 0xFF)
+	if (NPC->flag & solid)
 	{
 		NPC->cond = 0;
 		createCaret(NPC->x, NPC->y, effect_RisingDisc, dirLeft);
@@ -865,7 +865,7 @@ void npcAct212(npc *NPC) // Sky Dragon
 
     case startFlight:
         NPC->act_no = flying;
-        NPC->flag |= npc_ignoreSolid;
+        NPC->flag |= ground;
         // Fallthrough
     case flying:
         NPC->accelerateTowardsYTarget(0x10);
@@ -1085,9 +1085,9 @@ void npcAct213(npc *NPC) // Night Spirit
 		if (NPC->ym > 0x400)
 			NPC->ym = 0x400;
 
-		if (NPC->flag & npc_ignore44)
+		if (NPC->flag & ceiling)
 			NPC->ym = 0x200;
-		if (NPC->flag & npc_ignoreSolid)
+		if (NPC->flag & ground)
 			NPC->ym = -0x200;
 
 		if (NPC->shock)
@@ -1100,6 +1100,62 @@ void npcAct213(npc *NPC) // Night Spirit
 	}
 
 	NPC->rect = rc[NPC->ani_no];
+}
+
+void npcAct214(npc *NPC) // Night Spirit projectile
+{
+	RECT rect[3];
+
+	rect[0].left = 144;
+	rect[0].top = 48;
+	rect[0].right = 176;
+	rect[0].bottom = 64;
+
+	rect[1].left = 176;
+	rect[1].top = 48;
+	rect[1].right = 208;
+	rect[1].bottom = 64;
+
+	rect[2].left = 208;
+	rect[2].top = 48;
+	rect[2].right = 240;
+	rect[2].bottom = 64;
+
+	switch (NPC->act_no)
+	{
+	case 0:
+		NPC->act_no = 1;
+		NPC->bits |= ground;
+		// fallthrough
+	case 1:
+		if (++NPC->ani_wait > 2)
+		{
+			NPC->ani_wait = 0;
+			++NPC->ani_no;
+		}
+
+		if (NPC->ani_no > 2)
+			NPC->ani_no = 0;
+
+		NPC->xm -= 25;
+
+		NPC->x += NPC->xm;
+		NPC->y += NPC->ym;
+
+		if (NPC->xm < 0)
+			NPC->bits &= ~npc_ignoreSolid;
+
+		if (NPC->flag & solid)
+		{
+			createSmokeLeft(NPC->x, NPC->y, NPC->view.right, 4);
+			playSound(28, 1);
+			NPC->cond = 0;
+		}
+
+		break;
+	}
+
+	NPC->rect = rect[NPC->ani_no];
 }
 
 void npcAct215(npc *NPC) // Sandcroc, White (enemy)
