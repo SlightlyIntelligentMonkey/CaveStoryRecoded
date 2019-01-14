@@ -73,7 +73,7 @@ void writeLElong(uint8_t *data, uint32_t input, size_t offset)
 bool fileExists(const string& name)
 {
 	struct stat buffer;
-	return (stat(name.c_str(), &buffer) == 0);
+	return stat(name.c_str(), &buffer) == 0;
 }
 
 int loadFile(const string& name, uint8_t **data)

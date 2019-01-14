@@ -11,7 +11,7 @@ using std::endl;
 using std::string;
 using std::put_time;
 
-fstream logFile;
+static fstream logFile;
 
 const string logFileName = "CaveStoryEngine.log";
 
