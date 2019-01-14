@@ -22,7 +22,7 @@ using std::list;
 
 //Sound struct
 struct SOUND {
-	uint8_t *wave; //Dynamic size
+	uint8_t *wave; // Dynamic size
 	size_t length;
 	bool playing;
 	long double pos;
@@ -168,12 +168,12 @@ void SoundObject_Stop(SOUND *sound)
 	}
 }
 
-//Audio callback and things
+// Audio callback and things
 void mixSounds(int16_t *stream, int len)
 {
 	for (int i = 0; i < len; ++i)
 	{
-		//Put current stream sample into temp samples
+		// Put current stream sample into temp samples
 		int32_t tempSampleL = stream[i * 2];
 		int32_t tempSampleR = stream[i * 2 + 1];
 
@@ -209,13 +209,13 @@ void mixSounds(int16_t *stream, int len)
 			}
 		}
 
-		//Put into main stream and clip buffer
-		stream[2 * i] = clamp(tempSampleL, (int32_t)-0x7FFF, (int32_t)0x7FFF);
-		stream[2 * i + 1] = clamp(tempSampleR, (int32_t)-0x7FFF, (int32_t)0x7FFF);
+		// Put into main stream and clip buffer
+		stream[2 * i] = clamp(tempSampleL, -0x7FFF, 0x7FFF);
+		stream[2 * i + 1] = clamp(tempSampleR, -0x7FFF, 0x7FFF);
 	}
 }
 
-void audio_callback(void * /*userdata*/, Uint8 *stream, int len) // TBD : Handle userdata parameter
+void audio_callback(void *, Uint8 *stream, int len)
 {
 	memset(stream, 0, len);
 
@@ -225,13 +225,13 @@ void audio_callback(void * /*userdata*/, Uint8 *stream, int len) // TBD : Handle
 
 void initAudio()
 {
-	//Initialize Organya
+	// Initialize Organya
 	initOrganya();
 
-	//Initialize PXT
+	// Initialize PXT
 	makeWaveTables();
 
-	//Create sound device
+	// Create sound device
 	want.channels = 2;
 	want.freq = sampleRate;
 	want.format = AUDIO_S16;
