@@ -466,8 +466,9 @@ void endTsc(TSC &ptsc, bool *bExit)
 
 bool doTscCommand(int *retVal, bool *bExit, TSC &ptsc)
 {
-    int xt;
-    int yt;
+	int xt;
+	int yt;
+	int w, x, y, z;	// TODO: Merge with the above variables
 
 	static bool notifiedAboutCIL = false;
 	static bool notifiedAboutCPS = false;
@@ -712,32 +713,20 @@ bool doTscCommand(int *retVal, bool *bExit, TSC &ptsc)
 		tscCleanup(0, ptsc);
 		break;
 	case('<FOB'):
-		xt = getTSCNumber(ptsc, ptsc.p_read + 4);
-		viewport.lookX = &bossObj[xt].x;
-		viewport.lookY = &bossObj[xt].y;
-		viewport.speed = getTSCNumber(ptsc, ptsc.p_read + 9);
+		x = getTSCNumber(ptsc, ptsc.p_read + 4);
+		y = getTSCNumber(ptsc, ptsc.p_read + 9);
+		SetFrameTargetBoss(x, y);
 		tscCleanup(2, ptsc);
 		break;
 	case('<FOM'):
-		viewport.lookX = &currentPlayer.tgt_x;
-		viewport.lookY = &currentPlayer.tgt_y;
-		viewport.speed = getTSCNumber(ptsc, ptsc.p_read + 4);
+		z = getTSCNumber(ptsc, ptsc.p_read + 4);
+		SetFrameTargetMyChar(z);
 		tscCleanup(1, ptsc);
 		break;
 	case('<FON'):
-		for (size_t n = 0; n < npcs.size(); n++)
-		{
-			if (npcs[n].cond & npccond_alive)
-			{
-				if (npcs[n].code_event == getTSCNumber(ptsc, ptsc.p_read + 4))
-				{
-					viewport.lookX = &npcs[n].x;
-					viewport.lookY = &npcs[n].y;
-					viewport.speed = getTSCNumber(ptsc, ptsc.p_read + 9);
-					break;
-				}
-			}
-		}
+		x = getTSCNumber(ptsc, ptsc.p_read + 4);
+		y = getTSCNumber(ptsc, ptsc.p_read + 9);
+		SetFrameTargetNpChar(x, y);
 		tscCleanup(2, ptsc);
 		break;
 	case('<FRE'):
@@ -1049,14 +1038,11 @@ bool doTscCommand(int *retVal, bool *bExit, TSC &ptsc)
 		tscCleanup(3, ptsc);
 		break;
 	case('<TRA'):
-		xt = getTSCNumber(ptsc, ptsc.p_read + 9);
-		currentPlayer.setPos(
-		    tilesToUnits(getTSCNumber(ptsc, ptsc.p_read + 14)),
-		    tilesToUnits(getTSCNumber(ptsc, ptsc.p_read + 19)));
-		loadLevel(getTSCNumber(ptsc, ptsc.p_read + 4));
-
-		endTsc(ptsc, bExit);
-		startTscEvent(tsc, xt);
+		z = getTSCNumber(ptsc, ptsc.p_read + 4);
+		w = getTSCNumber(ptsc, ptsc.p_read + 9);
+		x = getTSCNumber(ptsc, ptsc.p_read + 14);
+		y = getTSCNumber(ptsc, ptsc.p_read + 19);
+		loadLevel(z, w, x, y);
 		*retVal = 1;
 		return true;
 	case('<TUR'):
@@ -1344,12 +1330,12 @@ void drawTsc()
 		if (tsc.item) //Display item not 0
 		{
 			//Draw GIT background
-			drawTexture(sprites[TEX_TEXTBOX], &rcItemBox1, (screenWidth / 2) - 40, 128);
-			drawTexture(sprites[TEX_TEXTBOX], &rcItemBox2, (screenWidth / 2) - 40, 144);
-			drawTexture(sprites[TEX_TEXTBOX], &rcItemBox3, (screenWidth / 2) + 32, 128);
-			drawTexture(sprites[TEX_TEXTBOX], &rcItemBox4, (screenWidth / 2) + 32, 136);
-			drawTexture(sprites[TEX_TEXTBOX], &rcItemBox4, (screenWidth / 2) + 32, 144);
-			drawTexture(sprites[TEX_TEXTBOX], &rcItemBox5, (screenWidth / 2) + 32, 152);
+			drawTexture(sprites[TEX_TEXTBOX], &rcItemBox1, (screenWidth / 2) - 40, (screenHeight / 2) + 8);
+			drawTexture(sprites[TEX_TEXTBOX], &rcItemBox2, (screenWidth / 2) - 40, (screenHeight / 2) + 24);
+			drawTexture(sprites[TEX_TEXTBOX], &rcItemBox3, (screenWidth / 2) + 32, (screenHeight / 2) + 8);
+			drawTexture(sprites[TEX_TEXTBOX], &rcItemBox4, (screenWidth / 2) + 32, (screenHeight / 2) + 12);
+			drawTexture(sprites[TEX_TEXTBOX], &rcItemBox4, (screenWidth / 2) + 32, (screenHeight / 2) + 24);
+			drawTexture(sprites[TEX_TEXTBOX], &rcItemBox5, (screenWidth / 2) + 32, (screenHeight / 2) + 32);
 
 			//Move the item image into position
 			if (tsc.item_y < 0x88)
@@ -1362,7 +1348,7 @@ void drawTsc()
 				rcItem.top = 16 * ((tsc.item - 1000) / 8);
 				rcItem.bottom = 16 * ((tsc.item - 1000) / 8) + 16;
 
-				drawTexture(sprites[TEX_ITEMIMAGE], &rcItem, (screenWidth / 2) - 20, tsc.item_y);
+				drawTexture(sprites[TEX_ITEMIMAGE], &rcItem, (screenWidth / 2) - 20, ((screenHeight - 240) / 2) + tsc.item_y);
 			}
 			else //Otherwise, draw weapon
 			{
@@ -1371,7 +1357,7 @@ void drawTsc()
 				rcItem.top = 16 * (tsc.item / 16);
 				rcItem.bottom = 16 * (tsc.item / 16) + 16;
 
-				drawTexture(sprites[TEX_ARMSIMAGE], &rcItem, (screenWidth / 2) - 12, tsc.item_y);
+				drawTexture(sprites[TEX_ARMSIMAGE], &rcItem, (screenWidth / 2) - 12, ((screenHeight - 240) / 2) + tsc.item_y);
 			}
 		}
 
@@ -1383,14 +1369,14 @@ void drawTsc()
 		{
 			int y;
 			if (tsc.wait > 1)
-				y = 144;
+				y = screenHeight - 96;
 			else
-				y = 4 * (38 - tsc.wait);
+				y = (screenHeight - 240) + 4 * (38 - tsc.wait);
 
 			drawTexture(sprites[TEX_TEXTBOX], &rcYesNo, tsc.rcText.left + 164, y);
 
 			if (tsc.wait == 16)
-				drawTexture(sprites[TEX_TEXTBOX], &rcSelection, 41 * tsc.select + tsc.rcText.left + 159, 154);
+				drawTexture(sprites[TEX_TEXTBOX], &rcSelection, 41 * tsc.select + tsc.rcText.left + 159, screenHeight - 86);
 		}
 	}
 }

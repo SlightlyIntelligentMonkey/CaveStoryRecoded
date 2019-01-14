@@ -250,7 +250,7 @@ uint32_t calculateFPS()
 void drawFPS()
 {
 	if (displayFpsCounter)
-		drawNumber(calculateFPS(), 280, 8, false);
+		drawNumber(calculateFPS(), screenWidth - 40, 8, false);
 }
 
 bool drawWindow()

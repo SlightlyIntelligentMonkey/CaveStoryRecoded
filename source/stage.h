@@ -65,7 +65,7 @@ bool changeTile(int x, int y, uint8_t tile);
 
 void loadStageTable();
 
-void loadLevel(int levelIndex);
+void loadLevel(int levelIndex, int w, int x, int y);
 void drawLevel(bool foreground);
 
 template<typename T> constexpr inline int32_t tilesToUnits(T x)

@@ -73,7 +73,7 @@ void writeLElong(uint8_t *data, uint32_t input, size_t offset)
 bool fileExists(const string& name)
 {
 	struct stat buffer;
-	return (stat(name.c_str(), &buffer) == 0);
+	return stat(name.c_str(), &buffer) == 0;
 }
 
 int loadFile(const string& name, uint8_t **data)
@@ -170,8 +170,8 @@ void loadProfile()
 
 		currentPlayer.init();
 
-		currentPlayer.x = SDL_ReadLE32(profile); //Player X
-		currentPlayer.y = SDL_ReadLE32(profile); //Player Y
+		const int player_x = SDL_ReadLE32(profile); //Player X
+		const int player_y = SDL_ReadLE32(profile); //Player Y
 		currentPlayer.direct = SDL_ReadLE32(profile); //Player Direction
 
 		currentPlayer.max_life = SDL_ReadLE16(profile); //max health
@@ -214,10 +214,12 @@ void loadProfile()
 		for (auto& i : tscFlags)
 			SDL_RWread(profile, &i, 1, 1);
 
-		//Now load level
-		loadLevel(level);
-		startTscEvent(tsc, 0);
+		loadLevel(level, 0, 0, 1);
+		currentPlayer.x = player_x;
+		currentPlayer.y = player_y;
 		initFade();
+		SetFrameMyChar();
+		SetFrameTargetMyChar(16);
 
 		//Close RW
 		SDL_RWclose(profile);
