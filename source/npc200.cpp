@@ -479,6 +479,188 @@ void npcAct207(npc *NPC) // Balloon (countdown)
 	NPC->rect.bottom = rc[NPC->ani_no].bottom;
 }
 
+void npcAct208(npc *NPC) // Basu 2
+{
+	RECT rcLeft[3];
+
+	rcLeft[0].left = 248;
+	rcLeft[0].top = 80;
+	rcLeft[0].right = 272;
+	rcLeft[0].bottom = 104;
+
+	rcLeft[1].left = 272;
+	rcLeft[1].top = 80;
+	rcLeft[1].right = 296;
+	rcLeft[1].bottom = 104;
+
+	rcLeft[2].left = 296;
+	rcLeft[2].top = 80;
+	rcLeft[2].right = 320;
+	rcLeft[2].bottom = 104;
+
+	RECT rcRight[3];
+
+	rcRight[0].left = 248;
+	rcRight[0].top = 104;
+	rcRight[0].right = 272;
+	rcRight[0].bottom = 128;
+
+	rcRight[1].left = 272;
+	rcRight[1].top = 104;
+	rcRight[1].right = 296;
+	rcRight[1].bottom = 128;
+
+	rcRight[2].left = 296;
+	rcRight[2].top = 104;
+	rcRight[2].right = 320;
+	rcRight[2].bottom = 128;
+
+	switch (NPC->act_no)
+	{
+	case 0:
+		if (currentPlayer.x >= NPC->x + 0x2000 || currentPlayer.x <= NPC->x - 0x2000)
+		{
+			NPC->rect.right = 0;
+			NPC->damage = 0;
+			NPC->xm = 0;
+			NPC->ym = 0;
+			NPC->bits &= ~npc_shootable;
+		}
+		else
+		{
+			NPC->bits |= npc_shootable;
+			NPC->ym = -0x200;
+			NPC->tgt_x = NPC->x;
+			NPC->tgt_y = NPC->y;
+			NPC->act_no = 1;
+			NPC->act_wait = 0;
+			NPC->count1 = NPC->direct;
+			NPC->count2 = 0;
+			NPC->damage = 6;
+
+			if (NPC->direct != dirLeft)
+			{
+				NPC->x = currentPlayer.x - 0x20000;
+				NPC->xm = 0x2FF;
+			}
+			else
+			{
+				NPC->x = currentPlayer.x + 0x20000;
+				NPC->xm = -0x2FF;
+			}
+		}
+
+		break;
+	case 1:
+		if (NPC->x <= currentPlayer.x)
+		{
+			NPC->direct = dirRight;
+			NPC->xm += 0x10;
+		}
+		else
+		{
+			NPC->direct = dirLeft;
+			NPC->xm -= 0x10;
+		}
+
+		if (NPC->flag & npc_solidSoft)
+			NPC->xm = 0x200;
+		if (NPC->flag & npc_invulnerable)
+			NPC->xm = -0x200;
+
+		if (NPC->y >= NPC->tgt_y)
+			NPC->ym -= 8;
+		else
+			NPC->ym += 8;
+
+		if (NPC->xm > 0x2FF)
+			NPC->xm = 0x2FF;
+		if (NPC->xm < -0x2FF)
+			NPC->xm = -0x2FF;
+		if (NPC->ym > 0x200)
+			NPC->ym = 0x200;
+		if (NPC->ym < -0x200)
+			NPC->ym = -0x200;
+
+		if (NPC->shock)
+		{
+			NPC->x += NPC->xm / 2;
+			NPC->y += NPC->ym / 2;
+		}
+		else
+		{
+			NPC->x += NPC->xm;
+			NPC->y += NPC->ym;
+		}
+
+		if (currentPlayer.x > NPC->x + 0x32000 || currentPlayer.x < NPC->x - 0x32000)
+		{
+			NPC->act_no = 0;
+			NPC->xm = 0;
+			NPC->direct = NPC->count1;
+			NPC->x = NPC->tgt_x;
+			NPC->rect.right = 0;
+			NPC->damage = 0;
+			break;
+		}
+		// fallthrough
+	case 2:
+		if (NPC->act_no)
+		{
+			if (NPC->act_wait < 150)
+				++NPC->act_wait;
+
+			if (NPC->act_wait == 150)
+			{
+				if ((++NPC->count2 % 8) == 0 && NPC->x < currentPlayer.x + 0x14000 && NPC->x > currentPlayer.x - 0x14000)
+				{
+					unsigned char deg = getAtan(NPC->x - currentPlayer.x, NPC->y - currentPlayer.y);
+					unsigned char random_deg = random(-6, 6) + deg;
+					int ym = 3 * getSin(random_deg);
+					int xm = 3 * getCos(random_deg);
+					createNpc(209, NPC->x, NPC->y, xm, ym, 0, 0, false /*256*/);	// TODO: createNpc has a different final parameter so fuck me I guess
+					playSound(39, 1);
+				}
+
+				if (NPC->count2 > 0x10)
+				{
+					NPC->act_wait = 0;
+					NPC->count2 = 0;
+				}
+			}
+		}
+
+		if (++NPC->ani_wait > 1)
+		{
+			NPC->ani_wait = 0;
+			++NPC->ani_no;
+		}
+
+		if (NPC->ani_no > 1)
+			NPC->ani_no = 0;
+
+		if (NPC->act_wait > 120 && (NPC->act_wait / 2) % 2 == 1 && NPC->ani_no == 1)
+			NPC->ani_no = 2;
+
+		if (NPC->direct != dirLeft)
+		{
+			NPC->rect.left = rcRight[NPC->ani_no].left;
+			NPC->rect.top = rcRight[NPC->ani_no].top;
+			NPC->rect.right = rcRight[NPC->ani_no].right;
+			NPC->rect.bottom = rcRight[NPC->ani_no].bottom;
+		}
+		else
+		{
+			NPC->rect.left = rcLeft[NPC->ani_no].left;
+			NPC->rect.top = rcLeft[NPC->ani_no].top;
+			NPC->rect.right = rcLeft[NPC->ani_no].right;
+			NPC->rect.bottom = rcLeft[NPC->ani_no].bottom;
+		}
+
+		break;
+	}
+}
+
 void npcAct210(npc *NPC) // Beetle, Follow Aqua (enemy)
 {
 	constexpr array<RECT, 2> rcLeft = { {{0, 112, 16, 128}, {16, 112, 32, 128}} };
