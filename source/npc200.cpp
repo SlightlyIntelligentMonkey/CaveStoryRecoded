@@ -1264,6 +1264,155 @@ void npcAct216(npc *NPC) // Debug cat
 	NPC->doRects({ 256, 192, 272, 216 });
 }
 
+void npcAct217(npc *NPC) // Itoh
+{
+	RECT rc[8];
+
+	rc[0].left = 144;
+	rc[0].top = 64;
+	rc[0].right = 160;
+	rc[0].bottom = 80;
+
+	rc[1].left = 160;
+	rc[1].top = 64;
+	rc[1].right = 176;
+	rc[1].bottom = 80;
+
+	rc[2].left = 176;
+	rc[2].top = 64;
+	rc[2].right = 192;
+	rc[2].bottom = 80;
+
+	rc[3].left = 192;
+	rc[3].top = 64;
+	rc[3].right = 208;
+	rc[3].bottom = 80;
+
+	rc[4].left = 144;
+	rc[4].top = 80;
+	rc[4].right = 160;
+	rc[4].bottom = 96;
+
+	rc[5].left = 160;
+	rc[5].top = 80;
+	rc[5].right = 176;
+	rc[5].bottom = 96;
+
+	rc[6].left = 144;
+	rc[6].top = 80;
+	rc[6].right = 160;
+	rc[6].bottom = 96;
+
+	rc[7].left = 176;
+	rc[7].top = 80;
+	rc[7].right = 192;
+	rc[7].bottom = 96;
+
+	switch (NPC->act_no)
+	{
+	case 0:
+		NPC->act_no = 1;
+		NPC->ani_no = 0;
+		NPC->ani_wait = 0;
+		NPC->xm = 0;
+		// fallthrough
+	case 1:
+		if (random(0, 120) == 10)
+		{
+			NPC->act_no = 2;
+			NPC->act_wait = 0;
+			NPC->ani_no = 1;
+		}
+
+		break;
+	case 2:
+		if (NPC->act_wait > 8)
+		{
+			NPC->act_no = 1;
+			NPC->ani_no = 0;
+		}
+
+		break;
+	case 10:
+		NPC->ani_no = 2;
+		NPC->xm = 0;
+		break;
+	case 20:
+		NPC->act_no = 21;
+		NPC->ani_no = 2;
+		NPC->xm += pixelsToUnits(1);
+		NPC->ym -= pixelsToUnits(2);
+		break;
+	case 21:
+		if (NPC->flag & ground)
+		{
+			NPC->ani_no = 3;
+			NPC->act_no = 30;
+			NPC->act_wait = 0;
+			NPC->xm = 0;
+			NPC->tgt_x = NPC->x;
+		}
+
+		break;
+	case 30:
+		NPC->ani_no = 3;
+
+		if ((++NPC->act_wait / 2) % 2)
+			NPC->x = NPC->tgt_x + 0x200;
+		else
+			NPC->x = NPC->tgt_x;
+
+		break;
+	case 40:
+		NPC->act_no = 41;
+		NPC->ym = -0x200;
+		NPC->ani_no = 2;
+		// fallthrough
+	case 41:
+		if (NPC->flag & ground)
+		{
+			NPC->act_no = 42;
+			NPC->ani_no = 4;
+		}
+
+		break;
+	case 42:
+		NPC->xm = 0;
+		NPC->ani_no = 4;
+		break;
+	case 50:
+		NPC->act_no = 51;
+		NPC->act_wait = 0;
+		// fallthrough
+	case 51:
+		if (++NPC->act_wait > 0x20)
+			NPC->act_no = 42;
+
+		NPC->xm = 0x200;
+
+		if (++NPC->ani_wait > 3)
+		{
+			NPC->ani_wait = 0;
+			++NPC->ani_no;
+		}
+
+		if (NPC->ani_no > 7)
+			NPC->ani_no = 4;
+
+		break;
+	}
+
+	NPC->ym += 0x40;
+
+	if (NPC->ym > 0x5FF)
+		NPC->ym = 0x5FF;
+
+	NPC->x += NPC->xm;
+	NPC->y += NPC->ym;
+
+	NPC->rect = rc[NPC->ani_no];
+}
+
 void npcAct218(npc *NPC) //big energy shot from core
 {
 	RECT rect[2];
