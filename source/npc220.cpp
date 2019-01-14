@@ -979,6 +979,182 @@ void npcAct235(npc *NPC) //Midorin
 		NPC->rect = rcLeft[NPC->ani_no];
 }
 
+void npcAct236(npc *NPC) //Gunfish
+{
+	RECT rcLeft[6];
+
+	rcLeft[0].left = 128;
+	rcLeft[0].top = 64;
+	rcLeft[0].right = 152;
+	rcLeft[0].bottom = 88;
+
+	rcLeft[1].left = 152;
+	rcLeft[1].top = 64;
+	rcLeft[1].right = 176;
+	rcLeft[1].bottom = 88;
+
+	rcLeft[2].left = 176;
+	rcLeft[2].top = 64;
+	rcLeft[2].right = 200;
+	rcLeft[2].bottom = 88;
+
+	rcLeft[3].left = 200;
+	rcLeft[3].top = 64;
+	rcLeft[3].right = 224;
+	rcLeft[3].bottom = 88;
+
+	rcLeft[4].left = 224;
+	rcLeft[4].top = 64;
+	rcLeft[4].right = 248;
+	rcLeft[4].bottom = 88;
+
+	rcLeft[5].left = 248;
+	rcLeft[5].top = 64;
+	rcLeft[5].right = 272;
+	rcLeft[5].bottom = 88;
+
+	RECT rcRight[6];
+
+	rcRight[0].left = 128;
+	rcRight[0].top = 88;
+	rcRight[0].right = 152;
+	rcRight[0].bottom = 112;
+
+	rcRight[1].left = 152;
+	rcRight[1].top = 88;
+	rcRight[1].right = 176;
+	rcRight[1].bottom = 112;
+
+	rcRight[2].left = 176;
+	rcRight[2].top = 88;
+	rcRight[2].right = 200;
+	rcRight[2].bottom = 112;
+
+	rcRight[3].left = 200;
+	rcRight[3].top = 88;
+	rcRight[3].right = 224;
+	rcRight[3].bottom = 112;
+
+	rcRight[4].left = 224;
+	rcRight[4].top = 88;
+	rcRight[4].right = 248;
+	rcRight[4].bottom = 112;
+
+	rcRight[5].left = 248;
+	rcRight[5].top = 88;
+	rcRight[5].right = 272;
+	rcRight[5].bottom = 112;
+
+	switch (NPC->act_no)
+	{
+	case 0:
+		NPC->act_no = 1;
+		NPC->act_wait = random(0, 50);
+		NPC->tgt_x = NPC->x;
+		NPC->tgt_y = NPC->y;
+		NPC->ym = 0;
+		// fallthrough
+	case 1:
+		if (NPC->act_wait)
+		{
+			--NPC->act_wait;
+		}
+		else
+		{
+			NPC->ym = 0x200;
+			NPC->act_no = 2;
+		}
+
+		break;
+	case 2:
+		if (NPC->x >= currentPlayer.x)
+			NPC->direct = dirLeft;
+		else
+			NPC->direct = dirRight;
+
+		if (currentPlayer.x < NPC->x + 0x10000 && currentPlayer.x > NPC->x - 0x10000 && currentPlayer.y < NPC->y + 0x4000 && currentPlayer.y > NPC->y - 0x14000)
+			++NPC->act_wait;
+
+		if (NPC->act_wait > 80)
+		{
+			NPC->act_no = 10;
+			NPC->act_wait = 0;
+		}
+
+		if (++NPC->ani_wait > 1)
+		{
+			NPC->ani_wait = 0;
+			++NPC->ani_no;
+		}
+
+		if (NPC->ani_no > 1)
+			NPC->ani_no = 0;
+
+		break;
+	case 10:
+		if (++NPC->act_wait > 20)
+		{
+			NPC->act_wait = 0;
+			NPC->act_no = 20;
+		}
+
+		if (++NPC->ani_wait > 1)
+		{
+			NPC->act_wait = 0;
+			++NPC->ani_no;
+		}
+
+		if (NPC->ani_no > 3)
+			NPC->ani_no = 2;
+
+		break;
+	case 20:
+		if (++NPC->act_wait > 60)
+		{
+			NPC->act_wait = 0;
+			NPC->act_no = 2;
+		}
+
+		if (NPC->act_wait % 10 == 3)
+		{
+			playSound(39, 1);
+
+			if (NPC->direct != dirLeft)
+				createNpc(237, NPC->x + 0x1000, NPC->y - 0x1000, 0x400, -0x400, 0, 0, false /*256*/);
+			else
+				createNpc(237, NPC->x - 0x1000, NPC->y - 0x1000, -0x400, -0x400, 0, 0, false /*256*/);
+		}
+
+		if (++NPC->ani_wait > 1)
+		{
+			NPC->ani_wait = 0;
+			++NPC->ani_no;
+		}
+
+		if (NPC->ani_no > 5)
+			NPC->ani_no = 4;
+
+		break;
+	}
+
+	if (NPC->y >= NPC->tgt_y)
+		NPC->ym -= 0x10;
+	else
+		NPC->ym += 0x10;
+
+	if (NPC->ym > 0x100)
+		NPC->ym = 0x100;
+	if (NPC->ym < -0x100)
+		NPC->ym = -0x100;
+
+	NPC->y += NPC->ym;
+
+	if (NPC->direct != dirLeft)
+		NPC->rect = rcRight[NPC->ani_no];
+	else
+		NPC->rect = rcLeft[NPC->ani_no];
+}
+
 void npcAct238(npc *NPC) //Killer press
 {
 	array<RECT, 3> rcNPC;
