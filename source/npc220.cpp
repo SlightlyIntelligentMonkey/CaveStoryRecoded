@@ -844,6 +844,141 @@ void npcAct234(npc * NPC) // Red Flowers, picked
 	NPC->doRects({144, 96, 192, 112}, {144, 112, 192, 128});
 }
 
+void npcAct235(npc *NPC) //Midorin
+{
+	RECT rcLeft[4];
+
+	rcLeft[0].left = 192;
+	rcLeft[0].top = 96;
+	rcLeft[0].right = 208;
+	rcLeft[0].bottom = 112;
+
+	rcLeft[1].left = 208;
+	rcLeft[1].top = 96;
+	rcLeft[1].right = 224;
+	rcLeft[1].bottom = 112;
+
+	rcLeft[2].left = 224;
+	rcLeft[2].top = 96;
+	rcLeft[2].right = 240;
+	rcLeft[2].bottom = 112;
+
+	rcLeft[3].left = 192;
+	rcLeft[3].top = 96;
+	rcLeft[3].right = 208;
+	rcLeft[3].bottom = 112;
+
+	RECT rcRight[4];
+
+	rcRight[0].left = 192;
+	rcRight[0].top = 112;
+	rcRight[0].right = 208;
+	rcRight[0].bottom = 128;
+
+	rcRight[1].left = 208;
+	rcRight[1].top = 112;
+	rcRight[1].right = 224;
+	rcRight[1].bottom = 128;
+
+	rcRight[2].left = 224;
+	rcRight[2].top = 112;
+	rcRight[2].right = 240;
+	rcRight[2].bottom = 128;
+
+	rcRight[3].left = 192;
+	rcRight[3].top = 112;
+	rcRight[3].right = 208;
+	rcRight[3].bottom = 128;
+
+	switch (NPC->act_no)
+	{
+	case 0:
+		NPC->act_no = 1;
+		NPC->ani_no = 0;
+		NPC->ani_wait = 0;
+		NPC->xm = 0;
+		// fallthrough
+	case 1:
+		if (random(0, 30) == 1)
+		{
+			NPC->act_no = 2;
+			NPC->act_wait = 0;
+			NPC->ani_no = 1;
+		}
+
+		if (random(0, 30) == 1)
+		{
+			NPC->act_no = 10;
+			NPC->act_wait = 0;
+			NPC->ani_no = 1;
+		}
+
+		break;
+	case 2:
+		if (++NPC->act_wait > 8)
+		{
+			NPC->act_no = 1;
+			NPC->ani_no = 0;
+		}
+
+		break;
+	case 10:
+		NPC->act_no = 11;
+		NPC->act_wait = random(0, 0x10);
+		NPC->ani_no = 2;
+		NPC->ani_wait = 0;
+
+		if (random(0, 9) % 2)
+			NPC->direct = dirLeft;
+		else
+			NPC->direct = dirRight;
+
+		// fallthrough
+	case 11:
+		if (NPC->direct == dirLeft && (NPC->flag & leftWall))
+			NPC->direct = dirRight;
+		else if (NPC->direct == dirRight && (NPC->flag & rightWall))
+			NPC->direct = dirLeft;
+
+		if (NPC->direct != dirLeft)
+			NPC->xm = 0x400;
+		else
+			NPC->xm = -0x400;
+
+		if (++NPC->ani_wait > 1)
+		{
+			NPC->ani_wait = 0;
+			++NPC->ani_no;
+		}
+
+		if (NPC->ani_no > 3)
+			NPC->ani_no = 2;
+
+		if (NPC->act_wait > 0x40)
+			NPC->act_no = 0;
+
+		break;
+	}
+
+	NPC->ym += 0x20;
+
+	if (NPC->ym > 0x5FF)
+		NPC->ym = 0x5FF;
+
+	NPC->x += NPC->xm;
+	NPC->y += NPC->ym;
+
+	if (NPC->ani_no == 2)
+		NPC->hit.top = 0xA00;
+	else
+		NPC->hit.top = 0x800;
+
+	if (NPC->direct != dirLeft)
+		NPC->rect = rcRight[NPC->ani_no];
+	else
+		NPC->rect = rcLeft[NPC->ani_no];
+}
+
 void npcAct238(npc *NPC) //Killer press
 {
 	array<RECT, 3> rcNPC;
