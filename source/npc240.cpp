@@ -13,6 +13,156 @@
 
 using std::array;
 
+void npcAct240(npc *NPC) // Mimiga (jailed)
+{
+	RECT rcLeft[6];
+
+	rcLeft[0].left = 160;
+	rcLeft[0].top = 64;
+	rcLeft[0].right = 176;
+	rcLeft[0].bottom = 80;
+
+	rcLeft[1].left = 176;
+	rcLeft[1].top = 64;
+	rcLeft[1].right = 192;
+	rcLeft[1].bottom = 80;
+
+	rcLeft[2].left = 192;
+	rcLeft[2].top = 64;
+	rcLeft[2].right = 208;
+	rcLeft[2].bottom = 80;
+
+	rcLeft[3].left = 160;
+	rcLeft[3].top = 64;
+	rcLeft[3].right = 176;
+	rcLeft[3].bottom = 80;
+
+	rcLeft[4].left = 208;
+	rcLeft[4].top = 64;
+	rcLeft[4].right = 224;
+	rcLeft[4].bottom = 80;
+
+	rcLeft[5].left = 160;
+	rcLeft[5].top = 64;
+	rcLeft[5].right = 176;
+	rcLeft[5].bottom = 80;
+
+	RECT rcRight[6];
+
+	rcRight[0].left = 160;
+	rcRight[0].top = 80;
+	rcRight[0].right = 176;
+	rcRight[0].bottom = 96;
+
+	rcRight[1].left = 176;
+	rcRight[1].top = 80;
+	rcRight[1].right = 192;
+	rcRight[1].bottom = 96;
+
+	rcRight[2].left = 192;
+	rcRight[2].top = 80;
+	rcRight[2].right = 208;
+	rcRight[2].bottom = 96;
+
+	rcRight[3].left = 160;
+	rcRight[3].top = 80;
+	rcRight[3].right = 176;
+	rcRight[3].bottom = 96;
+
+	rcRight[4].left = 208;
+	rcRight[4].top = 80;
+	rcRight[4].right = 224;
+	rcRight[4].bottom = 96;
+
+	rcRight[5].left = 160;
+	rcRight[5].top = 80;
+	rcRight[5].right = 176;
+	rcRight[5].bottom = 96;
+
+	switch (NPC->act_no)
+	{
+	case 0:
+		NPC->act_no = 1;
+		NPC->ani_no = 0;
+		NPC->ani_wait = 0;
+		NPC->xm = 0;
+		// fallthrough
+	case 1:
+		if (random(0, 60) == 1)
+		{
+			NPC->act_no = 2;
+			NPC->act_wait = 0;
+			NPC->ani_no = 1;
+		}
+
+		if (random(0, 60) == 1)
+		{
+			NPC->act_no = 10;
+			NPC->act_wait = 0;
+			NPC->ani_no = 1;
+		}
+
+		break;
+	case 2:
+		if (++NPC->act_wait > 8)
+		{
+			NPC->act_no = 1;
+			NPC->ani_no = 0;
+		}
+
+		break;
+	case 10:
+		NPC->act_no = 11;
+		NPC->act_wait = random(0, 0x10);
+		NPC->ani_no = 2;
+		NPC->ani_wait = 0;
+
+		if (random(0, 9) % 2)
+			NPC->direct = dirLeft;
+		else
+			NPC->direct = dirRight;
+
+		// fallthrough
+	case 11:
+		if (NPC->direct == dirLeft && (NPC->flag & leftWall))
+			NPC->direct = dirRight;
+		else if (NPC->direct == dirRight && (NPC->flag & rightWall))
+			NPC->direct = dirLeft;
+
+		if (NPC->direct != dirLeft)
+			NPC->xm = 0x200;
+		else
+			NPC->xm = -0x200;
+
+		if (++NPC->ani_wait > 4)
+		{
+			NPC->ani_wait = 0;
+			++NPC->ani_no;
+		}
+
+		if (NPC->ani_no > 5)
+			NPC->ani_no = 2;
+
+		if (++NPC->act_wait > 0x20)
+			NPC->act_no = 0;
+
+		break;
+	}
+
+	NPC->ym += 0x20;
+
+	if (NPC->ym > 0x5FF)
+		NPC->ym = 0x5FF;
+
+	NPC->x += NPC->xm;
+	NPC->y += NPC->ym;
+
+	if (NPC->direct != dirLeft)
+		NPC->rect = rcRight[NPC->ani_no];
+	else
+		NPC->rect = rcLeft[NPC->ani_no];
+}
+
 void npcAct241(npc *NPC) // Critter, Hopping Red (enemy)
 {
 	constexpr array<RECT, 3> rcLeft = { {{0, 0, 16, 16}, {16, 0, 32, 16}, {32, 0, 48, 16}} };
