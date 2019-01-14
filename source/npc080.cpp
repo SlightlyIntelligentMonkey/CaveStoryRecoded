@@ -1603,7 +1603,7 @@ void npcAct096(npc *NPC) //Fan left
 			NPC->ani_no = 0;
 
 		//Current effect
-		if (currentPlayer.x > NPC->x - 0x28000 && currentPlayer.x < NPC->x + 0x28000 && currentPlayer.y > NPC->y - 0x28000 && currentPlayer.y < NPC->y + 0x28000 && random(0, 5) == 1)
+		if (currentPlayer.x > NPC->x - pixelsToUnits(screenWidth) && currentPlayer.x < NPC->x + pixelsToUnits(screenWidth) && currentPlayer.y > NPC->y - pixelsToUnits(screenHeight) && currentPlayer.y < NPC->y + pixelsToUnits(screenHeight) && random(0, 5) == 1)
 			createNpc(NPC_UnderwaterCurrent, NPC->x + (random(-8, 8) << 9), NPC->y, 0, 0, dirLeft);
 
 		//Blow quote
@@ -1649,7 +1649,7 @@ void npcAct097(npc *NPC) //Fan up
 			NPC->ani_no = 0;
 
 		//Current effect
-		if (currentPlayer.x > NPC->x - 0x28000 && currentPlayer.x < NPC->x + 0x28000 && currentPlayer.y > NPC->y - 0x28000 && currentPlayer.y < NPC->y + 0x28000 && random(0, 5) == 1)
+		if (currentPlayer.x > NPC->x - pixelsToUnits(screenWidth) && currentPlayer.x < NPC->x + pixelsToUnits(screenWidth) && currentPlayer.y > NPC->y - pixelsToUnits(screenHeight) && currentPlayer.y < NPC->y + pixelsToUnits(screenHeight) && random(0, 5) == 1)
 			createNpc(NPC_UnderwaterCurrent, NPC->x + (random(-8, 8) << 9), NPC->y, 0, 0, dirUp);
 
 		//Blow quote
@@ -1692,7 +1692,7 @@ void npcAct098(npc *NPC) //Fan right
 			NPC->ani_no = 0;
 
 		//Current effect
-		if (currentPlayer.x > NPC->x - 0x28000 && currentPlayer.x < NPC->x + 0x28000 && currentPlayer.y > NPC->y - 0x28000 && currentPlayer.y < NPC->y + 0x28000 && random(0, 5) == 1)
+		if (currentPlayer.x > NPC->x - pixelsToUnits(screenWidth) && currentPlayer.x < NPC->x + pixelsToUnits(screenWidth) && currentPlayer.y > NPC->y - pixelsToUnits(screenHeight) && currentPlayer.y < NPC->y + pixelsToUnits(screenHeight) && random(0, 5) == 1)
 			createNpc(NPC_UnderwaterCurrent, NPC->x + (random(-8, 8) << 9), NPC->y, 0, 0, dirRight);
 
 		//Blow quote
@@ -1713,4 +1713,47 @@ void npcAct098(npc *NPC) //Fan right
 	}
 
 	NPC->rect = { 272 + (NPC->ani_no << 4), 152, 288 + (NPC->ani_no << 4), 168 };
+}
+
+
+void npcAct099(npc *NPC) //Fan down
+{
+	const int action = NPC->act_no;
+
+	switch (action)
+	{
+	case 0:
+		if (NPC->direct == dirRight)
+			NPC->act_no = 2;
+		else
+			NPC->ani_no = 1; // Overriden by the next statement. Pixel's fault
+		// fallthrough
+	case 1:
+		NPC->ani_no = 0;
+		break;
+
+	case 2:
+		//Animate
+		if (++NPC->ani_wait > 0)
+		{
+			NPC->ani_wait = 0;
+			++NPC->ani_no;
+		}
+
+		//Animate
+		if (NPC->ani_no > 2)
+			NPC->ani_no = 0;
+
+		//Current effect
+		if (currentPlayer.x > NPC->x - pixelsToUnits(screenWidth) && currentPlayer.x < NPC->x + pixelsToUnits(screenWidth) && currentPlayer.y > NPC->y - pixelsToUnits(screenHeight) && currentPlayer.y < NPC->y + pixelsToUnits(screenHeight) && random(0, 5) == 1)
+			createNpc(NPC_UnderwaterCurrent, NPC->x + pixelsToUnits(random(-8, 8)), NPC->y, 0, 0, dirRight);
+
+		//Blow quote
+		if (currentPlayer.x < NPC->x + 0x1000 && currentPlayer.x > NPC->x - 0x1000 && currentPlayer.y > NPC->y && currentPlayer.y < NPC->y + 0xC000)
+			currentPlayer.ym += 0x88;
+
+		break;
+	}
+
+	NPC->rect = { 272 + (NPC->ani_no << 4), 168, 288 + (NPC->ani_no << 4), 184 };
 }
