@@ -417,6 +417,68 @@ void npcAct206(npc *NPC) // Counter bomb (enemy)
     NPC->doRects(rcNPC);
 }
 
+void npcAct207(npc *NPC) // Balloon (countdown)
+{
+	RECT rc[5];
+
+	rc[0].left = 0;
+	rc[0].top = 144;
+	rc[0].right = 16;
+	rc[0].bottom = 160;
+
+	rc[1].left = 16;
+	rc[1].top = 144;
+	rc[1].right = 32;
+	rc[1].bottom = 160;
+
+	rc[2].left = 32;
+	rc[2].top = 144;
+	rc[2].right = 48;
+	rc[2].bottom = 160;
+
+	rc[3].left = 48;
+	rc[3].top = 144;
+	rc[3].right = 64;
+	rc[3].bottom = 160;
+
+	rc[4].left = 64;
+	rc[4].top = 144;
+	rc[4].right = 80;
+	rc[4].bottom = 160;
+
+	switch (NPC->act_no)
+	{
+	case 0:
+		NPC->act_no = 1;
+		NPC->ani_no = NPC->direct;
+		playSound(43, 1);
+		// fallthrough
+	case 1:
+		NPC->x += 0x200;
+
+		if (++NPC->act_wait > 8)
+		{
+			NPC->act_wait = 0;
+			NPC->act_no = 2;
+		}
+
+		break;
+	case 2:
+		if (++NPC->act_wait > 30)
+		{
+			NPC->cond = 0;
+			return;
+		}
+
+		break;
+	}
+
+	NPC->rect.left = rc[NPC->ani_no].left;
+	NPC->rect.top = rc[NPC->ani_no].top;
+	NPC->rect.right = rc[NPC->ani_no].right;
+	NPC->rect.bottom = rc[NPC->ani_no].bottom;
+}
+
 void npcAct210(npc *NPC) // Beetle, Follow Aqua (enemy)
 {
 	constexpr array<RECT, 2> rcLeft = { {{0, 112, 16, 128}, {16, 112, 32, 128}} };
