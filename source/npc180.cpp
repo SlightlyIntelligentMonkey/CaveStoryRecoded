@@ -1057,6 +1057,66 @@ void npcAct197(npc *NPC) //Porcupine fish
 	NPC->rect.bottom = rc[NPC->ani_no].bottom;
 }
 
+void npcAct198(npc *NPC) //Shot (Ironhead)
+{
+	RECT rcRight[3];
+
+	rcRight[0].left = 208;
+	rcRight[0].top = 48;
+	rcRight[0].right = 224;
+	rcRight[0].bottom = 72;
+
+	rcRight[1].left = 224;
+	rcRight[1].top = 48;
+	rcRight[1].right = 240;
+	rcRight[1].bottom = 72;
+
+	rcRight[2].left = 240;
+	rcRight[2].top = 48;
+	rcRight[2].right = 256;
+	rcRight[2].bottom = 72;
+
+	switch (NPC->act_no)
+	{
+	case 0:
+		if (++NPC->act_wait > 20)
+		{
+			NPC->act_no = 1;
+			NPC->xm = 0;
+			NPC->ym = 0;
+			NPC->count1 = 0;
+		}
+
+		break;
+	case 1:
+		NPC->xm += 0x20;
+		break;
+	}
+
+	if (++NPC->ani_wait > 0)
+	{
+		NPC->ani_wait = 0;
+		++NPC->ani_no;
+	}
+
+	if (NPC->ani_no > 2)
+		NPC->ani_no = 0;
+
+	NPC->x += NPC->xm;
+	NPC->y += NPC->ym;
+
+	NPC->rect.left = rcRight[NPC->ani_no].left;
+	NPC->rect.top = rcRight[NPC->ani_no].top;
+	NPC->rect.right = rcRight[NPC->ani_no].right;
+	NPC->rect.bottom = rcRight[NPC->ani_no].bottom;
+
+	if (++NPC->count1 > 100)
+		NPC->cond = 0;
+
+	if (NPC->count1 % 4 == 1)
+		playSound(46, 1);
+}
+
 void npcAct199(npc *NPC) //Current / fan effect
 {
 	if (!NPC->act_no)
