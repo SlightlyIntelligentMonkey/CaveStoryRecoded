@@ -20,11 +20,6 @@ template <typename T> int8_t sign(T x)
 	return (x > 0) - (x < 0);
 }
 
- template <typename T> attrConst T clamp(T x, T mi, T ma)
-{
-    return std::max(std::min(ma, x), mi);
-}
-
 //returns result of normalized sinc
 template <typename T> T sinc(T x)
 {

@@ -1,8 +1,8 @@
+#include "stage.h"
 #include <string>
+#include <algorithm>
 #include <cstring>
 #include <SDL_render.h>
-
-#include "stage.h"
 #include "render.h"
 #include "mathUtils.h"
 #include "game.h"
@@ -402,11 +402,11 @@ void drawLevel(bool foreground)
 	//Render tiles
 	RECT tileRect;
 
-	const int xFrom = clamp(unitsToTiles(viewport.x + 0x1000), 0, map.width);
-	const int xTo = clamp((unitsToTiles((viewport.x + 0x1000) + (screenWidth << 9))) + 1, 0, map.width); //add 1 because edge wouldn't appear
+	const int xFrom = std::clamp(unitsToTiles(viewport.x + 0x1000), 0, map.width);
+	const int xTo = std::clamp((unitsToTiles((viewport.x + 0x1000) + (screenWidth << 9))) + 1, 0, map.width); //add 1 because edge wouldn't appear
 
-	const int yFrom = clamp(unitsToTiles(viewport.y + 0x1000), 0, map.height);
-	const int yTo = clamp((unitsToTiles((viewport.y + 0x1000) + (screenWidth << 9))) + 1, 0, map.height); //add 1 because edge wouldn't appear
+	const int yFrom = std::clamp(unitsToTiles(viewport.y + 0x1000), 0, map.height);
+	const int yTo = std::clamp((unitsToTiles((viewport.y + 0x1000) + (screenWidth << 9))) + 1, 0, map.height); //add 1 because edge wouldn't appear
 
 	for (int x = xFrom; x < xTo; x++)
 	{

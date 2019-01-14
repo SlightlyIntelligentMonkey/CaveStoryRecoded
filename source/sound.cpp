@@ -1,5 +1,6 @@
 ﻿#include "sound.h"
 
+#include <algorithm>
 #include <list>
 #include <vector>
 #include <string>
@@ -122,7 +123,7 @@ void SoundObject_SetFrequency(SOUND *sound, unsigned long freq)
 static long double MillibelToVolume(long volume)
 {
 	// Volume is in hundredths of decibels, from 0 to -10000
-	volume = clamp(volume, (long)-10000, (long)0);
+	volume = std::clamp(volume, (decltype(volume))-10000, (decltype(volume))0);
 	return pow(10, volume / 2000.0);
 }
 
@@ -210,8 +211,8 @@ void mixSounds(int16_t *stream, int len)
 		}
 
 		// Put into main stream and clip buffer
-		stream[2 * i] = clamp(tempSampleL, -0x7FFF, 0x7FFF);
-		stream[2 * i + 1] = clamp(tempSampleR, -0x7FFF, 0x7FFF);
+		stream[2 * i] = std::clamp(tempSampleL, (decltype(tempSampleL))-0x7FFF, (decltype(tempSampleL))0x7FFF);
+		stream[2 * i + 1] = std::clamp(tempSampleR, (decltype(tempSampleL))-0x7FFF, (decltype(tempSampleL))0x7FFF);
 	}
 }
 
