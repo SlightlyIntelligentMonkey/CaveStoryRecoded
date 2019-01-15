@@ -1,9 +1,5 @@
 #pragma once
-
-#include <fstream>
 #include <string>
-
-extern std::fstream logFile;
 
 void initLogFile();
 
