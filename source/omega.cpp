@@ -400,7 +400,7 @@ void actBoss_Omega(npc *boss)
 		{
 			boss->act_wait = 0;
 			boss->act_no = 160;
-			setFlash(boss->x, boss->y, explosion, 0);
+			setFlash(boss->x, boss->y, flashModes::explosion, 0);
 			playSound(SFX_LargeExplosion);
 		}
 		break;

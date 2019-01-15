@@ -540,7 +540,7 @@ bool doTscCommand(int *retVal, bool *bExit, TSC &ptsc)
 		tscCleanup(1, ptsc);
 		break;
 	case('<BXL'):
-		setFlash(getTSCNumber(ptsc, ptsc.p_read + 4)<<13, getTSCNumber(ptsc, ptsc.p_read + 9)<<13, explosion, 0);
+		setFlash(getTSCNumber(ptsc, ptsc.p_read + 4)<<13, getTSCNumber(ptsc, ptsc.p_read + 9)<<13, flashModes::explosion, 0);
 		tscCleanup(2, ptsc);
 		break;
 	case('<CAT'):
@@ -699,7 +699,7 @@ bool doTscCommand(int *retVal, bool *bExit, TSC &ptsc)
 		tscCleanup(1, ptsc);
 		break;
 	case('<FLA'):
-		setFlash(0, 0, normal, 20);
+		setFlash(0, 0, flashModes::normal, 20);
 		tscCleanup(0, ptsc);
 		break;
 	case('<FLJ'):

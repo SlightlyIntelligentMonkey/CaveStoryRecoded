@@ -24,7 +24,7 @@ FLASH flash =
 {
 	0,
 	0,
-	none,
+	flashModes::none,
 	0,
 	0,
 	0,
@@ -66,7 +66,7 @@ void flashExplosion()
 		flash.hH = h;
 		if (flash.hH <= 0)
 		{
-			flash.mode = none;
+			flash.mode = flashModes::none;
 			explInc = 0;
 			h = 0;
 			explosionEnd = false;
@@ -105,7 +105,7 @@ void flashNormal()
 		SDL_RenderFillRect(renderer, nullptr);
 	}
 	if (flash.timer < 0)
-		flash.mode = none;
+		flash.mode = flashModes::none;
 	return;
 }
 
@@ -113,12 +113,14 @@ void actFlash()
 {
 	switch (flash.mode)
 	{
-	case(1):
+	case flashModes::normal:
 		flashNormal();
 		break;
-	case(2):
+	case flashModes::explosion:
 		flashExplosion();
 		break;
+
+	case flashModes::none:
 	default:
 		break;
 	}
