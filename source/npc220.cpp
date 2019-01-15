@@ -1100,7 +1100,7 @@ void npcAct236(npc *NPC) //Gunfish
 
 		if (++NPC->ani_wait > 1)
 		{
-			NPC->act_wait = 0;
+			NPC->ani_wait = 0;
 			++NPC->ani_no;
 		}
 
