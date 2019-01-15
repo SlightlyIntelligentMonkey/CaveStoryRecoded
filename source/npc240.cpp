@@ -919,6 +919,131 @@ void npcAct251(npc *NPC) // Misery black lightning (projectile)
     NPC->doRects(rcNPC);
 }
 
+void npcAct252(npc *NPC) // Misery bat (projectile)
+{
+	RECT rcLeft[4];
+
+	rcLeft[0].left = 48;
+	rcLeft[0].top = 32;
+	rcLeft[0].right = 64;
+	rcLeft[0].bottom = 48;
+
+	rcLeft[1].left = 112;
+	rcLeft[1].top = 32;
+	rcLeft[1].right = 128;
+	rcLeft[1].bottom = 48;
+
+	rcLeft[2].left = 128;
+	rcLeft[2].top = 32;
+	rcLeft[2].right = 144;
+	rcLeft[2].bottom = 48;
+
+	rcLeft[3].left = 144;
+	rcLeft[3].top = 32;
+	rcLeft[3].right = 160;
+	rcLeft[3].bottom = 48;
+
+	RECT rcRight[4];
+
+	rcRight[0].left = 48;
+	rcRight[0].top = 32;
+	rcRight[0].right = 64;
+	rcRight[0].bottom = 48;
+
+	rcRight[1].left = 112;
+	rcRight[1].top = 48;
+	rcRight[1].right = 128;
+	rcRight[1].bottom = 64;
+
+	rcRight[2].left = 128;
+	rcRight[2].top = 48;
+	rcRight[2].right = 144;
+	rcRight[2].bottom = 64;
+
+	rcRight[3].left = 144;
+	rcRight[3].top = 48;
+	rcRight[3].right = 160;
+	rcRight[3].bottom = 64;
+
+	unsigned char deg;
+
+	switch (NPC->act_no)
+	{
+	case 0:
+		NPC->act_no = 1;
+		NPC->act_wait = 0;
+		NPC->count1 = NPC->direct;
+		// fallthrough
+	case 1:
+		NPC->count1 += 2;
+		NPC->count1 %= 0x100;
+		deg = NPC->count1;
+
+		if (NPC->act_wait < 192)
+			++NPC->act_wait;
+
+		NPC->x = NPC->pNpc->x + NPC->act_wait * getCos(deg) / 4;
+		NPC->y = NPC->pNpc->y + NPC->act_wait * getSin(deg) / 4;
+
+		if (NPC->pNpc->act_no == 151)
+		{
+			NPC->act_no = 10;
+			NPC->ani_no = 0;
+		}
+
+		break;
+	case 10:
+		NPC->act_no = 11;
+
+		NPC->bits |= npc_shootable;
+		NPC->bits &= ~npc_invulnerable;
+		NPC->bits &= ~npc_ignoreSolid;
+
+		deg = getAtan(NPC->x - currentPlayer.x, NPC->y - currentPlayer.y);
+		deg += random(-3, 3);
+
+		NPC->xm = getCos(deg);
+		NPC->ym = getSin(deg);
+
+		NPC->ani_no = 1;
+		NPC->ani_wait = 0;
+
+		if (NPC->x <= currentPlayer.x)
+			NPC->direct = dirRight;
+		else
+			NPC->direct = dirLeft;
+
+		// fallthrough
+	case 11:
+		NPC->x += NPC->xm;
+		NPC->y += NPC->ym;
+
+		if (NPC->flag & solid)
+		{
+			createNpc(4, NPC->x, NPC->y, 0, 0, 0, 0, false /*256*/);
+			createNpc(4, NPC->x, NPC->y, 0, 0, 0, 0, false /*256*/);
+			createNpc(4, NPC->x, NPC->y, 0, 0, 0, 0, false /*256*/);
+			NPC->cond = 0;
+		}
+
+		if (++NPC->ani_wait > 4)
+		{
+			NPC->ani_wait = 0;
+			++NPC->ani_no;
+		}
+
+		if (NPC->ani_no > 3)
+			NPC->ani_no = 1;
+
+		break;
+	}
+
+	if (NPC->direct != dirLeft)
+		NPC->rect = rcRight[NPC->ani_no];
+	else
+		NPC->rect = rcLeft[NPC->ani_no];
+}
+
 void npcAct253(npc *NPC) // Energy Capsule
 {
 	if (!NPC->act_no)
