@@ -784,6 +784,118 @@ void npcAct248(npc *NPC) // Misery (vanishing)
 	}
 }
 
+void npcAct249(npc *NPC) // Misery energy shot (projectile)
+{
+	if (++NPC->act_wait > 8)
+		NPC->cond = 0;
+
+	if (NPC->direct != dirLeft)
+	{
+		NPC->rect.left = 64;
+		NPC->rect.top = 48;
+		NPC->rect.right = 80;
+		NPC->rect.bottom = 64;
+
+		NPC->x += 0x400;
+	}
+	else
+	{
+		NPC->rect.left = 48;
+		NPC->rect.top = 48;
+		NPC->rect.right = 64;
+		NPC->rect.bottom = 64;
+
+		NPC->x -= 0x400;
+	}
+}
+
+void npcAct250(npc *NPC) // Misery lightning ball (projectile)
+{
+	RECT rc[3];
+
+	rc[0].left = 0;
+	rc[0].top = 32;
+	rc[0].right = 16;
+	rc[0].bottom = 48;
+
+	rc[1].left = 16;
+	rc[1].top = 32;
+	rc[1].right = 32;
+	rc[1].bottom = 48;
+
+	rc[2].left = 32;
+	rc[2].top = 32;
+	rc[2].right = 48;
+	rc[2].bottom = 48;
+
+	switch (NPC->act_no)
+	{
+	case 0:
+		NPC->act_no = 1;
+		NPC->tgt_y = NPC->y;
+		NPC->xm = 0;
+		NPC->ym = -0x200;
+		// fallthrough
+	case 1:
+		if (NPC->x >= currentPlayer.x)
+			NPC->xm -= 0x10;
+		else
+			NPC->xm += 0x10;
+
+		if (NPC->y >= NPC->tgt_y)
+			NPC->ym -= 0x20;
+		else
+			NPC->ym += 0x20;
+
+		if (NPC->xm > 0x200)
+			NPC->xm = 0x200;
+		if (NPC->xm < -0x200)
+			NPC->xm = -0x200;
+		if (NPC->ym > 0x200)
+			NPC->ym = 0x200;
+		if (NPC->ym < -0x200)
+			NPC->ym = -0x200;
+
+		NPC->x += NPC->xm;
+		NPC->y += NPC->ym;
+
+		if (++NPC->ani_wait > 2)
+		{
+			NPC->ani_wait = 0;
+			++NPC->ani_no;
+		}
+
+		if (NPC->ani_no > 1)
+			NPC->ani_no = 0;
+
+		if (currentPlayer.x > NPC->x - 0x1000 && currentPlayer.x < NPC->x + 0x1000 && currentPlayer.y > NPC->y)
+			NPC->act_no = 10;
+
+		break;
+	case 10:
+		NPC->act_no = 11;
+		NPC->act_wait = 0;
+		// fallthrough
+	case 11:
+		if (++NPC->act_wait > 10)
+		{
+			createNpc(251, NPC->x, NPC->y, 0, 0, 0, 0, false /*256*/);
+			playSound(101, 1);
+			NPC->cond = 0;
+			return;
+		}
+
+		if ((NPC->act_wait / 2) % 2)
+			NPC->ani_no = 2;
+		else
+			NPC->ani_no = 1;
+
+		break;
+	}
+
+	NPC->rect = rc[NPC->ani_no];
+}
+
 void npcAct251(npc *NPC) // Misery black lightning (projectile)
 {
     constexpr array<RECT, 2> rcNPC = {{{80, 32, 96, 64}, {96, 32, 112, 64}}};
