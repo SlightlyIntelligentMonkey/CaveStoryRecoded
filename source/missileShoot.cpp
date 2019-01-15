@@ -22,7 +22,7 @@ void shootMissile(int level)
 			bulletId = bullet_MissileLauncherLevel2;
 			break;
 		case(3):
-			if (weaponBullets(5) >= 3 || weaponBullets(6) >= 3) { return; }
+			if (weaponBullets(5) > 3 || weaponBullets(6) > 3) { return; }
 			bulletId = bullet_MissileLauncherLevel3;
 			break;
 		}
