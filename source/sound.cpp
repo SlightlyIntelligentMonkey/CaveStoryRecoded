@@ -196,10 +196,10 @@ void mixSounds(float (*stream)[2], int len)
 				const float sample1 = (sound.wave[position] - 0x80) / 255.0f;
 				const float sample2 = (!sound.loops && position + 1 >= sound.length) ? 0.0f : (sound.wave[(position + 1) % sound.length] - 0x80) / 255.0f;
 
-				const float val = sample1 + (sample2 - sample1) * fmod(sound.pos, 1.0f);
+				const float interpolated_sample = sample1 + (sample2 - sample1) * fmod(sound.pos, 1.0f);
 
-				stream[i][0] += (val * sound.volume * sound.volume_l);
-				stream[i][1] += (val * sound.volume * sound.volume_r);
+				stream[i][0] += interpolated_sample * sound.volume * sound.volume_l;
+				stream[i][1] += interpolated_sample * sound.volume * sound.volume_r;
 
 				sound.pos += (long double)sound.freq / sampleRate;
 			}
