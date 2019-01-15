@@ -1,6 +1,7 @@
 #include "game.h"
 
 #include <string>
+#include <algorithm>
 #include <cstring>
 #include <SDL_scancode.h>
 #include <SDL_timer.h>
@@ -128,12 +129,12 @@ void init2()
 void viewBounds()
 {
 	if ((map.width - 1) << 4 > screenWidth)
-		viewport.x = clamp(viewport.x, 0, tilesToUnits(map.width - 1) - (screenWidth << 9));
+		viewport.x = std::clamp(viewport.x, 0, tilesToUnits(map.width - 1) - (screenWidth << 9));
 	else
 		viewport.x = ((map.width - 1) << 12) - (screenWidth << 8);
 
 	if ((map.height - 1) << 4 > screenHeight)
-		viewport.y = clamp(viewport.y, 0, tilesToUnits(map.height - 1) - (screenHeight << 9));
+		viewport.y = std::clamp(viewport.y, 0, tilesToUnits(map.height - 1) - (screenHeight << 9));
 	else
 		viewport.y = ((map.height - 1) << 12) - (screenHeight << 8);
 }

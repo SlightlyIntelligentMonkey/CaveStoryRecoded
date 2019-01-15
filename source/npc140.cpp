@@ -621,8 +621,8 @@ void npcAct146(npc *NPC) //Lightning
 	case 0:
 		NPC->act_no = 1;
 
-	if (NPC->direct == 2)
-		setFlash(0, 0, normal, 20);
+	if (NPC->direct == dirRight)
+		setFlash(0, 0, flashModes::normal, 20);
 	// Fallthrough
 	case 1:
 		if (++NPC->act_wait > 10)

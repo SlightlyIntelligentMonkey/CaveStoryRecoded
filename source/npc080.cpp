@@ -445,7 +445,7 @@ void npcAct082(npc *NPC) //Misery standing
 		if (++NPC->act_wait == 30)
 		{
 			playSound(SFX_Lightning);
-			setFlash(0, 0, normal, 20);
+			setFlash(0, 0, flashModes::normal, 20);
 			NPC->act_no = 27;
 			NPC->ani_no = 7;
 		}

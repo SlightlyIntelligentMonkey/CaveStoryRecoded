@@ -6,6 +6,7 @@
 #include "caret.h"
 #include "render.h"
 #include "stage.h"
+#include "boss.h"
 
 using std::array;
 
@@ -25,77 +26,77 @@ void npcAct300(npc *NPC) //Demon crown
 
 void npcAct302(npc *NPC) //Camera Helper NPC
 {
-	if (NPC->act_no != 20)
-	{
-		if (NPC->act_no <= 20)
-		{
-			if (NPC->act_no == 10)
-			{
-				NPC->x = currentPlayer.x;
-				NPC->y = currentPlayer.y - 0x4000;
-			}
+    switch (NPC->act_no)
+    {
+    case 10:
+        NPC->x = currentPlayer.x;
+        NPC->y = currentPlayer.y - tilesToUnits(2);
+        break;
 
-			return;
-		}
+    case 20:
+        switch (NPC->direct)
+        {
+        case dirLeft:
+            NPC->x -= pixelsToUnits(2);
+            break;
 
-		if (NPC->act_no == 100)
-		{
-			NPC->act_no = 101;
+        case dirUp:
+            NPC->y -= pixelsToUnits(2);
+            break;
 
-			if (NPC->direct != dirLeft)
-			{
-				int n;
+        case dirRight:
+            NPC->x += pixelsToUnits(2);
+            break;
 
-				for (n = 170; n < 512; ++n)
-				{
-					if ((npcs[n].cond & npccond_alive) != 0 && npcs[n].code_event == NPC->direct)
-					{
-						NPC->pNpc = &npcs[n];
-						break;
-					}
-				}
+        case dirDown:
+            NPC->y += pixelsToUnits(2);
+            break;
 
-				if (n == 512)
-				{
-					NPC->cond = 0;
-					return;
-				}
-			}
-			else
-			{
-				//NPC->pNpc = gBoss;
-			}
-		}
-		else if (NPC->act_no != 101)
-		{
-			if (NPC->act_no == 30)
-			{
-				NPC->x = currentPlayer.x;
-				NPC->y = currentPlayer.y + 0xA000;
-			}
+        default:
+            break;
+        }
 
-			return;
-		}
+        currentPlayer.x = NPC->x;
+        currentPlayer.y = NPC->y;
+        break;
 
-		NPC->x = (currentPlayer.x + NPC->pNpc->x) / 2;
-		NPC->y = (currentPlayer.y + NPC->pNpc->y) / 2;
-		return;
-	}
+    case 30:
+        NPC->x = currentPlayer.x;
+        NPC->y = currentPlayer.y + tilesToUnits(5);
+        break;
 
-	if (NPC->direct == dirUp)
-		NPC->y -= 0x400;
-	else if (NPC->direct > dirUp)
-	{
-		if (NPC->direct == dirRight)
-			NPC->x += 0x400;
-		else if (NPC->direct == dirDown)
-			NPC->y += 0x400;
-	}
-	else if (NPC->direct == dirLeft)
-		NPC->x -= 1024;
+    case 100:
+        NPC->pNpc = nullptr;
+        NPC->act_no = 101;
+        if (NPC->direct == dirLeft)
+        {
+            NPC->pNpc = &bossObj[0];
+            goto case101;
+        }
 
-	currentPlayer.x = NPC->x;
-	currentPlayer.y = NPC->y;
+        {
+            size_t i = 170;
+            for (; i < npcs.size(); ++i)
+            {
+                if (npcs[i].cond & npccond_alive && npcs[i].code_event == NPC->direct)
+                {
+                    NPC->pNpc = &npcs[i];
+                    break;
+                }
+            }
+            if (NPC->pNpc)
+                goto case101;
+        }
+        NPC->cond = 0;
+        break;
+
+    case 101:
+case101:
+        int64_t tmp = NPC->pNpc->x + currentPlayer.x;
+        NPC->x = ((int32_t)tmp - (tmp >> 32)) >> 1;
+        NPC->y = (NPC->pNpc->y + currentPlayer.y) / 2;
+        break;
+    }
 }
 
 void npcAct304(npc *NPC)    // Gaudi (sitting)
