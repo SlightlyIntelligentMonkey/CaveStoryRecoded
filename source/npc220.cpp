@@ -954,7 +954,7 @@ void npcAct235(npc *NPC) //Midorin
 		if (NPC->ani_no > 3)
 			NPC->ani_no = 2;
 
-		if (NPC->act_wait > 0x40)
+		if (++NPC->act_wait > 0x40)
 			NPC->act_no = 0;
 
 		break;

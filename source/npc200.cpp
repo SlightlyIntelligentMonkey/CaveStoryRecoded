@@ -983,7 +983,7 @@ void npcAct213(npc *NPC) // Night Spirit
 			++NPC->ani_no;
 		}
 
-		if (++NPC->ani_no > 3)
+		if (NPC->ani_no > 3)
 			NPC->ani_no = 1;
 
 		if (++NPC->act_wait > 200)
@@ -1326,7 +1326,7 @@ void npcAct217(npc *NPC) // Itoh
 
 		break;
 	case 2:
-		if (NPC->act_wait > 8)
+		if (++NPC->act_wait > 8)
 		{
 			NPC->act_no = 1;
 			NPC->ani_no = 0;
