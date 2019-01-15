@@ -33,75 +33,58 @@ class npc
 {
 	//Variables
 public:
-	//state things
-	uint8_t cond;
-	int flag;
+	uint8_t cond;	// Current condition of the NPC (alive or dead)
+	int flag;	// Flag for collision
 
-	//position
-	int x;
-	int y;
+	int x;	// X position
+	int y;	// Y position
 
-	//speed
-	int xm;
-	int ym;
-	int xm2;
-	int ym2;
+	int xm;	// Usually used as the X velocity
+	int ym;	// Usually used as the Y velocity
+	int xm2;	// 2nd X velocity ?
+	int ym2;	// 2nd Y velocity ?
 
-	int tgt_x;
-	int tgt_y;
+	int tgt_x;	// Target X (also often used to save some random value)
+	int tgt_y;	// Target Y (also often used to save some random value)
 
-	//npc things
-	int code_char;
-	int code_flag;
-	int code_event;
+	int code_char;	// ID of the NPC
+	int code_flag;	// Flag associated with the NPC
+	int code_event;	// Event associated with the NPC's death
 
-	// Sprite index
-	int surf;
+	int surf;	// Spritesheet
 
-	//stuff?
-	int hit_voice;
-	int destroy_voice;
+	int hit_voice;	// Sound emitted when getting hit
+	int destroy_voice;	// Sound emitted when dying
 
-	//life stuff
-	int life;
-	int exp;
+	int life;	// HP of the NPC
+	int exp;	// Number of EXP dropped when the NPC dies
 
-	/// Explosion size
-	int size;
+	int size;	// Size of the explosion made when dying
 
-	/// Direction NPC is facing towards
-	int direct;
+	int direct;	// Direction the NPC is facing towards
 
-	/// Entity flags
-	uint16_t bits;
+	uint16_t bits;	// Entity flags
 
-	/// Rect location in spritesheet
-	RECT rect;
+	RECT rect;	// Location of the NPC's texture in the spritesheet
 
-	//state, counters, and action
-	int ani_wait;
-	int ani_no;
-	int count1;
-	int count2;
-	int act_no;
-	int act_wait;
+	int ani_wait;	// Usually used as a wait timer for animation
+	int ani_no;	// Usually used as the current animation ID
+	int count1;	// Usually used as a counter
+	int count2;	// Usually used as a counter
+	int act_no;	// Usually used as the current state
+	int act_wait;	// Usually used as a timer for the state
 
-	//hitbox
-	RECT hit;
+	RECT hit;	// RECT delimiting the hitbox of the NPC
 
-	//offset
-	RECT view;
+	RECT view;	// Offset ?
 
-	// Damage
-	uint8_t shock;
-	int damage_view;
-	int damage;
+	uint8_t shock;	// Current time left invincible
+	int damage_view;	// ???
+	int damage;	// Amount of damage dealt when touching the player
 
-	// Parent NPC
-	npc *pNpc;
+	npc *pNpc;	// Parent NPC
 
-	// Priority
-	bool priority;
+	bool priority;	// Priority
 
 public:
 	// These are kinda supposed to be internal, but I can't put them as protected/private

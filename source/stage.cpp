@@ -1,8 +1,8 @@
+#include "stage.h"
 #include <string>
+#include <algorithm>
 #include <cstring>
 #include <SDL_render.h>
-
-#include "stage.h"
 #include "render.h"
 #include "mathUtils.h"
 #include "game.h"
@@ -185,10 +185,11 @@ void iniBackground(const string &name, int mode)
 	return;
 }
 
-void loadLevel(int levelIndex)
+void loadLevel(int levelIndex, int w, int x, int y)
 {
-    logInfo("Loading level " + to_string(levelIndex));
-	currentLevel = levelIndex;
+	logInfo("Loading level " + to_string(levelIndex));
+
+	currentPlayer.setPos(tilesToUnits(x), tilesToUnits(y));
 
 	// -- clears/frees stuff from last map -- //
 	carets.clear();
@@ -200,18 +201,12 @@ void loadLevel(int levelIndex)
 	valueviews.clear();
 	valueviews.shrink_to_fit();
 
-	// -- loads some map stuff -- //
-	//Set up map name
-	mapName.flag = 0;
-	mapName.wait = 0;
-	strcpy(mapName.name, stageTable[levelIndex].name);
-
-	//Load boss
-	initBoss(stageTable[levelIndex].boss);
+	//load tileset
+	loadImage(string("Stage/Prt") + stageTable[levelIndex].tileset, &sprites[TEX_TILESET]);
 
 	//load pxm, pxa, pxe, and tsc
-	loadPxm(stageTable[levelIndex].filename);
 	loadPxa(stageTable[levelIndex].tileset);
+	loadPxm(stageTable[levelIndex].filename);
 	loadPxe(stageTable[levelIndex].filename);
 	loadStageTsc(stageTable[levelIndex].filename);
 
@@ -219,18 +214,29 @@ void loadLevel(int levelIndex)
 	iniBackground(stageTable[levelIndex].background, stageTable[levelIndex].backgroundScroll);
 
 	// -- loads map images -- //
-	//load tileset
-	loadImage(string("Stage/Prt") + stageTable[levelIndex].tileset, &sprites[TEX_TILESET]);
 	//load sheet 1
 	loadImage(string("Npc/Npc") + stageTable[levelIndex].npc1, &sprites[TEX_NPC_1]);
 	//load sheet 2
 	loadImage(string("Npc/Npc") + stageTable[levelIndex].npc2, &sprites[TEX_NPC_2]);
 
+	// -- loads some map stuff -- //
+	//Set up map name
+	mapName.flag = 0;
+	mapName.wait = 0;
+	strcpy(mapName.name, stageTable[levelIndex].name);
+
+	startTscEvent(tsc, w);
+
+	SetFrameMyChar();
+	initBoss(stageTable[levelIndex].boss);
+
+	currentLevel = levelIndex;
+
 	// -- fix viewport -- //
-	viewport.x = currentPlayer.x - (screenWidth << 8);
-	viewport.y = currentPlayer.y - (screenHeight << 8);
-	viewport.lookX = &currentPlayer.tgt_x;
-	viewport.lookY = &currentPlayer.tgt_y;
+//	viewport.x = currentPlayer.x - (screenWidth << 8);
+//	viewport.y = currentPlayer.y - (screenHeight << 8);
+//	viewport.lookX = &currentPlayer.tgt_x;
+//	viewport.lookY = &currentPlayer.tgt_y;
 	viewport.quake = 0;
 	viewport.quake2 = 0;
 
@@ -396,11 +402,11 @@ void drawLevel(bool foreground)
 	//Render tiles
 	RECT tileRect;
 
-	const int xFrom = clamp(unitsToTiles(viewport.x + 0x1000), 0, map.width);
-	const int xTo = clamp((unitsToTiles((viewport.x + 0x1000) + (screenWidth << 9))) + 1, 0, map.width); //add 1 because edge wouldn't appear
+	const int xFrom = std::clamp(unitsToTiles(viewport.x + 0x1000), 0, map.width);
+	const int xTo = std::clamp((unitsToTiles((viewport.x + 0x1000) + (screenWidth << 9))) + 1, 0, map.width); //add 1 because edge wouldn't appear
 
-	const int yFrom = clamp(unitsToTiles(viewport.y + 0x1000), 0, map.height);
-	const int yTo = clamp((unitsToTiles((viewport.y + 0x1000) + (screenWidth << 9))) + 1, 0, map.height); //add 1 because edge wouldn't appear
+	const int yFrom = std::clamp(unitsToTiles(viewport.y + 0x1000), 0, map.height);
+	const int yTo = std::clamp((unitsToTiles((viewport.y + 0x1000) + (screenWidth << 9))) + 1, 0, map.height); //add 1 because edge wouldn't appear
 
 	for (int x = xFrom; x < xTo; x++)
 	{

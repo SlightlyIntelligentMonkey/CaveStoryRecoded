@@ -1,6 +1,6 @@
 #pragma once
 
-enum flashModes
+enum class flashModes
 {
 	none = 0,
 	normal = 1,

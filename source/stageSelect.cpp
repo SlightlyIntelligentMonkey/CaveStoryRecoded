@@ -66,7 +66,7 @@ void drawStageSelect()
 	if (stageSelectTitleY > 46)
 		--stageSelectTitleY;
 
-	drawTexture(sprites[TEX_TEXTBOX], &rcTitle1, (screenWidth / 2) - 32, stageSelectTitleY);
+	drawTexture(sprites[TEX_TEXTBOX], &rcTitle1, (screenWidth / 2) - 32, ((screenHeight - 240) / 2) + stageSelectTitleY);
 	for (stageNo = 0; stageNo < PERMITSTAGES && permitStage[stageNo].index != 0; stageNo++);
 
 	++stageSelectFlash;
@@ -76,7 +76,7 @@ void drawStageSelect()
 		const int stageX = (-40 * static_cast<int>(stageNo) + screenWidth) / 2;
 
 		//Draw everything now
-		drawTexture(sprites[TEX_TEXTBOX], &rcCur[(stageSelectFlash >> 1) & 1], stageX + 40 * selectedStage, 64);
+		drawTexture(sprites[TEX_TEXTBOX], &rcCur[(stageSelectFlash >> 1) & 1], stageX + 40 * selectedStage, ((screenHeight - 240) / 2) + 64);
 
 		for (size_t i = 0; i < PERMITSTAGES && permitStage[i].index; ++i)
 		{
@@ -85,7 +85,7 @@ void drawStageSelect()
 			rcStage.top = 16 * (permitStage[i].index / 8);
 			rcStage.bottom = rcStage.top + 16;
 
-			drawTexture(sprites[0xE], &rcStage, stageX + 40 * i, 64);
+			drawTexture(sprites[0xE], &rcStage, stageX + 40 * i, ((screenHeight - 240) / 2) + 64);
 		}
 	}
 }

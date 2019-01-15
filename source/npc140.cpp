@@ -9,6 +9,7 @@
 #include "weapons.h"
 #include "game.h"
 #include "stage.h"
+#include "render.h"
 
 using std::array;
 
@@ -620,8 +621,8 @@ void npcAct146(npc *NPC) //Lightning
 	case 0:
 		NPC->act_no = 1;
 
-	if (NPC->direct == 2)
-		setFlash(0, 0, normal, 20);
+	if (NPC->direct == dirRight)
+		setFlash(0, 0, flashModes::normal, 20);
 	// Fallthrough
 	case 1:
 		if (++NPC->act_wait > 10)
@@ -1300,7 +1301,7 @@ void npcAct153(npc *NPC)
 		{ 96, 72, 120, 96 }
 	} };
 
-	if (NPC->x <= currentPlayer.x + 0x28000 && NPC->x >= currentPlayer.x - 0x28000 && NPC->y <= currentPlayer.y + 0x1E000 && NPC->y >= currentPlayer.y - 0x1E000)
+	if (NPC->x <= currentPlayer.x + pixelsToUnits(screenWidth) && NPC->x >= currentPlayer.x - pixelsToUnits(screenWidth) && NPC->y <= currentPlayer.y + pixelsToUnits(screenHeight) && NPC->y >= currentPlayer.y - pixelsToUnits(screenHeight))
 	{
 		switch (NPC->act_no)
 		{
@@ -1584,7 +1585,7 @@ void npcAct155(npc *NPC) //flying gaudi
 	constexpr int rcX[4] = { 0, 24, 288, 24 };
 	constexpr int rcY[4] = { 48, 48, 0, 48};
 
-	if (!NPC->isPlayerWithinDistance(163840, 122880))
+	if (!NPC->isPlayerWithinDistance(pixelsToUnits(screenWidth), pixelsToUnits(screenHeight)))
 		return;
 	switch (NPC->act_no)
 	{
