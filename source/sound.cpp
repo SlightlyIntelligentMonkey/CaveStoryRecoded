@@ -1,5 +1,6 @@
 ﻿#include "sound.h"
 
+#include <algorithm>
 #include <list>
 #include <vector>
 #include <string>
