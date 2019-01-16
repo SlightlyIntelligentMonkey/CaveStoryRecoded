@@ -3,6 +3,10 @@
 #include <string>
 #include "stage.h"
 #include "game.h"
+#include "sound.h"
+#include "player.h"
+#include "mathUtils.h"
+#include "render.h"
 
 namespace ballos
 {
@@ -63,8 +67,12 @@ namespace ballos
 	}
 
 	constexpr int arenaBottom = tilesToUnits(14.0625);
+	constexpr int arenaLeft = tilesToUnits(6.9375);
+	constexpr int arenaTop = tilesToUnits(6.9375);
+	constexpr int arenaRight = tilesToUnits(32.0625);
 	constexpr int phase2Speed = pixelsToUnits(1.83203125);
 	constexpr int floorY = tilesToUnits(13);
+	constexpr int crashY = tilesToUnits(19);
 
 	static bool flashAlternator = false;
 
@@ -72,6 +80,27 @@ namespace ballos
 	{
 		switch (boss.act_no)
 		{
+		case states::phase1::jumping:
+			if (boss.x < tilesToUnits(5))
+				boss.xm = pixelsToUnits(1);
+			if (boss.x > tilesToUnits(34))
+				boss.xm = pixelsToUnits(-1);
+			
+			boss.ym += 0x55;
+			boss.limitYVel(tilesToUnits(6));
+
+			boss.x += boss.xm;
+			boss.y += boss.ym;
+
+			if (boss.y > crashY - boss.hit.bottom)
+			{
+				boss.y = crashY - boss.hit.bottom;
+				boss.ym = 0;
+				boss.act_no = states::phase1::prepareJump;
+			}
+			// Unfinished
+			break;
+			
 		case states::phase1::defeated:
 			boss.act_no = states::phase1::defeated + 1;
 			boss.life = 1200;
@@ -93,8 +122,16 @@ namespace ballos
 				boss.ym = 0;
 				boss.act_no = states::phase1::defeated + 2;
 				boss.act_wait = 0;
-				// This isn't finished
+				viewport.quake2 = 30;
+				playSound(SFX_LargeObjectHitGround);
+
+				for (int i = 0; i < 16; ++i)
+					createNpc(NPC_Smoke, boss.x + pixelsToUnits(random(-40, 40)), boss.y + tilesToUnits(2.5));
+				 
+				if (currentPlayer.flag & ground)
+					currentPlayer.flag = pixelsToUnits(-1);
 			}
+			break;
 		}
 	}
 
@@ -102,6 +139,72 @@ namespace ballos
 	{
 		switch (boss.act_no)
 		{
+		case states::phase2::enterPhase:
+			boss.act_no = states::phase2::enterPhase + 1;
+			boss.act_wait = 0;
+			for (unsigned int i = 0; i < 0x100; i += 0x40)
+			{
+				createNpc(NPC_EnemyBallos3Eyeball, boss.x, boss.y, 0, 0, i, &boss, false /* 90 */);
+				createNpc(NPC_EnemyBallos3Eyeball, boss.x, boss.y, 0, 0, i + 0x220, &boss, false /* 90 */);
+			}
+			createNpc(NPC_Ballos2Cutscene, boss.x, boss.y, 0, 0, dirLeft, &boss, false /* 24 */);
+			createNpc(NPC_Ballos2Eyes, boss.x - tilesToUnits(1.5), boss.y - tilesToUnits(2.25), 0, 0, 0, &boss, false /* 32 */);
+			createNpc(NPC_Ballos2Eyes, boss.x + tilesToUnits(1.5), boss.y - tilesToUnits(2.25), 0, 0, dirRight, &boss, false /* 32 */);
+			// Fallthrough
+		case states::phase2::enterPhase + 1:
+			boss.y += (arenaBottom - boss.y) / 8;
+			if (++boss.act_wait > secondsToFrames(1))
+			{
+				boss.act_no = states::phase2::enterPhase + 10;
+				boss.act_wait = 0;
+			}
+			break;
+
+		case states::phase2::fightBegin:
+		// case states::phase2::goLeft:	// same number as fightBegin
+			boss.direct = dirLeft;
+			boss.xm = -phase2Speed;
+			boss.ym = 0;
+			boss.x += boss.xm;
+
+			if (boss.x < arenaLeft)
+			{
+				boss.x = arenaLeft;
+				boss.act_no = states::phase2::goUp;
+			}
+			break;
+
+		case states::phase2::goUp:
+			boss.direct = dirUp;
+			boss.ym = -phase2Speed;
+			boss.xm = 0;
+			boss.y += boss.ym;
+			if (boss.y < arenaTop)
+			{
+				boss.y = arenaTop;
+				boss.act_no = states::phase2::goRight;
+			}
+			break;
+
+		case states::phase2::goRight:
+			boss.direct = dirRight;
+			boss.xm = phase2Speed;
+			boss.ym = 0;
+			boss.x += boss.xm;
+
+			if (boss.x > arenaRight)
+			{
+				boss.x = arenaRight;
+				boss.act_no = states::phase2::goDown;
+			}
+
+			if (boss.count1)
+				--boss.count1;
+			// Check if all rotating thingos are dead and if is at center of room
+			if (!boss.count1 && boss.x > tilesToUnits(19) && boss.x < tilesToUnits(21))
+				boss.act_no = states::phase3::enterPhase;
+			break;
+
 		case states::phase2::goDown:
 			boss.direct = dirDown;
 			boss.ym = phase2Speed;
@@ -112,6 +215,7 @@ namespace ballos
 				boss.y = arenaBottom;
 				boss.act_no = states::phase2::goLeft;
 			}
+			break;
 		}
 	}
 }
