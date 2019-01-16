@@ -19,13 +19,13 @@ void npcAct060(npc *NPC) //Toroko
 	    init = 0,
 	    stand = 1,
 	    blink = 2,
-        startRunning = 3,
-        running = 4,
-        jumpThenRun = 6,
-        inAir = 7,
-        jumpOnTheSpot = 8,
-        fallDown = 10,
-        fallen = 11,
+	    startRunning = 3,
+	    running = 4,
+	    jumpThenRun = 6,
+	    inAir = 7,
+	    jumpOnTheSpot = 8,
+	    fallDown = 10,
+	    fallen = 11,
 	};
 
 	switch(NPC->act_no)
@@ -38,7 +38,7 @@ void npcAct060(npc *NPC) //Toroko
 	// Fallthrough
 	case stand:
 		//Blink randomly
-		if (!random(0, 120))
+		if (random(0, 120) == 10)
 		{
 			NPC->act_no = blink;
 			NPC->act_wait = 0;
@@ -57,7 +57,7 @@ void npcAct060(npc *NPC) //Toroko
 
 		break;
 
-	case 2: //Blinking
+	case blink: //Blinking
 		//Blink for 8 frames
 		if (++NPC->act_wait > 8)
 		{
@@ -101,11 +101,12 @@ void npcAct060(npc *NPC) //Toroko
 	// Fallthrough
 	case inAir: //In air
 		//Animate
+		NPC->animate(2, 1, 4);
 
 		//Run in facing direction
 		NPC->moveInDir(pixelsToUnits(0.5));
 
-		if (++NPC->act_wait > 1 && NPC->flag & ground)
+		if (NPC->act_wait++ && NPC->flag & ground)
 			NPC->act_no = startRunning;
 
 		break;
@@ -117,7 +118,7 @@ void npcAct060(npc *NPC) //Toroko
 		NPC->ym = -0x200;
 	// Fallthrough
 	case jumpOnTheSpot + 1:
-		if (++NPC->act_wait > 1 && NPC->flag & ground)
+		if (NPC->act_wait++ && NPC->flag & ground)
 			NPC->act_no = init;
 
 		break;
@@ -132,7 +133,7 @@ void npcAct060(npc *NPC) //Toroko
 		break;
 
 	case fallen: //Fallen
-		if (++NPC->act_wait > 1 && NPC->flag & ground)
+		if (NPC->act_wait++ && NPC->flag & ground)
 		{
 			NPC->act_no = 12;
 			NPC->ani_no = 10;
@@ -152,7 +153,7 @@ void npcAct060(npc *NPC) //Toroko
 
 	//Move
 	NPC->doGravity(0x40, 0x5FF);
-    NPC->limitXVel(pixelsToUnits(2));
+	NPC->limitXVel(pixelsToUnits(2));
 
 	NPC->x += NPC->xm;
 	NPC->y += NPC->ym;

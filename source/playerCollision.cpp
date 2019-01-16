@@ -765,7 +765,7 @@ void playerHitNpcs()
 				else
 					hit = playerHitNpcNonSolid(rcHit, me, &npcs[i]);
 
-				if (hit && npcs[i].code_char == NPC_WeaponEnergy)
+				if (hit && npcs[i].code_char == NPC_EXP)
 				{
 					playSound(SFX_GetEXP);
 					giveWeaponExperience(npcs[i].exp);

@@ -29,7 +29,7 @@ const bossAct bossActs[10] =
 	static_cast<bossAct>(nullptr),
 	static_cast<bossAct>(nullptr),
 	&actBoss_HeavyPress,
-	static_cast<bossAct>(nullptr),
+	&actBoss_Ballos
 };
 
 void initBoss(int code)

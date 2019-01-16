@@ -19,4 +19,4 @@ void actBoss_Core(npc *boss);
 //void actBoss_Twin(npc *boss);
 //void actBoss_Undead(npc *boss);
 void actBoss_HeavyPress(npc *boss);
-//void actBoss_Ballos(npc *boss);
+void actBoss_Ballos(npc *boss);

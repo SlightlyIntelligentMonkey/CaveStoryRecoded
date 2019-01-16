@@ -876,7 +876,6 @@ void npcAct192(npc *NPC) // Scooter
 		NPC->act_wait = 1;
 		NPC->tgt_x = NPC->x;
 		NPC->tgt_y = NPC->y;
-		playSound(SFX_MissileImpact);
 		// Fallthrough
 	case startEngine + 1:
 		NPC->x = NPC->tgt_x + pixelsToUnits(random(-1, 1));
@@ -896,8 +895,9 @@ void npcAct192(npc *NPC) // Scooter
 	case takeOff + 1:
 		NPC->xm += 0x20;
 		NPC->x += NPC->xm;
+		++NPC->act_wait;
 		NPC->y = NPC->tgt_y + pixelsToUnits(random(-1, 1));
-		if (++NPC->act_wait > 10)
+		if (NPC->act_wait > 10)
 			NPC->direct = dirRight;
 		if (NPC->act_wait > 200)
 			NPC->act_no = outOfControl;
@@ -908,7 +908,7 @@ void npcAct192(npc *NPC) // Scooter
 		NPC->act_wait = 2;
 		NPC->direct = dirLeft;
 		NPC->y -= tilesToUnits(3);
-		NPC->xm = tilesToUnits(0.5);
+		NPC->xm = -tilesToUnits(0.5);
 		// Fallthrough
 	case outOfControl + 1:
 		NPC->x += NPC->xm;
@@ -970,6 +970,151 @@ void npcAct196(npc *NPC) //Stream floor
 		NPC->x += 0x2C000;
 
     NPC->doRects({112, 64, 155, 80}, {112, 80, 144, 96});
+}
+
+void npcAct197(npc *NPC) //Porcupine fish
+{
+	RECT rc[4];
+
+	rc[0].left = 0;
+	rc[0].top = 0;
+	rc[0].right = 16;
+	rc[0].bottom = 16;
+
+	rc[1].left = 16;
+	rc[1].top = 0;
+	rc[1].right = 32;
+	rc[1].bottom = 16;
+
+	rc[2].left = 32;
+	rc[2].top = 0;
+	rc[2].right = 48;
+	rc[2].bottom = 16;
+
+	rc[3].left = 48;
+	rc[3].top = 0;
+	rc[3].right = 64;
+	rc[3].bottom = 16;
+
+	switch (NPC->act_no)
+	{
+	case 0:
+		NPC->act_no = 10;
+		NPC->ani_wait = 0;
+		NPC->ym = random(-0x200, 0x200);
+		NPC->xm = 0x800;
+		// fallthrough
+	case 10:
+		if (++NPC->ani_wait > 2)
+		{
+			NPC->ani_wait = 0;
+			++NPC->ani_no;
+		}
+
+		if (NPC->ani_no > 1)
+			NPC->ani_no = 0;
+
+		if (NPC->xm < 0)
+		{
+			NPC->damage = 3;
+			NPC->act_no = 20;
+		}
+
+		break;
+	case 20:
+		NPC->damage = 3;
+		if (++NPC->ani_wait > 0)
+		{
+			NPC->ani_wait = 0;
+			++NPC->ani_no;
+		}
+
+		if (NPC->ani_no > 3)
+			NPC->ani_no = 2;
+
+		if (NPC->x < tilesToUnits(3))
+		{
+			NPC->destroy_voice = 0;
+			killNpc(NPC, 1);
+		}
+
+		break;
+	}
+
+	if (NPC->flag & 2)
+		NPC->ym = 0x200;
+	if (NPC->flag & 8)
+		NPC->ym = -0x200;
+
+	NPC->xm -= 12;
+
+	NPC->x += NPC->xm;
+	NPC->y += NPC->ym;
+
+	NPC->rect.left = rc[NPC->ani_no].left;
+	NPC->rect.top = rc[NPC->ani_no].top;
+	NPC->rect.right = rc[NPC->ani_no].right;
+	NPC->rect.bottom = rc[NPC->ani_no].bottom;
+}
+
+void npcAct198(npc *NPC) //Shot (Ironhead)
+{
+	RECT rcRight[3];
+
+	rcRight[0].left = 208;
+	rcRight[0].top = 48;
+	rcRight[0].right = 224;
+	rcRight[0].bottom = 72;
+
+	rcRight[1].left = 224;
+	rcRight[1].top = 48;
+	rcRight[1].right = 240;
+	rcRight[1].bottom = 72;
+
+	rcRight[2].left = 240;
+	rcRight[2].top = 48;
+	rcRight[2].right = 256;
+	rcRight[2].bottom = 72;
+
+	switch (NPC->act_no)
+	{
+	case 0:
+		if (++NPC->act_wait > 20)
+		{
+			NPC->act_no = 1;
+			NPC->xm = 0;
+			NPC->ym = 0;
+			NPC->count1 = 0;
+		}
+
+		break;
+	case 1:
+		NPC->xm += 0x20;
+		break;
+	}
+
+	if (++NPC->ani_wait > 0)
+	{
+		NPC->ani_wait = 0;
+		++NPC->ani_no;
+	}
+
+	if (NPC->ani_no > 2)
+		NPC->ani_no = 0;
+
+	NPC->x += NPC->xm;
+	NPC->y += NPC->ym;
+
+	NPC->rect.left = rcRight[NPC->ani_no].left;
+	NPC->rect.top = rcRight[NPC->ani_no].top;
+	NPC->rect.right = rcRight[NPC->ani_no].right;
+	NPC->rect.bottom = rcRight[NPC->ani_no].bottom;
+
+	if (++NPC->count1 > 100)
+		NPC->cond = 0;
+
+	if (NPC->count1 % 4 == 1)
+		playSound(46, 1);
 }
 
 void npcAct199(npc *NPC) //Current / fan effect
