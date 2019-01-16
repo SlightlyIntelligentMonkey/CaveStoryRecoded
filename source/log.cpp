@@ -35,7 +35,7 @@ void initLogFile()
     logFile << "Compiled against SDL2 version " 
     << (int)compiled.major << '.' << (int)compiled.minor << '.' << (int)compiled.patch
     << " and linked against version " 
-    << (int)linked.major << '.' << (int)linked.minor << '.' << (int)linked.major << '\n';
+    << (int)linked.major << '.' << (int)linked.minor << '.' << (int)linked.patch << '\n';
     logFile << "Exact SDL2 revision number : " << SDL_GetRevisionNumber() << '\n';
     logFile << "New session started at : " << put_time(localtime(&now), "%c") << endl;
 }
