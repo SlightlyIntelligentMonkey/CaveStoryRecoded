@@ -66,6 +66,8 @@ namespace ballos
 	constexpr int phase2Speed = pixelsToUnits(1.83203125);
 	constexpr int floorY = tilesToUnits(13);
 
+	static bool flashAlternator = false;
+
 	static inline void phase1(npc& boss)
 	{
 		switch (boss.act_no)
@@ -78,7 +80,7 @@ namespace ballos
 			boss.xm = 0;
 			boss.ani_no = 0;
 			boss.shock = 0;
-			ballosFlashAlternator = false;
+			flashAlternator = false;
 			// Fallthrough
 		case states::phase1::defeated + 1:
 			boss.ym += pixelsToUnits(0.125);
@@ -114,7 +116,7 @@ namespace ballos
 	}
 }
 
-static bool ballosFlashAlternator = false;
+
 
 void actBoss_Ballos(npc *boss)	// Ballos ball (boss)
 {
