@@ -170,17 +170,13 @@ void SoundObject_Stop(SOUND *sound)
 }
 
 // Audio callback and things
-void mixSounds(int16_t *stream, int len)
+void mixSounds(float (*stream)[2], int len)
 {
-	for (int i = 0; i < len; ++i)
+	for (auto& sound : sound_objects)
 	{
-		// Put current stream sample into temp samples
-		int32_t tempSampleL = stream[i * 2];
-		int32_t tempSampleR = stream[i * 2 + 1];
-
-		for (auto& sound : sound_objects)
+		if (sound.playing)
 		{
-			if (sound.playing)
+			for (int i = 0; i < len; ++i)
 			{
 				if (sound.pos >= sound.length)
 				{
@@ -191,37 +187,40 @@ void mixSounds(int16_t *stream, int len)
 					else
 					{
 						SoundObject_Stop(&sound);
-						continue;
+						break;
 					}
 				}
 
 				const size_t position = sound.pos;
 
 				// Perform sound interpolation
-				const int sample1 = (sound.wave[position] - 0x80) << 8;
-				const int sample2 = (!sound.loops && position + 1 >= sound.length) ? 0 : (sound.wave[(position + 1) % sound.length] - 0x80) << 8;
+				const float sample1 = (sound.wave[position] - 0x80) / 255.0f;
+				const float sample2 = (!sound.loops && position + 1 >= sound.length) ? 0.0f : (sound.wave[(position + 1) % sound.length] - 0x80) / 255.0f;
 
-				const int val = static_cast<int>(sample1 + (sample2 - sample1) * fmod(sound.pos, 1.0f));
+				const float interpolated_sample = sample1 + (sample2 - sample1) * fmod(sound.pos, 1.0f);
 
-				tempSampleL += (val * sound.volume * sound.volume_l);
-				tempSampleR += (val * sound.volume * sound.volume_r);
+				stream[i][0] += interpolated_sample * sound.volume * sound.volume_l;
+				stream[i][1] += interpolated_sample * sound.volume * sound.volume_r;
 
 				sound.pos += (long double)sound.freq / sampleRate;
 			}
 		}
-
-		// Put into main stream and clip buffer
-		stream[2 * i] = std::clamp(tempSampleL, (decltype(tempSampleL))-0x7FFF, (decltype(tempSampleL))0x7FFF);
-		stream[2 * i + 1] = std::clamp(tempSampleR, (decltype(tempSampleL))-0x7FFF, (decltype(tempSampleL))0x7FFF);
 	}
 }
 
-void audio_callback(void *, Uint8 *stream, int len)
+void audio_callback(void *, Uint8 *stream_bytes, int len)
 {
-	memset(stream, 0, len);
+	float (*stream)[2] = reinterpret_cast<float(*)[2]>(stream_bytes);
+	const unsigned int frames = len / (sizeof(float) * 2);
 
-	updateOrg(len / 4);
-	mixSounds(reinterpret_cast<int16_t*>(stream), len / 4);
+	for (unsigned int i = 0; i < frames; ++i)
+	{
+		stream[i][0] = 0.0f;
+		stream[i][1] = 0.0f;
+	}
+
+	updateOrg(frames);
+	mixSounds(stream, frames);
 }
 
 void initAudio()
@@ -235,7 +234,7 @@ void initAudio()
 	// Create sound device
 	want.channels = 2;
 	want.freq = sampleRate;
-	want.format = AUDIO_S16;
+	want.format = AUDIO_F32;
 	want.samples = 1024;
 	want.callback = audio_callback;
 	want.userdata = nullptr;

@@ -42,7 +42,6 @@ struct MUSICINFO {
 	int32_t repeat_x; //Repeat
 	int32_t end_x; //End of song (Return to repeat)
 	int samples;
-	int samplesForFrame;
 	TRACKDATA tdata[16];
 };
 
