@@ -118,7 +118,7 @@ void npcAct201(npc * NPC) // Dragon Zombie, dead
 
 void npcAct202(npc * NPC) // Dragon Zombie fire (projectile)
 {
-	if (NPC->flag & 0xFF)
+	if (NPC->flag & solid)
 	{
 		NPC->cond = 0;
 		createCaret(NPC->x, NPC->y, effect_RisingDisc);
@@ -266,7 +266,7 @@ void npcAct204(npc * NPC) // Falling Spike, small
 
 	case falling:
 		NPC->ym += 0x20;
-		if (!(NPC->flag & 0xFF))
+		if (!(NPC->flag & solid))
 			break;
 		if (!(currentPlayer.cond & player_removed))
 			playSound(SFX_DestroyBreakableBlock);
@@ -328,7 +328,7 @@ void npcAct205(npc *NPC) // Falling Spike, large
 			NPC->damage = 127;
 		}
 
-		if (++NPC->act_wait <= 8 || !(NPC->flag & 0xFF))
+		if (++NPC->act_wait <= 8 || !(NPC->flag & solid))
 			break;
 
 		NPC->bits |= npc_solidHard;
@@ -415,6 +415,304 @@ void npcAct206(npc *NPC) // Counter bomb (enemy)
     NPC->animate(4, 0, 2);
 
     NPC->doRects(rcNPC);
+}
+
+void npcAct207(npc *NPC) // Balloon (countdown)
+{
+	RECT rc[5];
+
+	rc[0].left = 0;
+	rc[0].top = 144;
+	rc[0].right = 16;
+	rc[0].bottom = 160;
+
+	rc[1].left = 16;
+	rc[1].top = 144;
+	rc[1].right = 32;
+	rc[1].bottom = 160;
+
+	rc[2].left = 32;
+	rc[2].top = 144;
+	rc[2].right = 48;
+	rc[2].bottom = 160;
+
+	rc[3].left = 48;
+	rc[3].top = 144;
+	rc[3].right = 64;
+	rc[3].bottom = 160;
+
+	rc[4].left = 64;
+	rc[4].top = 144;
+	rc[4].right = 80;
+	rc[4].bottom = 160;
+
+	switch (NPC->act_no)
+	{
+	case 0:
+		NPC->act_no = 1;
+		NPC->ani_no = NPC->direct;
+		playSound(43, 1);
+		// fallthrough
+	case 1:
+		NPC->x += 0x200;
+
+		if (++NPC->act_wait > 8)
+		{
+			NPC->act_wait = 0;
+			NPC->act_no = 2;
+		}
+
+		break;
+	case 2:
+		if (++NPC->act_wait > 30)
+		{
+			NPC->cond = 0;
+			return;
+		}
+
+		break;
+	}
+
+	NPC->rect.left = rc[NPC->ani_no].left;
+	NPC->rect.top = rc[NPC->ani_no].top;
+	NPC->rect.right = rc[NPC->ani_no].right;
+	NPC->rect.bottom = rc[NPC->ani_no].bottom;
+}
+
+void npcAct208(npc *NPC) // Basu 2
+{
+	RECT rcLeft[3];
+
+	rcLeft[0].left = 248;
+	rcLeft[0].top = 80;
+	rcLeft[0].right = 272;
+	rcLeft[0].bottom = 104;
+
+	rcLeft[1].left = 272;
+	rcLeft[1].top = 80;
+	rcLeft[1].right = 296;
+	rcLeft[1].bottom = 104;
+
+	rcLeft[2].left = 296;
+	rcLeft[2].top = 80;
+	rcLeft[2].right = 320;
+	rcLeft[2].bottom = 104;
+
+	RECT rcRight[3];
+
+	rcRight[0].left = 248;
+	rcRight[0].top = 104;
+	rcRight[0].right = 272;
+	rcRight[0].bottom = 128;
+
+	rcRight[1].left = 272;
+	rcRight[1].top = 104;
+	rcRight[1].right = 296;
+	rcRight[1].bottom = 128;
+
+	rcRight[2].left = 296;
+	rcRight[2].top = 104;
+	rcRight[2].right = 320;
+	rcRight[2].bottom = 128;
+
+	switch (NPC->act_no)
+	{
+	case 0:
+		if (currentPlayer.x >= NPC->x + 0x2000 || currentPlayer.x <= NPC->x - 0x2000)
+		{
+			NPC->rect.right = 0;
+			NPC->damage = 0;
+			NPC->xm = 0;
+			NPC->ym = 0;
+			NPC->bits &= ~npc_shootable;
+		}
+		else
+		{
+			NPC->bits |= npc_shootable;
+			NPC->ym = -0x200;
+			NPC->tgt_x = NPC->x;
+			NPC->tgt_y = NPC->y;
+			NPC->act_no = 1;
+			NPC->act_wait = 0;
+			NPC->count1 = NPC->direct;
+			NPC->count2 = 0;
+			NPC->damage = 6;
+
+			if (NPC->direct != dirLeft)
+			{
+				NPC->x = currentPlayer.x - 0x20000;
+				NPC->xm = 0x2FF;
+			}
+			else
+			{
+				NPC->x = currentPlayer.x + 0x20000;
+				NPC->xm = -0x2FF;
+			}
+		}
+
+		break;
+	case 1:
+		if (NPC->x <= currentPlayer.x)
+		{
+			NPC->direct = dirRight;
+			NPC->xm += 0x10;
+		}
+		else
+		{
+			NPC->direct = dirLeft;
+			NPC->xm -= 0x10;
+		}
+
+		if (NPC->flag & leftWall)
+			NPC->xm = 0x200;
+		if (NPC->flag & rightWall)
+			NPC->xm = -0x200;
+
+		if (NPC->y >= NPC->tgt_y)
+			NPC->ym -= 8;
+		else
+			NPC->ym += 8;
+
+		if (NPC->xm > 0x2FF)
+			NPC->xm = 0x2FF;
+		if (NPC->xm < -0x2FF)
+			NPC->xm = -0x2FF;
+		if (NPC->ym > 0x200)
+			NPC->ym = 0x200;
+		if (NPC->ym < -0x200)
+			NPC->ym = -0x200;
+
+		if (NPC->shock)
+		{
+			NPC->x += NPC->xm / 2;
+			NPC->y += NPC->ym / 2;
+		}
+		else
+		{
+			NPC->x += NPC->xm;
+			NPC->y += NPC->ym;
+		}
+
+		if (currentPlayer.x > NPC->x + 0x32000 || currentPlayer.x < NPC->x - 0x32000)
+		{
+			NPC->act_no = 0;
+			NPC->xm = 0;
+			NPC->direct = NPC->count1;
+			NPC->x = NPC->tgt_x;
+			NPC->rect.right = 0;
+			NPC->damage = 0;
+			break;
+		}
+		// fallthrough
+	case 2:
+		if (NPC->act_no)
+		{
+			if (NPC->act_wait < 150)
+				++NPC->act_wait;
+
+			if (NPC->act_wait == 150)
+			{
+				if ((++NPC->count2 % 8) == 0 && NPC->x < currentPlayer.x + 0x14000 && NPC->x > currentPlayer.x - 0x14000)
+				{
+					unsigned char deg = getAtan(NPC->x - currentPlayer.x, NPC->y - currentPlayer.y);
+					unsigned char random_deg = random(-6, 6) + deg;
+					int ym = 3 * getSin(random_deg);
+					int xm = 3 * getCos(random_deg);
+					createNpc(209, NPC->x, NPC->y, xm, ym, 0, 0, false /*256*/);	// TODO: createNpc has a different final parameter so fuck me I guess
+					playSound(39, 1);
+				}
+
+				if (NPC->count2 > 0x10)
+				{
+					NPC->act_wait = 0;
+					NPC->count2 = 0;
+				}
+			}
+		}
+
+		if (++NPC->ani_wait > 1)
+		{
+			NPC->ani_wait = 0;
+			++NPC->ani_no;
+		}
+
+		if (NPC->ani_no > 1)
+			NPC->ani_no = 0;
+
+		if (NPC->act_wait > 120 && (NPC->act_wait / 2) % 2 == 1 && NPC->ani_no == 1)
+			NPC->ani_no = 2;
+
+		if (NPC->direct != dirLeft)
+		{
+			NPC->rect.left = rcRight[NPC->ani_no].left;
+			NPC->rect.top = rcRight[NPC->ani_no].top;
+			NPC->rect.right = rcRight[NPC->ani_no].right;
+			NPC->rect.bottom = rcRight[NPC->ani_no].bottom;
+		}
+		else
+		{
+			NPC->rect.left = rcLeft[NPC->ani_no].left;
+			NPC->rect.top = rcLeft[NPC->ani_no].top;
+			NPC->rect.right = rcLeft[NPC->ani_no].right;
+			NPC->rect.bottom = rcLeft[NPC->ani_no].bottom;
+		}
+
+		break;
+	}
+}
+
+void npcAct209(npc *NPC) // Basu2 projectile
+{
+	if (NPC->flag & solid)
+	{
+		NPC->cond = 0;
+		createCaret(NPC->x, NPC->y, effect_RisingDisc, dirLeft);
+	}
+
+	NPC->y += NPC->ym;
+	NPC->x += NPC->xm;
+
+	RECT rect_left[4];
+
+	rect_left[0].left = 232;
+	rect_left[0].top = 96;
+	rect_left[0].right = 248;
+	rect_left[0].bottom = 112;
+
+	rect_left[1].left = 200;
+	rect_left[1].top = 112;
+	rect_left[1].right = 216;
+	rect_left[1].bottom = 128;
+
+	rect_left[2].left = 216;
+	rect_left[2].top = 112;
+	rect_left[2].right = 232;
+	rect_left[2].bottom = 128;
+
+	rect_left[3].left = 232;
+	rect_left[3].top = 112;
+	rect_left[3].right = 248;
+	rect_left[3].bottom = 128;
+
+	if (++NPC->ani_wait > 2)
+	{
+		NPC->ani_wait = 0;
+		++NPC->ani_no;
+	}
+
+	if (NPC->ani_no > 3)
+		NPC->ani_no = 0;
+
+	NPC->rect.left = rect_left[NPC->ani_no].left;
+	NPC->rect.top = rect_left[NPC->ani_no].top;
+	NPC->rect.right = rect_left[NPC->ani_no].right;
+	NPC->rect.bottom = rect_left[NPC->ani_no].bottom;
+
+	if (++NPC->count1 > 300)
+	{
+		NPC->cond = 0;
+		createCaret(NPC->x, NPC->y, effect_RisingDisc, dirLeft);
+	}
 }
 
 void npcAct210(npc *NPC) // Beetle, Follow Aqua (enemy)
@@ -567,7 +865,7 @@ void npcAct212(npc *NPC) // Sky Dragon
 
     case startFlight:
         NPC->act_no = flying;
-        NPC->flag |= npc_ignoreSolid;
+        NPC->flag |= ground;
         // Fallthrough
     case flying:
         NPC->accelerateTowardsYTarget(0x10);
@@ -599,6 +897,265 @@ void npcAct212(npc *NPC) // Sky Dragon
             NPC->rect.bottom += 40;
         }
     }
+}
+
+void npcAct213(npc *NPC) // Night Spirit
+{
+	RECT rc[10];
+
+	rc[0].left = 0;
+	rc[0].top = 0;
+	rc[0].right = 0;
+	rc[0].bottom = 0;
+
+	rc[1].left = 0;
+	rc[1].top = 0;
+	rc[1].right = 48;
+	rc[1].bottom = 48;
+
+	rc[2].left = 48;
+	rc[2].top = 0;
+	rc[2].right = 96;
+	rc[2].bottom = 48;
+
+	rc[3].left = 96;
+	rc[3].top = 0;
+	rc[3].right = 144;
+	rc[3].bottom = 48;
+
+	rc[4].left = 144;
+	rc[4].top = 0;
+	rc[4].right = 192;
+	rc[4].bottom = 48;
+
+	rc[5].left = 192;
+	rc[5].top = 0;
+	rc[5].right = 240;
+	rc[5].bottom = 48;
+
+	rc[6].left = 240;
+	rc[6].top = 0;
+	rc[6].right = 288;
+	rc[6].bottom = 48;
+
+	rc[7].left = 0;
+	rc[7].top = 48;
+	rc[7].right = 48;
+	rc[7].bottom = 96;
+
+	rc[8].left = 48;
+	rc[8].top = 48;
+	rc[8].right = 96;
+	rc[8].bottom = 96;
+
+	rc[9].left = 96;
+	rc[9].top = 48;
+	rc[9].right = 144;
+	rc[9].bottom = 96;
+
+	switch (NPC->act_no)
+	{
+	case 0:
+		NPC->ani_no = 0;
+		NPC->tgt_x = NPC->x;
+		NPC->tgt_y = NPC->y;
+		// fallthrough
+	case 1:
+		if (currentPlayer.y > NPC->y - 0x1000 && currentPlayer.y < NPC->y + 0x1000)
+		{
+			if (NPC->direct != dirLeft)
+				NPC->y += pixelsToUnits(240);
+			else
+				NPC->y -= pixelsToUnits(240);
+
+			NPC->act_no = 10;
+			NPC->act_wait = 0;
+			NPC->ani_no = 1;
+			NPC->ym = 0;
+			NPC->bits |= npc_shootable;
+		}
+
+		break;
+	case 10:
+		if (++NPC->ani_wait > 2)
+		{
+			NPC->ani_wait = 0;
+			++NPC->ani_no;
+		}
+
+		if (NPC->ani_no > 3)
+			NPC->ani_no = 1;
+
+		if (++NPC->act_wait > 200)
+		{
+			NPC->act_no = 20;
+			NPC->act_wait = 0;
+			NPC->ani_no = 4;
+		}
+
+		break;
+	case 20:
+		if (++NPC->ani_wait > 2)
+		{
+			NPC->ani_wait = 0;
+			++NPC->ani_no;
+		}
+
+		if (NPC->ani_no > 6)
+			NPC->ani_no = 4;
+
+		if (++NPC->act_wait > 50)
+		{
+			NPC->act_no = 30;
+			NPC->act_wait = 0;
+			NPC->ani_no = 7;
+		}
+
+		break;
+	case 30:
+		if (++NPC->ani_wait > 2)
+		{
+			NPC->ani_wait = 0;
+			++NPC->ani_no;
+		}
+
+		if (NPC->ani_no > 9)
+			NPC->ani_no = 7;
+
+		if (++NPC->act_wait % 5 == 1)
+		{
+			int ym = random(-0x200, 0x200);
+			int xm = random(2, 12);
+			createNpc(214, NPC->x, NPC->y, pixelsToUnits(xm) / 4, ym, 0, 0, false /*256*/);
+			playSound(21, 1);
+		}
+
+		if (NPC->act_wait > 50)
+		{
+			NPC->act_no = 10;
+			NPC->act_wait = 0;
+			NPC->ani_no = 1;
+		}
+
+		break;
+	case 40:
+		if (NPC->y >= NPC->tgt_y)
+			NPC->ym -= 0x40;
+		else
+			NPC->ym += 0x40;
+
+		if (NPC->ym < -0x400)
+			NPC->ym = -0x400;
+		if (NPC->ym > 0x400)
+			NPC->ym = 0x400;
+
+		if (NPC->shock)
+			NPC->y += NPC->ym / 2;
+		else
+			NPC->y += NPC->ym;
+
+		if (++NPC->ani_wait > 2)
+		{
+			NPC->ani_wait = 0;
+			++NPC->ani_no;
+		}
+
+		if (NPC->ani_no > 6)
+			NPC->ani_no = 4;
+
+		if (currentPlayer.y < NPC->tgt_y + pixelsToUnits(240) && currentPlayer.y > NPC->tgt_y - pixelsToUnits(240))
+		{
+			NPC->act_no = 20;
+			NPC->act_wait = 0;
+			NPC->ani_no = 4;
+		}
+
+		break;
+	}
+
+	if (NPC->act_no >= 10 && NPC->act_no <= 30)
+	{
+		if (NPC->y >= currentPlayer.y)
+			NPC->ym -= 25;
+		else
+			NPC->ym += 25;
+
+		if (NPC->ym < -0x400)
+			NPC->ym = -0x400;
+		if (NPC->ym > 0x400)
+			NPC->ym = 0x400;
+
+		if (NPC->flag & ceiling)
+			NPC->ym = 0x200;
+		if (NPC->flag & ground)
+			NPC->ym = -0x200;
+
+		if (NPC->shock)
+			NPC->y += NPC->ym / 2;
+		else
+			NPC->y += NPC->ym;
+
+		if (currentPlayer.y > NPC->tgt_y + pixelsToUnits(240) || currentPlayer.y < NPC->tgt_y - pixelsToUnits(240))
+			NPC->act_no = 40;
+	}
+
+	NPC->rect = rc[NPC->ani_no];
+}
+
+void npcAct214(npc *NPC) // Night Spirit projectile
+{
+	RECT rect[3];
+
+	rect[0].left = 144;
+	rect[0].top = 48;
+	rect[0].right = 176;
+	rect[0].bottom = 64;
+
+	rect[1].left = 176;
+	rect[1].top = 48;
+	rect[1].right = 208;
+	rect[1].bottom = 64;
+
+	rect[2].left = 208;
+	rect[2].top = 48;
+	rect[2].right = 240;
+	rect[2].bottom = 64;
+
+	switch (NPC->act_no)
+	{
+	case 0:
+		NPC->act_no = 1;
+		NPC->bits |= ground;
+		// fallthrough
+	case 1:
+		if (++NPC->ani_wait > 2)
+		{
+			NPC->ani_wait = 0;
+			++NPC->ani_no;
+		}
+
+		if (NPC->ani_no > 2)
+			NPC->ani_no = 0;
+
+		NPC->xm -= 25;
+
+		NPC->x += NPC->xm;
+		NPC->y += NPC->ym;
+
+		if (NPC->xm < 0)
+			NPC->bits &= ~npc_ignoreSolid;
+
+		if (NPC->flag & solid)
+		{
+			createSmokeLeft(NPC->x, NPC->y, NPC->view.right, 4);
+			playSound(28, 1);
+			NPC->cond = 0;
+		}
+
+		break;
+	}
+
+	NPC->rect = rect[NPC->ani_no];
 }
 
 void npcAct215(npc *NPC) // Sandcroc, White (enemy)
@@ -705,6 +1262,155 @@ void npcAct215(npc *NPC) // Sandcroc, White (enemy)
 void npcAct216(npc *NPC) // Debug cat
 {
 	NPC->doRects({ 256, 192, 272, 216 });
+}
+
+void npcAct217(npc *NPC) // Itoh
+{
+	RECT rc[8];
+
+	rc[0].left = 144;
+	rc[0].top = 64;
+	rc[0].right = 160;
+	rc[0].bottom = 80;
+
+	rc[1].left = 160;
+	rc[1].top = 64;
+	rc[1].right = 176;
+	rc[1].bottom = 80;
+
+	rc[2].left = 176;
+	rc[2].top = 64;
+	rc[2].right = 192;
+	rc[2].bottom = 80;
+
+	rc[3].left = 192;
+	rc[3].top = 64;
+	rc[3].right = 208;
+	rc[3].bottom = 80;
+
+	rc[4].left = 144;
+	rc[4].top = 80;
+	rc[4].right = 160;
+	rc[4].bottom = 96;
+
+	rc[5].left = 160;
+	rc[5].top = 80;
+	rc[5].right = 176;
+	rc[5].bottom = 96;
+
+	rc[6].left = 144;
+	rc[6].top = 80;
+	rc[6].right = 160;
+	rc[6].bottom = 96;
+
+	rc[7].left = 176;
+	rc[7].top = 80;
+	rc[7].right = 192;
+	rc[7].bottom = 96;
+
+	switch (NPC->act_no)
+	{
+	case 0:
+		NPC->act_no = 1;
+		NPC->ani_no = 0;
+		NPC->ani_wait = 0;
+		NPC->xm = 0;
+		// fallthrough
+	case 1:
+		if (random(0, 120) == 10)
+		{
+			NPC->act_no = 2;
+			NPC->act_wait = 0;
+			NPC->ani_no = 1;
+		}
+
+		break;
+	case 2:
+		if (++NPC->act_wait > 8)
+		{
+			NPC->act_no = 1;
+			NPC->ani_no = 0;
+		}
+
+		break;
+	case 10:
+		NPC->ani_no = 2;
+		NPC->xm = 0;
+		break;
+	case 20:
+		NPC->act_no = 21;
+		NPC->ani_no = 2;
+		NPC->xm += pixelsToUnits(1);
+		NPC->ym -= pixelsToUnits(2);
+		break;
+	case 21:
+		if (NPC->flag & ground)
+		{
+			NPC->ani_no = 3;
+			NPC->act_no = 30;
+			NPC->act_wait = 0;
+			NPC->xm = 0;
+			NPC->tgt_x = NPC->x;
+		}
+
+		break;
+	case 30:
+		NPC->ani_no = 3;
+
+		if ((++NPC->act_wait / 2) % 2)
+			NPC->x = NPC->tgt_x + 0x200;
+		else
+			NPC->x = NPC->tgt_x;
+
+		break;
+	case 40:
+		NPC->act_no = 41;
+		NPC->ym = -0x200;
+		NPC->ani_no = 2;
+		// fallthrough
+	case 41:
+		if (NPC->flag & ground)
+		{
+			NPC->act_no = 42;
+			NPC->ani_no = 4;
+		}
+
+		break;
+	case 42:
+		NPC->xm = 0;
+		NPC->ani_no = 4;
+		break;
+	case 50:
+		NPC->act_no = 51;
+		NPC->act_wait = 0;
+		// fallthrough
+	case 51:
+		if (++NPC->act_wait > 0x20)
+			NPC->act_no = 42;
+
+		NPC->xm = 0x200;
+
+		if (++NPC->ani_wait > 3)
+		{
+			NPC->ani_wait = 0;
+			++NPC->ani_no;
+		}
+
+		if (NPC->ani_no > 7)
+			NPC->ani_no = 4;
+
+		break;
+	}
+
+	NPC->ym += 0x40;
+
+	if (NPC->ym > 0x5FF)
+		NPC->ym = 0x5FF;
+
+	NPC->x += NPC->xm;
+	NPC->y += NPC->ym;
+
+	NPC->rect = rc[NPC->ani_no];
 }
 
 void npcAct218(npc *NPC) //big energy shot from core

@@ -96,46 +96,30 @@ void updateOrg(int len)
 {
 	org.playing = SDL_GetWindowFlags(window) & SDL_WINDOW_INPUT_FOCUS;
 
-	if (org.loaded)
+	if (org.playing)
 	{
-		for (int i = 0; i < len; i++)
+		if (org.loaded)
 		{
-			if (org.loaded)
+			org.samples -= len;
+
+			while (org.samples <= 0)
 			{
-				if (org.playing)
-				{
-					//Update
-					const int samplesPerBeat = sampleRate * org.wait / 1000;
-					const int samplesPerFrame = sampleRate * framewait / 1000;
+				org.samples += sampleRate * org.wait / 1000; // samples per beat
 
-					if (org.samples-- == 0)
-					{
-						if (orgFadeout && orgVolume > 0)
-							orgVolume -= 2;
-						if (orgVolume < 0)
-							orgVolume = 0;
-						playData();
-						org.samples = samplesPerBeat;
-					}
-
-					if (++org.samplesForFrame > samplesPerFrame)
-						org.samplesForFrame = 0;
-				}
-				else
-				{
-					for (int j = 0; j < 8; j++)
-					{
-						for (int k = 0; k < 8; k++)
-						{
-							for (int m = 0; m < 2; m++)
-							{
-								SoundObject_Stop(orgWaves[j][k][m]);
-							}
-						}
-					}
-				}
+				if (orgFadeout && orgVolume > 0)
+					orgVolume -= 2;
+				if (orgVolume < 0)
+					orgVolume = 0;
+				playData();
 			}
 		}
+	}
+	else
+	{
+		for (int j = 0; j < 8; j++)
+			for (int k = 0; k < 8; k++)
+				for (int m = 0; m < 2; m++)
+					SoundObject_Stop(orgWaves[j][k][m]);
 	}
 }
 

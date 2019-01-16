@@ -13,6 +13,156 @@
 
 using std::array;
 
+void npcAct240(npc *NPC) // Mimiga (jailed)
+{
+	RECT rcLeft[6];
+
+	rcLeft[0].left = 160;
+	rcLeft[0].top = 64;
+	rcLeft[0].right = 176;
+	rcLeft[0].bottom = 80;
+
+	rcLeft[1].left = 176;
+	rcLeft[1].top = 64;
+	rcLeft[1].right = 192;
+	rcLeft[1].bottom = 80;
+
+	rcLeft[2].left = 192;
+	rcLeft[2].top = 64;
+	rcLeft[2].right = 208;
+	rcLeft[2].bottom = 80;
+
+	rcLeft[3].left = 160;
+	rcLeft[3].top = 64;
+	rcLeft[3].right = 176;
+	rcLeft[3].bottom = 80;
+
+	rcLeft[4].left = 208;
+	rcLeft[4].top = 64;
+	rcLeft[4].right = 224;
+	rcLeft[4].bottom = 80;
+
+	rcLeft[5].left = 160;
+	rcLeft[5].top = 64;
+	rcLeft[5].right = 176;
+	rcLeft[5].bottom = 80;
+
+	RECT rcRight[6];
+
+	rcRight[0].left = 160;
+	rcRight[0].top = 80;
+	rcRight[0].right = 176;
+	rcRight[0].bottom = 96;
+
+	rcRight[1].left = 176;
+	rcRight[1].top = 80;
+	rcRight[1].right = 192;
+	rcRight[1].bottom = 96;
+
+	rcRight[2].left = 192;
+	rcRight[2].top = 80;
+	rcRight[2].right = 208;
+	rcRight[2].bottom = 96;
+
+	rcRight[3].left = 160;
+	rcRight[3].top = 80;
+	rcRight[3].right = 176;
+	rcRight[3].bottom = 96;
+
+	rcRight[4].left = 208;
+	rcRight[4].top = 80;
+	rcRight[4].right = 224;
+	rcRight[4].bottom = 96;
+
+	rcRight[5].left = 160;
+	rcRight[5].top = 80;
+	rcRight[5].right = 176;
+	rcRight[5].bottom = 96;
+
+	switch (NPC->act_no)
+	{
+	case 0:
+		NPC->act_no = 1;
+		NPC->ani_no = 0;
+		NPC->ani_wait = 0;
+		NPC->xm = 0;
+		// fallthrough
+	case 1:
+		if (random(0, 60) == 1)
+		{
+			NPC->act_no = 2;
+			NPC->act_wait = 0;
+			NPC->ani_no = 1;
+		}
+
+		if (random(0, 60) == 1)
+		{
+			NPC->act_no = 10;
+			NPC->act_wait = 0;
+			NPC->ani_no = 1;
+		}
+
+		break;
+	case 2:
+		if (++NPC->act_wait > 8)
+		{
+			NPC->act_no = 1;
+			NPC->ani_no = 0;
+		}
+
+		break;
+	case 10:
+		NPC->act_no = 11;
+		NPC->act_wait = random(0, 0x10);
+		NPC->ani_no = 2;
+		NPC->ani_wait = 0;
+
+		if (random(0, 9) % 2)
+			NPC->direct = dirLeft;
+		else
+			NPC->direct = dirRight;
+
+		// fallthrough
+	case 11:
+		if (NPC->direct == dirLeft && (NPC->flag & leftWall))
+			NPC->direct = dirRight;
+		else if (NPC->direct == dirRight && (NPC->flag & rightWall))
+			NPC->direct = dirLeft;
+
+		if (NPC->direct != dirLeft)
+			NPC->xm = 0x200;
+		else
+			NPC->xm = -0x200;
+
+		if (++NPC->ani_wait > 4)
+		{
+			NPC->ani_wait = 0;
+			++NPC->ani_no;
+		}
+
+		if (NPC->ani_no > 5)
+			NPC->ani_no = 2;
+
+		if (++NPC->act_wait > 0x20)
+			NPC->act_no = 0;
+
+		break;
+	}
+
+	NPC->ym += 0x20;
+
+	if (NPC->ym > 0x5FF)
+		NPC->ym = 0x5FF;
+
+	NPC->x += NPC->xm;
+	NPC->y += NPC->ym;
+
+	if (NPC->direct != dirLeft)
+		NPC->rect = rcRight[NPC->ani_no];
+	else
+		NPC->rect = rcLeft[NPC->ani_no];
+}
+
 void npcAct241(npc *NPC) // Critter, Hopping Red (enemy)
 {
 	constexpr array<RECT, 3> rcLeft = { {{0, 0, 16, 16}, {16, 0, 32, 16}, {32, 0, 48, 16}} };
@@ -589,6 +739,163 @@ void npcAct247(npc *NPC)
     NPC->doRects(rcLeft, rcRight);
 }
 
+void npcAct248(npc *NPC) // Misery (vanishing)
+{
+	if (NPC->flag & solid)
+	{
+		NPC->cond = 0;
+		createCaret(NPC->x, NPC->y, effect_RisingDisc, dirLeft);
+	}
+
+	NPC->y += NPC->ym;
+	NPC->x += NPC->xm;
+
+	RECT rect_left[3];
+
+	rect_left[0].left = 0;
+	rect_left[0].top = 48;
+	rect_left[0].right = 16;
+	rect_left[0].bottom = 64;
+
+	rect_left[1].left = 16;
+	rect_left[1].top = 48;
+	rect_left[1].right = 32;
+	rect_left[1].bottom = 64;
+
+	rect_left[2].left = 32;
+	rect_left[2].top = 48;
+	rect_left[2].right = 48;
+	rect_left[2].bottom = 64;
+
+	if (++NPC->ani_wait > 1)
+	{
+		NPC->ani_wait = 0;
+
+		if (++NPC->ani_no > 2)
+			NPC->ani_no = 0;
+	}
+
+	NPC->rect = rect_left[NPC->ani_no];
+
+	if (++NPC->count1 > 300)
+	{
+		NPC->cond = 0;
+		createCaret(NPC->x, NPC->y, effect_RisingDisc, dirLeft);
+	}
+}
+
+void npcAct249(npc *NPC) // Misery energy shot (projectile)
+{
+	if (++NPC->act_wait > 8)
+		NPC->cond = 0;
+
+	if (NPC->direct != dirLeft)
+	{
+		NPC->rect.left = 64;
+		NPC->rect.top = 48;
+		NPC->rect.right = 80;
+		NPC->rect.bottom = 64;
+
+		NPC->x += 0x400;
+	}
+	else
+	{
+		NPC->rect.left = 48;
+		NPC->rect.top = 48;
+		NPC->rect.right = 64;
+		NPC->rect.bottom = 64;
+
+		NPC->x -= 0x400;
+	}
+}
+
+void npcAct250(npc *NPC) // Misery lightning ball (projectile)
+{
+	RECT rc[3];
+
+	rc[0].left = 0;
+	rc[0].top = 32;
+	rc[0].right = 16;
+	rc[0].bottom = 48;
+
+	rc[1].left = 16;
+	rc[1].top = 32;
+	rc[1].right = 32;
+	rc[1].bottom = 48;
+
+	rc[2].left = 32;
+	rc[2].top = 32;
+	rc[2].right = 48;
+	rc[2].bottom = 48;
+
+	switch (NPC->act_no)
+	{
+	case 0:
+		NPC->act_no = 1;
+		NPC->tgt_y = NPC->y;
+		NPC->xm = 0;
+		NPC->ym = -0x200;
+		// fallthrough
+	case 1:
+		if (NPC->x >= currentPlayer.x)
+			NPC->xm -= 0x10;
+		else
+			NPC->xm += 0x10;
+
+		if (NPC->y >= NPC->tgt_y)
+			NPC->ym -= 0x20;
+		else
+			NPC->ym += 0x20;
+
+		if (NPC->xm > 0x200)
+			NPC->xm = 0x200;
+		if (NPC->xm < -0x200)
+			NPC->xm = -0x200;
+		if (NPC->ym > 0x200)
+			NPC->ym = 0x200;
+		if (NPC->ym < -0x200)
+			NPC->ym = -0x200;
+
+		NPC->x += NPC->xm;
+		NPC->y += NPC->ym;
+
+		if (++NPC->ani_wait > 2)
+		{
+			NPC->ani_wait = 0;
+			++NPC->ani_no;
+		}
+
+		if (NPC->ani_no > 1)
+			NPC->ani_no = 0;
+
+		if (currentPlayer.x > NPC->x - 0x1000 && currentPlayer.x < NPC->x + 0x1000 && currentPlayer.y > NPC->y)
+			NPC->act_no = 10;
+
+		break;
+	case 10:
+		NPC->act_no = 11;
+		NPC->act_wait = 0;
+		// fallthrough
+	case 11:
+		if (++NPC->act_wait > 10)
+		{
+			createNpc(251, NPC->x, NPC->y, 0, 0, 0, 0, false /*256*/);
+			playSound(101, 1);
+			NPC->cond = 0;
+			return;
+		}
+
+		if ((NPC->act_wait / 2) % 2)
+			NPC->ani_no = 2;
+		else
+			NPC->ani_no = 1;
+
+		break;
+	}
+
+	NPC->rect = rc[NPC->ani_no];
+}
+
 void npcAct251(npc *NPC) // Misery black lightning (projectile)
 {
     constexpr array<RECT, 2> rcNPC = {{{80, 32, 96, 64}, {96, 32, 112, 64}}};
@@ -610,6 +917,131 @@ void npcAct251(npc *NPC) // Misery black lightning (projectile)
     }
 
     NPC->doRects(rcNPC);
+}
+
+void npcAct252(npc *NPC) // Misery bat (projectile)
+{
+	RECT rcLeft[4];
+
+	rcLeft[0].left = 48;
+	rcLeft[0].top = 32;
+	rcLeft[0].right = 64;
+	rcLeft[0].bottom = 48;
+
+	rcLeft[1].left = 112;
+	rcLeft[1].top = 32;
+	rcLeft[1].right = 128;
+	rcLeft[1].bottom = 48;
+
+	rcLeft[2].left = 128;
+	rcLeft[2].top = 32;
+	rcLeft[2].right = 144;
+	rcLeft[2].bottom = 48;
+
+	rcLeft[3].left = 144;
+	rcLeft[3].top = 32;
+	rcLeft[3].right = 160;
+	rcLeft[3].bottom = 48;
+
+	RECT rcRight[4];
+
+	rcRight[0].left = 48;
+	rcRight[0].top = 32;
+	rcRight[0].right = 64;
+	rcRight[0].bottom = 48;
+
+	rcRight[1].left = 112;
+	rcRight[1].top = 48;
+	rcRight[1].right = 128;
+	rcRight[1].bottom = 64;
+
+	rcRight[2].left = 128;
+	rcRight[2].top = 48;
+	rcRight[2].right = 144;
+	rcRight[2].bottom = 64;
+
+	rcRight[3].left = 144;
+	rcRight[3].top = 48;
+	rcRight[3].right = 160;
+	rcRight[3].bottom = 64;
+
+	unsigned char deg;
+
+	switch (NPC->act_no)
+	{
+	case 0:
+		NPC->act_no = 1;
+		NPC->act_wait = 0;
+		NPC->count1 = NPC->direct;
+		// fallthrough
+	case 1:
+		NPC->count1 += 2;
+		NPC->count1 %= 0x100;
+		deg = NPC->count1;
+
+		if (NPC->act_wait < 192)
+			++NPC->act_wait;
+
+		NPC->x = NPC->pNpc->x + NPC->act_wait * getCos(deg) / 4;
+		NPC->y = NPC->pNpc->y + NPC->act_wait * getSin(deg) / 4;
+
+		if (NPC->pNpc->act_no == 151)
+		{
+			NPC->act_no = 10;
+			NPC->ani_no = 0;
+		}
+
+		break;
+	case 10:
+		NPC->act_no = 11;
+
+		NPC->bits |= npc_shootable;
+		NPC->bits &= ~npc_invulnerable;
+		NPC->bits &= ~npc_ignoreSolid;
+
+		deg = getAtan(NPC->x - currentPlayer.x, NPC->y - currentPlayer.y);
+		deg += random(-3, 3);
+
+		NPC->xm = getCos(deg);
+		NPC->ym = getSin(deg);
+
+		NPC->ani_no = 1;
+		NPC->ani_wait = 0;
+
+		if (NPC->x <= currentPlayer.x)
+			NPC->direct = dirRight;
+		else
+			NPC->direct = dirLeft;
+
+		// fallthrough
+	case 11:
+		NPC->x += NPC->xm;
+		NPC->y += NPC->ym;
+
+		if (NPC->flag & solid)
+		{
+			createNpc(4, NPC->x, NPC->y, 0, 0, 0, 0, false /*256*/);
+			createNpc(4, NPC->x, NPC->y, 0, 0, 0, 0, false /*256*/);
+			createNpc(4, NPC->x, NPC->y, 0, 0, 0, 0, false /*256*/);
+			NPC->cond = 0;
+		}
+
+		if (++NPC->ani_wait > 4)
+		{
+			NPC->ani_wait = 0;
+			++NPC->ani_no;
+		}
+
+		if (NPC->ani_no > 3)
+			NPC->ani_no = 1;
+
+		break;
+	}
+
+	if (NPC->direct != dirLeft)
+		NPC->rect = rcRight[NPC->ani_no];
+	else
+		NPC->rect = rcLeft[NPC->ani_no];
 }
 
 void npcAct253(npc *NPC) // Energy Capsule
