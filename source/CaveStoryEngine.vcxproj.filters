@@ -270,6 +270,9 @@
     <ClCompile Include="balfrog.cpp">
       <Filter>Source Files\classes\boss\act</Filter>
     </ClCompile>
+    <ClCompile Include="ballos.cpp">
+      <Filter>Source Files\classes\boss\act</Filter>
+    </ClCompile>
     <ClCompile Include="heavyPress.cpp">
       <Filter>Source Files\classes\boss\act</Filter>
     </ClCompile>

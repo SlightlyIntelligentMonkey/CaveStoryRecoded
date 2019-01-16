@@ -66,7 +66,7 @@ MAIN += blade bubbler fireball missile polarStar machineGun misc nemesis snake s
 # NPC behavior
 MAIN += npcAct npc000 npc020 npc040 npc060 npc080 npc100 npc120 npc140 npc160 npc180 npc200 npc220 npc240 npc260 npc280 npc300 npc320 npc340 npc360
 # Boss behavior
-MAIN += balfrog heavyPress monsterX omega core
+MAIN += balfrog ballos heavyPress monsterX omega core
 
 OBJS := $(addprefix obj/, $(addsuffix .o, $(MAIN)))
 ifeq ($(detected_OS),Windows)

@@ -219,6 +219,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="balfrog.cpp" />
+    <ClCompile Include="ballos.cpp" />
     <ClCompile Include="blade.cpp" />
     <ClCompile Include="bladeThrow.cpp" />
     <ClCompile Include="boss.cpp" />
