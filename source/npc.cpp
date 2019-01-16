@@ -288,7 +288,7 @@ void dropExperience(int x, int y, int exp)
 			effectiveExp = 20;
 		}
 
-		createNpcExp(NPC_WeaponEnergy, x, y, 0, 0, 0, nullptr, 0, effectiveExp);
+		createNpcExp(NPC_EXP, x, y, 0, 0, 0, nullptr, 0, effectiveExp);
 	}
 }
 
@@ -393,7 +393,7 @@ void killNpc(npc *NPC, bool bVanish)
 			createValueView(&NPC->x, &NPC->y, NPC->damage_view);
 
 		if (bVanish)
-			NPC->init(NPC_DeletesItself, NPC->x, NPC->y, 0, 0, 0, nullptr);
+			NPC->init(NPC_Null, NPC->x, NPC->y, 0, 0, 0, nullptr);
 	}
 }
 

@@ -187,40 +187,40 @@ extern int curlyShootY;
 
 enum NPC_cond
 {
-	npccond_dmgboss = 0x10, //when set damages the main boss
-	npccond_alive = 0x80, //Determines if an npc is alive
+	npccond_dmgboss = 0x10, // When set damages the main boss
+	npccond_alive = 0x80, // Determines if an npc is alive
 };
 
 enum NPC_flags
 {
-	npc_solidSoft = 0x1, //Pushes quote out
-	npc_ignore44 = 0x2, //Ignores tile 44 (No NPC)
-	npc_invulnerable = 0x4, //Can't get hit
-	npc_ignoreSolid = 0x8, //Doesn't collide with anything
-	npc_bouncy = 0x10, //Quote bounces on the top
-	npc_shootable = 0x20, //Can be shot
-	npc_solidHard = 0x40, //Essentially acts as level tiles
-	npc_rearTop = 0x80, //Rear and top don't hurt
-	npc_eventTouch = 0x100, //Run event when touched
-	npc_eventDie = 0x200, //Run event when killed
-	npc_appearSet = 0x800, //Only appear when flag is set
-	npc_altDir = 0x1000, //Spawn facing to the right (or however the npc interprets the direction as)
-	npc_interact = 0x2000, //Run event when interacted with
-	npc_hideSet = 0x4000, //Hide when flag is set
-	npc_showDamage = 0x8000, //Show #Damage taken
+	npc_solidSoft = 0x1, // Pushes quote out
+	npc_ignore44 = 0x2, // Ignores tile 44 (No NPC)
+	npc_invulnerable = 0x4, // Can't get hit
+	npc_ignoreSolid = 0x8, // Doesn't collide with anything
+	npc_bouncy = 0x10, // Quote bounces on the top
+	npc_shootable = 0x20, // Can be shot
+	npc_solidHard = 0x40, // Essentially acts as level tiles
+	npc_rearTop = 0x80, // Rear and top don't hurt
+	npc_eventTouch = 0x100, // Run event when touched
+	npc_eventDie = 0x200, // Run event when killed
+	npc_appearSet = 0x800, // Only appear when flag is set
+	npc_altDir = 0x1000, // Spawn facing to the right (or however the npc interprets the direction as)
+	npc_interact = 0x2000, // Run event when interacted with
+	npc_hideSet = 0x4000, // Hide when flag is set
+	npc_showDamage = 0x8000, // Show #Damage taken
 };
 
 enum NPCNames
 {
-	NPC_Nothing = 0x0,
-	NPC_WeaponEnergy = 0x1,
+	NPC_Null = 0x0,
+	NPC_EXP = 0x1,
 	NPC_EnemyBehemoth = 0x2,
-	NPC_DeletesItself = 0x3,
+	NPC_NullDeletesItself = 0x3,
 	NPC_Smoke = 0x4,
 	NPC_EnemyCritterHoppingGreen = 0x5,
 	NPC_EnemyBeetleHorizontalGreen = 0x6,
 	NPC_EnemyBasil = 0x7,
-	NPC_EnemyBeetleFollow1 = 0x8,
+	NPC_EnemyBeetleFollowGreen = 0x8,
 	NPC_BalrogFalling = 0x9,
 	NPC_BossBalrogShooting = 0xA,
 	NPC_ProjectileBalrogEnergyBallInvincible = 0xB,
