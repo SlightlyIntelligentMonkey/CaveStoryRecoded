@@ -231,6 +231,7 @@ void actBoss_Ballos(npc *boss)	// Ballos ball (boss)
 
 	if (!notified)
 	{
+		notified = true;
 		std::string msg = "Boss " + std::to_string(bossObj[0].code_char) + " is not completely implemented yet.";
 		logWarning(msg);
 		if (debugFlags & notifyOnNotImplemented)
