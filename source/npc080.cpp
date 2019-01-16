@@ -1746,7 +1746,7 @@ void npcAct099(npc *NPC) //Fan down
 
 		//Current effect
 		if (currentPlayer.x > NPC->x - pixelsToUnits(screenWidth) && currentPlayer.x < NPC->x + pixelsToUnits(screenWidth) && currentPlayer.y > NPC->y - pixelsToUnits(screenHeight) && currentPlayer.y < NPC->y + pixelsToUnits(screenHeight) && random(0, 5) == 1)
-			createNpc(NPC_UnderwaterCurrent, NPC->x + pixelsToUnits(random(-8, 8)), NPC->y, 0, 0, dirRight);
+			createNpc(NPC_UnderwaterCurrent, NPC->x + pixelsToUnits(random(-8, 8)), NPC->y, 0, 0, dirDown);
 
 		//Blow quote
 		if (currentPlayer.x < NPC->x + 0x1000 && currentPlayer.x > NPC->x - 0x1000 && currentPlayer.y > NPC->y && currentPlayer.y < NPC->y + 0xC000)
