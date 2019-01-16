@@ -879,7 +879,7 @@ void npcAct250(npc *NPC) // Misery lightning ball (projectile)
 	case 11:
 		if (++NPC->act_wait > 10)
 		{
-			createNpc(251, NPC->x, NPC->y, 0, 0, 0, 0, false /*256*/);
+			createNpc(251, NPC->x, NPC->y, 0, 0, 0, nullptr, false /*256*/);
 			playSound(101, 1);
 			NPC->cond = 0;
 			return;

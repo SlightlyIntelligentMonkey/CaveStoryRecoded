@@ -1120,9 +1120,9 @@ void npcAct236(npc *NPC) //Gunfish
 			playSound(39, 1);
 
 			if (NPC->direct != dirLeft)
-				createNpc(237, NPC->x + 0x1000, NPC->y - 0x1000, 0x400, -0x400, 0, 0, false /*256*/);
+				createNpc(237, NPC->x + 0x1000, NPC->y - 0x1000, 0x400, -0x400, 0, nullptr, false /*256*/);
 			else
-				createNpc(237, NPC->x - 0x1000, NPC->y - 0x1000, -0x400, -0x400, 0, 0, false /*256*/);
+				createNpc(237, NPC->x - 0x1000, NPC->y - 0x1000, -0x400, -0x400, 0, nullptr, false /*256*/);
 		}
 
 		if (++NPC->ani_wait > 1)

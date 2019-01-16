@@ -618,7 +618,7 @@ void npcAct208(npc *NPC) // Basu 2
 					unsigned char random_deg = random(-6, 6) + deg;
 					int ym = 3 * getSin(random_deg);
 					int xm = 3 * getCos(random_deg);
-					createNpc(209, NPC->x, NPC->y, xm, ym, 0, 0, false /*256*/);	// TODO: createNpc has a different final parameter so fuck me I guess
+					createNpc(209, NPC->x, NPC->y, xm, ym, 0, nullptr, false /*256*/);	// TODO: createNpc has a different final parameter so fuck me I guess
 					playSound(39, 1);
 				}
 
@@ -1026,7 +1026,7 @@ void npcAct213(npc *NPC) // Night Spirit
 		{
 			int ym = random(-0x200, 0x200);
 			int xm = random(2, 12);
-			createNpc(214, NPC->x, NPC->y, pixelsToUnits(xm) / 4, ym, 0, 0, false /*256*/);
+			createNpc(214, NPC->x, NPC->y, pixelsToUnits(xm) / 4, ym, 0, nullptr, false /*256*/);
 			playSound(21, 1);
 		}
 
