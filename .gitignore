@@ -83,14 +83,22 @@ ipch/
 !*.[Cc]ache/
 
 # ------ Actual stuff that matters ------
+# Files produced by the game
 /source/Profile.dat
-/CaveStoryEngine.layout
-/CaveStoryEngine.depend
-/CaveStoryEngine.mpp
-/source/*.aps
 /source/Config.dat
-/*.cscope_file_list
+
+# CodeBlocks files
 /*.layout
+/*.cscope_file_list
+
+# idk prolly something from VS
+/source/*.aps
+
+# Dependency files
 /*.d
+
+# VS Code directory
 /.vscode
+
+# Stack dump when somethingo crashes
 /*.stackdump
