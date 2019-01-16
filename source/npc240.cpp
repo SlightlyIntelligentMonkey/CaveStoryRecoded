@@ -1020,9 +1020,9 @@ void npcAct252(npc *NPC) // Misery bat (projectile)
 
 		if (NPC->flag & solid)
 		{
-			createNpc(4, NPC->x, NPC->y, 0, 0, 0, 0, false /*256*/);
-			createNpc(4, NPC->x, NPC->y, 0, 0, 0, 0, false /*256*/);
-			createNpc(4, NPC->x, NPC->y, 0, 0, 0, 0, false /*256*/);
+			createNpc(4, NPC->x, NPC->y, 0, 0, dirLeft, nullptr, false /*256*/);
+			createNpc(4, NPC->x, NPC->y, 0, 0, dirLeft, nullptr, false /*256*/);
+			createNpc(4, NPC->x, NPC->y, 0, 0, dirLeft, nullptr, false /*256*/);
 			NPC->cond = 0;
 		}
 
