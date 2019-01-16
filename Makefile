@@ -16,44 +16,56 @@ ifeq ($(detected_OS),MINGW)
 	detected_OS := Windows
 endif
 
+# Warning options fed to the compiler
 WARNINGS := -pedantic -Wall -Wextra -Walloc-zero -Wbool-compare -Wcast-align -Wcast-qual -Wchar-subscripts -Wchkp -Wdangling-else -Wdisabled-optimization -Wduplicated-branches -Wduplicated-cond -Wformat=2 -Wformat-nonliteral -Wformat-security -Wformat-y2k -Wimport -Winit-self -Winvalid-pch -Wlogical-not-parentheses -Wlogical-op -Wmissing-field-initializers -Wmissing-format-attribute -Wmissing-include-dirs -Wmissing-noreturn -Wnoexcept -Wnoexcept-type -Wnormalized=nfc -Woverloaded-virtual -Wpointer-arith -Wregister -Wrestrict -Wsign-promo -Wsizeof-array-argument -Wstack-protector -Wstrict-aliasing=3 -Wstrict-null-sentinel -Wsuggest-attribute=format -Wsuggest-attribute=noreturn -Wsuggest-override -Wswitch-bool -Wundef -Wunreachable-code -Wunused -Wunused-local-typedefs -Wuseless-cast -Wvariadic-macros -Wwrite-strings -Wzero-as-null-pointer-constant -Wno-multichar -Wno-unused-parameter
 
+# Optimisation options fed to the compiler
 OPTIMISATIONS := -O3 -frename-registers
 # OPTIMISATIONS += -flto
-# Link-time optimizing makes the linking super long so it's are unactivated by default
+# Link-time optimizing makes the linking super long so it's unactivated by default
 
+# Base command-line when calling the compiler
+# `sdl2-config --cflags` to get the flags needed to compile with SDL2
+# -std=c++17 to activate C++17 features
+# -IJson_Modern_Cpp so that the json library works
+# -MMD -MP -MF $@.d to make the compiler generate dependency files
+# -c so the compiler makes a simple compile into an object file
 CXXFLAGS = $(CXX) $(OPTIMISATIONS) $(WARNINGS) `sdl2-config --cflags` -std=c++17 -IJson_Modern_Cpp -c -MMD -MP -MF $@.d
 LDFLAGS := $(CXX) $(OPTIMISATIONS) $(WARNINGS) -s
 
 ifeq ($(detected_OS),Windows)
+# We can use native icons
 	CXXFLAGS += -DUSE_ICONS_WINDOWS
+# --static-libs is windows-exclusive. Also static linking to avoid having to distribute DLLs with the exe
 	LDFLAGS += -static `sdl2-config --static-libs`
 else
+# Normal linker SDL2 flags for Unix
 	LDFLAGS += `sdl2-config --libs`
 endif
 
+# Main source file
 MAIN := main
-# game states
+# States the game can be in
 MAIN += game inventory mapSystem stageSelect
-# modules
+# Random utilities
 MAIN += filesystem flags input loadConfig log mathUtils script stage stdUtils
-# collision
+# Collision handling
 MAIN += bossCollision bulletCollision npcCollision playerCollision
-# drawing
+# Drawing-related
 MAIN += fade flash hud render
-# libraries
+# External Libraries
 MAIN += lodepng/lodepng
-# sound
+# Sound-related
 MAIN +=	org pxt sound
-# classes
+# Classes
 MAIN += boss bullet caret npc player weapons valueview
-# weapon acts
+# Weapon behavior
 MAIN += bladeThrow bubblePew fireballShoot machineGunShoot missileShoot nemesisShoot polarStarShoot snakeShoot spurShoot
-# bullet acts
+# Bullet behavior
 MAIN += blade bubbler fireball missile polarStar machineGun misc nemesis snake spur
-# npc acts
+# NPC behavior
 MAIN += npcAct npc000 npc020 npc040 npc060 npc080 npc100 npc120 npc140 npc160 npc180 npc200 npc220 npc240 npc260 npc280 npc300 npc320 npc340 npc360
-# boss acts
+# Boss behavior
 MAIN += balfrog heavyPress monsterX omega core
 
 OBJS := $(addprefix obj/, $(addsuffix .o, $(MAIN)))
@@ -63,32 +75,38 @@ ifeq ($(detected_OS),Windows)
 endif
 DEPS := $(addsuffix .d, $(OBJS))
 
-all: bin/CaveStoryEngine
+# Default target
+all: bin/CaveStoryRecoded
 
-bin/CaveStoryEngine: $(OBJS)
+# CaveStoryRecoded binary
+bin/CaveStoryRecoded: $(OBJS)
 	@mkdir -p $(@D)
 	$(LDFLAGS) $(OBJS) -o $@
 
-# general compile
+# Generic source compile
 obj/%.o: source/%.cpp
 	@mkdir -p $(@D)
 	$(CXXFLAGS) $< -o $@
 
+# Compile for lodepng (avoid warnings and also some other stuff)
 obj/lodepng/lodepng.o: source/lodepng/lodepng.cpp
 	@mkdir -p $(@D)
 	$(CXXFLAGS) $< -o $@ -DLODEPNG_NO_COMPILE_ENCODER -DLODEPNG_NO_CXXFLAGS -Wno-zero-as-null-pointer-constant -Wno-suggest-attribute=pure -Wno-suggest-attribute=const -Wno-alloc-zero -Wno-useless-cast -Wno-cast-qual
 	
 ifeq ($(detected_OS),Windows)
+# Compile icon resource
 obj/icon.o: res/icon.rc res/icon_mini.ico
 	@mkdir -p $(@D)
 	@windres $< $@
 else
+# Compile icon from file
 source/icon_mini.h: res/icon_mini.png
 	@xxd -i $< $@
 endif
-	
+
+# Include dependencies
 include $(wildcard $(DEPS))
 
 # Remove all objects files and the binary
 clean:
-	@rm -rf obj bin/CaveStoryEngine
+	@rm -rf obj bin/CaveStoryRecoded
