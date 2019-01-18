@@ -38,6 +38,11 @@
 		"typeinfo": "cpp",
 		"utility": "cpp",
 		"__config": "cpp",
-		"__nullptr": "cpp"
+		"__nullptr": "cpp",
+		"cassert": "cpp",
+		"forward_list": "cpp",
+		"functional": "cpp",
+		"numeric": "cpp",
+		"valarray": "cpp"
 	}
 }

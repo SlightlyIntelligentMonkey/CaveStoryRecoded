@@ -1,7 +1,6 @@
 #pragma once
 #include "common.h"
 
-#include <algorithm>
 #include <cmath>
 #include <cstdint>
 
@@ -20,10 +19,24 @@ template <typename T> int8_t sign(T x)
 	return (x > 0) - (x < 0);
 }
 
- template <typename T> attrConst T clamp(T x, T mi, T ma)
+#if __cplusplus >= 201703L || defined(__cpp_lib_clamp)
+
+#include <algorithm>
+using std::clamp;
+
+#else
+
+template <typename T> constexpr const T clamp(T value, T low, T high)
 {
-    return std::max(std::min(ma, x), mi);
+    return clamp(value, low, high, std::less<>());
 }
+
+template <typename T, typename Compare> constexpr const T clamp(T value, T low, T high, Compare comp)
+{
+    return comp(value, low) ? low : compare(high, value) ? high : value;
+}
+
+#endif
 
 //returns result of normalized sinc
 template <typename T> T sinc(T x)

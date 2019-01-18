@@ -1,3 +1,4 @@
+# This probably doesn't work right now
 
 # -- basic project settings --
 cmake_minimum_required(VERSION 3.12.3)	# CMake version check
