@@ -28,17 +28,17 @@ struct SOUND {
 	long double pos;
 	bool loops;
 	unsigned long freq;
-	long double volume;
-	long double volume_l;
-	long double volume_r;
+	float volume;
+	float volume_l;
+	float volume_r;
 };
 
 //Variable things
-list<SOUND> sound_objects;
+static list<SOUND> sound_objects;
 
-SDL_AudioDeviceID soundDev;
-SDL_AudioSpec soundSpec;
-SDL_AudioSpec want;
+static SDL_AudioDeviceID soundDev;
+static SDL_AudioSpec soundSpec;
+static SDL_AudioSpec want;
 
 SOUND* SoundObject_Create(size_t size, unsigned long freq)
 {
@@ -49,9 +49,9 @@ SOUND* SoundObject_Create(size_t size, unsigned long freq)
 	sound.pos = 0.0L;
 	sound.loops = false;
 	sound.freq = freq;
-	sound.volume = 1.0L;
-	sound.volume_l = 1.0L;
-	sound.volume_r = 1.0L;
+	sound.volume = 1.0f;
+	sound.volume_l = 1.0f;
+	sound.volume_r = 1.0f;
 	SDL_LockAudioDevice(soundDev);
 	sound_objects.push_front(sound);
 	SDL_UnlockAudioDevice(soundDev);
@@ -119,11 +119,11 @@ void SoundObject_SetFrequency(SOUND *sound, unsigned long freq)
 	}
 }
 
-static long double MillibelToVolume(long volume)
+static float MillibelToVolume(long volume)
 {
 	// Volume is in hundredths of decibels, from 0 to -10000
 	volume = clamp(volume, (decltype(volume))-10000, (decltype(volume))0);
-	return pow(10, volume / 2000.0);
+	return pow(10.0f, volume / 2000.0f);
 }
 
 void SoundObject_SetVolume(SOUND *sound, long volume)
@@ -210,9 +210,9 @@ void mixSounds(float (*stream)[2], int len)
 void audio_callback(void *, Uint8 *stream_bytes, int len)
 {
 	float (*stream)[2] = reinterpret_cast<float(*)[2]>(stream_bytes);
-	const unsigned int frames = len / (sizeof(float) * 2);
+	const int frames = len / (sizeof(float) * 2);
 
-	for (unsigned int i = 0; i < frames; ++i)
+	for (int i = 0; i < frames; ++i)
 	{
 		stream[i][0] = 0.0f;
 		stream[i][1] = 0.0f;
