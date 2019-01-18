@@ -1,6 +1,5 @@
 ﻿#include "sound.h"
 
-#include <list>
 #include <vector>
 #include <string>
 #include <fstream>
@@ -18,10 +17,11 @@
 #include "main.h"
 
 using std::string;
-using std::list;
 
 //Sound struct
 struct SOUND {
+	struct SOUND *next;
+
 	uint8_t *wave; // Dynamic size
 	size_t length;
 	bool playing;
@@ -34,7 +34,7 @@ struct SOUND {
 };
 
 //Variable things
-static list<SOUND> sound_objects;
+static SOUND *sound_list_head = nullptr;
 
 static SDL_AudioDeviceID soundDev;
 static SDL_AudioSpec soundSpec;
@@ -42,20 +42,21 @@ static SDL_AudioSpec want;
 
 SOUND* SoundObject_Create(size_t size, unsigned long freq)
 {
-	SOUND sound;
-	sound.wave = new uint8_t[size];
-	sound.length = size;
-	sound.playing = false;
-	sound.pos = 0.0L;
-	sound.loops = false;
-	sound.freq = freq;
-	sound.volume = 1.0f;
-	sound.volume_l = 1.0f;
-	sound.volume_r = 1.0f;
+	SOUND *sound = new SOUND;
+	sound->wave = new uint8_t[size];
+	sound->length = size;
+	sound->playing = false;
+	sound->pos = 0.0L;
+	sound->loops = false;
+	sound->freq = freq;
+	sound->volume = 1.0f;
+	sound->volume_l = 1.0f;
+	sound->volume_r = 1.0f;
 	SDL_LockAudioDevice(soundDev);
-	sound_objects.push_front(sound);
+	sound->next = sound_list_head;
+	sound_list_head = sound;
 	SDL_UnlockAudioDevice(soundDev);
-	return &sound_objects.front();
+	return sound;
 }
 
 void SoundObject_Destroy(SOUND *sound)
@@ -66,11 +67,12 @@ void SoundObject_Destroy(SOUND *sound)
 
 		delete[] sound->wave;
 
-		for (auto it = sound_objects.begin(); it != sound_objects.end(); ++it)
+		for (SOUND **list_sound = &sound_list_head; *list_sound != nullptr; list_sound = &(*list_sound)->next)
 		{
-			if (&*it == sound)
+			if (*list_sound == sound)
 			{
-				sound_objects.erase(it);
+				*list_sound = (*list_sound)->next;
+				delete sound;
 				break;
 			}
 		}
@@ -171,37 +173,37 @@ void SoundObject_Stop(SOUND *sound)
 // Audio callback and things
 void mixSounds(float (*stream)[2], int len)
 {
-	for (auto& sound : sound_objects)
+	for (SOUND *sound = sound_list_head; sound != nullptr; sound = sound->next)
 	{
-		if (sound.playing)
+		if (sound->playing)
 		{
 			for (int i = 0; i < len; ++i)
 			{
-				if (sound.pos >= sound.length)
+				if (sound->pos >= sound->length)
 				{
-					if (sound.loops)
+					if (sound->loops)
 					{
-						sound.pos = fmod(sound.pos, sound.length);
+						sound->pos = fmod(sound->pos, sound->length);
 					}
 					else
 					{
-						SoundObject_Stop(&sound);
+						SoundObject_Stop(sound);
 						break;
 					}
 				}
 
-				const size_t position = sound.pos;
+				const size_t position = sound->pos;
 
 				// Perform sound interpolation
-				const float sample1 = (sound.wave[position] - 0x80) / 255.0f;
-				const float sample2 = (!sound.loops && position + 1 >= sound.length) ? 0.0f : (sound.wave[(position + 1) % sound.length] - 0x80) / 255.0f;
+				const float sample1 = (sound->wave[position] - 0x80) / 255.0f;
+				const float sample2 = (!sound->loops && position + 1 >= sound->length) ? 0.0f : (sound->wave[(position + 1) % sound->length] - 0x80) / 255.0f;
 
-				const float interpolated_sample = sample1 + (sample2 - sample1) * fmod(sound.pos, 1.0f);
+				const float interpolated_sample = sample1 + (sample2 - sample1) * fmod(sound->pos, 1.0f);
 
-				stream[i][0] += interpolated_sample * sound.volume * sound.volume_l;
-				stream[i][1] += interpolated_sample * sound.volume * sound.volume_r;
+				stream[i][0] += interpolated_sample * sound->volume * sound->volume_l;
+				stream[i][1] += interpolated_sample * sound->volume * sound->volume_r;
 
-				sound.pos += (long double)sound.freq / sampleRate;
+				sound->pos += (long double)sound->freq / sampleRate;
 			}
 		}
 	}
