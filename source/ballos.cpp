@@ -16,8 +16,8 @@ namespace ballos
 	constexpr auto& eye1 = bossObj[1];
 	constexpr auto& eye2 = bossObj[2];
 	constexpr auto& body = bossObj[3];
-	constexpr auto& hitai = bossObj[4];
-	constexpr auto& hara = bossObj[5];
+	constexpr auto& hitai = bossObj[4];	// Name is from linux symbols
+	constexpr auto& hara = bossObj[5];	// Name is from linux symbols
 
 	namespace eyeStates
 	{
@@ -25,6 +25,7 @@ namespace ballos
 		{
 			init = 0,
 			opening = 100,
+			openNoWait = 102,
 			closing = 200,
 			exploding = 300,
 		};
@@ -41,7 +42,7 @@ namespace ballos
 				beginFight = 200,
 				prepareJump = 201,
 				jumping = 204,
-				AIdefeated = 220,
+				defeated = 220,
 			};
 		}
 
@@ -124,7 +125,6 @@ namespace ballos
 			eye2.direct = dirRight;
 
 			// Initialize the body
-			auto& body = bossObj[3];
 			body.cond = npccond_alive | npccond_dmgboss;
 			body.bits = npc_ignoreSolid | npc_invulnerable | npc_solidSoft;
 
@@ -138,7 +138,6 @@ namespace ballos
 			body.hit.right = tilesToUnits(3);
 			body.hit.bottom = tilesToUnits(2);
 
-			auto& hitai = bossObj[4];	// Name of this thingo according to linux symbols
 			hitai.cond = npccond_alive | npccond_dmgboss;
 			hitai.bits = npc_ignoreSolid | npc_invulnerable | npc_solidSoft;
 
@@ -147,12 +146,11 @@ namespace ballos
 			hitai.hit.right = hitai.hit.left;
 			hitai.hit.bottom = hitai.hit.top;
 
-			auto& chara = bossObj[5];	// Name of this thingo according to linux symbols
 			hara.cond = npccond_alive | npccond_dmgboss;
 			hara.bits = npc_solidHard | npc_ignoreSolid | npc_invulnerable;
 			hara.hit.left = tilesToUnits(2);
 			hara.hit.top = 0;
-			hara.hit.top = chara.hit.left;
+			hara.hit.top = hara.hit.left;
 			hara.hit.bottom = tilesToUnits(3);
 
 			return true;
@@ -179,10 +177,11 @@ namespace ballos
 		case states::phase1::falling:
 			boss.ym += pixelsToUnits(0.125);
 			boss.limitYVel(pixelsToUnits(6));
+			boss.y += boss.ym;
 
-			if (boss.y > floorY - boss.hit.bottom)
+			if (boss.y > crashY - boss.hit.bottom)
 			{
-				boss.y = floorY - boss.hit.bottom;
+				boss.y = crashY - boss.hit.bottom;
 				boss.ym = 0;
 				boss.act_no = states::phase1::falling + 1;
 				boss.act_wait = 0;
@@ -228,6 +227,7 @@ namespace ballos
 			{
 				boss.act_no = states::phase1::jumping;
 				boss.ym = pixelsToUnits(-6);
+				boss.xm = 0;
 				boss.accelerateTowardsPlayer(pixelsToUnits(1));
 			}
 			break;
@@ -239,7 +239,7 @@ namespace ballos
 				boss.xm = pixelsToUnits(-1);
 			
 			boss.ym += 0x55;
-			boss.limitYVel(tilesToUnits(6));
+			boss.limitYVel(pixelsToUnits(6));
 
 			boss.x += boss.xm;
 			boss.y += boss.ym;
@@ -262,7 +262,7 @@ namespace ballos
 				viewport.quake2 = 30;
 				playSound(SFX_LargeObjectHitGround);
 				createNpc(NPC_ProjectileBallosShockwave
-					, boss.x - tilesToUnits(0.75), boss.y + tilesToUnits(3.25));
+					, boss.x - tilesToUnits(0.75), boss.y + tilesToUnits(3.25), 0, 0, dirLeft);
 				createNpc(NPC_ProjectileBallosShockwave
 					, boss.x + tilesToUnits(0.75), boss.y + tilesToUnits(3.25), 0, 0, dirRight);
 
@@ -274,26 +274,26 @@ namespace ballos
 			}
 			break;
 			
-		case states::phase1::AIdefeated:
-			boss.act_no = states::phase1::AIdefeated + 1;
+		case states::phase1::defeated:
+			boss.act_no = states::phase1::defeated + 1;
 			boss.life = 1200;
-			bossObj[1].act_no = eyeStates::closing;
-			bossObj[2].act_no = eyeStates::closing;
+			eye1.act_no = eyeStates::closing;
+			eye2.act_no = eyeStates::closing;
 			boss.xm = 0;
 			boss.ani_no = 0;
 			boss.shock = 0;
 			flashAlternator = false;
 			// Fallthrough
-		case states::phase1::AIdefeated + 1:
+		case states::phase1::defeated + 1:
 			boss.ym += pixelsToUnits(0.125);
 			boss.limitYVel(pixelsToUnits(6));
 			boss.y += boss.ym;
 
-			if (boss.y > floorY - boss.hit.bottom)
+			if (boss.y > crashY - boss.hit.bottom)
 			{
-				boss.y = floorY - boss.hit.bottom;
+				boss.y = crashY - boss.hit.bottom;
 				boss.ym = 0;
-				boss.act_no = states::phase1::AIdefeated + 2;
+				boss.act_no = states::phase1::defeated + 2;
 				boss.act_wait = 0;
 				viewport.quake2 = 30;
 				playSound(SFX_LargeObjectHitGround);
@@ -379,7 +379,7 @@ namespace ballos
 				--boss.count1;
 			// Check if all rotating thingos are dead and if is at center of room
 			if (!boss.count1 && boss.x > tilesToUnits(19) && boss.x < tilesToUnits(21))
-				boss.act_no = states::phase2::enterPhase;
+				boss.act_no = states::phase3::enterPhase;
 			break;
 
 		case states::phase2::goDown:
@@ -464,8 +464,8 @@ namespace ballos
 			viewport.quake2 = 30;
 			playSound(SFX_LargeExplosion);
 			
-			eye1.act_no = eyeStates::opening + 2;
-			eye2.act_no = eyeStates::opening + 2;
+			eye1.act_no = eyeStates::openNoWait;
+			eye2.act_no = eyeStates::openNoWait;
 
 			for (int i = 0; i < 0x100; ++i)
 				createNpc(NPC_Smoke, boss.x + pixelsToUnits(random(-60, 60))
@@ -621,10 +621,10 @@ namespace ballos
 		case eyeStates::opening + 1:
 			eye.animate(2);
 			if (eye.ani_no > 2)
-				eye.act_no = eyeStates::opening + 2;
+				eye.act_no = eyeStates::openNoWait;
 			break;
 
-		case eyeStates::opening + 2:
+		case eyeStates::openNoWait:
 			eye.ani_no = 3;
 			break;
 
