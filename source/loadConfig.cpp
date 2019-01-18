@@ -1,11 +1,11 @@
 #include <string>
 #include <limits>
 #include <fstream>
-#include <json.hpp>
 #include <SDL_render.h>
 #include <SDL_keyboard.h>
 #include <SDL_gamecontroller.h>
 #include <SDL_messagebox.h>
+#include "JsonModernCpp/json.hpp"
 
 #include "loadConfig.h"
 #include "game.h"

@@ -27,10 +27,9 @@ OPTIMISATIONS := -O3 -frename-registers
 # Base command-line when calling the compiler
 # `sdl2-config --cflags` to get the flags needed to compile with SDL2
 # -std=c++17 to activate C++17 features
-# -IJson_Modern_Cpp so that the json library works
 # -MMD -MP -MF $@.d to make the compiler generate dependency files
 # -c so the compiler makes a simple compile into an object file
-CXXFLAGS = $(CXX) $(OPTIMISATIONS) $(WARNINGS) `sdl2-config --cflags` -std=c++17 -IJson_Modern_Cpp -c -MMD -MP -MF $@.d
+CXXFLAGS = $(CXX) $(OPTIMISATIONS) $(WARNINGS) `sdl2-config --cflags` -std=c++17 -c -MMD -MP -MF $@.d
 LDFLAGS := $(CXX) $(OPTIMISATIONS) $(WARNINGS) -s
 
 ifeq ($(detected_OS),Windows)
