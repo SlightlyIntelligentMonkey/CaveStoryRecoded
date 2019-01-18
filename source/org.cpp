@@ -149,7 +149,7 @@ void noteAlloc(uint16_t alloc)
 void releaseNote(void)
 {
 	for (int i = 0; i < 16; i++) {
-		delete org.tdata[i].note_p;
+		delete[] org.tdata[i].note_p;
 	}
 }
 
