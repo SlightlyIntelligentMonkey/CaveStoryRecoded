@@ -149,7 +149,7 @@ void noteAlloc(uint16_t alloc)
 void releaseNote(void)
 {
 	for (int i = 0; i < 16; i++) {
-		delete org.tdata[i].note_p;
+		delete[] org.tdata[i].note_p;
 	}
 }
 
@@ -293,7 +293,7 @@ void changeOrganVolume(int /*no*/, long volume, uint8_t track)
 
 void playOrganObject(unsigned char key, int play_mode, uint8_t track, int32_t freq)
 {
-	if (orgWaves[track][old_key[track] / 12][key_twin[track]])
+	if (orgWaves[track][key / 12][key_twin[track]])
 	{
 		switch (play_mode) {
 		case 0: //Stop
