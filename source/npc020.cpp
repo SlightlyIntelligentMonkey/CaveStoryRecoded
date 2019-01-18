@@ -912,7 +912,7 @@ void npcAct036(npc *NPC) // Balrog, Flying (boss)
                 const auto xVel = random(pixelsToUnits(-2), pixelsToUnits(2));
                 const auto yPos = NPC->y + pixelsToUnits(random(-12, 12));
                 const auto xPos = NPC->x + pixelsToUnits(random(-12, -12));
-                createNpc(NPC_ProjectileBalrogEnergyBounce, xPos, yPos, xVel, yVel);
+                createNpc(NPC_ProjectileBalrogEnergyBallBouncing, xPos, yPos, xVel, yVel);
             }
         }
         break;
