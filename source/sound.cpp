@@ -65,19 +65,20 @@ void SoundObject_Destroy(SOUND *sound)
 	{
 		SDL_LockAudioDevice(soundDev);
 
-		delete[] sound->wave;
-
 		for (SOUND **list_sound = &sound_list_head; *list_sound != nullptr; list_sound = &(*list_sound)->next)
 		{
 			if (*list_sound == sound)
 			{
 				*list_sound = (*list_sound)->next;
-				delete sound;
 				break;
 			}
 		}
 
 		SDL_UnlockAudioDevice(soundDev);
+
+		delete[] sound->wave;
+		delete sound;
+
 	}
 }
 
