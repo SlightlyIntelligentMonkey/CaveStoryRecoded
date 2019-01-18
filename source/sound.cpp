@@ -1,6 +1,5 @@
 ﻿#include "sound.h"
 
-#include <algorithm>
 #include <list>
 #include <vector>
 #include <string>
@@ -123,7 +122,7 @@ void SoundObject_SetFrequency(SOUND *sound, unsigned long freq)
 static long double MillibelToVolume(long volume)
 {
 	// Volume is in hundredths of decibels, from 0 to -10000
-	volume = std::clamp(volume, (decltype(volume))-10000, (decltype(volume))0);
+	volume = clamp(volume, (decltype(volume))-10000, (decltype(volume))0);
 	return pow(10, volume / 2000.0);
 }
 
