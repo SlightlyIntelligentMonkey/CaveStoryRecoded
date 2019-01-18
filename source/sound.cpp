@@ -196,8 +196,8 @@ void mixSounds(float (*stream)[2], int len)
 				const size_t position = sound->pos;
 
 				// Perform sound interpolation
-				const float sample1 = (sound->wave[position] - 0x80) / 255.0f;
-				const float sample2 = (!sound->loops && position + 1 >= sound->length) ? 0.0f : (sound->wave[(position + 1) % sound->length] - 0x80) / 255.0f;
+				const float sample1 = (sound->wave[position] - 0x80) / 128.0f;
+				const float sample2 = (!sound->loops && position + 1 >= sound->length) ? 0.0f : (sound->wave[(position + 1) % sound->length] - 0x80) / 128.0f;
 
 				const float interpolated_sample = sample1 + (sample2 - sample1) * fmod(sound->pos, 1.0f);
 
