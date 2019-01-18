@@ -212,7 +212,51 @@ void npcAct329(npc *NPC) // Building fan
         NPC->rect = {64, 0, 80, 16};
 }
 
-void npcAct334(npc *NPC) //sweat
+void npcAct332(npc *NPC)	// Ballos shockwave (projectile)
+{
+	std::array<RECT, 3> rcNPC
+	{{
+		{144, 96, 168, 120},
+		{168, 96, 192, 120},
+		{192, 96, 216, 120},
+	}};
+
+	switch (NPC->act_no)
+	{
+	case 0:
+		playSound(SFX_MissileImpact);
+		NPC->act_no = 1;
+		NPC->moveInDir(pixelsToUnits(2));
+		// Fallthrough
+	case 1:
+		NPC->animate(1, 0, 2);
+
+		if (++NPC->act_wait % secondsToFrames(0.12) == 1)
+		{
+			if (NPC->direct != dirLeft)
+				createNpc(NPC_ProjectileBallosBone
+					, NPC->x, NPC->y, pixelsToUnits(random(4, 16)) / 8, pixelsToUnits(-2));
+			else
+				createNpc(NPC_ProjectileBallosBone
+					, NPC->x, NPC->y, pixelsToUnits(random(-16, -4)) / 8, pixelsToUnits(-2));
+			playSound(SFX_DestroyBreakableBlock);
+		}
+		break;
+
+	default:
+		break;
+	}
+
+	if (NPC->flag & leftWall)
+		NPC->cond = 0;
+	if (NPC->flag & ground)
+		NPC->cond = 0;
+
+	NPC->x += NPC->xm;
+	NPC->doRects(rcNPC);
+}
+
+void npcAct334(npc *NPC) // Water Drop, 2
 {
 	constexpr std::array<RECT, 2> rcRight =
 	{{
