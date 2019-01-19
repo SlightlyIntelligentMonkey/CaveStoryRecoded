@@ -35,6 +35,11 @@ LDFLAGS := $(CXX) $(OPTIMISATIONS) $(WARNINGS) -s -static `sdl2-config --static-
 ifeq ($(detected_OS),Windows)
 # We can use native icons
 	CXXFLAGS += -DUSE_ICONS_WINDOWS
+# --static-libs is windows-exclusive to avoid problems with people not . Also static linking to avoid having to distribute DLLs with the exe
+	LDFLAGS += -static `sdl2-config --static-libs`
+else
+# Normal linker SDL2 flags for Unix
+	LDFLAGS += `sdl2-config --libs`
 endif
 
 # Main source file
