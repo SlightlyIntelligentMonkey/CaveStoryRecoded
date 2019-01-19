@@ -166,7 +166,8 @@ bool loadWave100()
 	if ((fp = fopen("data/Wave100.dat", "rb")) == nullptr)
 		return false;
 
-	fread(wave_data, sizeof(char), 0x100 * 100, fp);
+	if (fread(wave_data, sizeof(char), 0x100 * 100, fp) != 0x100 * 100)
+		doCustomError("Couldn't read from data/Wave100.dat"); 
 	fclose(fp);
 	return true;
 }
