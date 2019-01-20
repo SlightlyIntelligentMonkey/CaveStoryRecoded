@@ -26,6 +26,8 @@ using std::clamp;
 
 #else
 
+#include <functional>
+
 template <typename T> constexpr const T clamp(T value, T low, T high)
 {
     return clamp(value, low, high, std::less<>());

@@ -30,12 +30,12 @@ OPTIMISATIONS := -O3 -frename-registers
 # -MMD -MP -MF $@.d to make the compiler generate dependency files
 # -c so the compiler makes a simple compile into an object file
 CXXFLAGS = $(CXX) $(OPTIMISATIONS) $(WARNINGS) `sdl2-config --cflags` -std=c++17 -c -MMD -MP -MF $@.d
-LDFLAGS := $(CXX) $(OPTIMISATIONS) $(WARNINGS) -s -static `sdl2-config --static-libs`
+LDFLAGS := $(CXX) $(OPTIMISATIONS) $(WARNINGS) -s
 
 ifeq ($(detected_OS),Windows)
 # We can use native icons
 	CXXFLAGS += -DUSE_ICONS_WINDOWS
-# --static-libs is windows-exclusive to avoid problems with people not . Also static linking to avoid having to distribute DLLs with the exe
+# --static-libs is windows-exclusive to avoid problems with people not having the appropriate static libs installed. Also static linking to avoid having to distribute DLLs with the exe
 	LDFLAGS += -static `sdl2-config --static-libs`
 else
 # Normal linker SDL2 flags for Unix
