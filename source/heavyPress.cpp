@@ -177,10 +177,10 @@ void actBoss_HeavyPress(npc *boss)
     bossObj[3].y = boss->y + tilesToUnits(2.5);
 
     constexpr array<RECT, 3> rcNormal = {{{0, 0, 80, 120}, {80, 0, 160, 120}, {160, 0, 240, 120}}};
-    constexpr array<RECT, 3> rcBeingHit = {{{0, 120, 80, 240}, {80, 120, 160, 240}, {160, 120, 240, 240}}};
 
     if (boss->shock)
     {
+		constexpr array<RECT, 3> rcBeingHit = {{{0, 120, 80, 240}, {80, 120, 160, 240}, {160, 120, 240, 240}}};
         static uint8_t flashAlternator = 0;
         if ((flashAlternator >> 1) & 1)
             boss->rect = rcNormal.at(boss->ani_no);

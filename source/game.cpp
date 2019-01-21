@@ -45,12 +45,12 @@ void SetFrameTargetMyChar(int wait)
 
 void SetFrameTargetNpChar(int event, int wait)
 {
-	int i;
-
+	size_t i = 0;
 	// Check if object actually exists
-	for (i = 0; i < (int)npcs.size() && npcs[i].code_event != event; ++i);
+	for (; i < npcs.size() && npcs[i].code_event != event; ++i)
+		;
 
-	if (i != (int)npcs.size())
+	if (i != npcs.size())
 	{
 		viewport.lookX = &npcs[i].x;
 		viewport.lookY = &npcs[i].y;
@@ -258,7 +258,7 @@ void debugFunction()
 		if (isKeyPressed(SDL_SCANCODE_RETURN) || isKeyPressed(SDL_SCANCODE_KP_ENTER))
 		{
 			cmd += "<END";
-			debugTSC.data = (uint8_t *)cmd.data();
+			debugTSC.data = reinterpret_cast<uint8_t *>(cmd.data());
 			debugTSC.mode = 1;
 			debugTSC.wait = 5;
 			debugTSC.p_read = 0;

@@ -76,7 +76,7 @@ bool fileExists(const string& name)
 	return stat(name.c_str(), &buffer) == 0;
 }
 
-int loadFile(const string& name, uint8_t **data)
+int loadFile(const string& name, std::unique_ptr<uint8_t>& data)
 {
 	if (data == nullptr)
 		throw std::invalid_argument("data was nullptr in loadFile");
@@ -94,7 +94,7 @@ int loadFile(const string& name, uint8_t **data)
 		throw std::runtime_error("Could not seek in " + name);
 	}
 
-	const int filesize = ftell(file);
+	const auto filesize = ftell(file);
 	if (filesize == -1L)
 	{
 		if (fclose(file) == EOF)
@@ -110,8 +110,8 @@ int loadFile(const string& name, uint8_t **data)
 	}
 
 	//Load data
-	*data = new uint8_t[filesize];
-	if (fread(*data, 1, filesize, file) < static_cast<size_t>(filesize))
+	data = std::make_unique<uint8_t>(filesize);
+	if (fread(data.get(), 1, filesize, file) < static_cast<size_t>(filesize))
 	{
 		if (fclose(file) == EOF)
 			throw std::runtime_error("Could not close " + name + " after failing to read it");

@@ -530,7 +530,7 @@ void loadOrganya(const string& name)
 		org.tdata[i].wave_no = SDL_ReadU8(fp);
 		org.tdata[i].pipi = SDL_ReadU8(fp);
 		if (ver == 1)
-			org.tdata[i].pipi = false;
+			org.tdata[i].pipi = 0;
 		org.tdata[i].note_num = SDL_ReadLE16(fp);
 	}
 

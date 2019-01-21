@@ -57,16 +57,18 @@ extern int gWaterY;
 extern SDL_Texture *levelTileset;
 extern SDL_Texture *levelBackground;
 
-uint8_t getTileAttribute(int x, int y) attrPure;
+uint8_t getTileAttribute(size_t x, size_t y) attrPure;
 
-void deleteTile(int x, int y);
-void shiftTile(int x, int y);
-bool changeTile(int x, int y, uint8_t tile);
+void deleteTile(size_t x, size_t y);
+void shiftTile(size_t x, size_t y);
+bool changeTile(size_t x, size_t y, uint8_t tile);
 
 void loadStageTable();
 
-void loadLevel(int levelIndex, int w, int x, int y);
+void loadLevel(size_t levelIndex, int w, int x, int y);
 void drawLevel(bool foreground);
+
+void updateBackgroundEffect(int w);
 
 template<typename T> constexpr inline int32_t tilesToUnits(T x)
 {
@@ -97,3 +99,4 @@ template <typename T> constexpr inline T unitsToPixels(T x)
 {
 	return x / 0x200;   // x / 512 or x >> 9
 }
+

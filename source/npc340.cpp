@@ -80,8 +80,8 @@ void npcAct340(npc *NPC) // Ballos (boss) (first form)
             {
                 if (tmp <= 3)
                     NPC->act_no = flightAttack;
-                else if (tmp == 4)
-                    NPC->act_no = lightningStrike;
+                else	// tmp == 4
+					NPC->act_no = lightningStrike;
             }
             ++NPC->count2;
         }

@@ -66,27 +66,26 @@ void loadStageTable()
 	}
 }
 
-
-uint8_t getTileAttribute(int xTile, int yTile)
+uint8_t getTileAttribute(size_t xTile, size_t yTile)
 {
-	if (xTile >= 0 && xTile < map.width && yTile >= 0 && yTile < map.height)  // Make sure coordinates are valid
+	if (xTile < map.width && yTile < map.height)  // Make sure coordinates are valid
 		return map.attribute[map.tile[xTile + yTile * map.width]];
 
     // Coordinates are invalid
 	return 0;
 }
 
-void deleteTile(int x, int y)
+void deleteTile(size_t x, size_t y)
 {
 	map.tile[x + y * map.width] = 0;
 }
 
-void shiftTile(int x, int y)
+void shiftTile(size_t x, size_t y)
 {
 	--map.tile[x + y * map.width];
 }
 
-bool changeTile(int x, int y, uint8_t tile)
+bool changeTile(size_t x, size_t y, uint8_t tile)
 {
 	if (map.tile[y * map.width + x] == tile)
 		return false;
@@ -104,18 +103,14 @@ void loadPxm(const string &name)
 	//frees old map memory
 	delete[] map.tile;
 
-	uint8_t *pxm = nullptr;
-	const int pxmSize = loadFile("data/Stage/" + name + ".pxm", &pxm);
+	std::unique_ptr<uint8_t> pxm = nullptr;
+	const int pxmSize = loadFile("data/Stage/" + name + ".pxm", pxm);
 
-	map.width = readLEshort(pxm, 4);
-	map.height = readLEshort(pxm, 6);
+	map.width = readLEshort(pxm.get(), 4);
+	map.height = readLEshort(pxm.get(), 6);
 
 	map.tile = new uint8_t[pxmSize - 8];
-	memcpy(map.tile, pxm + 8, pxmSize - 8);
-
-	//DONE WITH PXM
-	delete[] pxm;
-	return;
+	memcpy(map.tile, pxm.get() + 8, pxmSize - 8);
 }
 
 void loadPxa(const string &name)
@@ -123,15 +118,11 @@ void loadPxa(const string &name)
 	//free old tile attribute memory
 	delete[] map.attribute;
 
-	uint8_t *pxa = nullptr;
-	const int pxaSize = loadFile("data/Stage/" + name + ".pxa", &pxa);
+	std::unique_ptr<uint8_t> pxa = nullptr;
+	const int pxaSize = loadFile("data/Stage/" + name + ".pxa", pxa);
 
 	map.attribute = new uint8_t[pxaSize];
-	memcpy(map.attribute, pxa, pxaSize);
-
-	//DONE WITH PXA
-	delete[] pxa;
-	return;
+	memcpy(map.attribute, pxa.get(), pxaSize);
 }
 
 void loadPxe(const string &name)
@@ -140,37 +131,34 @@ void loadPxe(const string &name)
 	npcs.clear();
 	npcs.shrink_to_fit();
 
-	uint8_t *pxe = nullptr;
-	loadFile("data/Stage/" + name + ".pxe", &pxe);
+	std::unique_ptr<uint8_t> pxe = nullptr;
+	loadFile("data/Stage/" + name + ".pxe", pxe);
 
 	//Load npcs
-	const int npcAmount = readLElong(pxe, 4);
+	const int npcAmount = readLElong(pxe.get(), 4);
 
 	for (int i = 0; i < npcAmount; i++)
 	{
 		const int offset = (i * 12) + 8;
 
-		if (readLEshort(pxe, offset + 10) & npc_appearSet && !(getFlag(readLEshort(pxe, offset + 4))))
+		if (readLEshort(pxe.get(), offset + 10) & npc_appearSet && !(getFlag(readLEshort(pxe.get(), offset + 4))))
 			continue;
 
-		if (readLEshort(pxe, offset + 10) & npc_hideSet && getFlag(readLEshort(pxe, offset + 4)))
+		if (readLEshort(pxe.get(), offset + 10) & npc_hideSet && getFlag(readLEshort(pxe.get(), offset + 4)))
 			continue;
 
 		npc newNPC;
-		newNPC.init(readLEshort(pxe, offset + 8), tilesToUnits(readLEshort(pxe, offset)), tilesToUnits(readLEshort(pxe, offset + 2)), 0, 0, 0, nullptr);
+		newNPC.init(readLEshort(pxe.get(), offset + 8), tilesToUnits(readLEshort(pxe.get(), offset)), tilesToUnits(readLEshort(pxe.get(), offset + 2)), 0, 0, 0, nullptr);
 
-		newNPC.code_event = readLEshort(pxe, offset + 6);
-		newNPC.code_flag = readLEshort(pxe, offset + 4);
-		newNPC.bits |= readLEshort(pxe, offset + 10);
+		newNPC.code_event = readLEshort(pxe.get(), offset + 6);
+		newNPC.code_flag = readLEshort(pxe.get(), offset + 4);
+		newNPC.bits |= readLEshort(pxe.get(), offset + 10);
 
-		if (readLEshort(pxe, offset + 10) & npc_altDir)
+		if (readLEshort(pxe.get(), offset + 10) & npc_altDir)
 			newNPC.direct = dirRight;
 
 		npcs.push_back(newNPC);
 	}
-
-	delete[] pxe;
-	return;
 }
 
 void iniBackground(const string &name, int mode)
@@ -181,10 +169,9 @@ void iniBackground(const string &name, int mode)
 	background.flag = 1;
 	loadImage(name, &sprites[TEX_BACKGROUND]);
 	gWaterY = 0x1E0000;
-	return;
 }
 
-void loadLevel(int levelIndex, int w, int x, int y)
+void loadLevel(size_t levelIndex, int w, int x, int y)
 {
 	logInfo("Loading level " + to_string(levelIndex));
 
@@ -269,21 +256,10 @@ void drawForeground(void)
 					unitsToPixels(x) - unitsToPixels(viewport.x), unitsToPixels(y) - unitsToPixels(viewport.y));
 		}
 	}
-	return;
 }
 
-void drawBackground(void)
+void updateBackgroundEffect(int w)
 {
-	RECT rect;
-
-	int skyOff;
-
-	int w, h;
-	SDL_QueryTexture(sprites[TEX_BACKGROUND], nullptr, nullptr, &w, &h);
-
-	rect = { 0, 0, w, h };
-
-	//Update background effect
 	if (gameFlags & 1)
 	{
 		if (background.mode == 5)
@@ -297,6 +273,20 @@ void drawBackground(void)
 			background.effect %= (w * 2);
 		}
 	}
+}
+
+void drawBackground(void)
+{
+	RECT rect;
+
+	int skyOff;
+
+	int w, h;
+	SDL_QueryTexture(sprites[TEX_BACKGROUND], nullptr, nullptr, &w, &h);
+
+	rect = { 0, 0, w, h };
+
+	updateBackgroundEffect(w);
 
 	switch (background.mode)
 	{
@@ -384,7 +374,6 @@ void drawBackground(void)
 	default:
 		break;
 	}
-	return;
 }
 
 void drawLevel(bool foreground)
@@ -512,3 +501,4 @@ void drawLevel(bool foreground)
 		drawRect(0, screenHeight - bottomBorder, screenWidth, bottomBorder);
 	}
 }
+

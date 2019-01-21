@@ -83,13 +83,13 @@ void actBoss_Core(npc *boss)
 		memcpy(&bossObj[hit2], &bossObj[hit1], sizeof(npc));
 		bossObj[hit2].hit.right = pixelsToUnits(36);
 		bossObj[hit2].hit.top = pixelsToUnits(24);
-		bossObj[hit2].hit.bottom = pixelsToUnits(24);
+		bossObj[hit2].hit.bottom = bossObj[hit2].hit.top;
 		bossObj[hit2].count1 = 1;
 
 		memcpy(&bossObj[hit3], &bossObj[hit1], sizeof(npc));
 		bossObj[hit3].hit.right = pixelsToUnits(44);
 		bossObj[hit3].hit.top = pixelsToUnits(8);
-		bossObj[hit3].hit.bottom = pixelsToUnits(8);
+		bossObj[hit3].hit.bottom = bossObj[hit3].hit.top;
 		bossObj[hit3].count1 = 2;
 
 		memcpy(&bossObj[hit4], &bossObj[hit1], sizeof(npc));

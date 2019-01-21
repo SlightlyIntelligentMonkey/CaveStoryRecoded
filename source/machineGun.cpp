@@ -24,7 +24,7 @@ void actBulletMachineGun1(bullet *bul)
 		bul->rect.left = 64 + (bul->direct*16);
 		bul->rect.top = 0;
 		bul->rect.right = bul->rect.left + 16;
-		bul->rect.bottom = bul->rect.top + 16;
+		bul->rect.bottom = 16;
 	}
 	else
 	{

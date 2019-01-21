@@ -13,15 +13,15 @@ void bossHitMap()
 		NPC->flag = 0; //clear
         if (bossObj[i].cond & 0x80 && !(bossObj[i].bits & npc_ignoreSolid))
         {
-			const size_t fromX = unitsToTiles(NPC->x - rcHit->right + 0x1000);
-			const size_t fromY = unitsToTiles(NPC->y - rcHit->top + 0x1000);
+			const int fromX = unitsToTiles(NPC->x - rcHit->right + 0x1000);
+			const int fromY = unitsToTiles(NPC->y - rcHit->top + 0x1000);
 
-			const size_t toX = unitsToTiles(NPC->x + rcHit->right + 0x1000);
-			const size_t toY = unitsToTiles(NPC->y + rcHit->bottom + 0x1000);
+			const int toX = unitsToTiles(NPC->x + rcHit->right + 0x1000);
+			const int toY = unitsToTiles(NPC->y + rcHit->bottom + 0x1000);
 
-            for (size_t currentX = fromX; currentX <= toX; ++currentX)
+            for (int currentX = fromX; currentX <= toX; ++currentX)
             {
-				for (size_t currentY = fromY; currentY <= toY; currentY++)
+				for (int currentY = fromY; currentY <= toY; currentY++)
 				{
 					switch (getTileAttribute(currentX, currentY))
 					{
