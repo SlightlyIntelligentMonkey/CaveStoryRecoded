@@ -90,6 +90,7 @@ public:
 	// These are kinda supposed to be internal, but I can't put them as protected/private
 	void accelerateTowardsPlayer(int vel);
 	void animate(int aniWait, int aniStart = -1, int aniMax = -1);
+	void animateReverse(int aniWait, int aniStart = -1, int aniMin = -1);
 	void createSmokeWithVel(size_t num, int xVel, int yVel);
 	void doGravity(int gravity, int maxYVel);
 

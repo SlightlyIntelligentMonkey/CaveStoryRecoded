@@ -13,22 +13,19 @@
 #include "log.h"
 #include "stage.h"
 
-using std::string;
-using std::to_string;
-using std::array;
-
 void npcActNone(npc *NPC)
 {
 	NPC->surf = 0x27;
-	NPC->doRects({ 0, 0, NPC->view.left >> 8, NPC->view.top >> 8 });
+	NPC->doRects({ 0, 0, NPC->view.left >> 8, NPC->view.top >> 8 });	// Checkered texture thing
 
+	// Array to check for having already notified about an NPC
 	static bool wasNotifiedAbout[_countof(npcActs)] = { 0 };
 
 	if (wasNotifiedAbout[NPC->code_char])
-		return;
+		return;	// We already notified about this NPC
 
 	wasNotifiedAbout[NPC->code_char] = true;
-	string msg = "NPC " + to_string(NPC->code_char) + " is not implementated yet.";
+	std::string msg = "NPC " + std::to_string(NPC->code_char) + " is not implementated yet.";
 	logWarning(msg);
 	if (debugFlags & notifyOnNotImplemented)
         SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_WARNING, "Missing NPC", msg.c_str(), nullptr);
@@ -41,7 +38,7 @@ void npcAct000(npc *NPC) //Null
 		NPC->act_no = 1;
 
 		if (NPC->direct == dirRight)
-			NPC->y += 0x2000;
+			NPC->y += tilesToUnits(1);
 	}
 
 	NPC->doRects({ 0, 0, 16, 16 });
@@ -51,7 +48,7 @@ void npcAct001(npc *NPC) //Experience
 {
 	if (background.mode != 5 && background.mode != 6)
 	{
-		//Set initial velocity
+		// Initialisation
 		if (!NPC->act_no)
 		{
 			NPC->act_no = 1;
@@ -65,13 +62,13 @@ void npcAct001(npc *NPC) //Experience
 				NPC->direct = dirRight;
 		}
 
-		//Gravity
+		// Gravity
 		if (NPC->flag & water)
-			NPC->ym += 0x15;
+			NPC->ym += pixelsToUnits(0.041015625);	// Gravity in wqter
 		else
-			NPC->ym += 0x2A;
+			NPC->ym += pixelsToUnits(0.08203125);	// Gravity in air
 
-		//Bounce off of walls
+		// Bounce off walls
 		if (NPC->flag & leftWall && NPC->xm < 0)
 			NPC->xm = -NPC->xm;
 		if (NPC->flag & rightWall && NPC->xm > 0)
@@ -79,15 +76,15 @@ void npcAct001(npc *NPC) //Experience
 		if (NPC->flag & ceiling && NPC->ym < 0)
 			NPC->ym = -NPC->ym;
 
-		//Bounce off floor
+		// Bounce off floor
 		if (NPC->flag & ground)
 		{
-			playSound(SFX_EXPBounce); //This line is redundant.
-			NPC->ym = -0x280;
+			playSound(SFX_EXPBounce);
+			NPC->ym = pixelsToUnits(1.25);
 			NPC->xm = 2 * NPC->xm / 3;
 		}
 
-		//Clip out of floors???
+		// Clip out of floors???
 		if (NPC->flag & (leftWall | rightWall | ground))
 		{
 			playSound(SFX_EXPBounce);
@@ -95,75 +92,63 @@ void npcAct001(npc *NPC) //Experience
 				NPC->y -= pixelsToUnits(1);
 		}
 		else
-		{
 			NPC->count2 = 0;
-		}
 
-		//Limit speed
+		// Limit speed
 		NPC->limitXVel(0x5FF);
 		NPC->limitYVel(0x5FF);
 	}
-	else
+	else	// When in places with weird XP gravity (outside wall, etc.)
 	{
-		//Set initial velocity
+		// Initialization
 		if (!NPC->act_no)
 		{
 			NPC->act_no = 1;
-			NPC->ym = random(-0x80, 0x80);
-			NPC->xm = random(0x7F, 0x100);
+			NPC->ym = random(pixelsToUnits(-0.25), pixelsToUnits(0.25));
+			NPC->xm = random(pixelsToUnits(0.248046875), pixelsToUnits(0.5));
 		}
 
-		//Fly to the left
+		// Fly to the left
 		NPC->xm -= 8;
 		if (NPC->x < pixelsToUnits(5))
 			NPC->cond = 0;
 
-		//Limit speed (except applied to x position instead?)
+		// Snap to x-pos pixelsToUnits(-3) if less than that (this is useless wtf pixel)
 		if (NPC->x < pixelsToUnits(-3))
 			NPC->x = pixelsToUnits(-3);
 
-		//Bounce off of walls
+		// Bounce off walls
 		if (NPC->flag & leftWall)
 			NPC->xm = pixelsToUnits(0.5);
 		if (NPC->flag & ceiling)
-			NPC->ym = 0x40;
+			NPC->ym = pixelsToUnits(0.125);
 		if (NPC->flag & ground)
-			NPC->ym = -0x40;
+			NPC->ym = pixelsToUnits(-0.125);
 	}
 
-	//Move
+	// Move
 	NPC->x += NPC->xm;
 	NPC->y += NPC->ym;
 
-	//Framerects
-	array<RECT, 6> rect;
+	// Framerects
+	constexpr std::array<RECT, 6> rcNPC
+	{{
+		{ 0x00, 0x10, 0x10, 0x20 },
+		{ 0x10, 0x10, 0x20, 0x20 },
+		{ 0x20, 0x10, 0x30, 0x20 },
+		{ 0x30, 0x10, 0x40, 0x20 },
+		{ 0x40, 0x10, 0x50, 0x20 },
+		{ 0x50, 0x10, 0x60, 0x20 },
+	}};
 
-	rect[0] = { 0x00, 0x10, 0x10, 0x20 };
-	rect[1] = { 0x10, 0x10, 0x20, 0x20 };
-	rect[2] = { 0x20, 0x10, 0x30, 0x20 };
-	rect[3] = { 0x30, 0x10, 0x40, 0x20 };
-	rect[4] = { 0x40, 0x10, 0x50, 0x20 };
-	rect[5] = { 0x50, 0x10, 0x60, 0x20 };
-
-	//Animate
+	// Animate
 	++NPC->ani_wait;
 	if (NPC->direct != dirLeft)
-	{
-		if (NPC->ani_wait > 2)
-		{
-			NPC->ani_wait = 0;
-			if (--NPC->ani_no < 0)
-				NPC->ani_no = 5;
-		}
-	}
-	else if (NPC->ani_wait > 2)
-	{
-		NPC->ani_wait = 0;
-		if (++NPC->ani_no > 5)
-			NPC->ani_no = 0;
-	}
+		NPC->animateReverse(2, 5, 0);
+	else 
+		NPC->animate(2, 0, 5);
 
-	NPC->doRects(rect);
+	NPC->doRects(rcNPC);
 
 	//Change size
 	if (NPC->act_no)
@@ -182,63 +167,52 @@ void npcAct001(npc *NPC) //Experience
 		NPC->act_no = 1;
 	}
 
-	//Disappear after 500 frames and blink near the end
-	if (++NPC->count1 > 500 && NPC->ani_no == 5 && NPC->ani_wait == 2)
+	// Disappear after 10 seconds
+	if (++NPC->count1 > secondsToFrames(10) && NPC->ani_no == 5 && NPC->ani_wait == 2)
 		NPC->cond = 0;
 
-	if (NPC->count1 > 400 && (NPC->count1 / 2 & 1))
+	// Blink every odd frame after 8 seconds
+	if (NPC->count1 > secondsToFrames(8) && (NPC->count1 / 2 & 1))
 		NPC->rect = { 0, 0, 0, 0 };
 }
 
-void npcAct002(npc *NPC) //Behemoth
+void npcAct002(npc *NPC) // Behemoth
 {
-	const int act_no = NPC->act_no;
+	constexpr int damageOnCharge = 5;
+	constexpr int normalDamage = 1;
 
-	array<RECT, 7> rcLeft;
-	array<RECT, 7> rcRight;
+	constexpr std::array<RECT, 7> rcLeft
+	{{
+		{ 32, 0, 64, 24 },
+		{ 0, 0, 32, 24 },
+		{ 32, 0, 64, 24 },
+		{ 64, 0, 96, 24 },
+		{ 96, 0, 128, 24 },
+		{ 128, 0, 160, 24 },
+		{ 160, 0, 192, 24 },
+	}};
 
-	//Framerect
-	rcLeft[0] = { 32, 0, 64, 24 };
-	rcLeft[1] = { 0, 0, 32, 24 };
-	rcLeft[2] = { 32, 0, 64, 24 };
-	rcLeft[3] = { 64, 0, 96, 24 };
-	rcLeft[4] = { 96, 0, 128, 24 };
-	rcLeft[5] = { 128, 0, 160, 24 };
-	rcLeft[6] = { 160, 0, 192, 24 };
-
-	rcRight[0] = { 32, 24, 64, 48 };
-	rcRight[1] = { 0, 24, 32, 48 };
-	rcRight[2] = { 32, 24, 64, 48 };
-	rcRight[3] = { 64, 24, 96, 48 };
-	rcRight[4] = { 96, 24, 128, 48 };
-	rcRight[5] = { 128, 24, 160, 48 };
-	rcRight[6] = { 160, 24, 192, 48 };
+	constexpr std::array<RECT, 7> rcRight
+	{{
+		{ 32, 24, 64, 48 },
+		{ 0, 24, 32, 48 },
+		{ 32, 24, 64, 48 },
+		{ 64, 24, 96, 48 },
+		{ 96, 24, 128, 48 },
+		{ 128, 24, 160, 48 },
+		{ 160, 24, 192, 48 },
+	}};
 
 	if (NPC->flag & leftWall)
-	{
 		NPC->direct = dirRight;
-	}
 	else if (NPC->flag & rightWall)
-	{
 		NPC->direct = dirLeft;
-	}
 
-	switch (act_no)
+	switch (NPC->act_no)
 	{
-	case 0: //Normal act
-		if (NPC->direct != dirLeft)
-			NPC->xm = 0x100;
-		else
-			NPC->xm = -0x100;
-
-		if (++NPC->ani_wait > 8)
-		{
-			NPC->ani_wait = 0;
-			++NPC->ani_no;
-		}
-
-		if (NPC->ani_no > 3)
-			NPC->ani_no = 0;
+	case 0: // Normal act
+		NPC->moveInDir(pixelsToUnits(0.5));
+		NPC->animate(8, 0, 3);
 
 		if (NPC->shock)
 		{
@@ -249,18 +223,18 @@ void npcAct002(npc *NPC) //Behemoth
 
 		break;
 
-	case 1: //Hit
+	case 1: // Hit
 		NPC->xm = 7 * NPC->xm / 8;
 
-		if (++NPC->count1 > 40)
+		if (++NPC->count1 > secondsToFrames(0.8))
 		{
-			if (NPC->shock) //Shot multiple times in a row, charge
+			if (NPC->shock) // Shot multiple times in a row, charge
 			{
 				NPC->count1 = 0;
 				NPC->act_no = 2;
 				NPC->ani_no = 6;
 				NPC->ani_wait = 0;
-				NPC->damage = 5;
+				NPC->damage = damageOnCharge;
 			}
 			else
 			{
@@ -271,35 +245,23 @@ void npcAct002(npc *NPC) //Behemoth
 
 		break;
 
-	case 2: //Charge
-		if (NPC->direct != dirLeft)
-			NPC->xm = 0x400;
-		else
-			NPC->xm = -0x400;
+	case 2: // Charge
+		NPC->moveInDir(pixelsToUnits(2));
 
-		if (++NPC->count1 > 200)
+		if (++NPC->count1 > secondsToFrames(4))
 		{
 			NPC->act_no = 0;
-			NPC->damage = 1;
+			NPC->damage = normalDamage;
 		}
 
-		if (++NPC->ani_wait > 5)
-		{
-			NPC->ani_wait = 0;
-			++NPC->ani_no;
-		}
-
-		if (NPC->ani_no > 6)
-		{
-			NPC->ani_no = 5;
-		}
+		NPC->animate(5, 5, 6);
 	}
 
-	//Move
-	NPC->ym += 0x40;
+	// Move
+	NPC->ym += pixelsToUnits(0.125);
 
-	if (NPC->ym > 0x5FF)
-		NPC->ym = 0x5FF;
+	if (NPC->ym >= pixelsToUnits(3))
+		NPC->ym = pixelsToUnits(3) - 1;
 
 	NPC->x += NPC->xm;
 	NPC->y += NPC->ym;
@@ -309,12 +271,12 @@ void npcAct002(npc *NPC) //Behemoth
 
 void npcAct003(npc *NPC) // Null, spawned upon NPC death, disappears
 {
-	if (++NPC->count1 > 100)
+	if (++NPC->count1 > secondsToFrames(2))
 		NPC->cond = 0;
 	NPC->doRects({ 0, 0, 0, 0 });
 }
 
-void npcAct004(npc *NPC) //Smoke
+void npcAct004(npc *NPC) // Smoke
 {
 	RECT rcLeft[8];
 	RECT rcUp[8];
@@ -593,8 +555,8 @@ void npcAct006(npc *NPC) //Beetle
 
 void npcAct007(npc *NPC) //Basil
 {
-	array<RECT, 3> rcRight;
-	array<RECT, 3> rcLeft;
+	std::array<RECT, 3> rcRight;
+	std::array<RECT, 3> rcLeft;
 
 	rcLeft[0] = { 256, 64, 288, 80 };
 	rcLeft[1] = { 256, 80, 288, 96 };
@@ -686,8 +648,8 @@ void npcAct007(npc *NPC) //Basil
 
 void npcAct008(npc *NPC) //Follow beetle (egg corridor)
 {
-	array<RECT, 2> rcRight;
-	array<RECT, 2> rcLeft;
+	std::array<RECT, 2> rcRight;
+	std::array<RECT, 2> rcLeft;
 
 	rcLeft[0] = { 80, 80, 96, 96 };
 	rcLeft[1] = { 96, 80, 112, 96 };
@@ -783,8 +745,8 @@ void npcAct008(npc *NPC) //Follow beetle (egg corridor)
 
 void npcAct009(npc *NPC) //Balrog drop in
 {
-	array<RECT, 3> rcLeft;
-	array<RECT, 3> rcRight;
+	std::array<RECT, 3> rcLeft;
+	std::array<RECT, 3> rcRight;
 
 	rcLeft[0] = { 0, 0, 40, 24 };
 	rcLeft[1] = { 80, 0, 120, 24 };
@@ -869,6 +831,7 @@ void npcAct010(npc *NPC) // Balrog, Shooting (boss)
 	};
 
 	constexpr int jumpingDamage = 5;
+	constexpr int orbsShotPerPhase = 3;
 
 	switch (NPC->act_no)
 	{
@@ -880,7 +843,7 @@ void npcAct010(npc *NPC) // Balrog, Shooting (boss)
 		{
 			NPC->act_no = shooting;
 			NPC->act_wait = 0;
-			NPC->count1 = 3;	// Shoot 3 orbs
+			NPC->count1 = orbsShotPerPhase;	// Shoot 3 orbs
 			NPC->ani_no = 1;
 		}
 		break;
@@ -977,7 +940,7 @@ void npcAct010(npc *NPC) // Balrog, Shooting (boss)
 
 void npcAct011(npc *NPC) //Bubble
 {
-	array<RECT, 3> rect;
+	std::array<RECT, 3> rect;
 
 	rect[0] = { 208, 104, 224, 120 };
 	rect[1] = { 224, 104, 240, 120 };
@@ -1014,8 +977,8 @@ void npcAct012(npc *NPC) //Balrog cutscene
 	int x;
 	int y;
 
-	array<RECT, 14> rcLeft;
-	array<RECT, 14> rcRight;
+	std::array<RECT, 14> rcLeft;
+	std::array<RECT, 14> rcRight;
 
 	rcLeft[0] = { 0x000, 0x000, 0x028, 0x018 };
 	rcLeft[1] = { 0x0A0, 0x000, 0x0C8, 0x018 };
@@ -1330,7 +1293,7 @@ void npcAct012(npc *NPC) //Balrog cutscene
 
 void npcAct013(npc *NPC) // Forcefield
 {
-	constexpr array<RECT, 4> rcNPC = { {{128, 0, 144, 16 }, {144, 0, 160, 16 }, {160, 0, 176, 16}, {176, 0, 192, 16 } } };
+	constexpr std::array<RECT, 4> rcNPC = { {{128, 0, 144, 16 }, {144, 0, 160, 16 }, {160, 0, 176, 16}, {176, 0, 192, 16 } } };
 
 	if (++NPC->ani_wait > 0)
 	{
@@ -1346,7 +1309,7 @@ void npcAct013(npc *NPC) // Forcefield
 
 void npcAct014(npc * NPC) // Santa's Key
 {
-	constexpr array<RECT, 3> rcNPC = { { {192, 0, 208, 16}, {208, 0, 224, 16}, {224, 0, 240, 16} } };
+	constexpr std::array<RECT, 3> rcNPC = { { {192, 0, 208, 16}, {208, 0, 224, 16}, {224, 0, 240, 16} } };
 
 	if (!NPC->act_no)
 	{
@@ -1585,8 +1548,8 @@ void npcAct018(npc *NPC) //Door
 
 void npcAct019(npc *NPC) //Balrog burst
 {
-	array<RECT, 4> rcLeft;
-	array<RECT, 4> rcRight;
+	std::array<RECT, 4> rcLeft;
+	std::array<RECT, 4> rcRight;
 
 	rcLeft[0] = { 0, 0, 40, 24 };
 	rcLeft[1] = { 160, 0, 200, 24 };
