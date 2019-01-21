@@ -66,6 +66,12 @@ template <typename T, size_t N> char (&COUNTOF_REQUIRES_ARRAY_ARGUMENT(T(&)[N]))
 #endif
 #endif
 
+#include <sys/types.h>	// For ssize_t
+#if defined(_MSC_VER)
+#include <BaseTsd.h>
+typedef SSIZE_T ssize_t;	// For some demented reason MSVC doesn't have ssize_t
+#endif
+
 // Macros
 #ifdef __GNUC__
 #define attrPure __attribute__((pure))
@@ -74,3 +80,4 @@ template <typename T, size_t N> char (&COUNTOF_REQUIRES_ARRAY_ARGUMENT(T(&)[N]))
 #define attrPure
 #define attrConst
 #endif
+

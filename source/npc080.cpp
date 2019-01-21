@@ -793,7 +793,6 @@ void npcAct087(npc *NPC) //Health refill
 {
 	constexpr RECT rcHealth2[2] = { {32, 80, 48, 96}, { 48, 80, 64, 96 } };
 	constexpr RECT rcHealth6[2] = { {64, 80, 80, 96}, { 80, 80, 96, 96 } };
-	constexpr RECT rcLast = { 16, 0, 32, 16 };
 
 	if (NPC->direct == dirLeft)
 	{
@@ -847,7 +846,7 @@ void npcAct087(npc *NPC) //Health refill
 		NPC->rect.right = 0;
 
 	if (NPC->count1 > 547)
-		NPC->rect = rcLast;
+		NPC->rect = { 16, 0, 32, 16 };	// Last rect
 }
 
 void npcAct088(npc * NPC) // Igor (boss)

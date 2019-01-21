@@ -93,7 +93,7 @@ void init()
 		doCustomError("Couldn't initiate SDL");
 
 	loadConfigFiles();
-	CONFIG *config = loadConfigDat();
+	auto config = loadConfigDat();
 
 	if (config != nullptr)
 	{
@@ -151,8 +151,6 @@ void init()
 			switchScreenMode();
 			break;
 		}
-
-		delete config;
 	}
 	else
 		createWindow(screenWidth, screenHeight, screenScale);

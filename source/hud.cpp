@@ -199,7 +199,7 @@ void drawHudWeapons()
 				x += 16 * (weaponNo + 3);
 			}
 
-			if (8 * (2 * (static_cast<int>(weaponNo) + 3) + 1) <= x)
+			if (8 * (2 * (static_cast<ssize_t>(weaponNo) + 3) + 1) <= x)
 				x += 16 * (-3 - weaponNo);
 
 			if (x < 72 && x >= 24)

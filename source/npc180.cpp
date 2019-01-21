@@ -867,7 +867,7 @@ void npcAct192(npc *NPC) // Scooter
 		NPC->act_no = mounted + 1;
 		NPC->ani_no = 1;
 		NPC->view.top = tilesToUnits(1);
-		NPC->view.bottom = tilesToUnits(1);
+		NPC->view.bottom = NPC->view.top;
 		NPC->y -= pixelsToUnits(5);
 		break;
 

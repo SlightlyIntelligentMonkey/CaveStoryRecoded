@@ -32,33 +32,31 @@ struct CONFIG_RAW
 //Save and load config.dat (config file for the original Cave Story)
 std::string configName = "Config.dat";
 
-CONFIG *loadConfigDat()
+std::unique_ptr<CONFIG> loadConfigDat()
 {
-	CONFIG *config = nullptr;
+	std::unique_ptr<CONFIG> config;
 
 	FILE *fp = fopen(configName.c_str(), "rb");
 
 	if (fp != nullptr)
 	{
-		CONFIG_RAW *config_raw = new CONFIG_RAW;
-		const size_t elements_read = fread(config_raw, sizeof(CONFIG), 1, fp);
+		CONFIG_RAW config_raw;
+		const size_t elements_read = fread(&config_raw, sizeof(CONFIG), 1, fp);
 		fclose(fp);
 
-		if (elements_read == 1 && !strcmp(config_raw->proof, "DOUKUTSU20041206"))
+		if (elements_read == 1 && !strcmp(config_raw.proof, "DOUKUTSU20041206"))
 		{
-			config = new CONFIG;
-			memcpy(config->proof, config_raw->proof, 32);
-			memcpy(config->font_name, config_raw->font_name + 32, 64);
-			config->move_button_mode = readLElong(config_raw->move_button_mode, 0);
-			config->attack_button_mode = readLElong(config_raw->attack_button_mode, 0);
-			config->ok_button_mode = readLElong(config_raw->ok_button_mode, 0);
-			config->display_mode = readLElong(config_raw->display_mode, 0);
-			config->bJoystick = readLElong(config_raw->bJoystick, 0);
+			config = std::make_unique<CONFIG>();
+			memcpy(config->proof, config_raw.proof, 32);
+			memcpy(config->font_name, config_raw.font_name + 32, 64);
+			config->move_button_mode = readLElong(config_raw.move_button_mode, 0);
+			config->attack_button_mode = readLElong(config_raw.attack_button_mode, 0);
+			config->ok_button_mode = readLElong(config_raw.ok_button_mode, 0);
+			config->display_mode = readLElong(config_raw.display_mode, 0);
+			config->bJoystick = readLElong(config_raw.bJoystick, 0);
 			for (unsigned int i = 0; i < 8; ++i)
-				config->joystick_button[i] = readLElong(config_raw->joystick_button[i], 0);
+				config->joystick_button[i] = readLElong(config_raw.joystick_button[i], 0);
 		}
-
-		delete config_raw;
 	}
 
 	return config;
@@ -109,19 +107,19 @@ template<typename T> void safeGet(const nlohmann::json& j, const std::string& na
 }
 #else
 // C++11-friendly replacement
-void safeGet(const json& j, const string& name, string& varTbc)
+void safeGet(const nlohmann::json& j, const std::string& name, std::string& varTbc)
 {
     if (j[name].is_string())
         varTbc = j[name];
 }
 
-void safeGet(const json& j, const string& name, bool& varTbc)
+void safeGet(const nlohmann::json& j, const std::string& name, bool& varTbc)
 {
     if (j[name].is_boolean())
         varTbc = j[name];
 }
 
-void safeGet(const json& j, const string& name, int& varTbc)
+void safeGet(const nlohmann::json& j, const std::string& name, int& varTbc)
 {
     if (j[name].is_number())
         varTbc = j[name];

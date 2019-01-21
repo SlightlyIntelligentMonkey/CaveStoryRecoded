@@ -124,7 +124,7 @@ void actBoss_Balfrog(npc *boss)
 		boss->direct = 2;
 
 		boss->view.left = pixelsToUnits(48);
-		boss->view.top = pixelsToUnits(48);
+		boss->view.top = boss->view.left;
 		boss->view.right = pixelsToUnits(32);
 		boss->view.bottom = pixelsToUnits(16);
 
@@ -421,7 +421,7 @@ void actBoss_Balfrog(npc *boss)
 		else
 		{
 			boss->view.left = pixelsToUnits(48);
-			boss->view.top = pixelsToUnits(48);
+			boss->view.top = boss->view.left;
 			boss->view.right = pixelsToUnits(32);
 			boss->view.bottom = pixelsToUnits(16);
 			boss->ani_no = 2;

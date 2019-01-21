@@ -21,17 +21,17 @@ void initFlags()
 
 inline void setBit(uint8_t *buf, size_t x)
 {
-    buf[bitsToBytes(x)] |= 1 << x % CHAR_BIT;
+    buf[bitsToBytes(x)] |= 1 << (x % CHAR_BIT);
 }
 
 inline void clearBit(uint8_t *buf, size_t x)
 {
-    buf[bitsToBytes(x)] &= ~(1 << x % CHAR_BIT);
+    buf[bitsToBytes(x)] &= ~(1 << (x % CHAR_BIT));
 }
 
 inline bool getBit(uint8_t *buf, size_t x)
 {
-    return ((1 << x % CHAR_BIT) & buf[bitsToBytes(x)]) != 0;
+    return ((1 << (x % CHAR_BIT)) & buf[bitsToBytes(x)]) != 0;
 }
 
 inline void flipBit(uint8_t *buf, size_t x)

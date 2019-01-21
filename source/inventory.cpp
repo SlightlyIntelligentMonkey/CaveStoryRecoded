@@ -23,7 +23,7 @@ using std::strcpy;
 ITEM items[ITEMS];
 
 int inventoryTitleY;
-int inventoryActive;
+bool inventoryActive;
 int selectedItem;
 
 void moveInventoryCursor()
@@ -67,7 +67,7 @@ void moveInventoryCursor()
 				if (selectedItem + 5 > 10)
 					selectedItem -= 6;
 				else
-					inventoryActive = 0;
+					inventoryActive = false;
 
 				bChange = true;
 			}
@@ -75,7 +75,7 @@ void moveInventoryCursor()
 			if (isKeyPressed(keyDown))
 			{
 				if (selectedItem / 6 == (itemNo - 1) / 6)
-					inventoryActive = 0;
+					inventoryActive = false;
 				else
 					selectedItem += 6;
 
@@ -212,7 +212,7 @@ void drawInventory()
 	rcCur2[0] = { 80, 88, 112, 104 };
 	rcCur2[1] = { 80, 104, 112, 120 };
 
-	if (inventoryActive == 1)
+	if (inventoryActive)
 		drawTexture(
 			sprites[TEX_TEXTBOX],
 			&rcCur2[(inventoryFlash >> 1) & 1],

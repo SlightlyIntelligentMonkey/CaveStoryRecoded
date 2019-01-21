@@ -1496,10 +1496,8 @@ void npcAct179(npc *NPC) //core wisp
 		createCaret(NPC->x, NPC->y, effect_RisingDisc, 0);
 	}
 	NPC->xm -= 32;
-	NPC->ym = 0;
 	if (NPC->xm < -1024)
 		NPC->xm = -1024;
-	NPC->y += NPC->ym;
 	NPC->x += NPC->xm;
 
 	if (++NPC->ani_wait > 1)

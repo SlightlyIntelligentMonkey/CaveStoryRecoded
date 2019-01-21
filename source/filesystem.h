@@ -13,7 +13,7 @@ void writeLElong(uint8_t *data, uint32_t input, size_t offset);
 /// Returns whether the given filename points to a valid file
 bool fileExists(const std::string& name);
 
-int loadFile(const std::string& name, uint8_t **data);
+int loadFile(const std::string& name, std::unique_ptr<uint8_t>& data);
 void writeFile(const std::string& name, const void *data, size_t amount);
 
 void loadProfile();

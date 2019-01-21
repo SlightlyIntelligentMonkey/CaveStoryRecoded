@@ -11,6 +11,7 @@ struct CONFIG
 	Sint32 bJoystick;
 	Sint32 joystick_button[8];
 };
-CONFIG *loadConfigDat();
+
+std::unique_ptr<CONFIG> loadConfigDat();
 
 void loadConfigFiles();
