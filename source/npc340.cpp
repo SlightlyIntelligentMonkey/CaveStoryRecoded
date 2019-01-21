@@ -690,6 +690,6 @@ void npcAct359(npc *NPC)
 {
 	if (currentPlayer.x < NPC->x + tilesToUnits(20) && currentPlayer.x > NPC->x - tilesToUnits(20)
      && currentPlayer.y < NPC->y + tilesToUnits(20) && currentPlayer.y > NPC->y - tilesToUnits(20) && random(0, 100) == 2)
-		createNpc(NPC_Waterdrop, (random(-6, 6) << 9) + NPC->x, NPC->y - pixelsToUnits(7));
+		createNpc(NPC_WaterDrop1, (random(-6, 6) << 9) + NPC->x, NPC->y - pixelsToUnits(7));
 }
 

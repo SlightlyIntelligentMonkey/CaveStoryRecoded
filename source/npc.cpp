@@ -476,6 +476,20 @@ void npc::animate(int aniWait, int aniStart, int aniMax)
 		this->ani_no = aniStart;
 }
 
+void npc::animateReverse(int aniWait, int aniStart, int aniMin)
+{
+	if (++this->ani_wait > aniWait)
+	{
+		this->ani_wait = 0;
+		--this->ani_no;
+	}
+	if (aniStart == -1 || aniMin == -1)
+		return;
+
+	if (this->ani_no < aniMin)
+		this->ani_no = aniStart;
+}
+
 void npc::createSmokeWithVel(size_t num, int xVel, int yVel)
 {
 	for (size_t i = 0; i < num; ++i)

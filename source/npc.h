@@ -90,6 +90,7 @@ public:
 	// These are kinda supposed to be internal, but I can't put them as protected/private
 	void accelerateTowardsPlayer(int vel);
 	void animate(int aniWait, int aniStart = -1, int aniMax = -1);
+	void animateReverse(int aniWait, int aniStart = -1, int aniMin = -1);
 	void createSmokeWithVel(size_t num, int xVel, int yVel);
 	void doGravity(int gravity, int maxYVel);
 
@@ -212,10 +213,10 @@ enum NPC_flags
 
 enum NPCNames
 {
-	NPC_Null = 0,
-	NPC_EXP = 1,
+	NPC_Null = 0,	// Direction 2 = Moves 1 block down immediately when spawned
+	NPC_EXP = 1,	// Weapon energy
 	NPC_EnemyBehemoth = 2,
-	NPC_NullDeletesItself = 3,
+	NPC_NullDeletesItself = 3,	// Lasts 2 seconds, used to hold and indicate the position damage values displayed after an NPC is killed
 	NPC_Smoke = 4,
 	NPC_EnemyCritterHoppingGreen = 5,
 	NPC_EnemyBeetleHorizontalGreen = 6,
@@ -227,13 +228,13 @@ enum NPCNames
 	NPC_BalrogStanding = 12,
 	NPC_Forcefield = 13,
 	NPC_SantasKey = 14,
-	NPC_TreasureChestClosed = 15,
+	NPC_TreasureChestClosed = 15,	// Affected by gravity
 	NPC_SavePoint = 16,
 	NPC_HealthAmmoRefill = 17,
 	NPC_Door = 18,
 	NPC_BalrogBustsIn = 19,
-	NPC_Computer = 20,
-	NPC_TreasureChestOpen = 21,
+	NPC_Computer = 20,	// Direction 0 = Screen off, 2 = Screen on
+	NPC_TreasureChestOpen = 21,	// Not affected by gravity
 	NPC_Teleporter = 22,
 	NPC_TeleporterLights = 23,
 	NPC_EnemyPowerCritter = 24,
@@ -255,66 +256,66 @@ enum NPCNames
 	NPC_Santa = 40,
 	NPC_BustedDoorway = 41,
 	NPC_Sue = 42,
-	NPC_BlackboardTable = 43,
+	NPC_BlackboardTable = 43,	// Direction 0 = Blackboard, 2 = Table and poster
 	NPC_EnemyPolish = 44,
 	NPC_EnemyBaby = 45,
-	NPC_HorizontalVerticalTrigger = 46,
+	NPC_HorizontalVerticalTrigger = 46,	// Direction 0 = Horizontal, 2 = Vertical. Moves at 0.1873779296875 blocks per frame, or 9.368896484375 blocks per second
 	NPC_EnemySandcrocGreen = 47,
-	NPC_ProjectileOmega = 0x30,
-	NPC_EnemySkullhead = 0x31,
-	NPC_ProjectileSkeleton = 0x32,
-	NPC_EnemyCrowAndSkullhead = 0x33,
-	NPC_BlueRobotSitting = 0x34,
-	NPC_SkullstepFoot = 0x35,
-	NPC_EnemySkullstep = 0x36,
-	NPC_Kazuma = 0x37,
-	NPC_EnemyBeetleHorizontalBrown = 0x38,
-	NPC_EnemyCrow = 0x39,
-	NPC_EnemyBasu1 = 0x3A,
-	NPC_EnemyDoor = 0x3B,
-	NPC_Toroko = 0x3C,
-	NPC_King = 0x3D,
-	NPC_KazumaComputer = 0x3E,
-	NPC_TorokoAttacking = 0x3F,
-	NPC_EnemyCritterHoppingBlue = 0x40,
-	NPC_EnemyBatBlue = 0x41,
-	NPC_ProjectileMiseryBubble = 0x42,
-	NPC_MiseryFloating = 0x43,
-	NPC_BossBalrogRunning = 0x44,
-	NPC_EnemyPignon = 0x45,
-	NPC_SparklingItem = 0x46,
-	NPC_EnemyChinfish = 0x47,
-	NPC_Sprinkler = 0x48,
-	NPC_Waterdrop = 0x49,
-	NPC_Jack = 0x4A,
-	NPC_KanpachiFishing = 0x4B,
-	NPC_Flowers = 0x4C,
-	NPC_SandaimesPavillon = 0x4D,
-	NPC_Pot = 0x4E,
-	NPC_Mahin = 0x4F,
-	NPC_EnemyGravekeeper = 0x50,
-	NPC_EnemyGiantPignon = 0x51,
-	NPC_MiseryStanding = 0x52,
-	NPC_IgorCutscene = 0x53,
-	NPC_ProjectileBasu1 = 0x54,
-	NPC_Terminal = 0x55,
-	NPC_Missile = 0x56,
-	NPC_Heart = 0x57,
-	NPC_BossIgor = 0x58,
-	NPC_IgorDefeated = 0x59,
-	NPC_Background = 0x5A,
-	NPC_Cage = 0x5B,
-	NPC_SueComputer = 0x5C,
-	NPC_Chaco = 0x5D,
-	NPC_EnemyKulala = 0x5E,
-	NPC_EnemyJelly = 0x5F,
-	NPC_FanLeft = 0x60,
-	NPC_FanUp = 0x61,
-	NPC_FanRight = 0x62,
-	NPC_FanDown = 0x63,
-	NPC_Grate = 0x64,
-	NPC_PowerControlsScreen = 0x65,
-	NPC_PowerControlsPowerflow = 0x66,
+	NPC_ProjectileOmegaMudball = 48,
+	NPC_EnemySkullhead = 49,
+	NPC_ProjectileBone = 50,
+	NPC_EnemyCrowAndSkullhead = 51,
+	NPC_BlueRobotStanding = 52,
+	NPC_EnemySkullstepLeg = 53,	// Leg/Foot
+	NPC_EnemySkullstep = 54,
+	NPC_Kazuma = 55,
+	NPC_EnemyBeetleHorizontalBrown = 56,
+	NPC_EnemyCrow = 57,
+	NPC_EnemyBasu1 = 58,
+	NPC_EnemyEvilDoor = 59,
+	NPC_Toroko = 60,
+	NPC_King = 61,
+	NPC_KazumaFacingAway = 62,	// Usually when he's using a computer
+	NPC_TorokoPanicking = 63,	// When she attacks you in the shed
+	NPC_EnemyCritterHoppingBlue = 64,
+	NPC_EnemyBatBlueVertical = 65,
+	NPC_ProjectileMiseryBubble = 66,
+	NPC_MiseryFlying = 67,	// When she's floating/flying in cinematics
+	NPC_BossBalrogRunning = 68,
+	NPC_EnemyPignon = 69,
+	NPC_SparklingItem = 70,
+	NPC_EnemyChinfish = 71,
+	NPC_Sprinkler = 72,	// Direction 0 = On, 2 = Off
+	NPC_WaterDrop1 = 73,
+	NPC_Jack = 74,
+	NPC_KanpachiFishing = 75,
+	NPC_Flowers = 76,
+	NPC_SandaimesPavillon = 77,
+	NPC_Pot = 78,
+	NPC_Mahin = 79,
+	NPC_EnemyGravekeeper = 80,
+	NPC_EnemyGiantPignon = 81,
+	NPC_MiseryStanding = 82,
+	NPC_IgorStanding = 83,	// For cutscene
+	NPC_ProjectileBasuEnergyBall1 = 84,
+	NPC_Terminal = 85,	// Direction 2 = Red Screen
+	NPC_Missile = 86,	// Direction 2 = Doesn't despawn, EXP = health get
+	NPC_Heart = 87,	// Direction 2 = Doesn't despawn, EXP = ammo get
+	NPC_BossIgor = 88,
+	NPC_IgorDying = 89,	// When defeated
+	NPC_Background = 90,
+	NPC_Cage = 91,
+	NPC_SueFacingAway = 92,	// USually when she's using a computer
+	NPC_Chaco = 93,
+	NPC_EnemyKulala = 94,
+	NPC_EnemyJelly = 95,
+	NPC_FanLeft = 96,	// Direction 2 = On
+	NPC_FanUp = 97,	// Direction 2 = On
+	NPC_FanRight = 98,	// Direction 2 = On
+	NPC_FanDown = 99,	// Direction 2 = On
+	NPC_Grate = 100,
+	NPC_PowerControlsScreen = 101,
+	NPC_PowerControlsPowerFlow = 102,
 	NPC_ProjectileMannan = 0x67,
 	NPC_EnemyFrog = 0x68,
 	NPC_BalloonHeyLow = 0x69,
@@ -438,7 +439,7 @@ enum NPCNames
 	NPC_Momorin = 0xDF,
 	NPC_Chie = 0xE0,
 	NPC_Megane = 0xE1,
-	NPC_Kanpachi = 0xE2,
+	NPC_KanpachiStanding = 0xE2,
 	NPC_Bucket = 0xE3,
 	NPC_DrollGuard = 0xE4,
 	NPC_RedFlowersSprouts = 0xE5,
