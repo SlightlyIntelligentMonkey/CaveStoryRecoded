@@ -31,7 +31,7 @@ void npcActNone(npc *NPC)
         SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_WARNING, "Missing NPC", msg.c_str(), nullptr);
 }
 
-void npcAct000(npc *NPC) //Null
+void npcAct000(npc *NPC) // Null
 {
 	if (!NPC->act_no)
 	{
@@ -44,7 +44,7 @@ void npcAct000(npc *NPC) //Null
 	NPC->doRects({ 0, 0, 16, 16 });
 }
 
-void npcAct001(npc *NPC) //Experience
+void npcAct001(npc *NPC) // EXP
 {
 	if (background.mode != 5 && background.mode != 6)
 	{
@@ -176,7 +176,7 @@ void npcAct001(npc *NPC) //Experience
 		NPC->rect = { 0, 0, 0, 0 };
 }
 
-void npcAct002(npc *NPC) // Behemoth
+void npcAct002(npc *NPC) // Behemoth (enemy)
 {
 	constexpr int damageOnCharge = 5;
 	constexpr int normalDamage = 1;
@@ -259,9 +259,7 @@ void npcAct002(npc *NPC) // Behemoth
 
 	// Move
 	NPC->ym += pixelsToUnits(0.125);
-
-	if (NPC->ym >= pixelsToUnits(3))
-		NPC->ym = pixelsToUnits(3) - 1;
+	NPC->limitYVel(pixelsToUnits(3) - 1);
 
 	NPC->x += NPC->xm;
 	NPC->y += NPC->ym;
@@ -278,26 +276,29 @@ void npcAct003(npc *NPC) // Null, spawned upon NPC death, disappears
 
 void npcAct004(npc *NPC) // Smoke
 {
-	RECT rcLeft[8];
-	RECT rcUp[8];
+	constexpr std::array<RECT, 8> rcLeft
+	{{
+		{ 16, 0, 17, 1 },
+		{ 16, 0, 32, 16 },
+		{ 32, 0, 48, 16 },
+		{ 48, 0, 64, 16 },
+		{ 64, 0, 80, 16 },
+		{ 80, 0, 96, 16 },
+		{ 96, 0, 112, 16 },
+		{ 112, 0, 128, 16 },
+	}};
 
-	rcLeft[0] = { 16, 0, 17, 1 };
-	rcLeft[1] = { 16, 0, 32, 16 };
-	rcLeft[2] = { 32, 0, 48, 16 };
-	rcLeft[3] = { 48, 0, 64, 16 };
-	rcLeft[4] = { 64, 0, 80, 16 };
-	rcLeft[5] = { 80, 0, 96, 16 };
-	rcLeft[6] = { 96, 0, 112, 16 };
-	rcLeft[7] = { 112, 0, 128, 16 };
-
-	rcUp[0] = { 16, 0, 17, 1 };
-	rcUp[1] = { 80, 48, 96, 64 };
-	rcUp[2] = { 0, 128, 16, 144 };
-	rcUp[3] = { 16, 128, 32, 144 };
-	rcUp[4] = { 32, 128, 48, 144 };
-	rcUp[5] = { 48, 128, 64, 144 };
-	rcUp[6] = { 64, 128, 80, 144 };
-	rcUp[7] = { 80, 128, 96, 144 };
+	constexpr std::array<RECT, 8> rcUp
+	{{
+		{ 16, 0, 17, 1 },
+		{ 80, 48, 96, 64 },
+		{ 0, 128, 16, 144 },
+		{ 16, 128, 32, 144 },
+		{ 32, 128, 48, 144 },
+		{ 48, 128, 64, 144 },
+		{ 64, 128, 80, 144 },
+		{ 80, 128, 96, 144 },
+	}};	
 
 	if (NPC->act_no)
 	{
@@ -314,10 +315,11 @@ void npcAct004(npc *NPC) // Smoke
 			const uint8_t deg = random(0, 255);
 
 			const int degCos = getCos(deg);
-			NPC->xm = degCos * random(0x200, 0x5FF) / 0x200;
+			NPC->xm = 
+				unitsToPixels(degCos * random(pixelsToUnits(1), pixelsToUnits(3) - 1));
 
 			const int degSin = getSin(deg);
-			NPC->ym = degSin * random(0x200, 0x5FF) / 0x200;
+			NPC->ym = unitsToPixels(degSin * random(pixelsToUnits(1), pixelsToUnits(3) - 1));
 		}
 
 		NPC->ani_no = random(0, 4);
@@ -326,120 +328,112 @@ void npcAct004(npc *NPC) // Smoke
 		NPC->act_no = 1;
 	}
 
-	if (++NPC->ani_wait > 4)
-	{
-		NPC->ani_wait = 0;
-		++NPC->ani_no;
-	}
+	NPC->animate(4);
 
-	if (NPC->ani_no <= 7)
+	if (static_cast<size_t>(NPC->ani_no) < rcLeft.size())
 	{
 		if (NPC->direct != dirUp)
-			NPC->rect = rcLeft[NPC->ani_no];
+			NPC->rect = rcLeft.at(NPC->ani_no);
 		else
-			NPC->rect = rcUp[NPC->ani_no];
+			NPC->rect = rcUp.at(NPC->ani_no);
 	}
 	else
 		NPC->cond = 0;
 }
 
-void npcAct005(npc *NPC) //Egg Corridor critter
+void npcAct005(npc *NPC) // Critter, Hopping Green (enemy)
 {
-	const int act_no = NPC->act_no;
-
-	switch (act_no)
+	enum
 	{
-	case 0: //Initialize
-		NPC->y += 0x5FF;
-		NPC->act_no = 1;
+		init = 0,
+		waiting = 1,
+		startJump = 2,
+		jumping = 3,
+	};
 
+	switch (NPC->act_no)
+	{
+	case init: // Initialize
+		NPC->y += pixelsToUnits(3) - 1;
+		NPC->act_no = waiting;
 		break;
 
-	case 2: //Going to jump
-		if (++NPC->act_wait > 8)
-		{
-			//Jump
-			NPC->act_no = 3;
-			NPC->ani_no = 2;
-
-			NPC->flag &= ~ground;
-			NPC->ym = -0x5FF;
-
-			//Jump in direction facing
-			if (NPC->direct != dirLeft)
-				NPC->xm = 0x100;
-			else
-				NPC->xm = -0x100;
-
-			playSound(SFX_CritterHop);
-		}
-
-		break;
-
-	case 3: //In air
-		if (NPC->flag & ground) //Landed on the ground after jumping
-		{
-			NPC->act_no = 1;
-			NPC->act_wait = 0;
-
-			NPC->ani_no = 0;
-
-			NPC->xm = 0;
-		}
-	}
-
-	if (act_no == 1)
-	{
-		//Face towards player
+	case waiting:		
+		// Face towards player
 		if (NPC->x <= currentPlayer.x)
 			NPC->direct = dirRight;
 		else
 			NPC->direct = dirLeft;
 
-		//TargetX being used as timer (10/10 pixel code)
-		if (NPC->tgt_x < 100)
+		// TargetX being used as timer (10/10 pixel code)
+		if (NPC->tgt_x < secondsToFrames(2))
 			++NPC->tgt_x;
 
-		//Timer for looking at Quote
-		if (NPC->act_wait < 8 || NPC->x - 0xE000 >= currentPlayer.x || NPC->x + 0xE000 <= currentPlayer.x || NPC->y - 0xA000 >= currentPlayer.y || NPC->y + 0xA000 <= currentPlayer.y)
+		// Timer for looking at Quote
+		if (NPC->act_wait < 8 
+			|| NPC->x - tilesToUnits(7) >= currentPlayer.x || NPC->x + tilesToUnits(7) <= currentPlayer.x 
+			|| NPC->y - tilesToUnits(5) >= currentPlayer.y || NPC->y + tilesToUnits(5) <= currentPlayer.y)
 		{
-			if (NPC->act_wait <= 7)
+			if (NPC->act_wait < 8)
 				++NPC->act_wait;
 			NPC->ani_no = 0;
 		}
 		else
-		{
 			NPC->ani_no = 1;
-		}
 
-		//If shocked, jump
+		// If shocked, jump
 		if (NPC->shock)
 		{
-			NPC->act_no = 2;
+			NPC->act_no = startJump;
 			NPC->act_wait = 0;
 
 			NPC->ani_no = 0;
 		}
 
-		//Go into "going to jump" state
+		// Go into "going to jump" state
 		if (NPC->act_wait >= 8
-		        && NPC->tgt_x >= 100
-		        && NPC->x - 0x8000 < currentPlayer.x
-		        && NPC->x + 0x8000 > currentPlayer.x
-		        && NPC->y - 0xA000 < currentPlayer.y
-		        && NPC->y + 0x6000 > currentPlayer.y)
+		        && NPC->tgt_x >= secondsToFrames(2)
+		        && NPC->x - tilesToUnits(4) < currentPlayer.x
+		        && NPC->x + tilesToUnits(4) > currentPlayer.x
+		        && NPC->y - tilesToUnits(5) < currentPlayer.y
+		        && NPC->y + tilesToUnits(3) > currentPlayer.y)
 		{
-			NPC->act_no = 2;
+			NPC->act_no = startJump;
 			NPC->act_wait = 0;
-
 			NPC->ani_no = 0;
+		}
+		break;
+
+	case startJump: // Going to jump
+		if (++NPC->act_wait > secondsToFrames(0.16))
+		{
+			// Jump
+			NPC->act_no = jumping;
+			NPC->ani_no = 2;
+
+			NPC->flag &= ~ground;
+			NPC->ym = pixelsToUnits(-3) + 1;
+
+			// Jump in direction facing
+			NPC->moveInDir(pixelsToUnits(0.5));
+			playSound(SFX_CritterHop);
+		}
+
+		break;
+
+	case 3: // In air
+		if (NPC->flag & ground) // Landed on the ground after jumping
+		{
+			NPC->act_no = waiting;
+			NPC->act_wait = 0;
+			NPC->ani_no = 0;
+			NPC->xm = 0;
 		}
 	}
 
 	//Gravity
-	NPC->ym += 0x40;
-	if (NPC->ym > 0x5FF)
-		NPC->ym = 0x5FF;
+	NPC->ym += pixelsToUnits(0.125);
+	NPC->limitYVel(pixelsToUnits(3) - 1);
 
 	//Move critter
 	NPC->x += NPC->xm;
