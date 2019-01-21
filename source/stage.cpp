@@ -68,7 +68,7 @@ void loadStageTable()
 
 uint8_t getTileAttribute(size_t xTile, size_t yTile)
 {
-	if (xTile < map.width && yTile < map.height)  // Make sure coordinates are valid
+	if (xTile < (size_t)map.width && yTile < (size_t)map.height)  // Make sure coordinates are valid
 		return map.attribute[map.tile[xTile + yTile * map.width]];
 
     // Coordinates are invalid

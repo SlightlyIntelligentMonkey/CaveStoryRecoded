@@ -2,6 +2,7 @@
 
 #include <vector>
 #include <string>
+#include <memory>
 #include "common.h"
 
 uint16_t readLEshort(const uint8_t *data, size_t offset) attrPure;
