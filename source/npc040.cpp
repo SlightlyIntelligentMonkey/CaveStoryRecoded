@@ -1875,7 +1875,7 @@ void npcAct058(npc *NPC) //Basu 1
 						const int fireXm = 2 * getCos(deg);
 						const int fireYm = 2 * getSin(deg);
 
-						createNpc(NPC_ProjectileBasu1, NPC->x, NPC->y, fireXm, fireYm);
+						createNpc(NPC_ProjectileBasuEnergyBall1, NPC->x, NPC->y, fireXm, fireYm);
 						playSound(SFX_EnemyShootProjectile);
 					}
 

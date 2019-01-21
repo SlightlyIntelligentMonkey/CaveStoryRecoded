@@ -856,6 +856,125 @@ void npcAct009(npc *NPC) //Balrog drop in
 	NPC->doRects(rcLeft, rcRight);
 }
 
+void npcAct010(npc *NPC) // Balrog, Shooting (boss)
+{
+	enum
+	{
+		init = 0,
+		start = 1,
+		shooting = 2,
+		startJump = 3,
+		jumping = 4,
+		land = 5,
+	};
+
+	constexpr int jumpingDamage = 5;
+
+	switch (NPC->act_no)
+	{
+	case init:
+		NPC->act_no = start;
+		// Fallthrough
+	case start:
+		if (++NPC->act_wait > secondsToFrames(0.24))
+		{
+			NPC->act_no = shooting;
+			NPC->act_wait = 0;
+			NPC->count1 = 3;	// Shoot 3 orbs
+			NPC->ani_no = 1;
+		}
+		break;
+
+	case shooting:
+		if (++NPC->act_wait >= secondsToFrames(0.32))
+		{
+			--NPC->count1;
+			NPC->act_wait = 0;
+
+			auto deg = getAtan(NPC->x - currentPlayer.x, NPC->y - currentPlayer.y + tilesToUnits(0.25));
+			deg += random(-0x10, 0x10);
+			createNpc(NPC_ProjectileBalrogEnergyBallInvincible, NPC->x, NPC->y + tilesToUnits(0.25)
+				, getSin(deg), getCos(deg));
+			playSound(SFX_EnemyShootProjectile);
+
+			if (!NPC->count1)
+			{
+				NPC->act_no = startJump;
+				NPC->act_wait = 0;
+			}
+		}
+		break;
+
+	case startJump:	// Jump towards Quote
+		if (++NPC->act_wait > 3)
+		{
+			NPC->act_no = jumping;
+			NPC->act_wait = 0;
+			NPC->xm = (currentPlayer.x - NPC->x) / 100;
+			NPC->ym = pixelsToUnits(-3);
+			NPC->ani_no = 3;
+		}
+		break;
+
+	case jumping:
+		if (NPC->flag & (leftWall | rightWall))	// Stop when touching a wall
+			NPC->xm = 0;
+
+		if (NPC->y + tilesToUnits(1) >= currentPlayer.y)
+			NPC->damage = 0;	// No damage when touching ground
+		else
+			NPC->damage = jumpingDamage;
+
+		if (NPC->flag & ground)
+		{
+			NPC->act_no = land;
+			NPC->act_wait = 0;
+			NPC->ani_no = 2;
+			playSound(SFX_LargeObjectHitGround);
+			viewport.quake = 30;
+			NPC->damage = 0;	// No damage when landed
+		}
+		break;
+
+	case land:
+		NPC->xm = 0;
+		if (++NPC->act_wait > 3)
+		{
+			NPC->act_no = start;	// Loop through states shooting-jumping
+			NPC->act_wait = 0;
+		}
+
+	default:
+		break;
+	}
+
+	NPC->ym += pixelsToUnits(0.1);
+	if (NPC->ym >= pixelsToUnits(3))
+		NPC->ym = pixelsToUnits(3) - 1;
+
+	NPC->x += NPC->xm;
+	NPC->y += NPC->ym;
+
+	constexpr std::array<RECT, 4> rcLeft
+	{{
+		{0, 0, 40, 24},
+		{40, 0, 80, 24},
+		{80, 0, 120, 24},
+		{120, 0, 160, 24},
+	}};
+
+	constexpr std::array<RECT, 4> rcRight
+	{{
+		{0, 24, 40, 48},
+		{40, 24, 80, 48},
+		{80, 24, 120, 48},
+		{120, 24, 160, 48},
+	}};
+
+	NPC->facePlayer();
+	NPC->doRects(rcLeft, rcRight);
+}
+
 void npcAct011(npc *NPC) //Bubble
 {
 	array<RECT, 3> rect;

@@ -1291,9 +1291,9 @@ void npcAct072(npc *NPC) // Sprinkler
 		        && currentPlayer.y > NPC->y - tilesToUnits(15))
 		{
 			if (++NPC->act_no % 2)
-				createNpc(NPC_Waterdrop, NPC->x, NPC->y,
+				createNpc(NPC_WaterDrop1, NPC->x, NPC->y,
                         2 * random(pixelsToUnits(-1), pixelsToUnits(1)), 3 * random(pixelsToUnits(-1), 0x80));
-			createNpc(NPC_Waterdrop, NPC->x, NPC->y,
+			createNpc(NPC_WaterDrop1, NPC->x, NPC->y,
                         2 * random(pixelsToUnits(-1), pixelsToUnits(1)), 3 * random(pixelsToUnits(-1), 0x80));
 		}
 	}
