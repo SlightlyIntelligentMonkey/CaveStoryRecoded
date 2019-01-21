@@ -43,6 +43,9 @@
 		"forward_list": "cpp",
 		"functional": "cpp",
 		"numeric": "cpp",
-		"valarray": "cpp"
+		"valarray": "cpp",
+		"ctime": "cpp",
+		"chrono": "cpp",
+		"ratio": "cpp"
 	}
 }
