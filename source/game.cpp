@@ -29,10 +29,6 @@
 #include "playerCollision.h"
 #include "flash.h"
 
-using std::string;
-using std::to_string;
-using std::memset;
-
 int gameMode = 1;
 int gameFlags = 0;
 
@@ -163,7 +159,7 @@ void handleView()
 
 int debugFlags = 0;
 
-void debugCMDGetInput(string &cmd)
+void debugCMDGetInput(std::string &cmd)
 {
 	if (isKeyPressed(SDL_SCANCODE_COMMA)) { cmd += "<"; }
 	if (isKeyPressed(SDL_SCANCODE_SEMICOLON)) { cmd += ":"; }
@@ -219,7 +215,7 @@ void debugCMDGetInput(string &cmd)
 
 void debugFunction()
 {
-	static string cmd;
+	static std::string cmd;
 	static int debugMode = 0;
 	static TSC debugTSC;
 
@@ -278,11 +274,11 @@ void debugFunction()
 
 	if (debugFlags & showSlots)
 	{
-		string debugStr1 = "There are " + to_string(npcs.size()) + " npc slots.";
-		string debugStr2 = "There are " + to_string(bullets.size()) + " bullet slots.";
-		string debugStr3 = "There are " + to_string(carets.size()) + " caret slots.";
-		string debugStr4 = "There are " + to_string(valueviews.size()) + " valueview slots";
-		string debugStr5 = "Currently loaded boss is " + to_string(bossObj[0].code_char);
+		std::string debugStr1 = "There are " + std::to_string(npcs.size()) + " npc slots.";
+		std::string debugStr2 = "There are " + std::to_string(bullets.size()) + " bullet slots.";
+		std::string debugStr3 = "There are " + std::to_string(carets.size()) + " caret slots.";
+		std::string debugStr4 = "There are " + std::to_string(valueviews.size()) + " valueview slots";
+		std::string debugStr5 = "Currently loaded boss is boss " + std::to_string(bossObj[0].code_char);
 		drawString(8, screenHeight - 12, debugStr1);
 		drawString(8, screenHeight - 24, debugStr2);
 		drawString(8, screenHeight - 36, debugStr3);

@@ -81,6 +81,9 @@ all: bin/CaveStoryRecoded
 bin/CaveStoryRecoded: $(OBJS)
 	@mkdir -p $(@D)
 	$(LDFLAGS) $(OBJS) -o $@
+	@cp source/config.json bin/
+	@cp -R source/data bin/
+	@cp -R source/Sound bin/
 
 # Generic source compile
 obj/%.o: source/%.cpp

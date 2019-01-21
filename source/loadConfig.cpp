@@ -17,13 +17,6 @@
 #include "input.h"
 #include "log.h"
 #include "main.h"
-
-using std::string;
-using std::ifstream;
-using nlohmann::json;
-using nlohmann::detail::parse_error;
-using std::to_string;
-
 struct CONFIG_RAW
 {
 	char proof[32];
@@ -37,7 +30,7 @@ struct CONFIG_RAW
 };
 
 //Save and load config.dat (config file for the original Cave Story)
-string configName = "Config.dat";
+std::string configName = "Config.dat";
 
 CONFIG *loadConfigDat()
 {
@@ -71,20 +64,20 @@ CONFIG *loadConfigDat()
 	return config;
 }
 
-json loadJsonFromFile(const string& path)
+nlohmann::json loadJsonFromFile(const std::string& path)
 {
 	if (!fileExists(path))
-		return json();
-	ifstream file(path);
-	json j;
+		return nlohmann::json();
+	std::ifstream file(path);
+	nlohmann::json j;
 	logInfo("Opening " + path);
 	try
 	{
         file >> j;
 	}
-	catch (const parse_error& e)
+	catch (const nlohmann::detail::parse_error& e)
     {
-        doCustomError("Exception while loading \"" + path + "\" at byte " + to_string(e.byte) + ". Exception details : " + e.what());
+        doCustomError("Exception while loading \"" + path + "\" at byte " + std::to_string(e.byte) + ". Exception details : " + e.what());
 	}
 	catch (const std::exception& e)
 	{
@@ -94,9 +87,9 @@ json loadJsonFromFile(const string& path)
 }
 
 #if __cplusplus >= 201703L
-template<typename T> void safeGet(const json& j, const string& name, T& varTbc)
+template<typename T> void safeGet(const nlohmann::json& j, const std::string& name, T& varTbc)
 {
-	if constexpr(std::is_same_v<T, string>)
+	if constexpr(std::is_same_v<T, std::string>)
 	{
 		if (j[name].is_string())
 			varTbc = j[name];

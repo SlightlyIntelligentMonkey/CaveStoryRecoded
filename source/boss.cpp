@@ -12,9 +12,6 @@
 #include "log.h"
 #include "stage.h"
 
-using std::string;
-using std::to_string;
-
 npc bossObj[BOSSNPCS];
 
 using bossAct = void(*)(npc *);
@@ -64,7 +61,7 @@ void updateBoss()
 			return;
 
 		wasNotifiedAbout[bossObj[0].code_char] = true;
-		string msg = "Boss " + to_string(bossObj[0].code_char) + " is not implementated yet.";
+		std::string msg = "Boss " + std::to_string(bossObj[0].code_char) + " is not implementated yet.";
 		logWarning(msg);
 		if (debugFlags & notifyOnNotImplemented)
             SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_WARNING, "Missing Boss", msg.c_str(), nullptr);
