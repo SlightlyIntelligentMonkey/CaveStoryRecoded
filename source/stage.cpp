@@ -103,7 +103,7 @@ void loadPxm(const string &name)
 	//frees old map memory
 	delete[] map.tile;
 
-	std::unique_ptr<uint8_t> pxm = nullptr;
+	std::unique_ptr<uint8_t> pxm;
 	const int pxmSize = loadFile("data/Stage/" + name + ".pxm", pxm);
 
 	map.width = readLEshort(pxm.get(), 4);
@@ -118,7 +118,7 @@ void loadPxa(const string &name)
 	//free old tile attribute memory
 	delete[] map.attribute;
 
-	std::unique_ptr<uint8_t> pxa = nullptr;
+	std::unique_ptr<uint8_t> pxa;
 	const int pxaSize = loadFile("data/Stage/" + name + ".pxa", pxa);
 
 	map.attribute = new uint8_t[pxaSize];
@@ -131,7 +131,7 @@ void loadPxe(const string &name)
 	npcs.clear();
 	npcs.shrink_to_fit();
 
-	std::unique_ptr<uint8_t> pxe = nullptr;
+	std::unique_ptr<uint8_t> pxe;
 	loadFile("data/Stage/" + name + ".pxe", pxe);
 
 	//Load npcs
@@ -258,7 +258,7 @@ void drawForeground(void)
 	}
 }
 
-void updateBackgroundEffect(int w)
+static void updateBackgroundEffect(int w)
 {
 	if (gameFlags & 1)
 	{

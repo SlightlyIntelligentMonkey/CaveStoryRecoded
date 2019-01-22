@@ -68,8 +68,6 @@ void loadStageTable();
 void loadLevel(size_t levelIndex, int w, int x, int y);
 void drawLevel(bool foreground);
 
-void updateBackgroundEffect(int w);
-
 template<typename T> constexpr inline int32_t tilesToUnits(T x)
 {
     return x * 0x2000;  // x * 8192 or x << 13
