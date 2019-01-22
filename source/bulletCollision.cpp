@@ -21,7 +21,7 @@ void bulletVanish(bullet *bul)
 	createCaret(bul->x, bul->y, effect_RisingDisc, dirRight);
 }
 
-int bulletJudgeBlock(int x, int y, bullet *bul) //For judging breakable blocks
+int bulletJudgeBlock(size_t x, size_t y, bullet *bul) //For judging breakable blocks
 {
 	int hit = 0;
 
@@ -332,8 +332,8 @@ void bulletHitMap()
 		if (bul->cond & 0x80)
 		{
 			//Get offset positions for tile checking
-			const int x = unitsToTiles(bul->x);
-			const int y = unitsToTiles(bul->y);
+			const size_t x = unitsToTiles(bul->x);
+			const size_t y = unitsToTiles(bul->y);
 
 			uint8_t atrb[4];
 
@@ -459,7 +459,7 @@ void bulletHitNpcs()
 								//Shock if not already shocked for 2 frames
 								if (npcs[n].shock < 14)
 								{
-									for (int i = 0; i < 3; ++i)
+									for (int j = 0; j < 3; ++j)
 										createCaret((bul->x + npcs[n].x) / 2, (bul->y + npcs[n].y) / 2, effect_RedDamageRings);
 
 									playSound(npcs[n].hit_voice);
@@ -562,7 +562,7 @@ void bulletHitBoss()
 								//Shock if not already shocked for 2 frames
 								if (bossObj[bos_].shock < 14)
 								{
-									for (int i = 0; i < 3; ++i)
+									for (int j = 0; j < 3; ++j)
 										createCaret((bul->x + bossObj[bos_].x) / 2, (bul->y + bossObj[bos_].y) / 2, effect_RedDamageRings);
 
 									playSound(bossObj[bos_].hit_voice);

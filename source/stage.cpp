@@ -103,14 +103,15 @@ void loadPxm(const string &name)
 	//frees old map memory
 	delete[] map.tile;
 
-	std::unique_ptr<uint8_t> pxm = nullptr;
-	const int pxmSize = loadFile("data/Stage/" + name + ".pxm", pxm);
+	auto tmp = loadFile("data/Stage/" + name + ".pxm");
+	auto pxmSize = tmp.first;
+	auto pxm = tmp.second;
 
-	map.width = readLEshort(pxm.get(), 4);
-	map.height = readLEshort(pxm.get(), 6);
+	map.width = readLEshort(pxm.data(), 4);
+	map.height = readLEshort(pxm.data(), 6);
 
 	map.tile = new uint8_t[pxmSize - 8];
-	memcpy(map.tile, pxm.get() + 8, pxmSize - 8);
+	memcpy(map.tile, pxm.data() + 8, pxmSize - 8);
 }
 
 void loadPxa(const string &name)
@@ -118,11 +119,12 @@ void loadPxa(const string &name)
 	//free old tile attribute memory
 	delete[] map.attribute;
 
-	std::unique_ptr<uint8_t> pxa = nullptr;
-	const int pxaSize = loadFile("data/Stage/" + name + ".pxa", pxa);
+	auto tmp = loadFile("data/Stage/" + name + ".pxa");
+	auto pxaSize = tmp.first;
+	auto pxa = tmp.second;
 
 	map.attribute = new uint8_t[pxaSize];
-	memcpy(map.attribute, pxa.get(), pxaSize);
+	memcpy(map.attribute, pxa.data(), pxaSize);
 }
 
 void loadPxe(const string &name)
@@ -131,30 +133,29 @@ void loadPxe(const string &name)
 	npcs.clear();
 	npcs.shrink_to_fit();
 
-	std::unique_ptr<uint8_t> pxe = nullptr;
-	loadFile("data/Stage/" + name + ".pxe", pxe);
+	auto pxe = loadFile("data/Stage/" + name + ".pxe").second;
 
 	//Load npcs
-	const int npcAmount = readLElong(pxe.get(), 4);
+	const int npcAmount = readLElong(pxe.data(), 4);
 
 	for (int i = 0; i < npcAmount; i++)
 	{
 		const int offset = (i * 12) + 8;
 
-		if (readLEshort(pxe.get(), offset + 10) & npc_appearSet && !(getFlag(readLEshort(pxe.get(), offset + 4))))
+		if (readLEshort(pxe.data(), offset + 10) & npc_appearSet && !(getFlag(readLEshort(pxe.data(), offset + 4))))
 			continue;
 
-		if (readLEshort(pxe.get(), offset + 10) & npc_hideSet && getFlag(readLEshort(pxe.get(), offset + 4)))
+		if (readLEshort(pxe.data(), offset + 10) & npc_hideSet && getFlag(readLEshort(pxe.data(), offset + 4)))
 			continue;
 
 		npc newNPC;
-		newNPC.init(readLEshort(pxe.get(), offset + 8), tilesToUnits(readLEshort(pxe.get(), offset)), tilesToUnits(readLEshort(pxe.get(), offset + 2)), 0, 0, 0, nullptr);
+		newNPC.init(readLEshort(pxe.data(), offset + 8), tilesToUnits(readLEshort(pxe.data(), offset)), tilesToUnits(readLEshort(pxe.data(), offset + 2)), 0, 0, 0, nullptr);
 
-		newNPC.code_event = readLEshort(pxe.get(), offset + 6);
-		newNPC.code_flag = readLEshort(pxe.get(), offset + 4);
-		newNPC.bits |= readLEshort(pxe.get(), offset + 10);
+		newNPC.code_event = readLEshort(pxe.data(), offset + 6);
+		newNPC.code_flag = readLEshort(pxe.data(), offset + 4);
+		newNPC.bits |= readLEshort(pxe.data(), offset + 10);
 
-		if (readLEshort(pxe.get(), offset + 10) & npc_altDir)
+		if (readLEshort(pxe.data(), offset + 10) & npc_altDir)
 			newNPC.direct = dirRight;
 
 		npcs.push_back(newNPC);
@@ -258,7 +259,7 @@ void drawForeground(void)
 	}
 }
 
-void updateBackgroundEffect(int w)
+static void updateBackgroundEffect(int w)
 {
 	if (gameFlags & 1)
 	{
