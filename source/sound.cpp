@@ -204,7 +204,7 @@ void mixSounds(float (*stream)[2], int len)
 				stream[i][0] += interpolated_sample * sound->volume * sound->volume_l;
 				stream[i][1] += interpolated_sample * sound->volume * sound->volume_r;
 
-				sound->pos += (long double)sound->freq / sampleRate;
+				sound->pos += (double)sound->freq / sampleRate;
 			}
 		}
 	}

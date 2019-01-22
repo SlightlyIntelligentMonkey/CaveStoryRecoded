@@ -78,9 +78,6 @@ bool fileExists(const string& name)
 
 int loadFile(const string& name, std::unique_ptr<uint8_t>& data)
 {
-	if (data == nullptr)
-		throw std::invalid_argument("data was nullptr in loadFile");
-
 	//Open file
 	FILE *file = fopen(name.c_str(), "rb");
 	if (file == nullptr)
