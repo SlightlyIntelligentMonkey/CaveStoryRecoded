@@ -17,7 +17,7 @@
 			</Target>
 		</Build>
 		<Unit filename="Json_Modern_Cpp/json.hpp" />
-		<Unit filename="source/CaveStoryEngine.rc">
+		<Unit filename="source/CaveStoryRecoded.rc">
 			<Option compilerVar="WINDRES" />
 		</Unit>
 		<Unit filename="source/balfrog.cpp" />

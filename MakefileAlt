@@ -34,9 +34,9 @@ MAIN += balfrog ballos core heavyPress monsterX omega
 OBJS := $(addprefix obj/, $(addsuffix .o, $(MAIN)))
 DEPS := $(addsuffix .d, $(OBJS))
 
-all: bin/CaveStoryEngine
+all: bin/CaveStoryRecoded
 
-bin/CaveStoryEngine: $(OBJS)
+bin/CaveStoryRecoded: $(OBJS)
 	@mkdir -p $(@D)
 	@$(CXX) $(ALL_CXXFLAGS) $(OBJS) -o $@ $(ALL_LDFLAGS) $(ALL_LIBS)
 
@@ -52,4 +52,4 @@ include $(wildcard $(DEPS))
 
 # Remove all object files and the binary
 clean:
-	@rm -rf obj bin/CaveStoryEngine
+	@rm -rf obj bin/CaveStoryRecoded

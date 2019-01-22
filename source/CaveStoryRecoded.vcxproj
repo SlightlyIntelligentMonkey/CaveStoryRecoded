@@ -1,0 +1,384 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <VCProjectVersion>15.0</VCProjectVersion>
+    <ProjectGuid>{8DE67CE2-BCF9-4B5E-8260-C58044628838}</ProjectGuid>
+    <RootNamespace>source</RootNamespace>
+    <ProjectName>CaveStoryRecoded</ProjectName>
+    <WindowsTargetPlatformVersion>10.0.17134.0</WindowsTargetPlatformVersion>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v141</PlatformToolset>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v141</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v141</PlatformToolset>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v141</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="Shared">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);$(SolutionDir)SDL2-2.0.8\include</IncludePath>
+    <CodeAnalysisRuleSet>CS_RuleSet.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);$(SolutionDir)SDL2-2.0.8\include</IncludePath>
+    <CodeAnalysisRuleSet>CS_RuleSet.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);$(SolutionDir)SDL2-2.0.8\include</IncludePath>
+    <CodeAnalysisRuleSet>CS_RuleSet.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);$(SolutionDir)SDL2-2.0.8\include</IncludePath>
+    <CodeAnalysisRuleSet>CS_RuleSet.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <WarningLevel>Level4</WarningLevel>
+      <SDLCheck>true</SDLCheck>
+      <ConformanceMode>true</ConformanceMode>
+      <PreprocessorDefinitions>USE_ICONS_WINDOWS;_CRT_SECURE_NO_WARNINGS;_SILENCE_CXX17_CODECVT_HEADER_DEPRECATION_WARNING;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <FavorSizeOrSpeed>Neither</FavorSizeOrSpeed>
+      <Optimization>Disabled</Optimization>
+      <UndefinePreprocessorDefinitions>_DEBUG</UndefinePreprocessorDefinitions>
+      <AdditionalIncludeDirectories>
+      </AdditionalIncludeDirectories>
+      <InlineFunctionExpansion>Disabled</InlineFunctionExpansion>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <LanguageStandard>stdcpplatest</LanguageStandard>
+      <EnableModules>true</EnableModules>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <PrecompiledHeaderFile>main.h</PrecompiledHeaderFile>
+      <CallingConvention>Cdecl</CallingConvention>
+      <CompileAs>CompileAsCpp</CompileAs>
+      <UseFullPaths>false</UseFullPaths>
+      <TreatWarningAsError>false</TreatWarningAsError>
+      <DisableSpecificWarnings>4244;4100;4127;4267;</DisableSpecificWarnings>
+    </ClCompile>
+    <Link>
+      <AdditionalDependencies>kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;$(SolutionDir)SDL2-2.0.8\lib\x86\SDL2.lib;$(SolutionDir)SDL2-2.0.8\lib\x86\SDL2main.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <SubSystem>Windows</SubSystem>
+    </Link>
+    <PostBuildEvent>
+      <Command>xcopy $(SolutionDir)SDL2-2.0.8\lib\x86\SDL2.dll $(TargetDir) /y /d</Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <WarningLevel>Level4</WarningLevel>
+      <SDLCheck>true</SDLCheck>
+      <ConformanceMode>true</ConformanceMode>
+      <PreprocessorDefinitions>USE_ICONS_WINDOWS;_CRT_SECURE_NO_WARNINGS;_SILENCE_CXX17_CODECVT_HEADER_DEPRECATION_WARNING;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <Optimization>Disabled</Optimization>
+      <FavorSizeOrSpeed>Neither</FavorSizeOrSpeed>
+      <UndefinePreprocessorDefinitions>_DEBUG</UndefinePreprocessorDefinitions>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <InlineFunctionExpansion>Disabled</InlineFunctionExpansion>
+      <OmitFramePointers>false</OmitFramePointers>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <PrecompiledHeaderFile>main.h</PrecompiledHeaderFile>
+      <CallingConvention>Cdecl</CallingConvention>
+      <CompileAs>CompileAsCpp</CompileAs>
+      <UseFullPaths>false</UseFullPaths>
+      <TreatWarningAsError>false</TreatWarningAsError>
+      <DisableSpecificWarnings>4244;4100;4127;4267;</DisableSpecificWarnings>
+      <LanguageStandard>stdcpplatest</LanguageStandard>
+    </ClCompile>
+    <Link>
+      <AdditionalDependencies>kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;$(SolutionDir)SDL2-2.0.8\lib\x64\SDL2.lib;$(SolutionDir)SDL2-2.0.8\lib\x64\SDL2main.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <SubSystem>Windows</SubSystem>
+    </Link>
+    <PostBuildEvent>
+      <Command>xcopy $(SolutionDir)SDL2-2.0.8\lib\x64\SDL2.dll $(TargetDir) /y /d</Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level4</WarningLevel>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <ConformanceMode>true</ConformanceMode>
+      <PreprocessorDefinitions>USE_ICONS_WINDOWS;_CRT_SECURE_NO_WARNINGS;_SILENCE_CXX17_CODECVT_HEADER_DEPRECATION_WARNING;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <Optimization>MaxSpeed</Optimization>
+      <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
+      <UndefinePreprocessorDefinitions>_DEBUG</UndefinePreprocessorDefinitions>
+      <AdditionalIncludeDirectories>
+      </AdditionalIncludeDirectories>
+      <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
+      <OmitFramePointers>true</OmitFramePointers>
+      <EnableFiberSafeOptimizations>true</EnableFiberSafeOptimizations>
+      <LanguageStandard>stdcpplatest</LanguageStandard>
+      <EnableModules>true</EnableModules>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <PrecompiledHeaderFile>main.h</PrecompiledHeaderFile>
+      <CallingConvention>Cdecl</CallingConvention>
+      <CompileAs>CompileAsCpp</CompileAs>
+      <UseFullPaths>false</UseFullPaths>
+      <TreatWarningAsError>false</TreatWarningAsError>
+      <DisableSpecificWarnings>4244;4100;4127;4267;</DisableSpecificWarnings>
+    </ClCompile>
+    <Link>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <AdditionalDependencies>kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;$(SolutionDir)SDL2-2.0.8\lib\x86\SDL2.lib;$(SolutionDir)SDL2-2.0.8\lib\x86\SDL2main.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <SubSystem>Windows</SubSystem>
+    </Link>
+    <PostBuildEvent>
+      <Command>xcopy $(SolutionDir)SDL2-2.0.8\lib\x86\SDL2.dll $(TargetDir) /y /d</Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <WarningLevel>Level4</WarningLevel>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <ConformanceMode>true</ConformanceMode>
+      <PreprocessorDefinitions>USE_ICONS_WINDOWS;_CRT_SECURE_NO_WARNINGS;_SILENCE_CXX17_CODECVT_HEADER_DEPRECATION_WARNING;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <Optimization>MaxSpeed</Optimization>
+      <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
+      <UndefinePreprocessorDefinitions>_DEBUG</UndefinePreprocessorDefinitions>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
+      <OmitFramePointers>true</OmitFramePointers>
+      <EnableFiberSafeOptimizations>true</EnableFiberSafeOptimizations>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <PrecompiledHeaderFile>main.h</PrecompiledHeaderFile>
+      <CallingConvention>Cdecl</CallingConvention>
+      <CompileAs>CompileAsCpp</CompileAs>
+      <UseFullPaths>false</UseFullPaths>
+      <TreatWarningAsError>false</TreatWarningAsError>
+      <DisableSpecificWarnings>4244;4100;4127;4267;</DisableSpecificWarnings>
+      <LanguageStandard>stdcpplatest</LanguageStandard>
+    </ClCompile>
+    <Link>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <AdditionalDependencies>kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;$(SolutionDir)SDL2-2.0.8\lib\x64\SDL2.lib;$(SolutionDir)SDL2-2.0.8\lib\x64\SDL2main.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <SubSystem>Windows</SubSystem>
+    </Link>
+    <PostBuildEvent>
+      <Command>xcopy $(SolutionDir)SDL2-2.0.8\lib\x64\SDL2.dll $(TargetDir) /y /d</Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="balfrog.cpp" />
+    <ClCompile Include="ballos.cpp" />
+    <ClCompile Include="blade.cpp" />
+    <ClCompile Include="bladeThrow.cpp" />
+    <ClCompile Include="boss.cpp" />
+    <ClCompile Include="bossCollision.cpp" />
+    <ClCompile Include="bubblePew.cpp" />
+    <ClCompile Include="bubbler.cpp" />
+    <ClCompile Include="bullet.cpp" />
+    <ClCompile Include="bulletCollision.cpp" />
+    <ClCompile Include="caret.cpp" />
+    <ClCompile Include="core.cpp" />
+    <ClCompile Include="fade.cpp" />
+    <ClCompile Include="fireballShoot.cpp" />
+    <ClCompile Include="flash.cpp" />
+    <ClCompile Include="game.cpp" />
+    <ClCompile Include="heavyPress.cpp" />
+    <ClCompile Include="hud.cpp" />
+    <ClCompile Include="inventory.cpp" />
+    <ClCompile Include="loadConfig.cpp" />
+    <ClCompile Include="lodepng\lodepng.cpp">
+      <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">LODEPNG_NO_COMPILE_ENCODER;LODEPNG_NO_COMPILE_CPP;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">LODEPNG_NO_COMPILE_ENCODER;LODEPNG_NO_COMPILE_CPP;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">LODEPNG_NO_COMPILE_ENCODER;LODEPNG_NO_COMPILE_CPP;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">LODEPNG_NO_COMPILE_ENCODER;LODEPNG_NO_COMPILE_CPP;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ClCompile>
+    <ClCompile Include="log.cpp" />
+    <ClCompile Include="machineGun.cpp" />
+    <ClCompile Include="machineGunShoot.cpp" />
+    <ClCompile Include="mapSystem.cpp" />
+    <ClCompile Include="misc.cpp" />
+    <ClCompile Include="missile.cpp" />
+    <ClCompile Include="missileShoot.cpp" />
+    <ClCompile Include="monsterX.cpp" />
+    <ClCompile Include="nemesis.cpp" />
+    <ClCompile Include="nemesisShoot.cpp" />
+    <ClCompile Include="npc080.cpp" />
+    <ClCompile Include="npc100.cpp" />
+    <ClCompile Include="npc120.cpp" />
+    <ClCompile Include="npc140.cpp" />
+    <ClCompile Include="npc160.cpp" />
+    <ClCompile Include="npc180.cpp" />
+    <ClCompile Include="npc220.cpp" />
+    <ClCompile Include="npc240.cpp" />
+    <ClCompile Include="npc260.cpp" />
+    <ClCompile Include="npc280.cpp" />
+    <ClCompile Include="npc300.cpp" />
+    <ClCompile Include="npc320.cpp" />
+    <ClCompile Include="npc340.cpp" />
+    <ClCompile Include="npc360.cpp" />
+    <ClCompile Include="npcCollision.cpp" />
+    <ClCompile Include="filesystem.cpp" />
+    <ClCompile Include="flags.cpp" />
+    <ClCompile Include="input.cpp" />
+    <ClCompile Include="stage.cpp" />
+    <ClCompile Include="main.cpp">
+      <CallingConvention Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Cdecl</CallingConvention>
+      <CallingConvention Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Cdecl</CallingConvention>
+      <CallingConvention Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Cdecl</CallingConvention>
+      <CallingConvention Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Cdecl</CallingConvention>
+    </ClCompile>
+    <ClCompile Include="mathUtils.cpp" />
+    <ClCompile Include="npc.cpp" />
+    <ClCompile Include="npc000.cpp" />
+    <ClCompile Include="npc020.cpp" />
+    <ClCompile Include="npc040.cpp" />
+    <ClCompile Include="npc060.cpp" />
+    <ClCompile Include="npc200.cpp" />
+    <ClCompile Include="npcAct.cpp" />
+    <ClCompile Include="omega.cpp" />
+    <ClCompile Include="org.cpp" />
+    <ClCompile Include="player.cpp" />
+    <ClCompile Include="playerCollision.cpp" />
+    <ClCompile Include="polarStar.cpp" />
+    <ClCompile Include="polarStarShoot.cpp" />
+    <ClCompile Include="pxt.cpp" />
+    <ClCompile Include="render.cpp" />
+    <ClCompile Include="script.cpp" />
+    <ClCompile Include="snake.cpp" />
+    <ClCompile Include="snakeShoot.cpp" />
+    <ClCompile Include="sound.cpp" />
+    <ClCompile Include="spur.cpp" />
+    <ClCompile Include="fireball.cpp" />
+    <ClCompile Include="spurShoot.cpp" />
+    <ClCompile Include="stageSelect.cpp" />
+    <ClCompile Include="stdUtils.cpp" />
+    <ClCompile Include="valueview.cpp" />
+    <ClCompile Include="weapons.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="blade.h" />
+    <ClInclude Include="boss.h" />
+    <ClInclude Include="bossCollision.h" />
+    <ClInclude Include="bubbler.h" />
+    <ClInclude Include="bullet.h" />
+    <ClInclude Include="bulletCollision.h" />
+    <ClInclude Include="caret.h" />
+    <ClInclude Include="common.h" />
+    <ClInclude Include="fade.h" />
+    <ClInclude Include="fireball.h" />
+    <ClInclude Include="flags.h" />
+    <ClInclude Include="flash.h" />
+    <ClInclude Include="game.h" />
+    <ClInclude Include="lodepng\lodepng.h" />
+    <ClInclude Include="org.h" />
+    <ClInclude Include="loadConfig.h" />
+    <ClInclude Include="log.h" />
+    <ClInclude Include="machineGun.h" />
+    <ClInclude Include="misc.h" />
+    <ClInclude Include="missile.h" />
+    <ClInclude Include="nemesis.h" />
+    <ClInclude Include="npc080.h" />
+    <ClInclude Include="npc100.h" />
+    <ClInclude Include="npc120.h" />
+    <ClInclude Include="npc140.h" />
+    <ClInclude Include="npc160.h" />
+    <ClInclude Include="npc180.h" />
+    <ClInclude Include="npc220.h" />
+    <ClInclude Include="npc240.h" />
+    <ClInclude Include="npc260.h" />
+    <ClInclude Include="npc280.h" />
+    <ClInclude Include="npc300.h" />
+    <ClInclude Include="npc320.h" />
+    <ClInclude Include="polarStar.h" />
+    <ClInclude Include="pxt.h" />
+    <ClInclude Include="script.h" />
+    <ClInclude Include="shootFunctions.h" />
+    <ClInclude Include="snake.h" />
+    <ClInclude Include="spur.h" />
+    <ClInclude Include="stdUtils.h" />
+    <ClInclude Include="valueview.h" />
+    <ClInclude Include="weapons.h" />
+    <ClInclude Include="hud.h" />
+    <ClInclude Include="npc340.h" />
+    <ClInclude Include="npc360.h" />
+    <ClInclude Include="npcCollision.h" />
+    <ClInclude Include="main.h" />
+    <ClInclude Include="filesystem.h" />
+    <ClInclude Include="input.h" />
+    <ClInclude Include="stage.h" />
+    <ClInclude Include="mathUtils.h" />
+    <ClInclude Include="npc.h" />
+    <ClInclude Include="npc000.h" />
+    <ClInclude Include="npc020.h" />
+    <ClInclude Include="npc040.h" />
+    <ClInclude Include="npc060.h" />
+    <ClInclude Include="npc200.h" />
+    <ClInclude Include="npcAct.h" />
+    <ClInclude Include="player.h" />
+    <ClInclude Include="playerCollision.h" />
+    <ClInclude Include="render.h" />
+    <ClInclude Include="resource.h" />
+    <ClInclude Include="sound.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="CS_RuleSet.ruleset" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="..\res\icon.rc" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

@@ -123,7 +123,7 @@ int createWindow(int width, int height, int scale)
 	//Set window
 	if (!window)
 	{
-		window = SDL_CreateWindow("Cave Story Engine",
+		window = SDL_CreateWindow("Cave Story Recoded",
 		                          SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
 		                          createWidth, createHeight,
 		                          windowFlags);
