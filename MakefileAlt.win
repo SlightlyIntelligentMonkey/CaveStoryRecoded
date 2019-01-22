@@ -37,9 +37,9 @@ DEPS := $(addsuffix .d, $(OBJS))
 # Embed icons as resources, and load them natively
 OBJS += obj/icon.o
 
-all: bin/CaveStoryEngine
+all: bin/CaveStoryRecoded
 
-bin/CaveStoryEngine: $(OBJS)
+bin/CaveStoryRecoded: $(OBJS)
 	@mkdir -p $(@D)
 	@$(CXX) $(ALL_CXXFLAGS) $(OBJS) -o $@ $(ALL_LDFLAGS) $(ALL_LIBS)
 
@@ -56,4 +56,4 @@ include $(wildcard $(DEPS))
 
 # Remove all objects files and the binary
 clean:
-	@rm -rf obj bin/CaveStoryEngine
+	@rm -rf obj bin/CaveStoryRecoded

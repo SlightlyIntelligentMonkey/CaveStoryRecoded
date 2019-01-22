@@ -1,5 +1,5 @@
 # Cave Story Recoded
-An open-source Cave Story Engine.
+An recode of Cave Story.
 
 Attempts to have complete 1:1 compatibility to the original game (except for binary compat, that's pretty much impossible).
 

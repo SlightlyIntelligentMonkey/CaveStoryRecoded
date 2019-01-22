@@ -44,9 +44,10 @@ void loadStageTable()
 	if (tblStream == nullptr)
 		doError();
 
-	const auto stages = static_cast<size_t>(SDL_RWsize(tblStream) / 200);
+	const auto stages = static_cast<size_t>(SDL_RWsize(tblStream) / sizeof(STAGE_TABLE));
 
-	stageTable = static_cast<STAGE_TABLE*>(malloc(stages * 200));
+	stageTable = new STAGE_TABLE[stages];
+
 	if (stageTable == nullptr)
 		doCustomError("Could not allocate memory for stage table");
 

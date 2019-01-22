@@ -162,13 +162,13 @@ void loadProfile()
 			doCustomError(errorMsg);
 		}
 
-		const int level = SDL_ReadLE32(profile); //level
+		const uint32_t level = SDL_ReadLE32(profile); //level
 		changeOrg(SDL_ReadLE32(profile)); //song
 
 		currentPlayer.init();
 
-		const int player_x = SDL_ReadLE32(profile); //Player X
-		const int player_y = SDL_ReadLE32(profile); //Player Y
+		const uint32_t player_x = SDL_ReadLE32(profile); //Player X
+		const uint32_t player_y = SDL_ReadLE32(profile); //Player Y
 		currentPlayer.direct = SDL_ReadLE32(profile); //Player Direction
 
 		currentPlayer.max_life = SDL_ReadLE16(profile); //max health

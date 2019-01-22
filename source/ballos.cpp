@@ -208,7 +208,6 @@ namespace ballos
 			break;
 
 		case states::phase1::beginFight:
-			boss.act_no = states::phase1::prepareJump;
 			boss.count1 = 0;
 			// Fallthrough
 		case states::phase1::prepareJump:

@@ -26,10 +26,10 @@ int bulletJudgeBlock(size_t x, size_t y, bullet *bul) //For judging breakable bl
 	int hit = 0;
 
 	//Check if hit tile
-	if (bul->x - bul->blockXL < (2 * x + 1) << 12
-		&& bul->blockXL + bul->x > (2 * x - 1) << 12
-		&& bul->y - bul->blockYL < (2 * y + 1) << 12
-		&& bul->blockYL + bul->y > (2 * y - 1) << 12)
+	if (bul->x - bul->blockXL < (int)(2 * x + 1) << 12
+		&& bul->blockXL + bul->x > (int)(2 * x - 1) << 12
+		&& bul->y - bul->blockYL < (int)(2 * y + 1) << 12
+		&& bul->blockYL + bul->y > (int)(2 * y - 1) << 12)
 	{
 		hit = 0x200;
 	}
