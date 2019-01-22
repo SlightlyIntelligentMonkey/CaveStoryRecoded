@@ -3,6 +3,7 @@
 #include <vector>
 #include <string>
 #include <memory>
+#include <utility>
 #include "common.h"
 
 uint16_t readLEshort(const uint8_t *data, size_t offset) attrPure;
@@ -14,7 +15,7 @@ void writeLElong(uint8_t *data, uint32_t input, size_t offset);
 /// Returns whether the given filename points to a valid file
 bool fileExists(const std::string& name);
 
-int loadFile(const std::string& name, std::unique_ptr<uint8_t>& data);
+std::pair<size_t, std::vector<uint8_t>> loadFile(const std::string& name);
 void writeFile(const std::string& name, const void *data, size_t amount);
 
 void loadProfile();

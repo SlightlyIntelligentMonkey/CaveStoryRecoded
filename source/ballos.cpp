@@ -449,7 +449,7 @@ namespace ballos
 
 		case states::phase3::spawnSpikes + 1:
 			if (++boss.act_wait % secondsToFrames(0.6) == 1)
-				createNpc(NPC_BallosSpikesRising, tilesToUnits((2 * (boss.act_wait / 30) + 2)), tilesToUnits(21));
+				createNpc(NPC_BallosSpikesRising, tilesToUnits(2 * (boss.act_wait / 30) + 2), tilesToUnits(21));
 			if (boss.act_wait / 3 % 2)
 				playSound(SFX_LargeObjectHitGround);
 			if (boss.act_wait > secondsToFrames(10.8))
@@ -582,7 +582,7 @@ namespace ballos
 		if (boss.shock)
 		{
 			flashAlternator = !flashAlternator;
-			body.ani_no = (int)flashAlternator;
+			body.ani_no = flashAlternator;
 		}
 		else
 			body.ani_no = 0;

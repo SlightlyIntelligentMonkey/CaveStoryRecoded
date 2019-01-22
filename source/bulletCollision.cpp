@@ -21,7 +21,7 @@ void bulletVanish(bullet *bul)
 	createCaret(bul->x, bul->y, effect_RisingDisc, dirRight);
 }
 
-int bulletJudgeBlock(int x, int y, bullet *bul) //For judging breakable blocks
+int bulletJudgeBlock(size_t x, size_t y, bullet *bul) //For judging breakable blocks
 {
 	int hit = 0;
 
@@ -332,8 +332,8 @@ void bulletHitMap()
 		if (bul->cond & 0x80)
 		{
 			//Get offset positions for tile checking
-			const int x = unitsToTiles(bul->x);
-			const int y = unitsToTiles(bul->y);
+			const size_t x = unitsToTiles(bul->x);
+			const size_t y = unitsToTiles(bul->y);
 
 			uint8_t atrb[4];
 

@@ -76,7 +76,7 @@ bool fileExists(const string& name)
 	return stat(name.c_str(), &buffer) == 0;
 }
 
-int loadFile(const string& name, std::unique_ptr<uint8_t>& data)
+std::pair<size_t, std::vector<uint8_t>> loadFile(const string& name)
 {
 	//Open file
 	FILE *file = fopen(name.c_str(), "rb");
@@ -107,8 +107,8 @@ int loadFile(const string& name, std::unique_ptr<uint8_t>& data)
 	}
 
 	//Load data
-	data = std::make_unique<uint8_t>(filesize);
-	if (fread(data.get(), 1, filesize, file) < static_cast<size_t>(filesize))
+	std::vector<uint8_t> data(filesize);
+	if (fread(data.data(), 1, filesize, file) < static_cast<size_t>(filesize))
 	{
 		if (fclose(file) == EOF)
 			throw std::runtime_error("Could not close " + name + " after failing to read it");
@@ -120,7 +120,7 @@ int loadFile(const string& name, std::unique_ptr<uint8_t>& data)
 		throw std::runtime_error("Could not close " + name);
 
     logDebug("Loaded from " + name);
-	return filesize;
+	return std::pair(filesize, data);
 }
 
 void writeFile(const string& name, const void *data, size_t amount)
