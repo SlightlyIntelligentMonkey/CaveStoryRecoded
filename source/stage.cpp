@@ -44,7 +44,7 @@ void loadStageTable()
 	if (tblStream == nullptr)
 		doError();
 
-	const auto stages = static_cast<size_t>(SDL_RWsize(tblStream) / sizeof(STAGE_TABLE));
+	const auto stages = static_cast<size_t>(tblStream->size(tblStream)) / sizeof(STAGE_TABLE);
 
 	stageTable = new STAGE_TABLE[stages];
 
