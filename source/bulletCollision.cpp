@@ -459,7 +459,7 @@ void bulletHitNpcs()
 								//Shock if not already shocked for 2 frames
 								if (npcs[n].shock < 14)
 								{
-									for (int i = 0; i < 3; ++i)
+									for (int j = 0; j < 3; ++j)
 										createCaret((bul->x + npcs[n].x) / 2, (bul->y + npcs[n].y) / 2, effect_RedDamageRings);
 
 									playSound(npcs[n].hit_voice);
@@ -562,7 +562,7 @@ void bulletHitBoss()
 								//Shock if not already shocked for 2 frames
 								if (bossObj[bos_].shock < 14)
 								{
-									for (int i = 0; i < 3; ++i)
+									for (int j = 0; j < 3; ++j)
 										createCaret((bul->x + bossObj[bos_].x) / 2, (bul->y + bossObj[bos_].y) / 2, effect_RedDamageRings);
 
 									playSound(bossObj[bos_].hit_voice);

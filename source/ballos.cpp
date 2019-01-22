@@ -400,7 +400,7 @@ namespace ballos
 		return true;
 	}
 
-	static inline void phase3DoPlatformWait(npc& boss, int waitTime, int nextPhase = -1)
+	static inline void phase3DoPlatformWait(int waitTime, int nextPhase = -1)
 	{
 		if (++boss.ani_wait > waitTime)
 		{
@@ -473,25 +473,25 @@ namespace ballos
 			// Fallthrough
 		case states::phase3::spinPlatforms:
 		case states::phase3::spinPlatforms + 4:
-			phase3DoPlatformWait(boss, secondsToFrames(10));
+			phase3DoPlatformWait(secondsToFrames(10));
 			break;
 
 		case states::phase3::spinPlatforms + 1:
-			phase3DoPlatformWait(boss, secondsToFrames(4));
+			phase3DoPlatformWait(secondsToFrames(4));
 			break;
 
 		case states::phase3::spinPlatforms + 2:
 		case states::phase3::spinPlatforms + 6:
-			phase3DoPlatformWait(boss, secondsToFrames(0.4));
+			phase3DoPlatformWait(secondsToFrames(0.4));
 			break;
 
 		case states::phase3::spinPlatforms + 3:
 		case states::phase3::spinPlatforms + 5:
-			phase3DoPlatformWait(boss, secondsToFrames(4));
+			phase3DoPlatformWait(secondsToFrames(4));
 			break;
 
 		case states::phase3::spinPlatforms + 7:
-			phase3DoPlatformWait(boss, secondsToFrames(4), states::phase3::spinPlatforms);
+			phase3DoPlatformWait(secondsToFrames(4), states::phase3::spinPlatforms);
 			break;
 
 		default:
