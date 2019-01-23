@@ -18,26 +18,26 @@ using std::to_string;
 
 void drawMapName(bool bMini)
 {
-	const auto len = strlen(mapName.name);
+	const auto len = strlen(gMapName.name);
 
-	const int x = screenWidth / 2 - len * 3;
-	const int y = ((screenHeight - 240) / 2) + 80;
+	const int x = gScreenWidth / 2 - len * 3;
+	const int y = ((gScreenHeight - 240) / 2) + 80;
 
 	if (bMini)
 	{
-		SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
-		drawRect(0, 7, screenWidth, 17);
-		drawString(x, 10, mapName.name);
+		SDL_SetRenderDrawColor(gRenderer, 0, 0, 0, 255);
+		drawRect(0, 7, gScreenWidth, 17);
+		drawString(x, 10, gMapName.name);
 	}
-	else if (mapName.flag)
+	else if (gMapName.flag)
 	{
-		SDL_SetTextureColorMod(sprites[0x26], 17, 0, 34);
-		drawString(x, y + 1, mapName.name);
-		SDL_SetTextureColorMod(sprites[0x26], 255, 255, 255);
-		drawString(x, y, mapName.name);
+		SDL_SetTextureColorMod(gSprites[0x26], 17, 0, 34);
+		drawString(x, y + 1, gMapName.name);
+		SDL_SetTextureColorMod(gSprites[0x26], 255, 255, 255);
+		drawString(x, y, gMapName.name);
 
-		if (++mapName.wait > 160)
-			mapName.flag = 0;
+		if (++gMapName.wait > 160)
+			gMapName.flag = 0;
 	}
 }
 
@@ -71,32 +71,32 @@ void drawBossHealth()
 	rcBr.right = 232;
 	rcBr.bottom = 40;
 
-	if (bossLife.flag)
+	if (gBossLife.flag)
 	{
-		if (*bossLife.pLife > 0)
+		if (*gBossLife.pLife > 0)
 		{
-			rcLife.right = 198 * *bossLife.pLife / bossLife.max;
+			rcLife.right = 198 * *gBossLife.pLife / gBossLife.max;
 
-			if (bossLife.br <= *bossLife.pLife)
+			if (gBossLife.br <= *gBossLife.pLife)
 			{
-				bossLife.count = 0;
+				gBossLife.count = 0;
 			}
-			else if (++bossLife.count > 30)
+			else if (++gBossLife.count > 30)
 			{
-				--bossLife.br;
+				--gBossLife.br;
 			}
 
-			rcBr.right = 198 * bossLife.br / bossLife.max;
+			rcBr.right = 198 * gBossLife.br / gBossLife.max;
 
-			drawTexture(sprites[TEX_TEXTBOX], &rcBox1, screenWidth / 2 - 128, screenHeight - 20);
-			drawTexture(sprites[TEX_TEXTBOX], &rcBox2, screenWidth / 2 - 128, screenHeight - 12);
-			drawTexture(sprites[TEX_TEXTBOX], &rcBr, screenWidth / 2 - 88, screenHeight - 16);
-			drawTexture(sprites[TEX_TEXTBOX], &rcLife, screenWidth / 2 - 88, screenHeight - 16);
-			drawTexture(sprites[TEX_TEXTBOX], &rcText, screenWidth / 2 - 120, screenHeight - 16);
+			drawTexture(gSprites[TEX_TEXTBOX], &rcBox1, gScreenWidth / 2 - 128, gScreenHeight - 20);
+			drawTexture(gSprites[TEX_TEXTBOX], &rcBox2, gScreenWidth / 2 - 128, gScreenHeight - 12);
+			drawTexture(gSprites[TEX_TEXTBOX], &rcBr, gScreenWidth / 2 - 88, gScreenHeight - 16);
+			drawTexture(gSprites[TEX_TEXTBOX], &rcLife, gScreenWidth / 2 - 88, gScreenHeight - 16);
+			drawTexture(gSprites[TEX_TEXTBOX], &rcText, gScreenWidth / 2 - 120, gScreenHeight - 16);
 		}
 		else
 		{
-			bossLife.flag = 0;
+			gBossLife.flag = 0;
 		}
 	}
 }
@@ -126,16 +126,16 @@ void drawWeaponStats()
 	}
 	else
 	{
-		drawTexture(sprites[TEX_TEXTBOX], &rcNone, weaponShiftX + 48, 16);
-		drawTexture(sprites[TEX_TEXTBOX], &rcNone, weaponShiftX + 48, 24);
+		drawTexture(gSprites[TEX_TEXTBOX], &rcNone, weaponShiftX + 48, 16);
+		drawTexture(gSprites[TEX_TEXTBOX], &rcNone, weaponShiftX + 48, 24);
 	}
 
 	//Draw experience
 	if (!((currentPlayer.shock >> 1) & 1))
 	{
 		//Draw level
-		drawTexture(sprites[TEX_TEXTBOX], &rcPer, weaponShiftX + 32, 24);
-		drawTexture(sprites[TEX_TEXTBOX], &rcLv, weaponShiftX, 32);
+		drawTexture(gSprites[TEX_TEXTBOX], &rcPer, weaponShiftX + 32, 24);
+		drawTexture(gSprites[TEX_TEXTBOX], &rcLv, weaponShiftX, 32);
 		drawNumber(weapons[selectedWeapon].level, weaponShiftX - 8, 32, false);
 
 		//Set framerects
@@ -151,7 +151,7 @@ void drawWeaponStats()
 		const int exp_next = weaponLevels[arms_code].exp[lv];
 
 		//Draw the bar
-		drawTexture(sprites[TEX_TEXTBOX], &rcExpBox, weaponShiftX + 24, 32);
+		drawTexture(gSprites[TEX_TEXTBOX], &rcExpBox, weaponShiftX + 24, 32);
 
 		if (lv != 2 || weapons[selectedWeapon].exp != weaponLevels[arms_code].exp[2]) //If not at max level
 		{
@@ -161,17 +161,17 @@ void drawWeaponStats()
 			else
 				rcExpVal.right = 0;
 
-			drawTexture(sprites[TEX_TEXTBOX], &rcExpVal, weaponShiftX + 24, 32);
+			drawTexture(gSprites[TEX_TEXTBOX], &rcExpVal, weaponShiftX + 24, 32);
 		}
 		else
 		{
-			drawTexture(sprites[TEX_TEXTBOX], &rcExpMax, weaponShiftX + 24, 32);
+			drawTexture(gSprites[TEX_TEXTBOX], &rcExpMax, weaponShiftX + 24, 32);
 		}
 		
 		static int flashAlternator = 0;
 		//Draw the flashing
 		if (currentPlayer.exp_wait && (flashAlternator++ >> 1) & 1)
-			drawTexture(sprites[TEX_TEXTBOX], &rcExpFlash, weaponShiftX + 24, 32);
+			drawTexture(gSprites[TEX_TEXTBOX], &rcExpFlash, weaponShiftX + 24, 32);
 	}
 }
 
@@ -208,7 +208,7 @@ void drawHudWeapons()
 			//Set rect and draw
 			rect.left = 16 * weapons[a].code;
 			rect.right = rect.left + 16;
-			drawTexture(sprites[TEX_ARMSIMAGE], &rect, x, 16);
+			drawTexture(gSprites[TEX_ARMSIMAGE], &rect, x, 16);
 		}
 	}
 }
@@ -238,9 +238,9 @@ void drawPlayerHealth()
 		rcBr.right = 40 * currentPlayer.lifeBr / currentPlayer.max_life - 1;
 
 		//Draw health bar
-		drawTexture(sprites[0x1A], &rcCase, 16, 40);
-		drawTexture(sprites[0x1A], &rcBr, 40, 40);
-		drawTexture(sprites[0x1A], &rcLife, 40, 40);
+		drawTexture(gSprites[0x1A], &rcCase, 16, 40);
+		drawTexture(gSprites[0x1A], &rcBr, 40, 40);
+		drawTexture(gSprites[0x1A], &rcLife, 40, 40);
 
 		drawNumber(currentPlayer.lifeBr, 8, 40, false);
 	}
@@ -253,8 +253,8 @@ void drawPlayerAir()
 	rcAir[0] = { 112, 72, 144, 80 };
 	rcAir[1] = { 112, 80, 144, 88 };
 
-	const int x = (screenWidth / 2) - 40;
-	const int y = (screenHeight / 2) - 16;
+	const int x = (gScreenWidth / 2) - 40;
+	const int y = (gScreenHeight / 2) - 16;
 
 	if (!(currentPlayer.equip & equip_airTank) && currentPlayer.air_get)
 	{
@@ -263,7 +263,7 @@ void drawPlayerAir()
 			drawNumber(currentPlayer.air / 10, x + 32, y, false);
 
 		//Draw the "AIR" thing
-		drawTexture(sprites[0x1A], &rcAir[currentPlayer.air % 30 <= 10], x, y);
+		drawTexture(gSprites[0x1A], &rcAir[currentPlayer.air % 30 <= 10], x, y);
 	}
 }
 

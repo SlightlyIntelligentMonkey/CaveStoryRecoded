@@ -79,13 +79,13 @@ bool makeOrganyaWave(uint8_t track, uint8_t wave_no, bool pipi);
 
 void playData();
 
-extern uint32_t currentOrg;
-extern bool orgFadeout;
+extern uint32_t gCurrentOrg;
+extern bool gOrgFadeout;
 
 void changeOrg(const uint32_t num);
 void resumeOrg();
 
-extern bool disableOrg;
+extern bool gDisableOrg;
 
 enum musics
 {

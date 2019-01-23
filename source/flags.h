@@ -3,9 +3,9 @@
 #include "common.h"
 #include <climits>
 
-extern uint8_t tscFlags[1000]; //game flags
-extern uint8_t skipFlags[64]; //skip flags
-extern uint8_t mapFlags[128]; //Map flags
+extern uint8_t gTscFlags[1000]; //game flags
+extern uint8_t gSkipFlags[64]; //skip flags
+extern uint8_t gMapFlags[128]; //Map flags
 
 void initFlags();
 

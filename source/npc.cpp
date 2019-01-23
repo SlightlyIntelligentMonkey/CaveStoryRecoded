@@ -19,41 +19,35 @@
 #include "main.h"
 #include "npcCollision.h"
 
-using std::memset;
-using std::string;
-using std::to_string;
-using std::vector;
-using std::deque;
+std::deque<npc> gNPC(0);
 
-deque<npc> npcs(0);
+int gSuperXPos = 0;	// used to communicate between npcs utilized by certain bosses
+int gSuperYPos = 0;
 
-int superXPos = 0;	// used to communicate between npcs utilized by certain bosses
-int superYPos = 0;
-
-int curlyShootWait = 0;
-int curlyShootX = 0;
-int curlyShootY = 0;
+int gCurlyShootWait = 0;
+int gCurlyShootX = 0;
+int gCurlyShootY = 0;
 
 //NPC Functions
 void setUniqueAttributes(npc *NPC)
 {
-	NPC->surf = npcTable[NPC->code_char].surf;
-	NPC->hit_voice = npcTable[NPC->code_char].hit_voice;
-	NPC->destroy_voice = npcTable[NPC->code_char].destroy_voice;
+	NPC->surf = gNpcTable[NPC->code_char].surf;
+	NPC->hit_voice = gNpcTable[NPC->code_char].hit_voice;
+	NPC->destroy_voice = gNpcTable[NPC->code_char].destroy_voice;
 
-	NPC->damage = npcTable[NPC->code_char].damage;
-	NPC->size = npcTable[NPC->code_char].size;
-	NPC->life = npcTable[NPC->code_char].life;
+	NPC->damage = gNpcTable[NPC->code_char].damage;
+	NPC->size = gNpcTable[NPC->code_char].size;
+	NPC->life = gNpcTable[NPC->code_char].life;
 
-	NPC->hit.left = npcTable[NPC->code_char].hit.front << 9;
-	NPC->hit.right = npcTable[NPC->code_char].hit.back << 9;
-	NPC->hit.top = npcTable[NPC->code_char].hit.top << 9;
-	NPC->hit.bottom = npcTable[NPC->code_char].hit.bottom << 9;
+	NPC->hit.left = gNpcTable[NPC->code_char].hit.front << 9;
+	NPC->hit.right = gNpcTable[NPC->code_char].hit.back << 9;
+	NPC->hit.top = gNpcTable[NPC->code_char].hit.top << 9;
+	NPC->hit.bottom = gNpcTable[NPC->code_char].hit.bottom << 9;
 
-	NPC->view.left = npcTable[NPC->code_char].view.front << 9;
-	NPC->view.right = npcTable[NPC->code_char].view.back << 9;
-	NPC->view.top = npcTable[NPC->code_char].view.top << 9;
-	NPC->view.bottom = npcTable[NPC->code_char].view.bottom << 9;
+	NPC->view.left = gNpcTable[NPC->code_char].view.front << 9;
+	NPC->view.right = gNpcTable[NPC->code_char].view.back << 9;
+	NPC->view.top = gNpcTable[NPC->code_char].view.top << 9;
+	NPC->view.bottom = gNpcTable[NPC->code_char].view.bottom << 9;
 }
 
 void createSmokeLeft(int x, int y, int w, size_t num)
@@ -90,21 +84,21 @@ void createNpc(int setCode, int setX, int setY, int setXm, int setYm, int setDir
 	size_t n;
 	for (n = 0; ; ++n)
 	{
-		if (!(n < npcs.size() && npcs[n].cond))
+		if (!(n < gNPC.size() && gNPC[n].cond))
 			break;
 	}
 
-	if (n != npcs.size())
+	if (n != gNPC.size())
 	{
-		npcs[n].init(setCode, setX, setY, setXm, setYm, setDir, parentNpc);
-		npcs[n].priority = setPriority;
+		gNPC[n].init(setCode, setX, setY, setXm, setYm, setDir, parentNpc);
+		gNPC[n].priority = setPriority;
 	}
 	else
 	{
 		npc newNpc;
 		newNpc.init(setCode, setX, setY, setXm, setYm, setDir, parentNpc);
 		newNpc.priority = setPriority;
-		npcs.push_back(newNpc);
+		gNPC.push_back(newNpc);
 	}
 }
 
@@ -113,16 +107,16 @@ void createNpcExp(int setCode, int setX, int setY, int setXm, int setYm, int set
 	size_t n;
 	for (n = 0; ; ++n)
 	{
-		if (!(n < npcs.size() && npcs[n].cond))
+		if (!(n < gNPC.size() && gNPC[n].cond))
 			break;
 	}
 
-	if (n != npcs.size())
+	if (n != gNPC.size())
 	{
-		npcs[n].init(setCode, setX, setY, setXm, setYm, setDir, parentNpc);
-		npcs[n].code_event = setEvent;
-		npcs[n].priority = true;
-		npcs[n].exp = exp;
+		gNPC[n].init(setCode, setX, setY, setXm, setYm, setDir, parentNpc);
+		gNPC[n].code_event = setEvent;
+		gNPC[n].priority = true;
+		gNPC[n].exp = exp;
 	}
 	else
 	{
@@ -131,66 +125,66 @@ void createNpcExp(int setCode, int setX, int setY, int setXm, int setYm, int set
 		newNpc.code_event = setEvent;
 		newNpc.exp = exp;
 		newNpc.priority = true;
-		npcs.push_back(newNpc);
+		gNPC.push_back(newNpc);
 	}
 }
 
 void changeNpc(int code_event, int code_char, int dir)
 {
-	for (size_t i = 0; i < npcs.size(); ++i)
+	for (size_t i = 0; i < gNPC.size(); ++i)
 	{
-		if (npcs[i].cond & npccond_alive && npcs[i].code_event == code_event)
+		if (gNPC[i].cond & npccond_alive && gNPC[i].code_event == code_event)
 		{
-			npcs[i].bits &= ~(npc_showDamage | 0xFF);
-			npcs[i].code_char = code_char;
-			npcs[i].bits |= npcTable[npcs[i].code_char].bits;
-			npcs[i].exp = npcTable[npcs[i].code_char].exp;
-			setUniqueAttributes(&npcs[i]);
-			npcs[i].cond |= 0x80u;
-			npcs[i].act_no = 0;
-			npcs[i].act_wait = 0;
-			npcs[i].count1 = 0;
-			npcs[i].count2 = 0;
-			npcs[i].ani_no = 0;
-			npcs[i].ani_wait = 0;
-			npcs[i].xm = 0;
-			npcs[i].ym = 0;
+			gNPC[i].bits &= ~(npc_showDamage | 0xFF);
+			gNPC[i].code_char = code_char;
+			gNPC[i].bits |= gNpcTable[gNPC[i].code_char].bits;
+			gNPC[i].exp = gNpcTable[gNPC[i].code_char].exp;
+			setUniqueAttributes(&gNPC[i]);
+			gNPC[i].cond |= 0x80u;
+			gNPC[i].act_no = 0;
+			gNPC[i].act_wait = 0;
+			gNPC[i].count1 = 0;
+			gNPC[i].count2 = 0;
+			gNPC[i].ani_no = 0;
+			gNPC[i].ani_wait = 0;
+			gNPC[i].xm = 0;
+			gNPC[i].ym = 0;
 
 			if (dir != 5)
 			{
 				if (dir == 4)
-					npcs[i].facePlayer();
+					gNPC[i].facePlayer();
 				else
-					npcs[i].direct = dir;
+					gNPC[i].direct = dir;
 			}
 
-			npcActs[code_char](&npcs[i]);
+			npcActs[code_char](&gNPC[i]);
 		}
 	}
 }
 
 int findEntityByType(int entityType)
 {
-    for (size_t i = 0; i < npcs.size(); ++i)
-        if (npcs[i].cond & npccond_alive && npcs[i].code_char == entityType)
+    for (size_t i = 0; i < gNPC.size(); ++i)
+        if (gNPC[i].cond & npccond_alive && gNPC[i].code_char == entityType)
             return i;
     return -1;
 }
 
 void setNPCState(int entityEventNumber, int newNPCState, int direction)
 {
-	for (size_t i = 0; i < npcs.size(); i++)
+	for (size_t i = 0; i < gNPC.size(); i++)
 	{
-		if ((npcs[i].cond & npccond_alive) && npcs[i].code_event == entityEventNumber)
+		if ((gNPC[i].cond & npccond_alive) && gNPC[i].code_event == entityEventNumber)
 		{
-			npcs[i].act_no = newNPCState;
+			gNPC[i].act_no = newNPCState;
 
 			if (direction != 5)
 			{
 				if (direction == 4)
-                    npcs[i].facePlayer();
+                    gNPC[i].facePlayer();
 				else
-					npcs[i].direct = direction;
+					gNPC[i].direct = direction;
 			}
 		}
 	}
@@ -198,19 +192,19 @@ void setNPCState(int entityEventNumber, int newNPCState, int direction)
 
 void moveNPC(int entityEventNum, int xPos, int yPos, int direction)
 {
-	for (size_t i = 0; i < npcs.size(); i++)
+	for (size_t i = 0; i < gNPC.size(); i++)
 	{
-		if ((npcs[i].cond & npccond_alive) && npcs[i].code_event == entityEventNum)
+		if ((gNPC[i].cond & npccond_alive) && gNPC[i].code_event == entityEventNum)
 		{
-			npcs[i].x = xPos;
-			npcs[i].y = yPos;
+			gNPC[i].x = xPos;
+			gNPC[i].y = yPos;
 
 			if (direction != 5)
 			{
 				if (direction == 4)
-					npcs[i].facePlayer();
+					gNPC[i].facePlayer();
 				else
-					npcs[i].direct = direction;
+					gNPC[i].direct = direction;
 			}
 		}
 	}
@@ -218,46 +212,46 @@ void moveNPC(int entityEventNum, int xPos, int yPos, int direction)
 
 void updateNPC()
 {
-	if (npcs.size())
+	if (gNPC.size())
 	{
 		//Update
-		for (size_t i = 0; i < npcs.size(); i++)
+		for (size_t i = 0; i < gNPC.size(); i++)
 		{
-			if (npcs[i].priority == false && npcs[i].cond & npccond_alive)
+			if (gNPC[i].priority == false && gNPC[i].cond & npccond_alive)
 			{
-				npcs[i].update();
+				gNPC[i].update();
 				npcHitMap(i);
 			}
 		}
 
-		for (size_t i = 0; i < npcs.size(); i++)
+		for (size_t i = 0; i < gNPC.size(); i++)
 		{
-			if (npcs[i].priority == true && npcs[i].cond & npccond_alive)
+			if (gNPC[i].priority == true && gNPC[i].cond & npccond_alive)
 			{
-				npcs[i].update();
+				gNPC[i].update();
 				npcHitMap(i);
 			}
 		}
 
-		while (npcs.size() && !(npcs[npcs.size() - 1].cond & npccond_alive))
-			npcs.erase(npcs.begin() + npcs.size() - 1);
+		while (gNPC.size() && !(gNPC[gNPC.size() - 1].cond & npccond_alive))
+			gNPC.erase(gNPC.begin() + gNPC.size() - 1);
 	}
 }
 
 void drawNPC()
 {
-	if (npcs.size())
+	if (gNPC.size())
 	{
-		for (size_t i = 0; i < npcs.size(); i++)
+		for (size_t i = 0; i < gNPC.size(); i++)
 		{
-			if (npcs[i].priority == false && npcs[i].cond & npccond_alive)
-				npcs[i].draw();
+			if (gNPC[i].priority == false && gNPC[i].cond & npccond_alive)
+				gNPC[i].draw();
 		}
 
-		for (size_t i = 0; i < npcs.size(); i++)
+		for (size_t i = 0; i < gNPC.size(); i++)
 		{
-			if (npcs[i].priority == true && npcs[i].cond & npccond_alive)
-				npcs[i].draw();
+			if (gNPC[i].priority == true && gNPC[i].cond & npccond_alive)
+				gNPC[i].draw();
 		}
 	}
 }
@@ -399,24 +393,24 @@ void killNpc(npc *NPC, bool bVanish)
 
 void killNpcsByType(int entityType, bool makeDustClouds)
 {
-	for (size_t i = 0; i < npcs.size(); ++i)
+	for (size_t i = 0; i < gNPC.size(); ++i)
 	{
-		if (npcs[i].cond & npccond_alive && npcs[i].code_char == entityType)
+		if (gNPC[i].cond & npccond_alive && gNPC[i].code_char == entityType)
 		{
-			npcs[i].cond = 0;
-			setFlag(npcs[i].code_flag);
+			gNPC[i].cond = 0;
+			setFlag(gNPC[i].code_flag);
 
 			if (makeDustClouds)
 			{
-				playSound(npcs[i].destroy_voice);
-				createSmokeLeft(npcs[i].x, npcs[i].y, npcs[i].view.right, npcs[i].size * 4);
+				playSound(gNPC[i].destroy_voice);
+				createSmokeLeft(gNPC[i].x, gNPC[i].y, gNPC[i].view.right, gNPC[i].size * 4);
 			}
 		}
 	}
 }
 
 //NPC Table
-NPC_TABLE *npcTable;
+NPC_TABLE *gNpcTable;
 
 void loadNpcTable()
 {
@@ -428,30 +422,30 @@ void loadNpcTable()
 	const auto tblSize = static_cast<int>(SDL_RWsize(tblStream));
 
 	const int npcCount = tblSize / 0x18;
-	npcTable = new NPC_TABLE[npcCount];
+	gNpcTable = new NPC_TABLE[npcCount];
 
 	int i;
 
 	for (i = 0; i < npcCount; ++i) //bits
-		npcTable[i].bits = SDL_ReadLE16(tblStream);
+		gNpcTable[i].bits = SDL_ReadLE16(tblStream);
 	for (i = 0; i < npcCount; ++i) //life
-		npcTable[i].life = SDL_ReadLE16(tblStream);
+		gNpcTable[i].life = SDL_ReadLE16(tblStream);
 	for (i = 0; i < npcCount; ++i) //surf
-		tblStream->read(tblStream, &npcTable[i].surf, 1, 1);
+		tblStream->read(tblStream, &gNpcTable[i].surf, 1, 1);
 	for (i = 0; i < npcCount; ++i) //destroy_voice
-		tblStream->read(tblStream, &npcTable[i].destroy_voice, 1, 1);
+		tblStream->read(tblStream, &gNpcTable[i].destroy_voice, 1, 1);
 	for (i = 0; i < npcCount; ++i) //hit_voice
-		tblStream->read(tblStream, &npcTable[i].hit_voice, 1, 1);
+		tblStream->read(tblStream, &gNpcTable[i].hit_voice, 1, 1);
 	for (i = 0; i < npcCount; ++i) //size
-		tblStream->read(tblStream, &npcTable[i].size, 1, 1);
+		tblStream->read(tblStream, &gNpcTable[i].size, 1, 1);
 	for (i = 0; i < npcCount; ++i) //exp
-		npcTable[i].exp = SDL_ReadLE32(tblStream);
+		gNpcTable[i].exp = SDL_ReadLE32(tblStream);
 	for (i = 0; i < npcCount; ++i) //damage
-		npcTable[i].damage = SDL_ReadLE32(tblStream);
+		gNpcTable[i].damage = SDL_ReadLE32(tblStream);
 	for (i = 0; i < npcCount; ++i) //hit
-		tblStream->read(tblStream, &npcTable[i].hit, 4, 1);
+		tblStream->read(tblStream, &gNpcTable[i].hit, 4, 1);
 	for (i = 0; i < npcCount; ++i) //view
-		tblStream->read(tblStream, &npcTable[i].view, 4, 1);
+		tblStream->read(tblStream, &gNpcTable[i].view, 4, 1);
 }
 
 void npc::accelerateTowardsPlayer(int vel)
@@ -615,8 +609,8 @@ void npc::init(int setCode, int setX, int setY, int setXm, int setYm, int setDir
 	direct = setDir;
 
 	pNpc = parentNpc;
-	bits = npcTable[code_char].bits;
-	exp = npcTable[code_char].exp;
+	bits = gNpcTable[code_char].bits;
+	exp = gNpcTable[code_char].exp;
 
 	setUniqueAttributes(this);
 }
@@ -654,38 +648,38 @@ void npc::draw()
 		if (direct != dirLeft)
 			side = view.right;
 
-		drawTexture(sprites[surf], &rect, (x - side) / 0x200 - viewport.x / 0x200 + xOffset, (y - view.top) / 0x200 - viewport.y / 0x200);
+		drawTexture(gSprites[surf], &rect, (x - side) / 0x200 - gViewport.x / 0x200 + xOffset, (y - view.top) / 0x200 - gViewport.y / 0x200);
 
 		if (debugFlags & showNPCId)
 		{
 			size_t index = 0;
 
-			for (size_t i = 0; i < npcs.size(); i++)
+			for (size_t i = 0; i < gNPC.size(); i++)
 			{
-				if (&npcs[i] == this)
+				if (&gNPC[i] == this)
 				{
 					index = i;
 					break;
 				}
 			}
 
-			drawString((x - side) / 0x200 - viewport.x / 0x200 + xOffset, (y - view.top) / 0x200 - viewport.y / 0x200 - 16, to_string(index));
+			drawString((x - side) / 0x200 - gViewport.x / 0x200 + xOffset, (y - view.top) / 0x200 - gViewport.y / 0x200 - 16, std::to_string(index));
 		}
 
 		if (debugFlags & showNPCHealth && life)
 		{
 			RECT rcPer = { 72, 48, 80, 56 };
 
-			drawNumber(life, (x - side) / 0x200 - viewport.x / 0x200 + xOffset, (y - view.top) / 0x200 - viewport.y / 0x200 - 24, true);
-			drawTexture(sprites[TEX_TEXTBOX], &rcPer, (x - side) / 0x200 - viewport.x / 0x200 + xOffset + 32, (y - view.top) / 0x200 - viewport.y / 0x200 - 24);
-			drawNumber(npcTable[code_char].life, (x - side) / 0x200 - viewport.x / 0x200 + xOffset + 40, (y - view.top) / 0x200 - viewport.y / 0x200 - 24, true);
+			drawNumber(life, (x - side) / 0x200 - gViewport.x / 0x200 + xOffset, (y - view.top) / 0x200 - gViewport.y / 0x200 - 24, true);
+			drawTexture(gSprites[TEX_TEXTBOX], &rcPer, (x - side) / 0x200 - gViewport.x / 0x200 + xOffset + 32, (y - view.top) / 0x200 - gViewport.y / 0x200 - 24);
+			drawNumber(gNpcTable[code_char].life, (x - side) / 0x200 - gViewport.x / 0x200 + xOffset + 40, (y - view.top) / 0x200 - gViewport.y / 0x200 - 24, true);
 		}
 
 		if (debugFlags & showHitRects)
 		{
-			SDL_SetRenderDrawColor(renderer, 0x80, 0x80, 0x80, 0xFF);
-			drawRect(unitsToPixels(x - hit.left) - unitsToPixels(viewport.x),
-				unitsToPixels(y - hit.top) - unitsToPixels(viewport.y),
+			SDL_SetRenderDrawColor(gRenderer, 0x80, 0x80, 0x80, 0xFF);
+			drawRect(unitsToPixels(x - hit.left) - unitsToPixels(gViewport.x),
+				unitsToPixels(y - hit.top) - unitsToPixels(gViewport.y),
 				unitsToPixels(hit.left + hit.right), unitsToPixels(hit.top + hit.bottom));
 		}
 	}

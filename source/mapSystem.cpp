@@ -59,7 +59,7 @@ int openMapSystem()
 	my_y = (currentPlayer.y / 0x200 + 8) / 16;
 
 	//Create map buffer
-	createTextureBuffer(TEX_MAPSYSTEM, map.width, map.height);
+	createTextureBuffer(TEX_MAPSYSTEM, gMap.width, gMap.height);
 
 	//Do opening animation
 	for (int f = 0; f <= 8; ++f)
@@ -78,11 +78,11 @@ int openMapSystem()
 		}
 
 		// Draw screenshot
-		drawTextureNoScale(sprites[TEX_SCREENSHOT], nullptr, 0, 0);
+		drawTextureNoScale(gSprites[TEX_SCREENSHOT], nullptr, 0, 0);
 
 		//Draw opening box and name
-		SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
-		drawRect(screenWidth / 2 - f * map.width / 16, screenHeight / 2 - f * map.height / 16, f * map.width / 16 * 2, f * map.height / 16 * 2);
+		SDL_SetRenderDrawColor(gRenderer, 0, 0, 0, 255);
+		drawRect(gScreenWidth / 2 - f * gMap.width / 16, gScreenHeight / 2 - f * gMap.height / 16, f * gMap.width / 16 * 2, f * gMap.height / 16 * 2);
 		drawMapName(true);
 
 		//Present
@@ -96,7 +96,7 @@ int openMapSystem()
 		getKeys();
 
 		//Exit if Z or X pressed
-		if (isKeyPressed(keyJump) || isKeyPressed(keyShoot))
+		if (isKeyPressed(gKeyJump) || isKeyPressed(gKeyShoot))
 			break;
 
 		if (isKeyDown(SDL_SCANCODE_ESCAPE))
@@ -110,11 +110,11 @@ int openMapSystem()
 		}
 
 		// Draw screenshot
-		drawTextureNoScale(sprites[TEX_SCREENSHOT], nullptr, 0, 0);
+		drawTextureNoScale(gSprites[TEX_SCREENSHOT], nullptr, 0, 0);
 
 		//Draw box
-		SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
-		drawRect(screenWidth / 2 - map.width / 2 - 1, screenHeight / 2 - map.height / 2 - 1, map.width + 2, map.height + 2);
+		SDL_SetRenderDrawColor(gRenderer, 0, 0, 0, 255);
+		drawRect(gScreenWidth / 2 - gMap.width / 2 - 1, gScreenHeight / 2 - gMap.height / 2 - 1, gMap.width + 2, gMap.height + 2);
 
 		//Draw contents
 		RECT rcLevel[4];
@@ -135,30 +135,30 @@ int openMapSystem()
 		rcLevel[3].right = 244;
 		rcLevel[3].bottom = 25;
 
-		const int off_x = screenWidth / 2 - map.width / 2;
-		const int off_y = screenHeight / 2 - map.height / 2;
+		const int off_x = gScreenWidth / 2 - gMap.width / 2;
+		const int off_y = gScreenHeight / 2 - gMap.height / 2;
 
-		if (SDL_SetRenderTarget(renderer, sprites[TEX_MAPSYSTEM]) < 0)
+		if (SDL_SetRenderTarget(gRenderer, gSprites[TEX_MAPSYSTEM]) < 0)
 			doError();
 
 		for (int i = 0; i < 2; i++)
 		{
-			if (line >= map.height)
+			if (line >= gMap.height)
 				break;
-			for (int x = 0; x < map.width; x++)
-				drawTextureNoScale(sprites[TEX_TEXTBOX], &rcLevel[tileTypes[getTileAttribute(x, line)]], x, line);
+			for (int x = 0; x < gMap.width; x++)
+				drawTextureNoScale(gSprites[TEX_TEXTBOX], &rcLevel[tileTypes[getTileAttribute(x, line)]], x, line);
 			line++;
 		}
 
-		if (SDL_SetRenderTarget(renderer, nullptr) < 0)
+		if (SDL_SetRenderTarget(gRenderer, nullptr) < 0)
 			doError();
 
-		RECT rcMiniMap = { 0, 0, map.width, map.height };
-		drawTexture(sprites[TEX_MAPSYSTEM], &rcMiniMap, off_x, off_y);
+		RECT rcMiniMap = { 0, 0, gMap.width, gMap.height };
+		drawTexture(gSprites[TEX_MAPSYSTEM], &rcMiniMap, off_x, off_y);
 
 		//Draw player marker
 		if ((++my_wait >> 3) & 1)
-			drawTexture(sprites[TEX_TEXTBOX], &my_rect, off_x + my_x, off_y + my_y);
+			drawTexture(gSprites[TEX_TEXTBOX], &my_rect, off_x + my_x, off_y + my_y);
 
 		//Draw name
 		drawMapName(true);
@@ -185,11 +185,11 @@ int openMapSystem()
 		}
 
 		// Draw screenshot
-		drawTextureNoScale(sprites[TEX_SCREENSHOT], nullptr, 0, 0);
+		drawTextureNoScale(gSprites[TEX_SCREENSHOT], nullptr, 0, 0);
 
 		//Draw closing box and name
-		SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
-		drawRect(screenWidth / 2 - f * map.width / 16, screenHeight / 2 - f * map.height / 16, f * map.width / 16 * 2, f * map.height / 16 * 2);
+		SDL_SetRenderDrawColor(gRenderer, 0, 0, 0, 255);
+		drawRect(gScreenWidth / 2 - f * gMap.width / 16, gScreenHeight / 2 - f * gMap.height / 16, f * gMap.width / 16 * 2, f * gMap.height / 16 * 2);
 		drawMapName(true);
 
 		//Present

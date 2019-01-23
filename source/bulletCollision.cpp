@@ -413,17 +413,17 @@ void bulletHitMap()
 
 void bulletHitNpcs()
 {
-	for (size_t n = 0; n < npcs.size(); n++)
+	for (size_t n = 0; n < gNPC.size(); n++)
 	{
-		if (npcs[n].cond & npccond_alive && (!(npcs[n].bits & npc_shootable) || !(npcs[n].bits & npc_interact)))
+		if (gNPC[n].cond & npccond_alive && (!(gNPC[n].bits & npc_shootable) || !(gNPC[n].bits & npc_interact)))
 		{
 			for (size_t i = 0; ; i++)
 			{
 				//If at end of bullets, kill npc if dead flag is on
 				if (i >= bullets.size())
 				{
-					if (npcs[n].cond & 8)
-						killNpc(&npcs[n], true);
+					if (gNPC[n].cond & 8)
+						killNpc(&gNPC[n], true);
 					break;
 				}
 
@@ -434,60 +434,60 @@ void bulletHitNpcs()
 				{
 					bool bHit = false;
 
-					if (npcs[n].bits & npc_shootable //Check for shootable npc collision
-						&& npcs[n].x - npcs[n].hit.right < bul->x + bul->enemyXL
-						&& npcs[n].x + npcs[n].hit.right > bul->x - bul->enemyXL
-						&& npcs[n].y - npcs[n].hit.top < bul->y + bul->enemyYL
-						&& npcs[n].y + npcs[n].hit.bottom > bul->y - bul->enemyYL)
+					if (gNPC[n].bits & npc_shootable //Check for shootable npc collision
+						&& gNPC[n].x - gNPC[n].hit.right < bul->x + bul->enemyXL
+						&& gNPC[n].x + gNPC[n].hit.right > bul->x - bul->enemyXL
+						&& gNPC[n].y - gNPC[n].hit.top < bul->y + bul->enemyYL
+						&& gNPC[n].y + gNPC[n].hit.bottom > bul->y - bul->enemyYL)
 						bHit = true;
-					else if (npcs[n].bits & npc_invulnerable //Check for collision with a specifically not shootable npc
-						&& npcs[n].x - npcs[n].hit.right < bul->x + bul->blockXL
-						&& npcs[n].x + npcs[n].hit.right > bul->x - bul->blockXL
-						&& npcs[n].y - npcs[n].hit.top < bul->y + bul->blockYL
-						&& npcs[n].y + npcs[n].hit.bottom > bul->y - bul->blockYL)
+					else if (gNPC[n].bits & npc_invulnerable //Check for collision with a specifically not shootable npc
+						&& gNPC[n].x - gNPC[n].hit.right < bul->x + bul->blockXL
+						&& gNPC[n].x + gNPC[n].hit.right > bul->x - bul->blockXL
+						&& gNPC[n].y - gNPC[n].hit.top < bul->y + bul->blockYL
+						&& gNPC[n].y + gNPC[n].hit.bottom > bul->y - bul->blockYL)
 						bHit = true;
 
 					if (bHit)
 					{
-						if (npcs[n].bits & npc_shootable)
+						if (gNPC[n].bits & npc_shootable)
 						{
 							//NPC takes damage
-							npcs[n].life -= bul->damage;
+							gNPC[n].life -= bul->damage;
 
-							if (npcs[n].life > 0)
+							if (gNPC[n].life > 0)
 							{
 								//Shock if not already shocked for 2 frames
-								if (npcs[n].shock < 14)
+								if (gNPC[n].shock < 14)
 								{
 									for (int j = 0; j < 3; ++j)
-										createCaret((bul->x + npcs[n].x) / 2, (bul->y + npcs[n].y) / 2, effect_RedDamageRings);
+										createCaret((bul->x + gNPC[n].x) / 2, (bul->y + gNPC[n].y) / 2, effect_RedDamageRings);
 
-									playSound(npcs[n].hit_voice);
-									npcs[n].shock = 16;
+									playSound(gNPC[n].hit_voice);
+									gNPC[n].shock = 16;
 								}
 
 								//Add to valueview damage
-								if (npcs[n].bits & npc_showDamage)
-									npcs[n].damage_view -= bul->damage;
+								if (gNPC[n].bits & npc_showDamage)
+									gNPC[n].damage_view -= bul->damage;
 							}
 							else
 							{
 								//Keep life at 0 rather than some negative number (although this doesn't matter)
-								npcs[n].life = 0;
+								gNPC[n].life = 0;
 
 								//Hide boss healthbar if it's focused on this npc
-								if (bossLife.flag && bossLife.pLife == &npcs[n].life)
-									bossLife.flag = 0;
+								if (gBossLife.flag && gBossLife.pLife == &gNPC[n].life)
+									gBossLife.flag = 0;
 
 								//Add to valueview damage
-								if (npcs[n].bits & npc_showDamage)
-									npcs[n].damage_view -= bul->damage;
+								if (gNPC[n].bits & npc_showDamage)
+									gNPC[n].damage_view -= bul->damage;
 
 								//Either run event if the run event on death flag's set, or die
-								if (currentPlayer.cond & npccond_alive && npcs[n].bits & npc_eventDie)
-									startTscEvent(tsc, npcs[n].code_event);
+								if (currentPlayer.cond & npccond_alive && gNPC[n].bits & npc_eventDie)
+									startTscEvent(tsc, gNPC[n].code_event);
 								else
-									npcs[n].cond |= 8;
+									gNPC[n].cond |= 8;
 							}
 						}
 						else if (bul->code_bullet != 13
@@ -499,7 +499,7 @@ void bulletHitNpcs()
 							&& !(bul->bbits & 0x10))
 						{
 							//Break if hitting a non-shootable NPC
-							createCaret((bul->x + npcs[n].x) / 2, (bul->y + npcs[n].y) / 2, effect_RisingDisc, dirRight);
+							createCaret((bul->x + gNPC[n].x) / 2, (bul->y + gNPC[n].y) / 2, effect_RisingDisc, dirRight);
 							playSound(SFX_ShotHitInvulnerableEntity);
 							bul->life = 0;
 							continue;

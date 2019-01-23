@@ -9,7 +9,7 @@ void shootMachineGun(int level)
 {
 	static int rechargeWait = 0;
 
-	if (isKeyDown(keyShoot))
+	if (isKeyDown(gKeyShoot))
 	{
 		if (++currentPlayer.rensha > 5)
 			currentPlayer.rensha = 0;

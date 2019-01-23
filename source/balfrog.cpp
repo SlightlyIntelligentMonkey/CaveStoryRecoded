@@ -85,7 +85,7 @@ void balfrogMouth(npc *sub)
 
 //second half of balfrog or something and has the exact same hitbox and is at the exact same coordinates
 //so really this does fucking nothing
-void balfrog_other_half(npc *sub)
+void balfrogOtherHalf(npc *sub)
 {
 	if (bossObj[0].ani_no != -1)
 	{
@@ -225,7 +225,7 @@ void actBoss_Balfrog(npc *boss)
 		if (boss->flag & ground)
 		{
 			playSound(26, 1);
-			viewport.quake = 30;
+			gViewport.quake = 30;
 			boss->act_no = 100;
 			boss->ani_no = 1;
 			boss->view.top = pixelsToUnits(48);
@@ -362,7 +362,7 @@ void actBoss_Balfrog(npc *boss)
 		if (boss->flag & ground)
 		{
 			playSound(26, 1);
-			viewport.quake = 60;
+			gViewport.quake = 60;
 			boss->act_no = 100;
 			boss->ani_no = 1;
 			boss->view.top = tilesToUnits(3);
@@ -460,7 +460,7 @@ void actBoss_Balfrog(npc *boss)
 		{
 			boss->cond = 0;
 			playSound(26, 1);
-			viewport.quake = 30;
+			gViewport.quake = 30;
 		}
 		break;
 	default:
@@ -494,5 +494,5 @@ void actBoss_Balfrog(npc *boss)
 		boss->rect.right = boss->rect.left;
 
 	balfrogMouth(&bossObj[1]);
-	balfrog_other_half(&bossObj[2]);
+	balfrogOtherHalf(&bossObj[2]);
 }

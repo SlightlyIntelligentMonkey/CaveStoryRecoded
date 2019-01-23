@@ -140,7 +140,7 @@ void npcAct340(npc *NPC) // Ballos (boss) (first form)
             NPC->act_no = flyHorizontally + 2;
             NPC->act_wait = 0;
             NPC->damage = dmgNormal;
-            viewport.quake2 = 10;
+            gViewport.quake2 = 10;
             playSound(SFX_LargeObjectHitGround);
         }
 
@@ -186,7 +186,7 @@ void npcAct340(npc *NPC) // Ballos (boss) (first form)
                 createNpc(NPC_Smoke, NPC->x + pixelsToUnits(random(-0x10, 0x10)), NPC->y - pixelsToUnits(10));
             createNpc(NPC_ProjectileBallosShockwave, NPC->x - pixelsToUnits(10), NPC->y - pixelsToUnits(10));
             createNpc(NPC_ProjectileBallosShockwave, NPC->x + pixelsToUnits(10), NPC->y + pixelsToUnits(10), 0, 0, dirRight);
-            viewport.quake2 = 10;
+            gViewport.quake2 = 10;
             playSound(SFX_LargeObjectHitGround);
         }
 
@@ -233,7 +233,7 @@ void npcAct340(npc *NPC) // Ballos (boss) (first form)
             createNpc(NPC_ProjectileBallosShockwave, NPC->x - pixelsToUnits(10), NPC->y - pixelsToUnits(10));
             createNpc(NPC_ProjectileBallosShockwave, NPC->x + pixelsToUnits(10), NPC->y + pixelsToUnits(10), 0, 0, dirRight);
             
-            viewport.quake2 = 10;
+            gViewport.quake2 = 10;
             playSound(SFX_LargeObjectHitGround);
         }
 
@@ -631,7 +631,7 @@ void npcAct354(npc *NPC) // Invisible deathtrap wall
         if (++NPC->act_wait > 100)
         {
             NPC->act_wait = 0;
-            viewport.quake = 20;
+            gViewport.quake = 20;
             playSound(SFX_LargeObjectHitGround);
             playSound(SFX_DestroyBreakableBlock);
             if (NPC->direct != dirLeft)

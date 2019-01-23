@@ -128,13 +128,13 @@ void valueview::draw()
 		width = 40;
 
 	//Draw + or -
-	int x = *px / 0x200 - width / 2 - viewport.x / 0x200;
-	const int y = *py / 0x200 + offset_y / 0x200 - 4 - viewport.y / 0x200;
+	int x = *px / 0x200 - width / 2 - gViewport.x / 0x200;
+	const int y = *py / 0x200 + offset_y / 0x200 - 4 - gViewport.y / 0x200;
 
 	if (value >= 0)
-		drawTexture(sprites[TEX_TEXTBOX], &rcPlus, x, y);
+		drawTexture(gSprites[TEX_TEXTBOX], &rcPlus, x, y);
 	else
-		drawTexture(sprites[TEX_TEXTBOX], &rcMinus, x, y);
+		drawTexture(gSprites[TEX_TEXTBOX], &rcMinus, x, y);
 
 	//Draw numbers
 	int offset = 0;
@@ -142,7 +142,7 @@ void valueview::draw()
 	int numCount = 0;
 	int printValue = abs(value);
 
-	x = *px / 0x200 + width / 2 - 32 - viewport.x / 0x200;
+	x = *px / 0x200 + width / 2 - 32 - gViewport.x / 0x200;
 
 	while (offset < 4)
 	{
@@ -163,7 +163,7 @@ void valueview::draw()
 			else
 				rect = { drawValue << 3, 64 + hide, (drawValue + 1) << 3, 72 };
 
-			drawTexture(sprites[TEX_TEXTBOX], &rect, x + (offset << 3), y);
+			drawTexture(gSprites[TEX_TEXTBOX], &rect, x + (offset << 3), y);
 		}
 
 		offset++;

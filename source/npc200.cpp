@@ -393,7 +393,7 @@ void npcAct206(npc *NPC) // Counter bomb (enemy)
             NPC->damage = 30;
             playSound(SFX_LargeExplosion, 1);
             createSmokeLeft(NPC->x, NPC->y, tilesToUnits(8), 100);
-            viewport.quake = 20;
+            gViewport.quake = 20;
             NPC->cond |= 8;
         }
         else if (NPC->act_wait < 300 && !(NPC->act_wait % 60) )

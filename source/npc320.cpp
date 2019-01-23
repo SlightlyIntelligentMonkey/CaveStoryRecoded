@@ -70,7 +70,7 @@ void npcAct322(npc *NPC) // Deleet (enemy)
             NPC->damage = 12;
             playSound(SFX_LargeObjectHitGround);
             createSmokeLeft(NPC->x, NPC->y, tilesToUnits(3), 40);
-            viewport.quake = 10;
+            gViewport.quake = 10;
             if (NPC->direct != dirLeft)
             {
                 deleteTile(unitsToTiles(NPC->x - tilesToUnits(0.5)), unitsToTiles(NPC->y));

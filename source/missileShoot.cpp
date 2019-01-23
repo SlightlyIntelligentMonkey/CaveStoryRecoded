@@ -8,7 +8,7 @@
 void shootMissile(int level)
 {
 
-	if (isKeyPressed(keyShoot))
+	if (isKeyPressed(gKeyShoot))
 	{
 		int bulletId = 0;
 		switch (level)
@@ -91,7 +91,7 @@ void shootMissile(int level)
 void launchSuperMissile(int level)
 {
 
-	if (isKeyPressed(keyShoot))
+	if (isKeyPressed(gKeyShoot))
 	{
 
 		int bulletId = 0;

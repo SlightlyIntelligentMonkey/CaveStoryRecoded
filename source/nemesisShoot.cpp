@@ -13,7 +13,7 @@ void shootNemesis(int level)
 	int shootY = 0;
 	int caretX = 0;
 
-	if (weaponBullets(12) < 2 && isKeyPressed(keyShoot))
+	if (weaponBullets(12) < 2 && isKeyPressed(gKeyShoot))
 	{
 		if (useWeaponAmmo(1) ^ 1)
 		{

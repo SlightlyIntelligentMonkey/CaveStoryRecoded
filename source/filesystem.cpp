@@ -19,19 +19,6 @@
 #include "org.h"
 #include "log.h"
 
-using std::string;
-using std::vector;
-using std::ifstream;
-using std::getline;
-using std::FILE;
-using std::fopen;
-using std::fseek;
-using std::ftell;
-using std::malloc;
-using std::fread;
-using std::fclose;
-using std::to_string;
-
 uint16_t readLEshort(const uint8_t * data, size_t offset)
 {
 	if (data == nullptr)
@@ -70,13 +57,13 @@ void writeLElong(uint8_t *data, uint32_t input, size_t offset)
 }
 
 //Loading and writing functions
-bool fileExists(const string& name)
+bool fileExists(const std::string& name)
 {
 	struct stat buffer;
 	return stat(name.c_str(), &buffer) == 0;
 }
 
-std::pair<size_t, std::vector<uint8_t>> loadFile(const string& name)
+std::pair<size_t, std::vector<uint8_t>> loadFile(const std::string& name)
 {
 	//Open file
 	FILE *file = fopen(name.c_str(), "rb");
@@ -123,7 +110,7 @@ std::pair<size_t, std::vector<uint8_t>> loadFile(const string& name)
 	return std::pair(filesize, data);
 }
 
-void writeFile(const string& name, const void *data, size_t amount)
+void writeFile(const std::string& name, const void *data, size_t amount)
 {
 	FILE *file;
 	if ((file = fopen(name.c_str(), "wb")) == nullptr)
@@ -143,22 +130,22 @@ void writeFile(const string& name, const void *data, size_t amount)
 }
 
 //Profile code
-string profileName = "Profile.dat";
-string profileCode = "Do041220";
+std::string gProfileName = "Profile.dat";
+std::string gProfileCode = "Do041220";
 
 void loadProfile()
 {
-	if (fileExists(profileName))
+	if (fileExists(gProfileName))
 	{
-		SDL_RWops *profile = SDL_RWFromFile(profileName.c_str(), "rb");
+		SDL_RWops *profile = SDL_RWFromFile(gProfileName.c_str(), "rb");
 
 		if (profile == nullptr)
 			doCustomError("Profile.dat exists, but couldn't be read from.");
 
 		const uint64_t code = SDL_ReadLE64(profile); //Code
-		if (memcmp(&code, profileCode.c_str(), sizeof(code)) != 0)
+		if (memcmp(&code, gProfileCode.c_str(), sizeof(code)) != 0)
 		{
-			const string errorMsg(string("Invalid profile (first 8 bytes aren't \"") + profileCode + "\"");
+			const std::string errorMsg(std::string("Invalid profile (first 8 bytes aren't \"") + gProfileCode + "\"");
 			doCustomError(errorMsg);
 		}
 
@@ -178,7 +165,7 @@ void loadProfile()
 		SDL_ReadLE16(profile); // a?
 
 		selectedWeapon = SDL_ReadLE32(profile); //current weapon
-		selectedItem = SDL_ReadLE32(profile); //current item
+		gSelectedItem = SDL_ReadLE32(profile); //current item
 
 		currentPlayer.equip = SDL_ReadLE32(profile); //equipped items
 		currentPlayer.unit = SDL_ReadLE32(profile); //physics
@@ -194,21 +181,21 @@ void loadProfile()
 			i.num = SDL_ReadLE32(profile);
 		}
 
-		for (auto& i : items)
+		for (auto& i : gItems)
 			i.code = SDL_ReadLE32(profile);
 
-		for (auto& i : permitStage)
+		for (auto& i : gPermitStage)
 		{
 			i.index = SDL_ReadLE32(profile);
 			i.event = SDL_ReadLE32(profile);
 		}
 
-		for (auto& i : mapFlags)
+		for (auto& i : gMapFlags)
 			SDL_RWread(profile, &i, 1, 1);
 
 		SDL_ReadLE32(profile); //FLAG
 
-		for (auto& i : tscFlags)
+		for (auto& i : gTscFlags)
 			SDL_RWread(profile, &i, 1, 1);
 
 		loadLevel(level, 0, 0, 1);
@@ -235,10 +222,10 @@ void saveProfile()
 	uint8_t profile[0x604] = { 0 };
 
 	//Set data
-	memcpy(profile, profileCode.c_str(), 0x08);
+	memcpy(profile, gProfileCode.c_str(), 0x08);
 
-	writeLElong(profile, currentLevel, 0x08); //Level
-	writeLElong(profile, currentOrg, 0xC); //song
+	writeLElong(profile, gCurrentLevel, 0x08); //Level
+	writeLElong(profile, gCurrentOrg, 0xC); //song
 
 	writeLElong(profile, currentPlayer.x, 0x10); //Player X
 	writeLElong(profile, currentPlayer.y, 0x14); //Player Y
@@ -249,7 +236,7 @@ void saveProfile()
 	writeLEshort(profile, currentPlayer.life, 0x20); //Player health
 
 	writeLElong(profile, selectedWeapon, 0x24); //Selected weapon
-	writeLElong(profile, selectedItem, 0x28); //Selected item
+	writeLElong(profile, gSelectedItem, 0x28); //Selected item
 
 	writeLElong(profile, currentPlayer.equip, 0x2C); //Equipped items
 	writeLElong(profile, currentPlayer.unit, 0x30); //Current physics
@@ -265,30 +252,30 @@ void saveProfile()
 
 	for (size_t i = 0; i < 32; i++)
 	{
-		writeLElong(profile, items[i].code, 0xD8 + i * 0x4);
+		writeLElong(profile, gItems[i].code, 0xD8 + i * 0x4);
 	}
 
 	for (size_t i = 0; i < 8; i++)
 	{
-		writeLElong(profile, permitStage[i].index, 0x158 + i * 8);
-		writeLElong(profile, permitStage[i].event, 0x15C + i * 8);
+		writeLElong(profile, gPermitStage[i].index, 0x158 + i * 8);
+		writeLElong(profile, gPermitStage[i].event, 0x15C + i * 8);
 	}
 
-	memcpy(profile + 0x198, mapFlags, 0x80); // Consider cleaning up those magic numbers
+	memcpy(profile + 0x198, gMapFlags, 0x80); // Consider cleaning up those magic numbers
 	memcpy(profile + 0x218, "FLAG", 4);
-	memcpy(profile + 0x21C, tscFlags, 1000);
+	memcpy(profile + 0x21C, gTscFlags, 1000);
 
 	//Save to file
-	writeFile(profileName, profile, 0x604);
+	writeFile(gProfileName, profile, 0x604);
 }
 
 /// Return a vector of strings containing the contents of the file who's name is given as argument
-vector<string> getLinesFromFile(const string& fileName)
+std::vector<std::string> getLinesFromFile(const std::string& fileName)
 {
-	vector<string> lines;
-	ifstream inFile(fileName);
-	string line;
-	while (getline(inFile, line))
+	std::vector<std::string> lines;
+	std::ifstream inFile(fileName);
+	std::string line;
+	while (std::getline(inFile, line))
 		lines.push_back(line);
 	return lines;
 }

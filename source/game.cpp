@@ -29,77 +29,77 @@
 #include "playerCollision.h"
 #include "flash.h"
 
-int gameMode = 1;
-int gameFlags = 0;
+int gGameMode = INTRO;
+int gGameFlags = 0;
 
-VIEW viewport;
+VIEW gViewport;
 
-BOSSLIFE bossLife;
+BOSSLIFE gBossLife;
 
 void SetFrameTargetMyChar(int wait)
 {
-	viewport.lookX = &currentPlayer.tgt_x;
-	viewport.lookY = &currentPlayer.tgt_y;
-	viewport.speed = wait;
+	gViewport.lookX = &currentPlayer.tgt_x;
+	gViewport.lookY = &currentPlayer.tgt_y;
+	gViewport.speed = wait;
 }
 
 void SetFrameTargetNpChar(int event, int wait)
 {
 	size_t i = 0;
 	// Check if object actually exists
-	for (; i < npcs.size() && npcs[i].code_event != event; ++i)
+	for (; i < gNPC.size() && gNPC[i].code_event != event; ++i)
 		;
 
-	if (i != npcs.size())
+	if (i != gNPC.size())
 	{
-		viewport.lookX = &npcs[i].x;
-		viewport.lookY = &npcs[i].y;
-		viewport.speed = wait;
+		gViewport.lookX = &gNPC[i].x;
+		gViewport.lookY = &gNPC[i].y;
+		gViewport.speed = wait;
 	}
 }
 
 void SetFrameTargetBoss(int no, int wait)
 {
-	viewport.lookX = &bossObj[no].x;
-	viewport.lookY = &bossObj[no].y;
-	viewport.speed = wait;
+	gViewport.lookX = &bossObj[no].x;
+	gViewport.lookY = &bossObj[no].y;
+	gViewport.speed = wait;
 }
 
 void SetFrameMyChar(void)
 {
 	const int mc_x = currentPlayer.x;
 	const int mc_y = currentPlayer.y;
-	const short map_w = map.width;
-	const short map_l = map.height;
+	const short map_w = gMap.width;
+	const short map_l = gMap.height;
 
-	viewport.x = mc_x - pixelsToUnits(screenWidth / 2);
-	viewport.y = mc_y - pixelsToUnits(screenHeight / 2);
+	gViewport.x = mc_x - pixelsToUnits(gScreenWidth / 2);
+	gViewport.y = mc_y - pixelsToUnits(gScreenHeight / 2);
 
-	if (viewport.x <= -512)
-		viewport.x = 0;
+	if (gViewport.x <= -512)
+		gViewport.x = 0;
 
-	if (viewport.y <= -512)
-		viewport.y = 0;
+	if (gViewport.y <= -512)
+		gViewport.y = 0;
 
-	if (viewport.x > tilesToUnits(map_w - pixelsToTiles(screenWidth) - 1))
-		viewport.x = tilesToUnits(map_w - pixelsToTiles(screenWidth) - 1);
+	if (gViewport.x > tilesToUnits(map_w - pixelsToTiles(gScreenWidth) - 1))
+		gViewport.x = tilesToUnits(map_w - pixelsToTiles(gScreenWidth) - 1);
 
-	if (viewport.y > tilesToUnits(map_l - pixelsToTiles(screenHeight) - 1))
-		viewport.y = tilesToUnits(map_l - pixelsToTiles(screenHeight) - 1);
+	if (gViewport.y > tilesToUnits(map_l - pixelsToTiles(gScreenHeight) - 1))
+		gViewport.y = tilesToUnits(map_l - pixelsToTiles(gScreenHeight) - 1);
 }
 
 //Init game function
 void initGame()
 {
 	//Clear flags
-	memset(tscFlags, 0, sizeof(tscFlags));
-	memset(mapFlags, 0, sizeof(mapFlags));
+	memset(gTscFlags, 0, sizeof(gTscFlags));
+	memset(gMapFlags, 0, sizeof(gMapFlags));
 
 	//Clear other stuff
 	init2();
 	initWeapons();
-	memset(permitStage, 0, sizeof(permitStage));
-	memset(items, 0, sizeof(items));
+	memset(gPermitStage, 0, sizeof(gPermitStage));
+	memset(gItems, 0, sizeof(gItems));
 
 	//Set up fade
 	initFade();
@@ -117,43 +117,43 @@ void initGame()
 //Init other important things
 void init2()
 {
-	memset(&bossLife, 0, sizeof(bossLife));
+	memset(&gBossLife, 0, sizeof(gBossLife));
 }
 
 //Keep view inside the level
 void viewBounds()
 {
-	if ((map.width - 1) << 4 > screenWidth)
-		viewport.x = clamp(viewport.x, 0, tilesToUnits(map.width - 1) - (screenWidth << 9));
+	if ((gMap.width - 1) << 4 > gScreenWidth)
+		gViewport.x = clamp(gViewport.x, 0, tilesToUnits(gMap.width - 1) - (gScreenWidth << 9));
 	else
-		viewport.x = ((map.width - 1) << 12) - (screenWidth << 8);
+		gViewport.x = ((gMap.width - 1) << 12) - (gScreenWidth << 8);
 
-	if ((map.height - 1) << 4 > screenHeight)
-		viewport.y = clamp(viewport.y, 0, tilesToUnits(map.height - 1) - (screenHeight << 9));
+	if ((gMap.height - 1) << 4 > gScreenHeight)
+		gViewport.y = clamp(gViewport.y, 0, tilesToUnits(gMap.height - 1) - (gScreenHeight << 9));
 	else
-		viewport.y = ((map.height - 1) << 12) - (screenHeight << 8);
+		gViewport.y = ((gMap.height - 1) << 12) - (gScreenHeight << 8);
 }
 
 void handleView()
 {
 	//Move view
-	viewport.x += ((*viewport.lookX - (screenWidth << 8)) - viewport.x) / viewport.speed;
-	viewport.y += ((*viewport.lookY - (screenHeight << 8)) - viewport.y) / viewport.speed;
+	gViewport.x += ((*gViewport.lookX - (gScreenWidth << 8)) - gViewport.x) / gViewport.speed;
+	gViewport.y += ((*gViewport.lookY - (gScreenHeight << 8)) - gViewport.y) / gViewport.speed;
 
 	viewBounds();
 
 	//Quake
-	if (viewport.quake2)
+	if (gViewport.quake2)
 	{
-		viewport.x += (random(-5, 5) << 9);
-		viewport.y += (random(-3, 3) << 9);
-		--viewport.quake2;
+		gViewport.x += (random(-5, 5) << 9);
+		gViewport.y += (random(-3, 3) << 9);
+		--gViewport.quake2;
 	}
-	else if (viewport.quake)
+	else if (gViewport.quake)
 	{
-		viewport.x += (random(-1, 1) << 9);
-		viewport.y += (random(-1, 1) << 9);
-		--viewport.quake;
+		gViewport.x += (random(-1, 1) << 9);
+		gViewport.y += (random(-1, 1) << 9);
+		--gViewport.quake;
 	}
 }
 
@@ -234,9 +234,9 @@ void debugFunction()
 		if (isKeyPressed(SDL_SCANCODE_R))
 			debugFlags ^= showHurtRects;
 		if (isKeyPressed(SDL_SCANCODE_EQUALS))
-			framewait--;
+			gFramewait--;
 		if (isKeyPressed(SDL_SCANCODE_MINUS))
-			framewait++;
+			gFramewait++;
 		if (isKeyPressed(SDL_SCANCODE_P))
 			debugFlags ^= showPosition;
 	}
@@ -274,24 +274,24 @@ void debugFunction()
 
 	if (debugFlags & showSlots)
 	{
-		std::string debugStr1 = "There are " + std::to_string(npcs.size()) + " npc slots.";
+		std::string debugStr1 = "There are " + std::to_string(gNPC.size()) + " npc slots.";
 		std::string debugStr2 = "There are " + std::to_string(bullets.size()) + " bullet slots.";
 		std::string debugStr3 = "There are " + std::to_string(carets.size()) + " caret slots.";
 		std::string debugStr4 = "There are " + std::to_string(valueviews.size()) + " valueview slots";
 		std::string debugStr5 = "Currently loaded boss is boss " + std::to_string(bossObj[0].code_char);
-		drawString(8, screenHeight - 12, debugStr1);
-		drawString(8, screenHeight - 24, debugStr2);
-		drawString(8, screenHeight - 36, debugStr3);
-		drawString(8, screenHeight - 48, debugStr4);
-		drawString(8, screenHeight - 60, debugStr5);
+		drawString(8, gScreenHeight - 12, debugStr1);
+		drawString(8, gScreenHeight - 24, debugStr2);
+		drawString(8, gScreenHeight - 36, debugStr3);
+		drawString(8, gScreenHeight - 48, debugStr4);
+		drawString(8, gScreenHeight - 60, debugStr5);
 	}
 
 	if (debugFlags & showPosition)
 	{
-		drawString(screenWidth - 96, screenHeight - 12, "x:");
-		drawNumber(unitsToTiles(currentPlayer.x), screenWidth - 88, screenHeight - 8, false);
-		drawString(screenWidth - 48, screenHeight - 12, "y:");
-		drawNumber(unitsToTiles(currentPlayer.y), screenWidth - 40, screenHeight - 8, false);
+		drawString(gScreenWidth - 96, gScreenHeight - 12, "x:");
+		drawNumber(unitsToTiles(currentPlayer.x), gScreenWidth - 88, gScreenHeight - 8, false);
+		drawString(gScreenWidth - 48, gScreenHeight - 12, "y:");
+		drawNumber(unitsToTiles(currentPlayer.y), gScreenWidth - 40, gScreenHeight - 8, false);
 	}
 }
 
@@ -317,10 +317,10 @@ int escapeMenu()
 		        (isKeyPressed(SDL_SCANCODE_LALT) && isKeyDown(SDL_SCANCODE_RETURN)))
 			switchScreenMode();
 
-		SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
-		SDL_RenderClear(renderer);
+		SDL_SetRenderDrawColor(gRenderer, 0, 0, 0, 255);
+		SDL_RenderClear(gRenderer);
 
-		drawTexture(sprites[0x1A], &rcEscape, (screenWidth >> 1) - 104, (screenHeight >> 1) - 8);
+		drawTexture(gSprites[0x1A], &rcEscape, (gScreenWidth >> 1) - 104, (gScreenHeight >> 1) - 8);
 	} while (drawWindow());
 
 	return 0;
@@ -351,9 +351,9 @@ int gameUpdatePlay()
 			switchScreenMode();
 
 		//Update stuff
-		if (gameFlags & 1)
+		if (gGameFlags & 1)
 		{
-			if (gameFlags & 2)
+			if (gGameFlags & 2)
 				currentPlayer.update(true);
 			else
 				currentPlayer.update(false);
@@ -362,12 +362,12 @@ int gameUpdatePlay()
 			playerHitMap();
 			playerHitNpcs();
 			playerHitBosses();
-			if (gameFlags & 2)
+			if (gGameFlags & 2)
 				actWeapon();
 			updateBullets();
 			updateCarets();
 			updateValueView();
-			if (gameFlags & 2)
+			if (gGameFlags & 2)
 				currentPlayer.animate(true);
 			else
 				currentPlayer.animate(false);
@@ -378,8 +378,8 @@ int gameUpdatePlay()
 		updateFade();
 
 		// -- DRAW -- //
-		SDL_SetRenderDrawColor(renderer, 0, 0, 32, 255);
-		SDL_RenderClear(renderer);
+		SDL_SetRenderDrawColor(gRenderer, 0, 0, 32, 255);
+		SDL_RenderClear(gRenderer);
 
 		drawLevel(false);
 		drawBoss();
@@ -392,9 +392,9 @@ int gameUpdatePlay()
 		drawFade();
 
 		//Open inventory and map system
-		if (!(gameFlags & 4))
+		if (!(gGameFlags & 4))
 		{
-			if (isKeyPressed(keyMenu))
+			if (isKeyPressed(gKeyMenu))
 			{
 				//captureScreen(TEX_SCREENSHOT); //Redundant
 				const int inventoryRet = openInventory();
@@ -404,7 +404,7 @@ int gameUpdatePlay()
 					return 1;
 				currentPlayer.cond &= ~player_interact;
 			}
-			else if (currentPlayer.equip & equip_mapSystem && isKeyPressed(keyMap))
+			else if (currentPlayer.equip & equip_mapSystem && isKeyPressed(gKeyMap))
 			{
 				captureScreen(TEX_SCREENSHOT);
 				const int mapRet = openMapSystem();
@@ -416,11 +416,11 @@ int gameUpdatePlay()
 		}
 
 		//Rotate weapons
-		if (gameFlags & 2)
+		if (gGameFlags & 2)
 		{
-			if (isKeyPressed(keyRotRight))
+			if (isKeyPressed(gKeyRotateRight))
 				rotateWeaponRight();
-			else if (isKeyPressed(keyRotLeft))
+			else if (isKeyPressed(gKeyRotateLeft))
 				rotateWeaponLeft();
 		}
 
@@ -433,7 +433,7 @@ int gameUpdatePlay()
 			return 1;
 
 		drawMapName(false);
-		drawHud(!(gameFlags & 2));
+		drawHud(!(gGameFlags & 2));
 		actFlash();
 		drawTsc();
 		debugFunction();
@@ -489,13 +489,13 @@ int gameUpdateMenu()
 		if ((isKeyDown(SDL_SCANCODE_LALT) && isKeyPressed(SDL_SCANCODE_RETURN)) || (isKeyPressed(SDL_SCANCODE_LALT) && isKeyDown(SDL_SCANCODE_RETURN)))
 			switchScreenMode();
 
-		if (isKeyPressed(keyJump))
+		if (isKeyPressed(gKeyJump))
 		{
 			playSound(SFX_YNConfirm);
 			break;
 		}
 
-		if (isKeyPressed(keyUp) || isKeyPressed(keyDown))
+		if (isKeyPressed(gKeyUp) || isKeyPressed(gKeyDown))
 		{
 			playSound(SFX_YNChangeChoice);
 			select = !select;
@@ -505,26 +505,26 @@ int gameUpdateMenu()
 			anime = 0;
 
 		// -- DRAW -- //
-		SDL_SetRenderDrawColor(renderer, 32, 32, 32, 255);
-		SDL_RenderClear(renderer);
+		SDL_SetRenderDrawColor(gRenderer, 32, 32, 32, 255);
+		SDL_RenderClear(gRenderer);
 
 		//Draw version
-		drawTexture(sprites[0x1A], &rcVersion, (screenWidth / 2) - 60, (screenHeight / 2) + 96);
-		drawTexture(sprites[0x1A], &rcPeriod, (screenWidth / 2) - 4, (screenHeight / 2) + 96);
-		drawNumber(version[0], (screenWidth / 2) - 20, (screenHeight / 2) + 96, false);
-		drawNumber(version[1], (screenWidth / 2) - 4, (screenHeight / 2) + 96, false);
-		drawNumber(version[2], (screenWidth / 2) + 12, (screenHeight / 2) + 96, false);
-		drawNumber(version[3], (screenWidth / 2) + 28, (screenHeight / 2) + 96, false);
+		drawTexture(gSprites[0x1A], &rcVersion, (gScreenWidth / 2) - 60, (gScreenHeight / 2) + 96);
+		drawTexture(gSprites[0x1A], &rcPeriod, (gScreenWidth / 2) - 4, (gScreenHeight / 2) + 96);
+		drawNumber(version[0], (gScreenWidth / 2) - 20, (gScreenHeight / 2) + 96, false);
+		drawNumber(version[1], (gScreenWidth / 2) - 4, (gScreenHeight / 2) + 96, false);
+		drawNumber(version[2], (gScreenWidth / 2) + 12, (gScreenHeight / 2) + 96, false);
+		drawNumber(version[3], (gScreenWidth / 2) + 28, (gScreenHeight / 2) + 96, false);
 
 		//Draw title, new, load, and pixel 12.2004 thing
-		drawTexture(sprites[0x00], &rcTitle, (screenWidth / 2) - 72, (screenHeight / 2) - 80);
-		drawTexture(sprites[0x00], &rcNew, (screenWidth / 2) - 24, (screenHeight / 2) + 8);
-		drawTexture(sprites[0x00], &rcLoad, (screenWidth / 2) - 24, (screenHeight / 2) + 28);
-		drawTexture(sprites[0x01], &rcPixel, (screenWidth / 2) - 80, (screenHeight / 2) + 72);
+		drawTexture(gSprites[0x00], &rcTitle, (gScreenWidth / 2) - 72, (gScreenHeight / 2) - 80);
+		drawTexture(gSprites[0x00], &rcNew, (gScreenWidth / 2) - 24, (gScreenHeight / 2) + 8);
+		drawTexture(gSprites[0x00], &rcLoad, (gScreenWidth / 2) - 24, (gScreenHeight / 2) + 28);
+		drawTexture(gSprites[0x01], &rcPixel, (gScreenWidth / 2) - 80, (gScreenHeight / 2) + 72);
 
 		//Draw the character cursor
 		RECT rcChar = { 0 + (frameOrder[(anime / 10) % 4] << 4), 16, 16 + (frameOrder[(anime / 10) % 4] << 4), 32 };
-		drawTexture(sprites[0x10], &rcChar, (screenWidth / 2) - 44, (screenHeight / 2) + 7 + (20 * select));
+		drawTexture(gSprites[0x10], &rcChar, (gScreenWidth / 2) - 44, (gScreenHeight / 2) + 7 + (20 * select));
 
 		if (!drawWindow())
 			return 0;
@@ -537,8 +537,8 @@ int gameUpdateMenu()
 	while (SDL_GetTicks() < frame + 1000)
 	{
 		getKeys();
-		SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
-		SDL_RenderClear(renderer);
+		SDL_SetRenderDrawColor(gRenderer, 0, 0, 0, 255);
+		SDL_RenderClear(gRenderer);
 		if (!drawWindow())
 			return 0;
 	}
@@ -586,7 +586,7 @@ int gameUpdateIntro()
 		if ((isKeyDown(SDL_SCANCODE_LALT) && isKeyPressed(SDL_SCANCODE_RETURN)) || (isKeyPressed(SDL_SCANCODE_LALT) && isKeyDown(SDL_SCANCODE_RETURN)))
 			switchScreenMode();
 
-		if (isKeyPressed(keyJump) || isKeyDown(keyShoot))
+		if (isKeyPressed(gKeyJump) || isKeyDown(gKeyShoot))
 		{
 			break;
 		}
@@ -600,8 +600,8 @@ int gameUpdateIntro()
 		updateFade();
 
 		// -- DRAW -- //
-		SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
-		SDL_RenderClear(renderer);
+		SDL_SetRenderDrawColor(gRenderer, 0, 0, 0, 255);
+		SDL_RenderClear(gRenderer);
 
 		drawLevel(false);
 		drawNPC();
@@ -626,8 +626,8 @@ int gameUpdateIntro()
 	while (SDL_GetTicks() < frame + 500)
 	{
 		getKeys();
-		SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
-		SDL_RenderClear(renderer);
+		SDL_SetRenderDrawColor(gRenderer, 0, 0, 0, 255);
+		SDL_RenderClear(gRenderer);
 		if (!drawWindow())
 			return 0;
 	}
@@ -637,19 +637,19 @@ int gameUpdateIntro()
 
 int mainGameLoop()
 {
-	while (gameMode != 0)
+	while (gGameMode != 0)
 	{
 		//////UPDATE//////
-		switch (gameMode)
+		switch (gGameMode)
 		{
 		case(INTRO):
-			gameMode = gameUpdateIntro();
+			gGameMode = gameUpdateIntro();
 			break;
 		case(MENU):
-			gameMode = gameUpdateMenu();
+			gGameMode = gameUpdateMenu();
 			break;
 		case(PLAY):
-			gameMode = gameUpdatePlay();
+			gGameMode = gameUpdatePlay();
 			break;
 		default:
 			doCustomError("Invalid gameMode");

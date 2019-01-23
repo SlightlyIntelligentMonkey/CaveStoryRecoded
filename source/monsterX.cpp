@@ -331,7 +331,7 @@ void actBoss_MonsterX(npc *boss)
 		}
 		break;
 	case 1000:
-		viewport.quake = 2;
+		gViewport.quake = 2;
 		if (!(++boss->act_wait % 8))
 			playSound(SFX_BehemothLargeHurt);
 		createSmokeLeft(boss->x + (random(-72, 72) << 9), boss->y + (random(-64, 64) << 9), 1, 1);
@@ -344,7 +344,7 @@ void actBoss_MonsterX(npc *boss)
 		}
 		break;
 	case 1001:
-		viewport.quake = 40;
+		gViewport.quake = 40;
 		if (++boss->act_wait > 50)
 		{
 			for (int i = 0; i < 20; ++i)

@@ -17,7 +17,7 @@ ifeq ($(detected_OS),MINGW)
 endif
 
 # Warning options fed to the compiler
-WARNINGS := -pedantic -Wall -Wextra -Walloc-zero -Wbool-compare -Wcast-align -Wcast-qual -Wchar-subscripts -Wchkp -Wdangling-else -Wdisabled-optimization -Wduplicated-branches -Wduplicated-cond -Wformat=2 -Wformat-nonliteral -Wformat-security -Wformat-y2k -Wimport -Winit-self -Winvalid-pch -Wlogical-not-parentheses -Wlogical-op -Wmissing-field-initializers -Wmissing-format-attribute -Wmissing-include-dirs -Wmissing-noreturn -Wnoexcept -Wnoexcept-type -Wnormalized=nfc -Woverloaded-virtual -Wpointer-arith -Wregister -Wrestrict -Wsign-promo -Wsizeof-array-argument -Wstack-protector -Wstrict-aliasing=3 -Wstrict-null-sentinel -Wsuggest-attribute=format -Wsuggest-attribute=noreturn -Wsuggest-override -Wswitch-bool -Wundef -Wunreachable-code -Wunused -Wunused-local-typedefs -Wuseless-cast -Wvariadic-macros -Wwrite-strings -Wzero-as-null-pointer-constant -Wno-multichar -Wno-unused-parameter
+WARNINGS := -pedantic -Wall -Wextra -Walloc-zero -Wbool-compare -Wcast-align -Wcast-qual -Wchar-subscripts -Wchkp -Wdangling-else -Wdisabled-optimization -Wduplicated-branches -Wduplicated-cond -Wformat=2 -Wformat-nonliteral -Wformat-security -Wformat-y2k -Wimport -Winit-self -Winvalid-pch -Wlogical-not-parentheses -Wlogical-op -Wmissing-field-initializers -Wmissing-format-attribute -Wmissing-include-dirs -Wmissing-noreturn -Wnoexcept -Wnoexcept-type -Wnormalized=nfc -Woverloaded-virtual -Wpointer-arith -Wregister -Wrestrict -Wsign-promo -Wsizeof-array-argument -Wstack-protector -Wstrict-aliasing=3 -Wstrict-null-sentinel -Wsuggest-attribute=format -Wsuggest-attribute=noreturn -Wsuggest-override -Wswitch-bool -Wundef -Wunreachable-code -Wunused -Wunused-local-typedefs -Wvariadic-macros -Wwrite-strings -Wzero-as-null-pointer-constant -Wno-multichar -Wno-unused-parameter
 
 # Optimisation options fed to the compiler
 OPTIMISATIONS := -O3 -frename-registers
@@ -93,7 +93,7 @@ obj/%.o: source/%.cpp
 # Compile for lodepng (avoid warnings and also some other stuff)
 obj/lodepng/lodepng.o: source/lodepng/lodepng.cpp
 	@mkdir -p $(@D)
-	$(CXXFLAGS) $< -o $@ -DLODEPNG_NO_COMPILE_ENCODER -DLODEPNG_NO_CXXFLAGS -Wno-zero-as-null-pointer-constant -Wno-suggest-attribute=pure -Wno-suggest-attribute=const -Wno-alloc-zero -Wno-useless-cast -Wno-cast-qual
+	$(CXXFLAGS) $< -o $@ -DLODEPNG_NO_COMPILE_ENCODER -DLODEPNG_NO_CXXFLAGS -Wno-zero-as-null-pointer-constant -Wno-alloc-zero -Wno-cast-qual
 	
 ifeq ($(detected_OS),Windows)
 # Compile icon resource

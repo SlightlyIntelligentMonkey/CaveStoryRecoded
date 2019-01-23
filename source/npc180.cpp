@@ -45,10 +45,10 @@ void npcAct180(npc * NPC) // Curly, AI
 
 	if (NPC->y >= currentPlayer.y - 0x14000)
 	{
-		if (curlyShootWait)
+		if (gCurlyShootWait)
 		{
-			NPC->tgt_x = curlyShootX;
-			NPC->tgt_y = curlyShootY;
+			NPC->tgt_x = gCurlyShootX;
+			NPC->tgt_y = gCurlyShootY;
 		}
 		else
 		{
@@ -182,11 +182,11 @@ void npcAct180(npc * NPC) // Curly, AI
 		}
 	}
 
-	if (curlyShootWait)
-		--curlyShootWait;
-	if (curlyShootWait == 70)
+	if (gCurlyShootWait)
+		--gCurlyShootWait;
+	if (gCurlyShootWait == 70)
 		NPC->count2 = 10;
-	if (curlyShootWait == 60 && NPC->flag & ground && random(0, 2))
+	if (gCurlyShootWait == 60 && NPC->flag & ground && random(0, 2))
 	{
 		NPC->count1 = 0;
 		NPC->ym = -0x600;
@@ -466,7 +466,7 @@ void npcAct184(npc *NPC) //big moving block in almond
 
 		if (!(++NPC->act_wait & 7))
 			playSound(26);
-		viewport.quake = 20;
+		gViewport.quake = 20;
 		break;
 	case 20:
 		for (int i = 0; i <= 3; ++i)
@@ -819,7 +819,7 @@ void npcAct191(npc *NPC) //water level controller npc
 		if (NPC->ym > 512)
 			NPC->ym = 512;
 		NPC->y += NPC->ym;
-		if (NPC->y <= 0x7FFF || superYPos)
+		if (NPC->y <= 0x7FFF || gSuperYPos)
 		{
 			NPC->act_no = 21;
 			NPC->act_wait = 0;

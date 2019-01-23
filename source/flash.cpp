@@ -86,14 +86,14 @@ void flashExplosion()
 			explosionEnd = true;
 			flash.timer = 0;
 			explInc = 122880;
-			h = screenHeight;
+			h = gScreenHeight;
 		}
 	}
 
-	SDL_SetRenderDrawColor(renderer, flash.r, flash.g, flash.b, flash.a);
+	SDL_SetRenderDrawColor(gRenderer, flash.r, flash.g, flash.b, flash.a);
 	if (explosionEnd != true)
-		drawRect(unitsToPixels(flash.x - pixelsToUnits(flash.vW/2) - viewport.x), 0, flash.vW, screenHeight);
-	drawRect(0, unitsToPixels(flash.y - pixelsToUnits(flash.hH/2) - viewport.y), screenWidth, flash.hH);
+		drawRect(unitsToPixels(flash.x - pixelsToUnits(flash.vW/2) - gViewport.x), 0, flash.vW, gScreenHeight);
+	drawRect(0, unitsToPixels(flash.y - pixelsToUnits(flash.hH/2) - gViewport.y), gScreenWidth, flash.hH);
 }
 
 void flashNormal()
@@ -101,8 +101,8 @@ void flashNormal()
 	--flash.timer;
 	if (flash.timer / 2 & 1)
 	{
-		SDL_SetRenderDrawColor(renderer, flash.r, flash.g, flash.b, flash.a);
-		SDL_RenderFillRect(renderer, nullptr);
+		SDL_SetRenderDrawColor(gRenderer, flash.r, flash.g, flash.b, flash.a);
+		SDL_RenderFillRect(gRenderer, nullptr);
 	}
 	if (flash.timer < 0)
 		flash.mode = flashModes::none;

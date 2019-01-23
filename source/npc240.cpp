@@ -237,7 +237,7 @@ void npcAct241(npc *NPC) // Critter, Hopping Red (enemy)
 
 void npcAct242(npc *NPC) // Bat, Red Wave (enemy)
 {
-    if (NPC->x < 0 || NPC->x > tilesToUnits(map.width))
+    if (NPC->x < 0 || NPC->x > tilesToUnits(gMap.width))
     {
 		NPC->init(3, NPC->x, NPC->y, 0, 0, 0, nullptr);
         return;
@@ -440,7 +440,7 @@ void npcAct246(npc *NPC) // Press, Proximity (enemy)
                     createNpc(NPC_Smoke, NPC->x, NPC->y, xVel, yVel);
                 }
                 playSound(SFX_LargeObjectHitGround);
-                viewport.quake = 10;
+                gViewport.quake = 10;
             }
             NPC->act_no = 20;
             NPC->ani_no = 0;

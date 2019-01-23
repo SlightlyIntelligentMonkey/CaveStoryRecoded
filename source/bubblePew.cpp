@@ -16,7 +16,7 @@ void pewBubble(int level)
 
 	if (level == 1)
 	{
-		if (isKeyPressed(keyShoot) && weaponBullets(7) <= 3)
+		if (isKeyPressed(gKeyShoot) && weaponBullets(7) <= 3)
 		{
 			if (useWeaponAmmo(1) ^ 1)
 			{
@@ -63,7 +63,7 @@ void pewBubble(int level)
 	}
 	else
 	{
-		if (isKeyDown(keyShoot))
+		if (isKeyDown(gKeyShoot))
 		{
 			if (weaponBullets(7) <= 15 && ++currentPlayer.rensha > 6)
 			{

@@ -76,11 +76,11 @@ void npcAct302(npc *NPC) //Camera Helper NPC
 
         {
             size_t i = 170;
-            for (; i < npcs.size(); ++i)
+            for (; i < gNPC.size(); ++i)
             {
-                if (npcs[i].cond & npccond_alive && npcs[i].code_event == NPC->direct)
+                if (gNPC[i].cond & npccond_alive && gNPC[i].code_event == NPC->direct)
                 {
-                    NPC->pNpc = &npcs[i];
+                    NPC->pNpc = &gNPC[i];
                     break;
                 }
             }

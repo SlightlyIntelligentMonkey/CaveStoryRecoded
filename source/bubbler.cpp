@@ -153,7 +153,7 @@ void actBulletBubbler2(bullet *bul)
 
 void actBulletBubbler3(bullet *bul)
 {
-	if (++bul->act_wait <= 100 && isKeyDown(keyShoot))
+	if (++bul->act_wait <= 100 && isKeyDown(gKeyShoot))
 	{
 		if (!bul->act_no)
 		{

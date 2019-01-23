@@ -43,19 +43,19 @@ struct MAP
 	int height;
 };
 
-extern MAPNAME mapName;
+extern MAPNAME gMapName;
 
-extern STAGE_TABLE *stageTable;
+extern STAGE_TABLE *gStageTable;
 
-extern MAP map;
-extern BACKGROUND background;
+extern MAP gMap;
+extern BACKGROUND gBackground;
 
-extern int currentLevel;
+extern int gCurrentLevel;
 
 extern int gWaterY;
 
-extern SDL_Texture *levelTileset;
-extern SDL_Texture *levelBackground;
+extern SDL_Texture *gLevelTileset;
+extern SDL_Texture *gLevelBackground;
 
 uint8_t getTileAttribute(size_t x, size_t y) attrPure;
 

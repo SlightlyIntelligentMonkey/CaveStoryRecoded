@@ -2,18 +2,18 @@
 
 #include "common.h"
 
-extern bool useGamepad;
+extern bool gUseGamepad;
 
-extern int keyLeft;
-extern int keyRight;
-extern int keyUp;
-extern int keyDown;
-extern int keyJump;
-extern int keyShoot;
-extern int keyMenu;
-extern int keyMap;
-extern int keyRotLeft;
-extern int keyRotRight;
+extern int gKeyLeft;
+extern int gKeyRight;
+extern int gKeyUp;
+extern int gKeyDown;
+extern int gKeyJump;
+extern int gKeyShoot;
+extern int gKeyMenu;
+extern int gKeyMap;
+extern int gKeyRotateLeft;
+extern int gKeyRotateRight;
 
 void initGamepad();
 

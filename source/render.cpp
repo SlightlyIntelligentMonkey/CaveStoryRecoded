@@ -13,39 +13,36 @@
 #include "icon_mini.h"
 #endif
 
-using std::string;
+SDL_Window *gWindow;
+SDL_Renderer *gRenderer;
 
-SDL_Window *window;
-SDL_Renderer *renderer;
+SDL_Rect gRcDraw = {0, 0, 0, 0};
+SDL_Rect gImageRectangle = {0, 0, 0, 0};
+SDL_Rect gDrawRectangle = {0, 0, 0, 0};
+SDL_Rect gCliprect = {0, 0, 0, 0};
 
-SDL_Rect rcDraw = {0, 0, 0, 0};
-SDL_Rect rcImage = {0, 0, 0, 0};
+int gScreenWidth = 320;
+int gScreenHeight = 240;
+int gScreenScale = 2;
 
-SDL_Rect drawRectangle = {0, 0, 0, 0};
-SDL_Rect cliprect = {0, 0, 0, 0};
+bool gDisplayFpsCounter = false;
 
-int screenWidth = 320;
-int screenHeight = 240;
-int screenScale = 2;
+int gPrevWidth = 0;
+int gPrevHeight = 0;
+int gPrevScale = 0;
 
-bool displayFpsCounter = false;
+int gCharWidth = 24;
+int gCharHeight = 24;
+int gCharScale = 2;
 
-int prevWidth = 0;
-int prevHeight = 0;
-int prevScale = 0;
+int gFramewait = 20; //17 for 60-ish fps
 
-int charWidth = 24;
-int charHeight = 24;
-int charScale = 2;
+uint32_t gWindowFlags = 0;
 
-int framewait = 20; //17 for 60-ish fps
+static SDL_Surface *gCursorSurface;
+static SDL_Cursor *gCursor;
 
-uint32_t windowFlags = 0;
-
-static SDL_Surface *cursor_surface;
-static SDL_Cursor *cursor;
-
-static SDL_Surface* loadPNGToSurface(const string& path)
+static SDL_Surface* loadPNGToSurface(const std::string& path)
 {
 	SDL_Surface *surface = nullptr;
 
@@ -73,7 +70,7 @@ static SDL_Surface* loadPNGToSurface(const string& path)
 	return surface;
 }
 
-static SDL_Texture* loadPNGToTexture(SDL_Renderer *localRenderer, const string& path)
+static SDL_Texture* loadPNGToTexture(SDL_Renderer *localRenderer, const std::string& path)
 {
 	SDL_Texture *texture = nullptr;
 
@@ -92,7 +89,7 @@ static SDL_Texture* loadPNGToTexture(SDL_Renderer *localRenderer, const string& 
 	return texture;
 }
 
-static SDL_Texture* loadBMPToTexture(SDL_Renderer *rend, const string& path)
+static SDL_Texture* loadBMPToTexture(SDL_Renderer *rend, const std::string& path)
 {
 	SDL_Texture *texture = nullptr;
 	SDL_Surface *surf = SDL_LoadBMP(path.c_str());
@@ -116,17 +113,17 @@ int createWindow(int width, int height, int scale)
 	const int createWidth = width * scale;
 	const int createHeight = height * scale;
 
-	screenWidth = width;
-	screenHeight = height;
-	screenScale = scale;
+	gScreenWidth = width;
+	gScreenHeight = height;
+	gScreenScale = scale;
 
 	//Set window
-	if (!window)
+	if (!gWindow)
 	{
-		window = SDL_CreateWindow("Cave Story Recoded",
+		gWindow = SDL_CreateWindow("Cave Story Recoded",
 		                          SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
 		                          createWidth, createHeight,
-		                          windowFlags);
+		                          gWindowFlags);
 
 #ifdef USE_ICONS_SDL2
 		// Set the window icon.
@@ -140,7 +137,7 @@ int createWindow(int width, int height, int scale)
 
 			if (surface)
 			{
-				SDL_SetWindowIcon(window, surface);
+				SDL_SetWindowIcon(gWindow, surface);
 				SDL_FreeSurface(surface);
 			}
 
@@ -149,28 +146,28 @@ int createWindow(int width, int height, int scale)
 #endif
 	}
 	else
-		SDL_SetWindowSize(window, createWidth, createHeight);
+		SDL_SetWindowSize(gWindow, createWidth, createHeight);
 
-	if (windowFlags == SDL_WINDOW_FULLSCREEN)
-        SDL_SetWindowFullscreen(window, SDL_WINDOW_FULLSCREEN);
+	if (gWindowFlags == SDL_WINDOW_FULLSCREEN)
+        SDL_SetWindowFullscreen(gWindow, SDL_WINDOW_FULLSCREEN);
 
 	//Set renderer
-	if (!renderer)
+	if (!gRenderer)
 	{
-		renderer = SDL_CreateRenderer(window, -1, 0);
-		SDL_SetRenderDrawBlendMode(renderer, SDL_BLENDMODE_BLEND);
+		gRenderer = SDL_CreateRenderer(gWindow, -1, 0);
+		SDL_SetRenderDrawBlendMode(gRenderer, SDL_BLENDMODE_BLEND);
 
-		if (renderer == nullptr)
+		if (gRenderer == nullptr)
 			logError((std::string)"Couldn't create renderer! SDL2 error: " + SDL_GetError());
 	}
 
 	// TODO free these when closing-down
-	cursor_surface = loadPNGToSurface("data/Cursor/cursor_normal.png");
-	if (cursor_surface)
+	gCursorSurface = loadPNGToSurface("data/Cursor/cursor_normal.png");
+	if (gCursorSurface)
 	{
-		cursor = SDL_CreateColorCursor(cursor_surface, 0, 0);	// Don't worry, the hotspots are accurate to the original files
-		if (cursor)
-			SDL_SetCursor(cursor);
+		gCursor = SDL_CreateColorCursor(gCursorSurface, 0, 0);	// Don't worry, the hotspots are accurate to the original files
+		if (gCursor)
+			SDL_SetCursor(gCursor);
         else
             logError("Couldn't create cursor");
 	}
@@ -182,44 +179,44 @@ int createWindow(int width, int height, int scale)
 
 void switchScreenMode()
 {
-	windowFlags ^= SDL_WINDOW_FULLSCREEN_DESKTOP;
+	gWindowFlags ^= SDL_WINDOW_FULLSCREEN_DESKTOP;
 
-	//Unlike prevWidth and Height, this is used for fixing the view when going between fullscreen and windowed mode
-	const int lastWidth = screenWidth;
-	const int lastHeight = screenHeight;
+	//Unlike gPrevWidth and Height, this is used for fixing the view when going between fullscreen and windowed mode
+	const int lastWidth = gScreenWidth;
+	const int lastHeight = gScreenHeight;
 
-	if (windowFlags & SDL_WINDOW_FULLSCREEN_DESKTOP)
+	if (gWindowFlags & SDL_WINDOW_FULLSCREEN_DESKTOP)
 	{
 		SDL_DisplayMode dm;
 
 		if (SDL_GetDesktopDisplayMode(0, &dm) != 0)
 			doError();
 
-		prevWidth = screenWidth;
-		prevHeight = screenHeight;
-		prevScale = screenScale;
+		gPrevWidth = gScreenWidth;
+		gPrevHeight = gScreenHeight;
+		gPrevScale = gScreenScale;
 
-		screenWidth = (dm.w * 240) / dm.h;
-		screenHeight = 240;
-		screenScale = dm.h / 240;
+		gScreenWidth = (dm.w * 240) / dm.h;
+		gScreenHeight = 240;
+		gScreenScale = dm.h / 240;
 	}
 	else
 	{
-		screenWidth = prevWidth;
-		screenHeight = prevHeight;
-		screenScale = prevScale;
+		gScreenWidth = gPrevWidth;
+		gScreenHeight = gPrevHeight;
+		gScreenScale = gPrevScale;
 	}
 
 	//Scale renderer to proper proportions
-	SDL_RenderSetLogicalSize(renderer, screenWidth * screenScale, screenHeight * screenScale);
+	SDL_RenderSetLogicalSize(gRenderer, gScreenWidth * gScreenScale, gScreenHeight * gScreenScale);
 
 	//Ensure that the view is shifted properly
-	viewport.x += (lastWidth - screenWidth) * 0x100;
-	viewport.y += (lastHeight - screenHeight) * 0x100;
+	gViewport.x += (lastWidth - gScreenWidth) * 0x100;
+	gViewport.y += (lastHeight - gScreenHeight) * 0x100;
 
 	//Set window properties
-	SDL_SetWindowSize(window, screenWidth * screenScale, screenHeight * screenScale);
-	SDL_SetWindowFullscreen(window, windowFlags);
+	SDL_SetWindowSize(gWindow, gScreenWidth * gScreenScale, gScreenHeight * gScreenScale);
+	SDL_SetWindowFullscreen(gWindow, gWindowFlags);
 }
 
 uint32_t calculateFPS()
@@ -249,8 +246,8 @@ uint32_t calculateFPS()
 
 void drawFPS()
 {
-	if (displayFpsCounter)
-		drawNumber(calculateFPS(), screenWidth - 40, 8, false);
+	if (gDisplayFpsCounter)
+		drawNumber(calculateFPS(), gScreenWidth - 40, 8, false);
 }
 
 bool drawWindow()
@@ -264,12 +261,12 @@ bool drawWindow()
 		static uint32_t timePrev;
 		const uint32_t timeNow = SDL_GetTicks();
 
-		if (timeNow >= timePrev + framewait)
+		if (timeNow >= timePrev + gFramewait)
 		{
 			if (timeNow >= timePrev + 100)
 				timePrev = timeNow;	// If the timer is freakishly out of sync, panic and reset it, instead of spamming frames for who-knows how long
 			else
-				timePrev += framewait;
+				timePrev += gFramewait;
 			break;
 		}
 
@@ -278,7 +275,7 @@ bool drawWindow()
 
 	drawFPS();
 
-	SDL_RenderPresent(renderer);
+	SDL_RenderPresent(gRenderer);
 
 	return true;
 }
@@ -286,17 +283,17 @@ bool drawWindow()
 void captureScreen(enum TextureNums texture_id)
 {
 	//Destroy previously existing texture and load new one
-	if (sprites[texture_id] != nullptr)
-		SDL_DestroyTexture(sprites[texture_id]);
+	if (gSprites[texture_id] != nullptr)
+		SDL_DestroyTexture(gSprites[texture_id]);
 
 	int width, height;
-	SDL_GetRendererOutputSize(renderer, &width, &height);
+	SDL_GetRendererOutputSize(gRenderer, &width, &height);
 
 	// The depth parameter here is unused. Be aware, it will be removed in SDL 2.1.
 	SDL_Surface *surface = SDL_CreateRGBSurfaceWithFormat(SDL_TEXTUREACCESS_TARGET, width, height, 0, SDL_PIXELFORMAT_RGB888);
-	SDL_RenderReadPixels(renderer, nullptr, SDL_PIXELFORMAT_RGB888, surface->pixels, surface->pitch);
+	SDL_RenderReadPixels(gRenderer, nullptr, SDL_PIXELFORMAT_RGB888, surface->pixels, surface->pitch);
 
-	sprites[texture_id] = SDL_CreateTextureFromSurface(renderer, surface);
+	gSprites[texture_id] = SDL_CreateTextureFromSurface(gRenderer, surface);
 
 	SDL_FreeSurface(surface);
 }
@@ -304,14 +301,14 @@ void captureScreen(enum TextureNums texture_id)
 void createTextureBuffer(enum TextureNums texture_id, int width, int height)
 {
 	//Destroy previously existing texture and load new one
-	if (sprites[texture_id] != nullptr)
-		SDL_DestroyTexture(sprites[texture_id]);
+	if (gSprites[texture_id] != nullptr)
+		SDL_DestroyTexture(gSprites[texture_id]);
 
-	sprites[texture_id] = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_RGB888, SDL_TEXTUREACCESS_TARGET, width, height);
+	gSprites[texture_id] = SDL_CreateTexture(gRenderer, SDL_PIXELFORMAT_RGB888, SDL_TEXTUREACCESS_TARGET, width, height);
 }
 
 //Texture and drawing stuff
-void loadImage(const string& file, SDL_Texture **tex)
+void loadImage(const std::string& file, SDL_Texture **tex)
 {
 	if (tex == nullptr)
 		doCustomError("tex was nullptr in loadImage");
@@ -322,9 +319,9 @@ void loadImage(const string& file, SDL_Texture **tex)
 
 	//loads either a png or bmp
 	if(fileExists("data/" + file + ".png"))
-		*tex = loadPNGToTexture(renderer, "data/" + file + ".png");
+		*tex = loadPNGToTexture(gRenderer, "data/" + file + ".png");
 	if (fileExists("data/" + file + ".bmp"))
-		*tex = loadBMPToTexture(renderer, "data/" + file + ".bmp");
+		*tex = loadBMPToTexture(gRenderer, "data/" + file + ".bmp");
 	
 
 	//Error if anything failed
@@ -338,7 +335,7 @@ void loadImage(const string& file, SDL_Texture **tex)
 
 //loads images with limited colors
 uint8_t colorValTbl[] = { 0, 52, 87, 116, 144, 172, 206, 255 };
-void loadImageBad(const string& file, SDL_Texture **tex)
+void loadImageBad(const std::string& file, SDL_Texture **tex)
 {
 	SDL_Surface *surface;
 
@@ -369,7 +366,7 @@ void loadImageBad(const string& file, SDL_Texture **tex)
 			if (pixel[p])
 				pixel[p] = colorValTbl[(pixel[p] * (sizeof(colorValTbl) - 1)) / 0xFF];
 	}
-	*tex = SDL_CreateTextureFromSurface(renderer, surface);
+	*tex = SDL_CreateTextureFromSurface(gRenderer, surface);
 
 	//Error if anything failed
 	if (*tex == nullptr)
@@ -386,11 +383,11 @@ void setCliprect(const RECT *rect)
 	//All of this code should be pretty self explanatory
 	if (rect != nullptr)
 	{
-		cliprect = { rect->left * screenScale, rect->top * screenScale, (rect->right - rect->left) * screenScale, (rect->bottom - rect->top) * screenScale };
-		SDL_RenderSetClipRect(renderer, &cliprect);
+		gCliprect = { rect->left * gScreenScale, rect->top * gScreenScale, (rect->right - rect->left) * gScreenScale, (rect->bottom - rect->top) * gScreenScale };
+		SDL_RenderSetClipRect(gRenderer, &gCliprect);
 	}
 	else
-		SDL_RenderSetClipRect(renderer, nullptr);
+		SDL_RenderSetClipRect(gRenderer, nullptr);
 }
 
 void drawTexture(SDL_Texture *texture, const RECT *rect, int x, int y)
@@ -398,16 +395,16 @@ void drawTexture(SDL_Texture *texture, const RECT *rect, int x, int y)
 	//Set framerect
 	if (rect)
 	{
-		rcImage = { rect->left, rect->top, rect->right - rect->left, rect->bottom - rect->top };
+		gImageRectangle = { rect->left, rect->top, rect->right - rect->left, rect->bottom - rect->top };
 
 		//Set drawrect, with defined width and height
-		rcDraw.x = x * screenScale;
-		rcDraw.y = y * screenScale;
-		rcDraw.w = rcImage.w * screenScale;
-		rcDraw.h = rcImage.h * screenScale;
+		gRcDraw.x = x * gScreenScale;
+		gRcDraw.y = y * gScreenScale;
+		gRcDraw.w = gImageRectangle.w * gScreenScale;
+		gRcDraw.h = gImageRectangle.h * gScreenScale;
 
 		//Draw to screen, error if failed
-		if (SDL_RenderCopy(renderer, texture, &rcImage, &rcDraw) != 0)
+		if (SDL_RenderCopy(gRenderer, texture, &gImageRectangle, &gRcDraw) != 0)
 			doError();
 	}
 	else
@@ -415,12 +412,12 @@ void drawTexture(SDL_Texture *texture, const RECT *rect, int x, int y)
 		int w, h;
 		SDL_QueryTexture(texture, nullptr, nullptr, &w, &h);
 
-		rcDraw.x = (x-(w/2)) * screenScale;
-		rcDraw.y = (y-(h/2)) * screenScale;
-		rcDraw.w = w * screenScale;
-		rcDraw.h = h * screenScale;
+		gRcDraw.x = (x-(w/2)) * gScreenScale;
+		gRcDraw.y = (y-(h/2)) * gScreenScale;
+		gRcDraw.w = w * gScreenScale;
+		gRcDraw.h = h * gScreenScale;
 
-		if (SDL_RenderCopy(renderer, texture, nullptr, &rcDraw) != 0)
+		if (SDL_RenderCopy(gRenderer, texture, nullptr, &gRcDraw) != 0)
 			doError();
 	}
 }
@@ -430,16 +427,16 @@ void drawTextureNoScale(SDL_Texture *texture, const RECT *rect, int x, int y)
 	//Set framerect
 	if (rect)
 	{
-		rcImage = { rect->left, rect->top, rect->right - rect->left, rect->bottom - rect->top };
+		gImageRectangle = { rect->left, rect->top, rect->right - rect->left, rect->bottom - rect->top };
 
 		//Set drawrect, with defined width and height
-		rcDraw.x = x;
-		rcDraw.y = y;
-		rcDraw.w = rcImage.w;
-		rcDraw.h = rcImage.h;
+		gRcDraw.x = x;
+		gRcDraw.y = y;
+		gRcDraw.w = gImageRectangle.w;
+		gRcDraw.h = gImageRectangle.h;
 
 		//Draw to screen, error if failed
-		if (SDL_RenderCopy(renderer, texture, &rcImage, &rcDraw) != 0)
+		if (SDL_RenderCopy(gRenderer, texture, &gImageRectangle, &gRcDraw) != 0)
 			doError();
 	}
 	else
@@ -447,12 +444,12 @@ void drawTextureNoScale(SDL_Texture *texture, const RECT *rect, int x, int y)
 		int w, h;
 		SDL_QueryTexture(texture, nullptr, nullptr, &w, &h);
 
-		rcDraw.x = x;
-		rcDraw.y = y;
-		rcDraw.w = w;
-		rcDraw.h = h;
+		gRcDraw.x = x;
+		gRcDraw.y = y;
+		gRcDraw.w = w;
+		gRcDraw.h = h;
 
-		if (SDL_RenderCopy(renderer, texture, nullptr, &rcDraw) != 0)
+		if (SDL_RenderCopy(gRenderer, texture, nullptr, &gRcDraw) != 0)
 			doError();
 	}
 }
@@ -460,16 +457,16 @@ void drawTextureNoScale(SDL_Texture *texture, const RECT *rect, int x, int y)
 void drawTextureSize(SDL_Texture *texture, const RECT *rect, int x, int y, int w, int h)
 {
 	//Set framerect
-	rcImage = { rect->left, rect->top, rect->right - rect->left, rect->bottom - rect->top };
+	gImageRectangle = { rect->left, rect->top, rect->right - rect->left, rect->bottom - rect->top };
 
 	//Set drawrect, with defined width and height
-	rcDraw.x = x * screenScale;
-	rcDraw.y = y * screenScale;
-	rcDraw.w = w * screenScale;
-	rcDraw.h = h * screenScale;
+	gRcDraw.x = x * gScreenScale;
+	gRcDraw.y = y * gScreenScale;
+	gRcDraw.w = w * gScreenScale;
+	gRcDraw.h = h * gScreenScale;
 
 	//Draw to screen, error if failed
-	if (SDL_RenderCopy(renderer, texture, &rcImage, &rcDraw) != 0)
+	if (SDL_RenderCopy(gRenderer, texture, &gImageRectangle, &gRcDraw) != 0)
 		doError();
 }
 
@@ -503,7 +500,7 @@ void drawNumber(int value, int x, int y, bool bZero)
 		{
 			//Set rect and draw
 			numbRect = { drawValue << 3, 56, (drawValue + 1) << 3, 64 };
-			drawTexture(sprites[26], &numbRect, x + (offset << 3), y);
+			drawTexture(gSprites[26], &numbRect, x + (offset << 3), y);
 		}
 
 		//Change checking digit
@@ -521,7 +518,7 @@ bool isMultibyte(uint8_t c)  //Shift-JIS
 	return !(c <= 0xDFu || c > 0xEFu);
 }
 
-void drawString(int x, int y, const string& str, const uint8_t *flag)
+void drawString(int x, int y, const std::string& str, const uint8_t *flag)
 {
 	RECT rcChar;
 
@@ -538,7 +535,7 @@ void drawString(int x, int y, const string& str, const uint8_t *flag)
 			if (flag != nullptr && flag[i] & 2)
 			{
 				rcChar = { 64, 48, 72, 56 };
-				drawTexture(sprites[TEX_TEXTBOX], &rcChar, x + (i * sep), y + 2);
+				drawTexture(gSprites[TEX_TEXTBOX], &rcChar, x + (i * sep), y + 2);
 			}
 			else
 			{
@@ -548,22 +545,22 @@ void drawString(int x, int y, const string& str, const uint8_t *flag)
 				if (isMultibyte(str[i]))
 				{
 					const int localChar = 0x81 + str[i + 1] + ((str[i] - 0x81) * 0x100);
-					rcChar.left = ((localChar % 32) * charWidth);
-					rcChar.top = ((localChar >> 5) * charHeight);
-					rcChar.right = rcChar.left + charWidth;
-					rcChar.bottom = rcChar.top + charHeight;
+					rcChar.left = ((localChar % 32) * gCharWidth);
+					rcChar.top = ((localChar >> 5) * gCharHeight);
+					rcChar.right = rcChar.left + gCharWidth;
+					rcChar.bottom = rcChar.top + gCharHeight;
 					i++;
 				}
 				else
 				{
-					rcChar.left = ((str[i] % 32) * charWidth);
-					rcChar.top = ((str[i] >> 5) * charHeight);
-					rcChar.right = rcChar.left + charWidth;
-					rcChar.bottom = rcChar.top + charHeight;
+					rcChar.left = ((str[i] % 32) * gCharWidth);
+					rcChar.top = ((str[i] >> 5) * gCharHeight);
+					rcChar.right = rcChar.left + gCharWidth;
+					rcChar.bottom = rcChar.top + gCharHeight;
 				}
 
 				//Draw to the screen
-				drawTextureSize(sprites[0x26], &rcChar, x + (drawIndex * sep), y, charWidth / charScale, charHeight / charScale);
+				drawTextureSize(gSprites[0x26], &rcChar, x + (drawIndex * sep), y, gCharWidth / gCharScale, gCharHeight / gCharScale);
 			}
 		}
 		else
@@ -574,11 +571,11 @@ void drawString(int x, int y, const string& str, const uint8_t *flag)
 void drawRect(int x, int y, int w, int h)
 {
 	//Map this onto an SDL_Rect
-	drawRectangle.x = x * screenScale;
-	drawRectangle.y = y * screenScale;
-	drawRectangle.w = w * screenScale;
-	drawRectangle.h = h * screenScale;
+	gDrawRectangle.x = x * gScreenScale;
+	gDrawRectangle.y = y * gScreenScale;
+	gDrawRectangle.w = w * gScreenScale;
+	gDrawRectangle.h = h * gScreenScale;
 
 	//Render onto the screen
-	SDL_RenderFillRect(renderer, &drawRectangle);
+	SDL_RenderFillRect(gRenderer, &gDrawRectangle);
 }

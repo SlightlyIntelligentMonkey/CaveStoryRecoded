@@ -179,37 +179,37 @@ void load()
     safeGet(jPlayer, "disableDamage", disableDamage);
 
 	auto jProfile = jGame["profile"];
-    safeGet(jProfile, "name", profileName);
-    safeGet(jProfile, "code", profileCode);
+    safeGet(jProfile, "name", gProfileName);
+    safeGet(jProfile, "code", gProfileCode);
 
 	auto jSound = jConfig["sound"];
 	auto jOrg = jSound["org"];
-    safeGet(jOrg, "disable", disableOrg);
+    safeGet(jOrg, "disable", gDisableOrg);
 
     auto jScreen = jConfig["screen"];
-    safeGet(jScreen, "width", screenWidth);
-    safeGet(jScreen, "height", screenHeight);
-    safeGet(jScreen, "scale", screenScale);
+    safeGet(jScreen, "width", gScreenWidth);
+    safeGet(jScreen, "height", gScreenHeight);
+    safeGet(jScreen, "scale", gScreenScale);
 	
 	auto jFps = jScreen["fps"];
-	safeGet(jFps, "millisecondsPerFrame", framewait);
-	safeGet(jFps, "displayCounter", displayFpsCounter);
+	safeGet(jFps, "millisecondsPerFrame", gFramewait);
+	safeGet(jFps, "displayCounter", gDisplayFpsCounter);
 
 	auto jInput = jConfig["input"];
-    safeGet(jInput, "useGamepad", useGamepad);
+    safeGet(jInput, "useGamepad", gUseGamepad);
 
 	auto jKeys = jConfig["keys"];
 
-	safeGet(jKeys, "keyLeft", keyLeft);
-	safeGet(jKeys, "keyRight", keyRight);
-    safeGet(jKeys, "keyUp", keyUp);
-    safeGet(jKeys, "keyDown", keyDown);
-    safeGet(jKeys, "keyJump", keyJump);
-    safeGet(jKeys, "keyShoot", keyShoot);
-    safeGet(jKeys, "keyMenu", keyMenu);
-    safeGet(jKeys, "keyMap", keyMap);
-    safeGet(jKeys, "keyRotLeft", keyRotLeft);
-    safeGet(jKeys, "keyRotRight", keyRotRight);
+	safeGet(jKeys, "keyLeft", gKeyLeft);
+	safeGet(jKeys, "keyRight", gKeyRight);
+    safeGet(jKeys, "keyUp", gKeyUp);
+    safeGet(jKeys, "keyDown", gKeyDown);
+    safeGet(jKeys, "keyJump", gKeyJump);
+    safeGet(jKeys, "keyShoot", gKeyShoot);
+    safeGet(jKeys, "keyMenu", gKeyMenu);
+    safeGet(jKeys, "keyMap", gKeyMap);
+    safeGet(jKeys, "keyRotLeft", gKeyRotateLeft);
+    safeGet(jKeys, "keyRotRight", gKeyRotateRight);
 }
 
 }

@@ -16,7 +16,7 @@ void shootFireball(int level)
 	int shootY;
 	int caretX;
 
-	if (isKeyPressed(keyShoot))
+	if (isKeyPressed(gKeyShoot))
 	{
 		switch (level)
 		{

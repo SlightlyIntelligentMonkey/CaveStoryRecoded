@@ -7,7 +7,7 @@
 
 void shootSnake(int level)
 {
-	if (weaponBullets(1) <= 3 && isKeyPressed(keyShoot))
+	if (weaponBullets(1) <= 3 && isKeyPressed(gKeyShoot))
 	{
 		if (useWeaponAmmo(1) ^ 1)
 		{

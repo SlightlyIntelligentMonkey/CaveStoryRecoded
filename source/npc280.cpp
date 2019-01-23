@@ -28,7 +28,7 @@ void npcAct291(npc *NPC) // Mini Undead Core, stationary
 
 void npcAct292(npc * /*NPC*/) //Quake
 {
-	viewport.quake = 10;
+	gViewport.quake = 10;
 }
 
 void npcAct293(npc *NPC) // Undead Core large energy ball (projectile)
