@@ -92,10 +92,10 @@ void init()
 	if (SDL_Init(SDL_INIT_TIMER | SDL_INIT_AUDIO | SDL_INIT_VIDEO | SDL_INIT_GAMECONTROLLER) < 0)
 		doCustomError("Couldn't initiate SDL");
 
-	loadConfigFiles();
-	auto config = loadConfigDat();
+	config::load();
+	auto config = config::old::load(config::old::gName);
 
-	if (config != nullptr)
+	if (config)
 	{
 		if (config->attack_button_mode == 1)
 		{
