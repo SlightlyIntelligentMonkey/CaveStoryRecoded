@@ -2,6 +2,7 @@
 
 #include <memory>
 #include <cstddef>
+#include <string>
 
 struct CONFIG
 {
@@ -15,6 +16,15 @@ struct CONFIG
 	int32_t joystick_button[8];
 };
 
-std::unique_ptr<CONFIG> loadConfigDat();
+namespace config
+{
+	namespace old
+	{
+		std::unique_ptr<CONFIG> load(const std::string& name);
 
-void loadConfigFiles();
+		extern std::string gName;
+		extern bool gUse;
+	}
+
+	void load();
+}

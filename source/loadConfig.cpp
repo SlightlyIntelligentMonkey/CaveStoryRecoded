@@ -17,6 +17,7 @@
 #include "input.h"
 #include "log.h"
 #include "main.h"
+
 struct CONFIG_RAW
 {
 	char proof[32];
@@ -29,14 +30,25 @@ struct CONFIG_RAW
 	uint8_t joystick_button[8][4];
 };
 
-//Save and load config.dat (config file for the original Cave Story)
-std::string configName = "Config.dat";
-
-std::unique_ptr<CONFIG> loadConfigDat()
+namespace config
 {
+	
+namespace old
+{
+	
+//Save and load config.dat (config file for the original Cave Story)
+std::string gName = "Config.dat";
+
+bool gUse = false;
+
+std::unique_ptr<CONFIG> load(const std::string& name)
+{
+	if (!config::old::gUse)
+		return std::unique_ptr<CONFIG>();
+
 	std::unique_ptr<CONFIG> config;
 
-	FILE *fp = fopen(configName.c_str(), "rb");
+	FILE *fp = fopen(name.c_str(), "rb");
 
 	if (fp != nullptr)
 	{
@@ -60,6 +72,8 @@ std::unique_ptr<CONFIG> loadConfigDat()
 	}
 
 	return config;
+}
+
 }
 
 nlohmann::json loadJsonFromFile(const std::string& path)
@@ -87,6 +101,9 @@ nlohmann::json loadJsonFromFile(const std::string& path)
 #if __cplusplus >= 201703L
 template<typename T> void safeGet(const nlohmann::json& j, const std::string& name, T& varTbc)
 {
+	if (j.find(name) == j.end())
+		return;
+
 	if constexpr(std::is_same_v<T, std::string>)
 	{
 		if (j[name].is_string())
@@ -109,54 +126,77 @@ template<typename T> void safeGet(const nlohmann::json& j, const std::string& na
 // C++11-friendly replacement
 void safeGet(const nlohmann::json& j, const std::string& name, std::string& varTbc)
 {
+	if (j.find(name) == j.end())
+		return;
     if (j[name].is_string())
         varTbc = j[name];
 }
 
 void safeGet(const nlohmann::json& j, const std::string& name, bool& varTbc)
 {
+	if (j.find(name) == j.end())
+		return;
     if (j[name].is_boolean())
         varTbc = j[name];
 }
 
 void safeGet(const nlohmann::json& j, const std::string& name, int& varTbc)
 {
+	if (j.find(name) == j.end())
+		return;
     if (j[name].is_number())
         varTbc = j[name];
 }
+
 #endif
 
-void loadConfigFiles()
+void load()
 {
 	auto jConfig = loadJsonFromFile("config.json");
 
+	auto jOldConfig = jConfig["oldConfig"];
+    safeGet(jOldConfig, "name", old::gName);
+	safeGet(jOldConfig, "use", old::gUse);
+	if (old::gUse)
+		return;
+
+	auto jGame = jConfig["game"];
+
 	debugFlags = 0;
-	auto jDbgFlgs = jConfig["debugFlags"];
-	if (jDbgFlgs["showSlots"] == true)
+	auto jDebugFlags = jGame["debugFlags"];
+	if (jDebugFlags["showSlots"] == true)
 		debugFlags |= showSlots;
-	if (jDbgFlgs["showNPCId"] == true)
+	if (jDebugFlags["showNPCId"] == true)
 		debugFlags |= showNPCId;
-	if (jDbgFlgs["showCARId"] == true)
+	if (jDebugFlags["showCARId"] == true)
 		debugFlags |= showCARId;
-	if (jDbgFlgs["notifyOnNotImplemented"] == true)
+	if (jDebugFlags["notifyOnNotImplemented"] == true)
 		debugFlags |= notifyOnNotImplemented;
-	if (jDbgFlgs["showNPCHealth"] == true)
+	if (jDebugFlags["showNPCHealth"] == true)
 		debugFlags |= showNPCHealth;
 
-    safeGet(jConfig, "configName", configName);
-    safeGet(jConfig, "profileName", profileName);
-    safeGet(jConfig, "profileCode", profileCode);
-    safeGet(jConfig, "disableDamage", disableDamage);
-    safeGet(jConfig, "disableOrg", disableOrg);
-    safeGet(jConfig, "millisecondsPerFrame", framewait);
-    safeGet(jConfig, "displayFpsCounter", displayFpsCounter);
-    safeGet(jConfig, "useGamepad", useGamepad);
+	auto jPlayer = jGame["player"];
+    safeGet(jPlayer, "disableDamage", disableDamage);
+
+	auto jProfile = jGame["profile"];
+    safeGet(jProfile, "name", profileName);
+    safeGet(jProfile, "code", profileCode);
+
+	auto jSound = jConfig["sound"];
+	auto jOrg = jSound["org"];
+    safeGet(jOrg, "disable", disableOrg);
 
     auto jScreen = jConfig["screen"];
     safeGet(jScreen, "width", screenWidth);
     safeGet(jScreen, "height", screenHeight);
     safeGet(jScreen, "scale", screenScale);
+	
+	auto jFps = jScreen["fps"];
+	safeGet(jFps, "millisecondsPerFrame", framewait);
+	safeGet(jFps, "displayCounter", displayFpsCounter);
 
+	auto jInput = jConfig["input"];
+    safeGet(jInput, "useGamepad", useGamepad);
 
 	auto jKeys = jConfig["keys"];
 
@@ -170,4 +210,6 @@ void loadConfigFiles()
     safeGet(jKeys, "keyMap", keyMap);
     safeGet(jKeys, "keyRotLeft", keyRotLeft);
     safeGet(jKeys, "keyRotRight", keyRotRight);
+}
+
 }
