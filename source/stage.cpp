@@ -16,9 +16,6 @@
 #include "main.h"
 #include "valueview.h"
 
-using std::string;
-using std::to_string;
-
 int currentLevel;
 
 MAPNAME mapName;
@@ -99,7 +96,7 @@ bool changeTile(size_t x, size_t y, uint8_t tile)
 	return true;
 }
 
-void loadPxm(const string &name)
+void loadPxm(const std::string &name)
 {
 	//frees old map memory
 	delete[] map.tile;
@@ -115,7 +112,7 @@ void loadPxm(const string &name)
 	memcpy(map.tile, pxm.data() + 8, pxmSize - 8);
 }
 
-void loadPxa(const string &name)
+void loadPxa(const std::string &name)
 {
 	//free old tile attribute memory
 	delete[] map.attribute;
@@ -128,7 +125,7 @@ void loadPxa(const string &name)
 	memcpy(map.attribute, pxa.data(), pxaSize);
 }
 
-void loadPxe(const string &name)
+void loadPxe(const std::string &name)
 {
 	//Clear old npcs
 	npcs.clear();
@@ -163,7 +160,7 @@ void loadPxe(const string &name)
 	}
 }
 
-void iniBackground(const string &name, int mode)
+void iniBackground(const std::string &name, int mode)
 {
 	background.mode = mode;
 	background.tileWidth = map.width;
@@ -175,7 +172,7 @@ void iniBackground(const string &name, int mode)
 
 void loadLevel(size_t levelIndex, int w, int x, int y)
 {
-	logInfo("Loading level " + to_string(levelIndex));
+	logInfo("Loading level " + std::to_string(levelIndex));
 
 	currentPlayer.setPos(tilesToUnits(x), tilesToUnits(y));
 
@@ -190,7 +187,7 @@ void loadLevel(size_t levelIndex, int w, int x, int y)
 	valueviews.shrink_to_fit();
 
 	//load tileset
-	loadImage(string("Stage/Prt") + stageTable[levelIndex].tileset, &sprites[TEX_TILESET]);
+	loadImage(std::string("Stage/Prt") + stageTable[levelIndex].tileset, &sprites[TEX_TILESET]);
 
 	//load pxm, pxa, pxe, and tsc
 	loadPxa(stageTable[levelIndex].tileset);
