@@ -239,14 +239,14 @@ void npcAct042(npc *NPC) // Sue
 		NPC->ym = 0;
 		NPC->act_no = 14;
 		size_t i;
-		for (i = 0; i < npcs.size() && npcs[i].code_event != 501; ++i)	// Search for Igor ?
+		for (i = 0; i < gNPC.size() && gNPC[i].code_event != 501; ++i)	// Search for Igor ?
 			;
-		if (i == npcs.size())
+		if (i == gNPC.size())
 		{
 			NPC->act_no = standAndBlink;
 			break;
 		}
-		NPC->pNpc = &npcs[i];
+		NPC->pNpc = &gNPC[i];
 	// Fallthrough
 	case 14:
 		if (NPC->pNpc->direct != dirLeft)
@@ -271,15 +271,15 @@ void npcAct042(npc *NPC) // Sue
 		NPC->ani_no = 0;
 	// Fallthrough
 	case 16:
-		superXPos = NPC->x - 0x3000;
-		superYPos = NPC->y - 0x1000;
+		gSuperXPos = NPC->x - 0x3000;
+		gSuperYPos = NPC->y - 0x1000;
 		break;
 
 	case undeadCoreIntroLookUp:
 		NPC->xm = 0;
 		NPC->ani_no = 12;
-		superXPos = NPC->x;
-		superYPos = NPC->y - 0x1000;
+		gSuperXPos = NPC->x;
+		gSuperYPos = NPC->y - 0x1000;
 		break;
 
 	case undeadCoreIntroRunToQuote:

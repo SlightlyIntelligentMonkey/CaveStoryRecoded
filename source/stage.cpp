@@ -16,22 +16,22 @@
 #include "main.h"
 #include "valueview.h"
 
-int currentLevel;
+int gCurrentLevel;
 
-MAPNAME mapName;
+MAPNAME gMapName;
 
 //Loaded level stuff
-MAP map;
-BACKGROUND background;
+MAP gMap;
+BACKGROUND gBackground;
 
 //Effect things
-int currentEffect = 0;
+int gCurrentEffect = 0;
 
 //water level (used in core area)
 int gWaterY = 0;
 
 //Get stage data
-STAGE_TABLE *stageTable;
+STAGE_TABLE *gStageTable;
 
 
 void loadStageTable()
@@ -43,31 +43,31 @@ void loadStageTable()
 
 	const auto stages = static_cast<size_t>(tblStream->size(tblStream)) / sizeof(STAGE_TABLE);
 
-	stageTable = new STAGE_TABLE[stages];
+	gStageTable = new STAGE_TABLE[stages];
 
-	if (stageTable == nullptr)
+	if (gStageTable == nullptr)
 		doCustomError("Could not allocate memory for stage table");
 
 	for (size_t i = 0; i < stages; i++)
 	{
-		tblStream->read(tblStream, stageTable[i].tileset, 0x20, 1);
-		tblStream->read(tblStream, stageTable[i].filename, 0x20, 1);
-		stageTable[i].backgroundScroll = SDL_ReadLE32(tblStream);
-		tblStream->read(tblStream, stageTable[i].background, 0x20, 1);
-		tblStream->read(tblStream, stageTable[i].npc1, 0x20, 1);
-		tblStream->read(tblStream, stageTable[i].npc2, 0x20, 1);
-		tblStream->read(tblStream, &stageTable[i].boss, 1, 1);
-		tblStream->read(tblStream, stageTable[i].name, 0x23, 1);
+		tblStream->read(tblStream, gStageTable[i].tileset, 0x20, 1);
+		tblStream->read(tblStream, gStageTable[i].filename, 0x20, 1);
+		gStageTable[i].backgroundScroll = SDL_ReadLE32(tblStream);
+		tblStream->read(tblStream, gStageTable[i].background, 0x20, 1);
+		tblStream->read(tblStream, gStageTable[i].npc1, 0x20, 1);
+		tblStream->read(tblStream, gStageTable[i].npc2, 0x20, 1);
+		tblStream->read(tblStream, &gStageTable[i].boss, 1, 1);
+		tblStream->read(tblStream, gStageTable[i].name, 0x23, 1);
 
-		if (!strcmp(stageTable[i].name, "u"))
-			strcpy(stageTable[i].name, "Studio Pixel presents");
+		if (!strcmp(gStageTable[i].name, "u"))
+			strcpy(gStageTable[i].name, "Studio Pixel presents");
 	}
 }
 
 uint8_t getTileAttribute(size_t xTile, size_t yTile)
 {
-	if (xTile < (size_t)map.width && yTile < (size_t)map.height)  // Make sure coordinates are valid
-		return map.attribute[map.tile[xTile + yTile * map.width]];
+	if (xTile < (size_t)gMap.width && yTile < (size_t)gMap.height)  // Make sure coordinates are valid
+		return gMap.attribute[gMap.tile[xTile + yTile * gMap.width]];
 
     // Coordinates are invalid
 	return 0;
@@ -75,20 +75,20 @@ uint8_t getTileAttribute(size_t xTile, size_t yTile)
 
 void deleteTile(size_t x, size_t y)
 {
-	map.tile[x + y * map.width] = 0;
+	gMap.tile[x + y * gMap.width] = 0;
 }
 
 void shiftTile(size_t x, size_t y)
 {
-	--map.tile[x + y * map.width];
+	--gMap.tile[x + y * gMap.width];
 }
 
 bool changeTile(size_t x, size_t y, uint8_t tile)
 {
-	if (map.tile[y * map.width + x] == tile)
+	if (gMap.tile[y * gMap.width + x] == tile)
 		return false;
 
-	map.tile[x + y * map.width] = tile;
+	gMap.tile[x + y * gMap.width] = tile;
 
 	for (int i = 0; i < 3; ++i)
 		createNpc(NPC_Smoke, tilesToUnits(x), tilesToUnits(y));
@@ -99,37 +99,37 @@ bool changeTile(size_t x, size_t y, uint8_t tile)
 void loadPxm(const std::string &name)
 {
 	//frees old map memory
-	delete[] map.tile;
+	delete[] gMap.tile;
 
 	auto tmp = loadFile("data/Stage/" + name + ".pxm");
 	auto pxmSize = tmp.first;
 	auto pxm = tmp.second;
 
-	map.width = readLEshort(pxm.data(), 4);
-	map.height = readLEshort(pxm.data(), 6);
+	gMap.width = readLEshort(pxm.data(), 4);
+	gMap.height = readLEshort(pxm.data(), 6);
 
-	map.tile = new uint8_t[pxmSize - 8];
-	memcpy(map.tile, pxm.data() + 8, pxmSize - 8);
+	gMap.tile = new uint8_t[pxmSize - 8];
+	memcpy(gMap.tile, pxm.data() + 8, pxmSize - 8);
 }
 
 void loadPxa(const std::string &name)
 {
 	//free old tile attribute memory
-	delete[] map.attribute;
+	delete[] gMap.attribute;
 
 	auto tmp = loadFile("data/Stage/" + name + ".pxa");
 	auto pxaSize = tmp.first;
 	auto pxa = tmp.second;
 
-	map.attribute = new uint8_t[pxaSize];
-	memcpy(map.attribute, pxa.data(), pxaSize);
+	gMap.attribute = new uint8_t[pxaSize];
+	memcpy(gMap.attribute, pxa.data(), pxaSize);
 }
 
 void loadPxe(const std::string &name)
 {
 	//Clear old npcs
-	npcs.clear();
-	npcs.shrink_to_fit();
+	gNPC.clear();
+	gNPC.shrink_to_fit();
 
 	auto pxe = loadFile("data/Stage/" + name + ".pxe").second;
 
@@ -156,17 +156,17 @@ void loadPxe(const std::string &name)
 		if (readLEshort(pxe.data(), offset + 10) & npc_altDir)
 			newNPC.direct = dirRight;
 
-		npcs.push_back(newNPC);
+		gNPC.push_back(newNPC);
 	}
 }
 
 void iniBackground(const std::string &name, int mode)
 {
-	background.mode = mode;
-	background.tileWidth = map.width;
-	background.tileHeight = map.height;
-	background.flag = 1;
-	loadImage(name, &sprites[TEX_BACKGROUND]);
+	gBackground.mode = mode;
+	gBackground.tileWidth = gMap.width;
+	gBackground.tileHeight = gMap.height;
+	gBackground.flag = 1;
+	loadImage(name, &gSprites[TEX_BACKGROUND]);
 	gWaterY = 0x1E0000;
 }
 
@@ -187,43 +187,43 @@ void loadLevel(size_t levelIndex, int w, int x, int y)
 	valueviews.shrink_to_fit();
 
 	//load tileset
-	loadImage(std::string("Stage/Prt") + stageTable[levelIndex].tileset, &sprites[TEX_TILESET]);
+	loadImage(std::string("Stage/Prt") + gStageTable[levelIndex].tileset, &gSprites[TEX_TILESET]);
 
 	//load pxm, pxa, pxe, and tsc
-	loadPxa(stageTable[levelIndex].tileset);
-	loadPxm(stageTable[levelIndex].filename);
-	loadPxe(stageTable[levelIndex].filename);
-	loadStageTsc(stageTable[levelIndex].filename);
+	loadPxa(gStageTable[levelIndex].tileset);
+	loadPxm(gStageTable[levelIndex].filename);
+	loadPxe(gStageTable[levelIndex].filename);
+	loadStageTsc(gStageTable[levelIndex].filename);
 
 	//Load background
-	iniBackground(stageTable[levelIndex].background, stageTable[levelIndex].backgroundScroll);
+	iniBackground(gStageTable[levelIndex].background, gStageTable[levelIndex].backgroundScroll);
 
 	// -- loads map images -- //
 	//load sheet 1
-	loadImage(std::string("Npc/Npc") + stageTable[levelIndex].npc1, &sprites[TEX_NPC_1]);
+	loadImage(std::string("Npc/Npc") + gStageTable[levelIndex].npc1, &gSprites[TEX_NPC_1]);
 	//load sheet 2
-	loadImage(std::string("Npc/Npc") + stageTable[levelIndex].npc2, &sprites[TEX_NPC_2]);
+	loadImage(std::string("Npc/Npc") + gStageTable[levelIndex].npc2, &gSprites[TEX_NPC_2]);
 
 	// -- loads some map stuff -- //
 	//Set up map name
-	mapName.flag = 0;
-	mapName.wait = 0;
-	strcpy(mapName.name, stageTable[levelIndex].name);
+	gMapName.flag = 0;
+	gMapName.wait = 0;
+	strcpy(gMapName.name, gStageTable[levelIndex].name);
 
 	startTscEvent(tsc, w);
 
 	SetFrameMyChar();
-	initBoss(stageTable[levelIndex].boss);
+	initBoss(gStageTable[levelIndex].boss);
 
-	currentLevel = levelIndex;
+	gCurrentLevel = levelIndex;
 
-	// -- fix viewport -- //
-//	viewport.x = currentPlayer.x - (screenWidth << 8);
-//	viewport.y = currentPlayer.y - (screenHeight << 8);
-//	viewport.lookX = &currentPlayer.tgt_x;
-//	viewport.lookY = &currentPlayer.tgt_y;
-	viewport.quake = 0;
-	viewport.quake2 = 0;
+	// -- fix gViewport -- //
+//	gViewport.x = currentPlayer.x - (gScreenWidth << 8);
+//	gViewport.y = currentPlayer.y - (gScreenHeight << 8);
+//	gViewport.lookX = &currentPlayer.tgt_x;
+//	gViewport.lookY = &currentPlayer.tgt_y;
+	gViewport.quake = 0;
+	gViewport.quake2 = 0;
 
 	viewBounds();
 }
@@ -232,9 +232,9 @@ void drawForeground(void)
 {
 	RECT rect;
 
-	if (background.mode == 3)
+	if (gBackground.mode == 3)
 	{
-		const int xOff = viewport.x % pixelsToUnits(32);
+		const int xOff = gViewport.x % pixelsToUnits(32);
 
 		rect.left = 0;
 		rect.right = 32;
@@ -242,34 +242,34 @@ void drawForeground(void)
 		rect.top = 0;
 		rect.bottom = 16;
 		//draws top of water
-		for (int x = viewport.x - xOff; x < viewport.x + pixelsToUnits(screenWidth); x += pixelsToUnits(32))
-			drawTexture(sprites[TEX_BACKGROUND], &rect,
-				unitsToPixels(x) - unitsToPixels(viewport.x), unitsToPixels(gWaterY) - unitsToPixels(viewport.y));
+		for (int x = gViewport.x - xOff; x < gViewport.x + pixelsToUnits(gScreenWidth); x += pixelsToUnits(32))
+			drawTexture(gSprites[TEX_BACKGROUND], &rect,
+				unitsToPixels(x) - unitsToPixels(gViewport.x), unitsToPixels(gWaterY) - unitsToPixels(gViewport.y));
 		//draws bottom of water
 		rect.top = 16;
 		rect.bottom = 32;
-		for (int y = gWaterY; y < viewport.y + pixelsToUnits(screenHeight); y += pixelsToUnits(16))
+		for (int y = gWaterY; y < gViewport.y + pixelsToUnits(gScreenHeight); y += pixelsToUnits(16))
 		{
-			for (int x = viewport.x - xOff; x < viewport.x + pixelsToUnits(screenWidth); x += pixelsToUnits(32))
-				drawTexture(sprites[TEX_BACKGROUND], &rect, 
-					unitsToPixels(x) - unitsToPixels(viewport.x), unitsToPixels(y) - unitsToPixels(viewport.y));
+			for (int x = gViewport.x - xOff; x < gViewport.x + pixelsToUnits(gScreenWidth); x += pixelsToUnits(32))
+				drawTexture(gSprites[TEX_BACKGROUND], &rect, 
+					unitsToPixels(x) - unitsToPixels(gViewport.x), unitsToPixels(y) - unitsToPixels(gViewport.y));
 		}
 	}
 }
 
 static void updateBackgroundEffect(int w)
 {
-	if (gameFlags & 1)
+	if (gGameFlags & 1)
 	{
-		if (background.mode == 5)
+		if (gBackground.mode == 5)
 		{
-			background.effect += 0xC00;
+			gBackground.effect += 0xC00;
 		}
 
-		else if (background.mode >= 5 && background.mode <= 7)
+		else if (gBackground.mode >= 5 && gBackground.mode <= 7)
 		{
-			++background.effect;
-			background.effect %= (w * 2);
+			++gBackground.effect;
+			gBackground.effect %= (w * 2);
 		}
 	}
 }
@@ -281,46 +281,46 @@ void drawBackground(void)
 	int skyOff;
 
 	int w, h;
-	SDL_QueryTexture(sprites[TEX_BACKGROUND], nullptr, nullptr, &w, &h);
+	SDL_QueryTexture(gSprites[TEX_BACKGROUND], nullptr, nullptr, &w, &h);
 
 	rect = { 0, 0, w, h };
 
 	updateBackgroundEffect(w);
 
-	switch (background.mode)
+	switch (gBackground.mode)
 	{
 	case 0:
-		for (int x = 0; x < screenWidth; x += w)
+		for (int x = 0; x < gScreenWidth; x += w)
 		{
-			for (int y = 0; y < screenHeight; y += h)
-				drawTexture(sprites[TEX_BACKGROUND], &rect, x, y);
+			for (int y = 0; y < gScreenHeight; y += h)
+				drawTexture(gSprites[TEX_BACKGROUND], &rect, x, y);
 		}
 
 		break;
 
 	case 1:
-		for (int x = -(viewport.x / 0x400 % w); x < screenWidth; x += w)
+		for (int x = -(gViewport.x / 0x400 % w); x < gScreenWidth; x += w)
 		{
-			for (int y = -(viewport.y / 0x400 % h); y < screenHeight; y += h)
-				drawTexture(sprites[TEX_BACKGROUND], &rect, x, y);
+			for (int y = -(gViewport.y / 0x400 % h); y < gScreenHeight; y += h)
+				drawTexture(gSprites[TEX_BACKGROUND], &rect, x, y);
 		}
 
 		break;
 
 	case 2:
-		for (int x = -(viewport.x / 0x200 % w); x < screenWidth; x += w)
+		for (int x = -(gViewport.x / 0x200 % w); x < gScreenWidth; x += w)
 		{
-			for (int y = -(viewport.y / 0x200 % h); y < screenHeight; y += h)
-				drawTexture(sprites[TEX_BACKGROUND], &rect, x, y);
+			for (int y = -(gViewport.y / 0x200 % h); y < gScreenHeight; y += h)
+				drawTexture(gSprites[TEX_BACKGROUND], &rect, x, y);
 		}
 
 		break;
 
 	case 5:
-		for (int x = -(background.effect / 0x200 % w); x < screenWidth; x += w)
+		for (int x = -(gBackground.effect / 0x200 % w); x < gScreenWidth; x += w)
 		{
-			for (int y = 0; y < screenHeight; y += h)
-				drawTexture(sprites[TEX_BACKGROUND], &rect, x, y);
+			for (int y = 0; y < gScreenHeight; y += h)
+				drawTexture(gSprites[TEX_BACKGROUND], &rect, x, y);
 		}
 
 		break;
@@ -330,18 +330,18 @@ void drawBackground(void)
 		//Draw sky
 		rect = { 0, 0, w / 2, 88 };
 
-		skyOff = (((w / 2) - screenWidth) / 2);
+		skyOff = (((w / 2) - gScreenWidth) / 2);
 
 		//Draw middle
-		drawTexture(sprites[0x1C], &rect, -skyOff, 0);
+		drawTexture(gSprites[0x1C], &rect, -skyOff, 0);
 
 		//Repeat stars or whatever
 		rect = { w / 2, 0, w, 88 };
 
-		for (int i = 0; i < screenWidth - (skyOff / 2 + rect.left); i += rect.left)
+		for (int i = 0; i < gScreenWidth - (skyOff / 2 + rect.left); i += rect.left)
 		{
-			drawTexture(sprites[TEX_BACKGROUND], &rect, -skyOff + (rect.left + i), 0);
-			drawTexture(sprites[TEX_BACKGROUND], &rect, -skyOff - (rect.left + i), 0);
+			drawTexture(gSprites[TEX_BACKGROUND], &rect, -skyOff + (rect.left + i), 0);
+			drawTexture(gSprites[TEX_BACKGROUND], &rect, -skyOff - (rect.left + i), 0);
 		}
 
 		//Cloud layers
@@ -350,23 +350,23 @@ void drawBackground(void)
 
 		rect.top = 88;
 		rect.bottom = 123;
-		for (int i = 0; i <= (screenWidth / w) + 1; ++i)
-			drawTexture(sprites[TEX_BACKGROUND], &rect, (w * i) - (background.effect / 2) % w, rect.top);
+		for (int i = 0; i <= (gScreenWidth / w) + 1; ++i)
+			drawTexture(gSprites[TEX_BACKGROUND], &rect, (w * i) - (gBackground.effect / 2) % w, rect.top);
 
 		rect.top = 123;
 		rect.bottom = 146;
-		for (int i = 0; i <= (screenWidth / w) + 1; ++i)
-			drawTexture(sprites[TEX_BACKGROUND], &rect, (w * i) - background.effect % w, rect.top);
+		for (int i = 0; i <= (gScreenWidth / w) + 1; ++i)
+			drawTexture(gSprites[TEX_BACKGROUND], &rect, (w * i) - gBackground.effect % w, rect.top);
 
 		rect.top = 146;
 		rect.bottom = 176;
-		for (int i = 0; i <= (screenWidth / w) + 1; ++i)
-			drawTexture(sprites[TEX_BACKGROUND], &rect, (w * i) - (background.effect * 2) % w, rect.top);
+		for (int i = 0; i <= (gScreenWidth / w) + 1; ++i)
+			drawTexture(gSprites[TEX_BACKGROUND], &rect, (w * i) - (gBackground.effect * 2) % w, rect.top);
 
 		rect.top = 176;
 		rect.bottom = 240;
-		for (int i = 0; i <= (screenWidth / w) + 1; ++i)
-			drawTexture(sprites[TEX_BACKGROUND], &rect, (w * i) - (background.effect * 4) % w, rect.top);
+		for (int i = 0; i <= (gScreenWidth / w) + 1; ++i)
+			drawTexture(gSprites[TEX_BACKGROUND], &rect, (w * i) - (gBackground.effect * 4) % w, rect.top);
 
 		break;
 
@@ -383,49 +383,49 @@ void drawLevel(bool foreground)
 	}
 
 	//Animate currents
-	if (gameFlags & 1 && foreground)
-		currentEffect += 2;
+	if (gGameFlags & 1 && foreground)
+		gCurrentEffect += 2;
 
 	//Render tiles
 	RECT tileRect;
 
-	const int xFrom = clamp(unitsToTiles(viewport.x + 0x1000), 0, map.width);
-	const int xTo = clamp((unitsToTiles((viewport.x + 0x1000) + (screenWidth << 9))) + 1, 0, map.width); //add 1 because edge wouldn't appear
+	const int xFrom = clamp(unitsToTiles(gViewport.x + 0x1000), 0, gMap.width);
+	const int xTo = clamp((unitsToTiles((gViewport.x + 0x1000) + (gScreenWidth << 9))) + 1, 0, gMap.width); //add 1 because edge wouldn't appear
 
-	const int yFrom = clamp(unitsToTiles(viewport.y + 0x1000), 0, map.height);
-	const int yTo = clamp((unitsToTiles((viewport.y + 0x1000) + (screenWidth << 9))) + 1, 0, map.height); //add 1 because edge wouldn't appear
+	const int yFrom = clamp(unitsToTiles(gViewport.y + 0x1000), 0, gMap.height);
+	const int yTo = clamp((unitsToTiles((gViewport.y + 0x1000) + (gScreenWidth << 9))) + 1, 0, gMap.height); //add 1 because edge wouldn't appear
 
 	for (int x = xFrom; x < xTo; x++)
 	{
 		for (int y = yFrom; y < yTo; y++)
 		{
-			const int i = x + y * map.width;
+			const int i = x + y * gMap.width;
 
-			const int tile = map.tile[i];
+			const int tile = gMap.tile[i];
 			if (tile)
 			{
-				const int attribute = map.attribute[tile];
+				const int attribute = gMap.attribute[tile];
 
 				if ((attribute < 0x20 && !foreground) || (attribute >= 0x40 && foreground))
 				{
-					const int drawX = i % map.width;
-					const int drawY = i / map.width;
+					const int drawX = i % gMap.width;
+					const int drawY = i / gMap.width;
 
 					if (attribute < 0x80)
 					{
 						tileRect = { (tile % 16) * 16, (tile / 16) * 16, (tile % 16) * 16 + 16, (tile / 16) * 16 + 16 };
 
-						drawTexture(sprites[TEX_TILESET], &tileRect, 
-							tilesToPixels(drawX) - unitsToPixels(viewport.x) - 8, 
-							tilesToPixels(drawY) - unitsToPixels(viewport.y) - 8);
+						drawTexture(gSprites[TEX_TILESET], &tileRect, 
+							tilesToPixels(drawX) - unitsToPixels(gViewport.x) - 8, 
+							tilesToPixels(drawY) - unitsToPixels(gViewport.y) - 8);
 
 						if (attribute == 0x43) //Star block
 						{
 							tileRect = { 256, 48, 272, 64 };
 
-							drawTexture(sprites[TEX_NPC_SYM], &tileRect, 
-								tilesToPixels(drawX) - unitsToPixels(viewport.x) - 8, 
-								tilesToPixels(drawY) - unitsToPixels(viewport.y) - 8);
+							drawTexture(gSprites[TEX_NPC_SYM], &tileRect, 
+								tilesToPixels(drawX) - unitsToPixels(gViewport.x) - 8, 
+								tilesToPixels(drawY) - unitsToPixels(gViewport.y) - 8);
 						}
 					}
 					else
@@ -434,8 +434,8 @@ void drawLevel(bool foreground)
 						{
 						case 0x80:
 						case 0xA0:
-							tileRect.left = (currentEffect & 0xF) + 224;
-							tileRect.right = (currentEffect & 0xF) + 240;
+							tileRect.left = (gCurrentEffect & 0xF) + 224;
+							tileRect.right = (gCurrentEffect & 0xF) + 240;
 							tileRect.top = 48;
 							tileRect.bottom = 64;
 							break;
@@ -444,14 +444,14 @@ void drawLevel(bool foreground)
 						case 0xA1:
 							tileRect.left = 224;
 							tileRect.right = 240;
-							tileRect.top = (currentEffect & 0xF) + 48;
-							tileRect.bottom = (currentEffect & 0xF) + 64;
+							tileRect.top = (gCurrentEffect & 0xF) + 48;
+							tileRect.bottom = (gCurrentEffect & 0xF) + 64;
 							break;
 
 						case 0x82:
 						case 0xA2:
-							tileRect.left = 240 - (currentEffect & 0xF);
-							tileRect.right = 256 - (currentEffect & 0xF);
+							tileRect.left = 240 - (gCurrentEffect & 0xF);
+							tileRect.right = 256 - (gCurrentEffect & 0xF);
 							tileRect.top = 48;
 							tileRect.bottom = 64;
 							break;
@@ -460,17 +460,17 @@ void drawLevel(bool foreground)
 						case 0xA3:
 							tileRect.left = 224;
 							tileRect.right = 240;
-							tileRect.top = 64 - (currentEffect & 0xF);
-							tileRect.bottom = 80 - (currentEffect & 0xF);
+							tileRect.top = 64 - (gCurrentEffect & 0xF);
+							tileRect.bottom = 80 - (gCurrentEffect & 0xF);
 							break;
 
 						default:
 							return;
 						}
 
-						drawTexture(sprites[TEX_CARET], &tileRect, 
-							tilesToPixels(drawX) - unitsToPixels(viewport.x) - 8, 
-							tilesToPixels(drawY) - unitsToPixels(viewport.y) - 8);
+						drawTexture(gSprites[TEX_CARET], &tileRect, 
+							tilesToPixels(drawX) - unitsToPixels(gViewport.x) - 8, 
+							tilesToPixels(drawY) - unitsToPixels(gViewport.y) - 8);
 					}
 				}
 			}
@@ -483,21 +483,21 @@ void drawLevel(bool foreground)
 		drawForeground();
 
 		//Render black bars in foreground
-		SDL_SetRenderDrawColor(renderer, 0, 0, 32, 255);
+		SDL_SetRenderDrawColor(gRenderer, 0, 0, 32, 255);
 
 		//Left and right
-		const int leftBorder = -(viewport.x / 0x200);
-		const int rightBorder = ((viewport.x / 0x200) + screenWidth) - ((map.width - 1) << 4);
+		const int leftBorder = -(gViewport.x / 0x200);
+		const int rightBorder = ((gViewport.x / 0x200) + gScreenWidth) - ((gMap.width - 1) << 4);
 
-		drawRect(0, 0, leftBorder, screenHeight);
-		drawRect(screenWidth - rightBorder, 0, rightBorder, screenHeight);
+		drawRect(0, 0, leftBorder, gScreenHeight);
+		drawRect(gScreenWidth - rightBorder, 0, rightBorder, gScreenHeight);
 
 		//Top and bottom
-		const int topBorder = -(viewport.y / 0x200);
-		const int bottomBorder = ((viewport.y / 0x200) + screenHeight) - ((map.height - 1) << 4);
+		const int topBorder = -(gViewport.y / 0x200);
+		const int bottomBorder = ((gViewport.y / 0x200) + gScreenHeight) - ((gMap.height - 1) << 4);
 
-		drawRect(0, 0, screenWidth, topBorder);
-		drawRect(0, screenHeight - bottomBorder, screenWidth, bottomBorder);
+		drawRect(0, 0, gScreenWidth, topBorder);
+		drawRect(0, gScreenHeight - bottomBorder, gScreenWidth, bottomBorder);
 	}
 }
 

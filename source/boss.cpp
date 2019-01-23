@@ -97,15 +97,15 @@ void drawBoss()
 			if (bossObj[bos].direct != dirLeft)
 				side = bossObj[bos].view.right;
 
-			drawTexture(sprites[TEX_NPC_2], &bossObj[bos].rect,
-				(bossObj[bos].x - side) / 0x200 - (viewport.x / 0x200) + shake,
-				(bossObj[bos].y - bossObj[bos].view.top) / 0x200 - (viewport.y / 0x200));
+			drawTexture(gSprites[TEX_NPC_2], &bossObj[bos].rect,
+				(bossObj[bos].x - side) / 0x200 - (gViewport.x / 0x200) + shake,
+				(bossObj[bos].y - bossObj[bos].view.top) / 0x200 - (gViewport.y / 0x200));
 
 			if (debugFlags & showHitRects)
 			{
-				SDL_SetRenderDrawColor(renderer, 0x80, 0x80, 0x80, 0xFF);
-				drawRect(unitsToPixels(bossObj[bos].x - bossObj[bos].hit.left) - unitsToPixels(viewport.x),
-					unitsToPixels(bossObj[bos].y - bossObj[bos].hit.top) - unitsToPixels(viewport.y),
+				SDL_SetRenderDrawColor(gRenderer, 0x80, 0x80, 0x80, 0xFF);
+				drawRect(unitsToPixels(bossObj[bos].x - bossObj[bos].hit.left) - unitsToPixels(gViewport.x),
+					unitsToPixels(bossObj[bos].y - bossObj[bos].hit.top) - unitsToPixels(gViewport.y),
 					unitsToPixels(bossObj[bos].hit.right + bossObj[bos].hit.left),
 					unitsToPixels(bossObj[bos].hit.bottom + bossObj[bos].hit.top));
 			}

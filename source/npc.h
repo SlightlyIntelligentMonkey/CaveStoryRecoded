@@ -27,7 +27,7 @@ struct NPC_TABLE
 	NPC_RECT view;
 };
 
-extern NPC_TABLE *npcTable;
+extern NPC_TABLE *gNpcTable;
 
 class npc
 {
@@ -177,14 +177,14 @@ void dropExperience(int x, int y, int exp);
 void killNpc(npc *NPC, bool bVanish = true);
 void killNpcsByType(int entityType, bool makeDustClouds = true);
 
-extern std::deque<npc> npcs;
+extern std::deque<npc> gNPC;
 
-extern int superXPos;
-extern int superYPos;
+extern int gSuperXPos;
+extern int gSuperYPos;
 
-extern int curlyShootWait;
-extern int curlyShootX;
-extern int curlyShootY;
+extern int gCurlyShootWait;
+extern int gCurlyShootX;
+extern int gCurlyShootY;
 
 enum NPC_cond
 {

@@ -56,15 +56,15 @@ struct BOSSLIFE
 constexpr auto ITEMS = 32;
 constexpr auto PERMITSTAGES = 8;
 
-extern PERMIT_STAGE permitStage[PERMITSTAGES];
-extern ITEM items[ITEMS];
-extern int selectedItem;
+extern PERMIT_STAGE gPermitStage[PERMITSTAGES];
+extern ITEM gItems[ITEMS];
+extern int gSelectedItem;
 
-extern int gameFlags;
+extern int gGameFlags;
 
-extern BOSSLIFE bossLife;
+extern BOSSLIFE gBossLife;
 
-extern VIEW viewport;
+extern VIEW gViewport;
 
 //Debug flags
 extern int debugFlags;
@@ -85,3 +85,4 @@ int openMapSystem();
 int openInventory();
 int stageSelect(int *runEvent);
 int mainGameLoop();
+

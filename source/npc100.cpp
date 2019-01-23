@@ -886,7 +886,7 @@ void npcAct114(npc *NPC) // Press (enemy)
                     createNpc(NPC_Smoke, NPC->x, NPC->y, xVel, yVel);
                 }
                 playSound(SFX_LargeObjectHitGround);
-                viewport.quake = 10;
+                gViewport.quake = 10;
             }
             NPC->act_no = 1;
             NPC->ani_no = 0;

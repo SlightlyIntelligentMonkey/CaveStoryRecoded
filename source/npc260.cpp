@@ -227,13 +227,13 @@ void npcAct263(npc *NPC) // Doctor (boss)
     {
         if (NPC->act_no == waitingToReappear)
         {
-            superXPos = NPC->tgt_x;
-            superYPos = NPC->tgt_y;
+            gSuperXPos = NPC->tgt_x;
+            gSuperYPos = NPC->tgt_y;
         }
         else
         {
-            superXPos = NPC->x;
-            superYPos = NPC->y;
+            gSuperXPos = NPC->x;
+            gSuperYPos = NPC->y;
         }
     }
 
@@ -290,16 +290,16 @@ void npcAct267(npc *NPC) // Muscle Doctor (boss)
     switch (NPC->act_no)
     {
     case init:
-        if (superXPos <= currentPlayer.x)
+        if (gSuperXPos <= currentPlayer.x)
             NPC->direct = dirRight;
         else
             NPC->direct = dirLeft;
 
         if (NPC->direct != dirLeft)
-            NPC->x = superXPos + pixelsToUnits(6);
+            NPC->x = gSuperXPos + pixelsToUnits(6);
         else
-            NPC->x = superXPos - pixelsToUnits(6);
-        NPC->y = superYPos;
+            NPC->x = gSuperXPos - pixelsToUnits(6);
+        NPC->y = gSuperYPos;
         // Fallthrough
     case 1:
     case 2:
@@ -355,7 +355,7 @@ void npcAct267(npc *NPC) // Muscle Doctor (boss)
                 // WHAT THE FUCK ARE YOU SERIOUS ???
                 NPC->ani_no = 6;
                 currentPlayer.damage(5);
-                viewport.quake = 10;
+                gViewport.quake = 10;
                 playSound(SFX_LargeObjectHitGround);
                 currentPlayer.ym = pixelsToUnits(-2);
                 if (NPC->x <= currentPlayer.x)
@@ -433,7 +433,7 @@ void npcAct267(npc *NPC) // Muscle Doctor (boss)
     case 17:
         NPC->act_no = 18;
         NPC->act_wait = 0;
-        viewport.quake = 10;
+        gViewport.quake = 10;
         playSound(SFX_LargeObjectHitGround);
         // Fallthrough
     case 18:
@@ -623,7 +623,7 @@ void npcAct267(npc *NPC) // Muscle Doctor (boss)
         NPC->bits |= npc_ignoreSolid;
         // Fallthrough
     case dissolve + 1:
-        viewport.quake = 2;
+        gViewport.quake = 2;
         if (++NPC->act_wait % 6 == 3)
             playSound(SFX_SillyExplosion);
 
@@ -641,7 +641,7 @@ void npcAct267(npc *NPC) // Muscle Doctor (boss)
 
     case 520:
         NPC->damage = 0;
-        superYPos = tilesToUnits(-2);
+        gSuperYPos = tilesToUnits(-2);
         break;
 
     default:
@@ -652,13 +652,13 @@ void npcAct267(npc *NPC) // Muscle Doctor (boss)
     {
         if (NPC->act_no == 102)
         {
-            superXPos = NPC->tgt_x;
-            superYPos = NPC->tgt_y;
+            gSuperXPos = NPC->tgt_x;
+            gSuperYPos = NPC->tgt_y;
         }
         else
         {
-            superXPos = NPC->x;
-            superYPos = NPC->y;
+            gSuperXPos = NPC->x;
+            gSuperYPos = NPC->y;
         }
     }
 
@@ -790,7 +790,7 @@ void npcAct268(npc *NPC)
 		{
 			NPC->act_no = 40;
 			NPC->act_wait = 0;
-            viewport.quake = 20;
+            gViewport.quake = 20;
             playSound(SFX_LargeObjectHitGround);
 		}
 		break;

@@ -45,36 +45,36 @@ void doCustomError(const string& msg)
 	exit(EXIT_FAILURE);
 }
 
-SDL_Texture* sprites[0x28];
+SDL_Texture* gSprites[0x28];
 
 void loadInitialSprites()
 {
-	loadImage("Title", &sprites[TEX_TITLE]);
-	loadImage("Pixel", &sprites[TEX_PIXEL]);
+	loadImage("Title", &gSprites[TEX_TITLE]);
+	loadImage("Pixel", &gSprites[TEX_PIXEL]);
 
-	loadImage("Fade", &sprites[TEX_FADE]);
+	loadImage("Fade", &gSprites[TEX_FADE]);
 
-	loadImage("ItemImage", &sprites[TEX_ITEMIMAGE]);
+	loadImage("ItemImage", &gSprites[TEX_ITEMIMAGE]);
 
-	loadImage("Arms", &sprites[TEX_ARMS]);
-	loadImage("ArmsImage", &sprites[TEX_ARMSIMAGE]);
+	loadImage("Arms", &gSprites[TEX_ARMS]);
+	loadImage("ArmsImage", &gSprites[TEX_ARMSIMAGE]);
 
-	loadImage("StageImage", &sprites[TEX_STAGEIMAGE]);
+	loadImage("StageImage", &gSprites[TEX_STAGEIMAGE]);
 
-	loadImage("MyChar", &sprites[TEX_MYCHAR]);
+	loadImage("MyChar", &gSprites[TEX_MYCHAR]);
 
-	loadImage("Bullet", &sprites[TEX_BULLET]);
-	loadImage("Caret", &sprites[TEX_CARET]);
+	loadImage("Bullet", &gSprites[TEX_BULLET]);
+	loadImage("Caret", &gSprites[TEX_CARET]);
 
-	loadImage("Npc/NpcSym", &sprites[TEX_NPC_SYM]);
+	loadImage("Npc/NpcSym", &gSprites[TEX_NPC_SYM]);
 
-	loadImage("Npc/NpcRegu", &sprites[TEX_NPC_REGU]);
+	loadImage("Npc/NpcRegu", &gSprites[TEX_NPC_REGU]);
 
-	loadImage("TextBox", &sprites[TEX_TEXTBOX]);
-	loadImage("Face", &sprites[TEX_FACE]);
+	loadImage("TextBox", &gSprites[TEX_TEXTBOX]);
+	loadImage("Face", &gSprites[TEX_FACE]);
 
-	loadImage("Font", &sprites[0x26]);
-	loadImage("Missing", &sprites[0x27]);
+	loadImage("Font", &gSprites[0x26]);
+	loadImage("Missing", &gSprites[0x27]);
 
 }
 
@@ -99,13 +99,13 @@ void init()
 	{
 		if (config->attack_button_mode == 1)
 		{
-			keyJump = SDL_SCANCODE_X;
-			keyShoot = SDL_SCANCODE_Z;
+			gKeyJump = SDL_SCANCODE_X;
+			gKeyShoot = SDL_SCANCODE_Z;
 		}
 		else
 		{
-			keyJump = SDL_SCANCODE_Z;
-			keyShoot = SDL_SCANCODE_X;
+			gKeyJump = SDL_SCANCODE_Z;
+			gKeyShoot = SDL_SCANCODE_X;
 		}
 		/* no ok button/key currently implemented
 		if (config->ok_button_mode == 1)
@@ -121,17 +121,17 @@ void init()
 		*/
 		if (config->move_button_mode == 1)
 		{
-			keyLeft = SDL_SCANCODE_COMMA;
-			keyRight = SDL_SCANCODE_SLASH;
-			keyDown = SDL_SCANCODE_PERIOD;
-			keyUp = SDL_SCANCODE_SEMICOLON;
+			gKeyLeft = SDL_SCANCODE_COMMA;
+			gKeyRight = SDL_SCANCODE_SLASH;
+			gKeyDown = SDL_SCANCODE_PERIOD;
+			gKeyUp = SDL_SCANCODE_SEMICOLON;
 		}
 		else
 		{
-			keyLeft = SDL_SCANCODE_LEFT;
-			keyRight = SDL_SCANCODE_RIGHT;
-			keyDown = SDL_SCANCODE_DOWN;
-			keyUp = SDL_SCANCODE_UP;
+			gKeyLeft = SDL_SCANCODE_LEFT;
+			gKeyRight = SDL_SCANCODE_RIGHT;
+			gKeyDown = SDL_SCANCODE_DOWN;
+			gKeyUp = SDL_SCANCODE_UP;
 		}
 
 		switch (config->display_mode)
@@ -153,14 +153,14 @@ void init()
 		}
 	}
 	else
-		createWindow(screenWidth, screenHeight, screenScale);
+		createWindow(gScreenWidth, gScreenHeight, gScreenScale);
 
 	//draws loading
-	loadImage("Loading", &sprites[TEX_LOADING]);   // Load the loading sprite now so that we can display it
-	SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
-	SDL_RenderClear(renderer);
-	drawTexture(sprites[TEX_LOADING], nullptr, screenWidth >> 1, screenHeight >> 1);
-	SDL_RenderPresent(renderer);
+	loadImage("Loading", &gSprites[TEX_LOADING]);   // Load the loading sprite now so that we can display it
+	SDL_SetRenderDrawColor(gRenderer, 0, 0, 0, 255);
+	SDL_RenderClear(gRenderer);
+	drawTexture(gSprites[TEX_LOADING], nullptr, gScreenWidth >> 1, gScreenHeight >> 1);
+	SDL_RenderPresent(gRenderer);
 
 	initTsc();
 	initFlags();

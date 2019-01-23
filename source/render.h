@@ -8,24 +8,24 @@ struct SDL_Window;
 struct SDL_Rect;
 struct SDL_Renderer;
 
-extern SDL_Texture* sprites[40];
+extern SDL_Texture* gSprites[40];
 
-extern SDL_Window *window;
-extern SDL_Renderer *renderer;
+extern SDL_Window *gWindow;
+extern SDL_Renderer *gRenderer;
 
-extern SDL_Rect rcDraw;
-extern SDL_Rect rcImage;
+extern SDL_Rect gRcDraw;
+extern SDL_Rect gImageRectangle;
 
-extern int screenWidth;
-extern int screenHeight;
+extern int gScreenWidth;
+extern int gScreenHeight;
 
-extern int screenScale;
+extern int gScreenScale;
 
-extern int framewait;
+extern int gFramewait;
 
-extern uint32_t windowFlags;
+extern uint32_t gWindowFlags;
 
-extern bool displayFpsCounter;
+extern bool gDisplayFpsCounter;
 
 enum TextureNums
 {

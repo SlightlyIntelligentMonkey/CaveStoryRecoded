@@ -745,7 +745,7 @@ void npcAct086(npc *NPC) //Dropped missiles
 			NPC->ani_no = 0;
 	}
 
-	if (background.mode == 5 || background.mode == 6)
+	if (gBackground.mode == 5 || gBackground.mode == 6)
 	{
 		if (!NPC->act_no)
 		{
@@ -805,7 +805,7 @@ void npcAct087(npc *NPC) //Health refill
 			NPC->ani_no = 0;
 	}
 
-	if (background.mode == 5 || background.mode == 6)
+	if (gBackground.mode == 5 || gBackground.mode == 6)
 	{
 		if (NPC->act_no == 0)
 		{
@@ -997,7 +997,7 @@ void npcAct088(npc * NPC) // Igor (boss)
 			NPC->act_no = land;
 			NPC->ani_no = 9;
 			playSound(SFX_LargeObjectHitGround);
-			viewport.quake = 30;
+			gViewport.quake = 30;
 			NPC->damage = 0;
 
 			for (size_t i = 0; i < 4; ++i)
@@ -1602,7 +1602,7 @@ void npcAct096(npc *NPC) //Fan left
 			NPC->ani_no = 0;
 
 		//Current effect
-		if (currentPlayer.x > NPC->x - pixelsToUnits(screenWidth) && currentPlayer.x < NPC->x + pixelsToUnits(screenWidth) && currentPlayer.y > NPC->y - pixelsToUnits(screenHeight) && currentPlayer.y < NPC->y + pixelsToUnits(screenHeight) && random(0, 5) == 1)
+		if (currentPlayer.x > NPC->x - pixelsToUnits(gScreenWidth) && currentPlayer.x < NPC->x + pixelsToUnits(gScreenWidth) && currentPlayer.y > NPC->y - pixelsToUnits(gScreenHeight) && currentPlayer.y < NPC->y + pixelsToUnits(gScreenHeight) && random(0, 5) == 1)
 			createNpc(NPC_UnderwaterCurrent, NPC->x + (random(-8, 8) << 9), NPC->y, 0, 0, dirLeft);
 
 		//Blow quote
@@ -1648,7 +1648,7 @@ void npcAct097(npc *NPC) //Fan up
 			NPC->ani_no = 0;
 
 		//Current effect
-		if (currentPlayer.x > NPC->x - pixelsToUnits(screenWidth) && currentPlayer.x < NPC->x + pixelsToUnits(screenWidth) && currentPlayer.y > NPC->y - pixelsToUnits(screenHeight) && currentPlayer.y < NPC->y + pixelsToUnits(screenHeight) && random(0, 5) == 1)
+		if (currentPlayer.x > NPC->x - pixelsToUnits(gScreenWidth) && currentPlayer.x < NPC->x + pixelsToUnits(gScreenWidth) && currentPlayer.y > NPC->y - pixelsToUnits(gScreenHeight) && currentPlayer.y < NPC->y + pixelsToUnits(gScreenHeight) && random(0, 5) == 1)
 			createNpc(NPC_UnderwaterCurrent, NPC->x + (random(-8, 8) << 9), NPC->y, 0, 0, dirUp);
 
 		//Blow quote
@@ -1691,7 +1691,7 @@ void npcAct098(npc *NPC) //Fan right
 			NPC->ani_no = 0;
 
 		//Current effect
-		if (currentPlayer.x > NPC->x - pixelsToUnits(screenWidth) && currentPlayer.x < NPC->x + pixelsToUnits(screenWidth) && currentPlayer.y > NPC->y - pixelsToUnits(screenHeight) && currentPlayer.y < NPC->y + pixelsToUnits(screenHeight) && random(0, 5) == 1)
+		if (currentPlayer.x > NPC->x - pixelsToUnits(gScreenWidth) && currentPlayer.x < NPC->x + pixelsToUnits(gScreenWidth) && currentPlayer.y > NPC->y - pixelsToUnits(gScreenHeight) && currentPlayer.y < NPC->y + pixelsToUnits(gScreenHeight) && random(0, 5) == 1)
 			createNpc(NPC_UnderwaterCurrent, NPC->x + (random(-8, 8) << 9), NPC->y, 0, 0, dirRight);
 
 		//Blow quote
@@ -1744,7 +1744,7 @@ void npcAct099(npc *NPC) //Fan down
 			NPC->ani_no = 0;
 
 		//Current effect
-		if (currentPlayer.x > NPC->x - pixelsToUnits(screenWidth) && currentPlayer.x < NPC->x + pixelsToUnits(screenWidth) && currentPlayer.y > NPC->y - pixelsToUnits(screenHeight) && currentPlayer.y < NPC->y + pixelsToUnits(screenHeight) && random(0, 5) == 1)
+		if (currentPlayer.x > NPC->x - pixelsToUnits(gScreenWidth) && currentPlayer.x < NPC->x + pixelsToUnits(gScreenWidth) && currentPlayer.y > NPC->y - pixelsToUnits(gScreenHeight) && currentPlayer.y < NPC->y + pixelsToUnits(gScreenHeight) && random(0, 5) == 1)
 			createNpc(NPC_UnderwaterCurrent, NPC->x + pixelsToUnits(random(-8, 8)), NPC->y, 0, 0, dirDown);
 
 		//Blow quote

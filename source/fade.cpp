@@ -24,7 +24,7 @@ void updateFade()
 	{
 		fade.bMask = false;
 
-		if (++fade.count > (max(screenWidth, screenHeight) / 16 + fadeFrames))
+		if (++fade.count > (std::max(gScreenWidth, gScreenHeight) / 16 + fadeFrames))
 		{
 			fade.bMask = (fade.mode == 2);
 			fade.mode = 0;
@@ -40,14 +40,14 @@ void drawFade()
 	int yt;
 	int frame = 0;
 
-	const int w = screenWidth / 16 + 1;
-	const int h = screenHeight / 16 + 1;
-	const int frames = (max(screenWidth, screenHeight) / 16 + fadeFrames);
+	const int w = gScreenWidth / 16 + 1;
+	const int h = gScreenHeight / 16 + 1;
+	const int frames = (max(gScreenWidth, gScreenHeight) / 16 + fadeFrames);
 
 	if (fade.bMask)
 	{
-		SDL_SetRenderDrawColor(renderer, 0, 0, 32, 255);
-		SDL_RenderClear(renderer);
+		SDL_SetRenderDrawColor(gRenderer, 0, 0, 32, 255);
+		SDL_RenderClear(gRenderer);
 	}
 	else if (fade.mode == 1)
 	{
@@ -78,7 +78,7 @@ void drawFade()
 					break;
 
 				case 4:
-					frame = fadeFrames - (fade.count - abs(x - (screenWidth >> 5)) - abs(y - (screenHeight >> 5)));
+					frame = fadeFrames - (fade.count - abs(x - (gScreenWidth >> 5)) - abs(y - (gScreenHeight >> 5)));
 					break;
 				}
 
@@ -87,9 +87,9 @@ void drawFade()
 					rect.left = std::min(frame, fadeFrames - 1) * 16;
 					rect.right = rect.left + 16;
 
-					const int fixX = (w * 16) - screenWidth;
-					const int fixY = (h * 16) - screenHeight;
-					drawTexture(sprites[TEX_FADE], &rect, x * 16 - fixX, y * 16 - fixY);
+					const int fixX = (w * 16) - gScreenWidth;
+					const int fixY = (h * 16) - gScreenHeight;
+					drawTexture(gSprites[TEX_FADE], &rect, x * 16 - fixX, y * 16 - fixY);
 				}
 			}
 		}
@@ -123,7 +123,7 @@ void drawFade()
 					break;
 
 				case 4:
-					frame = fadeFrames - ((frames - fade.count) - abs(x - (screenWidth >> 5)) - abs(y - (screenHeight >> 5)));
+					frame = fadeFrames - ((frames - fade.count) - abs(x - (gScreenWidth >> 5)) - abs(y - (gScreenHeight >> 5)));
 					break;
 				}
 
@@ -132,9 +132,9 @@ void drawFade()
 					rect.left = std::min(frame, fadeFrames - 1) * 16;
 					rect.right = rect.left + 16;
 
-					const int fixX = (w * 16) - screenWidth;
-					const int fixY = (h * 16) - screenHeight;
-					drawTexture(sprites[TEX_FADE], &rect, x * 16 - fixX, y * 16 - fixY);
+					const int fixX = (w * 16) - gScreenWidth;
+					const int fixY = (h * 16) - gScreenHeight;
+					drawTexture(gSprites[TEX_FADE], &rect, x * 16 - fixX, y * 16 - fixY);
 				}
 			}
 		}

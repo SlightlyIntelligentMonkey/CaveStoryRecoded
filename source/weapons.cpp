@@ -10,10 +10,6 @@
 #include "bullet.h"
 #include "game.h"
 
-using std::memset;
-using std::string;
-using std::to_string;
-
 //Shoot functions
 weaponShoot shootFunctions[14] =
 {
@@ -72,23 +68,20 @@ void actWeapon()
 	if (_empty)
 		--_empty;
 
-	if (!(currentPlayer.cond & player_removed))
+	if (!(currentPlayer.cond & player_removed) && weapons[selectedWeapon].code)
 	{
-		if (weapons[selectedWeapon].code)
+		if (shootFunctions[weapons[selectedWeapon].code] != nullptr)
+			shootFunctions[weapons[selectedWeapon].code](weapons[selectedWeapon].level);
+		else if (debugFlags & notifyOnNotImplemented)
 		{
-			if (shootFunctions[weapons[selectedWeapon].code] != nullptr)
-				shootFunctions[weapons[selectedWeapon].code](weapons[selectedWeapon].level);
-			else if (debugFlags & notifyOnNotImplemented)
-			{
-				static bool wasNotifiedAbout[_countof(shootFunctions)] = { false };
+			static bool wasNotifiedAbout[_countof(shootFunctions)] = { false };
 
-				if (wasNotifiedAbout[weapons[selectedWeapon].code])
-					return;
+			if (wasNotifiedAbout[weapons[selectedWeapon].code])
+				return;
 
-				wasNotifiedAbout[weapons[selectedWeapon].code] = true;
-				string msg = "Weapon " + to_string(weapons[selectedWeapon].code) + " is not implemented.";
-				SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_WARNING, "Missing Weapon", msg.c_str(), nullptr);
-			}
+			wasNotifiedAbout[weapons[selectedWeapon].code] = true;
+			std::string msg = "Weapon " + std::to_string(weapons[selectedWeapon].code) + " is not implemented.";
+			SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_WARNING, "Missing Weapon", msg.c_str(), nullptr);
 		}
 	}
 }
@@ -241,11 +234,8 @@ void giveWeaponExperience(int x)
 			weapons[selectedWeapon].exp = weaponLevels[arms_code].exp[2];
 
 			//Give a whimsical star
-			if (currentPlayer.equip & equip_whimsicalStar)
-			{
-				if (currentPlayer.star < 3)
-					currentPlayer.star++;
-			}
+			if (currentPlayer.equip & equip_whimsicalStar && currentPlayer.star < 3)
+				currentPlayer.star++;
 		}
 	}
 	else

@@ -558,7 +558,7 @@ void caret::update()
 
 void caret::draw()
 {
-	drawTexture(sprites[0x13], &rect, (x - view_left) / 0x200 - viewport.x / 0x200, (y - view_top) / 0x200 - viewport.y / 0x200);
+	drawTexture(gSprites[0x13], &rect, (x - view_left) / 0x200 - gViewport.x / 0x200, (y - view_top) / 0x200 - gViewport.y / 0x200);
 
 	if (debugFlags & showCARId)
 	{
@@ -573,7 +573,7 @@ void caret::draw()
 			}
 		}
 
-		drawString((x - view_left) / 0x200 - viewport.x / 0x200, (y - view_top) / 0x200 - viewport.y / 0x200 - 16, to_string(index), nullptr);
+		drawString((x - view_left) / 0x200 - gViewport.x / 0x200, (y - view_top) / 0x200 - gViewport.y / 0x200 - 16, to_string(index), nullptr);
 	}
 }
 

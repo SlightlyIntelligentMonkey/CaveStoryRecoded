@@ -12,7 +12,7 @@ void throwBlade(int level)
 	int shootX = 0;
 	int shootY = 0;
 
-	if (isKeyPressed(keyShoot) && weaponBullets(9) <= 0)
+	if (isKeyPressed(gKeyShoot) && weaponBullets(9) <= 0)
 	{
 		switch (level)
 		{

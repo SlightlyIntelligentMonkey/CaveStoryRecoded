@@ -7,16 +7,16 @@
 using std::memset;
 using std::to_string;
 
-uint8_t tscFlags[bitsToBytes(8000)]; //game flags
-uint8_t skipFlags[bitsToBytes(512)]; //skip flags
-uint8_t mapFlags[bitsToBytes(1024)]; //map flags
+uint8_t gTscFlags[bitsToBytes(8000)]; //game flags
+uint8_t gSkipFlags[bitsToBytes(512)]; //skip flags
+uint8_t gMapFlags[bitsToBytes(1024)]; //map flags
 
 //Normal flags
 void initFlags()
 {
-	memset(tscFlags, 0, sizeof(tscFlags));
-	memset(skipFlags, 0, sizeof(skipFlags));
-	memset(mapFlags, 0, sizeof(mapFlags));
+	memset(gTscFlags, 0, sizeof(gTscFlags));
+	memset(gSkipFlags, 0, sizeof(gSkipFlags));
+	memset(gMapFlags, 0, sizeof(gMapFlags));
 }
 
 inline void setBit(uint8_t *buf, size_t x)
@@ -44,75 +44,75 @@ inline void flipBit(uint8_t *buf, size_t x)
 
 void setFlag(size_t a)
 {
-    if (a > bytesToBits(_countof(tscFlags)))
+    if (a > bytesToBits(_countof(gTscFlags)))
         logWarning("Tried to set flag " + to_string(a) + " (Out of bounds)");
     else
-        setBit(tscFlags, a);
+        setBit(gTscFlags, a);
 }
 
 void clearFlag(size_t a)
 {
-    if (a > bytesToBits(_countof(tscFlags)))
+    if (a > bytesToBits(_countof(gTscFlags)))
         logWarning("Tried to clear flag " + to_string(a) + " (Out of bounds)");
     else
-        clearBit(tscFlags, a);
+        clearBit(gTscFlags, a);
 }
 
 bool getFlag(size_t a)
 {
-    if (a > bytesToBits(_countof(tscFlags)))
+    if (a > bytesToBits(_countof(gTscFlags)))
     {
         logWarning("Tried to get flag " + to_string(a) + " (Out of bounds)");
         return false;
     }
     else
-        return getBit(tscFlags, a);
+        return getBit(gTscFlags, a);
 }
 
 //Skip flags
 void setSkipFlag(size_t a)
 {
-    if (a > bytesToBits(_countof(skipFlags)))
+    if (a > bytesToBits(_countof(gSkipFlags)))
         logWarning("Tried to set skipFlag " + to_string(a) + " (Out of bounds)");
     else
-        setBit(skipFlags, a);
+        setBit(gSkipFlags, a);
 }
 
 void clearSkipFlag(size_t a)
 {
-    if (a > bytesToBits(_countof(skipFlags)))
+    if (a > bytesToBits(_countof(gSkipFlags)))
         logWarning("Tried to clear skipFlag " + to_string(a) + " (Out of bounds)");
     else
-        clearBit(skipFlags, a);
+        clearBit(gSkipFlags, a);
 }
 
 bool getSkipFlag(size_t a)
 {
-    if (a > bytesToBits(_countof(skipFlags)))
+    if (a > bytesToBits(_countof(gSkipFlags)))
     {
         logWarning("Tried to get skipFlag " + to_string(a) + " (Out of bounds)");
         return false;
     }
     else
-        return getBit(skipFlags, a);
+        return getBit(gSkipFlags, a);
 }
 
 //Map flags
 void setMapFlag(size_t a)
 {
-    if (a > bytesToBits(_countof(mapFlags)))
+    if (a > bytesToBits(_countof(gMapFlags)))
         logWarning("Tried to set mapFlag " + to_string(a) + " (Out of bounds)");
     else
-        setBit(mapFlags, a);
+        setBit(gMapFlags, a);
 }
 
 bool getMapFlag(size_t a)
 {
-    if (a > bytesToBits(_countof(mapFlags)))
+    if (a > bytesToBits(_countof(gMapFlags)))
     {
         logWarning("Tried to get mapFlag " + to_string(a) + " (Out of bounds)");
         return false;
     }
     else
-        return getBit(mapFlags, a);
+        return getBit(gMapFlags, a);
 }

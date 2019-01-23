@@ -55,7 +55,7 @@ void npcAct160(npc *NPC) //poo black
 			}
 			NPC->act_no = landed;
 			NPC->act_wait = 0;
-			viewport.quake = 30;
+			gViewport.quake = 30;
 			playSound(26);
 			playSound(72);
 		}
@@ -77,8 +77,8 @@ void npcAct160(npc *NPC) //poo black
 		}
 		break;
 	case jump:
-		superXPos = NPC->x;
-		superYPos = NPC->y;
+		gSuperXPos = NPC->x;
+		gSuperYPos = NPC->y;
 		if (NPC->shock & 1)
 		{
 			createNpc(NPC_ProjectilePoohBlack, NPC->x + (random(-12, 12) << 9),
@@ -94,8 +94,8 @@ void npcAct160(npc *NPC) //poo black
 		}
 		break;
 	case prep:
-		superXPos = NPC->x;
-		superYPos = NPC->y;
+		gSuperXPos = NPC->x;
+		gSuperYPos = NPC->y;
 		if (++NPC->count1 > 60)
 		{
 			NPC->count1 = 0;
@@ -103,8 +103,8 @@ void npcAct160(npc *NPC) //poo black
 		}
 		break;
 	case inCeiling:
-		superXPos = currentPlayer.x;
-		superYPos = 3276800;
+		gSuperXPos = currentPlayer.x;
+		gSuperYPos = 3276800;
 		if (++NPC->count1 > 110)
 		{
 			NPC->count1 = 10;
@@ -153,12 +153,12 @@ void npcAct160(npc *NPC) //poo black
 void npcAct161(npc *NPC) // poos projectiles
 {
 	NPC->exp = 0;
-	if (NPC->x >= superXPos)
+	if (NPC->x >= gSuperXPos)
 		NPC->xm -= 64;
 	else
 		NPC->xm += 64;
 
-	if (NPC->y >= superYPos)
+	if (NPC->y >= gSuperYPos)
 		NPC->ym -= 64;
 	else
 		NPC->ym += 64;
@@ -244,7 +244,7 @@ void npcAct162(npc *NPC) //dying poo black
 	}
 	if (NPC->act_no == 2)
 	{
-		viewport.quake = 2;
+		gViewport.quake = 2;
 		if (++NPC->count1 > 240)
 		{
 			NPC->rect.left = 0;
@@ -288,8 +288,8 @@ void npcAct162(npc *NPC) //dying poo black
 		NPC->cond = 0;
 	}
 LABEL_34:
-	superXPos = NPC->x;
-	superYPos = -512000;
+	gSuperXPos = NPC->x;
+	gSuperYPos = -512000;
 
 	return;
 }
@@ -499,7 +499,7 @@ void npcAct168(npc *NPC) //boulder
 		if (NPC->act_wait && NPC->flag & ground)
 		{
 			playSound(35);
-			viewport.quake = 40;
+			gViewport.quake = 40;
 			NPC->act_no = 0;
 		}
 		if (!NPC->act_wait)
@@ -613,7 +613,7 @@ void npcAct169(npc *NPC)
 		{
 			NPC->act_no = 9;
 			NPC->ani_no = 8;
-			viewport.quake = 30;
+			gViewport.quake = 30;
 			playSound(26);
 		}
 		if (NPC->act_wait > 7 && NPC->x - 6144 < currentPlayer.x && NPC->x + 6144 > currentPlayer.x &&
@@ -855,9 +855,9 @@ void npcAct171(npc *NPC) //Fire whirr
 	{
 		createNpc(NPC_ProjectileFireWhirrr, NPC->x, NPC->y, 0, 0, NPC->direct, nullptr);
 		NPC->count1 = -100;
-		curlyShootWait = random(80, 100);
-		curlyShootX = NPC->x;
-		curlyShootY = NPC->y;
+		gCurlyShootWait = random(80, 100);
+		gCurlyShootX = NPC->x;
+		gCurlyShootY = NPC->y;
 	}
 
 	NPC->doRects(rcLeft, rcRight);
@@ -953,7 +953,7 @@ void npcAct173(npc *NPC) //Armoured Gaudi
 	rcRight[3].right = 96;
 	rcRight[3].bottom = 176;
 
-	if (NPC->x <= currentPlayer.x + pixelsToUnits(screenWidth) && NPC->x >= currentPlayer.x - pixelsToUnits(screenWidth) && NPC->y <= currentPlayer.y + pixelsToUnits(screenHeight) && NPC->y >= currentPlayer.y - pixelsToUnits(screenHeight))
+	if (NPC->x <= currentPlayer.x + pixelsToUnits(gScreenWidth) && NPC->x >= currentPlayer.x - pixelsToUnits(gScreenWidth) && NPC->y <= currentPlayer.y + pixelsToUnits(gScreenHeight) && NPC->y >= currentPlayer.y - pixelsToUnits(gScreenHeight))
 	{
 		switch (NPC->act_no)
 		{
@@ -1032,9 +1032,9 @@ void npcAct173(npc *NPC) //Armoured Gaudi
 				playSound(39);
 
 				NPC->ani_no = 3;
-				curlyShootWait = random(80, 100);
-				curlyShootX = NPC->x;
-				curlyShootY = NPC->y;
+				gCurlyShootWait = random(80, 100);
+				gCurlyShootX = NPC->x;
+				gCurlyShootY = NPC->y;
 			}
 
 			if (NPC->act_wait == 35 || NPC->act_wait == 45)
@@ -1330,9 +1330,9 @@ void npcAct176(npc *NPC)
 			NPC->act_no = 0;
 			NPC->ani_no = 0;
 
-			curlyShootWait = random(80, 100);
-			curlyShootX = NPC->x;
-			curlyShootY = NPC->y;
+			gCurlyShootWait = random(80, 100);
+			gCurlyShootX = NPC->x;
+			gCurlyShootY = NPC->y;
 		}
 		break;
 

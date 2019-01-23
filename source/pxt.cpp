@@ -9,10 +9,6 @@
 #include "filesystem.h"
 #include "sound.h"
 
-using std::vector;
-using std::string;
-using std::to_string;
-
 SOUND *sounds[0x100];
 
 //For pxt
@@ -56,7 +52,7 @@ void makeWaveTables()
 }
 
 //Pxt loading
-std::vector<long double> getNumbersFromString(const string& str)
+std::vector<long double> getNumbersFromString(const std::string& str)
 {
 	std::vector<long double> numbers;
 
@@ -248,7 +244,7 @@ int makePixelWaveData(const std::vector<long double>& pxtData, uint8_t *data)
 	return 1;
 }
 
-int loadSound(const string& path, int no)
+int loadSound(const std::string& path, int no)
 {
 	if (fileExists(path))
 	{
@@ -265,7 +261,7 @@ int loadSound(const string& path, int no)
 
 				if (lineNumbers[i].size() != 21)
 				{
-					string error("PXT: " + path + "\nChannel: " + to_string(i) + "\nInvalid amount of properties: " + to_string(lineNumbers[i].size()));
+					std::string error("PXT: " + path + "\nChannel: " + std::to_string(i) + "\nInvalid amount of properties: " + std::to_string(lineNumbers[i].size()));
 					doCustomError(error);
 				}
 			}
@@ -331,7 +327,7 @@ int loadSound(const string& path, int no)
 	}
 	else
 	{
-		string error("Attempted to load .pxt which doesn't exist:\n" + path);
+		std::string error("Attempted to load .pxt which doesn't exist:\n" + path);
 		doCustomError(error);
 	}
 }

@@ -327,7 +327,7 @@ void bullet::draw()
 		break;
 	}
 
-	drawTexture(sprites[TEX_BULLET], &rect, drawX / 0x200 - viewport.x / 0x200, drawY / 0x200 - viewport.y / 0x200);
+	drawTexture(gSprites[TEX_BULLET], &rect, drawX / 0x200 - gViewport.x / 0x200, drawY / 0x200 - gViewport.y / 0x200);
 
 	if (debugFlags & showBULId)
 	{
@@ -342,20 +342,20 @@ void bullet::draw()
 			}
 		}
 
-		drawString(drawX / 0x200 - viewport.x / 0x200, drawY / 0x200 - viewport.y / 0x200 - 16, std::to_string(index));
+		drawString(drawX / 0x200 - gViewport.x / 0x200, drawY / 0x200 - gViewport.y / 0x200 - 16, std::to_string(index));
 	}
 	if (debugFlags & showHitRects)
 	{
-		SDL_SetRenderDrawColor(renderer, 0x80, 0x80, 0x80, 0xFF);
-		drawRect(unitsToPixels(x - (blockXL / 2) - 0x200) - unitsToPixels(viewport.x),
-			unitsToPixels(y - (blockYL / 2) - 0x200) - unitsToPixels(viewport.y),
+		SDL_SetRenderDrawColor(gRenderer, 0x80, 0x80, 0x80, 0xFF);
+		drawRect(unitsToPixels(x - (blockXL / 2) - 0x200) - unitsToPixels(gViewport.x),
+			unitsToPixels(y - (blockYL / 2) - 0x200) - unitsToPixels(gViewport.y),
 			unitsToPixels(blockXL + 0x400), unitsToPixels(blockYL + 0x400));
 	}
 	if (debugFlags & showHurtRects)
 	{
-		SDL_SetRenderDrawColor(renderer, 0xFF, 0x00, 0x00, 0xFF);
-		drawRect(unitsToPixels(x - (enemyXL / 2) - 0x200) - unitsToPixels(viewport.x),
-			unitsToPixels(y - (enemyYL / 2) - 0x200) - unitsToPixels(viewport.y),
+		SDL_SetRenderDrawColor(gRenderer, 0xFF, 0x00, 0x00, 0xFF);
+		drawRect(unitsToPixels(x - (enemyXL / 2) - 0x200) - unitsToPixels(gViewport.x),
+			unitsToPixels(y - (enemyYL / 2) - 0x200) - unitsToPixels(gViewport.y),
 			unitsToPixels(enemyXL + 0x400), unitsToPixels(enemyYL + 0x400));
 	}
 }

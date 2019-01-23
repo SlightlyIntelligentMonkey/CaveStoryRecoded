@@ -185,7 +185,7 @@ namespace ballos
 				boss.ym = 0;
 				boss.act_no = states::phase1::falling + 1;
 				boss.act_wait = 0;
-				viewport.quake2 = 30;
+				gViewport.quake2 = 30;
 				playSound(SFX_MissileImpact);
 				if (currentPlayer.y > boss.y + tilesToUnits(3) && boss.getXDistToPlayer() < tilesToUnits(1.5))
 					currentPlayer.damage(16);
@@ -258,7 +258,7 @@ namespace ballos
 				if (currentPlayer.flag & ground)
 					currentPlayer.ym = pixelsToUnits(-1);
 
-				viewport.quake2 = 30;
+				gViewport.quake2 = 30;
 				playSound(SFX_LargeObjectHitGround);
 				createNpc(NPC_ProjectileBallosShockwave
 					, boss.x - tilesToUnits(0.75), boss.y + tilesToUnits(3.25), 0, 0, dirLeft);
@@ -294,7 +294,7 @@ namespace ballos
 				boss.ym = 0;
 				boss.act_no = states::phase1::defeated + 2;
 				boss.act_wait = 0;
-				viewport.quake2 = 30;
+				gViewport.quake2 = 30;
 				playSound(SFX_LargeObjectHitGround);
 
 				for (int i = 0; i < 16; ++i)
@@ -460,7 +460,7 @@ namespace ballos
 			boss.act_wait = 0;
 			boss.ani_wait = 0;
 			
-			viewport.quake2 = 30;
+			gViewport.quake2 = 30;
 			playSound(SFX_LargeExplosion);
 			
 			eye1.act_no = eyeStates::openNoWait;
@@ -530,7 +530,7 @@ namespace ballos
 			break;
 
 		case states::defeated + 2:
-			viewport.quake2 = 40;
+			gViewport.quake2 = 40;
 			if (++boss.act_wait == secondsToFrames(1))
 			{
 				boss.cond = 0;

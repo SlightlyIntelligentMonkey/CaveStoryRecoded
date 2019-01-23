@@ -8,13 +8,13 @@
 #include "main.h"
 
 int spurCharge = 0;
-bool bMax = false;
+bool gMax = false;
 
 void shootSpur(int level)
 {
 	bool bShot = false;
 
-	if (isKeyDown(keyShoot))
+	if (isKeyDown(gKeyShoot))
 	{
 		//Build up experience
 		if (currentPlayer.equip & equip_armsBarrier)
@@ -50,19 +50,19 @@ void shootSpur(int level)
 	//Play the sound when max level is reached
 	if (weaponMaxExp())
 	{
-		if (!bMax)
+		if (!gMax)
 		{
-			bMax = true;
+			gMax = true;
 			playSound(65);
 		}
 	}
 	else
 	{
-		bMax = false;
+		gMax = false;
 	}
 
 	//Clear experience when shoot button released
-	if (!isKeyDown(keyShoot))
+	if (!isKeyDown(gKeyShoot))
 		resetSelectedWeaponLevel();
 
 	//Determine bullet to use
@@ -78,7 +78,7 @@ void shootSpur(int level)
 		bul_no = 37;
 		break;
 	case 3:
-		if (bMax)
+		if (gMax)
 			bul_no = 39;
 		else
 			bul_no = 38;
@@ -90,7 +90,7 @@ void shootSpur(int level)
 	//Shoot bullet
 	const bool cantShoot = weaponBullets(13) > 0 || weaponBullets(14) > 0;
 
-	if (!cantShoot && (isKeyPressed(keyShoot) || bShot))
+	if (!cantShoot && (isKeyPressed(gKeyShoot) || bShot))
 	{
 		if (useWeaponAmmo(1) ^ 1)
 		{

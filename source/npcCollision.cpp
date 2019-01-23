@@ -193,7 +193,7 @@ void npcJudgeWater(const RECT *rcHit, npc *NPC, int tx, int ty)
 
 void npcHitMap(size_t NPCid)
 {
-	npc *NPC = &npcs[NPCid];
+	npc *NPC = &gNPC[NPCid];
 	NPC->flag = 0; //clear
 	const RECT *rcHit = &NPC->hit;
 

@@ -48,7 +48,7 @@ enum TSC_mode
 bool initTsc()
 {
 	tsc.mode = 0;
-	gameFlags &= ~4;
+	gGameFlags &= ~4;
 
 	memset(tscText, 0, 0x100);
 	memset(tscTextFlag, 0, 0x100);
@@ -153,7 +153,7 @@ void tscClearText()
 int startTscEvent(TSC &ptsc, int no)
 {
 	ptsc.mode = 1;
-	gameFlags |= 5;
+	gGameFlags |= 5;
 	ptsc.line = 0;
 	ptsc.p_write = 0;
 	ptsc.wait = 4;
@@ -191,7 +191,7 @@ int startTscEvent(TSC &ptsc, int no)
 int jumpTscEvent(TSC &ptsc, int no)
 {
 	ptsc.mode = 1;
-	gameFlags |= 4;
+	gGameFlags |= 4;
 	ptsc.line = 0;
 	ptsc.p_write = 0;
 	ptsc.wait = 4;
@@ -224,8 +224,8 @@ int jumpTscEvent(TSC &ptsc, int no)
 void stopTsc(TSC &ptsc)
 {
 	ptsc.mode = 0;
-	gameFlags &= ~4;
-	gameFlags |= 3u;
+	gGameFlags &= ~4;
+	gGameFlags |= 3u;
 	ptsc.flags = 0;
 }
 
@@ -235,7 +235,7 @@ void checkNewLine(TSC &ptsc)
 	if (ptsc.ypos_line[ptsc.line % 4] == 48)
 	{
 		ptsc.mode = 3;
-		gameFlags |= 4u;
+		gGameFlags |= 4u;
 		memset(tscText + (ptsc.line % 4 << 6), 0, 0x40);
 		memset(tscTextFlag + (ptsc.line % 4 << 6), 0, 0x40);
 	}
@@ -263,9 +263,9 @@ void tscCheck(const TSC &ptsc)
 {
 	//End tsc if in END state, continue if not
 	if (ptsc.mode)
-		gameFlags |= 4;
+		gGameFlags |= 4;
 	else
-		gameFlags &= ~4;
+		gGameFlags &= ~4;
 }
 
 void tscCleanup(int numargs, TSC &ptsc)  //Function to shift the current read position after a command
@@ -332,7 +332,7 @@ int doTscModes(bool *bExit, TSC &ptsc)
 		++ptsc.wait;
 
 		//If jump or shoot are held, add 4, effectively ending the timer early
-		if (!(gameFlags & 2) && (isKeyDown(keyShoot) || isKeyDown(keyJump)))
+		if (!(gGameFlags & 2) && (isKeyDown(gKeyShoot) || isKeyDown(gKeyJump)))
 			ptsc.wait += 4;
 
 		//If timer value is less than 4, stop for this frame.
@@ -349,7 +349,7 @@ int doTscModes(bool *bExit, TSC &ptsc)
 
 	case NOD:
 		//If jump or shoot button pressed, continue script
-		if (isKeyPressed(keyShoot) || isKeyPressed(keyJump))
+		if (isKeyPressed(gKeyShoot) || isKeyPressed(gKeyJump))
 			ptsc.mode = PARSE;
 
 		tscCheck(ptsc);
@@ -400,7 +400,7 @@ int doTscModes(bool *bExit, TSC &ptsc)
 	case YNJ:
 		if (ptsc.wait >= 16) //Do nothing for 16 frames
 		{
-			if (isKeyPressed(keyJump)) //Select button pressed
+			if (isKeyPressed(gKeyJump)) //Select button pressed
 			{
 				//Play selection sound
 				playSound(SFX_YNConfirm);
@@ -418,12 +418,12 @@ int doTscModes(bool *bExit, TSC &ptsc)
 				else
 					doCustomError("Invalid YNJ result");
 			}
-			else if (isKeyPressed(keyLeft)) //Left pressed
+			else if (isKeyPressed(gKeyLeft)) //Left pressed
 			{
 				ptsc.select = 0; //Select yes and play sound
 				playSound(SFX_YNChangeChoice);
 			}
-			else if (isKeyPressed(keyRight)) //Right pressed
+			else if (isKeyPressed(gKeyRight)) //Right pressed
 			{
 				ptsc.select = 1; //Select no and play sound
 				playSound(SFX_YNChangeChoice);
@@ -458,7 +458,7 @@ void endTsc(TSC &ptsc, bool *bExit)
 {
 	ptsc.mode = END;
 	currentPlayer.cond &= ~player_interact;
-	gameFlags |= 3;
+	gGameFlags |= 3;
 	ptsc.face = 0;
 	*bExit = true;
 	return;
@@ -517,24 +517,24 @@ bool doTscCommand(int *retVal, bool *bExit, TSC &ptsc)
 	case('<BSL'):
 		if (getTSCNumber(ptsc, ptsc.p_read + 4))
 		{
-			for (size_t i = 0; i < npcs.size(); i++)
+			for (size_t i = 0; i < gNPC.size(); i++)
 			{
-				if (npcs[i].code_event == getTSCNumber(ptsc, ptsc.p_read + 4))
+				if (gNPC[i].code_event == getTSCNumber(ptsc, ptsc.p_read + 4))
 				{
-					bossLife.flag = 1;
-					bossLife.max = npcs[i].life;
-					bossLife.br = npcs[i].life;
-					bossLife.pLife = &npcs[i].life;
+					gBossLife.flag = 1;
+					gBossLife.max = gNPC[i].life;
+					gBossLife.br = gNPC[i].life;
+					gBossLife.pLife = &gNPC[i].life;
 					break;
 				}
 			}
 		}
 		else
 		{
-			bossLife.flag = 1;
-			bossLife.max = bossObj[0].life;
-			bossLife.br = bossObj[0].life;
-			bossLife.pLife = &bossObj[0].life;
+			gBossLife.flag = 1;
+			gBossLife.max = bossObj[0].life;
+			gBossLife.br = bossObj[0].life;
+			gBossLife.pLife = &bossObj[0].life;
 		}
 
 		tscCleanup(1, ptsc);
@@ -609,39 +609,39 @@ bool doTscCommand(int *retVal, bool *bExit, TSC &ptsc)
 		tscCleanup(0, ptsc);
 		break;
 	case('<DNA'):
-		for (size_t i = 0; i < npcs.size(); i++)
+		for (size_t i = 0; i < gNPC.size(); i++)
 		{
-			if (npcs[i].cond & npccond_alive)
+			if (gNPC[i].cond & npccond_alive)
 			{
-				if (npcs[i].code_char == getTSCNumber(ptsc, ptsc.p_read + 4))
+				if (gNPC[i].code_char == getTSCNumber(ptsc, ptsc.p_read + 4))
 				{
-					npcs[i].cond = 0;
-					setFlag(npcs[i].code_flag);
+					gNPC[i].cond = 0;
+					setFlag(gNPC[i].code_flag);
 				}
 			}
 		}
 		tscCleanup(1, ptsc);
 		break;
 	case('<DNP'):
-		for (size_t i = 0; i < npcs.size(); i++)
+		for (size_t i = 0; i < gNPC.size(); i++)
 		{
-			if (npcs[i].cond & npccond_alive)
+			if (gNPC[i].cond & npccond_alive)
 			{
-				if (npcs[i].code_event == getTSCNumber(ptsc, ptsc.p_read + 4))
+				if (gNPC[i].code_event == getTSCNumber(ptsc, ptsc.p_read + 4))
 				{
-					npcs[i].cond = 0;
-					setFlag(npcs[i].code_flag);
+					gNPC[i].cond = 0;
+					setFlag(gNPC[i].code_flag);
 				}
 			}
 		}
 		tscCleanup(1, ptsc);
 		break;
 	case('<ECJ'):
-		for (size_t n = 0; n < npcs.size(); n++)
+		for (size_t n = 0; n < gNPC.size(); n++)
 		{
-			if (npcs[n].cond & npccond_alive)
+			if (gNPC[n].cond & npccond_alive)
 			{
-				if (npcs[n].code_char == getTSCNumber(ptsc, ptsc.p_read + 4))
+				if (gNPC[n].code_char == getTSCNumber(ptsc, ptsc.p_read + 4))
 				{
 					jumpTscEvent(ptsc, getTSCNumber(ptsc, ptsc.p_read + 9));
 					break;
@@ -709,7 +709,7 @@ bool doTscCommand(int *retVal, bool *bExit, TSC &ptsc)
 			tscCleanup(2, ptsc);
 		break;
 	case('<FMU'):
-		orgFadeout = true;
+		gOrgFadeout = true;
 		tscCleanup(0, ptsc);
 		break;
 	case('<FOB'):
@@ -730,7 +730,7 @@ bool doTscCommand(int *retVal, bool *bExit, TSC &ptsc)
 		tscCleanup(2, ptsc);
 		break;
 	case('<FRE'):
-		gameFlags |= 3;
+		gGameFlags |= 3;
 		tscCleanup(0, ptsc);
 		break;
 	case('<GIT'):
@@ -757,18 +757,18 @@ bool doTscCommand(int *retVal, bool *bExit, TSC &ptsc)
 		break;
 	case('<IT+'):
 		playSound(SFX_ItemGet);
-		for (xt = 0; xt < ITEMS && items[xt].code != getTSCNumber(ptsc, ptsc.p_read + 4) && items[xt].code; ++xt);
+		for (xt = 0; xt < ITEMS && gItems[xt].code != getTSCNumber(ptsc, ptsc.p_read + 4) && gItems[xt].code; ++xt);
 		if (xt == ITEMS)
 		{
 			tscCleanup(1, ptsc);
 			break;
 		}
 
-		items[xt].code = getTSCNumber(ptsc, ptsc.p_read + 4);
+		gItems[xt].code = getTSCNumber(ptsc, ptsc.p_read + 4);
 		tscCleanup(1, ptsc);
 		break;
 	case('<IT-'):
-		for (xt = 0; xt < ITEMS && items[xt].code != getTSCNumber(ptsc, ptsc.p_read + 4); ++xt);
+		for (xt = 0; xt < ITEMS && gItems[xt].code != getTSCNumber(ptsc, ptsc.p_read + 4); ++xt);
 		if (xt == ITEMS)
 		{
 			tscCleanup(1, ptsc);
@@ -776,22 +776,22 @@ bool doTscCommand(int *retVal, bool *bExit, TSC &ptsc)
 		}
 
 		for (yt = xt + 1; yt <= 31; ++yt)
-			items[yt - 1] = items[yt];
-		items[yt - 1].code = 0;
+			gItems[yt - 1] = gItems[yt];
+		gItems[yt - 1].code = 0;
 
-		selectedItem = 0;
+		gSelectedItem = 0;
 		tscCleanup(1, ptsc);
 		break;
 	case('<ITJ'):
-		for (xt = 0; xt < ITEMS && items[xt].code != getTSCNumber(ptsc, ptsc.p_read + 4); ++xt);
+		for (xt = 0; xt < ITEMS && gItems[xt].code != getTSCNumber(ptsc, ptsc.p_read + 4); ++xt);
 		if (xt == ITEMS)
 			tscCleanup(2, ptsc);
 		else
 			jumpTscEvent(ptsc, getTSCNumber(ptsc, ptsc.p_read + 9));
 		break;
 	case('<KEY'):
-		gameFlags |= 1;
-		gameFlags &= ~2;
+		gGameFlags |= 1;
+		gGameFlags &= ~2;
 		currentPlayer.up = false;
 		tscCleanup(0, ptsc);
 		break;
@@ -829,8 +829,8 @@ bool doTscCommand(int *retVal, bool *bExit, TSC &ptsc)
 		tscCleanup(0, ptsc);
 		break;
 	case('<MNA'):
-		mapName.wait = 0;
-		mapName.flag = 1;
+		gMapName.wait = 0;
+		gMapName.flag = 1;
 		tscCleanup(0, ptsc);
 		break;
 	case('<MNP'):
@@ -843,7 +843,7 @@ bool doTscCommand(int *retVal, bool *bExit, TSC &ptsc)
 		tscCleanup(2, ptsc);
 		break;
 	case('<MPJ'):
-		if (getMapFlag(currentLevel))
+		if (getMapFlag(gCurrentLevel))
 			jumpTscEvent(ptsc, getTSCNumber(ptsc, ptsc.p_read + 4));
 		else
 			tscCleanup(1, ptsc);
@@ -908,20 +908,20 @@ bool doTscCommand(int *retVal, bool *bExit, TSC &ptsc)
 		tscCleanup(1, ptsc);
 		break;
 	case('<PRI'):
-		gameFlags &= ~3;
+		gGameFlags &= ~3;
 		tscCleanup(0, ptsc);
 		break;
 	case('<PS+'):
-		for (xt = 0; xt < 8 && permitStage[xt].index != getTSCNumber(ptsc, ptsc.p_read + 4) && permitStage[xt].index; ++xt);
+		for (xt = 0; xt < 8 && gPermitStage[xt].index != getTSCNumber(ptsc, ptsc.p_read + 4) && gPermitStage[xt].index; ++xt);
 		if (xt == 8)
 			break;
 
-		permitStage[xt].index = getTSCNumber(ptsc, ptsc.p_read + 4);
-		permitStage[xt].event = getTSCNumber(ptsc, ptsc.p_read + 9);
+		gPermitStage[xt].index = getTSCNumber(ptsc, ptsc.p_read + 4);
+		gPermitStage[xt].event = getTSCNumber(ptsc, ptsc.p_read + 9);
 		tscCleanup(2, ptsc);
 		break;
 	case('<QUA'):
-		viewport.quake = getTSCNumber(ptsc, ptsc.p_read + 4);
+		gViewport.quake = getTSCNumber(ptsc, ptsc.p_read + 4);
 		tscCleanup(1, ptsc);
 		break;
 	case('<RMU'):
@@ -977,7 +977,7 @@ bool doTscCommand(int *retVal, bool *bExit, TSC &ptsc)
             return true;
         }
 		jumpTscEvent(ptsc, xt);
-		gameFlags &= ~3;
+		gGameFlags &= ~3;
 		break;
 	case('<SMC'):
 		currentPlayer.cond |= player_visible;
@@ -1249,8 +1249,8 @@ void drawTsc()
 	if (tsc.mode && tsc.flags & 1)
 	{
 		//Set cliprect
-		tsc.rcText.left = (screenWidth / 2) - 108;
-		tsc.rcText.right = (screenWidth / 2) + 108;
+		tsc.rcText.left = (gScreenWidth / 2) - 108;
+		tsc.rcText.right = (gScreenWidth / 2) + 108;
 
 		if (tsc.flags & 0x20)
 		{
@@ -1259,8 +1259,8 @@ void drawTsc()
 		}
 		else
 		{
-			tsc.rcText.top = screenHeight - 56;
-			tsc.rcText.bottom = screenHeight - 8;
+			tsc.rcText.top = gScreenHeight - 56;
+			tsc.rcText.bottom = gScreenHeight - 8;
 		}
 
 		//Draw message box background (if not MS2)
@@ -1270,12 +1270,12 @@ void drawTsc()
 			rcFrame2 = { 0, 8, 244, 16 };
 			rcFrame3 = { 0, 16, 244, 24 };
 
-			drawTexture(sprites[TEX_TEXTBOX], &rcFrame1, tsc.rcText.left - 14, tsc.rcText.top - 10);
+			drawTexture(gSprites[TEX_TEXTBOX], &rcFrame1, tsc.rcText.left - 14, tsc.rcText.top - 10);
 
 			int strip;
 			for (strip = 1; strip <= 6; ++strip)
-				drawTexture(sprites[TEX_TEXTBOX], &rcFrame2, tsc.rcText.left - 14, 8 * strip + tsc.rcText.top - 10);
-			drawTexture(sprites[TEX_TEXTBOX], &rcFrame3, tsc.rcText.left - 14, 8 * strip + tsc.rcText.top - 10);
+				drawTexture(gSprites[TEX_TEXTBOX], &rcFrame2, tsc.rcText.left - 14, 8 * strip + tsc.rcText.top - 10);
+			drawTexture(gSprites[TEX_TEXTBOX], &rcFrame3, tsc.rcText.left - 14, 8 * strip + tsc.rcText.top - 10);
 		}
 
 		setCliprect(&tsc.rcText);
@@ -1290,7 +1290,7 @@ void drawTsc()
 		rcFace.right = rcFace.left + 48;
 		rcFace.bottom = rcFace.top + 48;
 
-		drawTexture(sprites[TEX_FACE], &rcFace, tsc.rcText.left + tsc.face_x, tsc.rcText.top - 3);
+		drawTexture(gSprites[TEX_FACE], &rcFace, tsc.rcText.left + tsc.face_x, tsc.rcText.top - 3);
 
 		//Draw text
 		int text_offset;
@@ -1313,7 +1313,7 @@ void drawTsc()
 
 		if (flash && tsc.mode == NOD)
 		{
-			SDL_SetRenderDrawColor(renderer, 255, 255, 254, 255);
+			SDL_SetRenderDrawColor(gRenderer, 255, 255, 254, 255);
 			drawRect(tsc.rcText.left + text_offset + (tsc.p_write * 6),
 			         tsc.rcText.top + tsc.ypos_line[tsc.line % 4] + tsc.offsetY,
 			         5,
@@ -1330,12 +1330,12 @@ void drawTsc()
 		if (tsc.item) //Display item not 0
 		{
 			//Draw GIT background
-			drawTexture(sprites[TEX_TEXTBOX], &rcItemBox1, (screenWidth / 2) - 40, (screenHeight / 2) + 8);
-			drawTexture(sprites[TEX_TEXTBOX], &rcItemBox2, (screenWidth / 2) - 40, (screenHeight / 2) + 24);
-			drawTexture(sprites[TEX_TEXTBOX], &rcItemBox3, (screenWidth / 2) + 32, (screenHeight / 2) + 8);
-			drawTexture(sprites[TEX_TEXTBOX], &rcItemBox4, (screenWidth / 2) + 32, (screenHeight / 2) + 12);
-			drawTexture(sprites[TEX_TEXTBOX], &rcItemBox4, (screenWidth / 2) + 32, (screenHeight / 2) + 24);
-			drawTexture(sprites[TEX_TEXTBOX], &rcItemBox5, (screenWidth / 2) + 32, (screenHeight / 2) + 32);
+			drawTexture(gSprites[TEX_TEXTBOX], &rcItemBox1, (gScreenWidth / 2) - 40, (gScreenHeight / 2) + 8);
+			drawTexture(gSprites[TEX_TEXTBOX], &rcItemBox2, (gScreenWidth / 2) - 40, (gScreenHeight / 2) + 24);
+			drawTexture(gSprites[TEX_TEXTBOX], &rcItemBox3, (gScreenWidth / 2) + 32, (gScreenHeight / 2) + 8);
+			drawTexture(gSprites[TEX_TEXTBOX], &rcItemBox4, (gScreenWidth / 2) + 32, (gScreenHeight / 2) + 12);
+			drawTexture(gSprites[TEX_TEXTBOX], &rcItemBox4, (gScreenWidth / 2) + 32, (gScreenHeight / 2) + 24);
+			drawTexture(gSprites[TEX_TEXTBOX], &rcItemBox5, (gScreenWidth / 2) + 32, (gScreenHeight / 2) + 32);
 
 			//Move the item image into position
 			if (tsc.item_y < 0x88)
@@ -1348,7 +1348,7 @@ void drawTsc()
 				rcItem.top = 16 * ((tsc.item - 1000) / 8);
 				rcItem.bottom = 16 * ((tsc.item - 1000) / 8) + 16;
 
-				drawTexture(sprites[TEX_ITEMIMAGE], &rcItem, (screenWidth / 2) - 20, ((screenHeight - 240) / 2) + tsc.item_y);
+				drawTexture(gSprites[TEX_ITEMIMAGE], &rcItem, (gScreenWidth / 2) - 20, ((gScreenHeight - 240) / 2) + tsc.item_y);
 			}
 			else //Otherwise, draw weapon
 			{
@@ -1357,7 +1357,7 @@ void drawTsc()
 				rcItem.top = 16 * (tsc.item / 16);
 				rcItem.bottom = 16 * (tsc.item / 16) + 16;
 
-				drawTexture(sprites[TEX_ARMSIMAGE], &rcItem, (screenWidth / 2) - 12, ((screenHeight - 240) / 2) + tsc.item_y);
+				drawTexture(gSprites[TEX_ARMSIMAGE], &rcItem, (gScreenWidth / 2) - 12, ((gScreenHeight - 240) / 2) + tsc.item_y);
 			}
 		}
 
@@ -1369,14 +1369,14 @@ void drawTsc()
 		{
 			int y;
 			if (tsc.wait > 1)
-				y = screenHeight - 96;
+				y = gScreenHeight - 96;
 			else
-				y = (screenHeight - 240) + 4 * (38 - tsc.wait);
+				y = (gScreenHeight - 240) + 4 * (38 - tsc.wait);
 
-			drawTexture(sprites[TEX_TEXTBOX], &rcYesNo, tsc.rcText.left + 164, y);
+			drawTexture(gSprites[TEX_TEXTBOX], &rcYesNo, tsc.rcText.left + 164, y);
 
 			if (tsc.wait == 16)
-				drawTexture(sprites[TEX_TEXTBOX], &rcSelection, 41 * tsc.select + tsc.rcText.left + 159, screenHeight - 86);
+				drawTexture(gSprites[TEX_TEXTBOX], &rcSelection, 41 * tsc.select + tsc.rcText.left + 159, gScreenHeight - 86);
 		}
 	}
 }

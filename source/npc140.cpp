@@ -152,7 +152,7 @@ void npcAct140(npc *NPC)//rabid toroko
 			NPC->act_wait = 0;
 			NPC->ani_no = 2;
 			playSound(26);
-			viewport.quake = 20;
+			gViewport.quake = 20;
 		}
 		break;
 	case landPause:
@@ -203,7 +203,7 @@ void npcAct140(npc *NPC)//rabid toroko
 			NPC->act_wait = 0;
 			NPC->ani_no = 2;
 			playSound(26);
-			viewport.quake = 20;
+			gViewport.quake = 20;
 		}
 		break;
 	case 0x66:
@@ -933,7 +933,7 @@ void npcAct149(npc *NPC) //moving block
 			NPC->xm = 0;
 			NPC->direct = 2;
 			NPC->act_no = 20;
-			viewport.quake = 10;
+			gViewport.quake = 10;
 			playSound(26);
 			for (int i = 0; i <= 3; ++i)
 			{
@@ -974,7 +974,7 @@ void npcAct149(npc *NPC) //moving block
 			NPC->xm = 0;
 			NPC->direct = 0;
 			NPC->act_no = 10;
-			viewport.quake = 10;
+			gViewport.quake = 10;
 			playSound(26);
 			for (int i = 0; i <= 3; ++i)
 			{
@@ -1301,7 +1301,7 @@ void npcAct153(npc *NPC)
 		{ 96, 72, 120, 96 }
 	} };
 
-	if (NPC->x <= currentPlayer.x + pixelsToUnits(screenWidth) && NPC->x >= currentPlayer.x - pixelsToUnits(screenWidth) && NPC->y <= currentPlayer.y + pixelsToUnits(screenHeight) && NPC->y >= currentPlayer.y - pixelsToUnits(screenHeight))
+	if (NPC->x <= currentPlayer.x + pixelsToUnits(gScreenWidth) && NPC->x >= currentPlayer.x - pixelsToUnits(gScreenWidth) && NPC->y <= currentPlayer.y + pixelsToUnits(gScreenHeight) && NPC->y >= currentPlayer.y - pixelsToUnits(gScreenHeight))
 	{
 		switch (NPC->act_no)
 		{
@@ -1585,7 +1585,7 @@ void npcAct155(npc *NPC) //flying gaudi
 	constexpr int rcX[4] = { 0, 24, 288, 24 };
 	constexpr int rcY[4] = { 48, 48, 0, 48};
 
-	if (!NPC->isPlayerWithinDistance(pixelsToUnits(screenWidth), pixelsToUnits(screenHeight)))
+	if (!NPC->isPlayerWithinDistance(pixelsToUnits(gScreenWidth), pixelsToUnits(gScreenHeight)))
 		return;
 	switch (NPC->act_no)
 	{
@@ -1724,7 +1724,7 @@ void npcAct157(npc *NPC)
 			NPC->ym = 0;
 			NPC->direct = 2;
 			NPC->act_no = 20;
-			viewport.quake = 10;
+			gViewport.quake = 10;
 			playSound(26, 1);
 			for (int i = 0; i <= 3; ++i)
 			{
@@ -1765,7 +1765,7 @@ void npcAct157(npc *NPC)
 			NPC->ym = 0;
 			NPC->direct = 0;
 			NPC->act_no = 10;
-			viewport.quake = 10;
+			gViewport.quake = 10;
 			playSound(26);
 			for (int i = 0; i <= 3; ++i)
 			{

@@ -133,7 +133,7 @@ void actBoss_Core(npc *boss)
 		boss->act_no = 201;
 		boss->act_wait = 0;
 		bossObj[hit4].bits &= ~npc_shootable;
-		superYPos = 0;
+		gSuperYPos = 0;
 		//CutNoise();
 		// Fallthrough
 	case 201:
@@ -186,9 +186,9 @@ void actBoss_Core(npc *boss)
 		}
 		if (++boss->act_wait % 100 == 1)
 		{
-			curlyShootWait = random(80, 100);
-			curlyShootX = bossObj[hit4].x;
-			curlyShootY = bossObj[hit4].y;
+			gCurlyShootWait = random(80, 100);
+			gCurlyShootX = bossObj[hit4].x;
+			gCurlyShootY = bossObj[hit4].y;
 		}
 		if (boss->act_wait <= 199 && boss->act_wait % 20 == 1)
 		{
@@ -206,9 +206,9 @@ void actBoss_Core(npc *boss)
 	case iniShootBigAssEnergyBall:
 		boss->act_no = shootBigAssEnergyBall;
 		boss->act_wait = 0;
-		superYPos = 1;
+		gSuperYPos = 1;
 		bossObj[hit4].bits |= npc_shootable;
-		viewport.quake = 100;
+		gViewport.quake = 100;
 		//SetNoise(1, 1000);
 		// Fallthrough
 	case shootBigAssEnergyBall:
@@ -267,7 +267,7 @@ void actBoss_Core(npc *boss)
 		bossObj[mini3].act_no = 200;
 		bossObj[mini4].act_no = 200;
 		bossObj[mini5].act_no = 200;
-		viewport.quake = 20;
+		gViewport.quake = 20;
 		for (int i = 0; i <= 31; ++i)
 		{
 			createNpc(NPC_Smoke, boss->x + (random(-128, 128) << 9), boss->y + (random(-64, 64) << 9),
@@ -315,7 +315,7 @@ void actBoss_Core(npc *boss)
 
 	if (bShock)
 	{
-		viewport.quake = 20;
+		gViewport.quake = 20;
 		bossObj[mini1].act_no = 100;
 		bossObj[mini2].act_no = 100;
 		bossObj[mini3].act_no = 100;
@@ -554,7 +554,7 @@ void miniCore(npc *NPC)
 	case 201:
 		NPC->xm += 32;
 		NPC->x += NPC->xm;
-		if (NPC->x > (map.width << 13) + 0x4000)
+		if (NPC->x > (gMap.width << 13) + 0x4000)
 			NPC->cond = 0;
 		break;
 	default:

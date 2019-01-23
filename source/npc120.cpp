@@ -379,7 +379,7 @@ void npcAct124(npc *NPC) //Sunstone
 		}
 		if (!(++NPC->act_wait & 7))
 			playSound(26, 1);
-		viewport.quake = 20;
+		gViewport.quake = 20;
 		break;
 
 	default:
@@ -516,7 +516,7 @@ void npcAct126(npc *NPC) //Running Puppy
 		break;
 	}
 
-	if (isKeyPressed(keyDown))
+	if (isKeyPressed(gKeyDown))
 		NPC->bits |= npc_interact;
 	else
 		NPC->bits &= ~npc_interact;

@@ -46,7 +46,7 @@ void npcAct000(npc *NPC) // Null
 
 void npcAct001(npc *NPC) // EXP
 {
-	if (background.mode != 5 && background.mode != 6)
+	if (gBackground.mode != 5 && gBackground.mode != 6)
 	{
 		// Initialisation
 		if (!NPC->act_no)
@@ -780,7 +780,7 @@ void npcAct009(npc *NPC) //Balrog drop in
 			NPC->ani_no = 1;
 			NPC->act_wait = 0;
 			playSound(SFX_LargeObjectHitGround);
-			viewport.quake = 30;
+			gViewport.quake = 30;
 		}
 
 		break;
@@ -888,7 +888,7 @@ void npcAct010(npc *NPC) // Balrog, Shooting (boss)
 			NPC->act_wait = 0;
 			NPC->ani_no = 2;
 			playSound(SFX_LargeObjectHitGround);
-			viewport.quake = 30;
+			gViewport.quake = 30;
 			NPC->damage = 0;	// No damage when landed
 		}
 		break;
@@ -1068,7 +1068,7 @@ void npcAct012(npc *NPC) //Balrog cutscene
 		{
 			NPC->code_char = 0;
 			playSound(SFX_LargeObjectHitGround);
-			viewport.quake = 30;
+			gViewport.quake = 30;
 		}
 		break;
 
@@ -1250,13 +1250,13 @@ void npcAct012(npc *NPC) //Balrog cutscene
 			changeTile(x - 1, y, 0);
 			changeTile(x + 1, y, 0);
 			playSound(SFX_MissileImpact);
-			viewport.quake2 = 10;
+			gViewport.quake2 = 10;
 		}
 
 		if (NPC->y < -0x4000)
 		{
 			NPC->code_char = 0;
-			viewport.quake = 30;
+			gViewport.quake = 30;
 		}
 
 		break;
@@ -1567,7 +1567,7 @@ void npcAct019(npc *NPC) //Balrog burst
 		NPC->ym = -0x100;
 		playSound(12);
 		playSound(26);
-		viewport.quake = 30;
+		gViewport.quake = 30;
 //Fallthrough
 	case 1:
 		NPC->ym += 16;
@@ -1578,7 +1578,7 @@ void npcAct019(npc *NPC) //Balrog burst
 			NPC->ani_no = 2;
 			NPC->act_wait = 0;
 			playSound(26);
-			viewport.quake = 30;
+			gViewport.quake = 30;
 		}
 		break;
 

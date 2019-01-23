@@ -33,7 +33,7 @@ int playerJudgeBlock(const RECT *rcHit, player *me, int tx, int ty)
 		if (me->xm < -0x180)
 			me->xm = -0x180;
 
-		if (!isKeyDown(keyLeft) && me->xm < 0)
+		if (!isKeyDown(gKeyLeft) && me->xm < 0)
 			me->xm = 0;
 
 		hit |= leftWall;
@@ -49,7 +49,7 @@ int playerJudgeBlock(const RECT *rcHit, player *me, int tx, int ty)
 		if (me->xm > 0x180)
 			me->xm = 0x180;
 
-		if (!isKeyDown(keyRight) && me->xm > 0)
+		if (!isKeyDown(gKeyRight) && me->xm > 0)
 			me->xm = 0;
 
 		hit |= rightWall;
@@ -745,71 +745,71 @@ void playerHitNpcs()
 
 	if ((me->cond & player_visible) && !(me->cond & player_removed))
 	{
-		for (size_t i = 0; i < npcs.size(); ++i)
+		for (size_t i = 0; i < gNPC.size(); ++i)
 		{
-			if (npcs[i].cond & npccond_alive)
+			if (gNPC[i].cond & npccond_alive)
 			{
 				int hit = 0;
-				if (npcs[i].bits & npc_solidSoft)
+				if (gNPC[i].bits & npc_solidSoft)
 				{
-					hit = playerHitNpcSoftSolid(rcHit, me, &npcs[i]);
+					hit = playerHitNpcSoftSolid(rcHit, me, &gNPC[i]);
 
 					me->flag |= hit;
 				}
-				else if (npcs[i].bits & npc_solidHard)
+				else if (gNPC[i].bits & npc_solidHard)
 				{
-					hit = playerHitNpcHardSolid(rcHit, me, &npcs[i]);
+					hit = playerHitNpcHardSolid(rcHit, me, &gNPC[i]);
 
 					me->flag |= hit;
 				}
 				else
-					hit = playerHitNpcNonSolid(rcHit, me, &npcs[i]);
+					hit = playerHitNpcNonSolid(rcHit, me, &gNPC[i]);
 
-				if (hit && npcs[i].code_char == NPC_EXP)
+				if (hit && gNPC[i].code_char == NPC_EXP)
 				{
 					playSound(SFX_GetEXP);
-					giveWeaponExperience(npcs[i].exp);
-					npcs[i].cond = 0;
+					giveWeaponExperience(gNPC[i].exp);
+					gNPC[i].cond = 0;
 				}
-				if (hit && npcs[i].code_char == NPC_Missile)
+				if (hit && gNPC[i].code_char == NPC_Missile)
 				{
 					playSound(SFX_QuoteMissileGet);
-					giveAmmo(npcs[i].exp);
-					npcs[i].cond = 0;
+					giveAmmo(gNPC[i].exp);
+					gNPC[i].cond = 0;
 				}
 
-				if (hit && npcs[i].code_char == NPC_Heart)
+				if (hit && gNPC[i].code_char == NPC_Heart)
 				{
 					playSound(SFX_QuoteHeal);
-					me->life += npcs[i].exp;
+					me->life += gNPC[i].exp;
 					if (me->life > me->max_life)
 						me->life = me->max_life;
-					npcs[i].cond = 0;
+					gNPC[i].cond = 0;
 				}
 
-				if (!(gameFlags & 4) && hit && npcs[i].bits & npc_eventTouch)
-					startTscEvent(tsc, npcs[i].code_event);
+				if (!(gGameFlags & 4) && hit && gNPC[i].bits & npc_eventTouch)
+					startTscEvent(tsc, gNPC[i].code_event);
 
-				if (gameFlags & 2 && !(npcs[i].bits & npc_interact))
+				if (gGameFlags & 2 && !(gNPC[i].bits & npc_interact))
 				{
-					if (npcs[i].bits & npc_rearTop)
+					if (gNPC[i].bits & npc_rearTop)
 					{
-						if (hit & rightWall && npcs[i].xm < 0)
-							me->damage(npcs[i].damage);
-						if (hit & leftWall && npcs[i].xm > 0)
-							me->damage(npcs[i].damage);
-						if (hit & ground && npcs[i].ym < 0)
-							me->damage(npcs[i].damage);
-						if (hit & ceiling && npcs[i].ym > 0)
-							me->damage(npcs[i].damage);
+						if (hit & rightWall && gNPC[i].xm < 0)
+							me->damage(gNPC[i].damage);
+						if (hit & leftWall && gNPC[i].xm > 0)
+							me->damage(gNPC[i].damage);
+						if (hit & ground && gNPC[i].ym < 0)
+							me->damage(gNPC[i].damage);
+						if (hit & ceiling && gNPC[i].ym > 0)
+							me->damage(gNPC[i].damage);
 					}
-					else if (hit && npcs[i].damage && !(gameFlags & 4))
-						me->damage(npcs[i].damage);
+					else if (hit && gNPC[i].damage && !(gGameFlags & 4))
+						me->damage(gNPC[i].damage);
 				}
 
-				if (!(gameFlags & 4) && hit && me->cond & player_interact && npcs[i].bits & npc_interact)
+				if (!(gGameFlags & 4) && hit && me->cond & player_interact && gNPC[i].bits & npc_interact)
 				{
-					startTscEvent(tsc, npcs[i].code_event);
+					startTscEvent(tsc, gNPC[i].code_event);
 					me->xm = 0;
 					me->ques = false;
 				}
@@ -846,7 +846,7 @@ void playerHitBosses()
                 else
                     hit = playerHitNpcNonSolid(rcHit, me, &bossObj[i]);
 
-                if (!(gameFlags & 4) && hit && bossObj[i].bits & npc_eventTouch)
+                if (!(gGameFlags & 4) && hit && bossObj[i].bits & npc_eventTouch)
                 {
                     startTscEvent(tsc, bossObj[i].code_event);
                     me->ques = 0;
@@ -859,10 +859,10 @@ void playerHitBosses()
 					if (hit & leftWall && bossObj[i].xm > 0)
 						me->damage(bossObj[i].damage);
 				}
-				else if (hit && bossObj[i].damage && !(gameFlags & 4))
+				else if (hit && bossObj[i].damage && !(gGameFlags & 4))
 					me->damage(bossObj[i].damage);
 
-				if (!(gameFlags & 4) && hit && me->cond & player_interact)
+				if (!(gGameFlags & 4) && hit && me->cond & player_interact)
 				{
 					if (bossObj[i].bits & npc_interact)
 					{
@@ -872,25 +872,25 @@ void playerHitBosses()
 						me->ques = 0;
 					}
 				}
-				if (gameFlags & 2 && !(npcs[i].bits & npc_interact))
+				if (gGameFlags & 2 && !(gNPC[i].bits & npc_interact))
 				{
-					if (npcs[i].bits & npc_rearTop)
+					if (gNPC[i].bits & npc_rearTop)
 					{
-						if (hit & rightWall && npcs[i].xm < 0)
-							me->damage(npcs[i].damage);
-						if (hit & leftWall && npcs[i].xm > 0)
-							me->damage(npcs[i].damage);
-						if (hit & ground && npcs[i].ym < 0)
-							me->damage(npcs[i].damage);
-						if (hit & ceiling && npcs[i].ym > 0)
-							me->damage(npcs[i].damage);
+						if (hit & rightWall && gNPC[i].xm < 0)
+							me->damage(gNPC[i].damage);
+						if (hit & leftWall && gNPC[i].xm > 0)
+							me->damage(gNPC[i].damage);
+						if (hit & ground && gNPC[i].ym < 0)
+							me->damage(gNPC[i].damage);
+						if (hit & ceiling && gNPC[i].ym > 0)
+							me->damage(gNPC[i].damage);
 					}
 				}
 			}
-			else if (hit && npcs[i].damage && !(gameFlags & 4))
-				me->damage(npcs[i].damage);
+			else if (hit && gNPC[i].damage && !(gGameFlags & 4))
+				me->damage(gNPC[i].damage);
 
-			if (!(gameFlags & 4) && hit && me->cond & player_interact)
+			if (!(gGameFlags & 4) && hit && me->cond & player_interact)
 			{
 				if (bossObj[i].bits & npc_interact)
 				{

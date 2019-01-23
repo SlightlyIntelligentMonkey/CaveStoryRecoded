@@ -706,12 +706,12 @@ void npcAct066(npc *NPC) //Bubble (to catch Toroko in the shack)
 	{
 	case 0:
 		//Shoot towards Toroko
-		for (size_t i = 0; i < npcs.size(); i++)
+		for (size_t i = 0; i < gNPC.size(); i++)
 		{
-			if (npcs[i].code_event == 1000)
+			if (gNPC[i].code_event == 1000)
 			{
-				NPC->tgt_x = npcs[i].x;
-				NPC->tgt_y = npcs[i].y;
+				NPC->tgt_x = gNPC[i].x;
+				NPC->tgt_y = gNPC[i].y;
 				NPC->count1 = i;
 				deg = getAtan(NPC->x - NPC->tgt_x, NPC->y - NPC->tgt_y);
 				NPC->xm = 2 * getCos(deg);
@@ -733,7 +733,7 @@ void npcAct066(npc *NPC) //Bubble (to catch Toroko in the shack)
 		{
 			NPC->act_no = 2;
 			NPC->ani_no = 2;
-			npcs[NPC->count1].cond = 0;
+			gNPC[NPC->count1].cond = 0;
 			playSound(SFX_Bubble);
 		}
 
@@ -1007,7 +1007,7 @@ void npcAct068(npc * NPC) // Balrog, Running (boss)
 		{
 			NPC->act_no = slowDown;
 			NPC->ani_no = 8;
-			viewport.quake = 30;
+			gViewport.quake = 30;
 			playSound(SFX_LargeObjectHitGround);
 		}
 
@@ -1327,7 +1327,7 @@ void npcAct073(npc *NPC) //Water drop
 			NPC->cond = 0;
 	}
 
-	if (NPC->y > tilesToUnits(map.height))
+	if (NPC->y > tilesToUnits(gMap.height))
 		NPC->cond = 0;
 }
 

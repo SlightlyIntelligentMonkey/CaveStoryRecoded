@@ -23,5 +23,5 @@ void saveProfile();
 
 std::vector<std::string> getLinesFromFile(const std::string& fileName);
 
-extern std::string profileName;
-extern std::string profileCode;
+extern std::string gProfileName;
+extern std::string gProfileCode;

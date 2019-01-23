@@ -158,7 +158,7 @@ void actBoss_Omega(npc *boss)
 		boss->ani_no = 0;
 		//Fallthrough
 	case 30:
-		viewport.quake = 2;
+		gViewport.quake = 2;
 		boss->y -= 0x200;
 
 		if (!(++boss->act_wait & 3))
@@ -269,7 +269,7 @@ void actBoss_Omega(npc *boss)
 		break;
 
 	case 90: //Go back into the ground
-		viewport.quake = 2;
+		gViewport.quake = 2;
 		boss->y += 0x200;
 
 		if (!(++boss->act_wait & 3))
@@ -384,12 +384,12 @@ void actBoss_Omega(npc *boss)
 			playSound(SFX_LargeObjectHitGround);
 			playSound(SFX_DestroyBreakableBlock);
 
-			viewport.quake = 30;
+			gViewport.quake = 30;
 		}
 		break;
 
 	case 150:
-		viewport.quake = 2;
+		gViewport.quake = 2;
 
 		if (!(++boss->act_wait % 12))
 			playSound(SFX_BehemothLargeHurt);
@@ -406,7 +406,7 @@ void actBoss_Omega(npc *boss)
 		break;
 
 	case 160:
-		viewport.quake = 40;
+		gViewport.quake = 40;
 
 		if (++boss->act_wait > 50)
 		{
@@ -460,12 +460,12 @@ void actBoss_Omega(npc *boss)
 		boss->damage = 0;
 		bossObj[5].damage = 0;
 
-		for (size_t i = 0; i < npcs.size(); i++)
+		for (size_t i = 0; i < gNPC.size(); i++)
 		{
-			if (npcs[i].cond & npccond_alive)
+			if (gNPC[i].cond & npccond_alive)
 			{
-				if (npcs[i].code_char == 48)
-					npcs[i].cond = 0;
+				if (gNPC[i].code_char == 48)
+					gNPC[i].cond = 0;
 			}
 		}
 	}

@@ -29,10 +29,10 @@ void player::init()
 	view = { 0x1000, 0x1000, 0x1000, 0x1000 };
 	hit = { 0xA00, 0x1000, 0xA00, 0x1000 };
 
-	viewport.lookX = &tgt_x;
-	viewport.lookY = &tgt_y;
+	gViewport.lookX = &tgt_x;
+	gViewport.lookY = &tgt_y;
 
-	viewport.speed = 16;
+	gViewport.speed = 16;
 
 	air = 1000;
 
@@ -75,11 +75,11 @@ void player::setDir(int setDirect)
 		return;
 	}
 
-	for (size_t i = 0; i < npcs.size(); i++)
+	for (size_t i = 0; i < gNPC.size(); i++)
 	{
-		if (npcs[i].code_event == setDirect)
+		if (gNPC[i].code_event == setDirect)
 		{
-			if (x <= npcs[i].x)
+			if (x <= gNPC[i].x)
 				direct = dirRight;
 			else
 				direct = dirLeft;
@@ -109,11 +109,11 @@ void player::backStep(int entityEventNum)
 		break;
 
 	default:
-		for (size_t i = 0; i < npcs.size(); i++)
+		for (size_t i = 0; i < gNPC.size(); i++)
 		{
-			if (npcs[i].cond & npccond_alive && npcs[i].code_event == entityEventNum)
+			if (gNPC[i].cond & npccond_alive && gNPC[i].code_event == entityEventNum)
 			{
-				if (npcs[i].x >= this->x)
+				if (gNPC[i].x >= this->x)
 				{
 					this->direct = dirRight;
 					this->xm = -0x200;
@@ -231,23 +231,23 @@ void player::actNormal(bool bKey)
 
 			if (bKey)
 			{
-				const bool notDown = (isKeyDown(keyShoot) || isKeyDown(keyJump) || isKeyDown(keyUp) || isKeyDown(keyLeft) || isKeyDown(keyRight) || isKeyDown(keyMap) || isKeyDown(keyMenu) || isKeyDown(keyRotLeft) || isKeyDown(keyRotRight));
+				const bool notDown = (isKeyDown(gKeyShoot) || isKeyDown(gKeyJump) || isKeyDown(gKeyUp) || isKeyDown(gKeyLeft) || isKeyDown(gKeyRight) || isKeyDown(gKeyMap) || isKeyDown(gKeyMenu) || isKeyDown(gKeyRotateLeft) || isKeyDown(gKeyRotateRight));
 
-				if (notDown || cond & player_interact || gameFlags & 4) //Moving and interaction
+				if (notDown || cond & player_interact || gGameFlags & 4) //Moving and interaction
 				{
 					//Move left and right
-					if (isKeyDown(keyLeft) && xm > -max_dash)
+					if (isKeyDown(gKeyLeft) && xm > -max_dash)
 						xm -= dash1;
-					if (isKeyDown(keyRight) && xm < max_dash)
+					if (isKeyDown(gKeyRight) && xm < max_dash)
 						xm += dash1;
 
 					//Face held direction
-					if (isKeyDown(keyLeft))
+					if (isKeyDown(gKeyLeft))
 						direct = dirLeft;
-					if (isKeyDown(keyRight))
+					if (isKeyDown(gKeyRight))
 						direct = dirRight;
 				}
-				else if (isKeyPressed(keyDown))
+				else if (isKeyPressed(gKeyDown))
 				{
 					cond |= player_interact;
 					ques = 1;
@@ -263,20 +263,20 @@ void player::actNormal(bool bKey)
 				this->doBooster();
 
 				//Move left and right
-				if (isKeyDown(keyLeft) && xm > -max_dash)
+				if (isKeyDown(gKeyLeft) && xm > -max_dash)
 					xm -= dash2;
-				if (isKeyDown(keyRight) && xm < max_dash)
+				if (isKeyDown(gKeyRight) && xm < max_dash)
 					xm += dash2;
 
 				//Face held direction
-				if (isKeyDown(keyLeft))
+				if (isKeyDown(gKeyLeft))
 					direct = dirLeft;
-				if (isKeyDown(keyRight))
+				if (isKeyDown(gKeyRight))
 					direct = dirRight;
 			}
 
 			//Ending boost (2.0)
-			if (equip & equip_booster20 && boost_sw && (!isKeyDown(keyJump) || !boost_cnt))
+			if (equip & equip_booster20 && boost_sw && (!isKeyDown(gKeyJump) || !boost_cnt))
             {
 				if (boost_sw == 1)
 					xm /= 2;
@@ -284,18 +284,18 @@ void player::actNormal(bool bKey)
 					ym /= 2;
             }
 
-			if (!boost_cnt || !isKeyDown(keyJump))
+			if (!boost_cnt || !isKeyDown(gKeyJump))
 				boost_sw = 0;
 		}
 
 		if (bKey)
 		{
 			//Look up and down
-			up = isKeyDown(keyUp);
-			down = isKeyDown(keyDown) && !(flag & ground);
+			up = isKeyDown(gKeyUp);
+			down = isKeyDown(gKeyDown) && !(flag & ground);
 
 			//Jump
-			if (isKeyPressed(keyJump)
+			if (isKeyPressed(gKeyJump)
 			        && (flag & ground || flag & slopeRight || flag & slopeLeft)
 			        && !(flag & windUp))
 			{
@@ -305,7 +305,7 @@ void player::actNormal(bool bKey)
 		}
 
 		//End interaction state
-		if (bKey && (isKeyDown(keyShoot) || isKeyDown(keyJump) || isKeyDown(keyUp) || isKeyDown(keyLeft) || isKeyDown(keyRight)))
+		if (bKey && (isKeyDown(gKeyShoot) || isKeyDown(gKeyJump) || isKeyDown(gKeyUp) || isKeyDown(gKeyLeft) || isKeyDown(gKeyRight)))
 			cond &= ~player_interact;
 
 		//Boost timer
@@ -337,7 +337,7 @@ void player::actNormal(bool bKey)
 				if (direct == dirRight)
 					xm += 32;
 
-				if (isKeyPressed(keyJump) || boost_cnt % 3 == 1)
+				if (isKeyPressed(gKeyJump) || boost_cnt % 3 == 1)
 				{
 					if (direct == dirLeft)
 						createCaret(x + pixelsToUnits(2), y + pixelsToUnits(2), effect_BoosterSmoke, dirRight);
@@ -352,13 +352,13 @@ void player::actNormal(bool bKey)
 				//Move up
 				ym -= 0x20;
 
-				if (isKeyPressed(keyJump) || boost_cnt % 3 == 1)
+				if (isKeyPressed(gKeyJump) || boost_cnt % 3 == 1)
 				{
 					createCaret(x, y + pixelsToUnits(6), effect_BoosterSmoke, dirDown);
 					playSound(SFX_Booster);
 				}
 			}
-			else if (boost_sw == 3 && (isKeyPressed(keyJump) || boost_cnt % 3 == 1))
+			else if (boost_sw == 3 && (isKeyPressed(gKeyJump) || boost_cnt % 3 == 1))
 			{
 				createCaret(x, y - pixelsToUnits(6), effect_BoosterSmoke, dirUp);
 				playSound(SFX_Booster);
@@ -379,13 +379,13 @@ void player::actNormal(bool bKey)
 			if (flag & ceiling) //Bounce of ceilings
 				ym = pixelsToUnits(1);
 		}
-		else if (ym < 0 && bKey && isKeyDown(keyJump)) //Hold gravity
+		else if (ym < 0 && bKey && isKeyDown(gKeyJump)) //Hold gravity
 			ym += gravity2;
 		else //Normal gravity
 			ym += gravity1;
 
 		//Keep Quote down on slopes
-		if (!bKey || !isKeyPressed(keyJump))
+		if (!bKey || !isKeyPressed(gKeyJump))
 		{
 			if (flag & slopeRight && xm < 0)
 				ym = -xm;
@@ -461,7 +461,7 @@ void player::actNormal(bool bKey)
 				index_x = tilesToUnits(-4);
 		}
 
-		if (bKey && isKeyDown(keyUp))
+		if (bKey && isKeyDown(gKeyUp))
 		{
 			//Move up
 			index_y -= pixelsToUnits(1);
@@ -469,7 +469,7 @@ void player::actNormal(bool bKey)
 			if (index_y < tilesToUnits(-4))
 				index_y = tilesToUnits(-4);
 		}
-		else if (bKey && isKeyDown(keyDown))
+		else if (bKey && isKeyDown(gKeyDown))
 		{
 			//Move down
 			index_y += pixelsToUnits(1);
@@ -505,11 +505,11 @@ void player::actStream(bool bKey)
 	if (bKey)
 	{
 		//Move left and right
-		if (isKeyDown(keyLeft) || isKeyDown(keyRight))
+		if (isKeyDown(gKeyLeft) || isKeyDown(gKeyRight))
 		{
-			if (isKeyDown(keyLeft))
+			if (isKeyDown(gKeyLeft))
 				xm -= 0x100;
-			if (isKeyDown(keyRight))
+			if (isKeyDown(gKeyRight))
 				xm += 0x100;
 		}
 		else if (xm >= 0x80 || xm <= -0x80)
@@ -523,11 +523,11 @@ void player::actStream(bool bKey)
 			xm = 0;
 
 		//Move up and down
-		if (isKeyDown(keyUp) || isKeyDown(keyDown))
+		if (isKeyDown(gKeyUp) || isKeyDown(gKeyDown))
 		{
-			if (isKeyDown(keyUp))
+			if (isKeyDown(gKeyUp))
 				ym -= 0x100;
-			if (isKeyDown(keyDown))
+			if (isKeyDown(gKeyDown))
 				ym += 0x100;
 		}
 		else if (ym >= 0x80 || ym <= -0x80)
@@ -581,28 +581,28 @@ void player::actStream(bool bKey)
 		ym = pixelsToUnits(-2);
 
 	//Diagonal speed
-	if (isKeyDown(keyLeft) && isKeyDown(keyUp))
+	if (isKeyDown(gKeyLeft) && isKeyDown(gKeyUp))
 	{
 		if (xm < -0x30C)
 			xm = -0x30C;
 		if (ym < -0x30C)
 			ym = -0x30C;
 	}
-	if (isKeyDown(keyRight) && isKeyDown(keyUp))
+	if (isKeyDown(gKeyRight) && isKeyDown(gKeyUp))
 	{
 		if (xm > 0x30C)
 			xm = 0x30C;
 		if (ym < -0x30C)
 			ym = -0x30C;
 	}
-	if (isKeyDown(keyLeft) && isKeyDown(keyDown))
+	if (isKeyDown(gKeyLeft) && isKeyDown(gKeyDown))
 	{
 		if (xm < -0x30C)
 			xm = -0x30C;
 		if (ym > 0x30C)
 			ym = 0x30C;
 	}
-	if (isKeyDown(keyRight) && isKeyDown(keyDown))
+	if (isKeyDown(gKeyRight) && isKeyDown(gKeyDown))
 	{
 		if (xm > 0x30C)
 			xm = 0x30C;
@@ -653,7 +653,7 @@ void player::animate(bool bKey)
 			{
 				ani_no = 11;
 			}
-			else if (bKey && isKeyDown(keyUp) && (isKeyDown(keyLeft) || isKeyDown(keyRight))) //Look up while walking
+			else if (bKey && isKeyDown(gKeyUp) && (isKeyDown(gKeyLeft) || isKeyDown(gKeyRight))) //Look up while walking
 			{
 				cond |= player_walk;
 
@@ -668,7 +668,7 @@ void player::animate(bool bKey)
 				if (ani_no > 9 || ani_no < 6)
 					ani_no = 6;
 			}
-			else if (bKey && (isKeyDown(keyLeft) || isKeyDown(keyRight))) //Walk
+			else if (bKey && (isKeyDown(gKeyLeft) || isKeyDown(gKeyRight))) //Walk
 			{
 				cond |= player_walk;
 
@@ -683,7 +683,7 @@ void player::animate(bool bKey)
 				if (ani_no > 4 || ani_no < 1)
 					ani_no = 1;
 			}
-			else if (bKey && isKeyDown(keyUp)) //Look up
+			else if (bKey && isKeyDown(gKeyUp)) //Look up
 			{
 				if (cond & player_walk)
 					playSound(SFX_QuoteWalk);
@@ -744,7 +744,7 @@ void player::update(bool bKey)
 		{
 			actNormal(bKey);
 
-			if (!(gameFlags & 4) && bKey)
+			if (!(gGameFlags & 4) && bKey)
 			{
 				//Air
 				if (equip & equip_airTank)
@@ -836,30 +836,30 @@ void player::draw()
 			++weaponRect.top;
 
 		const int weaponOffsetX = (direct != dirLeft ? 0 : 8); //Make the weapon shift to the left if facing left
-		drawTexture(sprites[TEX_ARMS], &weaponRect, (x - view.left) / 0x200 - viewport.x / 0x200 - weaponOffsetX, (y - view.top) / 0x200 - viewport.y / 0x200 + weaponOffsetY);
+		drawTexture(gSprites[TEX_ARMS], &weaponRect, (x - view.left) / 0x200 - gViewport.x / 0x200 - weaponOffsetX, (y - view.top) / 0x200 - gViewport.y / 0x200 + weaponOffsetY);
 
 		if (!((shock >> 1) & 1)) //Invulnerability BLinking
 		{
 			//Draw Quote
-			drawTexture(sprites[TEX_MYCHAR], &rect, (x - view.left) / 0x200 - viewport.x / 0x200, (y - view.top) / 0x200 - viewport.y / 0x200);
+			drawTexture(gSprites[TEX_MYCHAR], &rect, (x - view.left) / 0x200 - gViewport.x / 0x200, (y - view.top) / 0x200 - gViewport.y / 0x200);
 
 			//Draw bubble
 			bubble++;
 			if (equip & equip_airTank && flag & water)
-				drawTexture(sprites[TEX_CARET], &rcBubble[(bubble >> 1) & 1], x / 0x200 - 12 - viewport.x / 0x200, y / 0x200 - 12 - viewport.y / 0x200);
+				drawTexture(gSprites[TEX_CARET], &rcBubble[(bubble >> 1) & 1], x / 0x200 - 12 - gViewport.x / 0x200, y / 0x200 - 12 - gViewport.y / 0x200);
 		}
 		if (debugFlags & showHitRects)
 		{
-			SDL_SetRenderDrawColor(renderer, 0x80, 0x80, 0x80, 0x00);
-			drawRect(unitsToPixels(x - hit.left) - unitsToPixels(viewport.x),
-				unitsToPixels(y - hit.top) - unitsToPixels(viewport.y),
+			SDL_SetRenderDrawColor(gRenderer, 0x80, 0x80, 0x80, 0x00);
+			drawRect(unitsToPixels(x - hit.left) - unitsToPixels(gViewport.x),
+				unitsToPixels(y - hit.top) - unitsToPixels(gViewport.y),
 				unitsToPixels(hit.right + hit.left), unitsToPixels(hit.bottom + hit.top));
 		}
 		if (debugFlags & showHurtRects)
 		{
-			SDL_SetRenderDrawColor(renderer, 0x0FF, 0x00, 0x00, 0xFF);
-			drawRect(unitsToPixels(x - 0x400) - unitsToPixels(viewport.x),
-				unitsToPixels(y - 0x400) - unitsToPixels(viewport.y),
+			SDL_SetRenderDrawColor(gRenderer, 0x0FF, 0x00, 0x00, 0xFF);
+			drawRect(unitsToPixels(x - 0x400) - unitsToPixels(gViewport.x),
+				unitsToPixels(y - 0x400) - unitsToPixels(gViewport.y),
 				unitsToPixels(0x800), unitsToPixels(0x800));
 		}
 	}
@@ -868,7 +868,7 @@ void player::draw()
 void player::doBooster()
 {
 	//Boosting
-	if (this->equip & (equip_booster08 | equip_booster20) && isKeyPressed(keyJump) && this->boost_cnt)
+	if (this->equip & (equip_booster08 | equip_booster20) && isKeyPressed(gKeyJump) && this->boost_cnt)
 	{
 		if (this->equip & equip_booster08)
 		{
@@ -880,28 +880,28 @@ void player::doBooster()
 
 		if (this->equip & equip_booster20)
 		{
-			if (isKeyDown(keyUp))
+			if (isKeyDown(gKeyUp))
 			{
 				this->boost_sw = 2;
 
 				this->xm = 0;
 				this->ym = -0x5FF;
 			}
-			else if (isKeyDown(keyLeft))
+			else if (isKeyDown(gKeyLeft))
 			{
 				this->boost_sw = 1;
 
 				this->xm = -0x5FF;
 				this->ym = 0;
 			}
-			else if (isKeyDown(keyRight))
+			else if (isKeyDown(gKeyRight))
 			{
 				this->boost_sw = 1;
 
 				this->xm = 0x5FF;
 				this->ym = 0;
 			}
-			else if (isKeyDown(keyDown))
+			else if (isKeyDown(gKeyDown))
 			{
 				this->boost_sw = 3;
 

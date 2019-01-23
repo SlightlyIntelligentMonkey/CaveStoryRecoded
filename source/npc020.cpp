@@ -167,7 +167,7 @@ void npcAct024(npc *NPC) // Power Critter (enemy)
             NPC->ani_no = 0;
             NPC->act_no = normal;
             playSound(SFX_LargeObjectHitGround);
-            viewport.quake = 30;
+            gViewport.quake = 30;
         }
         break;
 
@@ -895,7 +895,7 @@ void npcAct036(npc *NPC) // Balrog, Flying (boss)
             NPC->ani_no = 2;
             playSound(SFX_LargeObjectHitGround);
             playSound(SFX_SillyExplosion);
-            viewport.quake = 30;
+            gViewport.quake = 30;
             NPC->damage = 0;
 
             for (size_t i = 0; i < 8; ++i)
