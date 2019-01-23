@@ -200,9 +200,9 @@ void loadLevel(size_t levelIndex, int w, int x, int y)
 
 	// -- loads map images -- //
 	//load sheet 1
-	loadImage(string("Npc/Npc") + stageTable[levelIndex].npc1, &sprites[TEX_NPC_1]);
+	loadImage(std::string("Npc/Npc") + stageTable[levelIndex].npc1, &sprites[TEX_NPC_1]);
 	//load sheet 2
-	loadImage(string("Npc/Npc") + stageTable[levelIndex].npc2, &sprites[TEX_NPC_2]);
+	loadImage(std::string("Npc/Npc") + stageTable[levelIndex].npc2, &sprites[TEX_NPC_2]);
 
 	// -- loads some map stuff -- //
 	//Set up map name
