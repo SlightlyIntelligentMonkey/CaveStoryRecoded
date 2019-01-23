@@ -7,24 +7,19 @@
 #include <SDL_version.h>
 #include "filesystem.h"
 
-using std::fstream;
-using std::endl;
-using std::string;
-using std::put_time;
+static std::fstream logFile;
 
-static fstream logFile;
-
-const string logFileName = "CaveStoryRecoded.log";
+const std::string logFileName = "CaveStoryRecoded.log";
 
 void initLogFile()
 {
     if (fileExists(logFileName))
     {
-        logFile.open(logFileName, fstream::app);
+        logFile.open(logFileName, std::fstream::app);
         logFile << "\n\n";
     }
     else
-        logFile.open(logFileName, fstream::out);
+        logFile.open(logFileName, std::fstream::out);
 
     const auto now = time(nullptr);
     logFile << "Cave Story Recoded - Date of compilation : " << __DATE__ << ". Time of compilation : " << __TIME__ << '\n';
@@ -37,29 +32,29 @@ void initLogFile()
     << " and linked against version " 
     << (int)linked.major << '.' << (int)linked.minor << '.' << (int)linked.patch << '\n';
     logFile << "Exact SDL2 revision number : " << SDL_GetRevisionNumber() << '\n';
-    logFile << "New session started at : " << put_time(localtime(&now), "%c") << endl;
+    logFile << "New session started at : " << std::put_time(localtime(&now), "%c") << std::endl;
 }
 
-void logDebug(const string& str)
+void logDebug(const std::string& str)
 {
     const auto now = time(nullptr);
-    logFile << '<' << put_time(localtime(&now), "%c") << '>' << " : Debug : " << str << endl;
+    logFile << '<' << std::put_time(localtime(&now), "%c") << '>' << " : Debug : " << str << std::endl;
 }
 
-void logInfo(const string& str)
+void logInfo(const std::string& str)
 {
     const auto now = time(nullptr);
-    logFile << '<' << put_time(localtime(&now), "%c") << '>' << " : Information : " << str << endl;
+    logFile << '<' << std::put_time(localtime(&now), "%c") << '>' << " : Information : " << str << std::endl;
 }
 
-void logWarning(const string& str)
+void logWarning(const std::string& str)
 {
     const auto now = time(nullptr);
-    logFile << '<' << put_time(localtime(&now), "%c") << '>' << " : Warning : " << str << endl;
+    logFile << '<' << std::put_time(localtime(&now), "%c") << '>' << " : Warning : " << str << std::endl;
 }
 
-void logError(const string& str)
+void logError(const std::string& str)
 {
     const auto now = time(nullptr);
-    logFile << '<' << put_time(localtime(&now), "%c") << '>' << " : Error : " << str << endl;
+    logFile << '<' << std::put_time(localtime(&now), "%c") << '>' << " : Error : " << str << std::endl;
 }
