@@ -93,7 +93,7 @@ void init()
 		doCustomError("Couldn't initiate SDL");
 
 	config::load();
-	auto config = config::old::load(config::old::gName);
+	auto config = config::old::load();
 
 	if (config)
 	{

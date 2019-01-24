@@ -166,7 +166,7 @@ namespace ballos
 			boss.act_no = states::phase1::comeDown + 1;
 			boss.ani_no = 0;
 			boss.x = currentPlayer.x;
-			createNpc(NPC_ProjectileBallosLightning, currentPlayer.x, floorY, 0, 0, dirRight);
+			createNpc(NPC_ProjectileBallosLightning, currentPlayer.x, crashY, 0, 0, dirRight);
 			boss.act_wait = 0;
 			// Fallthrough
 		case states::phase1::comeDown + 1:
