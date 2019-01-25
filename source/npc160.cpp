@@ -9,8 +9,6 @@
 #include "render.h"
 #include "stage.h"
 
-using std::array;
-
 void npcAct160(npc *NPC) //poo black
 {
 	enum states
@@ -296,8 +294,8 @@ LABEL_34:
 
 void npcAct163(npc *NPC) // Dr. Gero
 {
-    constexpr array<RECT, 2> rcLeft = {{{192, 0, 208, 16}, {208, 0, 224, 16}}};
-    constexpr array<RECT, 2> rcRight = {{{192, 16, 208, 32}, {208, 16, 224, 32}}};
+    constexpr std::array<RECT, 2> rcLeft = {{{192, 0, 208, 16}, {208, 0, 224, 16}}};
+    constexpr std::array<RECT, 2> rcRight = {{{192, 16, 208, 32}, {208, 16, 224, 32}}};
 
     switch (NPC->act_no)
     {
@@ -328,8 +326,8 @@ void npcAct163(npc *NPC) // Dr. Gero
 
 void npcAct164(npc *NPC) // Nurse Hasumi
 {
-    constexpr array<RECT, 2> rcLeft = {{{224, 0, 240, 16}, {240, 0, 256, 16}}};
-    constexpr array<RECT, 2> rcRight = {{{224, 16, 240, 32}, {240, 16, 256, 32}}};
+    constexpr std::array<RECT, 2> rcLeft = {{{224, 0, 240, 16}, {240, 0, 256, 16}}};
+    constexpr std::array<RECT, 2> rcRight = {{{224, 16, 240, 32}, {240, 16, 256, 32}}};
 
     switch (NPC->act_no)
     {
@@ -773,8 +771,8 @@ void npcAct170(npc *NPC)
 
 void npcAct171(npc *NPC) //Fire whirr
 {
-	array<RECT, 2> rcRight;
-	array<RECT, 2> rcLeft;
+	std::array<RECT, 2> rcRight;
+	std::array<RECT, 2> rcLeft;
 
 	rcLeft[0].left = 120;
 	rcLeft[0].top = 48;
@@ -865,7 +863,7 @@ void npcAct171(npc *NPC) //Fire whirr
 
 void npcAct172(npc *NPC) //Fire whirr projectile
 {
-	array<RECT, 3> rect;
+	std::array<RECT, 3> rect;
 
 	rect[0].left = 248;
 	rect[0].top = 48;
@@ -916,8 +914,8 @@ void npcAct172(npc *NPC) //Fire whirr projectile
 
 void npcAct173(npc *NPC) //Armoured Gaudi
 {
-	array<RECT, 4> rcLeft;
-	array<RECT, 4> rcRight;
+	std::array<RECT, 4> rcLeft;
+	std::array<RECT, 4> rcRight;
 	uint8_t deg;
 
 	rcLeft[0].left = 0;
@@ -1092,7 +1090,7 @@ void npcAct173(npc *NPC) //Armoured Gaudi
 
 void npcAct174(npc *NPC)
 {
-	array<RECT, 3> rect;
+	std::array<RECT, 3> rect;
 	rect[0].left = 120;
 	rect[0].top = 80;
 	rect[0].right = 136;
@@ -1184,8 +1182,8 @@ void npcAct174(npc *NPC)
 
 void npcAct175(npc *NPC)
 {
-	array<RECT, 2> rcLeft;
-	array<RECT, 2> rcRight;
+	std::array<RECT, 2> rcLeft;
+	std::array<RECT, 2> rcRight;
 
 	rcLeft[0].left = 168;
 	rcLeft[0].top = 80;
@@ -1237,8 +1235,8 @@ void npcAct175(npc *NPC)
 
 void npcAct176(npc *NPC)
 {
-	array<RECT, 3> rcRight;
-	array<RECT, 3> rcLeft;
+	std::array<RECT, 3> rcRight;
+	std::array<RECT, 3> rcLeft;
 
 	rcLeft[0].left = 96;
 	rcLeft[0].top = 128;
@@ -1345,7 +1343,7 @@ void npcAct176(npc *NPC)
 
 void npcAct177(npc *NPC)
 {
-	array<RECT, 2> rect;
+	std::array<RECT, 2> rect;
 
 	rect[0].left = 192;
 	rect[0].top = 128;

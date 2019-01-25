@@ -1,6 +1,6 @@
-﻿#include <array>
+﻿#include "npc140.h"
 
-#include "npc140.h"
+#include <array>
 #include "sound.h"
 #include "player.h"
 #include "caret.h"
@@ -10,8 +10,6 @@
 #include "game.h"
 #include "stage.h"
 #include "render.h"
-
-using std::array;
 
 void npcAct140(npc *NPC)//rabid toroko
 {
@@ -657,8 +655,8 @@ void npcAct146(npc *NPC) //Lightning
 
 void npcAct147(npc *NPC)
 {
-	array<RECT, 6> rcLeft;
-	array<RECT, 6> rcRight;
+	std::array<RECT, 6> rcLeft;
+	std::array<RECT, 6> rcRight;
 	uint8_t deg;
 
 	rcLeft[0].left = 0;
@@ -868,7 +866,7 @@ void npcAct147(npc *NPC)
 
 void npcAct148(npc *NPC)
 {
-	array<RECT, 2> rect;
+	std::array<RECT, 2> rect;
 
 	if (NPC->flag & 0xFF)
 	{
@@ -1016,8 +1014,8 @@ void npcAct149(npc *NPC) //moving block
 
 void npcAct150(npc *NPC) // Quote
 {
-	array<RECT, 9> rcLeft;
-	array<RECT, 9> rcRight;
+	std::array<RECT, 9> rcLeft;
+	std::array<RECT, 9> rcRight;
 
 	rcLeft[0] = { 0, 0, 16, 16 };
 	rcLeft[1] = { 48, 0, 64, 16 };
@@ -1199,8 +1197,8 @@ void npcAct150(npc *NPC) // Quote
 
 void npcAct151(npc *NPC) //Blue robot standing
 {
-	array<RECT, 2> rcLeft;
-	array<RECT, 2> rcRight;
+	std::array<RECT, 2> rcLeft;
+	std::array<RECT, 2> rcRight;
 
 	rcLeft[0] = { 192, 0, 208, 16 };
 	rcLeft[1] = { 208, 0, 224, 16 };
@@ -1251,7 +1249,7 @@ void npcAct152(npc *NPC) //used in almond for shooting the door
 
 void npcAct153(npc *NPC)
 {
-	constexpr array<RECT, 21> rcLeft =
+	constexpr std::array<RECT, 21> rcLeft =
 	{ {
 		{ 0, 0, 24, 24 },
 		{ 24, 0, 48, 24 },
@@ -1276,7 +1274,7 @@ void npcAct153(npc *NPC)
 		{ 96, 48, 120, 72 }
 	} };
 
-	constexpr array<RECT, 21> rcRight =
+	constexpr std::array<RECT, 21> rcRight =
 	{ {
 		{ 0, 24, 24, 48 },
 		{ 24, 24, 48, 48 },
@@ -1470,7 +1468,7 @@ void npcAct153(npc *NPC)
 
 void npcAct154(npc *NPC)
 {
-	constexpr array<RECT, 21> rcLeft =
+	constexpr std::array<RECT, 21> rcLeft =
 	{ {
 		{ 0, 0, 24, 24 },
 		{ 24, 0, 48, 24 },
@@ -1495,7 +1493,7 @@ void npcAct154(npc *NPC)
 		{ 96, 48, 120, 72 }
 	} };
 
-	constexpr array<RECT, 21> rcRight =
+	constexpr std::array<RECT, 21> rcRight =
 	{ {
 		{ 0, 24, 24, 48 },
 		{ 24, 24, 48, 48 },

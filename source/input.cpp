@@ -6,8 +6,6 @@
 #include <SDL_events.h>
 #include "main.h"
 
-using std::memcpy;
-
 bool gUseGamepad = false;
 SDL_GameController* currentGamepad = NULL;
 

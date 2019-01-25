@@ -15,8 +15,6 @@
 #include "stage.h"
 #include "npc.h"
 
-using std::memset;
-
 player currentPlayer;
 
 bool disableDamage = false;

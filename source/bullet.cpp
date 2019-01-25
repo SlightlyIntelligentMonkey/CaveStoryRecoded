@@ -11,12 +11,7 @@
 #include "game.h"
 #include "log.h"
 
-using std::string;
-using std::to_string;
-using std::deque;
-using std::memset;
-
-deque<bullet> bullets(0);
+std::deque<bullet> bullets(0);
 
 BULLETSTATS bulletTable[] =
 {
@@ -288,7 +283,7 @@ void bullet::update()
 				return;
 
 			wasNotifiedAboutBullet[this->code_bullet] = true;
-			string msg = "Bullet " + to_string(this->code_bullet) + " is not implemented yet.";
+			std::string msg = "Bullet " + std::to_string(this->code_bullet) + " is not implemented yet.";
 			logWarning(msg);
 			if (debugFlags & notifyOnNotImplemented)
                 SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_WARNING, "Missing Bullet", msg.c_str(), nullptr);

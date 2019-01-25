@@ -8,11 +8,9 @@
 #include "stage.h"
 #include "game.h"
 
-using std::array;
-
 void npcAct263(npc *NPC) // Doctor (boss)
 {
-    array<RECT, 9> rcLeft, rcRight;
+    std::array<RECT, 9> rcLeft, rcRight;
 
     rcLeft[0] = {0, 0, 24, 32};
     rcLeft[1] = {24, 0, 48, 32};
@@ -255,7 +253,7 @@ void npcAct263(npc *NPC) // Doctor (boss)
 
 void npcAct267(npc *NPC) // Muscle Doctor (boss)
 {
-    array<RECT, 10> rcLeft, rcRight;
+    std::array<RECT, 10> rcLeft, rcRight;
 
     rcLeft[0] = {0, 0, 0, 0};
     rcLeft[1] = {0, 64, 40, 112};
@@ -693,8 +691,8 @@ void npcAct267(npc *NPC) // Muscle Doctor (boss)
 
 void npcAct268(npc *NPC)
 {
-	array<RECT, 10> rcLeft;
-	array<RECT, 10> rcRight;
+	std::array<RECT, 10> rcLeft;
+	std::array<RECT, 10> rcRight;
 
 	rcLeft[0] = { 0, 0, 40, 40 };
 	rcLeft[1] = { 40, 0, 80, 40 };

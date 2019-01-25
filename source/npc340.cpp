@@ -9,8 +9,6 @@
 #include "game.h"
 #include "flash.h"
 
-using std::array;
-
 void npcAct340(npc *NPC) // Ballos (boss) (first form)
 {
     enum ballosStates
@@ -454,7 +452,7 @@ void npcAct340(npc *NPC) // Ballos (boss) (first form)
 
 void npcAct341(npc *NPC) // Ballos head
 {
-	constexpr array<RECT, 3> rcNPC = {{{288, 32, 320, 48}, {288, 48, 320, 64}, {288, 64, 320, 80}}};
+	constexpr std::array<RECT, 3> rcNPC = {{{288, 32, 320, 48}, {288, 48, 320, 64}, {288, 64, 320, 80}}};
 
     if (NPC->pNpc)
     {
@@ -563,7 +561,7 @@ void npcAct347(npc *NPC) // Hoppy (enemy)
         break;
     }
 
-	constexpr array<RECT, 4> rcNPC = { {{256, 48, 272, 64}, {272, 48, 288, 64}, {288, 48, 304, 64}, {304, 48, 320, 64}} };
+	constexpr std::array<RECT, 4> rcNPC = { {{256, 48, 272, 64}, {272, 48, 288, 64}, {288, 48, 304, 64}, {304, 48, 320, 64}} };
 
     NPC->doRects(rcNPC);
 }
@@ -592,7 +590,7 @@ void npcAct348(npc *NPC) // Generator - Ballos spikes
         }
     }
 
-    constexpr array<RECT, 2> rcNPC = {{{128, 152, 160, 176}, {160, 152, 192, 176}}};
+    constexpr std::array<RECT, 2> rcNPC = {{{128, 152, 160, 176}, {160, 152, 192, 176}}};
 
     NPC->doRects(rcNPC);
 }
@@ -646,7 +644,7 @@ void npcAct354(npc *NPC) // Invisible deathtrap wall
 
 void npcAct355(npc *NPC) // Balrog, crashing through wall
 {
-    constexpr array<RECT, 4> rcNPC = {{{80, 16, 96, 32}, {80, 96, 96, 112}, {128, 16, 144, 32}, {208, 96, 224, 112}}};
+    constexpr std::array<RECT, 4> rcNPC = {{{80, 16, 96, 32}, {80, 96, 96, 112}, {128, 16, 144, 32}, {208, 96, 224, 112}}};
 
     if (!NPC->act_no && NPC->pNpc)
     {

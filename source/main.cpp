@@ -14,9 +14,6 @@
 #include "log.h"
 #include "stage.h"
 
-using std::string;
-using std::to_string;
-
 // Some global functions
 
 static void doQuit()
@@ -37,7 +34,7 @@ void doError()
 	exit(EXIT_FAILURE);
 }
 
-void doCustomError(const string& msg)
+void doCustomError(const std::string& msg)
 {
 	SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Critical Error", msg.c_str(), nullptr);
 	logError(msg);
@@ -188,22 +185,22 @@ void init()
 		throw;
 	} catch (std::exception& e)
 	{
-        doCustomError("Exception thrown : " + string(e.what()));
+        doCustomError("Exception thrown : " + std::string(e.what()));
 	} catch (const int i)
 	{
-		doCustomError("int exception : " + to_string(i));
+		doCustomError("int exception : " + std::to_string(i));
 	} catch (const long l)
 	{
-		doCustomError("long exception : " + to_string(l));
+		doCustomError("long exception : " + std::to_string(l));
 	} catch (const char *p)
 	{
 	    if (p)
-            doCustomError("char * exception : " + string(p));
+            doCustomError("char * exception : " + std::string(p));
         else
             doCustomError("Someone threw a nullptr char *");
 	} catch (const void *p)
 	{
-        doCustomError("Someone threw a pointer to " + to_string(reinterpret_cast<uintptr_t>(p)));
+        doCustomError("Someone threw a pointer to " + std::to_string(reinterpret_cast<uintptr_t>(p)));
 	} catch (...)
 	{
 		doCustomError("Nope, sorry, no idea wtf happened");

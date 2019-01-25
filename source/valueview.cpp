@@ -6,11 +6,7 @@
 #include "render.h"
 #include "game.h"
 
-using std::memset;
-using std::abs;
-using std::vector;
-
-vector<valueview> valueviews(0);
+std::vector<valueview> valueviews(0);
 
 //Functions
 void createValueView(int *px, int *py, int value)

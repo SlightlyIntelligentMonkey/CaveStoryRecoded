@@ -16,8 +16,6 @@
 #include "log.h"
 #include "main.h"
 
-using std::string;
-
 //hey brackohnn i stoel your thing
 const uint8_t tileTypes[0x100] =
 {

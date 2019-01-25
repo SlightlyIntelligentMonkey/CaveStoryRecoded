@@ -8,8 +8,6 @@
 #include "stage.h"
 #include "render.h"
 
-using std::array;
-
 void npcAct060(npc *NPC) //Toroko
 {
 	constexpr int frameMap[11] = { 0, 1, 2, 1, 3, 4, 5, 4, 6, 7, 8 };
@@ -169,7 +167,7 @@ void npcAct060(npc *NPC) //Toroko
 
 void npcAct061(npc *NPC) //King
 {
-	constexpr array<RECT, 11> rcLeft =
+	constexpr std::array<RECT, 11> rcLeft =
 	{{
         { 224, 32, 240, 48 },
         { 240, 32, 256, 48 },
@@ -184,7 +182,7 @@ void npcAct061(npc *NPC) //King
         { 96, 32, 112, 48 },
     }};
 
-	constexpr array<RECT, 11> rcRight =
+	constexpr std::array<RECT, 11> rcRight =
 	{{
         { 224, 48, 240, 64 },
         { 240, 48, 256, 64 },
@@ -376,7 +374,7 @@ void npcAct061(npc *NPC) //King
 
 void npcAct062(npc *NPC) // Kazuma, facing away
 {
-	constexpr array<RECT, 3> rcNPC = { { {272, 192, 288, 216}, {288, 192, 304, 216}, {304, 192, 320, 216} } };
+	constexpr std::array<RECT, 3> rcNPC = { { {272, 192, 288, 216}, {288, 192, 304, 216}, {304, 192, 320, 216} } };
 
 	enum
 	{
@@ -437,8 +435,8 @@ void npcAct062(npc *NPC) // Kazuma, facing away
 
 void npcAct063(npc *NPC) // Toroko, panicking
 {
-	array<RECT, 6> rcLeft;
-	array<RECT, 6> rcRight;
+	std::array<RECT, 6> rcLeft;
+	std::array<RECT, 6> rcRight;
 
 	rcLeft[0] = { 64, 64, 80, 80 };
 	rcLeft[1] = { 80, 64, 96, 80 };
@@ -695,7 +693,7 @@ void npcAct065(npc *NPC) //First Cave Bat
 void npcAct066(npc *NPC) //Bubble (to catch Toroko in the shack)
 {
 	uint8_t deg;
-	array<RECT, 4> rect;
+	std::array<RECT, 4> rect;
 
 	rect[0] = { 32, 192, 56, 216 };
 	rect[1] = { 56, 192, 80, 216 };
@@ -767,8 +765,8 @@ void npcAct066(npc *NPC) //Bubble (to catch Toroko in the shack)
 
 void npcAct067(npc *NPC) //Misery floating
 {
-	array<RECT, 8> rcLeft;
-	array<RECT, 8> rcRight;
+	std::array<RECT, 8> rcLeft;
+	std::array<RECT, 8> rcRight;
 
 	rcLeft[0] = { 0x50, 0x00, 0x60, 0x10 };
 	rcLeft[1] = { 0x60, 0x00, 0x70, 0x10 };
@@ -1096,8 +1094,8 @@ void npcAct068(npc * NPC) // Balrog, Running (boss)
 	NPC->x += NPC->xm;
 	NPC->y += NPC->ym;
 
-	array<RECT, 9> rcLeft;
-	array<RECT, 9> rcRight;
+	std::array<RECT, 9> rcLeft;
+	std::array<RECT, 9> rcRight;
 	rcLeft[0] = { 0, 0, 40, 24 };
 	rcLeft[1] = { 0, 48, 40, 72 };
 	rcLeft[2] = rcLeft[0];
@@ -1122,8 +1120,8 @@ void npcAct068(npc * NPC) // Balrog, Running (boss)
 
 void npcAct069(npc *NPC) //Pignon
 {
-	array<RECT, 6> rcLeft;
-	array<RECT, 6> rcRight;
+	std::array<RECT, 6> rcLeft;
+	std::array<RECT, 6> rcRight;
 
 	rcLeft[0] = { 48, 0, 64, 16 };
 	rcLeft[1] = { 64, 0, 80, 16 };
@@ -1239,7 +1237,7 @@ void npcAct069(npc *NPC) //Pignon
 
 void npcAct070(npc * NPC) // Sparkling Item
 {
-	constexpr array<RECT, 4> rcNPC = { { {96, 48, 112, 64}, {112, 48, 128, 64}, {128, 48, 144, 64}, {144, 48, 160, 64} } };
+	constexpr std::array<RECT, 4> rcNPC = { { {96, 48, 112, 64}, {112, 48, 128, 64}, {128, 48, 144, 64}, {144, 48, 160, 64} } };
 
 	NPC->animate(3, 0, 3);
 	NPC->doRects(rcNPC);
@@ -1263,8 +1261,8 @@ void npcAct071(npc * NPC) // Chinfish (enemy)
 	NPC->x += NPC->xm;
 	NPC->y += NPC->ym;
 
-	constexpr array<RECT, 3> rcLeft = { { {64, 32, 80, 48}, {80, 32, 96, 48}, {92, 32, 112, 48} } };
-	constexpr array<RECT, 3> rcRight = { { {64, 48, 80, 64}, {80, 48, 96, 64}, {96, 48, 112, 64} } };
+	constexpr std::array<RECT, 3> rcLeft = { { {64, 32, 80, 48}, {80, 32, 96, 48}, {92, 32, 112, 48} } };
+	constexpr std::array<RECT, 3> rcRight = { { {64, 48, 80, 64}, {80, 48, 96, 64}, {96, 48, 112, 64} } };
 
 	NPC->animate(4, 0, 1);
 	if (NPC->shock)
@@ -1298,7 +1296,7 @@ void npcAct072(npc *NPC) // Sprinkler
 		}
 	}
 
-	array<RECT, 2> rcNPC = { { {224, 48, 240, 64}, {240, 48, 256, 64} } };
+	std::array<RECT, 2> rcNPC = { { {224, 48, 240, 64}, {240, 48, 256, 64} } };
 
 	NPC->doRects(rcNPC);
 }
@@ -1333,8 +1331,8 @@ void npcAct073(npc *NPC) //Water drop
 
 void npcAct074(npc *NPC) //Jack
 {
-	array<RECT, 6> rcLeft;
-	array<RECT, 6> rcRight;
+	std::array<RECT, 6> rcLeft;
+	std::array<RECT, 6> rcRight;
 
 	rcLeft[0] = { 64, 0, 80, 16 };
 	rcLeft[1] = { 80, 0, 96, 16 };
@@ -1409,7 +1407,7 @@ void npcAct074(npc *NPC) //Jack
 
 void npcAct075(npc * NPC) // Kanpachi
 {
-	constexpr array<RECT, 2> rcNPC = { { {272, 32, 296, 56}, {296, 32, 320, 56} } };
+	constexpr std::array<RECT, 2> rcNPC = { { {272, 32, 296, 56}, {296, 32, 320, 56} } };
 
 	if (NPC->act_no)
 	{
@@ -1479,8 +1477,8 @@ void npcAct078(npc *NPC) //Pot
 
 void npcAct079(npc *NPC) // Mahin
 {
-	constexpr array<RECT, 3> rcLeft = { { { 0, 0, 16, 16 }, { 16, 0, 32, 16 }, { 32, 0, 48, 16 } } };
-	constexpr array<RECT, 3> rcRight = { { { 0, 16, 16, 32 }, { 16, 16, 32, 32 }, { 32, 16, 48, 32 } } };
+	constexpr std::array<RECT, 3> rcLeft = { { { 0, 0, 16, 16 }, { 16, 0, 32, 16 }, { 32, 0, 48, 16 } } };
+	constexpr std::array<RECT, 3> rcRight = { { { 0, 16, 16, 32 }, { 16, 16, 32, 32 }, { 32, 16, 48, 32 } } };
 
 	if (!NPC->act_no)
 	{

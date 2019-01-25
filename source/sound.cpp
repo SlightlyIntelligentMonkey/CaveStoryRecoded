@@ -16,8 +16,6 @@
 #include "mathUtils.h"	// For M_PI definition
 #include "main.h"
 
-using std::string;
-
 //Sound struct
 struct SOUND {
 	struct SOUND *next;

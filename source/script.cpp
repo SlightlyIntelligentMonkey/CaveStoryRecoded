@@ -23,8 +23,6 @@
 #include "stage.h"
 #include "flash.h"
 
-using std::string;
-
 //Variables
 TSC tsc;
 char tscText[0x100];
@@ -76,7 +74,7 @@ void decryptTsc(uint8_t *data, size_t size)
 	}
 }
 
-void loadStageTsc(const string& name)
+void loadStageTsc(const std::string& name)
 {
 	//Load Head.tsc file
 	SDL_RWops *headRW = SDL_RWFromFile("data/Head.tsc", "rb");
@@ -109,7 +107,7 @@ void loadStageTsc(const string& name)
 	tsc.path = name;
 }
 
-void loadTsc2(const string& name)
+void loadTsc2(const std::string& name)
 {
 	//Load tsc file
 	SDL_RWops *bodyRW = SDL_RWFromFile(name.c_str(), "rb");
@@ -313,7 +311,7 @@ void tscPutNumber(TSC &ptsc, int index)
 	}
 }
 
-static inline void showTSCNotImplementedWarning(const string& message)
+static inline void showTSCNotImplementedWarning(const std::string& message)
 {
 	SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_WARNING, "Unimplemented command", message.c_str(), nullptr);
 	logWarning(message);
