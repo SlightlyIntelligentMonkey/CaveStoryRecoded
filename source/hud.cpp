@@ -12,10 +12,6 @@
 #include <cstring>
 #include <SDL_render.h>
 
-using std::strlen;
-using std::string;
-using std::to_string;
-
 void drawMapName(bool bMini)
 {
 	const auto len = strlen(gMapName.name);

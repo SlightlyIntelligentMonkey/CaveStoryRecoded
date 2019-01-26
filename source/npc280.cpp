@@ -7,9 +7,6 @@
 #include "game.h"
 #include "render.h"
 
-using std::array;
-using std::max;
-
 void npcAct291(npc *NPC) // Mini Undead Core, stationary
 {
     if (!NPC->act_no)
@@ -33,7 +30,7 @@ void npcAct292(npc * /*NPC*/) //Quake
 
 void npcAct293(npc *NPC) // Undead Core large energy ball (projectile)
 {
-    constexpr array<RECT, 2> rcNPC = {{{240, 200, 280, 240}, {280, 200, 320, 240}}};
+    constexpr std::array<RECT, 2> rcNPC = {{{240, 200, 280, 240}, {280, 200, 320, 240}}};
 
     if (!NPC->act_no)
         NPC->act_no = 1;
@@ -55,7 +52,7 @@ void npcAct293(npc *NPC) // Undead Core large energy ball (projectile)
 
 void npcAct295(npc *NPC) // Cloud
 {
-    constexpr array<RECT, 4> rcNPC = {{{0, 0, 208, 64}, {32, 64, 144, 96}, {32, 96, 104, 128}, {104, 96, 144, 128}}};
+    constexpr std::array<RECT, 4> rcNPC = {{{0, 0, 208, 64}, {32, 64, 144, 96}, {32, 96, 104, 128}, {104, 96, 144, 128}}};
 
     switch (NPC->act_no)
     {
@@ -152,7 +149,7 @@ void npcAct297(npc *NPC) //Sue on sky dragon
 
 void npcAct298(npc *NPC) //Doctor without crown (intro)
 {
-	array<RECT, 8> rc;
+	std::array<RECT, 8> rc;
 
 	rc[0] = { 0x48, 0x80, 0x58, 0xA0 };
 	rc[1] = { 0x58, 0x80, 0x68, 0xA0 };
@@ -256,7 +253,7 @@ void npcAct298(npc *NPC) //Doctor without crown (intro)
 
 void npcAct299(npc *NPC) //Balrog / Misery in bubble (intro)
 {
-	array<RECT, 2> rc; // [esp+0h] [ebp-20h]
+	std::array<RECT, 2> rc; // [esp+0h] [ebp-20h]
 
 	rc[0] = { 0, 0, 48, 48 };
 	rc[1] = { 48, 0, 96, 48 };

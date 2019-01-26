@@ -10,12 +10,10 @@
 #include "stage.h"
 #include "flash.h"
 
-using std::array;
-
 void npcAct080(npc *NPC) //Gravekeeper
 {
-	array<RECT, 7> rcLeft;
-	array<RECT, 7> rcRight;
+	std::array<RECT, 7> rcLeft;
+	std::array<RECT, 7> rcRight;
 
 	rcLeft[0].left = 0; //Sorry I'm lazy
 	rcLeft[0].top = 64;
@@ -195,8 +193,8 @@ void npcAct080(npc *NPC) //Gravekeeper
 
 void npcAct081(npc *NPC) //Big pignon
 {
-	array<RECT, 6> rcLeft;
-	array<RECT, 6> rcRight;
+	std::array<RECT, 6> rcLeft;
+	std::array<RECT, 6> rcRight;
 
 	rcLeft[0].left = 144;
 	rcLeft[0].top = 64;
@@ -357,8 +355,8 @@ void npcAct081(npc *NPC) //Big pignon
 
 void npcAct082(npc *NPC) //Misery standing
 {
-	array<RECT, 9> rcLeft;
-	array<RECT, 9> rcRight;
+	std::array<RECT, 9> rcLeft;
+	std::array<RECT, 9> rcRight;
 
 	rcLeft[0] = { 0x50, 0x00, 0x60, 0x10 };
 	rcLeft[1] = { 0x60, 0x00, 0x70, 0x10 };
@@ -548,8 +546,8 @@ void npcAct082(npc *NPC) //Misery standing
 
 void npcAct083(npc *NPC) // Igor, standing
 {
-	array<RECT, 8> rcLeft;
-	array<RECT, 8> rcRight;
+	std::array<RECT, 8> rcLeft;
+	std::array<RECT, 8> rcRight;
 
 	rcLeft[0] = { 0, 0, 40, 40 };
 	rcLeft[1] = { 40, 0, 80, 40 };
@@ -659,7 +657,7 @@ void npcAct083(npc *NPC) // Igor, standing
 
 void npcAct084(npc *NPC) //Basu 1 projectile
 {
-	array<RECT, 4> rect;
+	std::array<RECT, 4> rect;
 
 	rect[0] = { 48, 48, 64, 64 };
 	rect[1] = { 64, 48, 80, 64 };
@@ -698,8 +696,8 @@ void npcAct084(npc *NPC) //Basu 1 projectile
 
 void npcAct085(npc * NPC) // Terminal
 {
-	constexpr array<RECT, 3> rcLeft = { { {256, 96, 272, 120}, {256, 96, 272, 120}, {272, 96, 288, 120} } };
-	constexpr array<RECT, 3> rcRight = { { {256, 96, 272, 120}, {288, 96, 304, 120}, {304, 96, 320, 120} } };
+	constexpr std::array<RECT, 3> rcLeft = { { {256, 96, 272, 120}, {256, 96, 272, 120}, {272, 96, 288, 120} } };
+	constexpr std::array<RECT, 3> rcRight = { { {256, 96, 272, 120}, {288, 96, 304, 120}, {304, 96, 320, 120} } };
 
 	if (NPC->act_no == 0)
 	{
@@ -851,8 +849,8 @@ void npcAct087(npc *NPC) //Health refill
 
 void npcAct088(npc * NPC) // Igor (boss)
 {
-	array<RECT, 12> rcLeft;
-	array<RECT, 12> rcRight;
+	std::array<RECT, 12> rcLeft;
+	std::array<RECT, 12> rcRight;
 
 	rcLeft[0] = { 0, 0, 40, 40 };
 	rcLeft[1] = { 40, 0, 80, 40 };
@@ -1068,8 +1066,8 @@ void npcAct088(npc * NPC) // Igor (boss)
 
 void npcAct089(npc * NPC) // Igor, dying
 {
-	array<RECT, 4> rcLeft;
-	array<RECT, 4> rcRight;
+	std::array<RECT, 4> rcLeft;
+	std::array<RECT, 4> rcRight;
 
 	rcLeft[0].left = 80;
 	rcLeft[0].top = 80;
@@ -1213,7 +1211,7 @@ void npcAct091(npc *NPC) // Cage
 
 void npcAct092(npc * NPC) // Sue (Computer)
 {
-	constexpr array<RECT, 3> rcNPC = { { {272, 216, 288, 240}, {288, 216, 304, 240}, {304, 216, 320, 240} } };
+	constexpr std::array<RECT, 3> rcNPC = { { {272, 216, 288, 240}, {288, 216, 304, 240}, {304, 216, 320, 240} } };
 
 	enum
 	{
@@ -1275,8 +1273,8 @@ void npcAct092(npc * NPC) // Sue (Computer)
 
 void npcAct093(npc * NPC)
 {
-	array<RECT, 7> rcLeft;
-	array<RECT, 7> rcRight;
+	std::array<RECT, 7> rcLeft;
+	std::array<RECT, 7> rcRight;
 
 	rcLeft[0] = { 128, 0, 144, 16 };
 	rcLeft[1] = { 144, 0, 160, 16 };
@@ -1363,7 +1361,7 @@ void npcAct093(npc * NPC)
 
 void npcAct094(npc * NPC)
 {
-	constexpr array<RECT, 5> rcNPC = { { {272, 0, 320, 24}, {272, 24, 320, 48}, {272, 48, 320, 73}, {272, 72, 320, 96}, {272, 96, 320, 120} } };
+	constexpr std::array<RECT, 5> rcNPC = { { {272, 0, 320, 24}, {272, 24, 320, 48}, {272, 48, 320, 73}, {272, 72, 320, 96}, {272, 96, 320, 120} } };
 
 	enum
 	{
@@ -1486,8 +1484,8 @@ void npcAct094(npc * NPC)
 
 void npcAct095(npc * NPC)
 {
-	constexpr array<RECT, 4> rcLeft = { { {208, 64, 224, 80}, {224, 64, 240, 80}, {240, 64, 256, 80}, {256, 64, 272, 80} } };
-	constexpr array<RECT, 4> rcRight = { { {208, 80, 224, 96}, {224, 80, 240, 96}, {240, 80, 256, 96}, {256, 80, 272, 96} } };
+	constexpr std::array<RECT, 4> rcLeft = { { {208, 64, 224, 80}, {224, 64, 240, 80}, {240, 64, 256, 80}, {256, 64, 272, 80} } };
+	constexpr std::array<RECT, 4> rcRight = { { {208, 80, 224, 96}, {224, 80, 240, 96}, {240, 80, 256, 96}, {256, 80, 272, 96} } };
 
 	switch (NPC->act_no)
 	{

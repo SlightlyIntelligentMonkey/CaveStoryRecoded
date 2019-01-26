@@ -27,10 +27,12 @@ void initLogFile()
     SDL_version linked;
     SDL_VERSION(&compiled);
     SDL_GetVersion(&linked);
-    logFile << "Compiled against SDL2 version " 
-    << (int)compiled.major << '.' << (int)compiled.minor << '.' << (int)compiled.patch
-    << " and linked against version " 
-    << (int)linked.major << '.' << (int)linked.minor << '.' << (int)linked.patch << '\n';
+    logFile << "Compiled against SDL2 version " << static_cast<int>(compiled.major) 
+    << '.' << static_cast<int>(compiled.minor) 
+    << '.' << static_cast<int>(compiled.patch)
+    << " and linked against version " << static_cast<int>(linked.major) 
+    << '.' << static_cast<int>(linked.minor) 
+    << '.' << static_cast<int>(linked.patch) << '\n';
     logFile << "Exact SDL2 revision number : " << SDL_GetRevisionNumber() << '\n';
     logFile << "New session started at : " << std::put_time(localtime(&now), "%c") << std::endl;
 }

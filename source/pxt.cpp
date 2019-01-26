@@ -18,7 +18,9 @@ void makeWaveTables()
 {
 	//Sine wave
 	for (int i = 0; i < 256; ++i)
-		waveModelTable[0][i] = (int8_t)(sin((long double)i * (M_PI * 2.0) / 256.0) * (long double)0x40);
+		waveModelTable[0][i] 
+			= static_cast<int8_t>(sinl(static_cast<long double>(i) 
+					* (M_PI * 2.0) / 256.0)  * static_cast<long double>(0x40));
 
 	//Triangle
 	int triangle = 0;
@@ -48,7 +50,7 @@ void makeWaveTables()
 	//Noise
 	srand(0);
 	for (int j = 0; j < 256; ++j)
-		waveModelTable[5][j] = (int8_t)rand() / 2;
+		waveModelTable[5][j] = static_cast<int8_t>(rand()) / 2;
 }
 
 //Pxt loading
@@ -90,9 +92,9 @@ std::vector<long double> getNumbersFromString(const std::string& str)
 
 				//Add value to number
 				if (!numberDecimal)
-					currentValue += (long double)(str[i] - 0x30) * (pow(10, (v - i) - 1));
+					currentValue += static_cast<long double>(str[i] - 0x30) * (pow(10, (v - i) - 1));
 				else
-					currentValue += (long double)(str[i] - 0x30) * (1.0 / pow(10, 2 - ((v - i) - 1)));
+					currentValue += static_cast<long double>(str[i] - 0x30) * (1.0 / pow(10, 2 - ((v - i) - 1)));
 			}
 			else
 				numberDecimal = true;
@@ -135,7 +137,7 @@ int makePixelWaveData(const std::vector<long double>& pxtData, uint8_t *data)
 	currentEnvelope = pxtData[14];
 	while (i < pxtData[15])
 	{
-		envelopeTable[i] = (char)currentEnvelope;
+		envelopeTable[i] = static_cast<char>(currentEnvelope);
 		currentEnvelope = (pxtData[16] - pxtData[14])
 			/ pxtData[15]
 			+ currentEnvelope;
@@ -146,7 +148,7 @@ int makePixelWaveData(const std::vector<long double>& pxtData, uint8_t *data)
 	currentEnvelopea = pxtData[16];
 	while (i < pxtData[17])
 	{
-		envelopeTable[i] = (char)currentEnvelopea;
+		envelopeTable[i] = static_cast<char>(currentEnvelopea);
 		currentEnvelopea = (pxtData[18] - pxtData[16])
 			/ (pxtData[17] - pxtData[15])
 			+ currentEnvelopea;
@@ -157,7 +159,7 @@ int makePixelWaveData(const std::vector<long double>& pxtData, uint8_t *data)
 	currentEnvelopeb = pxtData[18];
 	while (i < pxtData[19])
 	{
-		envelopeTable[i] = (char)currentEnvelopeb;
+		envelopeTable[i] = static_cast<char>(currentEnvelopeb);
 		currentEnvelopeb = (pxtData[20] - pxtData[18])
 			/ (pxtData[19] - pxtData[17])
 			+ currentEnvelopeb;
@@ -168,7 +170,7 @@ int makePixelWaveData(const std::vector<long double>& pxtData, uint8_t *data)
 	currentEnvelopec = pxtData[20];
 	while (i < 256)
 	{
-		envelopeTable[i] = (char)currentEnvelopec;
+		envelopeTable[i] = static_cast<char>(currentEnvelopec);
 		currentEnvelopec = currentEnvelopec
 			- pxtData[20] / (256 - pxtData[19]);
 		++i;
@@ -201,26 +203,27 @@ int makePixelWaveData(const std::vector<long double>& pxtData, uint8_t *data)
 
 	for (i = 0; i < pxtData[1]; ++i)
 	{
-		const int a = (int)(uint64_t)mainOffset % 256;
-		const int v2 = (int)(uint64_t)pitchOffset % 256;
+		const int a = static_cast<int>(static_cast<uint64_t>(mainOffset)) % 256;
+		const int v2 = static_cast<int>(static_cast<uint64_t>(pitchOffset)) % 256;
 
 		//Input data
-		data[i] = envelopeTable[(uint64_t)((long double)(i << 8) / pxtData[1])]
+		data[i] = static_cast<uint8_t>(
+			envelopeTable[static_cast<uint64_t>(static_cast<long double>(i << 8) / pxtData[1])]
 			* (pxtData[4]
-				* waveModelTable[(size_t)pxtData[2]][a]
+				* waveModelTable[static_cast<size_t>(pxtData[2])][a]
 				/ 64
 				* (pxtData[12]
-					* waveModelTable[(size_t)pxtData[10]][(signed int)(uint64_t)volumeOffset % 256]
+					* waveModelTable[static_cast<size_t>(pxtData[10])][static_cast<int>(static_cast<uint64_t>(volumeOffset)) % 256]
 					/ 64
 					+ 64)
 				/ 64)
 			/ 64
-			+ 128;	// This was originally -128, but casting a negative double to an unsigned char results in undefined behaviour
+			+ 128);	// This was originally -128, but casting a negative double to an unsigned char results in undefined behaviour
 
 		long double newMainOffset;
-		if (waveModelTable[(size_t)pxtData[6]][v2] >= 0)
+		if (waveModelTable[static_cast<size_t>(pxtData[6])][v2] >= 0)
 			newMainOffset = (mainFreq * 2)
-			* (long double)waveModelTable[(size_t)pxtData[6]][(signed int)(uint64_t)pitchOffset % 256]
+			* static_cast<long double>(waveModelTable[static_cast<size_t>(pxtData[6])][static_cast<int>(pitchOffset) % 256])
 			* pxtData[8]
 			/ 64.0
 			/ 64.0
@@ -230,7 +233,7 @@ int makePixelWaveData(const std::vector<long double>& pxtData, uint8_t *data)
 			newMainOffset = mainFreq
 			- mainFreq
 			* 0.5
-			* (long double)-waveModelTable[(size_t)pxtData[6]][v2]
+			* static_cast<long double>(-waveModelTable[static_cast<size_t>(pxtData[6])][v2])
 			* pxtData[8]
 			/ 64.0
 			/ 64.0
@@ -270,7 +273,7 @@ int loadSound(const std::string& path, int no)
 			for (int i = 0; i < 4; i++)
 			{
 				if (lineNumbers[i][1] > size)
-					size = (size_t)lineNumbers[i][1];
+					size = static_cast<size_t>(lineNumbers[i][1]);
 			}
 
 			sounds[no] = SoundObject_Create(size, 22050);

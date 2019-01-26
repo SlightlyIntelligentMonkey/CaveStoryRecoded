@@ -6,9 +6,6 @@
 #include "fade.h"
 #include "game.h"
 
-using std::memset;
-using std::max;
-
 FADE_STATE fade;
 
 const int fadeFrames = 16;
@@ -42,7 +39,7 @@ void drawFade()
 
 	const int w = gScreenWidth / 16 + 1;
 	const int h = gScreenHeight / 16 + 1;
-	const int frames = (max(gScreenWidth, gScreenHeight) / 16 + fadeFrames);
+	const int frames = (std::max(gScreenWidth, gScreenHeight) / 16 + fadeFrames);
 
 	if (fade.bMask)
 	{

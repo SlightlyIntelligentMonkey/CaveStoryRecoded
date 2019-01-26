@@ -3,19 +3,13 @@
 #include <random>
 #include <chrono>
 
-using std::mt19937;
-using std::enable_if;
-using std::seed_seq;
-using std::uniform_int_distribution;
-using std::random_device;
-
-template<class T = mt19937, size_t N = T::state_size>
-auto seededRandomEngine() -> typename enable_if<!!N, T>::type
+template<class T = std::mt19937, size_t N = T::state_size>
+auto seededRandomEngine() -> typename std::enable_if<!!N, T>::type
 {
-	random_device rd;
+	std::random_device rd;
 	if (rd.entropy() != 0)
 	{
-		seed_seq seeds
+		std::seed_seq seeds
 		{
 			rd(),
 			rd(),
@@ -30,7 +24,7 @@ auto seededRandomEngine() -> typename enable_if<!!N, T>::type
 		return seededEngine;
 	}
 	srand(static_cast<unsigned int>(std::chrono::high_resolution_clock::now().time_since_epoch().count()));
-	seed_seq seeds
+	std::seed_seq seeds
 	{
 		static_cast<int>(std::chrono::high_resolution_clock::now().time_since_epoch().count()),
 		static_cast<int>(std::chrono::high_resolution_clock::now().time_since_epoch().count() >> 32),
@@ -48,10 +42,10 @@ auto seededRandomEngine() -> typename enable_if<!!N, T>::type
 // return random number between mi and ma
 int32_t random(int32_t minimum, int32_t maximum)
 {
-	static thread_local mt19937 engine(seededRandomEngine());
+	static thread_local std::mt19937 engine(seededRandomEngine());
 
 	// Distribution goes from 0 to TYPE_MAX by default
-	static uniform_int_distribution<int32_t> distrInt;
+	static std::uniform_int_distribution<int32_t> distrInt;
 
 	return (minimum + (distrInt(engine) % (maximum - minimum + 1)));
 }

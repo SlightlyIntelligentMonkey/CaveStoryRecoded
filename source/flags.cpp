@@ -4,9 +4,6 @@
 #include <string>
 #include "log.h"
 
-using std::memset;
-using std::to_string;
-
 uint8_t gTscFlags[bitsToBytes(8000)]; //game flags
 uint8_t gSkipFlags[bitsToBytes(512)]; //skip flags
 uint8_t gMapFlags[bitsToBytes(1024)]; //map flags
@@ -45,7 +42,7 @@ inline void flipBit(uint8_t *buf, size_t x)
 void setFlag(size_t a)
 {
     if (a > bytesToBits(_countof(gTscFlags)))
-        logWarning("Tried to set flag " + to_string(a) + " (Out of bounds)");
+        logWarning("Tried to set flag " + std::to_string(a) + " (Out of bounds)");
     else
         setBit(gTscFlags, a);
 }
@@ -53,7 +50,7 @@ void setFlag(size_t a)
 void clearFlag(size_t a)
 {
     if (a > bytesToBits(_countof(gTscFlags)))
-        logWarning("Tried to clear flag " + to_string(a) + " (Out of bounds)");
+        logWarning("Tried to clear flag " + std::to_string(a) + " (Out of bounds)");
     else
         clearBit(gTscFlags, a);
 }
@@ -62,7 +59,7 @@ bool getFlag(size_t a)
 {
     if (a > bytesToBits(_countof(gTscFlags)))
     {
-        logWarning("Tried to get flag " + to_string(a) + " (Out of bounds)");
+        logWarning("Tried to get flag " + std::to_string(a) + " (Out of bounds)");
         return false;
     }
     else
@@ -73,7 +70,7 @@ bool getFlag(size_t a)
 void setSkipFlag(size_t a)
 {
     if (a > bytesToBits(_countof(gSkipFlags)))
-        logWarning("Tried to set skipFlag " + to_string(a) + " (Out of bounds)");
+        logWarning("Tried to set skipFlag " + std::to_string(a) + " (Out of bounds)");
     else
         setBit(gSkipFlags, a);
 }
@@ -81,7 +78,7 @@ void setSkipFlag(size_t a)
 void clearSkipFlag(size_t a)
 {
     if (a > bytesToBits(_countof(gSkipFlags)))
-        logWarning("Tried to clear skipFlag " + to_string(a) + " (Out of bounds)");
+        logWarning("Tried to clear skipFlag " + std::to_string(a) + " (Out of bounds)");
     else
         clearBit(gSkipFlags, a);
 }
@@ -90,7 +87,7 @@ bool getSkipFlag(size_t a)
 {
     if (a > bytesToBits(_countof(gSkipFlags)))
     {
-        logWarning("Tried to get skipFlag " + to_string(a) + " (Out of bounds)");
+        logWarning("Tried to get skipFlag " + std::to_string(a) + " (Out of bounds)");
         return false;
     }
     else
@@ -101,7 +98,7 @@ bool getSkipFlag(size_t a)
 void setMapFlag(size_t a)
 {
     if (a > bytesToBits(_countof(gMapFlags)))
-        logWarning("Tried to set mapFlag " + to_string(a) + " (Out of bounds)");
+        logWarning("Tried to set mapFlag " + std::to_string(a) + " (Out of bounds)");
     else
         setBit(gMapFlags, a);
 }
@@ -110,7 +107,7 @@ bool getMapFlag(size_t a)
 {
     if (a > bytesToBits(_countof(gMapFlags)))
     {
-        logWarning("Tried to get mapFlag " + to_string(a) + " (Out of bounds)");
+        logWarning("Tried to get mapFlag " + std::to_string(a) + " (Out of bounds)");
         return false;
     }
     else

@@ -9,8 +9,6 @@
 #include "mathUtils.h"
 #include "game.h"
 
-using std::array;
-
 void npcAct120(npc *NPC) //Colon 1
 {
 	if (NPC->direct)
@@ -1273,8 +1271,8 @@ void npcAct138(npc *NPC)
 
 void npcAct139(npc *NPC) //Doctor with the crown
 {
-	array<RECT, 3> rcLeft;
-	array<RECT, 3> rcRight;
+	std::array<RECT, 3> rcLeft;
+	std::array<RECT, 3> rcRight;
 
 	rcLeft[0] = { 0, 128, 24, 160 };
 	rcLeft[1] = { 24, 128, 48, 160 };

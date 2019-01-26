@@ -14,9 +14,6 @@
 #include "valueview.h"
 #include "main.h"
 
-using std::string;
-using std::strcpy;
-
 //Teleporter Menu
 PERMIT_STAGE gPermitStage[PERMITSTAGES];
 int selectedStage;
@@ -96,7 +93,7 @@ int stageSelect(int *runEvent)
 		doCustomError("runEvent was nullptr in stageSelect");
 
 	//Keep track of old one
-	string oldScript(tsc.path);
+	std::string oldScript(tsc.path);
 
 	//Init some stuff
 	selectedStage = 0;

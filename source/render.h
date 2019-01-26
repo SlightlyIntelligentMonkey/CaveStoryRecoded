@@ -74,10 +74,10 @@ void createTextureBuffer(enum TextureNums texture_id, int width, int height);
 
 template <typename T> constexpr inline int32_t secondsToFrames(T x)
 {
-    return x * 50;
+    return static_cast<int32_t>(x * static_cast<T>(50));
 }
 
 template <typename T> constexpr inline T framesToSeconds(T x)
 {
-    return x / 50;
+    return static_cast<int32_t>(x / static_cast<T>(50));
 }

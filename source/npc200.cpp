@@ -11,13 +11,11 @@
 #include "stage.h"
 #include "game.h"
 
-using std::array;
-
 void npcAct200(npc *NPC) // Dragon Zombie (enemy)
 {
-	constexpr array<RECT, 6> rcLeft = { { {0, 0, 40, 40}, {40, 0, 80, 40}, {80, 0, 120, 40}, {120, 0, 160, 40},
+	constexpr std::array<RECT, 6> rcLeft = { { {0, 0, 40, 40}, {40, 0, 80, 40}, {80, 0, 120, 40}, {120, 0, 160, 40},
 	{160, 0, 200, 40}, {200, 0, 240, 40} } };
-	constexpr array<RECT, 6> rcRight = { { {0, 40, 40, 80}, {40, 40, 80, 80}, {80, 40, 120, 80}, {120, 40, 160, 80}, {160, 40, 200, 80},
+	constexpr std::array<RECT, 6> rcRight = { { {0, 40, 40, 80}, {40, 40, 80, 80}, {80, 40, 120, 80}, {120, 40, 160, 80}, {160, 40, 200, 80},
 	{200, 40, 240, 80} } };
 
 	enum
@@ -127,7 +125,7 @@ void npcAct202(npc * NPC) // Dragon Zombie fire (projectile)
 	NPC->x += NPC->xm;
 	NPC->y += NPC->ym;
 
-	constexpr array<RECT, 3> rcNPC = { { {184, 216, 200, 240}, {200, 216, 216, 240}, {216, 216, 232, 240} } };
+	constexpr std::array<RECT, 3> rcNPC = { { {184, 216, 200, 240}, {200, 216, 216, 240}, {216, 216, 232, 240} } };
 
 	NPC->animate(1, 0, 2);
 
@@ -142,8 +140,8 @@ void npcAct202(npc * NPC) // Dragon Zombie fire (projectile)
 
 void npcAct203(npc * NPC) // Critter, Hopping Aqua (enemy)
 {
-	constexpr array<RECT, 3> rcLeft = { { {0, 80, 16, 96}, {16, 80, 32, 96}, {32, 80, 48, 96} } };
-	constexpr array<RECT, 3> rcRight = { { {0, 96, 16, 112}, {16, 96, 32, 112}, {32, 96, 48, 112} } };
+	constexpr std::array<RECT, 3> rcLeft = { { {0, 80, 16, 96}, {16, 80, 32, 96}, {32, 80, 48, 96} } };
+	constexpr std::array<RECT, 3> rcRight = { { {0, 96, 16, 112}, {16, 96, 32, 112}, {32, 96, 48, 112} } };
 
 	enum
 	{
@@ -230,7 +228,7 @@ void npcAct203(npc * NPC) // Critter, Hopping Aqua (enemy)
 
 void npcAct204(npc * NPC) // Falling Spike, small
 {
-	constexpr array<RECT, 2> rcNPC = { { {240, 80, 256, 96}, {240, 144, 256, 160} } };
+	constexpr std::array<RECT, 2> rcNPC = { { {240, 80, 256, 96}, {240, 144, 256, 160} } };
 
 	enum
 	{
@@ -286,7 +284,7 @@ void npcAct204(npc * NPC) // Falling Spike, small
 
 void npcAct205(npc *NPC) // Falling Spike, large
 {
-	constexpr array<RECT, 2> rcNPC = { {{112, 80, 128, 112}, {128, 80, 144, 112}} };
+	constexpr std::array<RECT, 2> rcNPC = { {{112, 80, 128, 112}, {128, 80, 144, 112}} };
 
 	switch (NPC->act_no)
 	{
@@ -410,7 +408,7 @@ void npcAct206(npc *NPC) // Counter bomb (enemy)
     NPC->x += NPC->xm;
     NPC->y += NPC->ym;
 
-    constexpr array<RECT, 3> rcNPC = {{{80, 80, 120, 120}, {120, 80, 160, 120}, {160, 80, 200, 120}}};
+    constexpr std::array<RECT, 3> rcNPC = {{{80, 80, 120, 120}, {120, 80, 160, 120}, {160, 80, 200, 120}}};
 
     NPC->animate(4, 0, 2);
 
@@ -717,8 +715,8 @@ void npcAct209(npc *NPC) // Basu2 projectile
 
 void npcAct210(npc *NPC) // Beetle, Follow Aqua (enemy)
 {
-	constexpr array<RECT, 2> rcLeft = { {{0, 112, 16, 128}, {16, 112, 32, 128}} };
-	constexpr array<RECT, 2> rcRight = { {{32, 112, 48, 128}, {48, 112, 64, 128}} };
+	constexpr std::array<RECT, 2> rcLeft = { {{0, 112, 16, 128}, {16, 112, 32, 128}} };
+	constexpr std::array<RECT, 2> rcRight = { {{32, 112, 48, 128}, {48, 112, 64, 128}} };
 
     switch (NPC->act_no)
     {
@@ -797,7 +795,7 @@ void npcAct210(npc *NPC) // Beetle, Follow Aqua (enemy)
 
 void npcAct211(npc *NPC) //Spikes
 {
-	array<RECT, 4> rcNPC;
+	std::array<RECT, 4> rcNPC;
 
 	rcNPC[0].left = 256;
 	rcNPC[0].top = 200;
@@ -821,7 +819,7 @@ void npcAct211(npc *NPC) //Spikes
 
 void npcAct212(npc *NPC) // Sky Dragon
 {
-	constexpr array<RECT, 4> rcNPC = { {{160, 152, 200, 192}, {200, 152, 240, 192}, {240, 112, 280, 152}, {280, 112, 320, 152}} };
+	constexpr std::array<RECT, 4> rcNPC = { {{160, 152, 200, 192}, {200, 152, 240, 192}, {240, 112, 280, 152}, {280, 112, 320, 152}} };
 
     enum
     {
@@ -1254,7 +1252,7 @@ void npcAct215(npc *NPC) // Sandcroc, White (enemy)
         break;
     }
 
-	constexpr array<RECT, 5> rcNPC = { {{0, 0, 0, 0}, {0, 96, 48, 128}, {48, 96, 96, 128}, {96, 96, 144, 128}, {144, 96, 192, 128}} };
+	constexpr std::array<RECT, 5> rcNPC = { {{0, 0, 0, 0}, {0, 96, 48, 128}, {48, 96, 96, 128}, {96, 96, 144, 128}, {144, 96, 192, 128}} };
 
     NPC->doRects(rcNPC);
 }

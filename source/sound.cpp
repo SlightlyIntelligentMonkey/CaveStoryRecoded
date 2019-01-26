@@ -16,8 +16,6 @@
 #include "mathUtils.h"	// For M_PI definition
 #include "main.h"
 
-using std::string;
-
 //Sound struct
 struct SOUND {
 	struct SOUND *next;
@@ -125,7 +123,7 @@ void SoundObject_SetFrequency(SOUND *sound, unsigned long freq)
 static float MillibelToVolume(long volume)
 {
 	// Volume is in hundredths of decibels, from 0 to -10000
-	volume = clamp(volume, (decltype(volume))-10000, (decltype(volume))0);
+	volume = clamp(volume, static_cast<decltype(volume)>(-10000), static_cast<decltype(volume)>(0));
 	return pow(10.0f, volume / 2000.0f);
 }
 
@@ -193,18 +191,20 @@ void mixSounds(float (*stream)[2], int len)
 					}
 				}
 
-				const size_t position = sound->pos;
+				const size_t position = static_cast<size_t>(sound->pos);
 
 				// Perform sound interpolation
 				const float sample1 = (sound->wave[position] - 0x80) / 128.0f;
-				const float sample2 = (!sound->loops && position + 1 >= sound->length) ? 0.0f : (sound->wave[(position + 1) % sound->length] - 0x80) / 128.0f;
+				const float sample2  = (!sound->loops && position + 1 >= sound->length) 
+					? 0.0f : (sound->wave[(position + 1) % sound->length] - 0x80) / 128.0f;
 
-				const float interpolated_sample = sample1 + (sample2 - sample1) * fmod(sound->pos, 1.0f);
+				const float interpolated_sample 
+					= sample1 + (sample2 - sample1) * static_cast<float>(fmod(sound->pos, 1.0f));
 
 				stream[i][0] += interpolated_sample * sound->volume * sound->volume_l;
 				stream[i][1] += interpolated_sample * sound->volume * sound->volume_r;
 
-				sound->pos += (double)sound->freq / sampleRate;
+				sound->pos += static_cast<double>(sound->freq) / sampleRate;
 			}
 		}
 	}

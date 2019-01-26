@@ -54,7 +54,7 @@ void actBoss_Core(npc *boss)
 		boss->act_no = 10;
 		boss->exp = 1;
 		boss->cond = npccond_alive;
-		boss->bits = npc_solidSoft | npc_ignore44 | npc_ignoreSolid;
+		boss->bits = npc_showDamage | npc_ignoreSolid | npc_invulnerable;
 		boss->life = 650;
 		boss->hit_voice = 114;
 		boss->x = tilesToUnits(77);
@@ -62,7 +62,7 @@ void actBoss_Core(npc *boss)
 		boss->xm = 0;
 		boss->ym = 0;
 		boss->code_event = 1000;
-		boss->bits |= npc_ignore44;
+		boss->bits |= npc_eventDie;
 
 		// initializes face and tail
 		bossObj[face].cond = npccond_alive;

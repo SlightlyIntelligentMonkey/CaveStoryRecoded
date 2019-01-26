@@ -63,7 +63,7 @@ void flashExplosion()
 	if (explosionEnd == true)
 	{
 		h -= h / 8;
-		flash.hH = h;
+		flash.hH = static_cast<int>(h);
 		if (flash.hH <= 0)
 		{
 			flash.mode = flashModes::none;
