@@ -309,8 +309,8 @@ void npcAct340(npc *NPC) // Ballos (boss) (first form)
         else
             NPC->ani_no = 5;
 
-        NPC->accelerateTowardsXTarget(0.125);
-        NPC->accelerateTowardsYTarget(0.125);
+        NPC->accelerateTowardsXTarget(pixelsToUnits(0.125));
+        NPC->accelerateTowardsYTarget(pixelsToUnits(0.125));
 
         NPC->limitXVel(pixelsToUnits(2));
         NPC->limitYVel(pixelsToUnits(2));

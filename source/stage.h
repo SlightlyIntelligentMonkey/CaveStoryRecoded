@@ -70,31 +70,31 @@ void drawLevel(bool foreground);
 
 template<typename T> constexpr inline int32_t tilesToUnits(T x)
 {
-    return x * 0x2000;  // x * 8192 or x << 13
+    return static_cast<int32_t>(x * static_cast<T>(0x2000));  // x * 8192 or x << 13
 }
 
 template<typename T> constexpr inline int32_t unitsToTiles(T x)
 {
-	return x / 0x2000;  // x / 8192 or x >> 13
+	return static_cast<int32_t>(x / static_cast<T>(0x2000));  // x / 8192 or x >> 13
 }
 
 template<typename T> constexpr inline int32_t tilesToPixels(T x)
 {
-	return x * 0x10;    // x * 16 or x << 4
+	return static_cast<int32_t>(x * static_cast<T>(0x10));    // x * 16 or x << 4
 }
 
 template<typename T> constexpr inline int32_t pixelsToTiles(T x)
 {
-	return x / 0x10;    // x / 16 or x >> 4
+	return static_cast<int32_t>(x / static_cast<T>(0x10));    // x / 16 or x >> 4
 }
 
 template <typename T> constexpr inline int32_t pixelsToUnits(T x)
 {
-	return x * 0x200;   // x * 512 or x << 9
+	return static_cast<int32_t>(x * static_cast<T>(0x200));   // x * 512 or x << 9
 }
 
 template <typename T> constexpr inline T unitsToPixels(T x)
 {
-	return x / 0x200;   // x / 512 or x >> 9
+	return static_cast<int32_t>(x / static_cast<T>(0x200));   // x / 512 or x >> 9
 }
 

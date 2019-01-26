@@ -91,7 +91,7 @@ void npcAct302(npc *NPC) //Camera Helper NPC
     case 101:
 case101:
         int64_t tmp = NPC->pNpc->x + currentPlayer.x;
-        NPC->x = ((int32_t)tmp - (tmp >> 32)) >> 1;
+        NPC->x = (static_cast<int32_t>(tmp) - (tmp >> 32)) >> 1;
         NPC->y = (NPC->pNpc->y + currentPlayer.y) / 2;
         break;
     }

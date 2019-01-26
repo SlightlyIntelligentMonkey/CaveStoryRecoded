@@ -13,6 +13,8 @@
 #include "icon_mini.h"
 #endif
 
+using namespace std::string_literals;
+
 SDL_Window *gWindow;
 SDL_Renderer *gRenderer;
 
@@ -50,7 +52,7 @@ static SDL_Surface* loadPNGToSurface(const std::string& path)
 	unsigned int width;
 	unsigned int height;
 	if (const unsigned int error = lodepng_decode32_file(&pixel_buffer, &width, &height, path.c_str()))
-		doCustomError((std::string)"loadPNGToSurface failed!\n\nlodepng error: " + lodepng_error_text(error) + "\nFile : " + path);
+		doCustomError("loadPNGToSurface failed!\n\nlodepng error: "s + lodepng_error_text(error) + "\nFile : " + path);
 	else
 	{
 		// We don't use SDL_CreateRGBSurfaceWithFormatFrom because then the pixel data wouldn't
@@ -59,10 +61,10 @@ static SDL_Surface* loadPNGToSurface(const std::string& path)
 		surface = SDL_CreateRGBSurfaceWithFormat(0, width, height, 0, SDL_PIXELFORMAT_RGBA32);
 
 		if (surface == nullptr)
-			doCustomError((std::string)"loadPNGToSurface failed!\n\nSDL2 error: " + SDL_GetError() + "\nFile : " + path);
+			doCustomError("loadPNGToSurface failed!\n\nSDL2 error: "s + SDL_GetError() + "\nFile : " + path);
 		else
 			for (unsigned int i = 0; i < height; ++i)
-				memcpy((unsigned char*)surface->pixels + (i * surface->pitch), pixel_buffer + (i * width * 4), width * 4);
+				memcpy(static_cast<unsigned char*>(surface->pixels) + (i * surface->pitch), pixel_buffer + (i * width * 4), width * 4);
 
 		free(pixel_buffer);
 	}
@@ -81,7 +83,7 @@ static SDL_Texture* loadPNGToTexture(SDL_Renderer *localRenderer, const std::str
 		texture = SDL_CreateTextureFromSurface(localRenderer, surface);
 
 		if (texture == nullptr)
-			doCustomError((std::string)"loadPNGToTexture failed!\n\nSDL2 error: " + SDL_GetError());
+			doCustomError("loadPNGToTexture failed!\n\nSDL2 error: "s + SDL_GetError());
 
 		SDL_FreeSurface(surface);
 	}
@@ -99,7 +101,7 @@ static SDL_Texture* loadBMPToTexture(SDL_Renderer *rend, const std::string& path
 		texture = SDL_CreateTextureFromSurface(rend, surf);
 
 		if (texture == nullptr)
-			doCustomError((std::string)"loadBMPToTexture failed!\n\nSDL2 error: " + SDL_GetError());
+			doCustomError("loadBMPToTexture failed!\n\nSDL2 error: "s + SDL_GetError());
 
 		SDL_FreeSurface(surf);
 	}
@@ -158,7 +160,7 @@ int createWindow(int width, int height, int scale)
 		SDL_SetRenderDrawBlendMode(gRenderer, SDL_BLENDMODE_BLEND);
 
 		if (gRenderer == nullptr)
-			logError((std::string)"Couldn't create renderer! SDL2 error: " + SDL_GetError());
+			logError("Couldn't create renderer! SDL2 error: "s + SDL_GetError());
 	}
 
 	// TODO free these when closing-down
