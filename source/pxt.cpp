@@ -312,8 +312,10 @@ int loadSound(const std::string& path, int no)
 			}
 
 			//Put data from buffers into main sound buffer
-			uint8_t *object_buffer;
+			uint8_t *object_buffer = nullptr;
 			SoundObject_Lock(gSounds[no], &object_buffer, nullptr);
+			if (!object_buffer)
+				doCustomError("Could not lock gSounds[" + std::to_string(no) + "]");
 			memcpy(object_buffer, pBlock, size);
 			SoundObject_Unlock(gSounds[no]);
 
