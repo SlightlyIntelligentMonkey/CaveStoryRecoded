@@ -6,25 +6,25 @@
 #include "fade.h"
 #include "game.h"
 
-FADE_STATE fade;
+FADE_STATE gFade;
 
 const int fadeFrames = 16;
 
 void initFade() 
 {
-	memset(&fade, 0, sizeof(FADE_STATE));
+	memset(&gFade, 0, sizeof(FADE_STATE));
 }
 
 void updateFade() 
 {
-	if (fade.mode)
+	if (gFade.mode)
 	{
-		fade.bMask = false;
+		gFade.bMask = false;
 
-		if (++fade.count > (std::max(gScreenWidth, gScreenHeight) / 16 + fadeFrames))
+		if (++gFade.count > (std::max(gScreenWidth, gScreenHeight) / 16 + fadeFrames))
 		{
-			fade.bMask = (fade.mode == 2);
-			fade.mode = 0;
+			gFade.bMask = (gFade.mode == 2);
+			gFade.mode = 0;
 		}
 	}
 }
@@ -41,41 +41,41 @@ void drawFade()
 	const int h = gScreenHeight / 16 + 1;
 	const int frames = (std::max(gScreenWidth, gScreenHeight) / 16 + fadeFrames);
 
-	if (fade.bMask)
+	if (gFade.bMask)
 	{
 		SDL_SetRenderDrawColor(gRenderer, 0, 0, 32, 255);
 		SDL_RenderClear(gRenderer);
 	}
-	else if (fade.mode == 1)
+	else if (gFade.mode == 1)
 	{
 		for (int x = 0; x < w; x++)
 		{
 			for (int y = 0; y < h; y++)
 			{
-				switch (fade.dir)
+				switch (gFade.dir)
 				{
 				case 0:
-					xt = (frames - fade.count);
+					xt = (frames - gFade.count);
 					frame = xt - x;
 					break;
 
 				case 1:
-					yt = (frames - fade.count);
+					yt = (frames - gFade.count);
 					frame = yt - y;
 					break;
 
 				case 2:
-					xt = w - (frames - fade.count);
+					xt = w - (frames - gFade.count);
 					frame = x - xt;
 					break;
 
 				case 3:
-					yt = h - (frames - fade.count);
+					yt = h - (frames - gFade.count);
 					frame = y - yt;
 					break;
 
 				case 4:
-					frame = fadeFrames - (fade.count - abs(x - (gScreenWidth >> 5)) - abs(y - (gScreenHeight >> 5)));
+					frame = fadeFrames - (gFade.count - abs(x - (gScreenWidth >> 5)) - abs(y - (gScreenHeight >> 5)));
 					break;
 				}
 
@@ -91,36 +91,36 @@ void drawFade()
 			}
 		}
 	}
-	else if (fade.mode == 2)
+	else if (gFade.mode == 2)
 	{
 		for (int x = 0; x < w; x++)
 		{
 			for (int y = 0; y < h; y++)
 			{
-				switch (fade.dir)
+				switch (gFade.dir)
 				{
 				case 0:
-					xt = w - fade.count;
+					xt = w - gFade.count;
 					frame = x - xt;
 					break;
 
 				case 1:
-					yt = h - fade.count;
+					yt = h - gFade.count;
 					frame = y - yt;
 					break;
 
 				case 2:
-					xt = fade.count;
+					xt = gFade.count;
 					frame = xt - x;
 					break;
 
 				case 3:
-					yt = fade.count;
+					yt = gFade.count;
 					frame = yt - y;
 					break;
 
 				case 4:
-					frame = fadeFrames - ((frames - fade.count) - abs(x - (gScreenWidth >> 5)) - abs(y - (gScreenHeight >> 5)));
+					frame = fadeFrames - ((frames - gFade.count) - abs(x - (gScreenWidth >> 5)) - abs(y - (gScreenHeight >> 5)));
 					break;
 				}
 

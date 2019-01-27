@@ -152,23 +152,23 @@ void loadProfile()
 		const uint32_t level = SDL_ReadLE32(profile); //level
 		changeOrg(SDL_ReadLE32(profile)); //song
 
-		currentPlayer.init();
+		gCurrentPlayer.init();
 
 		const uint32_t player_x = SDL_ReadLE32(profile); //Player X
 		const uint32_t player_y = SDL_ReadLE32(profile); //Player Y
-		currentPlayer.direct = SDL_ReadLE32(profile); //Player Direction
+		gCurrentPlayer.direct = SDL_ReadLE32(profile); //Player Direction
 
-		currentPlayer.max_life = SDL_ReadLE16(profile); //max health
-		currentPlayer.star = SDL_ReadLE16(profile); //whimsical star
-		currentPlayer.life = SDL_ReadLE16(profile); //health
+		gCurrentPlayer.max_life = SDL_ReadLE16(profile); //max health
+		gCurrentPlayer.star = SDL_ReadLE16(profile); //whimsical star
+		gCurrentPlayer.life = SDL_ReadLE16(profile); //health
 
 		SDL_ReadLE16(profile); // a?
 
 		gSelectedWeapon = SDL_ReadLE32(profile); //current weapon
 		gSelectedItem = SDL_ReadLE32(profile); //current item
 
-		currentPlayer.equip = SDL_ReadLE32(profile); //equipped items
-		currentPlayer.unit = SDL_ReadLE32(profile); //physics
+		gCurrentPlayer.equip = SDL_ReadLE32(profile); //equipped items
+		gCurrentPlayer.unit = SDL_ReadLE32(profile); //physics
 
 		SDL_ReadLE32(profile); //counter
 
@@ -199,8 +199,8 @@ void loadProfile()
 			SDL_RWread(profile, &i, 1, 1);
 
 		loadLevel(level, 0, 0, 1);
-		currentPlayer.x = player_x;
-		currentPlayer.y = player_y;
+		gCurrentPlayer.x = player_x;
+		gCurrentPlayer.y = player_y;
 		initFade();
 		SetFrameMyChar();
 		SetFrameTargetMyChar(16);
@@ -227,19 +227,19 @@ void saveProfile()
 	writeLElong(profile, gCurrentLevel, 0x08); //Level
 	writeLElong(profile, gCurrentOrg, 0xC); //song
 
-	writeLElong(profile, currentPlayer.x, 0x10); //Player X
-	writeLElong(profile, currentPlayer.y, 0x14); //Player Y
-	writeLElong(profile, currentPlayer.direct, 0x18); //Player direction
+	writeLElong(profile, gCurrentPlayer.x, 0x10); //Player X
+	writeLElong(profile, gCurrentPlayer.y, 0x14); //Player Y
+	writeLElong(profile, gCurrentPlayer.direct, 0x18); //Player direction
 
-	writeLEshort(profile, currentPlayer.max_life, 0x1C); //Player max health
-	writeLEshort(profile, currentPlayer.star, 0x1E); //Whimsical star
-	writeLEshort(profile, currentPlayer.life, 0x20); //Player health
+	writeLEshort(profile, gCurrentPlayer.max_life, 0x1C); //Player max health
+	writeLEshort(profile, gCurrentPlayer.star, 0x1E); //Whimsical star
+	writeLEshort(profile, gCurrentPlayer.life, 0x20); //Player health
 
 	writeLElong(profile, gSelectedWeapon, 0x24); //Selected weapon
 	writeLElong(profile, gSelectedItem, 0x28); //Selected item
 
-	writeLElong(profile, currentPlayer.equip, 0x2C); //Equipped items
-	writeLElong(profile, currentPlayer.unit, 0x30); //Current physics
+	writeLElong(profile, gCurrentPlayer.equip, 0x2C); //Equipped items
+	writeLElong(profile, gCurrentPlayer.unit, 0x30); //Current physics
 
 	for (size_t i = 0; i < 8; i++)
 	{

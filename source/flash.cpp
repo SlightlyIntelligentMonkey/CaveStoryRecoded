@@ -20,7 +20,7 @@ struct FLASH
 	Uint8 b;
 	Uint8 a;
 };
-FLASH flash =
+FLASH gFlash =
 {
 	0,
 	0,
@@ -36,21 +36,21 @@ FLASH flash =
 
 void setFlash(int x, int y, flashModes mode, int length)
 {
-	flash.x = x;
-	flash.y = y;
-	flash.mode = mode;
-	flash.timer = length;
-	flash.vW = 0;
-	flash.hH = 0;
+	gFlash.x = x;
+	gFlash.y = y;
+	gFlash.mode = mode;
+	gFlash.timer = length;
+	gFlash.vW = 0;
+	gFlash.hH = 0;
 	return;
 }
 
 void setFlashColor(uint8_t r, uint8_t g, uint8_t b, uint8_t a)
 {
-	flash.r = r;
-	flash.g = g;
-	flash.b = b;
-	flash.a = a;
+	gFlash.r = r;
+	gFlash.g = g;
+	gFlash.b = b;
+	gFlash.a = a;
 	return;
 }
 
@@ -63,10 +63,10 @@ void flashExplosion()
 	if (explosionEnd == true)
 	{
 		h -= h / 8;
-		flash.hH = static_cast<int>(h);
-		if (flash.hH <= 0)
+		gFlash.hH = static_cast<int>(h);
+		if (gFlash.hH <= 0)
 		{
-			flash.mode = flashModes::none;
+			gFlash.mode = flashModes::none;
 			explInc = 0;
 			h = 0;
 			explosionEnd = false;
@@ -75,43 +75,43 @@ void flashExplosion()
 	}
 	else
 	{
-		flash.timer += 512;
-		explInc += flash.timer;
+		gFlash.timer += 512;
+		explInc += gFlash.timer;
 
-		flash.vW = explInc / 512;
-		flash.hH = explInc / 512;
+		gFlash.vW = explInc / 512;
+		gFlash.hH = explInc / 512;
 
 		if (explInc > 655360)
 		{
 			explosionEnd = true;
-			flash.timer = 0;
+			gFlash.timer = 0;
 			explInc = 122880;
 			h = gScreenHeight;
 		}
 	}
 
-	SDL_SetRenderDrawColor(gRenderer, flash.r, flash.g, flash.b, flash.a);
+	SDL_SetRenderDrawColor(gRenderer, gFlash.r, gFlash.g, gFlash.b, gFlash.a);
 	if (explosionEnd != true)
-		drawRect(unitsToPixels(flash.x - pixelsToUnits(flash.vW/2) - gViewport.x), 0, flash.vW, gScreenHeight);
-	drawRect(0, unitsToPixels(flash.y - pixelsToUnits(flash.hH/2) - gViewport.y), gScreenWidth, flash.hH);
+		drawRect(unitsToPixels(gFlash.x - pixelsToUnits(gFlash.vW/2) - gViewport.x), 0, gFlash.vW, gScreenHeight);
+	drawRect(0, unitsToPixels(gFlash.y - pixelsToUnits(gFlash.hH/2) - gViewport.y), gScreenWidth, gFlash.hH);
 }
 
 void flashNormal()
 {
-	--flash.timer;
-	if (flash.timer / 2 & 1)
+	--gFlash.timer;
+	if (gFlash.timer / 2 & 1)
 	{
-		SDL_SetRenderDrawColor(gRenderer, flash.r, flash.g, flash.b, flash.a);
+		SDL_SetRenderDrawColor(gRenderer, gFlash.r, gFlash.g, gFlash.b, gFlash.a);
 		SDL_RenderFillRect(gRenderer, nullptr);
 	}
-	if (flash.timer < 0)
-		flash.mode = flashModes::none;
+	if (gFlash.timer < 0)
+		gFlash.mode = flashModes::none;
 	return;
 }
 
 void actFlash()
 {
-	switch (flash.mode)
+	switch (gFlash.mode)
 	{
 	case flashModes::normal:
 		flashNormal();

@@ -292,7 +292,7 @@ void npcAct042(npc *NPC) // Sue
 		else
 			NPC->xm = pixelsToUnits(-2);
 
-		if (NPC->x < currentPlayer.x - 0x1000)
+		if (NPC->x < gCurrentPlayer.x - 0x1000)
 		{
 			NPC->direct = dirRight;
 			NPC->act_no = standAndBlink;
@@ -592,14 +592,14 @@ void npcAct046(npc *NPC) //H/V trigger
 
 	if (NPC->direct != dirLeft)
 	{
-		if (NPC->y >= currentPlayer.y)
+		if (NPC->y >= gCurrentPlayer.y)
 			NPC->y -= 0x5FF;
 		else
 			NPC->y += 0x5FF;
 	}
 	else
 	{
-		if (NPC->x >= currentPlayer.x)
+		if (NPC->x >= gCurrentPlayer.x)
 			NPC->x -= 0x5FF;
 		else
 			NPC->x += 0x5FF;
@@ -628,16 +628,16 @@ void npcAct047(npc *NPC) //Sandcroc
 		NPC->bits &= ~(npc_shootable | npc_invulnerable | npc_solidSoft | npc_ignoreSolid);
 //Fallthrough
 	case 1:
-		if (currentPlayer.x > NPC->x - 0x1000 && currentPlayer.x < NPC->x + 0x1000 && currentPlayer.y > NPC->y && currentPlayer.y < NPC->y + 0x1000)
+		if (gCurrentPlayer.x > NPC->x - 0x1000 && gCurrentPlayer.x < NPC->x + 0x1000 && gCurrentPlayer.y > NPC->y && gCurrentPlayer.y < NPC->y + 0x1000)
 		{
 			NPC->act_no = 2;
 			NPC->act_wait = 0;
 			playSound(SFX_SandCroc, 1);
 		}
 
-		if (NPC->x < currentPlayer.x)
+		if (NPC->x < gCurrentPlayer.x)
 			NPC->x += 0x400;
-		if (NPC->x > currentPlayer.x)
+		if (NPC->x > gCurrentPlayer.x)
 			NPC->x -= 0x400;
 		break;
 
@@ -869,7 +869,7 @@ void npcAct049(npc *NPC) //Skull heads
 	case 10:
 		if (NPC->count1 > 49)
 		{
-			if (NPC->x - 0x10000 < currentPlayer.x && NPC->x + 0x10000 > currentPlayer.x && NPC->y - 0xC000 < currentPlayer.y && NPC->y + 0xC000 > currentPlayer.y)
+			if (NPC->x - 0x10000 < gCurrentPlayer.x && NPC->x + 0x10000 > gCurrentPlayer.x && NPC->y - 0xC000 < gCurrentPlayer.y && NPC->y + 0xC000 > gCurrentPlayer.y)
 			{
 				NPC->act_no = 11;
 				NPC->act_wait = 0;
@@ -885,7 +885,7 @@ void npcAct049(npc *NPC) //Skull heads
 	case 11:
 		if (++NPC->act_wait == 30 || NPC->act_wait == 35)
 		{
-			deg = getAtan(NPC->x - currentPlayer.x, NPC->y + 0x800 - currentPlayer.y);
+			deg = getAtan(NPC->x - gCurrentPlayer.x, NPC->y + 0x800 - gCurrentPlayer.y);
 			xm = 2 * getCos(deg);
 			ym = 2 * getSin(deg);
 
@@ -1090,7 +1090,7 @@ void npcAct051(npc *NPC) //Skull and crow
 		createNpc(49, 0, 0, 0, 0, 0, NPC, false);
 //Fallthrough
 	case 1:
-		if (currentPlayer.x >= NPC->x)
+		if (gCurrentPlayer.x >= NPC->x)
 			NPC->direct = dirRight;
 		else
 			NPC->direct = dirLeft;
@@ -1113,31 +1113,31 @@ void npcAct051(npc *NPC) //Skull and crow
 		break;
 
 	case 2:
-		if (!(NPC->x - 0x28000 >= currentPlayer.x || NPC->x + 0x28000 <= currentPlayer.x || NPC->y - 0x28000 >= currentPlayer.y || NPC->y + 0x28000 <= currentPlayer.y))
+		if (!(NPC->x - 0x28000 >= gCurrentPlayer.x || NPC->x + 0x28000 <= gCurrentPlayer.x || NPC->y - 0x28000 >= gCurrentPlayer.y || NPC->y + 0x28000 <= gCurrentPlayer.y))
 		{
-			if (currentPlayer.x >= NPC->x)
+			if (gCurrentPlayer.x >= NPC->x)
 				NPC->direct = dirRight;
 			else
 				NPC->direct = dirLeft;
 
-			if (NPC->y <= currentPlayer.y + 0x4000)
+			if (NPC->y <= gCurrentPlayer.y + 0x4000)
 			{
-				if (currentPlayer.x < NPC->x)
+				if (gCurrentPlayer.x < NPC->x)
 					NPC->xm -= 0x10;
-				if (currentPlayer.x > NPC->x)
+				if (gCurrentPlayer.x > NPC->x)
 					NPC->xm += 0x10;
 			}
 			else
 			{
-				if (currentPlayer.x < NPC->x)
+				if (gCurrentPlayer.x < NPC->x)
 					NPC->xm += 0x10;
-				if (currentPlayer.x > NPC->x)
+				if (gCurrentPlayer.x > NPC->x)
 					NPC->xm -= 0x10;
 			}
 
-			if (currentPlayer.y < NPC->y)
+			if (gCurrentPlayer.y < NPC->y)
 				NPC->ym -= 0x10;
-			if (currentPlayer.y > NPC->y)
+			if (gCurrentPlayer.y > NPC->y)
 				NPC->ym += 0x10;
 
 			if (NPC->shock)
@@ -1178,7 +1178,7 @@ void npcAct051(npc *NPC) //Skull and crow
 	{
 		NPC->ani_no = 4;
 	}
-	else if (NPC->act_no != 2 || NPC->y >= currentPlayer.y - 0x4000)
+	else if (NPC->act_no != 2 || NPC->y >= gCurrentPlayer.y - 0x4000)
 	{
 		if (NPC->act_no)
 		{
@@ -1521,7 +1521,7 @@ void npcAct056(npc *NPC) //Sand zone beetles
 		break;
 
 	case 2:
-		if (NPC->x < currentPlayer.x && NPC->x > currentPlayer.x - 0x20000 && NPC->y < currentPlayer.y + 0x1000 && NPC->y > currentPlayer.y - 0x1000)
+		if (NPC->x < gCurrentPlayer.x && NPC->x > gCurrentPlayer.x - 0x20000 && NPC->y < gCurrentPlayer.y + 0x1000 && NPC->y > gCurrentPlayer.y - 0x1000)
 		{
 			NPC->act_no = 3;
 			NPC->ani_wait = 0;
@@ -1559,7 +1559,7 @@ void npcAct056(npc *NPC) //Sand zone beetles
 		break;
 
 	case 4:
-		if (NPC->x < currentPlayer.x + 0x20000 && NPC->x > currentPlayer.x && NPC->y < currentPlayer.y + 0x1000 && NPC->y > currentPlayer.y - 0x1000)
+		if (NPC->x < gCurrentPlayer.x + 0x20000 && NPC->x > gCurrentPlayer.x && NPC->y < gCurrentPlayer.y + 0x1000 && NPC->y > gCurrentPlayer.y - 0x1000)
 		{
 			NPC->act_no = 1;
 			NPC->ani_wait = 0;
@@ -1645,7 +1645,7 @@ void npcAct057(npc *NPC) //Crow
 		NPC->ani_wait = random(0, 4);
 //Fallthrough
 	case 1:
-		if (currentPlayer.x >= NPC->x)
+		if (gCurrentPlayer.x >= NPC->x)
 			NPC->direct = dirRight;
 		else
 			NPC->direct = dirLeft;
@@ -1683,29 +1683,29 @@ void npcAct057(npc *NPC) //Crow
 		break;
 
 	case 2:
-		if (currentPlayer.x >= NPC->x)
+		if (gCurrentPlayer.x >= NPC->x)
 			NPC->direct = dirRight;
 		else
 			NPC->direct = dirLeft;
 
-		if (NPC->y <= currentPlayer.y + 0x6000)
+		if (NPC->y <= gCurrentPlayer.y + 0x6000)
 		{
-			if (currentPlayer.x < NPC->x)
+			if (gCurrentPlayer.x < NPC->x)
 				NPC->xm -= 0x10;
-			if (currentPlayer.x > NPC->x)
+			if (gCurrentPlayer.x > NPC->x)
 				NPC->xm += 0x10;
 		}
 		else
 		{
-			if (currentPlayer.x < NPC->x)
+			if (gCurrentPlayer.x < NPC->x)
 				NPC->xm += 0x10;
-			if (currentPlayer.x > NPC->x)
+			if (gCurrentPlayer.x > NPC->x)
 				NPC->xm -= 0x10;
 		}
 
-		if (currentPlayer.y < NPC->y)
+		if (gCurrentPlayer.y < NPC->y)
 			NPC->ym -= 0x10;
-		if (currentPlayer.y > NPC->y)
+		if (gCurrentPlayer.y > NPC->y)
 			NPC->ym += 0x10;
 
 		if (NPC->shock)
@@ -1769,7 +1769,7 @@ void npcAct058(npc *NPC) //Basu 1
 	if (!action)
 	{
 		//Don't appear until Quote walks into spawn area
-		if (currentPlayer.x >= NPC->x + 0x2000 || currentPlayer.x <= NPC->x - 0x2000)
+		if (gCurrentPlayer.x >= NPC->x + 0x2000 || gCurrentPlayer.x <= NPC->x - 0x2000)
 		{
 			NPC->rect = { 0, 0, 0, 0 };
 			NPC->damage = 0;
@@ -1795,12 +1795,12 @@ void npcAct058(npc *NPC) //Basu 1
 
 			if (NPC->direct != dirLeft)
 			{
-				NPC->x = currentPlayer.x - 0x20000;
+				NPC->x = gCurrentPlayer.x - 0x20000;
 				NPC->xm = 0x2FF;
 			}
 			else
 			{
-				NPC->x = currentPlayer.x + 0x20000;
+				NPC->x = gCurrentPlayer.x + 0x20000;
 				NPC->xm = -0x2FF;
 			}
 		}
@@ -1810,7 +1810,7 @@ void npcAct058(npc *NPC) //Basu 1
 		if (action == 1)
 		{
 			//Face towards player
-			if (NPC->x <= currentPlayer.x)
+			if (NPC->x <= gCurrentPlayer.x)
 			{
 				NPC->direct = dirRight;
 				NPC->xm += 16;
@@ -1857,7 +1857,7 @@ void npcAct058(npc *NPC) //Basu 1
 			}
 		}
 
-		if ((currentPlayer.x <= NPC->x + 0x32000 && currentPlayer.x >= NPC->x - 0x32000) || action != 1) //Do stuff if nearby
+		if ((gCurrentPlayer.x <= NPC->x + 0x32000 && gCurrentPlayer.x >= NPC->x - 0x32000) || action != 1) //Do stuff if nearby
 		{
 			if (NPC->act_no)
 			{
@@ -1865,9 +1865,9 @@ void npcAct058(npc *NPC) //Basu 1
 					++NPC->act_wait;
 				else
 				{
-					if (!(++NPC->count2 & 7) && NPC->x < currentPlayer.x + 0x14000 && NPC->x > currentPlayer.x - 0x14000)
+					if (!(++NPC->count2 & 7) && NPC->x < gCurrentPlayer.x + 0x14000 && NPC->x > gCurrentPlayer.x - 0x14000)
 					{
-						uint8_t deg = getAtan(NPC->x - currentPlayer.x, NPC->y - currentPlayer.y);
+						uint8_t deg = getAtan(NPC->x - gCurrentPlayer.x, NPC->y - gCurrentPlayer.y);
 						deg += random(-6, 6);
 
 						const int fireXm = 2 * getCos(deg);
@@ -1930,7 +1930,7 @@ void npcAct059(npc *NPC) //Eye door
 		NPC->act_no = 1;
 	// Fallthrough
 	case 1:
-		if (NPC->x - 0x8000 < currentPlayer.x && NPC->x + 0x8000 > currentPlayer.x && NPC->y - 0x8000 < currentPlayer.y && NPC->y + 0x8000 > currentPlayer.y)
+		if (NPC->x - 0x8000 < gCurrentPlayer.x && NPC->x + 0x8000 > gCurrentPlayer.x && NPC->y - 0x8000 < gCurrentPlayer.y && NPC->y + 0x8000 > gCurrentPlayer.y)
 		{
 			NPC->act_no = 2;
 			NPC->ani_wait = 0;
@@ -1950,7 +1950,7 @@ void npcAct059(npc *NPC) //Eye door
 		break;
 
 	case 3:
-		if (NPC->x - 0x8000 >= currentPlayer.x || NPC->x + 0x8000 <= currentPlayer.x || NPC->y - 0x8000 >= currentPlayer.y || NPC->y + 0x8000 <= currentPlayer.y)
+		if (NPC->x - 0x8000 >= gCurrentPlayer.x || NPC->x + 0x8000 <= gCurrentPlayer.x || NPC->y - 0x8000 >= gCurrentPlayer.y || NPC->y + 0x8000 <= gCurrentPlayer.y)
 		{
 			NPC->act_no = 4;
 			NPC->ani_wait = 0;

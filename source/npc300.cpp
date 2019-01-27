@@ -27,8 +27,8 @@ void npcAct302(npc *NPC) //Camera Helper NPC
     switch (NPC->act_no)
     {
     case 10:
-        NPC->x = currentPlayer.x;
-        NPC->y = currentPlayer.y - tilesToUnits(2);
+        NPC->x = gCurrentPlayer.x;
+        NPC->y = gCurrentPlayer.y - tilesToUnits(2);
         break;
 
     case 20:
@@ -54,13 +54,13 @@ void npcAct302(npc *NPC) //Camera Helper NPC
             break;
         }
 
-        currentPlayer.x = NPC->x;
-        currentPlayer.y = NPC->y;
+        gCurrentPlayer.x = NPC->x;
+        gCurrentPlayer.y = NPC->y;
         break;
 
     case 30:
-        NPC->x = currentPlayer.x;
-        NPC->y = currentPlayer.y + tilesToUnits(5);
+        NPC->x = gCurrentPlayer.x;
+        NPC->y = gCurrentPlayer.y + tilesToUnits(5);
         break;
 
     case 100:
@@ -90,9 +90,9 @@ void npcAct302(npc *NPC) //Camera Helper NPC
 
     case 101:
 case101:
-        int64_t tmp = NPC->pNpc->x + currentPlayer.x;
+        int64_t tmp = NPC->pNpc->x + gCurrentPlayer.x;
         NPC->x = (static_cast<int32_t>(tmp) - (tmp >> 32)) >> 1;
-        NPC->y = (NPC->pNpc->y + currentPlayer.y) / 2;
+        NPC->y = (NPC->pNpc->y + gCurrentPlayer.y) / 2;
         break;
     }
 }
@@ -197,9 +197,9 @@ void npcAct309(npc *NPC)
         // Fallthrough
     case 1:
         if ((NPC->direct != dirLeft &&
-             (currentPlayer.x >= NPC->x + tilesToUnits(18) || currentPlayer.x <= NPC->x + tilesToPixels(17)))
+             (gCurrentPlayer.x >= NPC->x + tilesToUnits(18) || gCurrentPlayer.x <= NPC->x + tilesToPixels(17)))
             || (NPC->direct == dirLeft &&
-                (currentPlayer.x <= NPC->x - tilesToPixels(18) || currentPlayer.x >= NPC->x - tilesToPixels(17))))
+                (gCurrentPlayer.x <= NPC->x - tilesToPixels(18) || gCurrentPlayer.x >= NPC->x - tilesToPixels(17))))
             return;
         NPC->act_no = 10;
         break;
@@ -217,7 +217,7 @@ void npcAct309(npc *NPC)
         else
             NPC->xm2 -= 0x10;
 
-        if (NPC->y <= currentPlayer.y)
+        if (NPC->y <= gCurrentPlayer.y)
             NPC->ym2 += 0x10;
         else
             NPC->ym2 -= 0x10;

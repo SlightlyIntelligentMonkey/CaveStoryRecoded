@@ -113,7 +113,7 @@ void npcAct340(npc *NPC) // Ballos (boss) (first form)
         NPC->ym = 8 * NPC->ym / 9;
         if (++NPC->act_wait > 20)
         {
-            if (currentPlayer.y >= NPC->y + pixelsToUnits(12))
+            if (gCurrentPlayer.y >= NPC->y + pixelsToUnits(12))
                 NPC->act_no = flyDown;
             else
                 NPC->act_no = flyUp;
@@ -142,7 +142,7 @@ void npcAct340(npc *NPC) // Ballos (boss) (first form)
             playSound(SFX_LargeObjectHitGround);
         }
 
-        if (NPC->count1 < 4 && currentPlayer.x > NPC->x - tilesToUnits(1) && currentPlayer.x < NPC->x + tilesToUnits(1))
+        if (NPC->count1 < 4 && gCurrentPlayer.x > NPC->x - tilesToUnits(1) && gCurrentPlayer.x < NPC->x + tilesToUnits(1))
             NPC->act_no = flightAttack + 1;
         break;
 
@@ -188,7 +188,7 @@ void npcAct340(npc *NPC) // Ballos (boss) (first form)
             playSound(SFX_LargeObjectHitGround);
         }
 
-        if (NPC->count1 < 4 && currentPlayer.y > NPC->y - tilesToUnits(1) && currentPlayer.y < NPC->y + tilesToUnits(1))
+        if (NPC->count1 < 4 && gCurrentPlayer.y > NPC->y - tilesToUnits(1) && gCurrentPlayer.y < NPC->y + tilesToUnits(1))
             NPC->act_no = flightAttack + 1;
         break;
 
@@ -235,7 +235,7 @@ void npcAct340(npc *NPC) // Ballos (boss) (first form)
             playSound(SFX_LargeObjectHitGround);
         }
 
-        if (NPC->count1 < 4 && currentPlayer.y > NPC->y - tilesToUnits(1) && currentPlayer.y < NPC->y + tilesToUnits(1))
+        if (NPC->count1 < 4 && gCurrentPlayer.y > NPC->y - tilesToUnits(1) && gCurrentPlayer.y < NPC->y + tilesToUnits(1))
             NPC->act_no = flightAttack + 1;
         break;
 
@@ -285,13 +285,13 @@ void npcAct340(npc *NPC) // Ballos (boss) (first form)
         if (NPC->x <= tilesToUnits(20))
         {
             NPC->direct = dirLeft;
-            NPC->tgt_x = currentPlayer.x;
+            NPC->tgt_x = gCurrentPlayer.x;
             NPC->tgt_y = tilesToUnits(11);
         }
         else
         {
             NPC->direct = dirRight;
-            NPC->tgt_x = currentPlayer.x;
+            NPC->tgt_x = gCurrentPlayer.x;
             NPC->tgt_y = tilesToUnits(11);
         }
         NPC->ani_wait = 0;
@@ -318,7 +318,7 @@ void npcAct340(npc *NPC) // Ballos (boss) (first form)
         if (NPC->act_wait > secondsToFrames(4) && NPC->act_wait % secondsToFrames(0.4) == 1)
         {
             NPC->ani_wait = 0;
-            createNpc(NPC_ProjectileBallosLightning, currentPlayer.x, tilesToUnits(19));
+            createNpc(NPC_ProjectileBallosLightning, gCurrentPlayer.x, tilesToUnits(19));
         }
 
         if (NPC->act_wait > secondsToFrames(9.6))
@@ -503,7 +503,7 @@ void npcAct347(npc *NPC) // Hoppy (enemy)
         // Fallthrough
     case waitForPlayer:
         NPC->ani_no = 0;
-        if (currentPlayer.y < NPC->y + tilesToUnits(8) && currentPlayer.y > NPC->y - tilesToUnits(8))
+        if (gCurrentPlayer.y < NPC->y + tilesToUnits(8) && gCurrentPlayer.y > NPC->y - tilesToUnits(8))
         {
             NPC->act_no = startJump;
             NPC->act_wait = 0;
@@ -524,7 +524,7 @@ void npcAct347(npc *NPC) // Hoppy (enemy)
         break;
 
     case jumping:
-        if (currentPlayer.y >= NPC->y)
+        if (gCurrentPlayer.y >= NPC->y)
             NPC->ym = 0xAA;
         else
             NPC->ym = -0xAA;
@@ -686,8 +686,8 @@ void npcAct355(npc *NPC) // Balrog, crashing through wall
 
 void npcAct359(npc *NPC)
 {
-	if (currentPlayer.x < NPC->x + tilesToUnits(20) && currentPlayer.x > NPC->x - tilesToUnits(20)
-     && currentPlayer.y < NPC->y + tilesToUnits(20) && currentPlayer.y > NPC->y - tilesToUnits(20) && random(0, 100) == 2)
+	if (gCurrentPlayer.x < NPC->x + tilesToUnits(20) && gCurrentPlayer.x > NPC->x - tilesToUnits(20)
+     && gCurrentPlayer.y < NPC->y + tilesToUnits(20) && gCurrentPlayer.y > NPC->y - tilesToUnits(20) && random(0, 100) == 2)
 		createNpc(NPC_WaterDrop1, (random(-6, 6) << 9) + NPC->x, NPC->y - pixelsToUnits(7));
 }
 

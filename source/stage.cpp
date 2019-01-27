@@ -175,17 +175,17 @@ void loadLevel(size_t levelIndex, int w, int x, int y)
 {
 	logInfo("Loading level " + std::to_string(levelIndex));
 
-	currentPlayer.setPos(tilesToUnits(x), tilesToUnits(y));
+	gCurrentPlayer.setPos(tilesToUnits(x), tilesToUnits(y));
 
 	// -- clears/frees stuff from last map -- //
-	carets.clear();
-	carets.shrink_to_fit();
+	gCarets.clear();
+	gCarets.shrink_to_fit();
 
-	bullets.clear();
-	bullets.shrink_to_fit();
+	gBullets.clear();
+	gBullets.shrink_to_fit();
 
-	valueviews.clear();
-	valueviews.shrink_to_fit();
+	gValueviews.clear();
+	gValueviews.shrink_to_fit();
 
 	//load tileset
 	loadImage(std::string("Stage/Prt") + gStageTable[levelIndex].tileset, &gSprites[TEX_TILESET]);
@@ -211,7 +211,7 @@ void loadLevel(size_t levelIndex, int w, int x, int y)
 	gMapName.wait = 0;
 	strcpy(gMapName.name, gStageTable[levelIndex].name);
 
-	startTscEvent(tsc, w);
+	startTscEvent(gTsc, w);
 
 	SetFrameMyChar();
 	initBoss(gStageTable[levelIndex].boss);
@@ -219,10 +219,10 @@ void loadLevel(size_t levelIndex, int w, int x, int y)
 	gCurrentLevel = levelIndex;
 
 	// -- fix gViewport -- //
-//	gViewport.x = currentPlayer.x - (gScreenWidth << 8);
-//	gViewport.y = currentPlayer.y - (gScreenHeight << 8);
-//	gViewport.lookX = &currentPlayer.tgt_x;
-//	gViewport.lookY = &currentPlayer.tgt_y;
+//	gViewport.x = gCurrentPlayer.x - (gScreenWidth << 8);
+//	gViewport.y = gCurrentPlayer.y - (gScreenHeight << 8);
+//	gViewport.lookX = &gCurrentPlayer.tgt_x;
+//	gViewport.lookY = &gCurrentPlayer.tgt_y;
 	gViewport.quake = 0;
 	gViewport.quake2 = 0;
 

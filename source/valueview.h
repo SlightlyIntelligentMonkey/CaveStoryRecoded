@@ -26,4 +26,4 @@ void createValueView(int *px, int *py, int value);
 void updateValueView();
 void drawValueView();
 
-extern std::vector<valueview> valueviews;
+extern std::vector<valueview> gValueviews;

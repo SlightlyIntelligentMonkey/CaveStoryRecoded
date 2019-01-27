@@ -167,7 +167,7 @@ void init()
 	initAudio();
 	loadSounds();
 
-	currentPlayer.init();
+	gCurrentPlayer.init();
 
 	//Load assets
 	loadNpcTable();

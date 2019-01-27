@@ -40,9 +40,9 @@ public:
 };
 
 using caretAct = void (*)(caret *);
-extern caretAct caretActs[];
+extern caretAct gCaretActs[];
 
-extern std::deque<caret> carets;
+extern std::deque<caret> gCarets;
 
 void updateCarets();
 void drawCarets();

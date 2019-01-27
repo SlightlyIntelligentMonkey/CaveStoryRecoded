@@ -164,10 +164,10 @@ void npcAct104(npc *NPC) // Frog (enemy)
 	{
 		if (NPC->shock)
 			doJump = true;
-		if (NPC->x >= currentPlayer.x - 0x14000
-			&& NPC->x <= currentPlayer.x + 0x14000
-			&& NPC->y >= currentPlayer.y - 0x8000
-			&& NPC->y <= currentPlayer.y + 0x8000
+		if (NPC->x >= gCurrentPlayer.x - 0x14000
+			&& NPC->x <= gCurrentPlayer.x + 0x14000
+			&& NPC->y >= gCurrentPlayer.y - 0x8000
+			&& NPC->y <= gCurrentPlayer.y + 0x8000
 			&& !random(0, 50))
 			doJump = true;
 	}
@@ -177,7 +177,7 @@ void npcAct104(npc *NPC) // Frog (enemy)
 		NPC->act_no = startJump;
 		NPC->ani_no = 2;
 		NPC->ym = -0x5FF;
-		if (!(currentPlayer.cond & player_removed))
+		if (!(gCurrentPlayer.cond & player_removed))
 			playSound(SFX_CritterHop);
 
 		NPC->moveInDir(pixelsToUnits(1));
@@ -535,10 +535,10 @@ void npcAct110(npc *NPC)
     {
         if (NPC->shock)
             doJump = true;
-        else if (NPC->x >= currentPlayer.x - tilesToUnits(10)
-                 && NPC->x <= currentPlayer.x + tilesToUnits(10)
-                 && NPC->y >= currentPlayer.y - tilesToUnits(4)
-                 && NPC->y <= currentPlayer.y + tilesToUnits(4)
+        else if (NPC->x >= gCurrentPlayer.x - tilesToUnits(10)
+                 && NPC->x <= gCurrentPlayer.x + tilesToUnits(10)
+                 && NPC->y >= gCurrentPlayer.y - tilesToUnits(4)
+                 && NPC->y <= gCurrentPlayer.y + tilesToUnits(4)
                  && !random(0, 50))
             doJump = true;
     }
@@ -628,7 +628,7 @@ void npcAct111(npc *NPC) //Quote teleport out
 
 	NPC->doRects(rcLeft, rcRight);
 
-	if (currentPlayer.equip & equip_mimigaMask)
+	if (gCurrentPlayer.equip & equip_mimigaMask)
 	{
 		NPC->rect.top += 32;
 		NPC->rect.bottom += 32;
@@ -698,7 +698,7 @@ void npcAct112(npc *NPC) //Quote teleport in
 
 	NPC->doRects(rcLeft, rcRight);
 
-	if (currentPlayer.equip & equip_mimigaMask)
+	if (gCurrentPlayer.equip & equip_mimigaMask)
 	{
 		NPC->rect.top += 32;
 		NPC->rect.bottom += 32;
@@ -863,7 +863,7 @@ void npcAct114(npc *NPC) // Press (enemy)
     case 10:
         NPC->animate(2, 2, 2);
 
-        if (currentPlayer.y <= NPC->y)
+        if (gCurrentPlayer.y <= NPC->y)
         {
             NPC->bits |= npc_solidHard;
             NPC->damage = 0;
@@ -995,10 +995,10 @@ void npcAct115(npc *NPC) // Ravil (enemy)
             NPC->ani_wait = 0;
             NPC->damage = 0;
 
-            if (currentPlayer.x > NPC->x + tilesToUnits(6)
-                || currentPlayer.x < NPC->x - tilesToUnits(6)
-                || currentPlayer.y > NPC->y + tilesToUnits(3)
-                || currentPlayer.y < NPC->y - tilesToUnits(6))
+            if (gCurrentPlayer.x > NPC->x + tilesToUnits(6)
+                || gCurrentPlayer.x < NPC->x - tilesToUnits(6)
+                || gCurrentPlayer.y > NPC->y + tilesToUnits(3)
+                || gCurrentPlayer.y < NPC->y - tilesToUnits(6))
                 NPC->act_no = init;
         }
         break;
@@ -1087,7 +1087,7 @@ void npcAct117(npc *NPC) //Curly
 		//Look towards player if direction is 4
 		if (NPC->direct == dirAuto)
 		{
-			if (NPC->x <= currentPlayer.x)
+			if (NPC->x <= gCurrentPlayer.x)
 				NPC->direct = dirRight;
 			else
 				NPC->direct = dirLeft;
@@ -1145,7 +1145,7 @@ void npcAct117(npc *NPC) //Curly
 		NPC->ani_wait = 0;
 
 		//Face towards player
-		if (NPC->x <= currentPlayer.x)
+		if (NPC->x <= gCurrentPlayer.x)
 			NPC->direct = dirRight;
 		else
 			NPC->direct = dirLeft;
@@ -1168,7 +1168,7 @@ void npcAct117(npc *NPC) //Curly
 			NPC->x -= 512;
 
 		//Stop when close to the player
-		if (NPC->x + 0x2800 > currentPlayer.x && NPC->x - 0x2800 < currentPlayer.x)
+		if (NPC->x + 0x2800 > gCurrentPlayer.x && NPC->x - 0x2800 < gCurrentPlayer.x)
 			NPC->act_no = 0;
 
 		break;
@@ -1276,9 +1276,9 @@ void npcAct118(npc *NPC) //Curly boss
 	//I think this is to shoot Quote when he jumps over Curly
 	bool bUpper = false;
 
-	if (NPC->direct == dirLeft && NPC->x < currentPlayer.x)
+	if (NPC->direct == dirLeft && NPC->x < gCurrentPlayer.x)
 		bUpper = true;
-	if (NPC->direct == dirRight && NPC->x > currentPlayer.x)
+	if (NPC->direct == dirRight && NPC->x > gCurrentPlayer.x)
 		bUpper = true;
 
 	switch (NPC->act_no)
@@ -1294,7 +1294,7 @@ void npcAct118(npc *NPC) //Curly boss
 		NPC->act_wait = random(50, 100);
 		NPC->ani_no = 0;
 
-		if (NPC->x <= currentPlayer.x)
+		if (NPC->x <= gCurrentPlayer.x)
 			NPC->direct = dirRight;
 		else
 			NPC->direct = dirLeft;
@@ -1314,7 +1314,7 @@ void npcAct118(npc *NPC) //Curly boss
 		NPC->ani_no = 3;
 		NPC->act_wait = random(50, 100);
 
-		if (NPC->x <= currentPlayer.x)
+		if (NPC->x <= gCurrentPlayer.x)
 			NPC->direct = dirRight;
 		else
 			NPC->direct = dirLeft;
@@ -1348,7 +1348,7 @@ void npcAct118(npc *NPC) //Curly boss
 		break;
 
 	case 20: //Charge shot
-		if (NPC->x <= currentPlayer.x)
+		if (NPC->x <= gCurrentPlayer.x)
 			NPC->direct = dirRight;
 		else
 			NPC->direct = dirLeft;

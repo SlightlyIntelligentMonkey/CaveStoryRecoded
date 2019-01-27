@@ -315,7 +315,7 @@ void npcAct141(npc *NPC) //block toroko throws
 			else
 				NPC->x = NPC->pNpc->x - 0x2000;
 			NPC->y = NPC->pNpc->y;
-			deg = getAtan(NPC->x - currentPlayer.x, NPC->y - currentPlayer.y);
+			deg = getAtan(NPC->x - gCurrentPlayer.x, NPC->y - gCurrentPlayer.y);
 			NPC->ym = 4 * getSin(deg);
 			NPC->xm = 4 * getCos(deg);
 			playSound(39);
@@ -717,10 +717,10 @@ void npcAct147(npc *NPC)
 //Fallthrough
 	case 1:
 		if (NPC->act_wait <= 7
-			|| NPC->x - 49152 >= currentPlayer.x
-			|| NPC->x + 49152 <= currentPlayer.x
-			|| NPC->y - 49152 >= currentPlayer.y
-			|| NPC->y + 0x4000 <= currentPlayer.y)
+			|| NPC->x - 49152 >= gCurrentPlayer.x
+			|| NPC->x + 49152 <= gCurrentPlayer.x
+			|| NPC->y - 49152 >= gCurrentPlayer.y
+			|| NPC->y + 0x4000 <= gCurrentPlayer.y)
 		{
 			if (NPC->act_wait < 8)
 				++NPC->act_wait;
@@ -729,7 +729,7 @@ void npcAct147(npc *NPC)
 		}
 		else
 		{
-			if (NPC->x <= currentPlayer.x)
+			if (NPC->x <= gCurrentPlayer.x)
 				NPC->direct = 2;
 			else
 				NPC->direct = 0;
@@ -743,7 +743,7 @@ void npcAct147(npc *NPC)
 			NPC->act_wait = 0;
 		}
 
-		if (NPC->act_wait > 7 && NPC->x - 24576 < currentPlayer.x && NPC->x + 24576 > currentPlayer.x && NPC->y - 49152 < currentPlayer.y && NPC->y + 0x4000 > currentPlayer.y)
+		if (NPC->act_wait > 7 && NPC->x - 24576 < gCurrentPlayer.x && NPC->x + 24576 > gCurrentPlayer.x && NPC->y - 49152 < gCurrentPlayer.y && NPC->y + 0x4000 > gCurrentPlayer.y)
 		{
 			NPC->act_no = 2;
 			NPC->ani_no = 0;
@@ -760,7 +760,7 @@ void npcAct147(npc *NPC)
 
 			playSound(30);
 
-			if (NPC->x <= currentPlayer.x)
+			if (NPC->x <= gCurrentPlayer.x)
 				NPC->direct = 2;
 			else
 				NPC->direct = 0;
@@ -778,7 +778,7 @@ void npcAct147(npc *NPC)
 		break;
 
 	case 4:
-		if (NPC->x >= currentPlayer.x)
+		if (NPC->x >= gCurrentPlayer.x)
 			NPC->direct = 0;
 		else
 			NPC->direct = 2;
@@ -801,7 +801,7 @@ void npcAct147(npc *NPC)
 
 			if (NPC->act_wait % 30 == 6)
 			{
-				deg = getAtan(NPC->x - currentPlayer.x, NPC->y - currentPlayer.y);
+				deg = getAtan(NPC->x - gCurrentPlayer.x, NPC->y - gCurrentPlayer.y);
 				deg += random(-6, 6);
 				createNpc(NPC_ProjectileCritter, NPC->x, NPC->y, 3 * getCos(deg), 3 * getSin(deg), 0, nullptr);
 				playSound(39);
@@ -916,8 +916,8 @@ void npcAct149(npc *NPC) //moving block
 	case 0xA:
 		NPC->bits &= 0x7F;
 		NPC->damage = 0;
-		if (currentPlayer.x < NPC->x + 12800 && currentPlayer.x > NPC->x - 204800 &&
-			currentPlayer.y < NPC->y + 12800 && currentPlayer.y > NPC->y - 12800)
+		if (gCurrentPlayer.x < NPC->x + 12800 && gCurrentPlayer.x > NPC->x - 204800 &&
+			gCurrentPlayer.y < NPC->y + 12800 && gCurrentPlayer.y > NPC->y - 12800)
 		{
 			NPC->act_no = 11;
 			NPC->act_wait = 0;
@@ -941,7 +941,7 @@ void npcAct149(npc *NPC) //moving block
 		}
 		else
 		{
-			if (currentPlayer.flag & leftWall)
+			if (gCurrentPlayer.flag & leftWall)
 			{
 				NPC->bits |= npc_rearTop;
 				NPC->damage = 100;
@@ -957,8 +957,8 @@ void npcAct149(npc *NPC) //moving block
 	case 0x14:
 		NPC->bits &= 0x7F;
 		NPC->damage = 0;
-		if (currentPlayer.x > NPC->x - 12800 && currentPlayer.x < NPC->x + 204800 &&
-			currentPlayer.y < NPC->y + 12800 && currentPlayer.y > NPC->y - 12800)
+		if (gCurrentPlayer.x > NPC->x - 12800 && gCurrentPlayer.x < NPC->x + 204800 &&
+			gCurrentPlayer.y < NPC->y + 12800 && gCurrentPlayer.y > NPC->y - 12800)
 		{
 			NPC->act_no = 21;
 			NPC->act_wait = 0;
@@ -982,7 +982,7 @@ void npcAct149(npc *NPC) //moving block
 		}
 		else
 		{
-			if (currentPlayer.flag & rightWall)
+			if (gCurrentPlayer.flag & rightWall)
 			{
 				NPC->bits |= npc_rearTop;
 				NPC->damage = 100;
@@ -1057,8 +1057,8 @@ void npcAct150(npc *NPC) // Quote
 
 		if (NPC->direct > 10) // Hermit Gunsmith related ?
 		{
-			NPC->x = currentPlayer.x;
-			NPC->y = currentPlayer.y;
+			NPC->x = gCurrentPlayer.x;
+			NPC->y = gCurrentPlayer.y;
 			NPC->direct = dirLeft;
 		}
 		break;
@@ -1188,7 +1188,7 @@ void npcAct150(npc *NPC) // Quote
 			++NPC->rect.left;	// For the shaking effect
 	}
 
-	if (currentPlayer.equip & equip_mimigaMask)
+	if (gCurrentPlayer.equip & equip_mimigaMask)
 	{
 		NPC->rect.top += 32;
 		NPC->rect.bottom += 32;
@@ -1299,7 +1299,7 @@ void npcAct153(npc *NPC)
 		{ 96, 72, 120, 96 }
 	} };
 
-	if (NPC->x <= currentPlayer.x + pixelsToUnits(gScreenWidth) && NPC->x >= currentPlayer.x - pixelsToUnits(gScreenWidth) && NPC->y <= currentPlayer.y + pixelsToUnits(gScreenHeight) && NPC->y >= currentPlayer.y - pixelsToUnits(gScreenHeight))
+	if (NPC->x <= gCurrentPlayer.x + pixelsToUnits(gScreenWidth) && NPC->x >= gCurrentPlayer.x - pixelsToUnits(gScreenWidth) && NPC->y <= gCurrentPlayer.y + pixelsToUnits(gScreenHeight) && NPC->y >= gCurrentPlayer.y - pixelsToUnits(gScreenHeight))
 	{
 		switch (NPC->act_no)
 		{
@@ -1380,7 +1380,7 @@ void npcAct153(npc *NPC)
 						NPC->ym = -0x5FF;
 						NPC->act_no = 20;
 
-						if (!(currentPlayer.cond & player_removed))
+						if (!(gCurrentPlayer.cond & player_removed))
 							playSound(30);
 					}
 				}
@@ -1391,7 +1391,7 @@ void npcAct153(npc *NPC)
 				NPC->ym = -0x5FF;
 				NPC->act_no = 20;
 
-				if (!(currentPlayer.cond & player_removed))
+				if (!(gCurrentPlayer.cond & player_removed))
 					playSound(30);
 			}
 			break;
@@ -1429,7 +1429,7 @@ void npcAct153(npc *NPC)
 				NPC->act_wait = 0;
 				NPC->xm = 0;
 
-				if (!(currentPlayer.cond & player_removed))
+				if (!(gCurrentPlayer.cond & player_removed))
 					playSound(23);
 			}
 			break;
@@ -1592,9 +1592,9 @@ void npcAct155(npc *NPC) //flying gaudi
 			NPC->ani_no = 2;
 		if (++NPC->act_wait > 30)
 		{
-			temp = random(-6, 6) + getAtan(NPC->x - currentPlayer.x, NPC->y - currentPlayer.y);
+			temp = random(-6, 6) + getAtan(NPC->x - gCurrentPlayer.x, NPC->y - gCurrentPlayer.y);
 			createNpc(NPC_ProjectileGaudiFlying, NPC->x, NPC->y, 3 * getCos(temp), 3 * getSin(temp), 0, nullptr, false);
-			if (!(currentPlayer.cond & 2))
+			if (!(gCurrentPlayer.cond & 2))
 				playSound(39);
 			NPC->act_no = 1;
 			NPC->act_wait = random(70, 150);
@@ -1707,8 +1707,8 @@ void npcAct157(npc *NPC)
 	case 0xA:
 		NPC->bits &= 0x7F;
 		NPC->damage = 0;
-		if (currentPlayer.y < NPC->y + 12800 && currentPlayer.y > NPC->y - 204800 &&
-			currentPlayer.x < NPC->x + 12800 && currentPlayer.x > NPC->x - 12800)
+		if (gCurrentPlayer.y < NPC->y + 12800 && gCurrentPlayer.y > NPC->y - 204800 &&
+			gCurrentPlayer.x < NPC->x + 12800 && gCurrentPlayer.x > NPC->x - 12800)
 		{
 			NPC->act_no = 11;
 			NPC->act_wait = 0;
@@ -1732,7 +1732,7 @@ void npcAct157(npc *NPC)
 		}
 		else
 		{
-			if (currentPlayer.flag & ceiling)
+			if (gCurrentPlayer.flag & ceiling)
 			{
 				NPC->bits |= npc_rearTop;
 				NPC->damage = 100;
@@ -1748,8 +1748,8 @@ void npcAct157(npc *NPC)
 	case 0x14:
 		NPC->bits &= 0x7F;
 		NPC->damage = 0;
-		if (currentPlayer.y > NPC->y - 12800 && currentPlayer.y < NPC->y + 204800 &&
-			currentPlayer.x < NPC->x + 12800 && currentPlayer.x > NPC->x - 12800)
+		if (gCurrentPlayer.y > NPC->y - 12800 && gCurrentPlayer.y < NPC->y + 204800 &&
+			gCurrentPlayer.x < NPC->x + 12800 && gCurrentPlayer.x > NPC->x - 12800)
 		{
 			NPC->act_no = 21;
 			NPC->act_wait = 0;
@@ -1773,7 +1773,7 @@ void npcAct157(npc *NPC)
 		}
 		else
 		{
-			if (currentPlayer.flag & ground)
+			if (gCurrentPlayer.flag & ground)
 			{
 				NPC->bits |= npc_rearTop;
 				NPC->damage = 100;
@@ -1829,7 +1829,7 @@ void npcAct158(npc *NPC)
 	NPC->ym = 2 * getSin(NPC->count1);
 	NPC->y += NPC->ym;
 	NPC->x += NPC->xm;
-	dir = getAtan(NPC->x - currentPlayer.x, NPC->y - currentPlayer.y);
+	dir = getAtan(NPC->x - gCurrentPlayer.x, NPC->y - gCurrentPlayer.y);
 
 	if (NPC->count1 <= dir)
 	{

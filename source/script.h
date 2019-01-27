@@ -36,7 +36,7 @@ struct TSC
 	uint8_t wait_beam;
 };
 
-extern TSC tsc;
+extern TSC gTsc;
 
 //Functions
 bool initTsc();
@@ -48,5 +48,5 @@ int startTscEvent(TSC &ptsc, int no);
 int jumpTscEvent(TSC &ptsc, int no);
 void stopTsc(TSC &ptsc);
 
-int updateTsc(TSC &ptsc = tsc);
+int updateTsc(TSC &ptsc = gTsc);
 void drawTsc();

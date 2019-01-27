@@ -13,4 +13,4 @@ void launchSuperMissile(int level);
 void shootNemesis(int level);
 void shootSpur(int level);
 
-extern int spurCharge;
+extern int gSpurCharge;

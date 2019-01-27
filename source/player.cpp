@@ -15,9 +15,9 @@
 #include "stage.h"
 #include "npc.h"
 
-player currentPlayer;
+player gCurrentPlayer;
 
-bool disableDamage = false;
+bool gDisableDamage = false;
 
 void player::init()
 {
@@ -129,7 +129,7 @@ void player::backStep(int entityEventNum)
 
 void player::damage(int16_t damage)
 {
-    if (disableDamage)
+    if (gDisableDamage)
         return;
 
     if (!shock)
@@ -177,7 +177,7 @@ void player::damage(int16_t damage)
 			cond = 0;
 
 			createSmokeLeft(x, y, 5120, 64);
-			startTscEvent(tsc, 40);
+			startTscEvent(gTsc, 40);
 		}
 	}
 }
@@ -760,11 +760,11 @@ void player::update(bool bKey)
 						{
 							if (getFlag(4000))
 							{
-								startTscEvent(tsc, 1100);
+								startTscEvent(gTsc, 1100);
 							}
 							else
 							{
-								startTscEvent(tsc, 41);
+								startTscEvent(gTsc, 41);
 
 								if (direct != dirLeft)
 									createCaret(x, y, effect_DrownedQuote, dirRight);

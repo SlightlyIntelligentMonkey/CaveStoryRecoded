@@ -230,12 +230,12 @@ void actBoss_Balfrog(npc *boss)
 			boss->ani_no = 1;
 			boss->view.top = pixelsToUnits(48);
 			boss->view.bottom = pixelsToUnits(16);
-			if (!boss->direct && boss->x < currentPlayer.x)
+			if (!boss->direct && boss->x < gCurrentPlayer.x)
 			{
 				boss->direct = 2;
 				boss->act_no = 110;
 			}
-			if (boss->direct == 2 && boss->x > currentPlayer.x)
+			if (boss->direct == 2 && boss->x > gCurrentPlayer.x)
 			{
 				boss->direct = 0;
 				boss->act_no = 110;
@@ -288,8 +288,8 @@ void actBoss_Balfrog(npc *boss)
 		{
 			boss->act_wait = 0;
 			--boss->count1;
-			deg = boss->direct ? getAtan(boss->x + 0x4000 - currentPlayer.x, boss->y - 4096 - currentPlayer.y) :
-				getAtan(boss->x - 0x4000 - currentPlayer.x, boss->y - 4096 - currentPlayer.y);
+			deg = boss->direct ? getAtan(boss->x + 0x4000 - gCurrentPlayer.x, boss->y - 4096 - gCurrentPlayer.y) :
+				getAtan(boss->x - 0x4000 - gCurrentPlayer.x, boss->y - 4096 - gCurrentPlayer.y);
 			deg += random(-16, 16);
 			ym = getSin(deg);
 			xm = getCos(deg);
@@ -373,12 +373,12 @@ void actBoss_Balfrog(npc *boss)
 				createNpc(NPC_EnemyPuchi, random(4, 16) << 13, random(0, 4) << 13, 0, 0, dirAuto);
 			for (int i = 0; i <= 7; ++i)
 				createNpc(NPC_Smoke, boss->x + (random(-12, 12) << 9), boss->y + boss->hit.bottom, random(-341, 341), random(-1536, 0));
-			if (!boss->direct && boss->x < currentPlayer.x)
+			if (!boss->direct && boss->x < gCurrentPlayer.x)
 			{
 				boss->direct = 2;
 				boss->act_no = 110;
 			}
-			if (boss->direct == 2 && boss->x > currentPlayer.x)
+			if (boss->direct == 2 && boss->x > gCurrentPlayer.x)
 			{
 				boss->direct = 0;
 				boss->act_no = 110;

@@ -112,9 +112,9 @@ void npcAct122(npc *NPC) //Colon attack
 		}
 
 		//Look towards Quote if nearby
-		if (NPC->x - 0x4000 < currentPlayer.x && NPC->x + 0x4000 > currentPlayer.x && NPC->y - 0x4000 < currentPlayer.y && NPC->y + 0x2000 > currentPlayer.y)
+		if (NPC->x - 0x4000 < gCurrentPlayer.x && NPC->x + 0x4000 > gCurrentPlayer.x && NPC->y - 0x4000 < gCurrentPlayer.y && NPC->y + 0x2000 > gCurrentPlayer.y)
 		{
-			if (NPC->x <= currentPlayer.x)
+			if (NPC->x <= gCurrentPlayer.x)
 				NPC->direct = dirRight;
 			else
 				NPC->direct = dirLeft;
@@ -148,7 +148,7 @@ void npcAct122(npc *NPC) //Colon attack
 		NPC->act_no = 14;
 		NPC->act_wait = random(0, 50);
 
-		if (NPC->x <= currentPlayer.x)
+		if (NPC->x <= gCurrentPlayer.x)
 			NPC->direct = dirRight;
 		else
 			NPC->direct = dirLeft;
@@ -437,17 +437,17 @@ void npcAct126(npc *NPC) //Running Puppy
 			NPC->ani_no = 1;
 		}
 
-		if (NPC->x - 0xC000 < currentPlayer.x && NPC->x + 0xC000 > currentPlayer.x && NPC->y - 0x4000 < currentPlayer.y && NPC->y + 0x2000 > currentPlayer.y)
+		if (NPC->x - 0xC000 < gCurrentPlayer.x && NPC->x + 0xC000 > gCurrentPlayer.x && NPC->y - 0x4000 < gCurrentPlayer.y && NPC->y + 0x2000 > gCurrentPlayer.y)
 		{
-			if (NPC->x <= currentPlayer.x)
+			if (NPC->x <= gCurrentPlayer.x)
 				NPC->direct = dirRight;
 			else
 				NPC->direct = dirLeft;
 		}
 
-		if (NPC->x - 0x4000 < currentPlayer.x && NPC->x + 0x4000 > currentPlayer.x && NPC->y - 0x4000 < currentPlayer.y && NPC->y + 0x2000 > currentPlayer.y)
+		if (NPC->x - 0x4000 < gCurrentPlayer.x && NPC->x + 0x4000 > gCurrentPlayer.x && NPC->y - 0x4000 < gCurrentPlayer.y && NPC->y + 0x2000 > gCurrentPlayer.y)
 		{
-			if (NPC->x <= currentPlayer.x)
+			if (NPC->x <= gCurrentPlayer.x)
 				NPC->direct = dirLeft;
 			else
 				NPC->direct = dirRight;
@@ -696,10 +696,10 @@ void npcAct130(npc *NPC) //Puppy wag
 			NPC->act_wait = 0;
 			NPC->ani_no = 1;
 		}
-		if (NPC->x - 0x8000 < currentPlayer.x && NPC->x + 0x8000 > currentPlayer.x && NPC->y - 0x4000 < currentPlayer.y && NPC->y + 0x2000 > currentPlayer.y)
+		if (NPC->x - 0x8000 < gCurrentPlayer.x && NPC->x + 0x8000 > gCurrentPlayer.x && NPC->y - 0x4000 < gCurrentPlayer.y && NPC->y + 0x2000 > gCurrentPlayer.y)
 		    NPC->animate(3, 2, 3);
 
-		if (NPC->x - 0xC000 < currentPlayer.x && NPC->x + 0xC000 > currentPlayer.x && NPC->y - 0x4000 < currentPlayer.y && NPC->y + 0x2000 > currentPlayer.y)
+		if (NPC->x - 0xC000 < gCurrentPlayer.x && NPC->x + 0xC000 > gCurrentPlayer.x && NPC->y - 0x4000 < gCurrentPlayer.y && NPC->y + 0x2000 > gCurrentPlayer.y)
             NPC->facePlayer();
 		break;
 
@@ -761,7 +761,7 @@ void npcAct132(npc *NPC) //Puppy bark
 
 	if (NPC->act_no < 100)
 	{
-		if (currentPlayer.x >= NPC->x)
+		if (gCurrentPlayer.x >= NPC->x)
 			NPC->direct = dirRight;
 		else
 			NPC->direct = dirLeft;
@@ -782,7 +782,7 @@ void npcAct132(npc *NPC) //Puppy bark
 			NPC->ani_no = 1;
 		}
 
-		if (NPC->x - 0x8000 >= currentPlayer.x || NPC->x + 0x8000 <= currentPlayer.x || NPC->y - 0x2000 >= currentPlayer.y || NPC->y + 0x2000 <= currentPlayer.y)
+		if (NPC->x - 0x8000 >= gCurrentPlayer.x || NPC->x + 0x8000 <= gCurrentPlayer.x || NPC->y - 0x2000 >= gCurrentPlayer.y || NPC->y + 0x2000 <= gCurrentPlayer.y)
 		{
 			if (NPC->ani_no == 4)
 				NPC->ani_no = 2;
@@ -963,7 +963,7 @@ void npcAct134(npc *NPC) //Armadillo
 		NPC->bits |= npc_invulnerable;
 //Fallthrough
 	case 1:
-		if (currentPlayer.x > NPC->x - 0x28000 && currentPlayer.x < NPC->x + 0x28000 && currentPlayer.y > NPC->y - 81920 && currentPlayer.y < NPC->y + 0x8000)
+		if (gCurrentPlayer.x > NPC->x - 0x28000 && gCurrentPlayer.x < NPC->x + 0x28000 && gCurrentPlayer.y > NPC->y - 81920 && gCurrentPlayer.y < NPC->y + 0x8000)
 		{
 			NPC->act_no = 10;
 			NPC->bits |= npc_shootable;
@@ -1054,7 +1054,7 @@ void npcAct135(npc *NPC)
 	int xm;
 	int ym;
 
-	if (currentPlayer.x < NPC->x - 0x2C000 || currentPlayer.x > NPC->x + 0x2C000 || currentPlayer.y < NPC->y - 0x14000 || currentPlayer.y > NPC->y + 0x8000)
+	if (gCurrentPlayer.x < NPC->x - 0x2C000 || gCurrentPlayer.x > NPC->x + 0x2C000 || gCurrentPlayer.y < NPC->y - 0x14000 || gCurrentPlayer.y > NPC->y + 0x8000)
 		NPC->act_no = 0;
 
 	switch (NPC->act_no)
@@ -1064,7 +1064,7 @@ void npcAct135(npc *NPC)
 		NPC->xm = 0;
 //Fallthrough
 	case 1:
-		if (currentPlayer.x > NPC->x - 0x28000 && currentPlayer.x < NPC->x + 0x28000 && currentPlayer.y > NPC->y - 0x14000 && currentPlayer.y < NPC->y + 0x8000)
+		if (gCurrentPlayer.x > NPC->x - 0x28000 && gCurrentPlayer.x < NPC->x + 0x28000 && gCurrentPlayer.y > NPC->y - 0x14000 && gCurrentPlayer.y < NPC->y + 0x8000)
 			NPC->act_no = 10;
 
 		if (NPC->flag & ground)
@@ -1087,14 +1087,14 @@ void npcAct135(npc *NPC)
 
 			if (NPC->shock)
 			{
-				if (NPC->x >= currentPlayer.x)
+				if (NPC->x >= gCurrentPlayer.x)
 					NPC->xm += 0x100;
 				else
 					NPC->xm -= 0x100;
 			}
 			else
 			{
-				if (NPC->x >= currentPlayer.x)
+				if (NPC->x >= gCurrentPlayer.x)
 					NPC->xm -= 0x100;
 				else
 					NPC->xm += 0x100;
@@ -1106,7 +1106,7 @@ void npcAct135(npc *NPC)
 		if (NPC->ym > 0 && !NPC->count1)
 		{
 			++NPC->count1;
-			deg = getAtan(NPC->x - currentPlayer.x, NPC->y + 0x800 - currentPlayer.y);
+			deg = getAtan(NPC->x - gCurrentPlayer.x, NPC->y + 0x800 - gCurrentPlayer.y);
 			ym = 2 * getSin(deg);
 			xm = 2 * getCos(deg);
 			createNpc(50, NPC->x, NPC->y, xm, ym, 0, nullptr, true);
@@ -1126,7 +1126,7 @@ void npcAct135(npc *NPC)
 
 	if (NPC->act_no >= 10)
 	{
-		if (NPC->x <= currentPlayer.x)
+		if (NPC->x <= gCurrentPlayer.x)
 			NPC->direct = dirRight;
 		else
 			NPC->direct = dirLeft;
@@ -1190,26 +1190,26 @@ void npcAct136(npc *NPC) //Puppy on Quote's head
 	}
 
 	//Face in same direction player is facing
-	if (currentPlayer.direct)
+	if (gCurrentPlayer.direct)
 		NPC->direct = 2;
 	else
 		NPC->direct = 0;
 
 	//Attach to player (and set framerects)
-	NPC->y = currentPlayer.y - 0x1400;
+	NPC->y = gCurrentPlayer.y - 0x1400;
 	if (NPC->direct)
 	{
-		NPC->x = currentPlayer.x - 0x800;
+		NPC->x = gCurrentPlayer.x - 0x800;
 		NPC->rect = rcRight[NPC->ani_no];
 	}
 	else
 	{
-		NPC->x = currentPlayer.x + 0x800;
+		NPC->x = gCurrentPlayer.x + 0x800;
 		NPC->rect = rcLeft[NPC->ani_no];
 	}
 
 	//Bob up when walking
-	if (currentPlayer.ani_no & 1)
+	if (gCurrentPlayer.ani_no & 1)
 		++NPC->rect.top;
 }
 

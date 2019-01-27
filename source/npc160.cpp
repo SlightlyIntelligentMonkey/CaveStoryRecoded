@@ -58,7 +58,7 @@ void npcAct160(npc *NPC) //poo black
 			playSound(72);
 		}
 
-		if (NPC->y < currentPlayer.y && currentPlayer.flag & ground)
+		if (NPC->y < gCurrentPlayer.y && gCurrentPlayer.flag & ground)
 			NPC->damage = 20;
 		else
 			NPC->damage = 0;
@@ -101,12 +101,12 @@ void npcAct160(npc *NPC) //poo black
 		}
 		break;
 	case inCeiling:
-		gSuperXPos = currentPlayer.x;
+		gSuperXPos = gCurrentPlayer.x;
 		gSuperYPos = 3276800;
 		if (++NPC->count1 > 110)
 		{
 			NPC->count1 = 10;
-			NPC->x = currentPlayer.x;
+			NPC->x = gCurrentPlayer.x;
 			NPC->y = 0;
 			NPC->ym = 1535;
 			NPC->act_no = air;
@@ -373,10 +373,10 @@ void npcAct165(npc *NPC) //Curly (Collapsed)
 //Fallthrough
 	case 1:
 		NPC->ani_no = NPC->direct == 2
-			&& currentPlayer.x > NPC->x - 0x4000
-			&& currentPlayer.x < NPC->x + 0x4000
-			&& currentPlayer.y > NPC->y - 0x2000
-			&& currentPlayer.y < NPC->y + 0x2000;
+			&& gCurrentPlayer.x > NPC->x - 0x4000
+			&& gCurrentPlayer.x < NPC->x + 0x4000
+			&& gCurrentPlayer.y > NPC->y - 0x2000
+			&& gCurrentPlayer.y < NPC->y + 0x2000;
 		break;
 
 	default:
@@ -554,8 +554,8 @@ void npcAct169(npc *NPC)
 		else
 			NPC->xm -= 32;
 
-		if (NPC->act_wait <= 7 || NPC->x - 6144 >= currentPlayer.x || NPC->x + 6144 <= currentPlayer.x ||
-			NPC->y - 6144 >= currentPlayer.y || NPC->y + 4096 <= currentPlayer.y)
+		if (NPC->act_wait <= 7 || NPC->x - 6144 >= gCurrentPlayer.x || NPC->x + 6144 <= gCurrentPlayer.x ||
+			NPC->y - 6144 >= gCurrentPlayer.y || NPC->y + 4096 <= gCurrentPlayer.y)
 		{
 			if (++NPC->act_wait <= 75)
 			{
@@ -595,8 +595,8 @@ void npcAct169(npc *NPC)
 		{
 			NPC->act_no = 10;
 			NPC->ani_no = 5;
-			currentPlayer.cond |= 2;
-			currentPlayer.damage(5);
+			gCurrentPlayer.cond |= 2;
+			gCurrentPlayer.damage(5);
 		}
 		break;
 	case 4:
@@ -614,13 +614,13 @@ void npcAct169(npc *NPC)
 			gViewport.quake = 30;
 			playSound(26);
 		}
-		if (NPC->act_wait > 7 && NPC->x - 6144 < currentPlayer.x && NPC->x + 6144 > currentPlayer.x &&
-			NPC->y - 6144 < currentPlayer.y && NPC->y + 4096 > currentPlayer.y)
+		if (NPC->act_wait > 7 && NPC->x - 6144 < gCurrentPlayer.x && NPC->x + 6144 > gCurrentPlayer.x &&
+			NPC->y - 6144 < gCurrentPlayer.y && NPC->y + 4096 > gCurrentPlayer.y)
 		{
 			NPC->act_no = 10;
 			NPC->ani_no = 5;
-			currentPlayer.cond |= 2;
-			currentPlayer.damage(10);
+			gCurrentPlayer.cond |= 2;
+			gCurrentPlayer.damage(10);
 		}
 		break;
 	case 9:
@@ -629,8 +629,8 @@ void npcAct169(npc *NPC)
 			NPC->act_no = 0;
 		break;
 	case 10:
-		currentPlayer.x = NPC->x;
-		currentPlayer.y = NPC->y;
+		gCurrentPlayer.x = NPC->x;
+		gCurrentPlayer.y = NPC->y;
 		NPC->xm = 4 * NPC->xm / 5;
 		if (!NPC->xm)
 		{
@@ -641,8 +641,8 @@ void npcAct169(npc *NPC)
 		}
 		break;
 	case 11:
-		currentPlayer.x = NPC->x;
-		currentPlayer.y = NPC->y;
+		gCurrentPlayer.x = NPC->x;
+		gCurrentPlayer.y = NPC->y;
 		if (++NPC->ani_wait > 2)
 		{
 			NPC->ani_wait = 0;
@@ -655,23 +655,23 @@ void npcAct169(npc *NPC)
 		break;
 	case 20:
 		playSound(25, 1);
-		currentPlayer.cond &= 0xFD;
+		gCurrentPlayer.cond &= 0xFD;
 		if (NPC->direct)
 		{
-			currentPlayer.x -= 2048;
-			currentPlayer.y -= 4096;
-			currentPlayer.xm = -1535;
-			currentPlayer.ym = -512;
-			currentPlayer.direct = dirLeft;
+			gCurrentPlayer.x -= 2048;
+			gCurrentPlayer.y -= 4096;
+			gCurrentPlayer.xm = -1535;
+			gCurrentPlayer.ym = -512;
+			gCurrentPlayer.direct = dirLeft;
 			NPC->direct = dirLeft;
 		}
 		else
 		{
-			currentPlayer.x += 2048;
-			currentPlayer.y -= 4096;
-			currentPlayer.xm = 1535;
-			currentPlayer.ym = -512;
-			currentPlayer.direct = dirRight;
+			gCurrentPlayer.x += 2048;
+			gCurrentPlayer.y -= 4096;
+			gCurrentPlayer.xm = 1535;
+			gCurrentPlayer.ym = -512;
+			gCurrentPlayer.direct = dirRight;
 			NPC->direct = dirRight;
 		}
 		NPC->act_no = 21;
@@ -747,7 +747,7 @@ void npcAct170(npc *NPC)
 		}
 		else
 		{
-			if (NPC->y >= currentPlayer.y)
+			if (NPC->y >= gCurrentPlayer.y)
 				NPC->ym -= 32;
 			else
 				NPC->ym += 32;
@@ -791,7 +791,7 @@ void npcAct171(npc *NPC) //Fire whirr
 	rcRight[1].right = 248;
 	rcRight[1].bottom = 80;
 
-	if (NPC->x <= currentPlayer.x)
+	if (NPC->x <= gCurrentPlayer.x)
 		NPC->direct = 2;
 	else
 		NPC->direct = 0;
@@ -843,10 +843,10 @@ void npcAct171(npc *NPC) //Fire whirr
 
 	if (NPC->direct)
 	{
-		if (currentPlayer.y < NPC->y + 40960 && currentPlayer.y > NPC->y - 40960 && currentPlayer.x < NPC->x + 81920 && currentPlayer.x > NPC->x)
+		if (gCurrentPlayer.y < NPC->y + 40960 && gCurrentPlayer.y > NPC->y - 40960 && gCurrentPlayer.x < NPC->x + 81920 && gCurrentPlayer.x > NPC->x)
 			++NPC->count1;
 	}
-	else if (currentPlayer.y < NPC->y + 40960 && currentPlayer.y > NPC->y - 40960 && currentPlayer.x < NPC->x && currentPlayer.x > NPC->x - 81920)
+	else if (gCurrentPlayer.y < NPC->y + 40960 && gCurrentPlayer.y > NPC->y - 40960 && gCurrentPlayer.x < NPC->x && gCurrentPlayer.x > NPC->x - 81920)
 		++NPC->count1;
 
 	if (NPC->count1 > 20)
@@ -951,7 +951,7 @@ void npcAct173(npc *NPC) //Armoured Gaudi
 	rcRight[3].right = 96;
 	rcRight[3].bottom = 176;
 
-	if (NPC->x <= currentPlayer.x + pixelsToUnits(gScreenWidth) && NPC->x >= currentPlayer.x - pixelsToUnits(gScreenWidth) && NPC->y <= currentPlayer.y + pixelsToUnits(gScreenHeight) && NPC->y >= currentPlayer.y - pixelsToUnits(gScreenHeight))
+	if (NPC->x <= gCurrentPlayer.x + pixelsToUnits(gScreenWidth) && NPC->x >= gCurrentPlayer.x - pixelsToUnits(gScreenWidth) && NPC->y <= gCurrentPlayer.y + pixelsToUnits(gScreenHeight) && NPC->y >= gCurrentPlayer.y - pixelsToUnits(gScreenHeight))
 	{
 		switch (NPC->act_no)
 		{
@@ -965,7 +965,7 @@ void npcAct173(npc *NPC) //Armoured Gaudi
 
 			if (NPC->act_wait > 4)
 			{
-				if (NPC->x - 98304 < currentPlayer.x && NPC->x + 98304 > currentPlayer.x && NPC->y - 81920 < currentPlayer.y && NPC->y + 81920 > currentPlayer.y)
+				if (NPC->x - 98304 < gCurrentPlayer.x && NPC->x + 98304 > gCurrentPlayer.x && NPC->y - 81920 < gCurrentPlayer.y && NPC->y + 81920 > gCurrentPlayer.y)
 				{
 					NPC->act_no = 10;
 					NPC->act_wait = 0;
@@ -1024,7 +1024,7 @@ void npcAct173(npc *NPC) //Armoured Gaudi
 		case 25:
 			if (++NPC->act_wait == 30 || NPC->act_wait == 40)
 			{
-				deg = getAtan(NPC->x - currentPlayer.x, NPC->y - currentPlayer.y);
+				deg = getAtan(NPC->x - gCurrentPlayer.x, NPC->y - gCurrentPlayer.y);
 				deg += random(-6, 6);
 				createNpc(NPC_ProjectileGaudiArmor, NPC->x, NPC->y, 3 * getCos(deg), 3 * getSin(deg), 0, nullptr);
 				playSound(39);
@@ -1062,7 +1062,7 @@ void npcAct173(npc *NPC) //Armoured Gaudi
 			break;
 		}
 
-		if (currentPlayer.x >= NPC->x)
+		if (gCurrentPlayer.x >= NPC->x)
 			NPC->direct = 2;
 		else
 			NPC->direct = 0;
@@ -1282,10 +1282,10 @@ void npcAct176(npc *NPC)
 	case 1:
 		if (NPC->direct)
 		{
-			if (NPC->x < currentPlayer.x + 0x14000 && NPC->x > currentPlayer.x - 0x14000 && NPC->y < currentPlayer.y + 0x2000 && NPC->y > currentPlayer.y - 0x14000)
+			if (NPC->x < gCurrentPlayer.x + 0x14000 && NPC->x > gCurrentPlayer.x - 0x14000 && NPC->y < gCurrentPlayer.y + 0x2000 && NPC->y > gCurrentPlayer.y - 0x14000)
 				++NPC->count1;
 		}
-		else if (NPC->x < currentPlayer.x + 0x14000 && NPC->x > currentPlayer.x - 0x14000 && NPC->y < currentPlayer.y + 0x14000 && NPC->y > currentPlayer.y - 0x2000)
+		else if (NPC->x < gCurrentPlayer.x + 0x14000 && NPC->x > gCurrentPlayer.x - 0x14000 && NPC->y < gCurrentPlayer.y + 0x14000 && NPC->y > gCurrentPlayer.y - 0x2000)
 		{
 			++NPC->count1;
 		}
@@ -1372,13 +1372,13 @@ void npcAct177(npc *NPC)
 			NPC->ym = -0x600;
 //Fallthrough
 	case 1:
-		if (NPC->y < currentPlayer.y + 0x2000 && NPC->y > currentPlayer.y - 0x2000)
+		if (NPC->y < gCurrentPlayer.y + 0x2000 && NPC->y > gCurrentPlayer.y - 0x2000)
 		{
 			NPC->act_no = 10;
 			NPC->tgt_x = NPC->x;
 			NPC->tgt_y = NPC->y;
 
-			if (NPC->x <= currentPlayer.x)
+			if (NPC->x <= gCurrentPlayer.x)
 				NPC->direct = 2;
 			else
 				NPC->direct = 0;

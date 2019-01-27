@@ -637,7 +637,7 @@ void npcAct031(npc *NPC) // Bat, Black Hanging (enemy)
     case falling:
         NPC->doGravity(0x20, 0x5FF);
 
-        if ((++NPC->act_wait >= 20 && NPC->y > currentPlayer.y - 0x2000) || NPC->flag & ground)
+        if ((++NPC->act_wait >= 20 && NPC->y > gCurrentPlayer.y - 0x2000) || NPC->flag & ground)
         {
             NPC->ani_wait = 0;
             NPC->ani_no = 2;
@@ -821,7 +821,7 @@ void npcAct036(npc *NPC) // Balrog, Flying (boss)
         {
             --NPC->count1;
             NPC->act_wait = 0;
-            int16_t angle = getAtan(NPC->x - currentPlayer.x, NPC->y + pixelsToUnits(4) - currentPlayer.y);
+            int16_t angle = getAtan(NPC->x - gCurrentPlayer.x, NPC->y + pixelsToUnits(4) - gCurrentPlayer.y);
             angle += random(-0x10, 0x10);
             const auto xVel = getCos(angle);
             const auto yVel = getSin(angle);
@@ -840,7 +840,7 @@ void npcAct036(npc *NPC) // Balrog, Flying (boss)
         {
             NPC->act_no = jumpUp;
             NPC->act_wait = 0;
-            NPC->xm = (currentPlayer.x - NPC->x) / 100;
+            NPC->xm = (gCurrentPlayer.x - NPC->x) / 100;
             NPC->ym = pixelsToUnits(-3);
             NPC->ani_no = 3;
         }
@@ -881,7 +881,7 @@ void npcAct036(npc *NPC) // Balrog, Flying (boss)
         break;
 
     case goDownFromJump:
-        if (NPC->y + tilesToUnits(1) >= currentPlayer.y)
+        if (NPC->y + tilesToUnits(1) >= gCurrentPlayer.y)
             NPC->damage = 0;
         else
             NPC->damage = 10;

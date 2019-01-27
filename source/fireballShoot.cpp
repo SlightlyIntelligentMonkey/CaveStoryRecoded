@@ -50,31 +50,31 @@ void shootFireball(int level)
 		}
 
 		//Get bullet orientation and position
-		if (currentPlayer.up)
+		if (gCurrentPlayer.up)
 		{
 			shootDirect = dirUp;
-			shootX = (currentPlayer.direct - 1) * 0x800;
-			caretX = (currentPlayer.direct - 1) * 0x800;
+			shootX = (gCurrentPlayer.direct - 1) * 0x800;
+			caretX = (gCurrentPlayer.direct - 1) * 0x800;
 			shootY = -0x1000;
 		}
-		else if (currentPlayer.down)
+		else if (gCurrentPlayer.down)
 		{
 			shootDirect = dirDown;
-			shootX = (currentPlayer.direct - 1) * 0x800;
-			caretX = (currentPlayer.direct - 1) * 0x800;
+			shootX = (gCurrentPlayer.direct - 1) * 0x800;
+			caretX = (gCurrentPlayer.direct - 1) * 0x800;
 			shootY = 0x1000;
 		}
 		else
 		{
-			shootDirect = currentPlayer.direct;
-			shootX = (currentPlayer.direct - 1) * 0xC00;
-			caretX = (currentPlayer.direct - 1) * 0x1800;
+			shootDirect = gCurrentPlayer.direct;
+			shootX = (gCurrentPlayer.direct - 1) * 0xC00;
+			caretX = (gCurrentPlayer.direct - 1) * 0x1800;
 			shootY = 0x600;
 		}
 
 		//Create bullet
-		createBullet(bul_no, currentPlayer.x + shootX, currentPlayer.y + shootY, shootDirect, 3);
-		createCaret(currentPlayer.x + caretX, currentPlayer.y + shootY, effect_Star);
+		createBullet(bul_no, gCurrentPlayer.x + shootX, gCurrentPlayer.y + shootY, shootDirect, 3);
+		createCaret(gCurrentPlayer.x + caretX, gCurrentPlayer.y + shootY, effect_Star);
 
 		playSound(SFX_FireballBounce);
 	}

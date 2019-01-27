@@ -25,31 +25,31 @@ void shootPolarStar(int level)
 			int caretX;
 
 			//Get bullet orientation and position
-			if (currentPlayer.up)
+			if (gCurrentPlayer.up)
 			{
 				shootDirect = dirUp;
-				shootX = (currentPlayer.direct - 1) * 0x200;
-				caretX = (currentPlayer.direct - 1) * 0x200;
+				shootX = (gCurrentPlayer.direct - 1) * 0x200;
+				caretX = (gCurrentPlayer.direct - 1) * 0x200;
 				shootY = -0x1000;
 			}
-			else if (currentPlayer.down)
+			else if (gCurrentPlayer.down)
 			{
 				shootDirect = dirDown;
-				shootX = (currentPlayer.direct - 1) * 0x200;
-				caretX = (currentPlayer.direct - 1) * 0x200;
+				shootX = (gCurrentPlayer.direct - 1) * 0x200;
+				caretX = (gCurrentPlayer.direct - 1) * 0x200;
 				shootY = 0x1000;
 			}
 			else
 			{
-				shootDirect = currentPlayer.direct;
-				shootX = (currentPlayer.direct - 1) * 0xC00;
-				caretX = (currentPlayer.direct - 1) * 0x1800;
+				shootDirect = gCurrentPlayer.direct;
+				shootX = (gCurrentPlayer.direct - 1) * 0xC00;
+				caretX = (gCurrentPlayer.direct - 1) * 0x1800;
 				shootY = 0x600;
 			}
 
 			//Create bullet
-			createBullet(level + bullet_PolarStarLevel1 - 1, currentPlayer.x + shootX, currentPlayer.y + shootY, shootDirect, 2);
-			createCaret(currentPlayer.x + caretX, currentPlayer.y + shootY, effect_Star);
+			createBullet(level + bullet_PolarStarLevel1 - 1, gCurrentPlayer.x + shootX, gCurrentPlayer.y + shootY, shootDirect, 2);
+			createCaret(gCurrentPlayer.x + caretX, gCurrentPlayer.y + shootY, effect_Star);
 
 			//Play sound
 			if (level == 3)

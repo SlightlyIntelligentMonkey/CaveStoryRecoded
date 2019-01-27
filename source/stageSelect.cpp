@@ -16,9 +16,9 @@
 
 //Teleporter Menu
 PERMIT_STAGE gPermitStage[PERMITSTAGES];
-int selectedStage;
-int stageSelectTitleY;
-int stageSelectFlash;
+int gSelectedStage;
+int gStageSelectTitleY;
+int gStageSelectFlash;
 
 void moveStageSelectCursor()
 {
@@ -30,19 +30,19 @@ void moveStageSelectCursor()
 	{
 		//Left and right move
 		if (isKeyPressed(gKeyLeft))
-			--selectedStage;
+			--gSelectedStage;
 		if (isKeyPressed(gKeyRight))
-			++selectedStage;
+			++gSelectedStage;
 
 		//Wrap around
-		if (selectedStage < 0)
-			selectedStage = stageNo - 1;
-		if (static_cast<size_t>(selectedStage) >= stageNo)
-			selectedStage = 0;
+		if (gSelectedStage < 0)
+			gSelectedStage = stageNo - 1;
+		if (static_cast<size_t>(gSelectedStage) >= stageNo)
+			gSelectedStage = 0;
 
 		//Run event and play sound
 		if (isKeyPressed(gKeyLeft) || isKeyPressed(gKeyRight))
-			startTscEvent(tsc, gPermitStage[selectedStage].index + 1000);
+			startTscEvent(gTsc, gPermitStage[gSelectedStage].index + 1000);
 		if (isKeyPressed(gKeyLeft) || isKeyPressed(gKeyRight))
 			playSound(SFX_YNChangeChoice);
 	}
@@ -60,20 +60,20 @@ void drawStageSelect()
 	rcCur[1] = { 80, 104, 112, 120 };
 	rcTitle1 = { 80, 64, 144, 72 };
 
-	if (stageSelectTitleY > 46)
-		--stageSelectTitleY;
+	if (gStageSelectTitleY > 46)
+		--gStageSelectTitleY;
 
-	drawTexture(gSprites[TEX_TEXTBOX], &rcTitle1, (gScreenWidth / 2) - 32, ((gScreenHeight - 240) / 2) + stageSelectTitleY);
+	drawTexture(gSprites[TEX_TEXTBOX], &rcTitle1, (gScreenWidth / 2) - 32, ((gScreenHeight - 240) / 2) + gStageSelectTitleY);
 	for (stageNo = 0; stageNo < PERMITSTAGES && gPermitStage[stageNo].index != 0; stageNo++);
 
-	++stageSelectFlash;
+	++gStageSelectFlash;
 
 	if (stageNo)
 	{
 		const int stageX = (-40 * static_cast<int>(stageNo) + gScreenWidth) / 2;
 
 		//Draw everything now
-		drawTexture(gSprites[TEX_TEXTBOX], &rcCur[(stageSelectFlash >> 1) & 1], stageX + 40 * selectedStage, ((gScreenHeight - 240) / 2) + 64);
+		drawTexture(gSprites[TEX_TEXTBOX], &rcCur[(gStageSelectFlash >> 1) & 1], stageX + 40 * gSelectedStage, ((gScreenHeight - 240) / 2) + 64);
 
 		for (size_t i = 0; i < PERMITSTAGES && gPermitStage[i].index; ++i)
 		{
@@ -93,17 +93,17 @@ int stageSelect(int *runEvent)
 		doCustomError("runEvent was nullptr in stageSelect");
 
 	//Keep track of old one
-	std::string oldScript(tsc.path);
+	std::string oldScript(gTsc.path);
 
 	//Init some stuff
-	selectedStage = 0;
-	stageSelectTitleY = 54;
+	gSelectedStage = 0;
+	gStageSelectTitleY = 54;
 
 	captureScreen(TEX_SCREENSHOT);
 
 	//Load stage select tsc
 	loadTsc2("data/StageSelect.tsc");
-	startTscEvent(tsc, gPermitStage[selectedStage].index + 1000);
+	startTscEvent(gTsc, gPermitStage[gSelectedStage].index + 1000);
 
 	while (true)
 	{
@@ -139,16 +139,16 @@ int stageSelect(int *runEvent)
 		//Select
 		if (isKeyPressed(gKeyJump))
 		{
-			stopTsc(tsc);
+			stopTsc(gTsc);
 			loadStageTsc(oldScript);
-			*runEvent = gPermitStage[selectedStage].event;
+			*runEvent = gPermitStage[gSelectedStage].event;
 			return 1;
 		}
 
 		//Cancel
 		if (isKeyPressed(gKeyShoot))
 		{
-			stopTsc(tsc);
+			stopTsc(gTsc);
 			loadStageTsc(oldScript);
 			*runEvent = 0;
 			return 1;

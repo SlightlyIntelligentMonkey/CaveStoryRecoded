@@ -18,15 +18,15 @@ using bossAct = void(*)(npc *);
 const bossAct gBossActs[10] =
 {
 	[](npc *) {},
-	&actBoss_Omega,
-	&actBoss_Balfrog,
-	&actBoss_MonsterX,
-	&actBoss_Core,
+	actBoss_Omega,
+	actBoss_Balfrog,
+	actBoss_MonsterX,
+	actBoss_Core,
 	static_cast<bossAct>(nullptr),
 	static_cast<bossAct>(nullptr),
 	static_cast<bossAct>(nullptr),
-	&actBoss_HeavyPress,
-	&actBoss_Ballos
+	actBoss_HeavyPress,
+	actBoss_Ballos
 };
 
 void initBoss(int code)

@@ -7,7 +7,7 @@
 #include "player.h"
 #include "main.h"
 
-int spurCharge = 0;
+int gSpurCharge = 0;
 bool gMax = false;
 
 void shootSpur(int level)
@@ -17,13 +17,13 @@ void shootSpur(int level)
 	if (isKeyDown(gKeyShoot))
 	{
 		//Build up experience
-		if (currentPlayer.equip & equip_armsBarrier)
+		if (gCurrentPlayer.equip & equip_armsBarrier)
 			giveWeaponExperience(3);
 		else
 			giveWeaponExperience(2);
 
 		//Play sound
-		if (++spurCharge / 2 & 1)
+		if (++gSpurCharge / 2 & 1)
 		{
 			switch (level)
 			{
@@ -42,9 +42,9 @@ void shootSpur(int level)
 	}
 	else
 	{
-		if (spurCharge)
+		if (gSpurCharge)
 			bShot = true;
-		spurCharge = 0;
+		gSpurCharge = 0;
 	}
 
 	//Play the sound when max level is reached
@@ -104,34 +104,34 @@ void shootSpur(int level)
 			int caretX;
 
 			//Get bullet orientation and position
-			if (currentPlayer.up)
+			if (gCurrentPlayer.up)
 			{
 				shootDirect = dirUp;
-				shootX = (currentPlayer.direct - 1) * 0x200;
-				caretX = (currentPlayer.direct - 1) * 0x200;
+				shootX = (gCurrentPlayer.direct - 1) * 0x200;
+				caretX = (gCurrentPlayer.direct - 1) * 0x200;
 				shootY = -0x1000;
 			}
-			else if (currentPlayer.down)
+			else if (gCurrentPlayer.down)
 			{
 				shootDirect = dirDown;
-				shootX = (currentPlayer.direct - 1) * 0x200;
-				caretX = (currentPlayer.direct - 1) * 0x200;
+				shootX = (gCurrentPlayer.direct - 1) * 0x200;
+				caretX = (gCurrentPlayer.direct - 1) * 0x200;
 				shootY = 0x1000;
 			}
 			else
 			{
-				shootDirect = currentPlayer.direct;
-				shootX = (currentPlayer.direct - 1) * 0xC00;
-				caretX = (currentPlayer.direct - 1) * 0x1800;
+				shootDirect = gCurrentPlayer.direct;
+				shootX = (gCurrentPlayer.direct - 1) * 0xC00;
+				caretX = (gCurrentPlayer.direct - 1) * 0x1800;
 				shootY = 0x600;
 			}
 
 			//Create bullet
 			if(bul_no == bullet_PolarStarLevel3)
-				createBullet(bul_no, currentPlayer.x + shootX, currentPlayer.y + shootY, shootDirect);
+				createBullet(bul_no, gCurrentPlayer.x + shootX, gCurrentPlayer.y + shootY, shootDirect);
 			else
-				createBullet(bul_no, currentPlayer.x + shootX, currentPlayer.y + shootY, shootDirect, 13);
-			createCaret(currentPlayer.x + caretX, currentPlayer.y + shootY, effect_Star);
+				createBullet(bul_no, gCurrentPlayer.x + shootX, gCurrentPlayer.y + shootY, shootDirect, 13);
+			createCaret(gCurrentPlayer.x + caretX, gCurrentPlayer.y + shootY, effect_Star);
 
 			//Play sound
 			switch (bul_no)

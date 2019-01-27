@@ -318,10 +318,10 @@ void npcAct244(npc *NPC)
 	{
 		for (int i = 0; i < 3; ++i)
 			createCaret(NPC->x, NPC->y + pixelsToUnits(4), effect_fountainDisk, dirRight);
-		if (NPC->x > currentPlayer.x - tilesToUnits(16)
-		        && NPC->x < currentPlayer.x + tilesToUnits(16)
-		        && NPC->y > currentPlayer.y - tilesToUnits(10)
-		        && NPC->y < currentPlayer.y + tilesToUnits(10))
+		if (NPC->x > gCurrentPlayer.x - tilesToUnits(16)
+		        && NPC->x < gCurrentPlayer.x + tilesToUnits(16)
+		        && NPC->y > gCurrentPlayer.y - tilesToUnits(10)
+		        && NPC->y < gCurrentPlayer.y + tilesToUnits(10))
 			playSound(SFX_Bubble);
         NPC->cond = 0;
 	}
@@ -397,10 +397,10 @@ void npcAct246(npc *NPC) // Press, Proximity (enemy)
         NPC->y -= pixelsToUnits(4);
         // Fallthrough
     case 1:
-		if (currentPlayer.x < NPC->x + pixelsToUnits(8)
-      && currentPlayer.x > NPC->x - pixelsToUnits(8)
-      && currentPlayer.y > NPC->y + pixelsToUnits(8)
-      && currentPlayer.y < NPC->y + tilesToUnits(8))
+		if (gCurrentPlayer.x < NPC->x + pixelsToUnits(8)
+      && gCurrentPlayer.x > NPC->x - pixelsToUnits(8)
+      && gCurrentPlayer.y > NPC->y + pixelsToUnits(8)
+      && gCurrentPlayer.y < NPC->y + tilesToUnits(8))
             NPC->act_no = 5;
         break;
 
@@ -416,7 +416,7 @@ void npcAct246(npc *NPC) // Press, Proximity (enemy)
     case 10:
         NPC->animate(2, 2, 2);
 
-        if (currentPlayer.y <= NPC->y)
+        if (gCurrentPlayer.y <= NPC->y)
         {
             NPC->bits |= npc_solidHard;
             NPC->damage = 0;
@@ -607,7 +607,7 @@ void npcAct247(npc *NPC)
     case startTeleportAway:
         if (!(++NPC->act_wait % 6))
         {
-            auto angle = getAtan(NPC->x - currentPlayer.x, NPC->y - currentPlayer.y);
+            auto angle = getAtan(NPC->x - gCurrentPlayer.x, NPC->y - gCurrentPlayer.y);
             angle += random(-4, 4);
             const auto xVel = 4 * getCos(angle);
             const auto yVel = 4 * getSin(angle);
@@ -623,7 +623,7 @@ void npcAct247(npc *NPC)
 
     case summonBlock:
         if (++NPC->act_wait == secondsToFrames(0.2))
-            createNpc(NPC_FallingBlockLarge, currentPlayer.x, currentPlayer.y - tilesToUnits(4), 0, 0, dirUp);
+            createNpc(NPC_FallingBlockLarge, gCurrentPlayer.x, gCurrentPlayer.y - tilesToUnits(4), 0, 0, dirUp);
         if (NPC->act_wait > 30)
         {
             NPC->act_wait = 0;
@@ -667,7 +667,7 @@ void npcAct247(npc *NPC)
                 createNpc(NPC_ProjectileMiseryBlackOrbitingRings, 0, 0, 0, 0, 192, NPC);
             }
 
-            if (currentPlayer.x >= NPC->x - tilesToUnits(7) && currentPlayer.x <= NPC->x + tilesToUnits(7))
+            if (gCurrentPlayer.x >= NPC->x - tilesToUnits(7) && gCurrentPlayer.x <= NPC->x + tilesToUnits(7))
                 NPC->act_no = fighting;
             else
                 NPC->act_no = summonBalls;
@@ -835,7 +835,7 @@ void npcAct250(npc *NPC) // Misery lightning ball (projectile)
 		NPC->ym = -0x200;
 		// fallthrough
 	case 1:
-		if (NPC->x >= currentPlayer.x)
+		if (NPC->x >= gCurrentPlayer.x)
 			NPC->xm -= 0x10;
 		else
 			NPC->xm += 0x10;
@@ -866,7 +866,7 @@ void npcAct250(npc *NPC) // Misery lightning ball (projectile)
 		if (NPC->ani_no > 1)
 			NPC->ani_no = 0;
 
-		if (currentPlayer.x > NPC->x - 0x1000 && currentPlayer.x < NPC->x + 0x1000 && currentPlayer.y > NPC->y)
+		if (gCurrentPlayer.x > NPC->x - 0x1000 && gCurrentPlayer.x < NPC->x + 0x1000 && gCurrentPlayer.y > NPC->y)
 			NPC->act_no = 10;
 
 		break;
@@ -997,7 +997,7 @@ void npcAct252(npc *NPC) // Misery bat (projectile)
 		NPC->bits &= ~npc_invulnerable;
 		NPC->bits &= ~npc_ignoreSolid;
 
-		deg = getAtan(NPC->x - currentPlayer.x, NPC->y - currentPlayer.y);
+		deg = getAtan(NPC->x - gCurrentPlayer.x, NPC->y - gCurrentPlayer.y);
 		deg += random(-3, 3);
 
 		NPC->xm = getCos(deg);
@@ -1006,7 +1006,7 @@ void npcAct252(npc *NPC) // Misery bat (projectile)
 		NPC->ani_no = 1;
 		NPC->ani_wait = 0;
 
-		if (NPC->x <= currentPlayer.x)
+		if (NPC->x <= gCurrentPlayer.x)
 			NPC->direct = dirRight;
 		else
 			NPC->direct = dirLeft;

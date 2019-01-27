@@ -450,7 +450,7 @@ void loadNpcTable()
 
 void npc::accelerateTowardsPlayer(int vel)
 {
-    if (this->x < currentPlayer.x)
+    if (this->x < gCurrentPlayer.x)
         this->xm += vel;
     else
         this->xm -= vel;
@@ -512,7 +512,7 @@ void npc::doRects(const RECT& rcNPC)
 
 void npc::facePlayer()
 {
-	if (currentPlayer.x >= this->x)
+	if (gCurrentPlayer.x >= this->x)
 		this->direct = dirRight;
 	else
 		this->direct = dirLeft;
@@ -520,7 +520,7 @@ void npc::facePlayer()
 
 int npc::getXDistToPlayer()
 {
-    return abs(this->x - currentPlayer.x);
+    return abs(this->x - gCurrentPlayer.x);
 }
 
 void npc::limitXVel(int maxVel)
@@ -581,18 +581,18 @@ void npc::accelerateTowardsYTarget(int vel)
 
 bool npc::isPlayerWithinDistance(int xDist, int yDistHigh, int yDistLow)
 {
-	return (this->x - xDist < currentPlayer.x
-		&& this->x + xDist > currentPlayer.x
-		&& this->y - yDistHigh < currentPlayer.y
-		&& this->y + yDistLow > currentPlayer.y);
+	return (this->x - xDist < gCurrentPlayer.x
+		&& this->x + xDist > gCurrentPlayer.x
+		&& this->y - yDistHigh < gCurrentPlayer.y
+		&& this->y + yDistLow > gCurrentPlayer.y);
 }
 
 bool npc::isPlayerAligned(int xRay, int yRayHigh, int yRayLow)
 {
-	return (this->x - xRay >= currentPlayer.x
-		|| this->x + xRay <= currentPlayer.x
-		|| this->y - yRayHigh >= currentPlayer.y
-		|| this->y + yRayLow <= currentPlayer.y);
+	return (this->x - xRay >= gCurrentPlayer.x
+		|| this->x + xRay <= gCurrentPlayer.x
+		|| this->y - yRayHigh >= gCurrentPlayer.y
+		|| this->y + yRayLow <= gCurrentPlayer.y);
 }
 
 void npc::init(int setCode, int setX, int setY, int setXm, int setYm, int setDir, npc *parentNpc)

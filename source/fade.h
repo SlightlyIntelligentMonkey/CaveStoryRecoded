@@ -8,7 +8,7 @@ struct FADE_STATE
 	char dir;
 };
 
-extern FADE_STATE fade;
+extern FADE_STATE gFade;
 
 void initFade();
 

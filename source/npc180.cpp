@@ -41,7 +41,7 @@ void npcAct180(npc * NPC) // Curly, AI
 	rcRight[9] = { 48, 112, 64, 128 };
 	rcRight[10] = { 144, 112, 160, 128 };
 
-	if (NPC->y >= currentPlayer.y - 0x14000)
+	if (NPC->y >= gCurrentPlayer.y - 0x14000)
 	{
 		if (gCurlyShootWait)
 		{
@@ -50,8 +50,8 @@ void npcAct180(npc * NPC) // Curly, AI
 		}
 		else
 		{
-			NPC->tgt_x = currentPlayer.x;
-			NPC->tgt_y = currentPlayer.y;
+			NPC->tgt_x = gCurrentPlayer.x;
+			NPC->tgt_y = gCurrentPlayer.y;
 		}
 	}
 	else if (NPC->y >= 0x20000)
@@ -118,8 +118,8 @@ void npcAct180(npc * NPC) // Curly, AI
 		switch (NPC->act_no)
 		{
 		case start:
-			NPC->x = currentPlayer.x;
-			NPC->y = currentPlayer.y;
+			NPC->x = gCurrentPlayer.x;
+			NPC->y = gCurrentPlayer.y;
 			NPC->act_no = running;
 			NPC->ani_no = 0;
 			createNpc(NPC_CurlyAirTankBubble, 0, 0, 0, 0, dirLeft, NPC);
@@ -242,7 +242,7 @@ void npcAct180(npc * NPC) // Curly, AI
 
 	if (NPC->act_no >= 100 && NPC->act_no < 500)
 	{
-		if (NPC->x >= currentPlayer.x - tilesToUnits(5) && NPC->x <= currentPlayer.x + tilesToUnits(5))
+		if (NPC->x >= gCurrentPlayer.x - tilesToUnits(5) && NPC->x <= gCurrentPlayer.x + tilesToUnits(5))
 			NPC->ym += 51;
 		else if (NPC->flag)
 			NPC->ym += 0x10;
@@ -624,7 +624,7 @@ void npcAct187(npc *NPC) //Fuzz
 	case 2:
 		NPC->count1 += 4;
 
-		if (currentPlayer.x >= NPC->x)
+		if (gCurrentPlayer.x >= NPC->x)
 			NPC->direct = 2;
 		else
 			NPC->direct = 0;
@@ -692,12 +692,12 @@ void npcAct188(npc *NPC) //Baby Fuzz
 		break;
 
 	case 10:
-		if (currentPlayer.x >= NPC->x)
+		if (gCurrentPlayer.x >= NPC->x)
 			NPC->xm += 0x20;
 		else
 			NPC->xm -= 0x20;
 
-		if (currentPlayer.y >= NPC->y)
+		if (gCurrentPlayer.y >= NPC->y)
 			NPC->ym += 0x20;
 		else
 			NPC->ym -= 0x20;
@@ -719,7 +719,7 @@ void npcAct188(npc *NPC) //Baby Fuzz
 		break;
 	}
 
-	if (currentPlayer.x >= NPC->x)
+	if (gCurrentPlayer.x >= NPC->x)
 		NPC->direct = 2;
 	else
 		NPC->direct = 0;

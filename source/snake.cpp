@@ -60,7 +60,7 @@ void actBulletSnake1(bullet *bul)
 		bul->rect.bottom = 80;
 }
 
-uint8_t snakeNextWiggle = 0;
+uint8_t gSnakeNextWiggle = 0;
 void actBulletSnake2(bullet *bul)
 {
 	if (++bul->count1 > bul->life_count)
@@ -89,18 +89,18 @@ void actBulletSnake2(bullet *bul)
 			bul->ym = 512;
 			break;
 		}
-		snakeNextWiggle++;
-		snakeNextWiggle &= 1;
+		gSnakeNextWiggle++;
+		gSnakeNextWiggle &= 1;
 		if (bul->direct == dirLeft || bul->direct == dirRight)
 		{
-			if (snakeNextWiggle)
+			if (gSnakeNextWiggle)
 				bul->ym = 1024;
 			else
 				bul->ym = -1024;
 		}
 		else if (bul->direct == dirUp || bul->direct == dirDown)
 		{
-			if (snakeNextWiggle)
+			if (gSnakeNextWiggle)
 				bul->xm = 1024;
 			else
 				bul->xm = -1024;
@@ -193,18 +193,18 @@ void actBulletSnake3(bullet *bul)
 			bul->ym = 512;
 			break;
 		}
-		snakeNextWiggle++;
-		snakeNextWiggle &= 1;
+		gSnakeNextWiggle++;
+		gSnakeNextWiggle &= 1;
 		if (bul->direct == dirLeft || bul->direct == dirRight)
 		{
-			if (snakeNextWiggle)
+			if (gSnakeNextWiggle)
 				bul->ym = 1024;
 			else
 				bul->ym = -1024;
 		}
 		else if (bul->direct == dirUp || bul->direct == dirDown)
 		{
-			if (snakeNextWiggle)
+			if (gSnakeNextWiggle)
 				bul->xm = 1024;
 			else
 				bul->xm = -1024;

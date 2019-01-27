@@ -65,10 +65,10 @@ void initWeapons()
 //Functions for shooting
 void actWeapon()
 {
-	if (_empty)
-		--_empty;
+	if (gEmpty)
+		--gEmpty;
 
-	if (!(currentPlayer.cond & player_removed) && gWeapons[gSelectedWeapon].code)
+	if (!(gCurrentPlayer.cond & player_removed) && gWeapons[gSelectedWeapon].code)
 	{
 		if (gShootFunctions[gWeapons[gSelectedWeapon].code] != nullptr)
 			gShootFunctions[gWeapons[gSelectedWeapon].code](gWeapons[gSelectedWeapon].level);
@@ -129,9 +129,9 @@ bool weaponMaxExp()
 int weaponBullets(int arms_code)
 {
 	int count = 0;
-	for (size_t i = 0; i < bullets.size(); ++i)
+	for (size_t i = 0; i < gBullets.size(); ++i)
 	{
-		if (bullets[i].cond & 0x80 && bullets[i].weapon == arms_code)
+		if (gBullets[i].cond & 0x80 && gBullets[i].weapon == arms_code)
 			++count;
 	}
 	return count;
@@ -234,8 +234,8 @@ void giveWeaponExperience(int x)
 			gWeapons[gSelectedWeapon].exp = gWeaponLevels[arms_code].exp[2];
 
 			//Give a whimsical star
-			if (currentPlayer.equip & equip_whimsicalStar && currentPlayer.star < 3)
-				currentPlayer.star++;
+			if (gCurrentPlayer.equip & equip_whimsicalStar && gCurrentPlayer.star < 3)
+				gCurrentPlayer.star++;
 		}
 	}
 	else
@@ -250,7 +250,7 @@ void giveWeaponExperience(int x)
 				if (gWeapons[gSelectedWeapon].code != 13)
 				{
 					playSound(SFX_LevelUp);
-					createCaret(currentPlayer.x, currentPlayer.y, effect_LevelUpOrDown);
+					createCaret(gCurrentPlayer.x, gCurrentPlayer.y, effect_LevelUpOrDown);
 				}
 			}
 
@@ -260,12 +260,12 @@ void giveWeaponExperience(int x)
 
 	if (gWeapons[gSelectedWeapon].code == 13)
 	{
-		currentPlayer.exp_wait = 10;
+		gCurrentPlayer.exp_wait = 10;
 	}
 	else
 	{
-		currentPlayer.exp_count += x;
-		currentPlayer.exp_wait = 30;
+		gCurrentPlayer.exp_count += x;
+		gCurrentPlayer.exp_wait = 30;
 	}
 }
 
@@ -277,7 +277,7 @@ void resetSelectedWeaponLevel()
 
 void resetSpurCharge()
 {
-	spurCharge = 0;
+	gSpurCharge = 0;
 	if (gWeapons[gSelectedWeapon].code == weapon_Spur)
 		resetSelectedWeaponLevel();
 }

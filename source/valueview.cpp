@@ -6,22 +6,22 @@
 #include "render.h"
 #include "game.h"
 
-std::vector<valueview> valueviews(0);
+std::vector<valueview> gValueviews(0);
 
 //Functions
 void createValueView(int *px, int *py, int value)
 {
 	valueview *repVV = nullptr;
 
-	if (valueviews.size())
+	if (gValueviews.size())
 	{
 		for (size_t i = 0;
-		        i < valueviews.size();
+		        i < gValueviews.size();
 		        ++i)
 		{
-			if (!(!valueviews[i].flag || valueviews[i].px != px || ((valueviews[i].value >= 0 || value >= 0) && (valueviews[i].value <= 0 || value <= 0))))
+			if (!(!gValueviews[i].flag || gValueviews[i].px != px || ((gValueviews[i].value >= 0 || value >= 0) && (gValueviews[i].value <= 0 || value <= 0))))
 			{
-				repVV = &valueviews[i];
+				repVV = &gValueviews[i];
 				break;
 			}
 		}
@@ -38,33 +38,33 @@ void createValueView(int *px, int *py, int value)
 	{
 		valueview newVV;
 		newVV.init(px, py, value);
-		valueviews.push_back(newVV);
+		gValueviews.push_back(newVV);
 	}
 }
 
 void updateValueView()
 {
-	if (valueviews.size())
+	if (gValueviews.size())
 	{
-		for (size_t i = 0; i < valueviews.size(); i++)
+		for (size_t i = 0; i < gValueviews.size(); i++)
 		{
-			if (valueviews[i].flag)
-				valueviews[i].update();
+			if (gValueviews[i].flag)
+				gValueviews[i].update();
 		}
 
-		while (valueviews.size() && !(valueviews[valueviews.size() - 1].flag))
-			valueviews.erase(valueviews.begin() + valueviews.size() - 1);
+		while (gValueviews.size() && !(gValueviews[gValueviews.size() - 1].flag))
+			gValueviews.erase(gValueviews.begin() + gValueviews.size() - 1);
 	}
 }
 
 void drawValueView()
 {
-	if (valueviews.size())
+	if (gValueviews.size())
 	{
-		for (size_t i = 0; i < valueviews.size(); i++)
+		for (size_t i = 0; i < gValueviews.size(); i++)
 		{
-			if (valueviews[i].flag)
-				valueviews[i].draw();
+			if (gValueviews[i].flag)
+				gValueviews[i].draw();
 		}
 	}
 }
