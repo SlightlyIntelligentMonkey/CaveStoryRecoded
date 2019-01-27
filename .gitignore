@@ -104,8 +104,9 @@ ipch/
 
 # ------ Actual stuff that matters ------
 # Files produced by the game
-/source/Profile.dat
-/source/Config.dat
+bin/Profile.dat
+bin/Config.dat
+bin/config.json
 
 # CodeBlocks files
 /*.layout
@@ -118,7 +119,7 @@ ipch/
 /*.d
 
 # Visual Studio Code stuff
-.vscode/
+.vscode/*
 
 # Useful for VS Code users
 !.vscode/settings.json
@@ -180,7 +181,6 @@ $RECYCLE.BIN/
 *.lo
 
 # Executables
-*.exe
 *.out
 *.app
 *.i*86
