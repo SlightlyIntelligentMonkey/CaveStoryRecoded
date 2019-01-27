@@ -9,12 +9,10 @@
 #include "game.h"
 #include "stage.h"
 
-using std::array;
-
 void npcAct020(npc *NPC) // Computer
 {
 	RECT rcLeft = { 288, 16, 320, 40 };
-	array<RECT, 3> rcRight = { {{288, 40, 320, 64}, {288, 40, 320, 64}, {288, 64, 320, 88}} };
+	std::array<RECT, 3> rcRight = { {{288, 40, 320, 64}, {288, 40, 320, 64}, {288, 64, 320, 88}} };
 
 	NPC->animate(3, 0, 2);
 
@@ -39,7 +37,7 @@ void npcAct021(npc *NPC) //Open chest
 
 void npcAct022(npc *NPC) //Teleporter
 {
-	constexpr array<RECT, 2> rcNPC = { {{240, 16, 264, 48}, {248, 152, 272, 184}} };
+	constexpr std::array<RECT, 2> rcNPC = { {{240, 16, 264, 48}, {248, 152, 272, 184}} };
 
 	if (NPC->act_no)
 	{
@@ -60,7 +58,7 @@ void npcAct023(npc *NPC) //Teleporter lights
 
 void npcAct024(npc *NPC) // Power Critter (enemy)
 {
-	constexpr array<RECT, 6> rcLeft =
+	constexpr std::array<RECT, 6> rcLeft =
 	{{
         {0, 0, 24, 24},
         {24, 0, 48, 24},
@@ -70,7 +68,7 @@ void npcAct024(npc *NPC) // Power Critter (enemy)
         {120, 0, 144, 24},
     }};
 
-	constexpr array<RECT, 6> rcRight =
+	constexpr std::array<RECT, 6> rcRight =
 	{{
         {0, 24, 24, 48},
 	    {24, 24, 48, 48},
@@ -357,8 +355,8 @@ void npcAct026(npc * NPC) // Bat, Black Circling (enemy)
 	NPC->x += NPC->xm;
 	NPC->y += NPC->ym;
 
-	array<RECT, 4> rcLeft;
-	array<RECT, 4> rcRight;
+	std::array<RECT, 4> rcLeft;
+	std::array<RECT, 4> rcRight;
 
 	rcLeft[0] = { 32, 80, 48, 96 };
 	rcLeft[1] = { 48, 80, 64, 96 };
@@ -385,8 +383,8 @@ void npcAct027(npc *NPC) // Death Spikes
 
 void npcAct028(npc *NPC)
 {
-	array<RECT, 6> rcLeft;
-	array<RECT, 6> rcRight;
+	std::array<RECT, 6> rcLeft;
+	std::array<RECT, 6> rcRight;
 
 	rcLeft[0] = { 0, 48, 16, 64 };
 	rcLeft[1] = { 16, 48, 32, 64 };
@@ -516,8 +514,8 @@ void npcAct028(npc *NPC)
 
 void npcAct029(npc *NPC) // Cthulhu
 {
-	constexpr array<RECT, 2> rcLeft = { { {0, 192, 16, 216}, {16, 192, 32, 216} } };
-	constexpr array<RECT, 2> rcRight = { { {0, 216, 16, 240}, {16, 216, 32, 240} } };
+	constexpr std::array<RECT, 2> rcLeft = { { {0, 192, 16, 216}, {16, 192, 32, 216} } };
+	constexpr std::array<RECT, 2> rcRight = { { {0, 216, 16, 240}, {16, 216, 32, 240} } };
 
 	if (NPC->act_no != 0)
 	{
@@ -539,7 +537,7 @@ doRects:
 
 void npcAct030(npc *NPC) // Hermit Gunsmith
 {
-	constexpr array<RECT, 3> rcNPC = { { { 48, 0, 64, 16 }, { 48, 16, 64, 32 }, { 0, 32, 16, 48 } } };
+	constexpr std::array<RECT, 3> rcNPC = { { { 48, 0, 64, 16 }, { 48, 16, 64, 32 }, { 0, 32, 16, 48 } } };
 
 	if (NPC->direct == dirLeft)	// Wherever he's awoken depends on his direction, it would seem
 	{
@@ -585,8 +583,8 @@ doRects:
 
 void npcAct031(npc *NPC) // Bat, Black Hanging (enemy)
 {
-	constexpr array<RECT, 5> rcLeft = { {{0, 80, 16, 96}, {16, 80, 32, 96}, {32, 80, 48, 96}, {48, 80, 65, 96}, {64, 80, 80, 96}} };
-	constexpr array<RECT, 5> rcRight = { {{0, 96, 16, 112}, {16, 96, 32, 112}, {32, 96, 48, 112}, {48, 96, 64, 112}, {64, 96, 80, 112}} };
+	constexpr std::array<RECT, 5> rcLeft = { {{0, 80, 16, 96}, {16, 80, 32, 96}, {32, 80, 48, 96}, {48, 80, 65, 96}, {64, 80, 80, 96}} };
+	constexpr std::array<RECT, 5> rcRight = { {{0, 96, 16, 112}, {16, 96, 32, 112}, {32, 96, 48, 112}, {48, 96, 64, 112}, {64, 96, 80, 112}} };
 
     enum
     {
@@ -677,7 +675,7 @@ void npcAct031(npc *NPC) // Bat, Black Hanging (enemy)
 
 void npcAct032(npc *NPC) //Life Capsule
 {
-	constexpr array<RECT, 2> rcNPC = { {{32, 96, 48, 112}, {48, 96, 64, 112}} };
+	constexpr std::array<RECT, 2> rcNPC = { {{32, 96, 48, 112}, {48, 96, 64, 112}} };
 
     NPC->animate(2, 0, 1);
 
@@ -698,7 +696,7 @@ void npcAct033(npc *NPC) // Balrog energy ball bouncing (projectile)
     NPC->y += NPC->ym;
     NPC->x += NPC->xm;
 
-	constexpr array<RECT, 2> rcNPC = { {{240, 64, 256, 80}, {240, 80, 256, 96}} };
+	constexpr std::array<RECT, 2> rcNPC = { {{240, 64, 256, 80}, {240, 80, 256, 96}} };
     NPC->animate(2, 0, 1);
 
     NPC->doRects(rcNPC);
@@ -745,7 +743,7 @@ void npcAct035(npc * NPC) // Manann (enemy)
 		{
 			const int xDist = (NPC->direct != dirLeft) ? 0x1000 : -0x1000;
 
-			createNpc(NPC_ProjectileMannan, NPC->x + xDist, NPC->y + 0x1000, 0, 0, NPC->direct);
+			createNpc(NPC_ProjectileMannanRedBlast, NPC->x + xDist, NPC->y + 0x1000, 0, 0, NPC->direct);
 			NPC->ani_no = 1;
 			NPC->act_no = shooting;
 			NPC->act_wait = 0;
@@ -783,8 +781,8 @@ void npcAct035(npc * NPC) // Manann (enemy)
 		break;
 	}
 
-	constexpr array<RECT, 4> rcLeft = { { {96, 64, 120, 96}, {120, 64, 144, 96}, {144, 64, 168, 98}, {168, 64, 192, 96} } };
-	constexpr array<RECT, 4> rcRight = { { {96, 96, 120, 128}, {120, 96, 144, 128}, {144, 96, 168, 128}, {168, 96, 192, 128} } };
+	constexpr std::array<RECT, 4> rcLeft = { { {96, 64, 120, 96}, {120, 64, 144, 96}, {144, 64, 168, 98}, {168, 64, 192, 96} } };
+	constexpr std::array<RECT, 4> rcRight = { { {96, 96, 120, 128}, {120, 96, 144, 128}, {144, 96, 168, 128}, {168, 96, 192, 128} } };
 
 	NPC->doRects(rcLeft, rcRight);
 }
@@ -938,8 +936,8 @@ void npcAct036(npc *NPC) // Balrog, Flying (boss)
     NPC->x += NPC->xm;
     NPC->y += NPC->ym;
 
-	array<RECT, 6> rcLeft;
-	array<RECT, 6> rcRight;
+	std::array<RECT, 6> rcLeft;
+	std::array<RECT, 6> rcRight;
 
     rcLeft[0] = {0, 0, 40, 24};
     rcLeft[1] = {40, 0, 80, 24};
@@ -960,7 +958,7 @@ void npcAct036(npc *NPC) // Balrog, Flying (boss)
 
 void npcAct037(npc *NPC) //Sign
 {
-	constexpr array<RECT, 2> rcNPC = { {{ 192, 64, 208, 80 }, { 208, 64, 224, 80 }} };
+	constexpr std::array<RECT, 2> rcNPC = { {{ 192, 64, 208, 80 }, { 208, 64, 224, 80 }} };
 
 	NPC->animate(1, 0, 1);
 
@@ -969,7 +967,7 @@ void npcAct037(npc *NPC) //Sign
 
 void npcAct038(npc * NPC)
 {
-	constexpr array<RECT, 4> rcNPC = { { {128, 64, 144, 80}, {144, 64, 160, 80}, {160, 64, 176, 80}, {176, 64, 192, 80} } };
+	constexpr std::array<RECT, 4> rcNPC = { { {128, 64, 144, 80}, {144, 64, 160, 80}, {160, 64, 176, 80}, {176, 64, 192, 80} } };
 
 	if (NPC->act_no != 0)
 	{
@@ -992,7 +990,7 @@ void npcAct038(npc * NPC)
 
 void npcAct039(npc *NPC) //Save Sign
 {
-	constexpr array<RECT, 2> rcNPC = { {{224, 64, 240, 80}, {240, 64, 256, 80}} };
+	constexpr std::array<RECT, 2> rcNPC = { {{224, 64, 240, 80}, {240, 64, 256, 80}} };
 
 	NPC->ani_no = (NPC->direct == dirLeft) ? 0 : 1;
 

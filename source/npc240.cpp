@@ -11,8 +11,6 @@
 #include "sound.h"
 #include "game.h"
 
-using std::array;
-
 void npcAct240(npc *NPC) // Mimiga (jailed)
 {
 	RECT rcLeft[6];
@@ -165,8 +163,8 @@ void npcAct240(npc *NPC) // Mimiga (jailed)
 
 void npcAct241(npc *NPC) // Critter, Hopping Red (enemy)
 {
-	constexpr array<RECT, 3> rcLeft = { {{0, 0, 16, 16}, {16, 0, 32, 16}, {32, 0, 48, 16}} };
-	constexpr array<RECT, 3> rcRight = { {{0, 16, 16, 32}, {16, 16, 32, 32}, {32, 16, 48, 32}} };
+	constexpr std::array<RECT, 3> rcLeft = { {{0, 0, 16, 16}, {16, 0, 32, 16}, {32, 0, 48, 16}} };
+	constexpr std::array<RECT, 3> rcRight = { {{0, 16, 16, 32}, {16, 16, 32, 32}, {32, 16, 48, 32}} };
 
     enum
     {
@@ -281,8 +279,8 @@ void npcAct242(npc *NPC) // Bat, Red Wave (enemy)
     NPC->x += NPC->xm;
     NPC->y += NPC->ym;
 
-	constexpr array<RECT, 4> rcLeft = { {{32, 32, 48, 48}, {48, 32, 64, 48}, {64, 32, 80, 48}, {80, 32, 96, 48}} };
-	constexpr array<RECT, 4> rcRight = { {{32, 48, 48, 64}, {48, 48, 64, 64}, {64, 48, 80, 64}, {80, 48, 96, 64}} };
+	constexpr std::array<RECT, 4> rcLeft = { {{32, 32, 48, 48}, {48, 32, 64, 48}, {64, 32, 80, 48}, {80, 32, 96, 48}} };
+	constexpr std::array<RECT, 4> rcRight = { {{32, 48, 48, 64}, {48, 48, 64, 64}, {64, 48, 80, 64}, {80, 48, 96, 64}} };
 
     NPC->animate(1, 0, 2);
     NPC->doRects(rcLeft, rcRight);
@@ -339,7 +337,7 @@ void npcAct244(npc *NPC)
 
 void npcAct245(npc *NPC) // Generator - Lava Drop
 {
-	constexpr array<RECT, 4> rcNPC = { {{0, 0, 0, 0}, {104, 0, 112, 16}, {112, 0, 120, 16}, {120, 0, 128, 16}} };
+	constexpr std::array<RECT, 4> rcNPC = { {{0, 0, 0, 0}, {104, 0, 112, 16}, {112, 0, 120, 16}, {120, 0, 128, 16}} };
 
 	if (NPC->act_no)
 	{
@@ -390,7 +388,7 @@ endOfAI:
 
 void npcAct246(npc *NPC) // Press, Proximity (enemy)
 {
-	constexpr array<RECT, 3> rcNPC = { {{144, 112, 160, 136}, {160, 112, 176, 136}, {176, 112, 196, 136}} };
+	constexpr std::array<RECT, 3> rcNPC = { {{144, 112, 160, 136}, {160, 112, 176, 136}, {176, 112, 196, 136}} };
 
     switch (NPC->act_no)
     {
@@ -465,7 +463,7 @@ void npcAct246(npc *NPC) // Press, Proximity (enemy)
 
 void npcAct247(npc *NPC)
 {
-    constexpr array<RECT, 9> rcLeft =
+    constexpr std::array<RECT, 9> rcLeft =
     {{
         { 0, 0, 16, 16 },
         { 16, 0, 32, 16},
@@ -478,7 +476,7 @@ void npcAct247(npc *NPC)
         { 112, 0, 128, 16 },
     }};
 
-    constexpr array<RECT, 9> rcRight =
+    constexpr std::array<RECT, 9> rcRight =
     {{
         { 0, 16, 16, 32},
         { 16, 16, 32, 32},
@@ -898,7 +896,7 @@ void npcAct250(npc *NPC) // Misery lightning ball (projectile)
 
 void npcAct251(npc *NPC) // Misery black lightning (projectile)
 {
-    constexpr array<RECT, 2> rcNPC = {{{80, 32, 96, 64}, {96, 32, 112, 64}}};
+    constexpr std::array<RECT, 2> rcNPC = {{{80, 32, 96, 64}, {96, 32, 112, 64}}};
 
     if (!NPC->act_no)
         NPC->act_no = 1;
@@ -1058,7 +1056,7 @@ void npcAct253(npc *NPC) // Energy Capsule
 		NPC->cond = 0;
 	}
 
-	constexpr array<RECT, 2> rcNPC = { { {0, 64, 16, 80}, {16, 64, 32, 80} } };
+	constexpr std::array<RECT, 2> rcNPC = { { {0, 64, 16, 80}, {16, 64, 32, 80} } };
 
 	NPC->doRects(rcNPC);
 }
@@ -1108,8 +1106,8 @@ void npcAct254(npc *NPC) // Helicopter
 
 void npcAct255(npc *NPC) // Helicopter Blades
 {
-	constexpr array<RECT, 4> rcLeft = { {{128, 0, 240, 16}, {128, 16, 240, 32}, {128, 32, 240, 48}, {128, 16, 240, 32}} };
-	constexpr array<RECT, 4> rcRight = { { {240, 0, 320, 16}, {240, 16, 320, 32}, {240, 32, 320, 48}, {240, 16, 320, 32} } };
+	constexpr std::array<RECT, 4> rcLeft = { {{128, 0, 240, 16}, {128, 16, 240, 32}, {128, 32, 240, 48}, {128, 16, 240, 32}} };
+	constexpr std::array<RECT, 4> rcRight = { { {240, 0, 320, 16}, {240, 16, 320, 32}, {240, 32, 320, 48}, {240, 16, 320, 32} } };
 
     switch (NPC->act_no)
     {

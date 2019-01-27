@@ -8,12 +8,10 @@
 #include "caret.h"
 #include "stage.h"
 
-using std::array;
-
 void npcAct040(npc * NPC) // Santa
 {
-	array<RECT, 7> rcLeft;
-	array<RECT, 7> rcRight;
+	std::array<RECT, 7> rcLeft;
+	std::array<RECT, 7> rcRight;
 
 	rcLeft[0] = { 0, 32, 16, 48 };
 	rcLeft[1] = { 16, 32, 32, 48 };
@@ -94,8 +92,8 @@ void npcAct041(npc * NPC) // Busted doorway
 
 void npcAct042(npc *NPC) // Sue
 {
-	array<RECT, 13> rcLeft;
-	array<RECT, 13> rcRight;
+	std::array<RECT, 13> rcLeft;
+	std::array<RECT, 13> rcRight;
 
 	rcLeft[0] = { 0, 0, 16, 16 };
 	rcLeft[1] = { 16, 0, 32, 16 };
@@ -1408,8 +1406,8 @@ void npcAct054(npc *NPC) //Skullstep (body)
 
 void npcAct055(npc *NPC) //Kazuma
 {
-	array<RECT, 6> rcLeft;
-	array<RECT, 6> rcRight;
+	std::array<RECT, 6> rcLeft;
+	std::array<RECT, 6> rcRight;
 
 	rcLeft[0] = { 0xC0, 0xC0, 0xD0, 0xD8 };
 	rcLeft[1] = { 0xD0, 0xC0, 0xE0, 0xD8 };
@@ -1919,7 +1917,7 @@ void npcAct058(npc *NPC) //Basu 1
 
 void npcAct059(npc *NPC) //Eye door
 {
-	array<RECT, 4> rect;
+	std::array<RECT, 4> rect;
 
 	rect[0] = { 224, 16, 240, 40 };
 	rect[1] = { 208, 80, 224, 104 };

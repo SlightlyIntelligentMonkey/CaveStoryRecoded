@@ -294,9 +294,9 @@ void actBoss_Balfrog(npc *boss)
 			ym = getSin(deg);
 			xm = getCos(deg);
 			if (boss->direct)
-				createNpc(NPC_ProjectileBalfrog, boss->x + 0x4000, boss->y - 4096, xm, ym);
+				createNpc(NPC_ProjectileBalfrogSpitball, boss->x + 0x4000, boss->y - 4096, xm, ym);
 			else
-				createNpc(NPC_ProjectileBalfrog, boss->x - 0x4000, boss->y - 4096, xm, ym);
+				createNpc(NPC_ProjectileBalfrogSpitball, boss->x - 0x4000, boss->y - 4096, xm, ym);
 			playSound(39, 1);
 			if (!boss->count1 || boss->life < boss->tgt_x - 90)
 			{

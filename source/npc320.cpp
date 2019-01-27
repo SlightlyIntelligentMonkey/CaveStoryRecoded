@@ -8,11 +8,9 @@
 #include "sound.h"
 #include "mathUtils.h"
 
-using std::array;
-
 void npcAct322(npc *NPC) // Deleet (enemy)
 {
-    constexpr array<RECT, 2> rcNormal = {{{272, 216, 296, 240}, {296, 216, 320, 240}}};
+    constexpr std::array<RECT, 2> rcNormal = {{{272, 216, 296, 240}, {296, 216, 320, 240}}};
     constexpr RECT rcExploding = {160, 216, 184, 240};
 
     if (NPC->act_no < 2 && NPC->life <= 968)
@@ -94,7 +92,7 @@ void npcAct322(npc *NPC) // Deleet (enemy)
 
 void npcAct323(npc *NPC)
 {
-	constexpr array<RECT, 4> rcNPC = { {{216, 32, 232, 56}, {232, 32, 248, 56}, {216, 56, 232, 80}, {232, 56, 248, 80}} };
+	constexpr std::array<RECT, 4> rcNPC = { {{216, 32, 232, 56}, {232, 32, 248, 56}, {216, 56, 232, 80}, {232, 56, 248, 80}} };
 
 	NPC->animate(3, 0, 3);
 

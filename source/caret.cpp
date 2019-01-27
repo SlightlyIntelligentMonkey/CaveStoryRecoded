@@ -1,5 +1,4 @@
 #include "caret.h"
-//yeah i like carrots
 
 #include "mathUtils.h"
 #include "render.h"
@@ -9,11 +8,7 @@
 #include <deque>
 #include <cstring>
 
-using std::to_string;
-using std::deque;
-using std::memset;
-
-deque<caret> carets(0);
+std::deque<caret> carets(0);
 
 CARETSTAT caretStats[] =
 {
@@ -573,7 +568,7 @@ void caret::draw()
 			}
 		}
 
-		drawString((x - view_left) / 0x200 - gViewport.x / 0x200, (y - view_top) / 0x200 - gViewport.y / 0x200 - 16, to_string(index), nullptr);
+		drawString((x - view_left) / 0x200 - gViewport.x / 0x200, (y - view_top) / 0x200 - gViewport.y / 0x200 - 16, std::to_string(index), nullptr);
 	}
 }
 

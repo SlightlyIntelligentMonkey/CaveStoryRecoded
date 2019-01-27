@@ -10,8 +10,6 @@
 #include "caret.h"
 #include "stage.h"
 
-using std::array;
-
 void npcAct100(npc * NPC) // Grate
 {
 	if (NPC->act_no == 0)
@@ -25,14 +23,14 @@ void npcAct100(npc * NPC) // Grate
 
 void npcAct101(npc *NPC) // Power Controls, screen
 {
-	constexpr array<RECT, 3> rcNPC{ {{240, 136, 256, 152}, {240, 136, 256, 152}, {256, 136, 272, 152}} };
+	constexpr std::array<RECT, 3> rcNPC{ {{240, 136, 256, 152}, {240, 136, 256, 152}, {256, 136, 272, 152}} };
     NPC->animate(3, 0, 2);
     NPC->doRects(rcNPC);
 }
 
 void npcAct102(npc *NPC) // Power Controls, power flow
 {
-	constexpr array<RECT, 4> rcNPC = { {{208, 120, 224, 136}, {224, 120, 240, 136}, {240, 120, 256, 136}, {256, 120, 272, 136}} };
+	constexpr std::array<RECT, 4> rcNPC = { {{208, 120, 224, 136}, {224, 120, 240, 136}, {240, 120, 256, 136}, {256, 120, 272, 136}} };
 
     if (!NPC->act_no)
     {
@@ -46,8 +44,8 @@ void npcAct102(npc *NPC) // Power Controls, power flow
 
 void npcAct103(npc *NPC) // Manann red blast (projectile)
 {
-	constexpr array<RECT, 3> rcLeft = { {{192, 96, 208, 120}, {208, 96, 224, 120}, {224, 96, 240, 120}} };
-	constexpr array<RECT, 3> rcRight = { {{192, 120, 208, 144}, {208, 120, 224, 144}, {224, 120, 240, 144}} };
+	constexpr std::array<RECT, 3> rcLeft = { {{192, 96, 208, 120}, {208, 96, 224, 120}, {224, 96, 240, 120}} };
+	constexpr std::array<RECT, 3> rcRight = { {{192, 120, 208, 144}, {208, 120, 224, 144}, {224, 120, 240, 144}} };
 
     if (NPC->act_no == 1 || !NPC->act_no)
     {
@@ -71,8 +69,8 @@ void npcAct103(npc *NPC) // Manann red blast (projectile)
 
 void npcAct104(npc *NPC) // Frog (enemy)
 {
-	constexpr array<RECT, 3> rcLeft = { { { 0, 112, 32, 144 },{ 32, 112, 64, 144 },{ 64, 112, 96, 144 } } };
-	constexpr array<RECT, 3> rcRight = { { { 0, 144, 32, 176 },{ 32, 144, 64, 176 },{ 64, 144, 96, 176 } } };
+	constexpr std::array<RECT, 3> rcLeft = { { { 0, 112, 32, 144 },{ 32, 112, 64, 144 },{ 64, 112, 96, 144 } } };
+	constexpr std::array<RECT, 3> rcRight = { { { 0, 144, 32, 176 },{ 32, 144, 64, 176 },{ 64, 144, 96, 176 } } };
 
 	enum
 	{
@@ -194,7 +192,7 @@ void npcAct104(npc *NPC) // Frog (enemy)
 
 void npcAct105(npc *NPC) // Speech balloon 'Hey' low
 {
-	constexpr array<RECT, 2> rcNPC = { {{128, 32, 144, 48}, {128, 38, 128, 32}} };
+	constexpr std::array<RECT, 2> rcNPC = { {{128, 32, 144, 48}, {128, 38, 128, 32}} };
 
     if (++NPC->act_wait > 30)
         NPC->cond = 0;
@@ -208,7 +206,7 @@ void npcAct106(npc *NPC) // Speech balloon 'Hey' high
 {
 	if (NPC->act_no == 0)
 	{
-		createNpc(NPC_BalloonHeyLow, NPC->x, NPC->y - 0x1000);
+		createNpc(NPC_SpeechBalloonHeyLow, NPC->x, NPC->y - 0x1000);
 		NPC->act_no = 1;
 	}
 }
@@ -389,8 +387,8 @@ void npcAct108(npc *NPC) //balfrog projectile
 
 void npcAct109(npc *NPC) // Malco, damaged
 {
-	constexpr array<RECT, 2> rcLeft = { {{240, 0, 256, 24}, {256, 0, 272, 24}} };
-	constexpr array<RECT, 2> rcRight = { {{240, 24, 256, 48}, {256, 24, 272, 48}} };
+	constexpr std::array<RECT, 2> rcLeft = { {{240, 0, 256, 24}, {256, 0, 272, 24}} };
+	constexpr std::array<RECT, 2> rcRight = { {{240, 24, 256, 48}, {256, 24, 272, 48}} };
 
     enum
     {
@@ -449,8 +447,8 @@ void npcAct109(npc *NPC) // Malco, damaged
 
 void npcAct110(npc *NPC)
 {
-	constexpr array<RECT, 3> rcLeft = { {{96, 128, 112, 144}, {112, 128, 128, 144}, {128, 128, 144, 144}} };
-	constexpr array<RECT, 3> rcRight = {{ {96, 144, 112, 160}, {112, 144, 128, 160}, {128, 144, 144, 160} } };
+	constexpr std::array<RECT, 3> rcLeft = { {{96, 128, 112, 144}, {112, 128, 128, 144}, {128, 128, 144, 144}} };
+	constexpr std::array<RECT, 3> rcRight = {{ {96, 144, 112, 160}, {112, 144, 128, 160}, {128, 144, 144, 160} } };
 
     enum
     {
@@ -567,8 +565,8 @@ void npcAct110(npc *NPC)
 
 void npcAct111(npc *NPC) //Quote teleport out
 {
-	array<RECT, 2> rcLeft;
-	array<RECT, 2> rcRight;
+	std::array<RECT, 2> rcLeft;
+	std::array<RECT, 2> rcRight;
 
 	rcLeft[0] = { 0, 0, 16, 16 };
 	rcLeft[1] = { 16, 0, 32, 16 };
@@ -647,8 +645,8 @@ void npcAct111(npc *NPC) //Quote teleport out
 
 void npcAct112(npc *NPC) //Quote teleport in
 {
-	array<RECT, 2> rcLeft;
-	array<RECT, 2> rcRight;
+	std::array<RECT, 2> rcLeft;
+	std::array<RECT, 2> rcRight;
 
 	rcLeft[0] = { 0, 0, 16, 16 };
 	rcLeft[1] = { 16, 0, 32, 16 };
@@ -717,8 +715,8 @@ void npcAct112(npc *NPC) //Quote teleport in
 
 void npcAct113(npc *NPC) // Professor Booster
 {
-    array<RECT, 7> rcLeft;
-	array<RECT, 7> rcRight;
+    std::array<RECT, 7> rcLeft;
+	std::array<RECT, 7> rcRight;
 
     rcLeft[0] = {224, 0, 240, 16};
     rcLeft[1] = {240, 0, 256, 16};
@@ -845,7 +843,7 @@ void npcAct113(npc *NPC) // Professor Booster
 
 void npcAct114(npc *NPC) // Press (enemy)
 {
-	constexpr array<RECT, 3> rcNPC = { {{144, 112, 160, 136}, {160, 112, 176, 136}, {176, 112, 192, 136}} };
+	constexpr std::array<RECT, 3> rcNPC = { {{144, 112, 160, 136}, {160, 112, 176, 136}, {176, 112, 192, 136}} };
 
     switch (NPC->act_no)
     {
@@ -906,8 +904,8 @@ void npcAct114(npc *NPC) // Press (enemy)
 
 void npcAct115(npc *NPC) // Ravil (enemy)
 {
-	array<RECT, 6> rcLeft;
-	array<RECT, 6> rcRight;
+	std::array<RECT, 6> rcLeft;
+	std::array<RECT, 6> rcRight;
 
     rcLeft[0] = {0, 120, 24, 144};
     rcLeft[1] = {24, 120, 48, 144};
@@ -1058,8 +1056,8 @@ void npcAct116(npc *NPC) // Red flowers petals
 
 void npcAct117(npc *NPC) //Curly
 {
-	array<RECT, 10> rcLeft;
-	array<RECT, 10> rcRight;
+	std::array<RECT, 10> rcLeft;
+	std::array<RECT, 10> rcRight;
 
 	rcLeft[0] = { 0x00, 0x60, 0x10, 0x70 };
 	rcLeft[1] = { 0x10, 0x60, 0x20, 0x70 };
@@ -1375,12 +1373,12 @@ void npcAct118(npc *NPC) //Curly boss
 				if (bUpper)
 				{
 					NPC->ani_no = 2;
-					createNpc(NPC_ProjectileCurly, NPC->x, NPC->y - 0x1000, 0, 0, 1, nullptr, true);
+					createNpc(NPC_ProjectileCurlyMachineGunBullet, NPC->x, NPC->y - 0x1000, 0, 0, 1, nullptr, true);
 				}
 				else
 				{
 					NPC->ani_no = 0;
-					createNpc(NPC_ProjectileCurly, NPC->x + 0x1000, NPC->y + 0x800, 0, 0, 2, nullptr, true);
+					createNpc(NPC_ProjectileCurlyMachineGunBullet, NPC->x + 0x1000, NPC->y + 0x800, 0, 0, 2, nullptr, true);
 					NPC->x -= 0x200;
 				}
 			}
@@ -1389,12 +1387,12 @@ void npcAct118(npc *NPC) //Curly boss
 				if (bUpper)
 				{
 					NPC->ani_no = 2;
-					createNpc(NPC_ProjectileCurly, NPC->x, NPC->y - 0x1000, 0, 0, 1, nullptr, true);
+					createNpc(NPC_ProjectileCurlyMachineGunBullet, NPC->x, NPC->y - 0x1000, 0, 0, 1, nullptr, true);
 				}
 				else
 				{
 					NPC->ani_no = 0;
-					createNpc(NPC_ProjectileCurly, NPC->x - 0x1000, NPC->y + 0x800, 0, 0, 0, nullptr, true);
+					createNpc(NPC_ProjectileCurlyMachineGunBullet, NPC->x - 0x1000, NPC->y + 0x800, 0, 0, 0, nullptr, true);
 					NPC->x += 0x200;
 				}
 			}

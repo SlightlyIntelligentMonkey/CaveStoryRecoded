@@ -8,8 +8,6 @@
 #include "stage.h"
 #include "boss.h"
 
-using std::array;
-
 void npcAct300(npc *NPC) //Demon crown
 {
 	if (!NPC->act_no)
@@ -93,7 +91,7 @@ void npcAct302(npc *NPC) //Camera Helper NPC
     case 101:
 case101:
         int64_t tmp = NPC->pNpc->x + currentPlayer.x;
-        NPC->x = ((int32_t)tmp - (tmp >> 32)) >> 1;
+        NPC->x = (static_cast<int32_t>(tmp) - (tmp >> 32)) >> 1;
         NPC->y = (NPC->pNpc->y + currentPlayer.y) / 2;
         break;
     }
@@ -101,7 +99,7 @@ case101:
 
 void npcAct304(npc *NPC)    // Gaudi (sitting)
 {
-    constexpr array<RECT, 4> rcNPC =
+    constexpr std::array<RECT, 4> rcNPC =
     {{
         {0, 176, 24, 192},
         {24, 176, 48, 192},
@@ -136,8 +134,8 @@ void npcAct304(npc *NPC)    // Gaudi (sitting)
 
 void npcAct305(npc *NPC)
 {
-    constexpr array<RECT, 2> rcLeft = {{{160, 144, 176, 160}, {176, 144, 192, 160}}};
-    constexpr array<RECT, 2> rcRight = {{{160, 160, 176, 176}, {176, 160, 192, 176}}};
+    constexpr std::array<RECT, 2> rcLeft = {{{160, 144, 176, 160}, {176, 144, 192, 160}}};
+    constexpr std::array<RECT, 2> rcRight = {{{160, 160, 176, 176}, {176, 160, 192, 176}}};
 
     switch (NPC->act_no)
     {
@@ -155,8 +153,8 @@ void npcAct305(npc *NPC)
 
 void npcAct306(npc *NPC) // Balrog, Nurse
 {
-    constexpr array<RECT, 2> rcLeft = {{{240, 96, 280, 128}, {280, 96, 320, 128}}};
-    constexpr array<RECT, 2> rcRight = {{{160, 152, 200, 184}, {200, 152, 240, 184}}};
+    constexpr std::array<RECT, 2> rcLeft = {{{240, 96, 280, 128}, {280, 96, 320, 128}}};
+    constexpr std::array<RECT, 2> rcRight = {{{160, 152, 200, 184}, {200, 152, 240, 184}}};
 
     switch (NPC->act_no)
     {
@@ -189,8 +187,8 @@ void npcAct306(npc *NPC) // Balrog, Nurse
 
 void npcAct309(npc *NPC)
 {
-    constexpr array<RECT, 2> rcLeft = {{{0, 0, 16, 16}, {16, 0, 32, 16}}};
-    constexpr array<RECT, 2> rcRight = {{{0, 16, 16, 32}, {16, 16, 32, 32}}};
+    constexpr std::array<RECT, 2> rcLeft = {{{0, 0, 16, 16}, {16, 0, 32, 16}}};
+    constexpr std::array<RECT, 2> rcRight = {{{0, 16, 16, 32}, {16, 16, 32, 32}}};
 
     switch (NPC->act_no)
     {

@@ -20,10 +20,10 @@ namespace config
 {
 	namespace old
 	{
-		std::unique_ptr<CONFIG> load(const std::string& name);
-
 		extern std::string gName;
 		extern bool gUse;
+		
+		std::unique_ptr<CONFIG> load(const std::string& name = config::old::gName);
 	}
 
 	void load();

@@ -72,12 +72,12 @@ void drawRect(int x, int y, int w, int h);
 
 void createTextureBuffer(enum TextureNums texture_id, int width, int height);
 
-template <typename T> constexpr inline int32_t secondsToFrames(T x)
+template <typename T> constexpr inline int secondsToFrames(T x)
 {
-    return x * 50;
+    return static_cast<int>(x * static_cast<T>(50));
 }
 
 template <typename T> constexpr inline T framesToSeconds(T x)
 {
-    return x / 50;
+    return static_cast<T>(x / static_cast<T>(50));
 }

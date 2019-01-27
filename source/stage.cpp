@@ -66,7 +66,7 @@ void loadStageTable()
 
 uint8_t getTileAttribute(size_t xTile, size_t yTile)
 {
-	if (xTile < (size_t)gMap.width && yTile < (size_t)gMap.height)  // Make sure coordinates are valid
+	if (xTile < static_cast<size_t>(gMap.width) && yTile < static_cast<size_t>(gMap.height))  // Make sure coordinates are valid
 		return gMap.attribute[gMap.tile[xTile + yTile * gMap.width]];
 
     // Coordinates are invalid
@@ -165,9 +165,10 @@ void iniBackground(const std::string &name, int mode)
 	gBackground.mode = mode;
 	gBackground.tileWidth = gMap.width;
 	gBackground.tileHeight = gMap.height;
+
 	gBackground.flag = 1;
-	loadImage(name, &gSprites[TEX_BACKGROUND]);
-	gWaterY = 0x1E0000;
+	loadImage(name, &gSprites[TEX_BACKGROUND]);	// Load background texture
+	gWaterY = tilesToUnits(240);
 }
 
 void loadLevel(size_t levelIndex, int w, int x, int y)
@@ -276,14 +277,10 @@ static void updateBackgroundEffect(int w)
 
 void drawBackground(void)
 {
-	RECT rect;
-
-	int skyOff;
-
 	int w, h;
 	SDL_QueryTexture(gSprites[TEX_BACKGROUND], nullptr, nullptr, &w, &h);
 
-	rect = { 0, 0, w, h };
+	RECT rect = { 0, 0, w, h };
 
 	updateBackgroundEffect(w);
 
@@ -330,7 +327,7 @@ void drawBackground(void)
 		//Draw sky
 		rect = { 0, 0, w / 2, 88 };
 
-		skyOff = (((w / 2) - gScreenWidth) / 2);
+		int skyOff = (((w / 2) - gScreenWidth) / 2);
 
 		//Draw middle
 		drawTexture(gSprites[0x1C], &rect, -skyOff, 0);
@@ -368,9 +365,6 @@ void drawBackground(void)
 		for (int i = 0; i <= (gScreenWidth / w) + 1; ++i)
 			drawTexture(gSprites[TEX_BACKGROUND], &rect, (w * i) - (gBackground.effect * 4) % w, rect.top);
 
-		break;
-
-	default:
 		break;
 	}
 }
