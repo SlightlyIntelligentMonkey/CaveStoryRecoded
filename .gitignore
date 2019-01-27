@@ -23,7 +23,6 @@ x86/
 [Aa][Rr][Mm]/
 [Aa][Rr][Mm]64/
 bld/
-[Bb]in/
 [Oo]bj/
 [Ll]og/
 
@@ -119,7 +118,7 @@ ipch/
 /*.d
 
 # Visual Studio Code stuff
-.vscode/*
+.vscode/
 
 # Useful for VS Code users
 !.vscode/settings.json
