@@ -170,7 +170,7 @@ int startTscEvent(TSC &ptsc, int no)
 	{
 		if (!ptsc.data[ptsc.p_read])
 			return 0;
-		if (ptsc.data[ptsc.p_read] != 35)
+		if (ptsc.data[ptsc.p_read] != '#')
 			continue;
 
 		event_no = getTSCNumber(tsc, ++ptsc.p_read);
