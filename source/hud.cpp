@@ -109,30 +109,30 @@ void drawWeaponStats()
 	RECT rcPer = { 72, 48, 80, 56 };
 
 	//Shift weapons back into correct position
-	if (weaponShiftX > 16)
-		weaponShiftX -= 2;
-	if (weaponShiftX < 16)
-		weaponShiftX += 2;
+	if (gWeaponShiftX > 16)
+		gWeaponShiftX -= 2;
+	if (gWeaponShiftX < 16)
+		gWeaponShiftX += 2;
 
 	//Draw amount of ammo
-	if (weapons[selectedWeapon].max_num)
+	if (gWeapons[gSelectedWeapon].max_num)
 	{
-		drawNumber(weapons[selectedWeapon].num, weaponShiftX + 32, 16, false);
-		drawNumber(weapons[selectedWeapon].max_num, weaponShiftX + 32, 24, false);
+		drawNumber(gWeapons[gSelectedWeapon].num, gWeaponShiftX + 32, 16, false);
+		drawNumber(gWeapons[gSelectedWeapon].max_num, gWeaponShiftX + 32, 24, false);
 	}
 	else
 	{
-		drawTexture(gSprites[TEX_TEXTBOX], &rcNone, weaponShiftX + 48, 16);
-		drawTexture(gSprites[TEX_TEXTBOX], &rcNone, weaponShiftX + 48, 24);
+		drawTexture(gSprites[TEX_TEXTBOX], &rcNone, gWeaponShiftX + 48, 16);
+		drawTexture(gSprites[TEX_TEXTBOX], &rcNone, gWeaponShiftX + 48, 24);
 	}
 
 	//Draw experience
 	if (!((currentPlayer.shock >> 1) & 1))
 	{
 		//Draw level
-		drawTexture(gSprites[TEX_TEXTBOX], &rcPer, weaponShiftX + 32, 24);
-		drawTexture(gSprites[TEX_TEXTBOX], &rcLv, weaponShiftX, 32);
-		drawNumber(weapons[selectedWeapon].level, weaponShiftX - 8, 32, false);
+		drawTexture(gSprites[TEX_TEXTBOX], &rcPer, gWeaponShiftX + 32, 24);
+		drawTexture(gSprites[TEX_TEXTBOX], &rcLv, gWeaponShiftX, 32);
+		drawNumber(gWeapons[gSelectedWeapon].level, gWeaponShiftX - 8, 32, false);
 
 		//Set framerects
 		rcExpBox = { 0, 72, 40, 80 };
@@ -141,15 +141,15 @@ void drawWeaponStats()
 		rcExpFlash = { 40, 80, 80, 88 };
 
 		//Set up some variables
-		const int lv = weapons[selectedWeapon].level - 1;
-		const int arms_code = weapons[selectedWeapon].code;
-		const int exp_now = weapons[selectedWeapon].exp;
-		const int exp_next = weaponLevels[arms_code].exp[lv];
+		const int lv = gWeapons[gSelectedWeapon].level - 1;
+		const int arms_code = gWeapons[gSelectedWeapon].code;
+		const int exp_now = gWeapons[gSelectedWeapon].exp;
+		const int exp_next = gWeaponLevels[arms_code].exp[lv];
 
 		//Draw the bar
-		drawTexture(gSprites[TEX_TEXTBOX], &rcExpBox, weaponShiftX + 24, 32);
+		drawTexture(gSprites[TEX_TEXTBOX], &rcExpBox, gWeaponShiftX + 24, 32);
 
-		if (lv != 2 || weapons[selectedWeapon].exp != weaponLevels[arms_code].exp[2]) //If not at max level
+		if (lv != 2 || gWeapons[gSelectedWeapon].exp != gWeaponLevels[arms_code].exp[2]) //If not at max level
 		{
 			//Scale bar
 			if (exp_next)
@@ -157,17 +157,17 @@ void drawWeaponStats()
 			else
 				rcExpVal.right = 0;
 
-			drawTexture(gSprites[TEX_TEXTBOX], &rcExpVal, weaponShiftX + 24, 32);
+			drawTexture(gSprites[TEX_TEXTBOX], &rcExpVal, gWeaponShiftX + 24, 32);
 		}
 		else
 		{
-			drawTexture(gSprites[TEX_TEXTBOX], &rcExpMax, weaponShiftX + 24, 32);
+			drawTexture(gSprites[TEX_TEXTBOX], &rcExpMax, gWeaponShiftX + 24, 32);
 		}
 		
 		static int flashAlternator = 0;
 		//Draw the flashing
 		if (currentPlayer.exp_wait && (flashAlternator++ >> 1) & 1)
-			drawTexture(gSprites[TEX_TEXTBOX], &rcExpFlash, weaponShiftX + 24, 32);
+			drawTexture(gSprites[TEX_TEXTBOX], &rcExpFlash, gWeaponShiftX + 24, 32);
 	}
 }
 
@@ -177,13 +177,13 @@ void drawHudWeapons()
 	RECT rect = { 0, 0, 0, 16 };
 
 	size_t weaponNo;
-	for (weaponNo = 0; weaponNo < WEAPONS && weapons[weaponNo].code != 0; ++weaponNo);
+	for (weaponNo = 0; weaponNo < WEAPONS && gWeapons[weaponNo].code != 0; ++weaponNo);
 
 	if (weaponNo)
 	{
 		for (size_t a = 0; a < weaponNo; ++a)
 		{
-			int x = 16 * (a - selectedWeapon) + weaponShiftX;
+			int x = 16 * (a - gSelectedWeapon) + gWeaponShiftX;
 
 			if (x >= 8)
 			{
@@ -202,7 +202,7 @@ void drawHudWeapons()
 				x -= 48;
 
 			//Set rect and draw
-			rect.left = 16 * weapons[a].code;
+			rect.left = 16 * gWeapons[a].code;
 			rect.right = rect.left + 16;
 			drawTexture(gSprites[TEX_ARMSIMAGE], &rect, x, 16);
 		}

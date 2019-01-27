@@ -77,12 +77,12 @@ static void doInventoryNotActive(bool &bChange, int itemNo, int weaponNo)
 {
 	if (isKeyPressed(gKeyLeft))
 	{
-		--selectedWeapon;
+		--gSelectedWeapon;
 		bChange = true;
 	}
 	if (isKeyPressed(gKeyRight))
 	{
-		++selectedWeapon;
+		++gSelectedWeapon;
 		bChange = true;
 	}
 	if (isKeyPressed(gKeyUp) || isKeyPressed(gKeyDown))
@@ -92,18 +92,18 @@ static void doInventoryNotActive(bool &bChange, int itemNo, int weaponNo)
 		bChange = true;
 	}
 
-	if (selectedWeapon < 0)
-		selectedWeapon = weaponNo - 1;
+	if (gSelectedWeapon < 0)
+		gSelectedWeapon = weaponNo - 1;
 
-	if (selectedWeapon > weaponNo - 1)
-		selectedWeapon = 0;
+	if (gSelectedWeapon > weaponNo - 1)
+		gSelectedWeapon = 0;
 }
 
 void moveInventoryCursor()
 {
 	int weaponNo = 0;
 	int itemNo = 0;
-	while (weaponNo < static_cast<int>(WEAPONS) && weapons[weaponNo].code != 0)
+	while (weaponNo < static_cast<int>(WEAPONS) && gWeapons[weaponNo].code != 0)
 		++weaponNo;
 	while (weaponNo < static_cast<int>(ITEMS) && gItems[itemNo].code != 0)
 		++itemNo;
@@ -132,7 +132,7 @@ void moveInventoryCursor()
 				playSound(4);
 
 				if (weaponNo)
-					startTscEvent(tsc, weapons[selectedWeapon].code + 1000);
+					startTscEvent(tsc, gWeapons[gSelectedWeapon].code + 1000);
 				else
 					startTscEvent(tsc, 1000);
 			}
@@ -173,9 +173,9 @@ void drawInventory()
 	static int inventoryFlash;
 	++inventoryFlash;
 	if (gInventoryActive)
-		drawTexture(gSprites[TEX_TEXTBOX], &rcCur1[1], 40 * selectedWeapon + gScreenWidth / 2 - 112, ((gScreenHeight - 240) / 2) + 24);
+		drawTexture(gSprites[TEX_TEXTBOX], &rcCur1[1], 40 * gSelectedWeapon + gScreenWidth / 2 - 112, ((gScreenHeight - 240) / 2) + 24);
 	else
-		drawTexture(gSprites[TEX_TEXTBOX], &rcCur1[(inventoryFlash >> 1) & 1], 40 * selectedWeapon + gScreenWidth / 2 - 112, ((gScreenHeight - 240) / 2) + 24);
+		drawTexture(gSprites[TEX_TEXTBOX], &rcCur1[(inventoryFlash >> 1) & 1], 40 * gSelectedWeapon + gScreenWidth / 2 - 112, ((gScreenHeight - 240) / 2) + 24);
 
 	//Draw weapons
 	RECT rcLv = { 80, 80, 96, 88 };
@@ -183,23 +183,23 @@ void drawInventory()
 	RECT rcPer = { 72, 48, 80, 56 };
 	RECT rcArms;
 
-	for (size_t i = 0; i < WEAPONS && weapons[i].code; ++i)
+	for (size_t i = 0; i < WEAPONS && gWeapons[i].code; ++i)
 	{
-		rcArms.left = 16 * (weapons[i].code % 16);
+		rcArms.left = 16 * (gWeapons[i].code % 16);
 		rcArms.right = rcArms.left + 16;
-		rcArms.top = 16 * (weapons[i].code / 16);
+		rcArms.top = 16 * (gWeapons[i].code / 16);
 		rcArms.bottom = rcArms.top + 16;
 
 		drawTexture(gSprites[TEX_ARMSIMAGE], &rcArms, 40 * i + gScreenWidth / 2 - 112, ((gScreenHeight - 240) / 2) + 24);
 		drawTexture(gSprites[TEX_TEXTBOX], &rcPer, 40 * i + gScreenWidth / 2 - 112, ((gScreenHeight - 240) / 2) + 56);
 		drawTexture(gSprites[TEX_TEXTBOX], &rcLv, 40 * i + gScreenWidth / 2 - 112, ((gScreenHeight - 240) / 2) + 40);
 
-		drawNumber(weapons[i].level, 40 * i + gScreenWidth / 2 - 112, ((gScreenHeight - 240) / 2) + 40, false);
+		drawNumber(gWeapons[i].level, 40 * i + gScreenWidth / 2 - 112, ((gScreenHeight - 240) / 2) + 40, false);
 
-		if (weapons[i].max_num)
+		if (gWeapons[i].max_num)
 		{
-			drawNumber(weapons[i].num, 40 * i + gScreenWidth / 2 - 112, ((gScreenHeight - 240) / 2) + 48, false);
-			drawNumber(weapons[i].max_num, 40 * i + gScreenWidth / 2 - 112, ((gScreenHeight - 240) / 2) + 56, false);
+			drawNumber(gWeapons[i].num, 40 * i + gScreenWidth / 2 - 112, ((gScreenHeight - 240) / 2) + 48, false);
+			drawNumber(gWeapons[i].max_num, 40 * i + gScreenWidth / 2 - 112, ((gScreenHeight - 240) / 2) + 56, false);
 		}
 		else
 		{
@@ -280,7 +280,7 @@ static int inventoryLoop(std::string &oldScript)
 		{
 			stopTsc(tsc);
 			loadStageTsc(oldScript);
-			weaponShiftX = 32;
+			gWeaponShiftX = 32;
 			return 1;
 		}
 
@@ -288,7 +288,7 @@ static int inventoryLoop(std::string &oldScript)
 		{
 			stopTsc(tsc);
 			loadStageTsc(oldScript);
-			weaponShiftX = 32;
+			gWeaponShiftX = 32;
 			return 1;
 		}
 
@@ -317,10 +317,10 @@ int openInventory()
 
 	//Start appropriate event
 	size_t weaponNo;
-	for (weaponNo = 0; weaponNo < WEAPONS && weapons[weaponNo].code != 0; ++weaponNo);
+	for (weaponNo = 0; weaponNo < WEAPONS && gWeapons[weaponNo].code != 0; ++weaponNo);
 
 	if (weaponNo)
-		startTscEvent(tsc, weapons[selectedWeapon].code + 1000);
+		startTscEvent(tsc, gWeapons[gSelectedWeapon].code + 1000);
 	else
 		startTscEvent(tsc, gItems[gSelectedItem].code + 5000);
 

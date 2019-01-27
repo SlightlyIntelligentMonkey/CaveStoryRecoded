@@ -12,10 +12,10 @@
 #include "log.h"
 #include "stage.h"
 
-npc bossObj[BOSSNPCS];
+npc gBossObj[BOSSNPCS];
 
 using bossAct = void(*)(npc *);
-const bossAct bossActs[10] =
+const bossAct gBossActs[10] =
 {
 	[](npc *) {},
 	&actBoss_Omega,
@@ -31,37 +31,37 @@ const bossAct bossActs[10] =
 
 void initBoss(int code)
 {
-	memset(bossObj, 0, sizeof(bossObj));
-	bossObj[0].cond = npccond_alive;
-	bossObj[0].code_char = code;
+	memset(gBossObj, 0, sizeof(gBossObj));
+	gBossObj[0].cond = npccond_alive;
+	gBossObj[0].code_char = code;
 }
 
 void setBossAction(int a)
 {
-	bossObj[0].act_no = a;
+	gBossObj[0].act_no = a;
 }
 
 void updateBoss()
 {
-	if ((bossObj[0].cond & npccond_alive) && bossActs[bossObj[0].code_char] != nullptr)
+	if ((gBossObj[0].cond & npccond_alive) && gBossActs[gBossObj[0].code_char] != nullptr)
 	{
-		bossActs[bossObj[0].code_char](&bossObj[0]);
+		gBossActs[gBossObj[0].code_char](&gBossObj[0]);
 
 		for (size_t bos = 0; bos < BOSSNPCS; ++bos)
 		{
-			if (bossObj[bos].shock)
-				--bossObj[bos].shock;
+			if (gBossObj[bos].shock)
+				--gBossObj[bos].shock;
 		}
 	}
-	else if (bossActs[bossObj[0].code_char] == nullptr)
+	else if (gBossActs[gBossObj[0].code_char] == nullptr)
     {
-		static bool wasNotifiedAbout[_countof(bossActs)] = { 0 };
+		static bool wasNotifiedAbout[_countof(gBossActs)] = { 0 };
 
-		if (wasNotifiedAbout[bossObj[0].code_char])
+		if (wasNotifiedAbout[gBossObj[0].code_char])
 			return;
 
-		wasNotifiedAbout[bossObj[0].code_char] = true;
-		std::string msg = "Boss " + std::to_string(bossObj[0].code_char) + " is not implementated yet.";
+		wasNotifiedAbout[gBossObj[0].code_char] = true;
+		std::string msg = "Boss " + std::to_string(gBossObj[0].code_char) + " is not implementated yet.";
 		logWarning(msg);
 		if (debugFlags & notifyOnNotImplemented)
             SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_WARNING, "Missing Boss", msg.c_str(), nullptr);
@@ -76,38 +76,38 @@ void drawBoss()
 	{
 		size_t bos = (BOSSNPCS - 1) - i;
 
-		if (bossObj[bos].cond & npccond_alive)
+		if (gBossObj[bos].cond & npccond_alive)
 		{
 			int shake = 0;
 
-			if (bossObj[bos].shock)
+			if (gBossObj[bos].shock)
 			{
-				shake = 2 * ((bossObj[bos].shock >> 1) & 1) - 1;
+				shake = 2 * ((gBossObj[bos].shock >> 1) & 1) - 1;
 			}
 			else
 			{
-				if (bossObj[bos].bits & npc_showDamage && bossObj[bos].damage_view)
+				if (gBossObj[bos].bits & npc_showDamage && gBossObj[bos].damage_view)
 				{
-					createValueView(&bossObj[bos].x, &bossObj[bos].y, bossObj[bos].damage_view);
-					bossObj[bos].damage_view = 0;
+					createValueView(&gBossObj[bos].x, &gBossObj[bos].y, gBossObj[bos].damage_view);
+					gBossObj[bos].damage_view = 0;
 				}
 			}
 
-			int side = bossObj[bos].view.left;
-			if (bossObj[bos].direct != dirLeft)
-				side = bossObj[bos].view.right;
+			int side = gBossObj[bos].view.left;
+			if (gBossObj[bos].direct != dirLeft)
+				side = gBossObj[bos].view.right;
 
-			drawTexture(gSprites[TEX_NPC_2], &bossObj[bos].rect,
-				(bossObj[bos].x - side) / 0x200 - (gViewport.x / 0x200) + shake,
-				(bossObj[bos].y - bossObj[bos].view.top) / 0x200 - (gViewport.y / 0x200));
+			drawTexture(gSprites[TEX_NPC_2], &gBossObj[bos].rect,
+				(gBossObj[bos].x - side) / 0x200 - (gViewport.x / 0x200) + shake,
+				(gBossObj[bos].y - gBossObj[bos].view.top) / 0x200 - (gViewport.y / 0x200));
 
 			if (debugFlags & showHitRects)
 			{
 				SDL_SetRenderDrawColor(gRenderer, 0x80, 0x80, 0x80, 0xFF);
-				drawRect(unitsToPixels(bossObj[bos].x - bossObj[bos].hit.left) - unitsToPixels(gViewport.x),
-					unitsToPixels(bossObj[bos].y - bossObj[bos].hit.top) - unitsToPixels(gViewport.y),
-					unitsToPixels(bossObj[bos].hit.right + bossObj[bos].hit.left),
-					unitsToPixels(bossObj[bos].hit.bottom + bossObj[bos].hit.top));
+				drawRect(unitsToPixels(gBossObj[bos].x - gBossObj[bos].hit.left) - unitsToPixels(gViewport.x),
+					unitsToPixels(gBossObj[bos].y - gBossObj[bos].hit.top) - unitsToPixels(gViewport.y),
+					unitsToPixels(gBossObj[bos].hit.right + gBossObj[bos].hit.left),
+					unitsToPixels(gBossObj[bos].hit.bottom + gBossObj[bos].hit.top));
 			}
 		}
 	}

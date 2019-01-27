@@ -2,7 +2,7 @@
 #include "npc.h"
 
 constexpr size_t BOSSNPCS = 20;
-extern npc bossObj[BOSSNPCS];
+extern npc gBossObj[BOSSNPCS];
 
 void initBoss(int code);
 

@@ -11,7 +11,7 @@
 #include "game.h"
 
 //Shoot functions
-weaponShoot shootFunctions[14] =
+weaponShoot gShootFunctions[14] =
 {
 	static_cast<weaponShoot>(nullptr),
 	&shootSnake,
@@ -30,7 +30,7 @@ weaponShoot shootFunctions[14] =
 };
 
 //Weapon Levels
-WEAPONEXP weaponLevels[14] =
+WEAPONEXP gWeaponLevels[14] =
 {
 	{{ 0,	0,	100 }},
 	{{ 30,	40,	16 }},
@@ -48,18 +48,18 @@ WEAPONEXP weaponLevels[14] =
 	{{ 40,	60,	200 }},
 };
 
-WEAPON weapons[WEAPONS];
+WEAPON gWeapons[WEAPONS];
 
-RECT weaponRect;
-int selectedWeapon;
-int weaponShiftX;
-int weaponExpFlash;
+RECT gWeaponRect;
+int gSelectedWeapon;
+int gWeaponShiftX;
+int gWeaponExpFlash;
 
 void initWeapons()
 {
-	memset(weapons, 0, sizeof(weapons));
-	selectedWeapon = 0;
-	weaponShiftX = 32;
+	memset(gWeapons, 0, sizeof(gWeapons));
+	gSelectedWeapon = 0;
+	gWeaponShiftX = 32;
 }
 
 //Functions for shooting
@@ -68,19 +68,19 @@ void actWeapon()
 	if (_empty)
 		--_empty;
 
-	if (!(currentPlayer.cond & player_removed) && weapons[selectedWeapon].code)
+	if (!(currentPlayer.cond & player_removed) && gWeapons[gSelectedWeapon].code)
 	{
-		if (shootFunctions[weapons[selectedWeapon].code] != nullptr)
-			shootFunctions[weapons[selectedWeapon].code](weapons[selectedWeapon].level);
+		if (gShootFunctions[gWeapons[gSelectedWeapon].code] != nullptr)
+			gShootFunctions[gWeapons[gSelectedWeapon].code](gWeapons[gSelectedWeapon].level);
 		else if (debugFlags & notifyOnNotImplemented)
 		{
-			static bool wasNotifiedAbout[_countof(shootFunctions)] = { false };
+			static bool wasNotifiedAbout[_countof(gShootFunctions)] = { false };
 
-			if (wasNotifiedAbout[weapons[selectedWeapon].code])
+			if (wasNotifiedAbout[gWeapons[gSelectedWeapon].code])
 				return;
 
-			wasNotifiedAbout[weapons[selectedWeapon].code] = true;
-			std::string msg = "Weapon " + std::to_string(weapons[selectedWeapon].code) + " is not implemented.";
+			wasNotifiedAbout[gWeapons[gSelectedWeapon].code] = true;
+			std::string msg = "Weapon " + std::to_string(gWeapons[gSelectedWeapon].code) + " is not implemented.";
 			SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_WARNING, "Missing Weapon", msg.c_str(), nullptr);
 		}
 	}
@@ -88,42 +88,42 @@ void actWeapon()
 
 void giveWeaponAmmo(int num)
 {
-	weapons[selectedWeapon].num += num;
-	if (weapons[selectedWeapon].num > weapons[selectedWeapon].max_num)
-		weapons[selectedWeapon].num = weapons[selectedWeapon].max_num;
+	gWeapons[gSelectedWeapon].num += num;
+	if (gWeapons[gSelectedWeapon].num > gWeapons[gSelectedWeapon].max_num)
+		gWeapons[gSelectedWeapon].num = gWeapons[gSelectedWeapon].max_num;
 }
 
 int useWeaponAmmo(int num)
 {
 	//Some checks
-	if (!weapons[selectedWeapon].max_num)
+	if (!gWeapons[gSelectedWeapon].max_num)
 		return 1;
-	if (!weapons[selectedWeapon].num)
+	if (!gWeapons[gSelectedWeapon].num)
 		return 0;
 
 	//Use ammo
-	weapons[selectedWeapon].num -= num;
-	if (weapons[selectedWeapon].num < 0)
-		weapons[selectedWeapon].num = 0;
+	gWeapons[gSelectedWeapon].num -= num;
+	if (gWeapons[gSelectedWeapon].num < 0)
+		gWeapons[gSelectedWeapon].num = 0;
 	return 1;
 }
 
 void giveAmmo(int ammoToRefill)
 {
 	int i;
-	for (i = 0; i < 8 && weapons[i].code != weapon_MissileLauncher && weapons[i].code != weapon_SuperMissileLauncher; ++i);
+	for (i = 0; i < 8 && gWeapons[i].code != weapon_MissileLauncher && gWeapons[i].code != weapon_SuperMissileLauncher; ++i);
 	if (i != 8)
 	{
-		weapons[i].num += ammoToRefill;
-		if (weapons[i].num > weapons[i].max_num)
-			weapons[i].num = weapons[i].max_num;
+		gWeapons[i].num += ammoToRefill;
+		if (gWeapons[i].num > gWeapons[i].max_num)
+			gWeapons[i].num = gWeapons[i].max_num;
 	}
 }
 
 bool weaponMaxExp()
 {
-	return weapons[selectedWeapon].level == 3
-	       && weapons[selectedWeapon].exp >= weaponLevels[weapons[selectedWeapon].code].exp[2];
+	return gWeapons[gSelectedWeapon].level == 3
+	       && gWeapons[gSelectedWeapon].exp >= gWeaponLevels[gWeapons[gSelectedWeapon].code].exp[2];
 }
 
 int weaponBullets(int arms_code)
@@ -141,64 +141,64 @@ int weaponBullets(int arms_code)
 int tradeWeapons(int code1, int code2, int max_num)
 {
 	int i;
-	for (i = 0; i < WEAPONS && weapons[i].code != code1; ++i);
+	for (i = 0; i < WEAPONS && gWeapons[i].code != code1; ++i);
 	if (i == WEAPONS)
 		return 0;
 
-	weapons[i].level = 1;
-	weapons[i].code = code2;
-	weapons[i].max_num += max_num;
-	weapons[i].num += max_num;
-	weapons[i].exp = 0;
+	gWeapons[i].level = 1;
+	gWeapons[i].code = code2;
+	gWeapons[i].max_num += max_num;
+	gWeapons[i].num += max_num;
+	gWeapons[i].exp = 0;
 	return 1;
 }
 
 int giveWeapon(int code, int maxAmmo)
 {
 	int i;
-	for (i = 0; i < WEAPONS && weapons[i].code != code && weapons[i].code; ++i)
+	for (i = 0; i < WEAPONS && gWeapons[i].code != code && gWeapons[i].code; ++i)
         ;
 	if (i == WEAPONS)
 		return 0;
 
 	//Ensure past data is erased
-	if (!weapons[i].code)
+	if (!gWeapons[i].code)
 	{
-		memset(&weapons[i], 0, sizeof(WEAPON));
-		weapons[i].level = 1;
+		memset(&gWeapons[i], 0, sizeof(WEAPON));
+		gWeapons[i].level = 1;
 	}
 
 	//Set weapon and ammo
-	weapons[i].code = code;
-	weapons[i].max_num += maxAmmo;
-	weapons[i].num += maxAmmo;
+	gWeapons[i].code = code;
+	gWeapons[i].max_num += maxAmmo;
+	gWeapons[i].num += maxAmmo;
 
-	if (weapons[i].num > weapons[i].max_num)
-		weapons[i].num = weapons[i].max_num;
+	if (gWeapons[i].num > gWeapons[i].max_num)
+		gWeapons[i].num = gWeapons[i].max_num;
 	return 1;
 }
 
 int removeWeapon(int code)
 {
 	int i;
-	for (i = 0; i < WEAPONS && weapons[i].code != code; ++i);
+	for (i = 0; i < WEAPONS && gWeapons[i].code != code; ++i);
 	if (i == WEAPONS)
 		return 0;
 
 	//Push back all weapons ahead
 	int ia;
 	for (ia = i + 1; ia < 8; ++ia)
-		memcpy(&weapons[ia - 1], &weapons[ia], sizeof(WEAPON));
+		memcpy(&gWeapons[ia - 1], &gWeapons[ia], sizeof(WEAPON));
 
 	//Clear farthest weapon and select first weapon
-	weapons[ia - 1].code = 0;
-	selectedWeapon = 0;
+	gWeapons[ia - 1].code = 0;
+	gSelectedWeapon = 0;
 	return 1;
 }
 
 void clearWeaponExperience()
 {
-	for (auto& i : weapons)
+	for (auto& i : gWeapons)
 	{
 		i.level = 1;
 		i.exp = 0;
@@ -207,13 +207,13 @@ void clearWeaponExperience()
 
 void maxWeaponAmmo()
 {
-	for (auto& i : weapons)
+	for (auto& i : gWeapons)
 		i.num = i.max_num;
 }
 
 bool checkWeapon(int code)
 {
-	for (const auto& i : weapons)
+	for (const auto& i : gWeapons)
 	{
 		if (i.code == code)
 			return true;
@@ -223,15 +223,15 @@ bool checkWeapon(int code)
 
 void giveWeaponExperience(int x)
 {
-	int lv = weapons[selectedWeapon].level - 1; // [esp+18h] [ebp-10h]
-	const int arms_code = weapons[selectedWeapon].code; // [esp+1Ch] [ebp-Ch]
-	weapons[selectedWeapon].exp += x;
+	int lv = gWeapons[gSelectedWeapon].level - 1; // [esp+18h] [ebp-10h]
+	const int arms_code = gWeapons[gSelectedWeapon].code; // [esp+1Ch] [ebp-Ch]
+	gWeapons[gSelectedWeapon].exp += x;
 
 	if (lv == 2)
 	{
-		if (weapons[selectedWeapon].exp >= weaponLevels[arms_code].exp[2])
+		if (gWeapons[gSelectedWeapon].exp >= gWeaponLevels[arms_code].exp[2])
 		{
-			weapons[selectedWeapon].exp = weaponLevels[arms_code].exp[2];
+			gWeapons[gSelectedWeapon].exp = gWeaponLevels[arms_code].exp[2];
 
 			//Give a whimsical star
 			if (currentPlayer.equip & equip_whimsicalStar && currentPlayer.star < 3)
@@ -242,12 +242,12 @@ void giveWeaponExperience(int x)
 	{
 		while (lv <= 1)
 		{
-			if (weapons[selectedWeapon].exp >= weaponLevels[arms_code].exp[lv])
+			if (gWeapons[gSelectedWeapon].exp >= gWeaponLevels[arms_code].exp[lv])
 			{
-				++weapons[selectedWeapon].level;
-				weapons[selectedWeapon].exp = 0;
+				++gWeapons[gSelectedWeapon].level;
+				gWeapons[gSelectedWeapon].exp = 0;
 
-				if (weapons[selectedWeapon].code != 13)
+				if (gWeapons[gSelectedWeapon].code != 13)
 				{
 					playSound(SFX_LevelUp);
 					createCaret(currentPlayer.x, currentPlayer.y, effect_LevelUpOrDown);
@@ -258,7 +258,7 @@ void giveWeaponExperience(int x)
 		}
 	}
 
-	if (weapons[selectedWeapon].code == 13)
+	if (gWeapons[gSelectedWeapon].code == 13)
 	{
 		currentPlayer.exp_wait = 10;
 	}
@@ -271,14 +271,14 @@ void giveWeaponExperience(int x)
 
 void resetSelectedWeaponLevel()
 {
-	weapons[selectedWeapon].level = 1;
-	weapons[selectedWeapon].exp = 0;
+	gWeapons[gSelectedWeapon].level = 1;
+	gWeapons[gSelectedWeapon].exp = 0;
 }
 
 void resetSpurCharge()
 {
 	spurCharge = 0;
-	if (weapons[selectedWeapon].code == weapon_Spur)
+	if (gWeapons[gSelectedWeapon].code == weapon_Spur)
 		resetSelectedWeaponLevel();
 }
 
@@ -287,47 +287,47 @@ int rotateWeaponRight()
 {
 	int weaponNo;
 
-	for (weaponNo = 0; weaponNo < WEAPONS && weapons[weaponNo].code != 0; ++weaponNo);
+	for (weaponNo = 0; weaponNo < WEAPONS && gWeapons[weaponNo].code != 0; ++weaponNo);
 	if (!weaponNo)
 		return 0;
 
 	resetSpurCharge();
 
 	//Rotate to the right, wrap around
-	++selectedWeapon;
-	while (selectedWeapon < weaponNo && !weapons[selectedWeapon].code)
-		++selectedWeapon;
-	if (selectedWeapon == weaponNo)
-		selectedWeapon = 0;
+	++gSelectedWeapon;
+	while (gSelectedWeapon < weaponNo && !gWeapons[gSelectedWeapon].code)
+		++gSelectedWeapon;
+	if (gSelectedWeapon == weaponNo)
+		gSelectedWeapon = 0;
 
 	//Do effects
-	weaponShiftX = 32;
+	gWeaponShiftX = 32;
 	playSound(SFX_SwitchWeapon);
 
-	return weapons[weaponNo].code;
+	return gWeapons[weaponNo].code;
 }
 
 int rotateWeaponLeft()
 {
 	int weaponNo;
 
-	for (weaponNo = 0; weaponNo < WEAPONS && weapons[weaponNo].code != 0; ++weaponNo);
+	for (weaponNo = 0; weaponNo < WEAPONS && gWeapons[weaponNo].code != 0; ++weaponNo);
 	if (!weaponNo)
 		return 0;
 
 	resetSpurCharge();
 
 	//Rotate to the left, wrap around
-	--selectedWeapon;
-	if (selectedWeapon < 0)
-		selectedWeapon = weaponNo - 1;
-	while (selectedWeapon < weaponNo && !weapons[selectedWeapon].code)
-		--selectedWeapon;
+	--gSelectedWeapon;
+	if (gSelectedWeapon < 0)
+		gSelectedWeapon = weaponNo - 1;
+	while (gSelectedWeapon < weaponNo && !gWeapons[gSelectedWeapon].code)
+		--gSelectedWeapon;
 
 	//Do effects
-	weaponShiftX = 0;
+	gWeaponShiftX = 0;
 	playSound(SFX_SwitchWeapon);
 
-	return weapons[weaponNo].code;
+	return gWeapons[weaponNo].code;
 }
 

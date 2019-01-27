@@ -8,10 +8,10 @@ void bossHitMap()
 {
     for (size_t i = 0; i < 20; ++i)
     {
-        RECT *rcHit = &bossObj[i].hit;
-        npc *NPC = &bossObj[i];
+        RECT *rcHit = &gBossObj[i].hit;
+        npc *NPC = &gBossObj[i];
 		NPC->flag = 0; //clear
-        if (bossObj[i].cond & 0x80 && !(bossObj[i].bits & npc_ignoreSolid))
+        if (gBossObj[i].cond & 0x80 && !(gBossObj[i].bits & npc_ignoreSolid))
         {
 			const size_t fromX = unitsToTiles(NPC->x - rcHit->right + 0x1000);
 			const size_t fromY = unitsToTiles(NPC->y - rcHit->top + 0x1000);
@@ -26,7 +26,7 @@ void bossHitMap()
 					switch (getTileAttribute(currentX, currentY))
 					{
 					case 0x44:
-						if ((bossObj[i].bits & npc_ignore44))
+						if ((gBossObj[i].bits & npc_ignore44))
 							break;
 						// Fallthrough
 					case 0x5:

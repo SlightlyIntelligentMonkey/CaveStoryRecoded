@@ -21,18 +21,18 @@ void ActBoss01_12() // Knee things
 
 	for (int i = 1; i <= 2; ++i)
 	{
-		if (bossObj[i].direct)
+		if (gBossObj[i].direct)
 		{
-			bossObj[i].rect = rcRight[bossObj[i].count2];
-			bossObj[i].x = bossObj[0].x + 0x2000;
+			gBossObj[i].rect = rcRight[gBossObj[i].count2];
+			gBossObj[i].x = gBossObj[0].x + 0x2000;
 		}
 		else
 		{
-			bossObj[i].rect = rcLeft[bossObj[i].count2];
-			bossObj[i].x = bossObj[0].x - 0x2000;
+			gBossObj[i].rect = rcLeft[gBossObj[i].count2];
+			gBossObj[i].x = gBossObj[0].x - 0x2000;
 		}
 
-		bossObj[i].y = (bossObj[i].y + bossObj[i + 2].y - 0x1000) / 2;
+		gBossObj[i].y = (gBossObj[i].y + gBossObj[i + 2].y - 0x1000) / 2;
 	}
 }
 
@@ -52,56 +52,56 @@ void ActBoss01_34() // Feet
 
 	for (int i = 3; i <= 4; ++i)
 	{
-		switch (bossObj[i].act_no)
+		switch (gBossObj[i].act_no)
 		{
 		case 0:
-			bossObj[i].act_no = 1;
+			gBossObj[i].act_no = 1;
 //Fallthrough
 		case 1:
 			if (i == 3)
-				bossObj[i].x = bossObj[0].x - 0x2000;
+				gBossObj[i].x = gBossObj[0].x - 0x2000;
 			if (i == 4)
-				bossObj[i].x = bossObj[0].x + 0x2000;
+				gBossObj[i].x = gBossObj[0].x + 0x2000;
 
-			bossObj[i].y = bossObj[0].y;
+			gBossObj[i].y = gBossObj[0].y;
 			break;
 
 		case 3:
 			if (i == 3)
-				bossObj[i].x = bossObj[0].x - 0x2000;
+				gBossObj[i].x = gBossObj[0].x - 0x2000;
 			if (i == 4)
-				bossObj[i].x = bossObj[0].x + 0x2000;
+				gBossObj[i].x = gBossObj[0].x + 0x2000;
 
-			bossObj[i].tgt_y = bossObj[0].y + 0x3000;
-			bossObj[i].y += (bossObj[i].tgt_y - bossObj[i].y) / 2;
+			gBossObj[i].tgt_y = gBossObj[0].y + 0x3000;
+			gBossObj[i].y += (gBossObj[i].tgt_y - gBossObj[i].y) / 2;
 			break;
 
 		default:
 			break;
 		}
 
-		bossObj[i].count2 = !(bossObj[i].flag & ground && bossObj[i].y > bossObj[i].tgt_y);
+		gBossObj[i].count2 = !(gBossObj[i].flag & ground && gBossObj[i].y > gBossObj[i].tgt_y);
 
-		if (bossObj[i].direct)
-			bossObj[i].rect = rcRight[bossObj[i].count2];
+		if (gBossObj[i].direct)
+			gBossObj[i].rect = rcRight[gBossObj[i].count2];
 		else
-			bossObj[i].rect = rcLeft[bossObj[i].count2];
+			gBossObj[i].rect = rcLeft[gBossObj[i].count2];
 	}
 }
 
 void ActBoss01_5()
 {
-	if (!bossObj[5].act_no)
+	if (!gBossObj[5].act_no)
 	{
-		bossObj[5].bits |= npc_solidSoft | npc_ignoreSolid;
-		bossObj[5].hit = { 0x2800, 0x4800, 0x2800, 0x2000 };
-		bossObj[5].act_no = 1;
+		gBossObj[5].bits |= npc_solidSoft | npc_ignoreSolid;
+		gBossObj[5].hit = { 0x2800, 0x4800, 0x2800, 0x2000 };
+		gBossObj[5].act_no = 1;
 	}
 
-	if (bossObj[5].act_no == 1)
+	if (gBossObj[5].act_no == 1)
 	{
-		bossObj[5].x = bossObj[0].x;
-		bossObj[5].y = bossObj[0].y;
+		gBossObj[5].x = gBossObj[0].x;
+		gBossObj[5].y = gBossObj[0].y;
 	}
 }
 
@@ -128,28 +128,28 @@ void actBoss_Omega(npc *boss)
 		boss->code_event = 210;
 		boss->life = 400;
 
-		bossObj[1].cond = npccond_alive;
-		bossObj[1].view = { 0x1800, 0x1000, 0x1800, 0x1000 };
-		bossObj[1].bits = npc_ignoreSolid;
+		gBossObj[1].cond = npccond_alive;
+		gBossObj[1].view = { 0x1800, 0x1000, 0x1800, 0x1000 };
+		gBossObj[1].bits = npc_ignoreSolid;
 
-		memcpy(&bossObj[2], &bossObj[1], sizeof(bossObj[2]));
+		memcpy(&gBossObj[2], &gBossObj[1], sizeof(gBossObj[2]));
 
-		bossObj[1].direct = dirLeft;
-		bossObj[2].direct = dirRight;
+		gBossObj[1].direct = dirLeft;
+		gBossObj[2].direct = dirRight;
 
-		bossObj[3].cond = npccond_alive;
-		bossObj[3].view = { 0x3000, 0x2000, 0x2000, 0x2000 };
-		bossObj[3].hit_voice = 52;
-		bossObj[3].hit = { 0x1000, 0x1000, 0x1000, 0x1000 };
-		bossObj[3].bits = npc_ignoreSolid;
+		gBossObj[3].cond = npccond_alive;
+		gBossObj[3].view = { 0x3000, 0x2000, 0x2000, 0x2000 };
+		gBossObj[3].hit_voice = 52;
+		gBossObj[3].hit = { 0x1000, 0x1000, 0x1000, 0x1000 };
+		gBossObj[3].bits = npc_ignoreSolid;
 
-		bossObj[3].y = boss->y;
-		bossObj[3].direct = dirLeft;
+		gBossObj[3].y = boss->y;
+		gBossObj[3].direct = dirLeft;
 
-		memcpy(&bossObj[4], &bossObj[3], sizeof(bossObj[4]));
-		bossObj[4].direct = dirRight;
-		bossObj[3].x = boss->x + 0x2000;
-		bossObj[5].cond = npccond_alive;
+		memcpy(&gBossObj[4], &gBossObj[3], sizeof(gBossObj[4]));
+		gBossObj[4].direct = dirRight;
+		gBossObj[3].x = boss->x + 0x2000;
+		gBossObj[5].cond = npccond_alive;
 		break;
 
 	case 20: //Rising out of the ground
@@ -175,12 +175,12 @@ void actBoss_Omega(npc *boss)
 
 				boss->bits |= npc_shootable;
 				boss->bits &= ~npc_ignoreSolid;
-				bossObj[3].bits &= ~npc_ignoreSolid;
-				bossObj[4].bits &= ~npc_ignoreSolid;
+				gBossObj[3].bits &= ~npc_ignoreSolid;
+				gBossObj[4].bits &= ~npc_ignoreSolid;
 
-				bossObj[3].act_no = 3;
-				bossObj[4].act_no = 3;
-				bossObj[5].hit.top = 0x2000;
+				gBossObj[3].act_no = 3;
+				gBossObj[4].act_no = 3;
+				gBossObj[5].hit.top = 0x2000;
 			}
 		}
 		break;
@@ -191,7 +191,7 @@ void actBoss_Omega(npc *boss)
 			boss->act_wait = 0;
 			boss->act_no = 50;
 			boss->count1 = 0;
-			bossObj[5].hit.top = 0x2000;
+			gBossObj[5].hit.top = 0x2000;
 			playSound(SFX_SandCroc);
 		}
 		break;
@@ -254,7 +254,7 @@ void actBoss_Omega(npc *boss)
 
 			boss->hit.left = 0x3000;
 			boss->hit.right = 0x3000;
-			bossObj[5].hit.top = 0x4800;
+			gBossObj[5].hit.top = 0x4800;
 
 			boss->damage = 0;
 		}
@@ -355,15 +355,15 @@ void actBoss_Omega(npc *boss)
 				boss->xm = -0x100;
 
 			boss->damage = 0;
-			bossObj[5].hit.top = 0x4800;
+			gBossObj[5].hit.top = 0x4800;
 		}
 		break;
 
 	case 140:
 		if (currentPlayer.flag & ground && boss->ym > 0)
-			bossObj[5].damage = 20;
+			gBossObj[5].damage = 20;
 		else
-			bossObj[5].damage = 0;
+			gBossObj[5].damage = 0;
 
 		boss->ym += 0x24;
 		if (boss->ym > 0x5FF)
@@ -378,8 +378,8 @@ void actBoss_Omega(npc *boss)
 			boss->act_wait = 0;
 			boss->count1 = 0;
 
-			bossObj[5].hit.top = 0x2000;
-			bossObj[5].damage = 0;
+			gBossObj[5].hit.top = 0x2000;
+			gBossObj[5].damage = 0;
 
 			playSound(SFX_LargeObjectHitGround);
 			playSound(SFX_DestroyBreakableBlock);
@@ -411,11 +411,11 @@ void actBoss_Omega(npc *boss)
 		if (++boss->act_wait > 50)
 		{
 			boss->cond = 0;
-			bossObj[1].cond = 0;
-			bossObj[2].cond = 0;
-			bossObj[3].cond = 0;
-			bossObj[4].cond = 0;
-			bossObj[5].cond = 0;
+			gBossObj[1].cond = 0;
+			gBossObj[2].cond = 0;
+			gBossObj[3].cond = 0;
+			gBossObj[4].cond = 0;
+			gBossObj[5].cond = 0;
 		}
 		break;
 
@@ -444,10 +444,10 @@ void actBoss_Omega(npc *boss)
 
 	boss->rect = rect[boss->count2];
 
-	bossObj[1].shock = boss->shock;
-	bossObj[2].shock = boss->shock;
-	bossObj[3].shock = boss->shock;
-	bossObj[4].shock = boss->shock;
+	gBossObj[1].shock = boss->shock;
+	gBossObj[2].shock = boss->shock;
+	gBossObj[3].shock = boss->shock;
+	gBossObj[4].shock = boss->shock;
 
 	ActBoss01_34();
 	ActBoss01_12();
@@ -458,7 +458,7 @@ void actBoss_Omega(npc *boss)
 		boss->act_no = 150;
 		boss->act_wait = 0;
 		boss->damage = 0;
-		bossObj[5].damage = 0;
+		gBossObj[5].damage = 0;
 
 		for (size_t i = 0; i < gNPC.size(); i++)
 		{

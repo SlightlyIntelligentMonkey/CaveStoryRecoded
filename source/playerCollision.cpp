@@ -831,42 +831,42 @@ void playerHitBosses()
         for (size_t i = 0; i < BOSSNPCS; ++i)
         {
             int hit = 0;
-            if (bossObj[i].cond & npccond_alive)
+            if (gBossObj[i].cond & npccond_alive)
             {
-                if (bossObj[i].bits & npc_solidSoft)
+                if (gBossObj[i].bits & npc_solidSoft)
                 {
-                    hit = playerHitNpcSoftSolid(rcHit, me, &bossObj[i]);
+                    hit = playerHitNpcSoftSolid(rcHit, me, &gBossObj[i]);
                     me->flag |= hit;
                 }
-                else if (bossObj[i].bits & npc_solidHard)
+                else if (gBossObj[i].bits & npc_solidHard)
                 {
-                    hit = playerHitNpcHardSolid(rcHit, me, &bossObj[i]);
+                    hit = playerHitNpcHardSolid(rcHit, me, &gBossObj[i]);
                     me->flag |= hit;
                 }
                 else
-                    hit = playerHitNpcNonSolid(rcHit, me, &bossObj[i]);
+                    hit = playerHitNpcNonSolid(rcHit, me, &gBossObj[i]);
 
-                if (!(gGameFlags & 4) && hit && bossObj[i].bits & npc_eventTouch)
+                if (!(gGameFlags & 4) && hit && gBossObj[i].bits & npc_eventTouch)
                 {
-                    startTscEvent(tsc, bossObj[i].code_event);
+                    startTscEvent(tsc, gBossObj[i].code_event);
                     me->ques = 0;
                 }
 
-				if (bossObj[i].bits & npc_rearTop)
+				if (gBossObj[i].bits & npc_rearTop)
 				{
-					if (hit & rightWall && bossObj[i].xm < 0)
-						me->damage(bossObj[i].damage);
-					if (hit & leftWall && bossObj[i].xm > 0)
-						me->damage(bossObj[i].damage);
+					if (hit & rightWall && gBossObj[i].xm < 0)
+						me->damage(gBossObj[i].damage);
+					if (hit & leftWall && gBossObj[i].xm > 0)
+						me->damage(gBossObj[i].damage);
 				}
-				else if (hit && bossObj[i].damage && !(gGameFlags & 4))
-					me->damage(bossObj[i].damage);
+				else if (hit && gBossObj[i].damage && !(gGameFlags & 4))
+					me->damage(gBossObj[i].damage);
 
 				if (!(gGameFlags & 4) && hit && me->cond & player_interact)
 				{
-					if (bossObj[i].bits & npc_interact)
+					if (gBossObj[i].bits & npc_interact)
 					{
-						startTscEvent(tsc, bossObj[i].code_event);
+						startTscEvent(tsc, gBossObj[i].code_event);
 
 						me->xm = 0;
 						me->ques = 0;
@@ -892,9 +892,9 @@ void playerHitBosses()
 
 			if (!(gGameFlags & 4) && hit && me->cond & player_interact)
 			{
-				if (bossObj[i].bits & npc_interact)
+				if (gBossObj[i].bits & npc_interact)
 				{
-					startTscEvent(tsc, bossObj[i].code_event);
+					startTscEvent(tsc, gBossObj[i].code_event);
 
 					me->xm = 0;
 					me->ques = 0;

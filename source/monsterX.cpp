@@ -46,127 +46,127 @@ void actBoss_MonsterX(npc *boss)
 		boss->ani_no = 0;
 
 		//initialize the cover npcs
-		bossObj[1].cond = npccond_alive;
-		bossObj[1].size = 3;
-		bossObj[1].direct = 0;
-		bossObj[1].view.left = 12288;
-		bossObj[1].view.top = 12288;
-		bossObj[1].view.right = 12288;
-		bossObj[1].view.bottom = 12288;
-		bossObj[1].bits = npc_ignoreSolid;
+		gBossObj[1].cond = npccond_alive;
+		gBossObj[1].size = 3;
+		gBossObj[1].direct = 0;
+		gBossObj[1].view.left = 12288;
+		gBossObj[1].view.top = 12288;
+		gBossObj[1].view.right = 12288;
+		gBossObj[1].view.bottom = 12288;
+		gBossObj[1].bits = npc_ignoreSolid;
 
-		memcpy(&bossObj[2], &bossObj[1], sizeof(npc));
-		bossObj[2].direct = 2;
+		memcpy(&gBossObj[2], &gBossObj[1], sizeof(npc));
+		gBossObj[2].direct = 2;
 
 		//initialize the orb npcs
-		bossObj[3].cond = npccond_alive;
-		bossObj[3].life = 60;
-		bossObj[3].hit_voice = 54;
-		bossObj[3].destroy_voice = 71;
-		bossObj[3].size = 2;
-		bossObj[3].view.left = 4096;
-		bossObj[3].view.top = 4096;
-		bossObj[3].view.right = 4096;
-		bossObj[3].view.bottom = 4096;
-		bossObj[3].hit.left = 2560;
-		bossObj[3].hit.right = 2560;
-		bossObj[3].hit.top = 2560;
-		bossObj[3].hit.bottom = 2560;
-		bossObj[3].bits = npc_ignoreSolid;
-		bossObj[3].tgt_x = 0;
+		gBossObj[3].cond = npccond_alive;
+		gBossObj[3].life = 60;
+		gBossObj[3].hit_voice = 54;
+		gBossObj[3].destroy_voice = 71;
+		gBossObj[3].size = 2;
+		gBossObj[3].view.left = 4096;
+		gBossObj[3].view.top = 4096;
+		gBossObj[3].view.right = 4096;
+		gBossObj[3].view.bottom = 4096;
+		gBossObj[3].hit.left = 2560;
+		gBossObj[3].hit.right = 2560;
+		gBossObj[3].hit.top = 2560;
+		gBossObj[3].hit.bottom = 2560;
+		gBossObj[3].bits = npc_ignoreSolid;
+		gBossObj[3].tgt_x = 0;
 
-		memcpy(&bossObj[4], &bossObj[3], sizeof(npc));
-		bossObj[4].tgt_x = 1;
+		memcpy(&gBossObj[4], &gBossObj[3], sizeof(npc));
+		gBossObj[4].tgt_x = 1;
 
-		memcpy(&bossObj[5], &bossObj[3], sizeof(npc));
-		bossObj[5].tgt_x = 2;
-		bossObj[5].life = 100;
+		memcpy(&gBossObj[5], &gBossObj[3], sizeof(npc));
+		gBossObj[5].tgt_x = 2;
+		gBossObj[5].life = 100;
 
-		memcpy(&bossObj[6], &bossObj[3], sizeof(npc));
-		bossObj[6].tgt_x = 3;
-		bossObj[6].life = 100;
+		memcpy(&gBossObj[6], &gBossObj[3], sizeof(npc));
+		gBossObj[6].tgt_x = 3;
+		gBossObj[6].life = 100;
 
 		//initialize the head npc
-		bossObj[7].cond = npccond_alive;
-		bossObj[7].x = 0x100000;
-		bossObj[7].y = 102400;
-		bossObj[7].view.left = 26624;
-		bossObj[7].view.top = 12288;
-		bossObj[7].view.right = 26624;
-		bossObj[7].view.bottom = 12288;
-		bossObj[7].hit_voice = 52;
-		bossObj[7].hit.left = 4096;
-		bossObj[7].hit.top = 12288;
-		bossObj[7].hit.right = 4096;
-		bossObj[7].hit.bottom = tilesToUnits(1);
-		bossObj[7].bits = 8;
-		bossObj[7].size = 3;
-		bossObj[7].ani_no = 0;
+		gBossObj[7].cond = npccond_alive;
+		gBossObj[7].x = 0x100000;
+		gBossObj[7].y = 102400;
+		gBossObj[7].view.left = 26624;
+		gBossObj[7].view.top = 12288;
+		gBossObj[7].view.right = 26624;
+		gBossObj[7].view.bottom = 12288;
+		gBossObj[7].hit_voice = 52;
+		gBossObj[7].hit.left = 4096;
+		gBossObj[7].hit.top = 12288;
+		gBossObj[7].hit.right = 4096;
+		gBossObj[7].hit.bottom = tilesToUnits(1);
+		gBossObj[7].bits = 8;
+		gBossObj[7].size = 3;
+		gBossObj[7].ani_no = 0;
 
 		//initialize the tread npcs
-		bossObj[9].cond = npccond_alive;
-		bossObj[9].act_no = 0;
-		bossObj[9].direct = dirUp;
-		bossObj[9].x = 1015808;
-		bossObj[9].y = 73728;
-		bossObj[9].view.left = 18432;
-		bossObj[9].view.top = 4096;
-		bossObj[9].view.right = 18432;
-		bossObj[9].view.bottom = 12288;
-		bossObj[9].hit_voice = 52;
-		bossObj[9].hit.left = 14336;
-		bossObj[9].hit.top = 4096;
-		bossObj[9].hit.right = 14336;
-		bossObj[9].hit.bottom = tilesToUnits(1);
-		bossObj[9].bits = npc_solidSoft | npc_invulnerable | npc_ignoreSolid | npc_rearTop;
-		bossObj[9].size = 3;
+		gBossObj[9].cond = npccond_alive;
+		gBossObj[9].act_no = 0;
+		gBossObj[9].direct = dirUp;
+		gBossObj[9].x = 1015808;
+		gBossObj[9].y = 73728;
+		gBossObj[9].view.left = 18432;
+		gBossObj[9].view.top = 4096;
+		gBossObj[9].view.right = 18432;
+		gBossObj[9].view.bottom = 12288;
+		gBossObj[9].hit_voice = 52;
+		gBossObj[9].hit.left = 14336;
+		gBossObj[9].hit.top = 4096;
+		gBossObj[9].hit.right = 14336;
+		gBossObj[9].hit.bottom = tilesToUnits(1);
+		gBossObj[9].bits = npc_solidSoft | npc_invulnerable | npc_ignoreSolid | npc_rearTop;
+		gBossObj[9].size = 3;
 
-		memcpy(&bossObj[10], &bossObj[9], sizeof(npc));
-		bossObj[10].x = 1081344;
+		memcpy(&gBossObj[10], &gBossObj[9], sizeof(npc));
+		gBossObj[10].x = 1081344;
 
-		memcpy(&bossObj[11], &bossObj[9], sizeof(npc));
-		bossObj[11].direct = dirDown;
-		bossObj[11].x = 1015808;
-		bossObj[11].y = 0x20000;
-		bossObj[11].view.top = 12288;
-		bossObj[11].view.bottom = 4096;
-		bossObj[11].hit.top = tilesToUnits(1);
-		bossObj[11].hit.bottom = 4096;
+		memcpy(&gBossObj[11], &gBossObj[9], sizeof(npc));
+		gBossObj[11].direct = dirDown;
+		gBossObj[11].x = 1015808;
+		gBossObj[11].y = 0x20000;
+		gBossObj[11].view.top = 12288;
+		gBossObj[11].view.bottom = 4096;
+		gBossObj[11].hit.top = tilesToUnits(1);
+		gBossObj[11].hit.bottom = 4096;
 
-		memcpy(&bossObj[12], &bossObj[11], sizeof(npc));
-		bossObj[12].x = 1081344;
+		memcpy(&gBossObj[12], &gBossObj[11], sizeof(npc));
+		gBossObj[12].x = 1081344;
 
 		//initialize the fish missile generator npcs
-		memcpy(&bossObj[13], &bossObj[9], sizeof(npc));
-		bossObj[13].cond = npccond_alive;
-		bossObj[13].view.top = 0x2000;
-		bossObj[13].view.bottom = 0x2000;
-		bossObj[13].view.left = 15360;
-		bossObj[13].view.right = 21504;
-		bossObj[13].count1 = 9;
-		bossObj[13].ani_no = 0;
-		bossObj[13].bits = npc_ignoreSolid;
+		memcpy(&gBossObj[13], &gBossObj[9], sizeof(npc));
+		gBossObj[13].cond = npccond_alive;
+		gBossObj[13].view.top = 0x2000;
+		gBossObj[13].view.bottom = 0x2000;
+		gBossObj[13].view.left = 15360;
+		gBossObj[13].view.right = 21504;
+		gBossObj[13].count1 = 9;
+		gBossObj[13].ani_no = 0;
+		gBossObj[13].bits = npc_ignoreSolid;
 
-		memcpy(&bossObj[14], &bossObj[13], sizeof(npc));
-		bossObj[14].view.left = 21504;
-		bossObj[14].view.right = 15360;
-		bossObj[14].count1 = 10;
-		bossObj[14].ani_no = 1;
-		bossObj[14].bits = npc_ignoreSolid;
+		memcpy(&gBossObj[14], &gBossObj[13], sizeof(npc));
+		gBossObj[14].view.left = 21504;
+		gBossObj[14].view.right = 15360;
+		gBossObj[14].count1 = 10;
+		gBossObj[14].ani_no = 1;
+		gBossObj[14].bits = npc_ignoreSolid;
 
-		memcpy(&bossObj[15], &bossObj[13], sizeof(npc));
-		bossObj[15].view.top = 0x2000;
-		bossObj[15].view.bottom = 0x2000;
-		bossObj[15].count1 = 11;
-		bossObj[15].ani_no = 2;
-		bossObj[15].bits = npc_ignoreSolid;
+		memcpy(&gBossObj[15], &gBossObj[13], sizeof(npc));
+		gBossObj[15].view.top = 0x2000;
+		gBossObj[15].view.bottom = 0x2000;
+		gBossObj[15].count1 = 11;
+		gBossObj[15].ani_no = 2;
+		gBossObj[15].bits = npc_ignoreSolid;
 
-		memcpy(&bossObj[16], &bossObj[15], sizeof(npc));
-		bossObj[16].view.left = 21504;
-		bossObj[16].view.right = 15360;
-		bossObj[16].count1 = 12;
-		bossObj[16].ani_no = 3;
-		bossObj[16].bits = npc_ignoreSolid;
+		memcpy(&gBossObj[16], &gBossObj[15], sizeof(npc));
+		gBossObj[16].view.left = 21504;
+		gBossObj[16].view.right = 15360;
+		gBossObj[16].count1 = 12;
+		gBossObj[16].ani_no = 3;
+		gBossObj[16].bits = npc_ignoreSolid;
 
 		boss->act_no = 2;
 		break;
@@ -192,13 +192,13 @@ void actBoss_MonsterX(npc *boss)
 		// Fallthrough
 	case 101:
 		if (++boss->act_wait == 4)
-			bossObj[9].act_no = 100;
+			gBossObj[9].act_no = 100;
 		if (boss->act_wait == 8)
-			bossObj[10].act_no = 100;
+			gBossObj[10].act_no = 100;
 		if (boss->act_wait == 10)
-			bossObj[11].act_no = 100;
+			gBossObj[11].act_no = 100;
 		if (boss->act_wait == 12)
-			bossObj[12].act_no = 100;
+			gBossObj[12].act_no = 100;
 		if (boss->act_wait > 120 && boss->count1 > 2)
 			boss->act_no = 300;
 		if (boss->act_wait > 121 && currentPlayer.x > boss->x)
@@ -211,13 +211,13 @@ void actBoss_MonsterX(npc *boss)
 		// Fallthrough
 	case 201:
 		if (++boss->act_wait == 4)
-			bossObj[9].act_no = 200;
+			gBossObj[9].act_no = 200;
 		if (boss->act_wait == 8)
-			bossObj[10].act_no = 200;
+			gBossObj[10].act_no = 200;
 		if (boss->act_wait == 10)
-			bossObj[11].act_no = 200;
+			gBossObj[11].act_no = 200;
 		if (boss->act_wait == 12)
-			bossObj[12].act_no = 200;
+			gBossObj[12].act_no = 200;
 		if (boss->act_wait > 120 && boss->count1 > 2)
 			boss->act_no = 400;
 		if (boss->act_wait > 121 && currentPlayer.x < boss->x)
@@ -229,16 +229,16 @@ void actBoss_MonsterX(npc *boss)
 		// Fallthrough
 	case 301:
 		if (++boss->act_wait == 4)
-			bossObj[9].act_no = 300;
+			gBossObj[9].act_no = 300;
 		if (boss->act_wait == 8)
-			bossObj[10].act_no = 300;
+			gBossObj[10].act_no = 300;
 		if (boss->act_wait == 10)
-			bossObj[11].act_no = 300;
+			gBossObj[11].act_no = 300;
 		if (boss->act_wait == 12)
-			bossObj[12].act_no = 300;
+			gBossObj[12].act_no = 300;
 		if (boss->act_wait > 50)
 		{
-			if (bossObj[3].cond || bossObj[4].cond || bossObj[5].cond || bossObj[6].cond)
+			if (gBossObj[3].cond || gBossObj[4].cond || gBossObj[5].cond || gBossObj[6].cond)
 				boss->act_no = 500;
 			else
 				boss->act_no = 600;
@@ -250,16 +250,16 @@ void actBoss_MonsterX(npc *boss)
 		// Fallthrough
 	case 401:
 		if (++boss->act_wait == 4)
-			bossObj[9].act_no = 400;
+			gBossObj[9].act_no = 400;
 		if (boss->act_wait == 8)
-			bossObj[10].act_no = 400;
+			gBossObj[10].act_no = 400;
 		if (boss->act_wait == 10)
-			bossObj[11].act_no = 400;
+			gBossObj[11].act_no = 400;
 		if (boss->act_wait == 12)
-			bossObj[12].act_no = 400;
+			gBossObj[12].act_no = 400;
 		if (boss->act_wait > 50)
 		{
-			if (bossObj[3].cond || bossObj[4].cond || bossObj[5].cond || bossObj[6].cond)
+			if (gBossObj[3].cond || gBossObj[4].cond || gBossObj[5].cond || gBossObj[6].cond)
 				boss->act_no = 500;
 			else
 				boss->act_no = 600;
@@ -268,8 +268,8 @@ void actBoss_MonsterX(npc *boss)
 	case 500:
 		boss->act_no = 501;
 		boss->act_wait = 0;
-		bossObj[1].act_no = 10;
-		bossObj[2].act_no = 10;
+		gBossObj[1].act_no = 10;
+		gBossObj[2].act_no = 10;
 		// Fallthrough
 	case 501:
 		if (++boss->act_wait > 300)
@@ -277,7 +277,7 @@ void actBoss_MonsterX(npc *boss)
 			boss->act_no = 502;
 			boss->act_wait = 0;
 		}
-		if (!bossObj[3].cond && !bossObj[4].cond && !bossObj[5].cond && !bossObj[6].cond)
+		if (!gBossObj[3].cond && !gBossObj[4].cond && !gBossObj[5].cond && !gBossObj[6].cond)
 		{
 			boss->act_no = 502;
 			boss->act_wait = 0;
@@ -287,8 +287,8 @@ void actBoss_MonsterX(npc *boss)
 		boss->act_no = 503;
 		boss->act_wait = 0;
 		boss->count1 = 0;
-		bossObj[1].act_no = 20;
-		bossObj[2].act_no = 20;
+		gBossObj[1].act_no = 20;
+		gBossObj[2].act_no = 20;
 		// Fallthrough
 	case 503:
 		if (++boss->act_wait > 50)
@@ -303,8 +303,8 @@ void actBoss_MonsterX(npc *boss)
 		boss->act_no = 601;
 		boss->act_wait = 0;
 		boss->count2 = boss->life;
-		bossObj[1].act_no = 30;
-		bossObj[2].act_no = 30;
+		gBossObj[1].act_no = 30;
+		gBossObj[2].act_no = 30;
 		// Fallthrough
 	case 601:
 		++boss->act_wait;
@@ -318,8 +318,8 @@ void actBoss_MonsterX(npc *boss)
 		boss->act_no = 603;
 		boss->act_wait = 0;
 		boss->count1 = 0;
-		bossObj[1].act_no = 40;
-		bossObj[2].act_no = 40;
+		gBossObj[1].act_no = 40;
+		gBossObj[2].act_no = 40;
 		break;
 	case 603:
 		if (++boss->act_wait > 50)
@@ -348,7 +348,7 @@ void actBoss_MonsterX(npc *boss)
 		if (++boss->act_wait > 50)
 		{
 			for (int i = 0; i < 20; ++i)
-				bossObj[i].cond = 0;
+				gBossObj[i].cond = 0;
 			killNpcsByType(158, 1);
 			createNpc(NPC_BossMonsterXDefeated, boss->x, boss->y - 12288);
 		}
@@ -358,30 +358,30 @@ void actBoss_MonsterX(npc *boss)
 	}
 
 	//run through sub npc ais
-	treads(&bossObj[9]);
-	treads(&bossObj[10]);
-	treads(&bossObj[11]);
-	treads(&bossObj[12]);
-	boss->x += ((bossObj[12].x + bossObj[11].x + bossObj[10].x + bossObj[9].x) / 4 - boss->x) / 16;
+	treads(&gBossObj[9]);
+	treads(&gBossObj[10]);
+	treads(&gBossObj[11]);
+	treads(&gBossObj[12]);
+	boss->x += ((gBossObj[12].x + gBossObj[11].x + gBossObj[10].x + gBossObj[9].x) / 4 - boss->x) / 16;
 
-	head(&bossObj[7]);
+	head(&gBossObj[7]);
 
-	fishMissileGenerator(&bossObj[13]);
-	fishMissileGenerator(&bossObj[14]);
-	fishMissileGenerator(&bossObj[15]);
-	fishMissileGenerator(&bossObj[16]);
+	fishMissileGenerator(&gBossObj[13]);
+	fishMissileGenerator(&gBossObj[14]);
+	fishMissileGenerator(&gBossObj[15]);
+	fishMissileGenerator(&gBossObj[16]);
 
-	cover(&bossObj[1]);
-	cover(&bossObj[2]);
+	cover(&gBossObj[1]);
+	cover(&gBossObj[2]);
 
-	if (bossObj[3].cond)
-		orb(&bossObj[3]);
-	if (bossObj[4].cond)
-		orb(&bossObj[4]);
-	if (bossObj[5].cond)
-		orb(&bossObj[5]);
-	if (bossObj[6].cond)
-		orb(&bossObj[6]);
+	if (gBossObj[3].cond)
+		orb(&gBossObj[3]);
+	if (gBossObj[4].cond)
+		orb(&gBossObj[4]);
+	if (gBossObj[5].cond)
+		orb(&gBossObj[5]);
+	if (gBossObj[6].cond)
+		orb(&gBossObj[6]);
 
 	//check if dead
 	if (!boss->life && boss->act_no < 1000)
@@ -389,10 +389,10 @@ void actBoss_MonsterX(npc *boss)
 		boss->act_no = 1000;
 		boss->act_wait = 0;
 		boss->shock = 0x96;
-		bossObj[9].act_no = 300;
-		bossObj[10].act_no = 300;
-		bossObj[11].act_no = 300;
-		bossObj[12].act_no = 300;
+		gBossObj[9].act_no = 300;
+		gBossObj[10].act_no = 300;
+		gBossObj[11].act_no = 300;
+		gBossObj[12].act_no = 300;
 	}
 }
 
@@ -612,8 +612,8 @@ void fishMissileGenerator(npc *NPC)
 	}
 
 LABEL_13:
-	NPC->x = (bossObj[NPC->count1].x + bossObj[0].x) / 2;
-	NPC->y = (bossObj[NPC->count1].y + bossObj[0].y) / 2;
+	NPC->x = (gBossObj[NPC->count1].x + gBossObj[0].x) / 2;
+	NPC->y = (gBossObj[NPC->count1].y + gBossObj[0].y) / 2;
 
 	NPC->rect.left = (NPC->ani_no % 2) * 72;
 	NPC->rect.top = 128 + ((NPC->ani_no / 2) * 32);
@@ -631,10 +631,10 @@ void cover(npc *NPC)
 		{
 			NPC->tgt_x = 0x4000;
 			NPC->act_no = 0;
-			bossObj[3].act_no = 10;
-			bossObj[4].act_no = 10;
-			bossObj[5].act_no = 10;
-			bossObj[6].act_no = 10;
+			gBossObj[3].act_no = 10;
+			gBossObj[4].act_no = 10;
+			gBossObj[5].act_no = 10;
+			gBossObj[6].act_no = 10;
 		}
 		break;
 	case 0x14:
@@ -643,10 +643,10 @@ void cover(npc *NPC)
 		{
 			NPC->tgt_x = 0;
 			NPC->act_no = 0;
-			bossObj[3].act_no = 0;
-			bossObj[4].act_no = 0;
-			bossObj[5].act_no = 0;
-			bossObj[6].act_no = 0;
+			gBossObj[3].act_no = 0;
+			gBossObj[4].act_no = 0;
+			gBossObj[5].act_no = 0;
+			gBossObj[6].act_no = 0;
 		}
 		break;
 	case 0x1E:
@@ -655,11 +655,11 @@ void cover(npc *NPC)
 		{
 			NPC->tgt_x = 10240;
 			NPC->act_no = 0;
-			bossObj[7].act_no = 10;
-			bossObj[13].act_no = 10;
-			bossObj[14].act_no = 10;
-			bossObj[15].act_no = 10;
-			bossObj[16].act_no = 10;
+			gBossObj[7].act_no = 10;
+			gBossObj[13].act_no = 10;
+			gBossObj[14].act_no = 10;
+			gBossObj[15].act_no = 10;
+			gBossObj[16].act_no = 10;
 		}
 		break;
 	case 0x28:
@@ -668,11 +668,11 @@ void cover(npc *NPC)
 		{
 			NPC->tgt_x = 0;
 			NPC->act_no = 0;
-			bossObj[7].act_no = 0;
-			bossObj[13].act_no = 0;
-			bossObj[14].act_no = 0;
-			bossObj[15].act_no = 0;
-			bossObj[16].act_no = 0;
+			gBossObj[7].act_no = 0;
+			gBossObj[13].act_no = 0;
+			gBossObj[14].act_no = 0;
+			gBossObj[15].act_no = 0;
+			gBossObj[16].act_no = 0;
 		}
 		break;
 	default:
@@ -684,7 +684,7 @@ void cover(npc *NPC)
 		NPC->rect.top = 96;
 		NPC->rect.right = 312;
 		NPC->rect.bottom = 144;
-		NPC->x = bossObj[0].x + NPC->tgt_x + 12288;
+		NPC->x = gBossObj[0].x + NPC->tgt_x + 12288;
 	}
 	else
 	{
@@ -692,9 +692,9 @@ void cover(npc *NPC)
 		NPC->rect.top = 96;
 		NPC->rect.right = 264;
 		NPC->rect.bottom = 144;
-		NPC->x = bossObj[0].x - 12288 - NPC->tgt_x;
+		NPC->x = gBossObj[0].x - 12288 - NPC->tgt_x;
 	}
-	NPC->y = bossObj[0].y;
+	NPC->y = gBossObj[0].y;
 }
 
 void orb(npc *NPC)
@@ -740,20 +740,20 @@ LABEL_14:
 	switch (NPC->tgt_x)
 	{
 	case 0:
-		NPC->x = bossObj[0].x - 11264;
-		NPC->y = bossObj[0].y - 0x2000;
+		NPC->x = gBossObj[0].x - 11264;
+		NPC->y = gBossObj[0].y - 0x2000;
 		break;
 	case 1:
-		NPC->x = bossObj[0].x + 14336;
-		NPC->y = bossObj[0].y - 0x2000;
+		NPC->x = gBossObj[0].x + 14336;
+		NPC->y = gBossObj[0].y - 0x2000;
 		break;
 	case 2:
-		NPC->x = bossObj[0].x - 7680;
-		NPC->y = bossObj[0].y + 7168;
+		NPC->x = gBossObj[0].x - 7680;
+		NPC->y = gBossObj[0].y + 7168;
 		break;
 	case 3:
-		NPC->x = bossObj[0].x + 8704;
-		NPC->y = bossObj[0].y + 7168;
+		NPC->x = gBossObj[0].x + 8704;
+		NPC->y = gBossObj[0].y + 7168;
 		break;
 	default:
 		break;
@@ -771,21 +771,21 @@ void head(npc *NPC)
 	switch (NPC->act_no)
 	{
 	case 0:
-		bossObj[0].bits &= ~npc_shootable;
+		gBossObj[0].bits &= ~npc_shootable;
 		NPC->ani_no = 0;
 		break;
 	case 10:
 		NPC->act_no = 11;
 		NPC->act_wait = 10 * NPC->tgt_x + 40;
-		bossObj[0].bits |= npc_shootable;
+		gBossObj[0].bits |= npc_shootable;
 		break;
 	case 11:
 		break;
 	}
 
-	if (bossObj[0].shock)
+	if (gBossObj[0].shock)
 	{
-		if (bossObj[0].shock / 2 % 2)
+		if (gBossObj[0].shock / 2 % 2)
 			NPC->ani_no = 1;
 		else
 			NPC->ani_no = 0;
@@ -796,10 +796,10 @@ void head(npc *NPC)
 	}
 
 
-	NPC->x = bossObj[0].x;
-	NPC->y = bossObj[0].y;
+	NPC->x = gBossObj[0].x;
+	NPC->y = gBossObj[0].y;
 
-	if (bossObj[0].act_no <= 10)
+	if (gBossObj[0].act_no <= 10)
 		NPC->ani_no = 3;
 
 	NPC->rect.left = 216;

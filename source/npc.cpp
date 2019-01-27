@@ -295,9 +295,9 @@ int dropMissiles(int x, int y, int val)
 	int n;
 	for (n = 0; n <= 7; ++n)
 	{
-		if (weapons[n].code == 5)
+		if (gWeapons[n].code == 5)
 			tamakazu_ari[t++] = 0;
-		else if (weapons[n].code == 10)
+		else if (gWeapons[n].code == 10)
 			tamakazu_ari[t++] = 1;
 		else
 			tamakazu_ari[t] = 0;

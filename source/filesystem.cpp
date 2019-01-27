@@ -164,7 +164,7 @@ void loadProfile()
 
 		SDL_ReadLE16(profile); // a?
 
-		selectedWeapon = SDL_ReadLE32(profile); //current weapon
+		gSelectedWeapon = SDL_ReadLE32(profile); //current weapon
 		gSelectedItem = SDL_ReadLE32(profile); //current item
 
 		currentPlayer.equip = SDL_ReadLE32(profile); //equipped items
@@ -172,7 +172,7 @@ void loadProfile()
 
 		SDL_ReadLE32(profile); //counter
 
-		for (auto& i : weapons)
+		for (auto& i : gWeapons)
 		{
 			i.code = SDL_ReadLE32(profile);
 			i.level = SDL_ReadLE32(profile);
@@ -235,7 +235,7 @@ void saveProfile()
 	writeLEshort(profile, currentPlayer.star, 0x1E); //Whimsical star
 	writeLEshort(profile, currentPlayer.life, 0x20); //Player health
 
-	writeLElong(profile, selectedWeapon, 0x24); //Selected weapon
+	writeLElong(profile, gSelectedWeapon, 0x24); //Selected weapon
 	writeLElong(profile, gSelectedItem, 0x28); //Selected item
 
 	writeLElong(profile, currentPlayer.equip, 0x2C); //Equipped items
@@ -243,11 +243,11 @@ void saveProfile()
 
 	for (size_t i = 0; i < 8; i++)
 	{
-		writeLElong(profile, weapons[i].code, 0x38 + i * 0x14);
-		writeLElong(profile, weapons[i].level, 0x3C + i * 0x14);
-		writeLElong(profile, weapons[i].exp, 0x40 + i * 0x14);
-		writeLElong(profile, weapons[i].max_num, 0x44 + i * 0x14);
-		writeLElong(profile, weapons[i].num, 0x48 + i * 0x14);
+		writeLElong(profile, gWeapons[i].code, 0x38 + i * 0x14);
+		writeLElong(profile, gWeapons[i].level, 0x3C + i * 0x14);
+		writeLElong(profile, gWeapons[i].exp, 0x40 + i * 0x14);
+		writeLElong(profile, gWeapons[i].max_num, 0x44 + i * 0x14);
+		writeLElong(profile, gWeapons[i].num, 0x48 + i * 0x14);
 	}
 
 	for (size_t i = 0; i < 32; i++)

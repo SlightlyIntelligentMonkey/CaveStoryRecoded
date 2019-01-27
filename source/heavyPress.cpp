@@ -40,8 +40,8 @@ void actBoss_HeavyPress(npc *boss)
         boss->act_no = 6;
         boss->x = 0;
         boss->y = 0;
-        bossObj[1].cond = 0;
-        bossObj[2].cond = 0;
+        gBossObj[1].cond = 0;
+        gBossObj[2].cond = 0;
         break;
 
     case 10:
@@ -56,8 +56,8 @@ void actBoss_HeavyPress(npc *boss)
         boss->x = tilesToUnits(10);
         boss->y = pixelsToUnits(413);
         boss->bits &= ~npc_solidHard;
-        bossObj[1].cond = 0;
-        bossObj[2].cond = 0;
+        gBossObj[1].cond = 0;
+        gBossObj[2].cond = 0;
         // Fallthrough
     case smokingInPassageway + 1:
         if (!(++boss->act_wait % 16))
@@ -88,14 +88,14 @@ void actBoss_HeavyPress(npc *boss)
         boss->count2 = 9;
         boss->act_wait = -100;
 
-        bossObj[1].cond = npccond_alive;
-        bossObj[1].hit = {pixelsToUnits(14), pixelsToUnits(14), pixelsToUnits(8), pixelsToUnits(8)};
-        bossObj[1].bits = (npc_ignoreSolid | npc_invulnerable);
-        bossObj[2] = bossObj[1];
+        gBossObj[1].cond = npccond_alive;
+        gBossObj[1].hit = {pixelsToUnits(14), pixelsToUnits(14), pixelsToUnits(8), pixelsToUnits(8)};
+        gBossObj[1].bits = (npc_ignoreSolid | npc_invulnerable);
+        gBossObj[2] = gBossObj[1];
 
-        bossObj[3].cond = (npccond_alive | npccond_dmgboss);
-        bossObj[3].bits |= npc_shootable;
-        bossObj[3].hit = {pixelsToUnits(6), pixelsToUnits(6), pixelsToUnits(8), pixelsToUnits(8)};
+        gBossObj[3].cond = (npccond_alive | npccond_dmgboss);
+        gBossObj[3].bits |= npc_shootable;
+        gBossObj[3].hit = {pixelsToUnits(6), pixelsToUnits(6), pixelsToUnits(8), pixelsToUnits(8)};
         createNpc(NPC_ProjectileHeavyPress, boss->x, boss->y + pixelsToUnits(60));
         // Fallthrough
     case beginFight + 1:
@@ -123,7 +123,7 @@ void actBoss_HeavyPress(npc *boss)
         break;
 
     case defeated:
-        bossObj[3].bits &= ~npc_shootable;
+        gBossObj[3].bits &= ~npc_shootable;
         boss->act_no = defeated + 1;
         boss->act_wait = 0;
         boss->count1 = 0;
@@ -167,12 +167,12 @@ void actBoss_HeavyPress(npc *boss)
         break;
 	}
 
-    bossObj[1].x = boss->x - tilesToUnits(1.5);
-    bossObj[1].y = boss->y + pixelsToUnits(52);
-    bossObj[2].x = bossObj[1].x;
-    bossObj[2].y = bossObj[1].y;
-    bossObj[3].x = boss->x;
-    bossObj[3].y = boss->y + tilesToUnits(2.5);
+    gBossObj[1].x = boss->x - tilesToUnits(1.5);
+    gBossObj[1].y = boss->y + pixelsToUnits(52);
+    gBossObj[2].x = gBossObj[1].x;
+    gBossObj[2].y = gBossObj[1].y;
+    gBossObj[3].x = boss->x;
+    gBossObj[3].y = boss->y + tilesToUnits(2.5);
 
     constexpr std::array<RECT, 3> rcNormal = {{{0, 0, 80, 120}, {80, 0, 160, 120}, {160, 0, 240, 120}}};
 

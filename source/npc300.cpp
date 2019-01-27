@@ -68,7 +68,7 @@ void npcAct302(npc *NPC) //Camera Helper NPC
         NPC->act_no = 101;
         if (NPC->direct == dirLeft)
         {
-            NPC->pNpc = &bossObj[0];
+            NPC->pNpc = &gBossObj[0];
             goto case101;
         }
 
