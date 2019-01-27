@@ -212,8 +212,11 @@ bool makeSoundObject8(const char *wavep, uint8_t track, bool pipi)
 				++wp_sub;
 			}
 
-			uint8_t *sound_object_buffer;
+			uint8_t *sound_object_buffer = nullptr;
 			SoundObject_Lock(gOrgWaves[track][j][k], &sound_object_buffer, nullptr);
+			if (!sound_object_buffer)
+				doCustomError(
+					"Could not lock gOrgWaves[" + std::to_string(track) + "][" + std::to_string(j) + "][" + std::to_string(k) + "]");
 			memcpy(sound_object_buffer, wp, data_size);
 			SoundObject_Unlock(gOrgWaves[track][j][k]);
 
