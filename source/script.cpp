@@ -52,7 +52,7 @@ bool initTsc()
 	memset(gTscTextFlag, 0, 0x100);
 
 	gTsc.data = new uint8_t[0x5000];
-	return gTsc.data != nullptr;
+	return true;
 }
 
 //Loading functions
@@ -127,8 +127,8 @@ void loadTsc2(const std::string& name)
 }
 
 //Get number function
-attrPure int getTSCNumber(TSC &ptsc, int a);
-int getTSCNumber(TSC &ptsc, int a)
+attrPure int getTSCNumber(const TSC &ptsc, int a);
+int getTSCNumber(const TSC &ptsc, int a)
 {
 	return			(static_cast<char>(ptsc.data[a + 3]) - 0x30) +
 	                10 *	(static_cast<char>(ptsc.data[a + 2]) - 0x30) +
@@ -458,6 +458,31 @@ void endTsc(TSC &ptsc, bool *bExit)
 	return;
 }
 
+void doBSL(const TSC& ptsc)
+{
+	if (getTSCNumber(ptsc, ptsc.p_read + 4))
+	{
+		for (size_t i = 0; i < gNPC.size(); i++)
+		{
+			if (gNPC[i].code_event == getTSCNumber(ptsc, ptsc.p_read + 4))
+			{
+				gBossLife.flag = 1;
+				gBossLife.max = gNPC[i].life;
+				gBossLife.br = gNPC[i].life;
+				gBossLife.pLife = &gNPC[i].life;
+				break;
+			}
+		}
+	}
+	else
+	{
+		gBossLife.flag = 1;
+		gBossLife.max = gBossObj[0].life;
+		gBossLife.br = gBossObj[0].life;
+		gBossLife.pLife = &gBossObj[0].life;
+	}
+}
+
 bool doTscCommand(int *retVal, bool *bExit, TSC &ptsc)
 {
 	int xt;
@@ -509,28 +534,7 @@ bool doTscCommand(int *retVal, bool *bExit, TSC &ptsc)
 		tscCleanup(1, ptsc);
 		break;
 	case('<BSL'):
-		if (getTSCNumber(ptsc, ptsc.p_read + 4))
-		{
-			for (size_t i = 0; i < gNPC.size(); i++)
-			{
-				if (gNPC[i].code_event == getTSCNumber(ptsc, ptsc.p_read + 4))
-				{
-					gBossLife.flag = 1;
-					gBossLife.max = gNPC[i].life;
-					gBossLife.br = gNPC[i].life;
-					gBossLife.pLife = &gNPC[i].life;
-					break;
-				}
-			}
-		}
-		else
-		{
-			gBossLife.flag = 1;
-			gBossLife.max = gBossObj[0].life;
-			gBossLife.br = gBossObj[0].life;
-			gBossLife.pLife = &gBossObj[0].life;
-		}
-
+		doBSL(ptsc);
 		tscCleanup(1, ptsc);
 		break;
 	case('<BXL'):
@@ -786,7 +790,7 @@ bool doTscCommand(int *retVal, bool *bExit, TSC &ptsc)
 	case('<KEY'):
 		gGameFlags |= 1;
 		gGameFlags &= ~2;
-		gCurrentPlayer.up = false;
+		gCurrentPlayer.up = 0;
 		tscCleanup(0, ptsc);
 		break;
 	case('<LDP'):

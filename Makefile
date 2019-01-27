@@ -16,13 +16,21 @@ ifeq ($(detected_OS),MINGW)
 	detected_OS := Windows
 endif
 
+ifeq ($(RELEASE), 1)
+TYPEOFBUILD := Release
+else
+TYPEOFBUILD := Debug
+endif
+
 # Warning options fed to the compiler
-WARNINGS := -pedantic -Wall -Wextra -Walloc-zero -Walloca -Wbool-compare -Wcast-align -Wcast-qual -Wchar-subscripts -Wchkp -Wctor-dtor-privacy -Wdangling-else -Wdisabled-optimization -Wdouble-promotion -Wduplicated-branches -Wduplicated-cond -Wfloat-conversion -Wformat=2 -Wformat-nonliteral -Wformat-security -Wformat-signedness -Wformat-y2k -Wimport -Winit-self -Winvalid-pch -Wlogical-not-parentheses -Wlogical-op -Wmissing-field-initializers -Wmissing-format-attribute -Wmissing-include-dirs -Wmissing-noreturn -Wnoexcept -Wnoexcept-type -Wnon-virtual-dtor -Wnormalized=nfc -Wold-style-cast -Woverloaded-virtual -Wpointer-arith -Wregister -Wreorder -Wrestrict -Wshadow -Wsign-promo -Wsizeof-array-argument -Wstack-protector -Wstrict-aliasing=3 -Wstrict-null-sentinel -Wsuggest-attribute=const -Wsuggest-attribute=format -Wsuggest-attribute=noreturn -Wsuggest-override -Wstrict-null-sentinel -Wswitch-bool -Wundef -Wunreachable-code -Wunused -Wunused-local-typedefs -Wunused-macros -Wunused-parameter -Wvariadic-macros -Wvector-operation-performance -Wwrite-strings -Wzero-as-null-pointer-constant -Wno-multichar -Wno-unused-parameter
+WARNINGS := -pedantic -Wall -Wextra -Walloc-zero -Walloca -Wbool-compare -Wcast-align -Wcast-qual -Wchar-subscripts -Wchkp -Wctor-dtor-privacy -Wdangling-else -Wdisabled-optimization -Wdouble-promotion -Wduplicated-branches -Wduplicated-cond -Wfloat-conversion -Wformat=2 -Wformat-nonliteral -Wformat-security -Wformat-signedness -Wformat-y2k -Wimport -Winit-self -Winvalid-pch -Wlogical-not-parentheses -Wlogical-op -Wmissing-field-initializers -Wmissing-format-attribute -Wmissing-include-dirs -Wmissing-noreturn -Wnoexcept -Wnoexcept-type -Wnon-virtual-dtor -Wnormalized=nfc -Wold-style-cast -Woverloaded-virtual -Wpointer-arith -Wregister -Wreorder -Wrestrict -Wshadow -Wsizeof-array-argument -Wstack-protector -Wstrict-aliasing=3 -Wstrict-null-sentinel -Wsuggest-attribute=const -Wsuggest-attribute=format -Wsuggest-attribute=noreturn -Wsuggest-override -Wstrict-null-sentinel -Wswitch-bool -Wundef -Wunreachable-code -Wunused -Wunused-local-typedefs -Wunused-macros -Wunused-parameter -Wvariadic-macros -Wvector-operation-performance -Wwrite-strings -Wzero-as-null-pointer-constant -Wno-multichar -Wno-unused-parameter
 
 # Optimisation options fed to the compiler
-OPTIMISATIONS := -O3 -frename-registers
-# OPTIMISATIONS += -flto
-# Link-time optimizing makes the linking super long so it's unactivated by default
+ifeq ($(RELEASE), 1)
+OPTIMISATIONS := -O3 -frename-registers -flto -s
+else
+OPTIMISATIONS := -Og -ggdb
+endif
 
 # Base command-line when calling the compiler
 # `sdl2-config --cflags` to get the flags needed to compile with SDL2
@@ -30,15 +38,19 @@ OPTIMISATIONS := -O3 -frename-registers
 # -MMD -MP -MF $@.d to make the compiler generate dependency files
 # -c so the compiler makes a simple compile into an object file
 CXXFLAGS = $(CXX) $(OPTIMISATIONS) $(WARNINGS) `sdl2-config --cflags` -std=c++17 -c -MMD -MP -MF $@.d
-LDFLAGS := $(CXX) $(OPTIMISATIONS) $(WARNINGS) -s
+LDFLAGS := $(CXX) $(OPTIMISATIONS) $(WARNINGS)
+ifeq ($(RELEASE), 1)
+LDFLAGS += -s
+endif
 
 ifeq ($(detected_OS),Windows)
 # We can use native icons
 	CXXFLAGS += -DUSE_ICONS_WINDOWS
-# --static-libs is windows-exclusive to avoid problems with people not having the appropriate static libs installed. Also static linking to avoid having to distribute DLLs with the exe
+endif
+
+ifeq ($(STATIC), 1)
 	LDFLAGS += -static `sdl2-config --static-libs`
 else
-# Normal linker SDL2 flags for Unix
 	LDFLAGS += `sdl2-config --libs`
 endif
 
@@ -67,37 +79,45 @@ MAIN += npcAct npc000 npc020 npc040 npc060 npc080 npc100 npc120 npc140 npc160 np
 # Boss behavior
 MAIN += balfrog ballos heavyPress monsterX omega core
 
-OBJS := $(addprefix obj/, $(addsuffix .o, $(MAIN)))
+OBJS := $(addprefix obj/, $(addprefix $(TYPEOFBUILD)/, $(addsuffix .o, $(MAIN))))
 ifeq ($(detected_OS),Windows)
 	# Embed icons as resources, and load them natively
-	OBJS += obj/icon.o
+	OBJS += obj/$(TYPEOFBUILD)/icon.o
 endif
 DEPS := $(addsuffix .d, $(OBJS))
 
 # Default target
-all: bin/CaveStoryRecoded
+all: bin/$(TYPEOFBUILD)/CaveStoryRecoded
 
 # CaveStoryRecoded binary
-bin/CaveStoryRecoded: $(OBJS)
+bin/$(TYPEOFBUILD)/CaveStoryRecoded: $(OBJS)
 	@mkdir -p $(@D)
-	$(LDFLAGS) $(OBJS) -o $@
-	@cp source/config.json bin/
-	@cp -R source/data bin/
-	@cp -R source/Sound bin/
+	@echo Linking to $@...
+	@$(LDFLAGS) $(OBJS) -o $@
+	@echo Finished compiling $@
+	@echo Copying data files...
+	@cp source/config.json bin/$(TYPEOFBUILD)/
+	@cp -R source/data bin/$(TYPEOFBUILD)/
+	@cp -R source/Sound bin/$(TYPEOFBUILD)/
+	@echo Copied data files
 
 # Generic source compile
-obj/%.o: source/%.cpp
+obj/$(TYPEOFBUILD)/%.o: source/%.cpp
 	@mkdir -p $(@D)
-	$(CXXFLAGS) $< -o $@
+	@echo Compiling $<...
+	@$(CXXFLAGS) $< -o $@
+	@echo Finished compiling $<
 
 # Compile for lodepng (avoid warnings and also some other stuff)
-obj/lodepng/lodepng.o: source/lodepng/lodepng.cpp
+obj/$(TYPEOFBUILD)/lodepng/lodepng.o: source/lodepng/lodepng.cpp
 	@mkdir -p $(@D)
-	$(CXXFLAGS) $< -o $@ -DLODEPNG_NO_COMPILE_ENCODER -DLODEPNG_NO_CXXFLAGS -Wno-zero-as-null-pointer-constant -Wno-alloc-zero -Wno-cast-qual -Wno-old-style-cast -Wno-unused-macros -Wno-vector-operation-performance -Wno-suggest-attribute=const -Wno-error
+	@echo Compiling $<...
+	@$(CXXFLAGS) $< -o $@ -DLODEPNG_NO_COMPILE_ENCODER -DLODEPNG_NO_CXXFLAGS -Wno-zero-as-null-pointer-constant -Wno-alloc-zero -Wno-cast-qual -Wno-old-style-cast -Wno-unused-macros -Wno-vector-operation-performance -Wno-suggest-attribute=const
+	@echo Finished compiling $<
 	
 ifeq ($(detected_OS),Windows)
 # Compile icon resource
-obj/icon.o: res/icon.rc res/icon_mini.ico
+obj/$(TYPEOFBUILD)/icon.o: res/icon.rc res/icon_mini.ico
 	@mkdir -p $(@D)
 	@windres $< $@
 else
@@ -111,4 +131,4 @@ include $(wildcard $(DEPS))
 
 # Remove all objects files and the binary
 clean:
-	@rm -rf obj bin/CaveStoryRecoded
+	@rm -rf obj bin
