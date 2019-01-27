@@ -60,8 +60,8 @@ void SetFrameTargetNpChar(int event, int wait)
 
 void SetFrameTargetBoss(int no, int wait)
 {
-	gViewport.lookX = &bossObj[no].x;
-	gViewport.lookY = &bossObj[no].y;
+	gViewport.lookX = &gBossObj[no].x;
+	gViewport.lookY = &gBossObj[no].y;
 	gViewport.speed = wait;
 }
 
@@ -278,7 +278,7 @@ void debugFunction()
 		std::string debugStr2 = "There are " + std::to_string(bullets.size()) + " bullet slots.";
 		std::string debugStr3 = "There are " + std::to_string(carets.size()) + " caret slots.";
 		std::string debugStr4 = "There are " + std::to_string(valueviews.size()) + " valueview slots";
-		std::string debugStr5 = "Currently loaded boss is boss " + std::to_string(bossObj[0].code_char);
+		std::string debugStr5 = "Currently loaded boss is boss " + std::to_string(gBossObj[0].code_char);
 		drawString(8, gScreenHeight - 12, debugStr1);
 		drawString(8, gScreenHeight - 24, debugStr2);
 		drawString(8, gScreenHeight - 36, debugStr3);

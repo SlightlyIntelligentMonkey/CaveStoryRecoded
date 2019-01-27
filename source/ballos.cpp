@@ -12,12 +12,12 @@
 
 namespace ballos
 {
-	constexpr auto& boss = bossObj[0];
-	constexpr auto& eye1 = bossObj[1];
-	constexpr auto& eye2 = bossObj[2];
-	constexpr auto& body = bossObj[3];
-	constexpr auto& hitai = bossObj[4];	// Name is from linux symbols
-	constexpr auto& hara = bossObj[5];	// Name is from linux symbols
+	constexpr auto& boss = gBossObj[0];
+	constexpr auto& eye1 = gBossObj[1];
+	constexpr auto& eye2 = gBossObj[2];
+	constexpr auto& body = gBossObj[3];
+	constexpr auto& hitai = gBossObj[4];	// Name is from linux symbols
+	constexpr auto& hara = gBossObj[5];	// Name is from linux symbols
 
 	namespace eyeStates
 	{

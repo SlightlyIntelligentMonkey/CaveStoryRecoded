@@ -43,8 +43,8 @@ void shootFireball(int level)
 
 		if (useWeaponAmmo(1) ^ 1)
 		{
-			selectedWeapon = 0;
-			weaponShiftX = 32;
+			gSelectedWeapon = 0;
+			gWeaponShiftX = 32;
 			playSound(SFX_SwitchWeapon);
 			return;
 		}

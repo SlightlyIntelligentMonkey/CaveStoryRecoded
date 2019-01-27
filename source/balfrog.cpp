@@ -45,12 +45,12 @@ void balfrogMouth(npc *sub)
 {
 	int minus;
 
-	if (bossObj[0].direct)
+	if (gBossObj[0].direct)
 		minus = -1;
 	else
 		minus = 1;
 
-	switch (bossObj[0].ani_no)
+	switch (gBossObj[0].ani_no)
 	{
 	case -1:
 		sub->hit_voice = 52;
@@ -62,21 +62,21 @@ void balfrogMouth(npc *sub)
 		sub->bits = 4;
 		break;
 	case 0:
-		sub->x = bossObj[0].x - pixelsToUnits(24) * minus;
-		sub->y = bossObj[0].y - pixelsToUnits(24);
+		sub->x = gBossObj[0].x - pixelsToUnits(24) * minus;
+		sub->y = gBossObj[0].y - pixelsToUnits(24);
 		break;
 	case 1:
-		sub->x = bossObj[0].x - pixelsToUnits(24) * minus;
-		sub->y = bossObj[0].y - pixelsToUnits(20);
+		sub->x = gBossObj[0].x - pixelsToUnits(24) * minus;
+		sub->y = gBossObj[0].y - pixelsToUnits(20);
 		break;
 	case 2:
 	case 3:
-		sub->x = bossObj[0].x - pixelsToUnits(24) * minus;
-		sub->y = bossObj[0].y - pixelsToUnits(16);
+		sub->x = gBossObj[0].x - pixelsToUnits(24) * minus;
+		sub->y = gBossObj[0].y - pixelsToUnits(16);
 		break;
 	case 4:
-		sub->x = bossObj[0].x - pixelsToUnits(24) * minus;
-		sub->y = bossObj[0].y - pixelsToUnits(43);
+		sub->x = gBossObj[0].x - pixelsToUnits(24) * minus;
+		sub->y = gBossObj[0].y - pixelsToUnits(43);
 		break;
 	default:
 		return;
@@ -87,12 +87,12 @@ void balfrogMouth(npc *sub)
 //so really this does fucking nothing
 void balfrogOtherHalf(npc *sub)
 {
-	if (bossObj[0].ani_no != -1)
+	if (gBossObj[0].ani_no != -1)
 	{
-		if (bossObj[0].ani_no >= 0 && bossObj[0].ani_no <= 5)
+		if (gBossObj[0].ani_no >= 0 && gBossObj[0].ani_no <= 5)
 		{
-			sub->x = bossObj[0].x;
-			sub->y = bossObj[0].y;
+			sub->x = gBossObj[0].x;
+			sub->y = gBossObj[0].y;
 		}
 	}
 	else
@@ -144,8 +144,8 @@ void actBoss_Balfrog(npc *boss)
 		break;
 	case start:
 		boss->cond = npccond_alive;
-		bossObj[1].cond = npccond_alive | npccond_dmgboss;
-		bossObj[2].cond = npccond_alive;
+		gBossObj[1].cond = npccond_alive | npccond_dmgboss;
+		gBossObj[2].cond = npccond_alive;
 		boss->bits |= npc_invulnerable;
 
 		boss->act_no = 11;
@@ -157,7 +157,7 @@ void actBoss_Balfrog(npc *boss)
 		boss->rect.bottom = 112;
 
 		boss->damage = 5;
-		bossObj[2].damage = 5;
+		gBossObj[2].damage = 5;
 
 		for (int i = 0; i <= 7; ++i)
 			createNpc(NPC_Smoke, boss->x + (random(-12, 12) << 9), boss->y + (random(-12, 12) << 9), random(-341, 341), random(-1536, 0));
@@ -266,7 +266,7 @@ void actBoss_Balfrog(npc *boss)
 			boss->act_wait = 0;
 			boss->ani_no = 2;
 			boss->count1 = 16;
-			bossObj[1].bits |= npc_shootable;
+			gBossObj[1].bits |= npc_shootable;
 			boss->tgt_x = boss->life;
 		}
 		break;
@@ -305,20 +305,20 @@ void actBoss_Balfrog(npc *boss)
 				boss->ani_no = 2;
 				boss->ani_wait = 0;
 
-				bossObj[1].bits &= ~npc_shootable;
+				gBossObj[1].bits &= ~npc_shootable;
 			}
 		}
 		break;
 	case 114:
 		if (++boss->ani_wait > 10)
 		{
-			if (++bossObj[1].count1 <= 2)
+			if (++gBossObj[1].count1 <= 2)
 			{
 				boss->act_no = 100;
 			}
 			else
 			{
-				bossObj[1].count1 = 0;
+				gBossObj[1].count1 = 0;
 				boss->act_no = 120;
 			}
 			boss->ani_wait = 0;
@@ -393,8 +393,8 @@ void actBoss_Balfrog(npc *boss)
 		playSound(72, 1);
 		for (int i = 0; i <= 7; ++i)
 			createNpc(NPC_Smoke, boss->x + (random(-12, 12) << 9), boss->y + (random(-12, 12) << 9), random(-341, 341), random(-1536, 0));
-		bossObj[1].cond = 0;
-		bossObj[2].cond = 0;
+		gBossObj[1].cond = 0;
+		gBossObj[2].cond = 0;
 		// Fallthrough
 	case die_flashing:
 		if (!(++boss->act_wait % 5))
@@ -493,6 +493,6 @@ void actBoss_Balfrog(npc *boss)
 	if (boss->ani_no == -1)
 		boss->rect.right = boss->rect.left;
 
-	balfrogMouth(&bossObj[1]);
-	balfrogOtherHalf(&bossObj[2]);
+	balfrogMouth(&gBossObj[1]);
+	balfrogOtherHalf(&gBossObj[2]);
 }

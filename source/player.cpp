@@ -151,21 +151,21 @@ void player::damage(int16_t damage)
 
 		//Lose experience
 		if (equip & equip_armsBarrier)
-			weapons[selectedWeapon].exp -= damage;
+			gWeapons[gSelectedWeapon].exp -= damage;
 		else
-			weapons[selectedWeapon].exp -= damage * 2;
+			gWeapons[gSelectedWeapon].exp -= damage * 2;
 
 		//Level down
-		while (weapons[selectedWeapon].exp < 0)
+		while (gWeapons[gSelectedWeapon].exp < 0)
 		{
-			if (weapons[selectedWeapon].level <= 1)
-				weapons[selectedWeapon].exp = 0;
+			if (gWeapons[gSelectedWeapon].level <= 1)
+				gWeapons[gSelectedWeapon].exp = 0;
 			else
 			{
-				weapons[selectedWeapon].exp += weaponLevels[weapons[selectedWeapon].code].exp[--weapons[selectedWeapon].level - 1];
+				gWeapons[gSelectedWeapon].exp += gWeaponLevels[gWeapons[gSelectedWeapon].code].exp[--gWeapons[gSelectedWeapon].level - 1];
 
 				//Level down caret
-				if (life > 0 && weapons[selectedWeapon].code != 13)
+				if (life > 0 && gWeapons[gSelectedWeapon].code != 13)
 					createCaret(x, y, effect_LevelUpOrDown, dirRight);
 			}
 		}
@@ -807,36 +807,36 @@ void player::draw()
 		//Set held weapon's framerect
 		int weaponOffsetY = 0;
 
-		weaponRect.left = 24 * (weapons[selectedWeapon].code % 13);
-		weaponRect.right = weaponRect.left + 24;
-		weaponRect.top = 96 * (weapons[selectedWeapon].code / 13);
-		weaponRect.bottom = weaponRect.top + 16;
+		gWeaponRect.left = 24 * (gWeapons[gSelectedWeapon].code % 13);
+		gWeaponRect.right = gWeaponRect.left + 24;
+		gWeaponRect.top = 96 * (gWeapons[gSelectedWeapon].code / 13);
+		gWeaponRect.bottom = gWeaponRect.top + 16;
 
 		if (direct == dirRight)
 		{
-			weaponRect.top += 16;
-			weaponRect.bottom += 16;
+			gWeaponRect.top += 16;
+			gWeaponRect.bottom += 16;
 		}
 
 		if (up)
 		{
 			weaponOffsetY = -4;
-			weaponRect.top += 32;
-			weaponRect.bottom += 32;
+			gWeaponRect.top += 32;
+			gWeaponRect.bottom += 32;
 		}
 		else if (down)
 		{
 			weaponOffsetY = 4;
-			weaponRect.top += 64;
-			weaponRect.bottom += 64;
+			gWeaponRect.top += 64;
+			gWeaponRect.bottom += 64;
 		}
 
 		//Shift up when Quote does
 		if (ani_no == 1 || ani_no == 3 || ani_no == 6 || ani_no == 8)
-			++weaponRect.top;
+			++gWeaponRect.top;
 
 		const int weaponOffsetX = (direct != dirLeft ? 0 : 8); //Make the weapon shift to the left if facing left
-		drawTexture(gSprites[TEX_ARMS], &weaponRect, (x - view.left) / 0x200 - gViewport.x / 0x200 - weaponOffsetX, (y - view.top) / 0x200 - gViewport.y / 0x200 + weaponOffsetY);
+		drawTexture(gSprites[TEX_ARMS], &gWeaponRect, (x - view.left) / 0x200 - gViewport.x / 0x200 - weaponOffsetX, (y - view.top) / 0x200 - gViewport.y / 0x200 + weaponOffsetY);
 
 		if (!((shock >> 1) & 1)) //Invulnerability BLinking
 		{

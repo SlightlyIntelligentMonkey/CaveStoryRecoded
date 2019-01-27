@@ -65,74 +65,74 @@ void actBoss_Core(npc *boss)
 		boss->bits |= npc_ignore44;
 
 		// initializes face and tail
-		bossObj[face].cond = npccond_alive;
-		bossObj[face].act_no = 10;
-		bossObj[tail].cond = npccond_alive;
-		bossObj[tail].act_no = 10;
+		gBossObj[face].cond = npccond_alive;
+		gBossObj[face].act_no = 10;
+		gBossObj[tail].cond = npccond_alive;
+		gBossObj[tail].act_no = 10;
 
 		//initializes core hitboxes
-		bossObj[hit1].cond = npccond_alive;
-		bossObj[hit1].bits = npc_ignoreSolid | npc_invulnerable;
-		bossObj[hit1].view.left = 0;
-		bossObj[hit1].view.top = 0;
-		bossObj[hit1].hit.right = pixelsToUnits(40);
-		bossObj[hit1].hit.top = pixelsToUnits(16);
-		bossObj[hit1].hit.bottom = pixelsToUnits(16);
-		bossObj[hit1].count1 = 0;
+		gBossObj[hit1].cond = npccond_alive;
+		gBossObj[hit1].bits = npc_ignoreSolid | npc_invulnerable;
+		gBossObj[hit1].view.left = 0;
+		gBossObj[hit1].view.top = 0;
+		gBossObj[hit1].hit.right = pixelsToUnits(40);
+		gBossObj[hit1].hit.top = pixelsToUnits(16);
+		gBossObj[hit1].hit.bottom = pixelsToUnits(16);
+		gBossObj[hit1].count1 = 0;
 
-		memcpy(&bossObj[hit2], &bossObj[hit1], sizeof(npc));
-		bossObj[hit2].hit.right = pixelsToUnits(36);
-		bossObj[hit2].hit.top = pixelsToUnits(24);
-		bossObj[hit2].hit.bottom = bossObj[hit2].hit.top;
-		bossObj[hit2].count1 = 1;
+		memcpy(&gBossObj[hit2], &gBossObj[hit1], sizeof(npc));
+		gBossObj[hit2].hit.right = pixelsToUnits(36);
+		gBossObj[hit2].hit.top = pixelsToUnits(24);
+		gBossObj[hit2].hit.bottom = gBossObj[hit2].hit.top;
+		gBossObj[hit2].count1 = 1;
 
-		memcpy(&bossObj[hit3], &bossObj[hit1], sizeof(npc));
-		bossObj[hit3].hit.right = pixelsToUnits(44);
-		bossObj[hit3].hit.top = pixelsToUnits(8);
-		bossObj[hit3].hit.bottom = bossObj[hit3].hit.top;
-		bossObj[hit3].count1 = 2;
+		memcpy(&gBossObj[hit3], &gBossObj[hit1], sizeof(npc));
+		gBossObj[hit3].hit.right = pixelsToUnits(44);
+		gBossObj[hit3].hit.top = pixelsToUnits(8);
+		gBossObj[hit3].hit.bottom = gBossObj[hit3].hit.top;
+		gBossObj[hit3].count1 = 2;
 
-		memcpy(&bossObj[hit4], &bossObj[hit1], sizeof(npc));
-		bossObj[hit4].cond |= npc_bouncy;
-		bossObj[hit4].hit.right = pixelsToUnits(20);
-		bossObj[hit4].hit.top = pixelsToUnits(20);
-		bossObj[hit4].hit.bottom = pixelsToUnits(20);
-		bossObj[hit4].count1 = 3;
+		memcpy(&gBossObj[hit4], &gBossObj[hit1], sizeof(npc));
+		gBossObj[hit4].cond |= npc_bouncy;
+		gBossObj[hit4].hit.right = pixelsToUnits(20);
+		gBossObj[hit4].hit.top = pixelsToUnits(20);
+		gBossObj[hit4].hit.bottom = pixelsToUnits(20);
+		gBossObj[hit4].count1 = 3;
 
 		// initializes mini cores
-		bossObj[mini1].cond = npccond_alive;
-		bossObj[mini1].act_no = 10;
-		bossObj[mini1].bits = npc_invulnerable | npc_ignoreSolid | npc_shootable;
-		bossObj[mini1].life = 1000;
-		bossObj[mini1].hit_voice = 54;
-		bossObj[mini1].hit.right = pixelsToUnits(24);
-		bossObj[mini1].hit.top = pixelsToUnits(16);
-		bossObj[mini1].hit.bottom = pixelsToUnits(16);
-		bossObj[mini1].view.left = pixelsToUnits(32);
-		bossObj[mini1].view.top = pixelsToUnits(20);
-		bossObj[mini1].x = boss->x - pixelsToUnits(8);
-		bossObj[mini1].y = boss->y - pixelsToUnits(64);
+		gBossObj[mini1].cond = npccond_alive;
+		gBossObj[mini1].act_no = 10;
+		gBossObj[mini1].bits = npc_invulnerable | npc_ignoreSolid | npc_shootable;
+		gBossObj[mini1].life = 1000;
+		gBossObj[mini1].hit_voice = 54;
+		gBossObj[mini1].hit.right = pixelsToUnits(24);
+		gBossObj[mini1].hit.top = pixelsToUnits(16);
+		gBossObj[mini1].hit.bottom = pixelsToUnits(16);
+		gBossObj[mini1].view.left = pixelsToUnits(32);
+		gBossObj[mini1].view.top = pixelsToUnits(20);
+		gBossObj[mini1].x = boss->x - pixelsToUnits(8);
+		gBossObj[mini1].y = boss->y - pixelsToUnits(64);
 
-		memcpy(&bossObj[mini2], &bossObj[mini1], sizeof(npc));
-		bossObj[mini2].x = boss->x + pixelsToUnits(16);
-		bossObj[mini2].y = boss->y;
+		memcpy(&gBossObj[mini2], &gBossObj[mini1], sizeof(npc));
+		gBossObj[mini2].x = boss->x + pixelsToUnits(16);
+		gBossObj[mini2].y = boss->y;
 
-		memcpy(&bossObj[mini3], &bossObj[mini1], sizeof(npc));
-		bossObj[mini3].x = boss->x - pixelsToUnits(8);
-		bossObj[mini3].y = boss->y + pixelsToUnits(64);
+		memcpy(&gBossObj[mini3], &gBossObj[mini1], sizeof(npc));
+		gBossObj[mini3].x = boss->x - pixelsToUnits(8);
+		gBossObj[mini3].y = boss->y + pixelsToUnits(64);
 
-		memcpy(&bossObj[mini4], &bossObj[mini1], sizeof(npc));
-		bossObj[mini4].x = boss->x - pixelsToUnits(48);
-		bossObj[mini4].y = boss->y - pixelsToUnits(32);
+		memcpy(&gBossObj[mini4], &gBossObj[mini1], sizeof(npc));
+		gBossObj[mini4].x = boss->x - pixelsToUnits(48);
+		gBossObj[mini4].y = boss->y - pixelsToUnits(32);
 
-		memcpy(&bossObj[mini5], &bossObj[mini1], sizeof(npc));
-		bossObj[mini5].x = boss->x - pixelsToUnits(48);
-		bossObj[mini5].y = boss->y + pixelsToUnits(32);
+		memcpy(&gBossObj[mini5], &gBossObj[mini1], sizeof(npc));
+		gBossObj[mini5].x = boss->x - pixelsToUnits(48);
+		gBossObj[mini5].y = boss->y + pixelsToUnits(32);
 		break;
 	case 200:
 		boss->act_no = 201;
 		boss->act_wait = 0;
-		bossObj[hit4].bits &= ~npc_shootable;
+		gBossObj[hit4].bits &= ~npc_shootable;
 		gSuperYPos = 0;
 		//CutNoise();
 		// Fallthrough
@@ -152,8 +152,8 @@ void actBoss_Core(npc *boss)
 				boss->count1 = 0;
 				boss->act_no = iniShootBigAssEnergyBall;
 			}
-			bossObj[face].ani_no = 0;
-			bossObj[tail].ani_no = 0;
+			gBossObj[face].ani_no = 0;
+			gBossObj[tail].ani_no = 0;
 			bShock = 1;
 		}
 		break;
@@ -161,7 +161,7 @@ void actBoss_Core(npc *boss)
 		boss->act_no = shootWisp;
 		boss->act_wait = 0;
 		boss->count2 = boss->life;
-		bossObj[hit4].bits |= npc_shootable;
+		gBossObj[hit4].bits |= npc_shootable;
 		// Fallthrough
 	case shootWisp:
 		boss->tgt_x = currentPlayer.x;
@@ -170,25 +170,25 @@ void actBoss_Core(npc *boss)
 		{
 			if ((++flash >> 1) & 1)
 			{
-				bossObj[face].ani_no = 0;
-				bossObj[tail].ani_no = 0;
+				gBossObj[face].ani_no = 0;
+				gBossObj[tail].ani_no = 0;
 			}
 			else
 			{
-				bossObj[face].ani_no = 1;
-				bossObj[tail].ani_no = 1;
+				gBossObj[face].ani_no = 1;
+				gBossObj[tail].ani_no = 1;
 			}
 		}
 		else
 		{
-			bossObj[face].ani_no = 0;
-			bossObj[tail].ani_no = 0;
+			gBossObj[face].ani_no = 0;
+			gBossObj[tail].ani_no = 0;
 		}
 		if (++boss->act_wait % 100 == 1)
 		{
 			gCurlyShootWait = random(80, 100);
-			gCurlyShootX = bossObj[hit4].x;
-			gCurlyShootY = bossObj[hit4].y;
+			gCurlyShootX = gBossObj[hit4].x;
+			gCurlyShootY = gBossObj[hit4].y;
 		}
 		if (boss->act_wait <= 199 && boss->act_wait % 20 == 1)
 		{
@@ -198,8 +198,8 @@ void actBoss_Core(npc *boss)
 		if (boss->act_wait > 400 || boss->life < boss->count2 - 200)
 		{
 			boss->act_no = 200;
-			bossObj[face].ani_no = 2;
-			bossObj[tail].ani_no = 0;
+			gBossObj[face].ani_no = 2;
+			gBossObj[tail].ani_no = 0;
 			bShock = 1;
 		}
 		break;
@@ -207,7 +207,7 @@ void actBoss_Core(npc *boss)
 		boss->act_no = shootBigAssEnergyBall;
 		boss->act_wait = 0;
 		gSuperYPos = 1;
-		bossObj[hit4].bits |= npc_shootable;
+		gBossObj[hit4].bits |= npc_shootable;
 		gViewport.quake = 100;
 		//SetNoise(1, 1000);
 		// Fallthrough
@@ -222,19 +222,19 @@ void actBoss_Core(npc *boss)
 		{
 			if ((++flash >> 1) & 1)
 			{
-				bossObj[face].ani_no = 0;
-				bossObj[tail].ani_no = 0;
+				gBossObj[face].ani_no = 0;
+				gBossObj[tail].ani_no = 0;
 			}
 			else
 			{
-				bossObj[face].ani_no = 1;
-				bossObj[tail].ani_no = 1;
+				gBossObj[face].ani_no = 1;
+				gBossObj[tail].ani_no = 1;
 			}
 		}
 		else
 		{
-			bossObj[face].ani_no = 0;
-			bossObj[tail].ani_no = 0;
+			gBossObj[face].ani_no = 0;
+			gBossObj[tail].ani_no = 0;
 		}
 		//shoots massive balls at a certain interval
 		if (boss->act_wait == 300 || boss->act_wait == 350 || boss->act_wait == 400)
@@ -247,8 +247,8 @@ void actBoss_Core(npc *boss)
 		if (boss->act_wait > 400)
 		{
 			boss->act_no = 200;
-			bossObj[face].ani_no = 2;
-			bossObj[tail].ani_no = 0;
+			gBossObj[face].ani_no = 2;
+			gBossObj[tail].ani_no = 0;
 			bShock = 1;
 		}
 		break;
@@ -259,14 +259,14 @@ void actBoss_Core(npc *boss)
 		boss->xm = 0;
 		boss->ym = 0;
 
-		bossObj[face].ani_no = 2;
-		bossObj[tail].ani_no = 0;
+		gBossObj[face].ani_no = 2;
+		gBossObj[tail].ani_no = 0;
 
-		bossObj[mini1].act_no = 200;
-		bossObj[mini2].act_no = 200;
-		bossObj[mini3].act_no = 200;
-		bossObj[mini4].act_no = 200;
-		bossObj[mini5].act_no = 200;
+		gBossObj[mini1].act_no = 200;
+		gBossObj[mini2].act_no = 200;
+		gBossObj[mini3].act_no = 200;
+		gBossObj[mini4].act_no = 200;
+		gBossObj[mini5].act_no = 200;
 		gViewport.quake = 20;
 		for (int i = 0; i <= 31; ++i)
 		{
@@ -274,7 +274,7 @@ void actBoss_Core(npc *boss)
 				random(-128, 128) << 9, random(-128, 128) << 9, 0, nullptr, false);
 		}
 		for (int i = 0; i <= 11; ++i)
-			bossObj[i].bits &= ~(npc_invulnerable | npc_shootable);
+			gBossObj[i].bits &= ~(npc_invulnerable | npc_shootable);
 		// Fallthrough
 	case deathAnimation:
 		if (++boss->act_wait & 0xF)
@@ -300,12 +300,12 @@ void actBoss_Core(npc *boss)
 		break;
 	case 600:
 		boss->act_no = 601;
-		bossObj[face].act_no = 50;
-		bossObj[tail].act_no = 50;
-		bossObj[hit1].bits &= ~npc_invulnerable;
-		bossObj[hit2].bits &= ~npc_invulnerable;
-		bossObj[hit3].bits &= ~npc_invulnerable;
-		bossObj[hit4].bits &= ~npc_invulnerable;
+		gBossObj[face].act_no = 50;
+		gBossObj[tail].act_no = 50;
+		gBossObj[hit1].bits &= ~npc_invulnerable;
+		gBossObj[hit2].bits &= ~npc_invulnerable;
+		gBossObj[hit3].bits &= ~npc_invulnerable;
+		gBossObj[hit4].bits &= ~npc_invulnerable;
 		break;
 	case 601:
 		break;
@@ -316,15 +316,15 @@ void actBoss_Core(npc *boss)
 	if (bShock)
 	{
 		gViewport.quake = 20;
-		bossObj[mini1].act_no = 100;
-		bossObj[mini2].act_no = 100;
-		bossObj[mini3].act_no = 100;
-		bossObj[mini4].act_no = 100;
-		bossObj[mini5].act_no = 100;
+		gBossObj[mini1].act_no = 100;
+		gBossObj[mini2].act_no = 100;
+		gBossObj[mini3].act_no = 100;
+		gBossObj[mini4].act_no = 100;
+		gBossObj[mini5].act_no = 100;
 		playSound(26);
 		for (int i = 0; i <= 7; ++i)
 		{
-			createNpc(NPC_Smoke, bossObj[face].x + (random(-32, 16) << 9), bossObj[face].y,
+			createNpc(NPC_Smoke, gBossObj[face].x + (random(-32, 16) << 9), gBossObj[face].y,
 				random(-512, 512), random(-256, 256), 0, nullptr, false);
 		}
 	}
@@ -333,19 +333,19 @@ void actBoss_Core(npc *boss)
 		switch (boss->act_wait)
 		{
 		case 80:
-			bossObj[mini1].act_no = 120;
+			gBossObj[mini1].act_no = 120;
 			break;
 		case 110:
-			bossObj[mini2].act_no = 120;
+			gBossObj[mini2].act_no = 120;
 			break;
 		case 140:
-			bossObj[mini3].act_no = 120;
+			gBossObj[mini3].act_no = 120;
 			break;
 		case 170:
-			bossObj[mini4].act_no = 120;
+			gBossObj[mini4].act_no = 120;
 			break;
 		case 200:
-			bossObj[mini5].act_no = 120;
+			gBossObj[mini5].act_no = 120;
 			break;
 		}
 		if (boss->x < boss->tgt_x + tilesToUnits(10))
@@ -369,19 +369,19 @@ void actBoss_Core(npc *boss)
 	boss->x += boss->xm;
 	boss->y += boss->ym;
 
-	coreFace(&bossObj[face]);
-	coreTail(&bossObj[tail]);
+	coreFace(&gBossObj[face]);
+	coreTail(&gBossObj[tail]);
 
-	miniCore(&bossObj[mini1]);
-	miniCore(&bossObj[mini2]);
-	miniCore(&bossObj[mini3]);
-	miniCore(&bossObj[mini4]);
-	miniCore(&bossObj[mini5]);
+	miniCore(&gBossObj[mini1]);
+	miniCore(&gBossObj[mini2]);
+	miniCore(&gBossObj[mini3]);
+	miniCore(&gBossObj[mini4]);
+	miniCore(&gBossObj[mini5]);
 
-	coreHit(&bossObj[hit1]);
-	coreHit(&bossObj[hit2]);
-	coreHit(&bossObj[hit3]);
-	coreHit(&bossObj[hit4]);
+	coreHit(&gBossObj[hit1]);
+	coreHit(&gBossObj[hit2]);
+	coreHit(&gBossObj[hit3]);
+	coreHit(&gBossObj[hit4]);
 	return;
 }
 
@@ -403,8 +403,8 @@ void coreFace(npc *NPC)
 		NPC->view.top = 28672;
 		// Fallthrough
 	case 11:
-		NPC->x = bossObj[core].x - 18432;
-		NPC->y = bossObj[core].y;
+		NPC->x = gBossObj[core].x - 18432;
+		NPC->y = gBossObj[core].y;
 		break;
 	case 50:
 		NPC->act_no = 51;
@@ -416,8 +416,8 @@ void coreFace(npc *NPC)
 			NPC->act_no = 100;
 			NPC->ani_no = 3;
 		}
-		NPC->x = bossObj[core].x - 18432;
-		NPC->y = bossObj[core].y;
+		NPC->x = gBossObj[core].x - 18432;
+		NPC->y = gBossObj[core].y;
 		break;
 	case 100:
 		NPC->ani_no = 3;
@@ -448,8 +448,8 @@ void coreTail(npc *NPC)
 		NPC->view.top = 28672;
 		// Fallthrough
 	case 11:
-		NPC->x = bossObj[core].x + 22528;
-		NPC->y = bossObj[core].y;
+		NPC->x = gBossObj[core].x + 22528;
+		NPC->y = gBossObj[core].y;
 		break;
 	case 50:
 		NPC->act_no = 51;
@@ -461,8 +461,8 @@ void coreTail(npc *NPC)
 			NPC->act_no = 100;
 			NPC->ani_no = 2;
 		}
-		NPC->x = bossObj[core].x + 22528;
-		NPC->y = bossObj[core].y;
+		NPC->x = gBossObj[core].x + 22528;
+		NPC->y = gBossObj[core].y;
 		break;
 	case 100:
 		NPC->ani_no = 2;
@@ -495,8 +495,8 @@ void miniCore(npc *NPC)
 		NPC->act_no = 101;
 		NPC->ani_no = 2;
 		NPC->act_wait = 0;
-		NPC->tgt_x = bossObj[core].x + (random(-128, 32) << 9);
-		NPC->tgt_y = bossObj[core].y + (random(-64, 64) << 9);
+		NPC->tgt_x = gBossObj[core].x + (random(-128, 32) << 9);
+		NPC->tgt_y = gBossObj[core].y + (random(-64, 64) << 9);
 		NPC->bits |= npc_shootable;
 		// Fallthrough
 	case 101:
@@ -571,20 +571,20 @@ void coreHit(npc *NPC)
 	switch (NPC->count1)
 	{
 	case 0:
-		NPC->x = bossObj[core].x;
-		NPC->y = bossObj[core].y - pixelsToUnits(32);
+		NPC->x = gBossObj[core].x;
+		NPC->y = gBossObj[core].y - pixelsToUnits(32);
 		break;
 	case 1:
-		NPC->x = bossObj[core].x + pixelsToUnits(28);
-		NPC->y = bossObj[core].y;
+		NPC->x = gBossObj[core].x + pixelsToUnits(28);
+		NPC->y = gBossObj[core].y;
 		break;
 	case 2:
-		NPC->x = bossObj[core].x + pixelsToUnits(4);
-		NPC->y = bossObj[core].y + pixelsToUnits(32);
+		NPC->x = gBossObj[core].x + pixelsToUnits(4);
+		NPC->y = gBossObj[core].y + pixelsToUnits(32);
 		break;
 	case 3:
-		NPC->x = bossObj[core].x - pixelsToUnits(28);
-		NPC->y = bossObj[core].y + pixelsToUnits(4);
+		NPC->x = gBossObj[core].x - pixelsToUnits(28);
+		NPC->y = gBossObj[core].y + pixelsToUnits(4);
 		break;
 	default:
 		break;

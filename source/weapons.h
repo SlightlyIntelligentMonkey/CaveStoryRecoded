@@ -7,7 +7,7 @@ struct WEAPONEXP
 	int exp[3];
 };
 
-extern WEAPONEXP weaponLevels[14];
+extern WEAPONEXP gWeaponLevels[14];
 
 struct WEAPON
 {
@@ -22,11 +22,11 @@ using weaponShoot = void(*)(int);
 
 constexpr auto WEAPONS = 8;
 
-extern WEAPON weapons[WEAPONS];
-extern RECT weaponRect;
-extern int selectedWeapon;
-extern int weaponShiftX;
-extern int weaponExpFlash;
+extern WEAPON gWeapons[WEAPONS];
+extern RECT gWeaponRect;
+extern int gSelectedWeapon;
+extern int gWeaponShiftX;
+extern int gWeaponExpFlash;
 
 void initWeapons();
 

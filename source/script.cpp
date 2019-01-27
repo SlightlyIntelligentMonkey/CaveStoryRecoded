@@ -532,9 +532,9 @@ bool doTscCommand(int *retVal, bool *bExit, TSC &ptsc)
 		else
 		{
 			gBossLife.flag = 1;
-			gBossLife.max = bossObj[0].life;
-			gBossLife.br = bossObj[0].life;
-			gBossLife.pLife = &bossObj[0].life;
+			gBossLife.max = gBossObj[0].life;
+			gBossLife.br = gBossObj[0].life;
+			gBossLife.pLife = &gBossObj[0].life;
 		}
 
 		tscCleanup(1, ptsc);
