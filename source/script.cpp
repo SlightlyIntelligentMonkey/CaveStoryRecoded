@@ -404,17 +404,13 @@ int doTscModes(bool *bExit, TSC &ptsc)
 				playSound(SFX_YNConfirm);
 
 				if (ptsc.select)
-				{
 					jumpTscEvent(ptsc, ptsc.next_event); //Jump to specified event
-				}
-				else if (!ptsc.select)
+				else
 				{
 					//Continue like normal
 					ptsc.mode = PARSE;
 					ptsc.wait_beam = 0;
 				}
-				else
-					doCustomError("Invalid YNJ result");
 			}
 			else if (isKeyPressed(gKeyLeft)) //Left pressed
 			{
