@@ -32,11 +32,11 @@ struct SOUND {
 };
 
 //Variable things
-static SOUND *sound_list_head = nullptr;
+static SOUND *gSoundListHead = nullptr;
 
-static SDL_AudioDeviceID soundDev;
-static SDL_AudioSpec soundSpec;
-static SDL_AudioSpec want;
+static SDL_AudioDeviceID gSoundDev;
+static SDL_AudioSpec gSoundSpec;
+static SDL_AudioSpec gWant;
 
 SOUND* SoundObject_Create(size_t size, unsigned long freq)
 {
@@ -50,10 +50,10 @@ SOUND* SoundObject_Create(size_t size, unsigned long freq)
 	sound->volume = 1.0f;
 	sound->volume_l = 1.0f;
 	sound->volume_r = 1.0f;
-	SDL_LockAudioDevice(soundDev);
-	sound->next = sound_list_head;
-	sound_list_head = sound;
-	SDL_UnlockAudioDevice(soundDev);
+	SDL_LockAudioDevice(gSoundDev);
+	sound->next = gSoundListHead;
+	gSoundListHead = sound;
+	SDL_UnlockAudioDevice(gSoundDev);
 	return sound;
 }
 
@@ -61,9 +61,9 @@ void SoundObject_Destroy(SOUND *sound)
 {
 	if (sound != nullptr)
 	{
-		SDL_LockAudioDevice(soundDev);
+		SDL_LockAudioDevice(gSoundDev);
 
-		for (SOUND **list_sound = &sound_list_head; *list_sound != nullptr; list_sound = &(*list_sound)->next)
+		for (SOUND **list_sound = &gSoundListHead; *list_sound != nullptr; list_sound = &(*list_sound)->next)
 		{
 			if (*list_sound == sound)
 			{
@@ -72,7 +72,7 @@ void SoundObject_Destroy(SOUND *sound)
 			}
 		}
 
-		SDL_UnlockAudioDevice(soundDev);
+		SDL_UnlockAudioDevice(gSoundDev);
 
 		delete[] sound->wave;
 		delete sound;
@@ -84,7 +84,7 @@ void SoundObject_Lock(SOUND *sound, uint8_t **buffer, size_t *size)
 {
 	if (sound != nullptr)
 	{
-		SDL_LockAudioDevice(soundDev);
+		SDL_LockAudioDevice(gSoundDev);
 
 		if (buffer != nullptr)
 			*buffer = sound->wave;
@@ -97,16 +97,16 @@ void SoundObject_Lock(SOUND *sound, uint8_t **buffer, size_t *size)
 void SoundObject_Unlock(SOUND *sound)
 {
 	if (sound != nullptr)
-		SDL_UnlockAudioDevice(soundDev);
+		SDL_UnlockAudioDevice(gSoundDev);
 }
 
 void SoundObject_SetPosition(SOUND *sound, size_t pos)
 {
 	if (sound != nullptr)
 	{
-		SDL_LockAudioDevice(soundDev);
+		SDL_LockAudioDevice(gSoundDev);
 		sound->pos = pos;
-		SDL_UnlockAudioDevice(soundDev);
+		SDL_UnlockAudioDevice(gSoundDev);
 	}
 }
 
@@ -114,9 +114,9 @@ void SoundObject_SetFrequency(SOUND *sound, unsigned long freq)
 {
 	if (sound != nullptr)
 	{
-		SDL_LockAudioDevice(soundDev);
+		SDL_LockAudioDevice(gSoundDev);
 		sound->freq = freq;
-		SDL_UnlockAudioDevice(soundDev);
+		SDL_UnlockAudioDevice(gSoundDev);
 	}
 }
 
@@ -131,9 +131,9 @@ void SoundObject_SetVolume(SOUND *sound, long volume)
 {
 	if (sound != nullptr)
 	{
-		SDL_LockAudioDevice(soundDev);
+		SDL_LockAudioDevice(gSoundDev);
 		sound->volume = MillibelToVolume(volume);
-		SDL_UnlockAudioDevice(soundDev);
+		SDL_UnlockAudioDevice(gSoundDev);
 	}
 }
 
@@ -141,10 +141,10 @@ void SoundObject_SetPan(SOUND *sound, long pan)
 {
 	if (sound != nullptr)
 	{
-		SDL_LockAudioDevice(soundDev);
+		SDL_LockAudioDevice(gSoundDev);
 		sound->volume_l = MillibelToVolume(-pan);
 		sound->volume_r = MillibelToVolume(pan);
-		SDL_UnlockAudioDevice(soundDev);
+		SDL_UnlockAudioDevice(gSoundDev);
 	}
 }
 
@@ -152,10 +152,10 @@ void SoundObject_Play(SOUND *sound, bool loops)
 {
 	if (sound != nullptr)
 	{
-		SDL_LockAudioDevice(soundDev);
+		SDL_LockAudioDevice(gSoundDev);
 		sound->playing = true;
 		sound->loops = loops;
-		SDL_UnlockAudioDevice(soundDev);
+		SDL_UnlockAudioDevice(gSoundDev);
 	}
 }
 
@@ -163,16 +163,16 @@ void SoundObject_Stop(SOUND *sound)
 {
 	if (sound != nullptr)
 	{
-		SDL_LockAudioDevice(soundDev);
+		SDL_LockAudioDevice(gSoundDev);
 		sound->playing = false;
-		SDL_UnlockAudioDevice(soundDev);
+		SDL_UnlockAudioDevice(gSoundDev);
 	}
 }
 
 // Audio callback and things
 void mixSounds(float (*stream)[2], int len)
 {
-	for (SOUND *sound = sound_list_head; sound != nullptr; sound = sound->next)
+	for (SOUND *sound = gSoundListHead; sound != nullptr; sound = sound->next)
 	{
 		if (sound->playing)
 		{
@@ -234,24 +234,24 @@ void initAudio()
 	makeWaveTables();
 
 	// Create sound device
-	want.channels = 2;
-	want.freq = sampleRate;
-	want.format = AUDIO_F32;
-	want.samples = 1024;
-	want.callback = audio_callback;
-	want.userdata = nullptr;
+	gWant.channels = 2;
+	gWant.freq = sampleRate;
+	gWant.format = AUDIO_F32;
+	gWant.samples = 1024;
+	gWant.callback = audio_callback;
+	gWant.userdata = nullptr;
 
-	soundDev = SDL_OpenAudioDevice(
+	gSoundDev = SDL_OpenAudioDevice(
 		nullptr,
 		0,
-		&want,
-		&soundSpec,
+		&gWant,
+		&gSoundSpec,
 		0);
 
-	if (soundDev == 0)
+	if (gSoundDev == 0)
 		doError();
 
-	SDL_PauseAudioDevice(soundDev, 0);
+	SDL_PauseAudioDevice(gSoundDev, 0);
 }
 
 void loadSounds()
@@ -278,7 +278,7 @@ void loadSounds()
 
 void freeSounds()
 {
-	for (auto& sound : sounds)
+	for (auto& sound : gSounds)
 		SoundObject_Destroy(sound);
 }
 
@@ -288,17 +288,17 @@ void playSound(size_t sound_no, int soundMode)
 	{
 		case -1:
 			// Play and loop (if sound is already playing, just set the loop flag)
-			SoundObject_Play(sounds[sound_no], true);
+			SoundObject_Play(gSounds[sound_no], true);
 			break;
 		case 1:
 			// Play sound (if sound if already playing, restart it)
-			SoundObject_Stop(sounds[sound_no]);
-			SoundObject_SetPosition(sounds[sound_no], 0);
-			SoundObject_Play(sounds[sound_no], false);
+			SoundObject_Stop(gSounds[sound_no]);
+			SoundObject_SetPosition(gSounds[sound_no], 0);
+			SoundObject_Play(gSounds[sound_no], false);
 			break;
 		case 0:
 			// Stop sound
-			SoundObject_Stop(sounds[sound_no]);
+			SoundObject_Stop(gSounds[sound_no]);
 			break;
 	}
 }

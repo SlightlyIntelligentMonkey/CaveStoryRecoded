@@ -24,10 +24,10 @@
 #include "flash.h"
 
 //Variables
-TSC tsc;
-char tscText[0x100];
-int tscNumber[4];
-uint8_t *tscTextFlag = new uint8_t[0x100];
+TSC gTsc;
+char gTscText[0x100];
+int gTscNumber[4];
+uint8_t *gTscTextFlag = new uint8_t[0x100];
 
 //Mode enum
 enum TSC_mode
@@ -45,14 +45,14 @@ enum TSC_mode
 //Init function
 bool initTsc()
 {
-	tsc.mode = 0;
+	gTsc.mode = 0;
 	gGameFlags &= ~4;
 
-	memset(tscText, 0, 0x100);
-	memset(tscTextFlag, 0, 0x100);
+	memset(gTscText, 0, 0x100);
+	memset(gTscTextFlag, 0, 0x100);
 
-	tsc.data = new uint8_t[0x5000];
-	return tsc.data != nullptr;
+	gTsc.data = new uint8_t[0x5000];
+	return gTsc.data != nullptr;
 }
 
 //Loading functions
@@ -83,9 +83,9 @@ void loadStageTsc(const std::string& name)
 	auto headSize = static_cast<size_t>(SDL_RWsize(headRW));
 
 	//Put the data into memory
-	headRW->read(headRW, tsc.data, 1, headSize);
-	decryptTsc(tsc.data, headSize);
-	tsc.data[headSize] = 0;
+	headRW->read(headRW, gTsc.data, 1, headSize);
+	decryptTsc(gTsc.data, headSize);
+	gTsc.data[headSize] = 0;
 
 	headRW->close(headRW);
 
@@ -96,15 +96,15 @@ void loadStageTsc(const std::string& name)
 	auto bodySize = static_cast<size_t>(SDL_RWsize(bodyRW));
 
 	//Put the data into memory
-	bodyRW->read(bodyRW, tsc.data + headSize, 1, bodySize);
-	decryptTsc(tsc.data + headSize, bodySize);
-	tsc.data[headSize + bodySize] = 0;
+	bodyRW->read(bodyRW, gTsc.data + headSize, 1, bodySize);
+	decryptTsc(gTsc.data + headSize, bodySize);
+	gTsc.data[headSize + bodySize] = 0;
 
 	bodyRW->close(bodyRW);
 
 	//Finish off by setting some stuff in the tsc struct
-	tsc.size = static_cast<int>(headSize + bodySize);
-	tsc.path = name;
+	gTsc.size = static_cast<int>(headSize + bodySize);
+	gTsc.path = name;
 }
 
 void loadTsc2(const std::string& name)
@@ -113,17 +113,17 @@ void loadTsc2(const std::string& name)
 	SDL_RWops *bodyRW = SDL_RWFromFile(name.c_str(), "rb");
 	if (!bodyRW)
 		doError();
-	tsc.size = static_cast<decltype(tsc.size)>(SDL_RWsize(bodyRW));
+	gTsc.size = static_cast<decltype(gTsc.size)>(SDL_RWsize(bodyRW));
 
 	//Put the data into memory
-	bodyRW->read(bodyRW, tsc.data, 1, tsc.size);
-	decryptTsc(tsc.data, tsc.size);
-	tsc.data[tsc.size] = 0;
+	bodyRW->read(bodyRW, gTsc.data, 1, gTsc.size);
+	decryptTsc(gTsc.data, gTsc.size);
+	gTsc.data[gTsc.size] = 0;
 
 	bodyRW->close(bodyRW);
 
 	//Finish off by setting some stuff in the tsc struct
-	tsc.path = name;
+	gTsc.path = name;
 }
 
 //Get number function
@@ -140,10 +140,10 @@ void tscClearText()
 {
 	for (int i = 0; i < 4; ++i)
 	{
-		tsc.ypos_line[i] = 16 * i;
+		gTsc.ypos_line[i] = 16 * i;
 
-		memset(tscText + (i * 0x40), 0, 0x40);
-		memset(tscTextFlag + (i * 0x40), 0, 0x40);
+		memset(gTscText + (i * 0x40), 0, 0x40);
+		memset(gTscTextFlag + (i * 0x40), 0, 0x40);
 	}
 }
 
@@ -160,7 +160,7 @@ int startTscEvent(TSC &ptsc, int no)
 	ptsc.face = 0;
 	ptsc.item = 0;
 	ptsc.offsetY = 0;
-	currentPlayer.shock = 0;
+	gCurrentPlayer.shock = 0;
 
 	ptsc.rcText = { 52, 184, 268, 234 };
 
@@ -173,7 +173,7 @@ int startTscEvent(TSC &ptsc, int no)
 		if (ptsc.data[ptsc.p_read] != '#')
 			continue;
 
-		event_no = getTSCNumber(tsc, ++ptsc.p_read);
+		event_no = getTSCNumber(gTsc, ++ptsc.p_read);
 		if (no == event_no)
 			break;
 		if (no < event_no)
@@ -206,7 +206,7 @@ int jumpTscEvent(TSC &ptsc, int no)
 		if (ptsc.data[ptsc.p_read] != 35)
 			continue;
 
-		event_no = getTSCNumber(tsc, ++ptsc.p_read);
+		event_no = getTSCNumber(gTsc, ++ptsc.p_read);
 		if (no == event_no)
 			break;
 		if (no < event_no)
@@ -234,8 +234,8 @@ void checkNewLine(TSC &ptsc)
 	{
 		ptsc.mode = 3;
 		gGameFlags |= 4u;
-		memset(tscText + (ptsc.line % 4 << 6), 0, 0x40);
-		memset(tscTextFlag + (ptsc.line % 4 << 6), 0, 0x40);
+		memset(gTscText + (ptsc.line % 4 << 6), 0, 0x40);
+		memset(gTscTextFlag + (ptsc.line % 4 << 6), 0, 0x40);
 	}
 }
 
@@ -251,8 +251,8 @@ void clearTextLine(TSC &ptsc)
 	{
 		ptsc.ypos_line[i] = 16 * i;
 
-		memset(tscText + (i * 40), 0, 0x40);
-		memset(tscTextFlag + (i * 40), 0, 0x40);
+		memset(gTscText + (i * 40), 0, 0x40);
+		memset(gTscTextFlag + (i * 40), 0, 0x40);
 	}
 }
 
@@ -283,7 +283,7 @@ void tscPutNumber(TSC &ptsc, int index)
 	table[0] = 1000;
 	table[1] = 100;
 	table[2] = 10;
-	int a = tscNumber[index];
+	int a = gTscNumber[index];
 	bZero = 0;
 	offset = 0;
 	for (int i = 0; i <= 2; ++i)
@@ -299,7 +299,7 @@ void tscPutNumber(TSC &ptsc, int index)
 	}
 	str[offset] = a + 48;
 	str[offset + 1] = 0;
-	strcat(tscText + (ptsc.line % 4 << 6), str);
+	strcat(gTscText + (ptsc.line % 4 << 6), str);
 	playSound(2);
 	ptsc.wait_beam = 0;
 	ptsc.p_write += strlen(str);
@@ -386,7 +386,7 @@ int doTscModes(bool *bExit, TSC &ptsc)
 		return 1;
 
 	case FADE:
-		if (fade.mode == 0) //Wait until fade has ended
+		if (gFade.mode == 0) //Wait until fade has ended
 		{
 			//Continue script
 			ptsc.mode = PARSE;
@@ -437,7 +437,7 @@ int doTscModes(bool *bExit, TSC &ptsc)
 
 	case WAS:
 		//Wait until on the ground
-		if (currentPlayer.flag & ground)
+		if (gCurrentPlayer.flag & ground)
 		{
 			//Go into parse mode
 			ptsc.mode = PARSE;
@@ -455,7 +455,7 @@ int doTscModes(bool *bExit, TSC &ptsc)
 void endTsc(TSC &ptsc, bool *bExit)
 {
 	ptsc.mode = END;
-	currentPlayer.cond &= ~player_interact;
+	gCurrentPlayer.cond &= ~player_interact;
 	gGameFlags |= 3;
 	ptsc.face = 0;
 	*bExit = true;
@@ -487,8 +487,8 @@ bool doTscCommand(int *retVal, bool *bExit, TSC &ptsc)
 		tscCleanup(0, ptsc);
 		break;
 	case('<AM+'):
-		tscNumber[0] = getTSCNumber(ptsc, ptsc.p_read + 9);
-		tscNumber[1] = 0;
+		gTscNumber[0] = getTSCNumber(ptsc, ptsc.p_read + 9);
+		gTscNumber[1] = 0;
 		playSound(SFX_ItemGet);
 		giveWeapon(getTSCNumber(ptsc, ptsc.p_read + 4), getTSCNumber(ptsc, ptsc.p_read + 9));
 		tscCleanup(2, ptsc);
@@ -651,11 +651,11 @@ bool doTscCommand(int *retVal, bool *bExit, TSC &ptsc)
 		endTsc(ptsc, bExit);
 		break;
 	case('<EQ+'):
-		currentPlayer.equip |= getTSCNumber(ptsc, ptsc.p_read + 4);
+		gCurrentPlayer.equip |= getTSCNumber(ptsc, ptsc.p_read + 4);
 		tscCleanup(1, ptsc);
 		break;
 	case('<EQ-'):
-		currentPlayer.equip &= ~getTSCNumber(ptsc, ptsc.p_read + 4);
+		gCurrentPlayer.equip &= ~getTSCNumber(ptsc, ptsc.p_read + 4);
 		tscCleanup(1, ptsc);
 		break;
 	case('<ESC'):
@@ -673,17 +673,17 @@ bool doTscCommand(int *retVal, bool *bExit, TSC &ptsc)
 		tscCleanup(1, ptsc);
 		break;
 	case('<FAI'):
-		fade.mode = 1;
-		fade.dir = getTSCNumber(ptsc, ptsc.p_read + 4);
-		fade.count = 0;
+		gFade.mode = 1;
+		gFade.dir = getTSCNumber(ptsc, ptsc.p_read + 4);
+		gFade.count = 0;
 		ptsc.mode = FADE;
 		tscCleanup(1, ptsc);
 		*bExit = true;
 		break;
 	case('<FAO'):
-		fade.mode = 2;
-		fade.dir = getTSCNumber(ptsc, ptsc.p_read + 4);
-		fade.count = 0;
+		gFade.mode = 2;
+		gFade.dir = getTSCNumber(ptsc, ptsc.p_read + 4);
+		gFade.count = 0;
 		ptsc.mode = FADE;
 		tscCleanup(1, ptsc);
 		*bExit = true;
@@ -737,7 +737,7 @@ bool doTscCommand(int *retVal, bool *bExit, TSC &ptsc)
 		tscCleanup(1, ptsc);
 		break;
 	case('<HMC'):
-		currentPlayer.cond &= ~player_visible;
+		gCurrentPlayer.cond &= ~player_visible;
 		tscCleanup(0, ptsc);
 		break;
 	case('<INI'):
@@ -790,21 +790,21 @@ bool doTscCommand(int *retVal, bool *bExit, TSC &ptsc)
 	case('<KEY'):
 		gGameFlags |= 1;
 		gGameFlags &= ~2;
-		currentPlayer.up = false;
+		gCurrentPlayer.up = false;
 		tscCleanup(0, ptsc);
 		break;
 	case('<LDP'):
 		loadProfile();
 		break;
 	case('<LI+'):
-		currentPlayer.life += getTSCNumber(ptsc, ptsc.p_read + 4);
-		if (currentPlayer.life > currentPlayer.max_life)
-			currentPlayer.life = currentPlayer.max_life;
+		gCurrentPlayer.life += getTSCNumber(ptsc, ptsc.p_read + 4);
+		if (gCurrentPlayer.life > gCurrentPlayer.max_life)
+			gCurrentPlayer.life = gCurrentPlayer.max_life;
 		tscCleanup(1, ptsc);
 		break;
 	case('<ML+'):
-		currentPlayer.max_life += getTSCNumber(ptsc, ptsc.p_read + 4);
-		currentPlayer.life += getTSCNumber(ptsc, ptsc.p_read + 4);
+		gCurrentPlayer.max_life += getTSCNumber(ptsc, ptsc.p_read + 4);
+		gCurrentPlayer.life += getTSCNumber(ptsc, ptsc.p_read + 4);
 		tscCleanup(1, ptsc);
 		break;
 	case('<MLP'):
@@ -823,7 +823,7 @@ bool doTscCommand(int *retVal, bool *bExit, TSC &ptsc)
         }
 		break;
 	case('<MM0'):
-		currentPlayer.xm = 0;
+		gCurrentPlayer.xm = 0;
 		tscCleanup(0, ptsc);
 		break;
 	case('<MNA'):
@@ -837,7 +837,7 @@ bool doTscCommand(int *retVal, bool *bExit, TSC &ptsc)
 		tscCleanup(4, ptsc);
 		break;
 	case('<MOV'):
-		currentPlayer.setPos(tilesToUnits(getTSCNumber(ptsc, ptsc.p_read + 4)), tilesToUnits(getTSCNumber(ptsc, ptsc.p_read + 9)));
+		gCurrentPlayer.setPos(tilesToUnits(getTSCNumber(ptsc, ptsc.p_read + 4)), tilesToUnits(getTSCNumber(ptsc, ptsc.p_read + 9)));
 		tscCleanup(2, ptsc);
 		break;
 	case('<MPJ'):
@@ -879,12 +879,12 @@ bool doTscCommand(int *retVal, bool *bExit, TSC &ptsc)
 		*bExit = true;
 		break;
 	case('<MYB'):
-        currentPlayer.backStep(getTSCNumber(ptsc, ptsc.p_read + 4));
+        gCurrentPlayer.backStep(getTSCNumber(ptsc, ptsc.p_read + 4));
 
 		tscCleanup(1, ptsc);
 		break;
 	case('<MYD'):
-		currentPlayer.setDir(getTSCNumber(ptsc, ptsc.p_read + 4));
+		gCurrentPlayer.setDir(getTSCNumber(ptsc, ptsc.p_read + 4));
 		tscCleanup(1, ptsc);
 		break;
 	case('<NCJ'):
@@ -978,7 +978,7 @@ bool doTscCommand(int *retVal, bool *bExit, TSC &ptsc)
 		gGameFlags &= ~3;
 		break;
 	case('<SMC'):
-		currentPlayer.cond |= player_visible;
+		gCurrentPlayer.cond |= player_visible;
 		tscCleanup(0, ptsc);
 		break;
 	case('<SMP'):
@@ -1048,7 +1048,7 @@ bool doTscCommand(int *retVal, bool *bExit, TSC &ptsc)
 		ptsc.flags |= 0x10;
 		break;
 	case('<UNI'):
-		currentPlayer.unit = getTSCNumber(ptsc, ptsc.p_read + 4);
+		gCurrentPlayer.unit = getTSCNumber(ptsc, ptsc.p_read + 4);
 		tscCleanup(1, ptsc);
 		break;
 	case('<UNJ'):
@@ -1120,7 +1120,7 @@ int updateTsc(TSC &ptsc)
 
 		if (ptsc.data[ptsc.p_read] != '<')
 		{
-			if (tsc.data[tsc.p_read] == '\r') //Check for break line
+			if (gTsc.data[gTsc.p_read] == '\r') //Check for break line
 			{
 				//Shift read and write positions accordingly
 				ptsc.p_read += 2;
@@ -1139,7 +1139,7 @@ int updateTsc(TSC &ptsc)
 				int x;
 				for (x = ptsc.p_read; ; ++x)
 				{
-					const bool quit = !(tsc.data[x] == '<' || tsc.data[x] == '\r');
+					const bool quit = !(gTsc.data[x] == '<' || gTsc.data[x] == '\r');
 
 					if (!quit)
 						break;
@@ -1149,12 +1149,12 @@ int updateTsc(TSC &ptsc)
 
 				//Get data to copy from tsc data
 				int copy = x - ptsc.p_read;
-				memcpy(str, &ptsc.data[tsc.p_read], copy);
+				memcpy(str, &ptsc.data[gTsc.p_read], copy);
 				str[copy] = 0;
 
 				//Copy data onto the text buffer
-				strcpy(tscText + (ptsc.line * 0x40), str);
-				memset(tscTextFlag + (ptsc.line * 0x40), 1, copy); //This sets the flag that makes drawn text thinner.
+				strcpy(gTscText + (ptsc.line * 0x40), str);
+				memset(gTscTextFlag + (ptsc.line * 0x40), 1, copy); //This sets the flag that makes drawn text thinner.
 
 				//Shift read and write positions
 				ptsc.p_write = x; //Pixel uses an absolute value rather than a relative value
@@ -1182,12 +1182,12 @@ int updateTsc(TSC &ptsc)
 				}
 
 				//Copy onto the text buffer
-				strcat(tscText + (ptsc.line % 4 << 6), c);
-				tscTextFlag[(ptsc.line % 4 << 6) + ptsc.p_write] = 0; //Make text display at normal width
+				strcat(gTscText + (ptsc.line % 4 << 6), c);
+				gTscTextFlag[(ptsc.line % 4 << 6) + ptsc.p_write] = 0; //Make text display at normal width
 
 				//Make equal signs draw as the circle thing
 				if (c[0] == '=')
-					tscTextFlag[(ptsc.line % 4 << 6) + ptsc.p_write] |= 2;
+					gTscTextFlag[(ptsc.line % 4 << 6) + ptsc.p_write] |= 2;
 
 				//Play sound and reset cursor blinking timer.
 				playSound(SFX_MessageTyping);
@@ -1244,55 +1244,55 @@ void drawTsc()
 	RECT rcYesNo;
 	RECT rcSelection;
 
-	if (tsc.mode && tsc.flags & 1)
+	if (gTsc.mode && gTsc.flags & 1)
 	{
 		//Set cliprect
-		tsc.rcText.left = (gScreenWidth / 2) - 108;
-		tsc.rcText.right = (gScreenWidth / 2) + 108;
+		gTsc.rcText.left = (gScreenWidth / 2) - 108;
+		gTsc.rcText.right = (gScreenWidth / 2) + 108;
 
-		if (tsc.flags & 0x20)
+		if (gTsc.flags & 0x20)
 		{
-			tsc.rcText.top = 32;
-			tsc.rcText.bottom = 80;
+			gTsc.rcText.top = 32;
+			gTsc.rcText.bottom = 80;
 		}
 		else
 		{
-			tsc.rcText.top = gScreenHeight - 56;
-			tsc.rcText.bottom = gScreenHeight - 8;
+			gTsc.rcText.top = gScreenHeight - 56;
+			gTsc.rcText.bottom = gScreenHeight - 8;
 		}
 
 		//Draw message box background (if not MS2)
-		if (tsc.flags & 2)
+		if (gTsc.flags & 2)
 		{
 			rcFrame1 = { 0, 0, 244, 8 };
 			rcFrame2 = { 0, 8, 244, 16 };
 			rcFrame3 = { 0, 16, 244, 24 };
 
-			drawTexture(gSprites[TEX_TEXTBOX], &rcFrame1, tsc.rcText.left - 14, tsc.rcText.top - 10);
+			drawTexture(gSprites[TEX_TEXTBOX], &rcFrame1, gTsc.rcText.left - 14, gTsc.rcText.top - 10);
 
 			int strip;
 			for (strip = 1; strip <= 6; ++strip)
-				drawTexture(gSprites[TEX_TEXTBOX], &rcFrame2, tsc.rcText.left - 14, 8 * strip + tsc.rcText.top - 10);
-			drawTexture(gSprites[TEX_TEXTBOX], &rcFrame3, tsc.rcText.left - 14, 8 * strip + tsc.rcText.top - 10);
+				drawTexture(gSprites[TEX_TEXTBOX], &rcFrame2, gTsc.rcText.left - 14, 8 * strip + gTsc.rcText.top - 10);
+			drawTexture(gSprites[TEX_TEXTBOX], &rcFrame3, gTsc.rcText.left - 14, 8 * strip + gTsc.rcText.top - 10);
 		}
 
-		setCliprect(&tsc.rcText);
+		setCliprect(&gTsc.rcText);
 
 		//Move face into position
-		if ((tsc.face_x += 8) > 0)
-			tsc.face_x = 0;
+		if ((gTsc.face_x += 8) > 0)
+			gTsc.face_x = 0;
 
 		//Set face's framerect
-		rcFace.left = 48 * (tsc.face % 6);
-		rcFace.top = 48 * (tsc.face / 6);
+		rcFace.left = 48 * (gTsc.face % 6);
+		rcFace.top = 48 * (gTsc.face / 6);
 		rcFace.right = rcFace.left + 48;
 		rcFace.bottom = rcFace.top + 48;
 
-		drawTexture(gSprites[TEX_FACE], &rcFace, tsc.rcText.left + tsc.face_x, tsc.rcText.top - 3);
+		drawTexture(gSprites[TEX_FACE], &rcFace, gTsc.rcText.left + gTsc.face_x, gTsc.rcText.top - 3);
 
 		//Draw text
 		int text_offset;
-		if (tsc.face)
+		if (gTsc.face)
 			text_offset = 56;
 		else
 			text_offset = 0;
@@ -1300,20 +1300,20 @@ void drawTsc()
 		//Go through each and every line and draw it
 		for (int i = 0; i < 4; i++)
 		{
-			drawString(tsc.rcText.left + text_offset, tsc.rcText.top + tsc.ypos_line[i] + tsc.offsetY, tscText + (i * 0x40), tscTextFlag + i * 0x40);
+			drawString(gTsc.rcText.left + text_offset, gTsc.rcText.top + gTsc.ypos_line[i] + gTsc.offsetY, gTscText + (i * 0x40), gTscTextFlag + i * 0x40);
 		}
 
 		//End cliprect
 		setCliprect(nullptr);
 
 		//NOD cursor / beam?
-		const bool flash = tsc.wait_beam++ % 20 > 12;
+		const bool flash = gTsc.wait_beam++ % 20 > 12;
 
-		if (flash && tsc.mode == NOD)
+		if (flash && gTsc.mode == NOD)
 		{
 			SDL_SetRenderDrawColor(gRenderer, 255, 255, 254, 255);
-			drawRect(tsc.rcText.left + text_offset + (tsc.p_write * 6),
-			         tsc.rcText.top + tsc.ypos_line[tsc.line % 4] + tsc.offsetY,
+			drawRect(gTsc.rcText.left + text_offset + (gTsc.p_write * 6),
+			         gTsc.rcText.top + gTsc.ypos_line[gTsc.line % 4] + gTsc.offsetY,
 			         5,
 			         11);
 		}
@@ -1325,7 +1325,7 @@ void drawTsc()
 		rcItemBox4 = { 240, 8, 244, 16 };
 		rcItemBox5 = { 240, 16, 244, 24 };
 
-		if (tsc.item) //Display item not 0
+		if (gTsc.item) //Display item not 0
 		{
 			//Draw GIT background
 			drawTexture(gSprites[TEX_TEXTBOX], &rcItemBox1, (gScreenWidth / 2) - 40, (gScreenHeight / 2) + 8);
@@ -1336,26 +1336,26 @@ void drawTsc()
 			drawTexture(gSprites[TEX_TEXTBOX], &rcItemBox5, (gScreenWidth / 2) + 32, (gScreenHeight / 2) + 32);
 
 			//Move the item image into position
-			if (tsc.item_y < 0x88)
-				++tsc.item_y;
+			if (gTsc.item_y < 0x88)
+				++gTsc.item_y;
 
-			if (tsc.item >= 1000) //Draw items if 1000 or greater
+			if (gTsc.item >= 1000) //Draw items if 1000 or greater
 			{
-				rcItem.left = 32 * ((tsc.item - 1000) % 8);
-				rcItem.right = 32 * ((tsc.item - 1000) % 8) + 32;
-				rcItem.top = 16 * ((tsc.item - 1000) / 8);
-				rcItem.bottom = 16 * ((tsc.item - 1000) / 8) + 16;
+				rcItem.left = 32 * ((gTsc.item - 1000) % 8);
+				rcItem.right = 32 * ((gTsc.item - 1000) % 8) + 32;
+				rcItem.top = 16 * ((gTsc.item - 1000) / 8);
+				rcItem.bottom = 16 * ((gTsc.item - 1000) / 8) + 16;
 
-				drawTexture(gSprites[TEX_ITEMIMAGE], &rcItem, (gScreenWidth / 2) - 20, ((gScreenHeight - 240) / 2) + tsc.item_y);
+				drawTexture(gSprites[TEX_ITEMIMAGE], &rcItem, (gScreenWidth / 2) - 20, ((gScreenHeight - 240) / 2) + gTsc.item_y);
 			}
 			else //Otherwise, draw weapon
 			{
-				rcItem.left = 16 * (tsc.item % 16);
-				rcItem.right = 16 * (tsc.item % 16) + 16;
-				rcItem.top = 16 * (tsc.item / 16);
-				rcItem.bottom = 16 * (tsc.item / 16) + 16;
+				rcItem.left = 16 * (gTsc.item % 16);
+				rcItem.right = 16 * (gTsc.item % 16) + 16;
+				rcItem.top = 16 * (gTsc.item / 16);
+				rcItem.bottom = 16 * (gTsc.item / 16) + 16;
 
-				drawTexture(gSprites[TEX_ARMSIMAGE], &rcItem, (gScreenWidth / 2) - 12, ((gScreenHeight - 240) / 2) + tsc.item_y);
+				drawTexture(gSprites[TEX_ARMSIMAGE], &rcItem, (gScreenWidth / 2) - 12, ((gScreenHeight - 240) / 2) + gTsc.item_y);
 			}
 		}
 
@@ -1363,18 +1363,18 @@ void drawTsc()
 		rcYesNo = { 152, 48, 244, 80 };
 		rcSelection = { 112, 88, 128, 104 };
 
-		if (tsc.mode == YNJ)
+		if (gTsc.mode == YNJ)
 		{
 			int y;
-			if (tsc.wait > 1)
+			if (gTsc.wait > 1)
 				y = gScreenHeight - 96;
 			else
-				y = (gScreenHeight - 240) + 4 * (38 - tsc.wait);
+				y = (gScreenHeight - 240) + 4 * (38 - gTsc.wait);
 
-			drawTexture(gSprites[TEX_TEXTBOX], &rcYesNo, tsc.rcText.left + 164, y);
+			drawTexture(gSprites[TEX_TEXTBOX], &rcYesNo, gTsc.rcText.left + 164, y);
 
-			if (tsc.wait == 16)
-				drawTexture(gSprites[TEX_TEXTBOX], &rcSelection, 41 * tsc.select + tsc.rcText.left + 159, gScreenHeight - 86);
+			if (gTsc.wait == 16)
+				drawTexture(gSprites[TEX_TEXTBOX], &rcSelection, 41 * gTsc.select + gTsc.rcText.left + 159, gScreenHeight - 86);
 		}
 	}
 }

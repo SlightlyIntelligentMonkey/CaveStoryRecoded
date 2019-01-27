@@ -20,7 +20,7 @@
 #include "main.h"
 
 SOUND *gOrgWaves[8][8][2];
-SOUND **gOrgDrums/*[8]*/ = sounds + 150;
+SOUND **gOrgDrums/*[8]*/ = gSounds + 150;
 
 std::vector<std::string> gMusicList;
 
@@ -69,7 +69,7 @@ struct OCTWAVE {
 	int16_t oct_size;
 };
 
-OCTWAVE oct_wave[8] = {
+OCTWAVE gOctWave[8] = {
 	{ 256,  1,  4 }, //0 Oct
 	{ 256,  2,  8 }, //1 Oct
 	{ 128,  4, 12 }, //2 Oct
@@ -142,19 +142,19 @@ void releaseNote(void)
 }
 
 //Load wave100
-char *wave_data = nullptr;
+char *gWaveData = nullptr;
 
 bool loadWave100()
 {
 	//Allocate data
-	if (wave_data == nullptr)
-		wave_data = new char[0x100 * 100];
+	if (gWaveData == nullptr)
+		gWaveData = new char[0x100 * 100];
 
 	FILE *fp;
 	if ((fp = fopen("data/Wave100.dat", "rb")) == nullptr)
 		return false;
 
-	if (fread(wave_data, sizeof(char), 0x100 * 100, fp) != 0x100 * 100)
+	if (fread(gWaveData, sizeof(char), 0x100 * 100, fp) != 0x100 * 100)
 		doCustomError("Couldn't read from data/Wave100.dat"); 
 	fclose(fp);
 	return true;
@@ -162,7 +162,7 @@ bool loadWave100()
 
 bool deleteWave100()
 {
-	delete[] wave_data;
+	delete[] gWaveData;
 	return true;
 }
 
@@ -187,10 +187,10 @@ bool makeSoundObject8(const char *wavep, uint8_t track, bool pipi)
 
 	for (j = 0; j < 8; j++) {
 		for (k = 0; k < 2; k++) {
-			wave_size = oct_wave[j].wave_size;
+			wave_size = gOctWave[j].wave_size;
 
 			if (pipi)
-				data_size = wave_size * oct_wave[j].oct_size;
+				data_size = wave_size * gOctWave[j].oct_size;
 			else
 				data_size = wave_size;
 
@@ -231,7 +231,7 @@ bool makeOrganyaWave(uint8_t track, uint8_t wave_no, bool pipi)
 	if (wave_no >= 100)
 		return false;
 	releaseOrganyaObject(track);
-	makeSoundObject8(wave_data + (wave_no * 0x100), track, pipi);
+	makeSoundObject8(gWaveData + (wave_no * 0x100), track, pipi);
 	return true;
 }
 
@@ -260,7 +260,7 @@ void changeOrganFrequency(unsigned char key, uint8_t track, int32_t a)
 {
 	for (int j = 0; j < 8; j++)
 		for (int i = 0; i < 2; i++)
-			SoundObject_SetFrequency(gOrgWaves[track][j][i], ((oct_wave[j].wave_size*gFrequenceTable[key]) * oct_wave[j].oct_par) / 8 + (a - 1000));
+			SoundObject_SetFrequency(gOrgWaves[track][j][i], ((gOctWave[j].wave_size*gFrequenceTable[key]) * gOctWave[j].oct_par) / 8 + (a - 1000));
 }
 
 short gPanTable[13] = { 0,43,86,129,172,215,256,297,340,383,426,469,512 };

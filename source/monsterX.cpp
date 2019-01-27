@@ -179,7 +179,7 @@ void actBoss_MonsterX(npc *boss)
 		if (++boss->act_wait > 100)
 		{
 			boss->act_wait = 0;
-			if (boss->x <= currentPlayer.x)
+			if (boss->x <= gCurrentPlayer.x)
 				boss->act_no = 200;
 			else
 				boss->act_no = 100;
@@ -201,7 +201,7 @@ void actBoss_MonsterX(npc *boss)
 			gBossObj[12].act_no = 100;
 		if (boss->act_wait > 120 && boss->count1 > 2)
 			boss->act_no = 300;
-		if (boss->act_wait > 121 && currentPlayer.x > boss->x)
+		if (boss->act_wait > 121 && gCurrentPlayer.x > boss->x)
 			boss->act_no = 200;
 		break;
 	case 200:
@@ -220,7 +220,7 @@ void actBoss_MonsterX(npc *boss)
 			gBossObj[12].act_no = 200;
 		if (boss->act_wait > 120 && boss->count1 > 2)
 			boss->act_no = 400;
-		if (boss->act_wait > 121 && currentPlayer.x < boss->x)
+		if (boss->act_wait > 121 && gCurrentPlayer.x < boss->x)
 			boss->act_no = 100;
 		break;
 	case 300:
@@ -293,7 +293,7 @@ void actBoss_MonsterX(npc *boss)
 	case 503:
 		if (++boss->act_wait > 50)
 		{
-			if (boss->x <= currentPlayer.x)
+			if (boss->x <= gCurrentPlayer.x)
 				boss->act_no = 200;
 			else
 				boss->act_no = 100;
@@ -324,7 +324,7 @@ void actBoss_MonsterX(npc *boss)
 	case 603:
 		if (++boss->act_wait > 50)
 		{
-			if (boss->x <= currentPlayer.x)
+			if (boss->x <= gCurrentPlayer.x)
 				boss->act_no = 200;
 			else
 				boss->act_no = 100;
@@ -543,7 +543,7 @@ void treads(npc *NPC)
 	}
 	if ((NPC->act_no == 103 || NPC->act_no == 203) && NPC->act_wait % 4 == 1)
 		playSound(SFX_Thud);
-	if (NPC->act_no < 100 || currentPlayer.y >= NPC->y + 2048 || currentPlayer.y <= NPC->y - 2048)
+	if (NPC->act_no < 100 || gCurrentPlayer.y >= NPC->y + 2048 || gCurrentPlayer.y <= NPC->y - 2048)
 	{
 		NPC->damage = 0;
 		NPC->bits &= ~npc_rearTop;
@@ -728,7 +728,7 @@ void orb(npc *NPC)
 	}
 	else
 	{
-		temp = getAtan(NPC->x - currentPlayer.x, NPC->y - currentPlayer.y);
+		temp = getAtan(NPC->x - gCurrentPlayer.x, NPC->y - gCurrentPlayer.y);
 		temp += random(-2, 2);
 		yVel = 3 * getSin(temp);
 		xVel = 3 * getCos(temp);

@@ -53,8 +53,8 @@ int openMapSystem()
 	my_rect.top = 57;
 	my_rect.right = 1;
 	my_rect.bottom = 58;
-	my_x = (currentPlayer.x / 0x200 + 8) / 16;
-	my_y = (currentPlayer.y / 0x200 + 8) / 16;
+	my_x = (gCurrentPlayer.x / 0x200 + 8) / 16;
+	my_y = (gCurrentPlayer.y / 0x200 + 8) / 16;
 
 	//Create map buffer
 	createTextureBuffer(TEX_MAPSYSTEM, gMap.width, gMap.height);

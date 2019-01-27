@@ -35,31 +35,31 @@ void shootSnake(int level)
 		int shootY = 0;
 		int caretX = 0;
 
-		if (currentPlayer.up)
+		if (gCurrentPlayer.up)
 		{
 			shootDirect = dirUp;
-			shootX = (currentPlayer.direct - 1) * 1536;
-			caretX = (currentPlayer.direct - 1) * 1536;
+			shootX = (gCurrentPlayer.direct - 1) * 1536;
+			caretX = (gCurrentPlayer.direct - 1) * 1536;
 			shootY = -5120;
 		}
-		else if (currentPlayer.down)
+		else if (gCurrentPlayer.down)
 		{
 			shootDirect = dirDown;
-			shootX = (currentPlayer.direct - 1) * 1536;
-			caretX = (currentPlayer.direct - 1) * 1536 ;
+			shootX = (gCurrentPlayer.direct - 1) * 1536;
+			caretX = (gCurrentPlayer.direct - 1) * 1536 ;
 			shootY = 5120;
 		}
 		else
 		{
-			shootDirect = currentPlayer.direct;
-			shootX = (currentPlayer.direct - 1) * 0xC00;
-			caretX = (currentPlayer.direct - 1) * 0x1800;
+			shootDirect = gCurrentPlayer.direct;
+			shootX = (gCurrentPlayer.direct - 1) * 0xC00;
+			caretX = (gCurrentPlayer.direct - 1) * 0x1800;
 			shootY = 1024;
 		}
 
 		//Create bullet
-		createBullet(bulletId, currentPlayer.x + shootX, currentPlayer.y + shootY, shootDirect, 1);
-		createCaret(currentPlayer.x + caretX, currentPlayer.y + shootY, effect_Star);
+		createBullet(bulletId, gCurrentPlayer.x + shootX, gCurrentPlayer.y + shootY, shootDirect, 1);
+		createCaret(gCurrentPlayer.x + caretX, gCurrentPlayer.y + shootY, effect_Star);
 		playSound(SFX_FireballShoot);
 	}
 }

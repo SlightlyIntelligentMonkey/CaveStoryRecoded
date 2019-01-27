@@ -68,14 +68,14 @@ public:
 	void draw();
 };
 
-extern int _empty;
+extern int gEmpty;
 
 void createBullet(int setCode, int setX, int setY, uint8_t setDir, int weapon = -1);
 void updateBullets();
 void drawBullets();
 
 using bulletAct = void(*)(bullet *);
-extern std::deque<bullet> bullets;
+extern std::deque<bullet> gBullets;
 
 enum bulletFlags
 {

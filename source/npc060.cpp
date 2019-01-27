@@ -44,10 +44,10 @@ void npcAct060(npc *NPC) //Toroko
 		}
 
 		//Face towards player if nearby
-		if (NPC->x - tilesToUnits(1) < currentPlayer.x && NPC->x + tilesToUnits(1) > currentPlayer.x
-            && NPC->y - tilesToUnits(1) < currentPlayer.y && NPC->y + tilesToUnits(1) > currentPlayer.y)
+		if (NPC->x - tilesToUnits(1) < gCurrentPlayer.x && NPC->x + tilesToUnits(1) > gCurrentPlayer.x
+            && NPC->y - tilesToUnits(1) < gCurrentPlayer.y && NPC->y + tilesToUnits(1) > gCurrentPlayer.y)
 		{
-			if (NPC->x <= currentPlayer.x)
+			if (NPC->x <= gCurrentPlayer.x)
 				NPC->direct = dirRight;
 			else
 				NPC->direct = dirLeft;
@@ -585,7 +585,7 @@ void npcAct064(npc *NPC) //First Cave critter
 	if (action == 1)
 	{
 		//Face towards player
-		if (NPC->x <= currentPlayer.x)
+		if (NPC->x <= gCurrentPlayer.x)
 			NPC->direct = dirRight;
 		else
 			NPC->direct = dirLeft;
@@ -596,8 +596,8 @@ void npcAct064(npc *NPC) //First Cave critter
 
 		//Timer for looking at Quote
 		if (NPC->act_wait < 8
-            || NPC->x - tilesToUnits(7) >= currentPlayer.x || NPC->x + tilesToUnits(7) <= currentPlayer.x
-            || NPC->y - tilesToUnits(5) >= currentPlayer.y || NPC->y + tilesToUnits(5) <= currentPlayer.y)
+            || NPC->x - tilesToUnits(7) >= gCurrentPlayer.x || NPC->x + tilesToUnits(7) <= gCurrentPlayer.x
+            || NPC->y - tilesToUnits(5) >= gCurrentPlayer.y || NPC->y + tilesToUnits(5) <= gCurrentPlayer.y)
 		{
 			if (NPC->act_wait <= 7)
 				++NPC->act_wait;
@@ -618,10 +618,10 @@ void npcAct064(npc *NPC) //First Cave critter
 		//Go into "going to jump" state
 		if (NPC->act_wait >= 8
 		        && NPC->tgt_x >= 100
-		        && NPC->x - tilesToUnits(4) < currentPlayer.x
-		        && NPC->x + tilesToUnits(4) > currentPlayer.x
-		        && NPC->y - tilesToUnits(5) < currentPlayer.y
-		        && NPC->y + tilesToUnits(3) > currentPlayer.y)
+		        && NPC->x - tilesToUnits(4) < gCurrentPlayer.x
+		        && NPC->x + tilesToUnits(4) > gCurrentPlayer.x
+		        && NPC->y - tilesToUnits(5) < gCurrentPlayer.y
+		        && NPC->y + tilesToUnits(3) > gCurrentPlayer.y)
 		{
 			NPC->act_no = 2;
 			NPC->act_wait = 0;
@@ -666,7 +666,7 @@ void npcAct065(npc *NPC) //First Cave Bat
 		break;
 	case 2:
 		//Face towards player
-		if (currentPlayer.x >= NPC->x)
+		if (gCurrentPlayer.x >= NPC->x)
 			NPC->direct = dirRight;
 		else
 			NPC->direct = dirLeft;
@@ -973,10 +973,10 @@ void npcAct068(npc * NPC) // Balrog, Running (boss)
 			NPC->xm -= 0x10;
 
 		if (NPC->act_wait < 8
-			|| NPC->x - pixelsToUnits(12) >= currentPlayer.x
-			|| NPC->x + pixelsToUnits(12) <= currentPlayer.x
-			|| NPC->y - pixelsToUnits(12) >= currentPlayer.y
-			|| NPC->y + pixelsToUnits(12) <= currentPlayer.y)
+			|| NPC->x - pixelsToUnits(12) >= gCurrentPlayer.x
+			|| NPC->x + pixelsToUnits(12) <= gCurrentPlayer.x
+			|| NPC->y - pixelsToUnits(12) >= gCurrentPlayer.y
+			|| NPC->y + pixelsToUnits(12) <= gCurrentPlayer.y)
 		{
 			++NPC->act_wait;
 			if (NPC->flag & (rightWall | leftWall) || NPC->act_wait > 75)
@@ -995,8 +995,8 @@ void npcAct068(npc * NPC) // Balrog, Running (boss)
 		{
 			NPC->act_no = caughtQuote;
 			NPC->ani_no = 5;
-			currentPlayer.cond |= player_removed;
-			currentPlayer.damage(2);
+			gCurrentPlayer.cond |= player_removed;
+			gCurrentPlayer.damage(2);
 		}
 		break;
 
@@ -1010,15 +1010,15 @@ void npcAct068(npc * NPC) // Balrog, Running (boss)
 		}
 
 		if (NPC->act_wait >= 8
-			&& NPC->x - pixelsToUnits(12) < currentPlayer.x
-			&& NPC->x + pixelsToUnits(12) > currentPlayer.x
-			&& NPC->y - pixelsToUnits(12) < currentPlayer.y
-			&& NPC->y + pixelsToUnits(12) > currentPlayer.y)
+			&& NPC->x - pixelsToUnits(12) < gCurrentPlayer.x
+			&& NPC->x + pixelsToUnits(12) > gCurrentPlayer.x
+			&& NPC->y - pixelsToUnits(12) < gCurrentPlayer.y
+			&& NPC->y + pixelsToUnits(12) > gCurrentPlayer.y)
 		{
 			NPC->act_no = caughtQuote;
 			NPC->ani_no = 5;
-			currentPlayer.cond |= player_removed;
-			currentPlayer.damage(2);
+			gCurrentPlayer.cond |= player_removed;
+			gCurrentPlayer.damage(2);
 		}
 		break;
 
@@ -1029,8 +1029,8 @@ void npcAct068(npc * NPC) // Balrog, Running (boss)
 		break;
 
 	case caughtQuote:
-		currentPlayer.x = NPC->x;
-		currentPlayer.y = NPC->y;
+		gCurrentPlayer.x = NPC->x;
+		gCurrentPlayer.y = NPC->y;
 		NPC->xm = (4 * NPC->xm) / 5;
 
 		if (!NPC->xm)
@@ -1043,8 +1043,8 @@ void npcAct068(npc * NPC) // Balrog, Running (boss)
 		break;
 
 	case caughtQuote + 1:
-		currentPlayer.x = NPC->x;
-		currentPlayer.y = NPC->y;
+		gCurrentPlayer.x = NPC->x;
+		gCurrentPlayer.y = NPC->y;
 
 		NPC->animate(2, 5, 6);
 
@@ -1054,24 +1054,24 @@ void npcAct068(npc * NPC) // Balrog, Running (boss)
 
 	case throwQuote:
 		playSound(SFX_SillyExplosion);
-		currentPlayer.cond &= ~player_removed;
+		gCurrentPlayer.cond &= ~player_removed;
 
 		if (NPC->direct != dirLeft)
 		{
-			currentPlayer.x -= pixelsToUnits(4);
-			currentPlayer.y -= pixelsToUnits(8);
-			currentPlayer.xm = -0x5FF;
-			currentPlayer.ym = pixelsToUnits(-1);
-			currentPlayer.direct = dirLeft;
+			gCurrentPlayer.x -= pixelsToUnits(4);
+			gCurrentPlayer.y -= pixelsToUnits(8);
+			gCurrentPlayer.xm = -0x5FF;
+			gCurrentPlayer.ym = pixelsToUnits(-1);
+			gCurrentPlayer.direct = dirLeft;
 			NPC->direct = dirLeft;
 		}
 		else
 		{
-			currentPlayer.x += pixelsToUnits(4);
-			currentPlayer.y -= pixelsToUnits(8);
-			currentPlayer.xm = 0x5FF;
-			currentPlayer.ym = pixelsToUnits(-1);
-			currentPlayer.direct = dirLeft;
+			gCurrentPlayer.x += pixelsToUnits(4);
+			gCurrentPlayer.y -= pixelsToUnits(8);
+			gCurrentPlayer.xm = 0x5FF;
+			gCurrentPlayer.ym = pixelsToUnits(-1);
+			gCurrentPlayer.direct = dirLeft;
 			NPC->direct = dirLeft;
 		}
 
@@ -1283,10 +1283,10 @@ void npcAct072(npc *NPC) // Sprinkler
 			return;
 		}
 
-		if (currentPlayer.x < NPC->x + tilesToUnits(20)
-		        && currentPlayer.x > NPC->x - tilesToUnits(20)
-		        && currentPlayer.y < NPC->y + tilesToUnits(15)
-		        && currentPlayer.y > NPC->y - tilesToUnits(15))
+		if (gCurrentPlayer.x < NPC->x + tilesToUnits(20)
+		        && gCurrentPlayer.x > NPC->x - tilesToUnits(20)
+		        && gCurrentPlayer.y < NPC->y + tilesToUnits(15)
+		        && gCurrentPlayer.y > NPC->y - tilesToUnits(15))
 		{
 			if (++NPC->act_no % 2)
 				createNpc(NPC_WaterDrop1, NPC->x, NPC->y,
@@ -1420,10 +1420,10 @@ void npcAct075(npc * NPC) // Kanpachi
 		NPC->ani_no = 0;
 		NPC->ani_wait = 0;
 	}
-	NPC->ani_no = NPC->x - tilesToUnits(3) < currentPlayer.x
-	              && NPC->x + tilesToUnits(3) > currentPlayer.x
-	              && NPC->y - tilesToUnits(3) < currentPlayer.y
-	              && NPC->y + tilesToUnits(1) > currentPlayer.y;
+	NPC->ani_no = NPC->x - tilesToUnits(3) < gCurrentPlayer.x
+	              && NPC->x + tilesToUnits(3) > gCurrentPlayer.x
+	              && NPC->y - tilesToUnits(3) < gCurrentPlayer.y
+	              && NPC->y + tilesToUnits(1) > gCurrentPlayer.y;
 doRects:
 	NPC->doRects(rcNPC);
 
@@ -1495,10 +1495,10 @@ void npcAct079(npc *NPC) // Mahin
 			NPC->act_wait = 0;
 			NPC->ani_no = 1;
 		}
-		if (NPC->x - tilesToUnits(2) < currentPlayer.x
-		        && NPC->x + tilesToUnits(2) > currentPlayer.x
-		        && NPC->y - tilesToUnits(2) < currentPlayer.y
-		        && NPC->y + tilesToUnits(1) > currentPlayer.x)
+		if (NPC->x - tilesToUnits(2) < gCurrentPlayer.x
+		        && NPC->x + tilesToUnits(2) > gCurrentPlayer.x
+		        && NPC->y - tilesToUnits(2) < gCurrentPlayer.y
+		        && NPC->y + tilesToUnits(1) > gCurrentPlayer.x)
 			NPC->facePlayer();
 	}
 	else if (NPC->act_no == 3 && ++NPC->act_wait > 8)

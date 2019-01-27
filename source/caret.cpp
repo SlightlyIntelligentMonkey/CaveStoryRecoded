@@ -8,9 +8,9 @@
 #include <deque>
 #include <cstring>
 
-std::deque<caret> carets(0);
+std::deque<caret> gCarets(0);
 
-CARETSTAT caretStats[] =
+CARETSTAT gCaretStats[] =
 {
 	{ 0x0,		0x0 },
 	{ 0x800,	0x800 },
@@ -34,18 +34,18 @@ CARETSTAT caretStats[] =
 
 void updateCarets()
 {
-	if (carets.size())
+	if (gCarets.size())
 	{
 		//Update
-		for (size_t i = 0; i < carets.size(); i++)
-			carets[i].update();
+		for (size_t i = 0; i < gCarets.size(); i++)
+			gCarets[i].update();
 
 		//Remove dead carets
-		for (size_t i = 0; i < carets.size(); i++)
+		for (size_t i = 0; i < gCarets.size(); i++)
 		{
-			if (!(carets[i].cond & 0x80))
+			if (!(gCarets[i].cond & 0x80))
 			{
-				carets.erase(carets.begin() + i);
+				gCarets.erase(gCarets.begin() + i);
 				i--;
 			}
 		}
@@ -54,10 +54,10 @@ void updateCarets()
 
 void drawCarets()
 {
-	if (carets.size())
+	if (gCarets.size())
 	{
-		for (size_t i = 0; i < carets.size(); i++)
-			carets[i].draw();
+		for (size_t i = 0; i < gCarets.size(); i++)
+			gCarets[i].draw();
 	}
 }
 
@@ -506,26 +506,26 @@ void caretAct017(caret *CARET) //PUSH JUMP KEY!
 		CARET->rect = { 0, 144, 144, 152 };
 }
 
-caretAct caretActs[] =
+caretAct gCaretActs[] =
 {
-	&caretAct000,
-	&caretAct001,
-	&caretAct002,
-	&caretAct003,
-	&caretAct004,
-	&caretAct005,
-	&caretAct004, //unused
-	&caretAct007,
-	&caretAct008,
-	&caretAct009,
-	&caretAct010,
-	&caretAct011,
-	&caretAct012,
-	&caretAct013,
-	&caretAct000, //unused
-	&caretAct015,
-	&caretAct016,
-	&caretAct017,
+	caretAct000,
+	caretAct001,
+	caretAct002,
+	caretAct003,
+	caretAct004,
+	caretAct005,
+	caretAct004, //unused
+	caretAct007,
+	caretAct008,
+	caretAct009,
+	caretAct010,
+	caretAct011,
+	caretAct012,
+	caretAct013,
+	caretAct000, //unused
+	caretAct015,
+	caretAct016,
+	caretAct017,
 };
 
 //Init
@@ -541,14 +541,14 @@ void caret::init(int setX, int setY, int setType, int setDir)
 
 	direct = setDir;
 
-	view_left = caretStats[code].offsetX;
-	view_top = caretStats[code].offsetY;
+	view_left = gCaretStats[code].offsetX;
+	view_top = gCaretStats[code].offsetY;
 }
 
 //Update code
 void caret::update() 
 {
-	caretActs[code](this);
+	gCaretActs[code](this);
 }
 
 void caret::draw()
@@ -559,9 +559,9 @@ void caret::draw()
 	{
 		size_t index = 0;
 
-		for (size_t i = 0; i < carets.size(); i++)
+		for (size_t i = 0; i < gCarets.size(); i++)
 		{
-			if (&carets[i] == this)
+			if (&gCarets[i] == this)
 			{
 				index = i;
 				break;
@@ -577,5 +577,5 @@ void createCaret(int setX, int setY, int setType, int setDir)
 {
 	caret newCaret;
 	newCaret.init(setX, setY, setType, setDir);
-	carets.push_back(newCaret);
+	gCarets.push_back(newCaret);
 }

@@ -251,7 +251,7 @@ void npcAct223(npc *NPC) // Momorin
         break;
     }
 
-    if (NPC->act_no < 2 && currentPlayer.y < NPC->y + 0x2000 && currentPlayer.y > NPC->y - 0x2000)
+    if (NPC->act_no < 2 && gCurrentPlayer.y < NPC->y + 0x2000 && gCurrentPlayer.y > NPC->y - 0x2000)
         NPC->facePlayer();
 
     NPC->doRects(rcLeft, rcRight);
@@ -302,7 +302,7 @@ void npcAct224(npc *NPC) // Chie
         break;
 	}
 
-	if (NPC->act_no < blinking && currentPlayer.y < NPC->y + 0x2000 && currentPlayer.y > NPC->y - 0x2000)
+	if (NPC->act_no < blinking && gCurrentPlayer.y < NPC->y + 0x2000 && gCurrentPlayer.y > NPC->y - 0x2000)
         NPC->facePlayer();
 
     NPC->doRects(rcLeft, rcRight);
@@ -589,9 +589,9 @@ void npcAct231(npc *NPC) //Momorin's rocket
 		if (NPC->act_wait % 4 == 1)
 			playSound(SFX_FireballBounce);
 
-		if (NPC->flag & ceiling || currentPlayer.flag & ceiling || NPC->act_wait > 450)
+		if (NPC->flag & ceiling || gCurrentPlayer.flag & ceiling || NPC->act_wait > 450)
 		{
-			if (NPC->flag & ceiling || currentPlayer.flag & ceiling)
+			if (NPC->flag & ceiling || gCurrentPlayer.flag & ceiling)
 				NPC->ym = 0;
 
 			NPC->act_no = 15;
@@ -730,7 +730,7 @@ void npcAct233(npc *NPC) // Unknown
 
 		if (NPC->count1 >= 120)
 		{
-			if (NPC->x - 0x1000 < currentPlayer.x && NPC->x + 0x1000 > currentPlayer.x && NPC->y < currentPlayer.y && NPC->y + pixelsToUnits(176) > currentPlayer.y)
+			if (NPC->x - 0x1000 < gCurrentPlayer.x && NPC->x + 0x1000 > gCurrentPlayer.x && NPC->y < gCurrentPlayer.y && NPC->y + pixelsToUnits(176) > gCurrentPlayer.y)
 			{
 				NPC->xm /= 4;
 				NPC->ym = 0;
@@ -1065,12 +1065,12 @@ void npcAct236(npc *NPC) //Gunfish
 
 		break;
 	case 2:
-		if (NPC->x >= currentPlayer.x)
+		if (NPC->x >= gCurrentPlayer.x)
 			NPC->direct = dirLeft;
 		else
 			NPC->direct = dirRight;
 
-		if (currentPlayer.x < NPC->x + 0x10000 && currentPlayer.x > NPC->x - 0x10000 && currentPlayer.y < NPC->y + 0x4000 && currentPlayer.y > NPC->y - 0x14000)
+		if (gCurrentPlayer.x < NPC->x + 0x10000 && gCurrentPlayer.x > NPC->x - 0x10000 && gCurrentPlayer.y < NPC->y + 0x4000 && gCurrentPlayer.y > NPC->y - 0x14000)
 			++NPC->act_wait;
 
 		if (NPC->act_wait > 80)
@@ -1220,14 +1220,14 @@ void npcAct238(npc *NPC) //Killer press
 	switch (NPC->act_no)
 	{
 	case 1:
-		if (NPC->direct == dirLeft && currentPlayer.x < NPC->x && currentPlayer.x > NPC->x - 0x18000 && currentPlayer.y > NPC->y - 0x800 && currentPlayer.y < NPC->y + 0x1000)
+		if (NPC->direct == dirLeft && gCurrentPlayer.x < NPC->x && gCurrentPlayer.x > NPC->x - 0x18000 && gCurrentPlayer.y > NPC->y - 0x800 && gCurrentPlayer.y < NPC->y + 0x1000)
 		{
 			NPC->act_no = 10;
 			NPC->act_wait = 0;
 			NPC->ani_no = 2;
 		}
 
-		if (NPC->direct == dirRight && currentPlayer.x > NPC->x && currentPlayer.x < NPC->x + 0x18000 && currentPlayer.y > NPC->y - 0x800 && currentPlayer.y < NPC->y + 0x1000)
+		if (NPC->direct == dirRight && gCurrentPlayer.x > NPC->x && gCurrentPlayer.x < NPC->x + 0x18000 && gCurrentPlayer.y > NPC->y - 0x800 && gCurrentPlayer.y < NPC->y + 0x1000)
 		{
 			NPC->act_no = 10;
 			NPC->act_wait = 0;
@@ -1290,9 +1290,9 @@ void npcAct238(npc *NPC) //Killer press
 		break;
 	}
 
-	if (NPC->direct != dirLeft || currentPlayer.x >= NPC->x)
+	if (NPC->direct != dirLeft || gCurrentPlayer.x >= NPC->x)
 	{
-		if (NPC->direct != dirRight || currentPlayer.x <= NPC->x)
+		if (NPC->direct != dirRight || gCurrentPlayer.x <= NPC->x)
 			NPC->hit.right = 0x1000;
 		else
 			NPC->hit.right = 0x2000;

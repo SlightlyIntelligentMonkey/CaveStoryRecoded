@@ -34,30 +34,30 @@ void shootNemesis(int level)
 			break;
 		}
 
-		if (currentPlayer.up)
+		if (gCurrentPlayer.up)
 		{
 			shootDirect = dirUp;
-			shootX = (currentPlayer.direct - 1) * 512;
-			caretX = (currentPlayer.direct - 1) * 512;
+			shootX = (gCurrentPlayer.direct - 1) * 512;
+			caretX = (gCurrentPlayer.direct - 1) * 512;
 			shootY = -6144;
 		}
-		else if (currentPlayer.down)
+		else if (gCurrentPlayer.down)
 		{
 			shootDirect = dirDown;
-			shootX = (currentPlayer.direct - 1) * 512;
-			caretX = (currentPlayer.direct - 1) * 512;
+			shootX = (gCurrentPlayer.direct - 1) * 512;
+			caretX = (gCurrentPlayer.direct - 1) * 512;
 			shootY = 6144;
 		}
 		else
 		{
-			shootDirect = currentPlayer.direct;
-			shootX = (currentPlayer.direct - 1) * 11264;
-			caretX = (currentPlayer.direct - 1) * 8192;
+			shootDirect = gCurrentPlayer.direct;
+			shootX = (gCurrentPlayer.direct - 1) * 11264;
+			caretX = (gCurrentPlayer.direct - 1) * 8192;
 			shootY = 1536;
 		}
 
-		createBullet(bulletId, currentPlayer.x + shootX, currentPlayer.y + shootY, shootDirect, 12);
-		createCaret(currentPlayer.x + caretX, currentPlayer.y + shootY, effect_Star);
+		createBullet(bulletId, gCurrentPlayer.x + shootX, gCurrentPlayer.y + shootY, shootDirect, 12);
+		createCaret(gCurrentPlayer.x + caretX, gCurrentPlayer.y + shootY, effect_Star);
 
 	
 		switch (level)

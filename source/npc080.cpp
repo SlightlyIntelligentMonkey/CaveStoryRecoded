@@ -82,7 +82,7 @@ void npcAct080(npc *NPC) //Gravekeeper
 //Fallthrough
 	case 1:
 		NPC->ani_no = 0;
-		if (NPC->x - 0x10000 < currentPlayer.x && NPC->x + 0x10000 > currentPlayer.x && NPC->y - 0x6000 < currentPlayer.y && NPC->y + 0x4000 > currentPlayer.y)
+		if (NPC->x - 0x10000 < gCurrentPlayer.x && NPC->x + 0x10000 > gCurrentPlayer.x && NPC->y - 0x6000 < gCurrentPlayer.y && NPC->y + 0x4000 > gCurrentPlayer.y)
 		{
 			NPC->ani_wait = 0;
 			NPC->act_no = 2;
@@ -109,7 +109,7 @@ void npcAct080(npc *NPC) //Gravekeeper
 		if (NPC->ani_no > 3)
 			NPC->ani_no = 0;
 
-		if (NPC->x - 0x2000 < currentPlayer.x && NPC->x + 0x2000 > currentPlayer.x)
+		if (NPC->x - 0x2000 < gCurrentPlayer.x && NPC->x + 0x2000 > gCurrentPlayer.x)
 		{
 			NPC->hit.left = 0x2400;
 			NPC->act_wait = 0;
@@ -122,7 +122,7 @@ void npcAct080(npc *NPC) //Gravekeeper
 				NPC->xm = pixelsToUnits(-2);
 		}
 
-		if (currentPlayer.x >= NPC->x)
+		if (gCurrentPlayer.x >= NPC->x)
 		{
 			NPC->direct = 2;
 			NPC->xm = 0x100;
@@ -337,7 +337,7 @@ void npcAct081(npc *NPC) //Big pignon
 		NPC->ani_no = 5;
 		NPC->act_no = 5;
 
-		if (NPC->x >= currentPlayer.x)
+		if (NPC->x >= gCurrentPlayer.x)
 			NPC->xm = -0x100;
 		else
 			NPC->xm = 0x100;
@@ -702,12 +702,12 @@ void npcAct085(npc * NPC) // Terminal
 	if (NPC->act_no == 0)
 	{
 		NPC->ani_no = 0;
-		if (NPC->x - 0x1000 < currentPlayer.
+		if (NPC->x - 0x1000 < gCurrentPlayer.
 
 			x
-			&& NPC->x + 0x1000 > currentPlayer.x
-			&& NPC->y - 0x2000 < currentPlayer.y
-			&& NPC->y + 0x1000 > currentPlayer.y)
+			&& NPC->x + 0x1000 > gCurrentPlayer.x
+			&& NPC->y - 0x2000 < gCurrentPlayer.y
+			&& NPC->y + 0x1000 > gCurrentPlayer.y)
 		{
 			playSound(SFX_ComputerScreenOn);
 			NPC->act_no = 1;
@@ -942,10 +942,10 @@ void npcAct088(npc * NPC) // Igor (boss)
 		{
 			if (NPC->direct != dirLeft)
 			{
-				if (NPC->x + tilesToUnits(1.5) > currentPlayer.x)
+				if (NPC->x + tilesToUnits(1.5) > gCurrentPlayer.x)
 					NPC->act_no = startPunch;
 			}
-			else if (NPC->x - tilesToUnits(1.5) < currentPlayer.x)
+			else if (NPC->x - tilesToUnits(1.5) < gCurrentPlayer.x)
 				NPC->act_no = startPunch;
 		}
 		else
@@ -1107,7 +1107,7 @@ void npcAct089(npc * NPC) // Igor, dying
 	case 0:
 		playSound(72);
 
-		if (NPC->x <= currentPlayer.x)
+		if (NPC->x <= gCurrentPlayer.x)
 			NPC->direct = 2;
 		else
 			NPC->direct = 0;
@@ -1600,14 +1600,14 @@ void npcAct096(npc *NPC) //Fan left
 			NPC->ani_no = 0;
 
 		//Current effect
-		if (currentPlayer.x > NPC->x - pixelsToUnits(gScreenWidth) && currentPlayer.x < NPC->x + pixelsToUnits(gScreenWidth) && currentPlayer.y > NPC->y - pixelsToUnits(gScreenHeight) && currentPlayer.y < NPC->y + pixelsToUnits(gScreenHeight) && random(0, 5) == 1)
+		if (gCurrentPlayer.x > NPC->x - pixelsToUnits(gScreenWidth) && gCurrentPlayer.x < NPC->x + pixelsToUnits(gScreenWidth) && gCurrentPlayer.y > NPC->y - pixelsToUnits(gScreenHeight) && gCurrentPlayer.y < NPC->y + pixelsToUnits(gScreenHeight) && random(0, 5) == 1)
 			createNpc(NPC_UnderwaterCurrent, NPC->x + (random(-8, 8) << 9), NPC->y, 0, 0, dirLeft);
 
 		//Blow quote
-		if (currentPlayer.y < NPC->y + 0x1000 && currentPlayer.y > NPC->y - 0x1000 && currentPlayer.x < NPC->x && currentPlayer.x > NPC->x - 0xC000)
+		if (gCurrentPlayer.y < NPC->y + 0x1000 && gCurrentPlayer.y > NPC->y - 0x1000 && gCurrentPlayer.x < NPC->x && gCurrentPlayer.x > NPC->x - 0xC000)
 		{
-			currentPlayer.xm -= 0x88;
-			currentPlayer.cond |= player_noFriction;
+			gCurrentPlayer.xm -= 0x88;
+			gCurrentPlayer.cond |= player_noFriction;
 		}
 
 		break;
@@ -1646,12 +1646,12 @@ void npcAct097(npc *NPC) //Fan up
 			NPC->ani_no = 0;
 
 		//Current effect
-		if (currentPlayer.x > NPC->x - pixelsToUnits(gScreenWidth) && currentPlayer.x < NPC->x + pixelsToUnits(gScreenWidth) && currentPlayer.y > NPC->y - pixelsToUnits(gScreenHeight) && currentPlayer.y < NPC->y + pixelsToUnits(gScreenHeight) && random(0, 5) == 1)
+		if (gCurrentPlayer.x > NPC->x - pixelsToUnits(gScreenWidth) && gCurrentPlayer.x < NPC->x + pixelsToUnits(gScreenWidth) && gCurrentPlayer.y > NPC->y - pixelsToUnits(gScreenHeight) && gCurrentPlayer.y < NPC->y + pixelsToUnits(gScreenHeight) && random(0, 5) == 1)
 			createNpc(NPC_UnderwaterCurrent, NPC->x + (random(-8, 8) << 9), NPC->y, 0, 0, dirUp);
 
 		//Blow quote
-		if (currentPlayer.x < NPC->x + 0x1000 && currentPlayer.x > NPC->x - 0x1000 && currentPlayer.y < NPC->y && currentPlayer.y > NPC->y - 0xC000)
-			currentPlayer.ym -= 0x88;
+		if (gCurrentPlayer.x < NPC->x + 0x1000 && gCurrentPlayer.x > NPC->x - 0x1000 && gCurrentPlayer.y < NPC->y && gCurrentPlayer.y > NPC->y - 0xC000)
+			gCurrentPlayer.ym -= 0x88;
 
 		break;
 	case 0:
@@ -1689,14 +1689,14 @@ void npcAct098(npc *NPC) //Fan right
 			NPC->ani_no = 0;
 
 		//Current effect
-		if (currentPlayer.x > NPC->x - pixelsToUnits(gScreenWidth) && currentPlayer.x < NPC->x + pixelsToUnits(gScreenWidth) && currentPlayer.y > NPC->y - pixelsToUnits(gScreenHeight) && currentPlayer.y < NPC->y + pixelsToUnits(gScreenHeight) && random(0, 5) == 1)
+		if (gCurrentPlayer.x > NPC->x - pixelsToUnits(gScreenWidth) && gCurrentPlayer.x < NPC->x + pixelsToUnits(gScreenWidth) && gCurrentPlayer.y > NPC->y - pixelsToUnits(gScreenHeight) && gCurrentPlayer.y < NPC->y + pixelsToUnits(gScreenHeight) && random(0, 5) == 1)
 			createNpc(NPC_UnderwaterCurrent, NPC->x + (random(-8, 8) << 9), NPC->y, 0, 0, dirRight);
 
 		//Blow quote
-		if (currentPlayer.y < NPC->y + 0x1000 && currentPlayer.y > NPC->y - 0x1000 && currentPlayer.x > NPC->x && currentPlayer.x < NPC->x + 0xC000)
+		if (gCurrentPlayer.y < NPC->y + 0x1000 && gCurrentPlayer.y > NPC->y - 0x1000 && gCurrentPlayer.x > NPC->x && gCurrentPlayer.x < NPC->x + 0xC000)
 		{
-			currentPlayer.xm += 0x88;
-			currentPlayer.cond |= player_noFriction;
+			gCurrentPlayer.xm += 0x88;
+			gCurrentPlayer.cond |= player_noFriction;
 		}
 
 		break;
@@ -1742,12 +1742,12 @@ void npcAct099(npc *NPC) //Fan down
 			NPC->ani_no = 0;
 
 		//Current effect
-		if (currentPlayer.x > NPC->x - pixelsToUnits(gScreenWidth) && currentPlayer.x < NPC->x + pixelsToUnits(gScreenWidth) && currentPlayer.y > NPC->y - pixelsToUnits(gScreenHeight) && currentPlayer.y < NPC->y + pixelsToUnits(gScreenHeight) && random(0, 5) == 1)
+		if (gCurrentPlayer.x > NPC->x - pixelsToUnits(gScreenWidth) && gCurrentPlayer.x < NPC->x + pixelsToUnits(gScreenWidth) && gCurrentPlayer.y > NPC->y - pixelsToUnits(gScreenHeight) && gCurrentPlayer.y < NPC->y + pixelsToUnits(gScreenHeight) && random(0, 5) == 1)
 			createNpc(NPC_UnderwaterCurrent, NPC->x + pixelsToUnits(random(-8, 8)), NPC->y, 0, 0, dirDown);
 
 		//Blow quote
-		if (currentPlayer.x < NPC->x + 0x1000 && currentPlayer.x > NPC->x - 0x1000 && currentPlayer.y > NPC->y && currentPlayer.y < NPC->y + 0xC000)
-			currentPlayer.ym += 0x88;
+		if (gCurrentPlayer.x < NPC->x + 0x1000 && gCurrentPlayer.x > NPC->x - 0x1000 && gCurrentPlayer.y > NPC->y && gCurrentPlayer.y < NPC->y + 0xC000)
+			gCurrentPlayer.ym += 0x88;
 
 		break;
 	}

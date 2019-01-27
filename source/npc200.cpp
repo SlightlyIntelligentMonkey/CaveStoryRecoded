@@ -49,7 +49,7 @@ void npcAct200(npc *NPC) // Dragon Zombie (enemy)
 
 		if (NPC->count1)	// count1 determines how much time till the dragon can shoot again
 			--NPC->count1;
-		if (!NPC->count1 && currentPlayer.x > NPC->x - 0xE000 && currentPlayer.x < NPC->x + 0xE000)	// Player also has to be in range
+		if (!NPC->count1 && gCurrentPlayer.x > NPC->x - 0xE000 && gCurrentPlayer.x < NPC->x + 0xE000)	// Player also has to be in range
 			NPC->act_no = startShoot;
 		break;
 
@@ -71,8 +71,8 @@ void npcAct200(npc *NPC) // Dragon Zombie (enemy)
 		NPC->act_no = shoot + 1;
 		NPC->act_wait = 0;
 		NPC->ani_no = 4;
-		NPC->tgt_x = currentPlayer.x;
-		NPC->tgt_y = currentPlayer.y;	// We're using the same target for all of our shots
+		NPC->tgt_x = gCurrentPlayer.x;
+		NPC->tgt_y = gCurrentPlayer.y;	// We're using the same target for all of our shots
 		// Fallthrough
 	case shoot + 1:
 		if (++NPC->act_wait < 40 && NPC->act_wait % 8 == 1)
@@ -87,7 +87,7 @@ void npcAct200(npc *NPC) // Dragon Zombie (enemy)
 			else
 				createNpc(NPC_ProjectileDragonZombie, NPC->x - 0x1C00, NPC->y, xVel, yVel);
 
-			if (!(currentPlayer.cond & player_removed))	// wot ?
+			if (!(gCurrentPlayer.cond & player_removed))	// wot ?
 				playSound(SFX_FireballShoot);
 		}
 		if (NPC->act_wait > 60)
@@ -190,10 +190,10 @@ void npcAct203(npc * NPC) // Critter, Hopping Aqua (enemy)
 			NPC->act_no = jumping;
 			NPC->ani_no = 2;
 			NPC->ym = -0x5FF;
-			if (!(currentPlayer.cond & player_removed))
+			if (!(gCurrentPlayer.cond & player_removed))
 				playSound(SFX_CritterHop);
 
-			if (NPC->x < currentPlayer.x)
+			if (NPC->x < gCurrentPlayer.x)
 				NPC->xm = 0x100;
 			else
 				NPC->xm = -0x100;
@@ -207,7 +207,7 @@ void npcAct203(npc * NPC) // Critter, Hopping Aqua (enemy)
 			NPC->act_wait = 0;
 			NPC->ani_no = 0;
 			NPC->act_no = waitForAttack;
-			if (!(currentPlayer.cond & player_removed))
+			if (!(gCurrentPlayer.cond & player_removed))
 				playSound(SFX_HitGround);
 		}
 		break;
@@ -245,7 +245,7 @@ void npcAct204(npc * NPC) // Falling Spike, small
 		NPC->tgt_x = NPC->x;
 		// Fallthrough
 	case normal:
-		if (currentPlayer.x > NPC->x - pixelsToUnits(12) && currentPlayer.x < NPC->x + pixelsToUnits(12) && currentPlayer.y > NPC->y)
+		if (gCurrentPlayer.x > NPC->x - pixelsToUnits(12) && gCurrentPlayer.x < NPC->x + pixelsToUnits(12) && gCurrentPlayer.y > NPC->y)
 			NPC->act_no = shaky;
 		break;
 
@@ -266,7 +266,7 @@ void npcAct204(npc * NPC) // Falling Spike, small
 		NPC->ym += 0x20;
 		if (!(NPC->flag & solid))
 			break;
-		if (!(currentPlayer.cond & player_removed))
+		if (!(gCurrentPlayer.cond & player_removed))
 			playSound(SFX_DestroyBreakableBlock);
 		createSmokeLeft(NPC->x, NPC->y, NPC->view.right, 4);
 		NPC->cond = 0;
@@ -294,8 +294,8 @@ void npcAct205(npc *NPC) // Falling Spike, large
 		NPC->y += pixelsToUnits(4);
 	// Fallthrough
 	case 1:
-		if (currentPlayer.x > NPC->x - pixelsToUnits(12) && currentPlayer.x < NPC->x + pixelsToUnits(12)
-		        && currentPlayer.y > NPC->y)
+		if (gCurrentPlayer.x > NPC->x - pixelsToUnits(12) && gCurrentPlayer.x < NPC->x + pixelsToUnits(12)
+		        && gCurrentPlayer.y > NPC->y)
 			NPC->act_no = 2;
 		break;
 
@@ -315,7 +315,7 @@ void npcAct205(npc *NPC) // Falling Spike, large
 
 	case 3:
 		NPC->ym += 0x20;
-		if (currentPlayer.y <= NPC->y)
+		if (gCurrentPlayer.y <= NPC->y)
 		{
 			NPC->bits |= npc_solidHard;
 			NPC->damage = 0;
@@ -377,7 +377,7 @@ void npcAct206(npc *NPC) // Counter bomb (enemy)
         break;
 
     case 2:
-        if ((currentPlayer.x > NPC->x - tilesToUnits(5) && currentPlayer.x < NPC->x + tilesToUnits(5)) || NPC->shock)
+        if ((gCurrentPlayer.x > NPC->x - tilesToUnits(5) && gCurrentPlayer.x < NPC->x + tilesToUnits(5)) || NPC->shock)
         {
             NPC->act_wait = 0;
             NPC->act_no = 3;
@@ -516,7 +516,7 @@ void npcAct208(npc *NPC) // Basu 2
 	switch (NPC->act_no)
 	{
 	case 0:
-		if (currentPlayer.x >= NPC->x + 0x2000 || currentPlayer.x <= NPC->x - 0x2000)
+		if (gCurrentPlayer.x >= NPC->x + 0x2000 || gCurrentPlayer.x <= NPC->x - 0x2000)
 		{
 			NPC->rect.right = 0;
 			NPC->damage = 0;
@@ -538,19 +538,19 @@ void npcAct208(npc *NPC) // Basu 2
 
 			if (NPC->direct != dirLeft)
 			{
-				NPC->x = currentPlayer.x - 0x20000;
+				NPC->x = gCurrentPlayer.x - 0x20000;
 				NPC->xm = 0x2FF;
 			}
 			else
 			{
-				NPC->x = currentPlayer.x + 0x20000;
+				NPC->x = gCurrentPlayer.x + 0x20000;
 				NPC->xm = -0x2FF;
 			}
 		}
 
 		break;
 	case 1:
-		if (NPC->x <= currentPlayer.x)
+		if (NPC->x <= gCurrentPlayer.x)
 		{
 			NPC->direct = dirRight;
 			NPC->xm += 0x10;
@@ -591,7 +591,7 @@ void npcAct208(npc *NPC) // Basu 2
 			NPC->y += NPC->ym;
 		}
 
-		if (currentPlayer.x > NPC->x + 0x32000 || currentPlayer.x < NPC->x - 0x32000)
+		if (gCurrentPlayer.x > NPC->x + 0x32000 || gCurrentPlayer.x < NPC->x - 0x32000)
 		{
 			NPC->act_no = 0;
 			NPC->xm = 0;
@@ -610,9 +610,9 @@ void npcAct208(npc *NPC) // Basu 2
 
 			if (NPC->act_wait == 150)
 			{
-				if ((++NPC->count2 % 8) == 0 && NPC->x < currentPlayer.x + 0x14000 && NPC->x > currentPlayer.x - 0x14000)
+				if ((++NPC->count2 % 8) == 0 && NPC->x < gCurrentPlayer.x + 0x14000 && NPC->x > gCurrentPlayer.x - 0x14000)
 				{
-					unsigned char deg = getAtan(NPC->x - currentPlayer.x, NPC->y - currentPlayer.y);
+					unsigned char deg = getAtan(NPC->x - gCurrentPlayer.x, NPC->y - gCurrentPlayer.y);
 					unsigned char random_deg = random(-6, 6) + deg;
 					int ym = 3 * getSin(random_deg);
 					int xm = 3 * getCos(random_deg);
@@ -721,7 +721,7 @@ void npcAct210(npc *NPC) // Beetle, Follow Aqua (enemy)
     switch (NPC->act_no)
     {
     case 0:
-        if (currentPlayer.x >= NPC->x + tilesToUnits(1) || currentPlayer.x <= NPC->x - tilesToUnits(1))
+        if (gCurrentPlayer.x >= NPC->x + tilesToUnits(1) || gCurrentPlayer.x <= NPC->x - tilesToUnits(1))
         {
             NPC->bits &= ~npc_shootable;
             NPC->rect.right = 0;
@@ -739,18 +739,18 @@ void npcAct210(npc *NPC) // Beetle, Follow Aqua (enemy)
 
         if (NPC->direct != dirLeft)
         {
-            NPC->x = currentPlayer.x - tilesToUnits(16);
+            NPC->x = gCurrentPlayer.x - tilesToUnits(16);
             NPC->xm = 0x2FF;
         }
         else
         {
-            NPC->x = currentPlayer.x + tilesToUnits(16);
+            NPC->x = gCurrentPlayer.x + tilesToUnits(16);
             NPC->xm = -0x2FF;
         }
         break;
 
     case 1:
-        if (NPC->x <= currentPlayer.x)
+        if (NPC->x <= gCurrentPlayer.x)
         {
             NPC->direct = dirRight;
             NPC->xm += 0x10;
@@ -887,7 +887,7 @@ void npcAct212(npc *NPC) // Sky Dragon
 
     NPC->doRects(rcNPC);
 
-    if (currentPlayer.equip & equip_mimigaMask)
+    if (gCurrentPlayer.equip & equip_mimigaMask)
     {
         if (NPC->ani_no > 1)
         {
@@ -959,7 +959,7 @@ void npcAct213(npc *NPC) // Night Spirit
 		NPC->tgt_y = NPC->y;
 		// fallthrough
 	case 1:
-		if (currentPlayer.y > NPC->y - 0x1000 && currentPlayer.y < NPC->y + 0x1000)
+		if (gCurrentPlayer.y > NPC->y - 0x1000 && gCurrentPlayer.y < NPC->y + 0x1000)
 		{
 			if (NPC->direct != dirLeft)
 				NPC->y += pixelsToUnits(240);
@@ -1061,7 +1061,7 @@ void npcAct213(npc *NPC) // Night Spirit
 		if (NPC->ani_no > 6)
 			NPC->ani_no = 4;
 
-		if (currentPlayer.y < NPC->tgt_y + pixelsToUnits(240) && currentPlayer.y > NPC->tgt_y - pixelsToUnits(240))
+		if (gCurrentPlayer.y < NPC->tgt_y + pixelsToUnits(240) && gCurrentPlayer.y > NPC->tgt_y - pixelsToUnits(240))
 		{
 			NPC->act_no = 20;
 			NPC->act_wait = 0;
@@ -1073,7 +1073,7 @@ void npcAct213(npc *NPC) // Night Spirit
 
 	if (NPC->act_no >= 10 && NPC->act_no <= 30)
 	{
-		if (NPC->y >= currentPlayer.y)
+		if (NPC->y >= gCurrentPlayer.y)
 			NPC->ym -= 25;
 		else
 			NPC->ym += 25;
@@ -1093,7 +1093,7 @@ void npcAct213(npc *NPC) // Night Spirit
 		else
 			NPC->y += NPC->ym;
 
-		if (currentPlayer.y > NPC->tgt_y + pixelsToUnits(240) || currentPlayer.y < NPC->tgt_y - pixelsToUnits(240))
+		if (gCurrentPlayer.y > NPC->tgt_y + pixelsToUnits(240) || gCurrentPlayer.y < NPC->tgt_y - pixelsToUnits(240))
 			NPC->act_no = 40;
 	}
 

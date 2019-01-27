@@ -176,7 +176,7 @@ void load()
 		debugFlags |= showNPCHealth;
 
 	auto jPlayer = jGame["player"];
-    safeGet(jPlayer, "disableDamage", disableDamage);
+    safeGet(jPlayer, "disableDamage", gDisableDamage);
 
 	auto jProfile = jGame["profile"];
     safeGet(jProfile, "name", gProfileName);

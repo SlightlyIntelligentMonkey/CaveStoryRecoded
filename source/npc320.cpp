@@ -139,22 +139,22 @@ void npcAct323(npc *NPC)
 			switch (NPC->direct)
 			{
 			case dirLeft:
-				if (NPC->x <= currentPlayer.x + tilesToUnits(2))
+				if (NPC->x <= gCurrentPlayer.x + tilesToUnits(2))
 					NPC->act_no = 10;
 				break;
 
 			case dirRight:
-				if (NPC->x >= currentPlayer.x - tilesToUnits(2))
+				if (NPC->x >= gCurrentPlayer.x - tilesToUnits(2))
 					NPC->act_no = 10;
 				break;
 
 			case dirUp:
-				if (NPC->y <= currentPlayer.y + tilesToUnits(2))
+				if (NPC->y <= gCurrentPlayer.y + tilesToUnits(2))
 					NPC->act_no = 10;
 				break;
 
 			case dirDown:
-				if (NPC->y >= currentPlayer.y - tilesToUnits(2))
+				if (NPC->y >= gCurrentPlayer.y - tilesToUnits(2))
 					NPC->act_no = 10;
 				break;
 
@@ -277,8 +277,8 @@ void npcAct334(npc *NPC) // Water Drop, 2
 		NPC->act_no = 10;
 		if (NPC->direct)
 		{
-			NPC->x = currentPlayer.x - 5120;
-			NPC->y = currentPlayer.y - 1024;
+			NPC->x = gCurrentPlayer.x - 5120;
+			NPC->y = gCurrentPlayer.y - 1024;
 		}
 		else
 		{
@@ -302,7 +302,7 @@ void npcAct336(npc *NPC)    // Generator - Ikachan
 {
     if (NPC->act_no == 0)
     {
-        if (currentPlayer.shock)
+        if (gCurrentPlayer.shock)
             NPC->cond = 0;
     }
     else if (NPC->act_no == 10 && ++NPC->act_wait % 4 == 1)

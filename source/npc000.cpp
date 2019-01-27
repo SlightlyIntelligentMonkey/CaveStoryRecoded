@@ -360,7 +360,7 @@ void npcAct005(npc *NPC) // Critter, Hopping Green (enemy)
 
 	case waiting:		
 		// Face towards player
-		if (NPC->x <= currentPlayer.x)
+		if (NPC->x <= gCurrentPlayer.x)
 			NPC->direct = dirRight;
 		else
 			NPC->direct = dirLeft;
@@ -371,8 +371,8 @@ void npcAct005(npc *NPC) // Critter, Hopping Green (enemy)
 
 		// Timer for looking at Quote
 		if (NPC->act_wait < 8 
-			|| NPC->x - tilesToUnits(7) >= currentPlayer.x || NPC->x + tilesToUnits(7) <= currentPlayer.x 
-			|| NPC->y - tilesToUnits(5) >= currentPlayer.y || NPC->y + tilesToUnits(5) <= currentPlayer.y)
+			|| NPC->x - tilesToUnits(7) >= gCurrentPlayer.x || NPC->x + tilesToUnits(7) <= gCurrentPlayer.x 
+			|| NPC->y - tilesToUnits(5) >= gCurrentPlayer.y || NPC->y + tilesToUnits(5) <= gCurrentPlayer.y)
 		{
 			if (NPC->act_wait < 8)
 				++NPC->act_wait;
@@ -393,10 +393,10 @@ void npcAct005(npc *NPC) // Critter, Hopping Green (enemy)
 		// Go into "going to jump" state
 		if (NPC->act_wait >= 8
 		        && NPC->tgt_x >= secondsToFrames(2)
-		        && NPC->x - tilesToUnits(4) < currentPlayer.x
-		        && NPC->x + tilesToUnits(4) > currentPlayer.x
-		        && NPC->y - tilesToUnits(5) < currentPlayer.y
-		        && NPC->y + tilesToUnits(3) > currentPlayer.y)
+		        && NPC->x - tilesToUnits(4) < gCurrentPlayer.x
+		        && NPC->x + tilesToUnits(4) > gCurrentPlayer.x
+		        && NPC->y - tilesToUnits(5) < gCurrentPlayer.y
+		        && NPC->y + tilesToUnits(3) > gCurrentPlayer.y)
 		{
 			NPC->act_no = startJump;
 			NPC->act_wait = 0;
@@ -568,7 +568,7 @@ void npcAct007(npc *NPC) //Basil
 		NPC->xm -= 64;
 
 		//Turn when far from player
-		if (NPC->x < currentPlayer.x - 98304)
+		if (NPC->x < gCurrentPlayer.x - 98304)
 			NPC->act_no = 2;
 
 		//Turn when hit wall
@@ -585,7 +585,7 @@ void npcAct007(npc *NPC) //Basil
 		NPC->xm += 64;
 
 		//Turn when far from player
-		if (NPC->x > currentPlayer.x + 98304)
+		if (NPC->x > gCurrentPlayer.x + 98304)
 			NPC->act_no = 1;
 
 		//Turn when hit wall
@@ -599,7 +599,7 @@ void npcAct007(npc *NPC) //Basil
 
 	case 0:
 		//Start at player's x
-		NPC->x = currentPlayer.x;
+		NPC->x = gCurrentPlayer.x;
 
 		//Move in facing direct
 		if (NPC->direct != dirLeft)
@@ -656,7 +656,7 @@ void npcAct008(npc *NPC) //Follow beetle (egg corridor)
 	{
 		if (act_no == 1)
 		{
-			if (NPC->x <= currentPlayer.x)
+			if (NPC->x <= gCurrentPlayer.x)
 			{
 				NPC->direct = dirRight;
 				NPC->xm += 0x10;
@@ -696,7 +696,7 @@ void npcAct008(npc *NPC) //Follow beetle (egg corridor)
 	}
 	else
 	{
-		if (currentPlayer.x >= NPC->x + 0x2000 || currentPlayer.x <= NPC->x - 0x2000)
+		if (gCurrentPlayer.x >= NPC->x + 0x2000 || gCurrentPlayer.x <= NPC->x - 0x2000)
 		{
 			NPC->bits &= ~npc_shootable;
 			NPC->rect.right = 0;
@@ -715,12 +715,12 @@ void npcAct008(npc *NPC) //Follow beetle (egg corridor)
 
 		if (NPC->direct != dirLeft)
 		{
-			NPC->x = currentPlayer.x - 0x20000;
+			NPC->x = gCurrentPlayer.x - 0x20000;
 			NPC->xm = 767;
 		}
 		else
 		{
-			NPC->x = currentPlayer.x + 0x20000;
+			NPC->x = gCurrentPlayer.x + 0x20000;
 			NPC->xm = -767;
 		}
 	}
@@ -848,7 +848,7 @@ void npcAct010(npc *NPC) // Balrog, Shooting (boss)
 			--NPC->count1;
 			NPC->act_wait = 0;
 
-			auto deg = getAtan(NPC->x - currentPlayer.x, NPC->y - currentPlayer.y + tilesToUnits(0.25));
+			auto deg = getAtan(NPC->x - gCurrentPlayer.x, NPC->y - gCurrentPlayer.y + tilesToUnits(0.25));
 			deg += random(-0x10, 0x10);
 			createNpc(NPC_ProjectileBalrogEnergyBallInvincible, NPC->x, NPC->y + tilesToUnits(0.25)
 				, getSin(deg), getCos(deg));
@@ -867,7 +867,7 @@ void npcAct010(npc *NPC) // Balrog, Shooting (boss)
 		{
 			NPC->act_no = jumping;
 			NPC->act_wait = 0;
-			NPC->xm = (currentPlayer.x - NPC->x) / 100;
+			NPC->xm = (gCurrentPlayer.x - NPC->x) / 100;
 			NPC->ym = pixelsToUnits(-3);
 			NPC->ani_no = 3;
 		}
@@ -877,7 +877,7 @@ void npcAct010(npc *NPC) // Balrog, Shooting (boss)
 		if (NPC->flag & (leftWall | rightWall))	// Stop when touching a wall
 			NPC->xm = 0;
 
-		if (NPC->y + tilesToUnits(1) >= currentPlayer.y)
+		if (NPC->y + tilesToUnits(1) >= gCurrentPlayer.y)
 			NPC->damage = 0;	// No damage when touching ground
 		else
 			NPC->damage = jumpingDamage;
@@ -1009,7 +1009,7 @@ void npcAct012(npc *NPC) //Balrog cutscene
 	case 0: //Stand and blink
 		if (NPC->direct == dirAuto)
 		{
-			if (NPC->x <= currentPlayer.x)
+			if (NPC->x <= gCurrentPlayer.x)
 				NPC->direct = dirRight;
 			else
 				NPC->direct = dirLeft;
@@ -1038,7 +1038,7 @@ void npcAct012(npc *NPC) //Balrog cutscene
 	case 10: //Jump up
 		if (NPC->direct == dirAuto)
 		{
-			if (NPC->x <= currentPlayer.x)
+			if (NPC->x <= gCurrentPlayer.x)
 				NPC->direct = dirRight;
 			else
 				NPC->direct = dirLeft;
@@ -1075,7 +1075,7 @@ void npcAct012(npc *NPC) //Balrog cutscene
 	case 20: //Defeated?
 		if (NPC->direct == dirAuto)
 		{
-			if (NPC->x <= currentPlayer.x)
+			if (NPC->x <= gCurrentPlayer.x)
 				NPC->direct = dirRight;
 			else
 				NPC->direct = dirLeft;
@@ -1129,7 +1129,7 @@ void npcAct012(npc *NPC) //Balrog cutscene
 	case 40: //"Super panic"
 		if (NPC->direct == dirAuto)
 		{
-			if (NPC->x <= currentPlayer.x)
+			if (NPC->x <= gCurrentPlayer.x)
 				NPC->direct = dirRight;
 			else
 				NPC->direct = dirLeft;
@@ -1150,7 +1150,7 @@ void npcAct012(npc *NPC) //Balrog cutscene
 	case 42: //"Uh oh! Image blinks"
 		if (NPC->direct == dirAuto)
 		{
-			if (NPC->x <= currentPlayer.x)
+			if (NPC->x <= gCurrentPlayer.x)
 				NPC->direct = dirRight;
 			else
 				NPC->direct = dirLeft;

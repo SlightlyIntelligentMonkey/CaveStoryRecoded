@@ -68,16 +68,16 @@ void actBulletFireball1(bullet *bul)
 
 				case dirUp:
 					//Move at same speed as player
-					bul->xm = currentPlayer.xm;
+					bul->xm = gCurrentPlayer.xm;
 
 					//Move in facing direction
-					if (currentPlayer.xm >= 0)
+					if (gCurrentPlayer.xm >= 0)
 						bul->direct = dirRight;
 					else
 						bul->direct = dirLeft;
 
 					//Shoot with increased velocity in facing direction
-					if (currentPlayer.direct != dirLeft)
+					if (gCurrentPlayer.direct != dirLeft)
 						bul->xm += 128;
 					else
 						bul->xm -= 128;
@@ -90,10 +90,10 @@ void actBulletFireball1(bullet *bul)
 					break;
 
 				case dirDown:
-					bul->xm = currentPlayer.xm;
+					bul->xm = gCurrentPlayer.xm;
 
 					//Move in current moving direction
-					if (currentPlayer.xm >= 0)
+					if (gCurrentPlayer.xm >= 0)
 						bul->direct = dirRight;
 					else
 						bul->direct = dirLeft;
@@ -207,16 +207,16 @@ void actBulletFireball2(bullet *bul)
 
 				case dirUp:
 					//Move at same speed as player
-					bul->xm = currentPlayer.xm;
+					bul->xm = gCurrentPlayer.xm;
 
 					//Move in facing direction
-					if (currentPlayer.xm >= 0)
+					if (gCurrentPlayer.xm >= 0)
 						bul->direct = dirRight;
 					else
 						bul->direct = dirLeft;
 
 					//Shoot with increased velocity in facing direction
-					if (currentPlayer.direct != dirLeft)
+					if (gCurrentPlayer.direct != dirLeft)
 						bul->xm += 128;
 					else
 						bul->xm -= 128;
@@ -229,10 +229,10 @@ void actBulletFireball2(bullet *bul)
 					break;
 
 				case dirDown:
-					bul->xm = currentPlayer.xm;
+					bul->xm = gCurrentPlayer.xm;
 
 					//Move in current moving direction
-					if (currentPlayer.xm >= 0)
+					if (gCurrentPlayer.xm >= 0)
 						bul->direct = dirRight;
 					else
 						bul->direct = dirLeft;
@@ -348,16 +348,16 @@ void actBulletFireball3(bullet *bul)
 
 				case dirUp:
 					//Move at same speed as player
-					bul->xm = currentPlayer.xm;
+					bul->xm = gCurrentPlayer.xm;
 
 					//Move in facing direction
-					if (currentPlayer.xm >= 0)
+					if (gCurrentPlayer.xm >= 0)
 						bul->direct = dirRight;
 					else
 						bul->direct = dirLeft;
 
 					//Shoot with increased velocity in facing direction
-					if (currentPlayer.direct != dirLeft)
+					if (gCurrentPlayer.direct != dirLeft)
 						bul->xm += 128;
 					else
 						bul->xm -= 128;
@@ -370,10 +370,10 @@ void actBulletFireball3(bullet *bul)
 					break;
 
 				case dirDown:
-					bul->xm = currentPlayer.xm;
+					bul->xm = gCurrentPlayer.xm;
 
 					//Move in current moving direction
-					if (currentPlayer.xm >= 0)
+					if (gCurrentPlayer.xm >= 0)
 						bul->direct = dirRight;
 					else
 						bul->direct = dirLeft;

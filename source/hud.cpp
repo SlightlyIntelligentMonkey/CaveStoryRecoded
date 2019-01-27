@@ -127,7 +127,7 @@ void drawWeaponStats()
 	}
 
 	//Draw experience
-	if (!((currentPlayer.shock >> 1) & 1))
+	if (!((gCurrentPlayer.shock >> 1) & 1))
 	{
 		//Draw level
 		drawTexture(gSprites[TEX_TEXTBOX], &rcPer, gWeaponShiftX + 32, 24);
@@ -166,7 +166,7 @@ void drawWeaponStats()
 		
 		static int flashAlternator = 0;
 		//Draw the flashing
-		if (currentPlayer.exp_wait && (flashAlternator++ >> 1) & 1)
+		if (gCurrentPlayer.exp_wait && (flashAlternator++ >> 1) & 1)
 			drawTexture(gSprites[TEX_TEXTBOX], &rcExpFlash, gWeaponShiftX + 24, 32);
 	}
 }
@@ -216,29 +216,29 @@ void drawPlayerHealth()
 	RECT rcLife = { 0, 24, 232, 32 };
 	RECT rcCase = { 0, 40, 232, 48 };
 
-	if (!((currentPlayer.shock >> 1) & 1))
+	if (!((gCurrentPlayer.shock >> 1) & 1))
 	{
-		if (currentPlayer.lifeBr <= currentPlayer.life)
+		if (gCurrentPlayer.lifeBr <= gCurrentPlayer.life)
 		{
-			currentPlayer.lifeBr_count = 0;
-			currentPlayer.lifeBr = currentPlayer.life;
+			gCurrentPlayer.lifeBr_count = 0;
+			gCurrentPlayer.lifeBr = gCurrentPlayer.life;
 		}
-		else if (currentPlayer.lifeBr_count++ > 30)
+		else if (gCurrentPlayer.lifeBr_count++ > 30)
 		{
-			currentPlayer.lifeBr--;
+			gCurrentPlayer.lifeBr--;
 		}
 
 		//Set rects
 		rcCase.right = 64;
-		rcLife.right = 40 * currentPlayer.life / currentPlayer.max_life - 1;
-		rcBr.right = 40 * currentPlayer.lifeBr / currentPlayer.max_life - 1;
+		rcLife.right = 40 * gCurrentPlayer.life / gCurrentPlayer.max_life - 1;
+		rcBr.right = 40 * gCurrentPlayer.lifeBr / gCurrentPlayer.max_life - 1;
 
 		//Draw health bar
 		drawTexture(gSprites[0x1A], &rcCase, 16, 40);
 		drawTexture(gSprites[0x1A], &rcBr, 40, 40);
 		drawTexture(gSprites[0x1A], &rcLife, 40, 40);
 
-		drawNumber(currentPlayer.lifeBr, 8, 40, false);
+		drawNumber(gCurrentPlayer.lifeBr, 8, 40, false);
 	}
 }
 
@@ -252,14 +252,14 @@ void drawPlayerAir()
 	const int x = (gScreenWidth / 2) - 40;
 	const int y = (gScreenHeight / 2) - 16;
 
-	if (!(currentPlayer.equip & equip_airTank) && currentPlayer.air_get)
+	if (!(gCurrentPlayer.equip & equip_airTank) && gCurrentPlayer.air_get)
 	{
 		//Amount of air left
-		if (currentPlayer.air_get % 6 <= 3)
-			drawNumber(currentPlayer.air / 10, x + 32, y, false);
+		if (gCurrentPlayer.air_get % 6 <= 3)
+			drawNumber(gCurrentPlayer.air / 10, x + 32, y, false);
 
 		//Draw the "AIR" thing
-		drawTexture(gSprites[0x1A], &rcAir[currentPlayer.air % 30 <= 10], x, y);
+		drawTexture(gSprites[0x1A], &rcAir[gCurrentPlayer.air % 30 <= 10], x, y);
 	}
 }
 

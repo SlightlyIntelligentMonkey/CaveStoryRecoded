@@ -137,8 +137,8 @@ void actBoss_Core(npc *boss)
 		//CutNoise();
 		// Fallthrough
 	case 201:
-		boss->tgt_x = currentPlayer.x;
-		boss->tgt_y = currentPlayer.y;
+		boss->tgt_x = gCurrentPlayer.x;
+		boss->tgt_y = gCurrentPlayer.y;
 		if (++boss->act_wait > 400)
 		{
 			++boss->count1;
@@ -164,8 +164,8 @@ void actBoss_Core(npc *boss)
 		gBossObj[hit4].bits |= npc_shootable;
 		// Fallthrough
 	case shootWisp:
-		boss->tgt_x = currentPlayer.x;
-		boss->tgt_y = currentPlayer.y;
+		boss->tgt_x = gCurrentPlayer.x;
+		boss->tgt_y = gCurrentPlayer.y;
 		if (boss->shock)
 		{
 			if ((++flash >> 1) & 1)
@@ -213,10 +213,10 @@ void actBoss_Core(npc *boss)
 		// Fallthrough
 	case shootBigAssEnergyBall:
 		++boss->act_wait;
-		createNpc(NPC_UnderwaterCurrent, currentPlayer.x + (random(-50, 150) << 10),
-			currentPlayer.y + (random(-160, 160) << 9), 0, 0, 0, nullptr, false);
-		currentPlayer.xm -= 32;
-		currentPlayer.cond |= npc_shootable;
+		createNpc(NPC_UnderwaterCurrent, gCurrentPlayer.x + (random(-50, 150) << 10),
+			gCurrentPlayer.y + (random(-160, 160) << 9), 0, 0, 0, nullptr, false);
+		gCurrentPlayer.xm -= 32;
+		gCurrentPlayer.cond |= npc_shootable;
 
 		if (boss->shock)
 		{
@@ -239,7 +239,7 @@ void actBoss_Core(npc *boss)
 		//shoots massive balls at a certain interval
 		if (boss->act_wait == 300 || boss->act_wait == 350 || boss->act_wait == 400)
 		{
-			deg = getAtan(boss->x - currentPlayer.x, boss->y - currentPlayer.y);
+			deg = getAtan(boss->x - gCurrentPlayer.x, boss->y - gCurrentPlayer.y);
 			createNpc(NPC_ProjectileCoreLargeEnergyBall,
 				boss->x - 20480, boss->y, 3 * getCos(deg), 3 * getSin(deg));
 			playSound(SFX_Lightning);
@@ -534,7 +534,7 @@ void miniCore(npc *NPC)
 		}
 		if (NPC->act_wait == 1 || NPC->act_wait == 3)
 		{
-			deg = getAtan(NPC->x - currentPlayer.x, NPC->y - currentPlayer.y);
+			deg = getAtan(NPC->x - gCurrentPlayer.x, NPC->y - gCurrentPlayer.y);
 			deg += random(-2, 2);
 			createNpc(NPC_ProjectileCoreSpinner, NPC->x, NPC->y,
 				2 * getCos(deg), 2 * getSin(deg), 0, nullptr, false);

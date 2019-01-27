@@ -27,26 +27,26 @@ void throwBlade(int level)
 			break;
 		}
 
-		if (currentPlayer.up)
+		if (gCurrentPlayer.up)
 		{
 			shootDirect = dirUp;
-			shootX = (currentPlayer.direct - 1) * 0x200;
+			shootX = (gCurrentPlayer.direct - 1) * 0x200;
 			shootY = -0x800;
 		}
-		else if (currentPlayer.down)
+		else if (gCurrentPlayer.down)
 		{
 			shootDirect = dirDown;
-			shootX = (currentPlayer.direct - 1) * 0x200;
+			shootX = (gCurrentPlayer.direct - 1) * 0x200;
 			shootY = 0xC00;
 		}
 		else
 		{
-			shootDirect = currentPlayer.direct;
-			shootX = (currentPlayer.direct - 1) * 0xC00;
+			shootDirect = gCurrentPlayer.direct;
+			shootX = (gCurrentPlayer.direct - 1) * 0xC00;
 			shootY = 0x600;
 		}
 
-		createBullet(bulletId, currentPlayer.x + shootX, currentPlayer.y + shootY, shootDirect, 9);
+		createBullet(bulletId, gCurrentPlayer.x + shootX, gCurrentPlayer.y + shootY, shootDirect, 9);
 
 	}
 }

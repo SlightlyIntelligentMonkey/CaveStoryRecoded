@@ -70,7 +70,7 @@ static void doInventoryActive(bool &bChange, int itemNo)
 		gSelectedItem = itemNo - 1;
 
 	if (gInventoryActive && isKeyPressed(gKeyJump))
-		startTscEvent(tsc, gItems[gSelectedItem].code + 6000);
+		startTscEvent(gTsc, gItems[gSelectedItem].code + 6000);
 }
 
 static void doInventoryNotActive(bool &bChange, int itemNo, int weaponNo)
@@ -123,18 +123,18 @@ void moveInventoryCursor()
 				playSound(1);
 
 				if (itemNo)
-					startTscEvent(tsc, gItems[gSelectedItem].code + 5000);
+					startTscEvent(gTsc, gItems[gSelectedItem].code + 5000);
 				else
-					startTscEvent(tsc, 5000);
+					startTscEvent(gTsc, 5000);
 			}
 			else
 			{
 				playSound(4);
 
 				if (weaponNo)
-					startTscEvent(tsc, gWeapons[gSelectedWeapon].code + 1000);
+					startTscEvent(gTsc, gWeapons[gSelectedWeapon].code + 1000);
 				else
-					startTscEvent(tsc, 1000);
+					startTscEvent(gTsc, 1000);
 			}
 		}
 	}
@@ -278,7 +278,7 @@ static int inventoryLoop(std::string &oldScript)
 		//Check to close
 		if (!gInventoryActive && (isKeyPressed(gKeyMenu) || isKeyPressed(gKeyJump) || isKeyPressed(gKeyShoot)))
 		{
-			stopTsc(tsc);
+			stopTsc(gTsc);
 			loadStageTsc(oldScript);
 			gWeaponShiftX = 32;
 			return 1;
@@ -286,7 +286,7 @@ static int inventoryLoop(std::string &oldScript)
 
 		if (gGameFlags & 2 && (isKeyPressed(gKeyMenu) || isKeyPressed(gKeyShoot)))
 		{
-			stopTsc(tsc);
+			stopTsc(gTsc);
 			loadStageTsc(oldScript);
 			gWeaponShiftX = 32;
 			return 1;
@@ -303,7 +303,7 @@ int openInventory()
     logInfo("Started openInventory");
 
 	//Keep track of old one
-	std::string oldScript(tsc.path);
+	std::string oldScript(gTsc.path);
 
 	//Set up some variables
 	gInventoryTitleY = 24;
@@ -320,9 +320,9 @@ int openInventory()
 	for (weaponNo = 0; weaponNo < WEAPONS && gWeapons[weaponNo].code != 0; ++weaponNo);
 
 	if (weaponNo)
-		startTscEvent(tsc, gWeapons[gSelectedWeapon].code + 1000);
+		startTscEvent(gTsc, gWeapons[gSelectedWeapon].code + 1000);
 	else
-		startTscEvent(tsc, gItems[gSelectedItem].code + 5000);
+		startTscEvent(gTsc, gItems[gSelectedItem].code + 5000);
 
 	return inventoryLoop(oldScript);
 }

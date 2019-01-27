@@ -179,13 +179,13 @@ void actBulletBubbler3(bullet *bul)
 			bul->act_no = 1;
 		}
 
-		if (bul->x < currentPlayer.x)
+		if (bul->x < gCurrentPlayer.x)
 			bul->xm += 32;
-		if (bul->x > currentPlayer.x)
+		if (bul->x > gCurrentPlayer.x)
 			bul->xm -= 32;
-		if (bul->y < currentPlayer.y)
+		if (bul->y < gCurrentPlayer.y)
 			bul->ym += 32;
-		if (bul->y > currentPlayer.y)
+		if (bul->y > gCurrentPlayer.y)
 			bul->ym -= 32;
 		if (bul->xm < 0 && bul->flag & 1)
 			bul->xm = 1024;
@@ -217,12 +217,12 @@ void actBulletBubbler3(bullet *bul)
 		bul->cond = 0;
 		createCaret(bul->x, bul->y, 2, 0);
 		playSound(SFX_BubblerShootLevel3, 1);
-		if (currentPlayer.up)
+		if (gCurrentPlayer.up)
 			createBullet(bullet_BubblerSpurs, bul->x, bul->y, dirUp);
-		else if (currentPlayer.down)
+		else if (gCurrentPlayer.down)
 			createBullet(bullet_BubblerSpurs, bul->x, bul->y, dirDown);
 		else
-			createBullet(bullet_BubblerSpurs, bul->x, bul->y, currentPlayer.direct);
+			createBullet(bullet_BubblerSpurs, bul->x, bul->y, gCurrentPlayer.direct);
 	}
 }
 

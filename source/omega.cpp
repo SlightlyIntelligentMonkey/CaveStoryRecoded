@@ -349,9 +349,9 @@ void actBoss_Omega(npc *boss)
 			playSound(SFX_DestroyBreakableBlock);
 			playSound(SFX_SillyExplosion);
 
-			if (boss->x < currentPlayer.x)
+			if (boss->x < gCurrentPlayer.x)
 				boss->xm = 0x100;
-			if (boss->x > currentPlayer.x)
+			if (boss->x > gCurrentPlayer.x)
 				boss->xm = -0x100;
 
 			boss->damage = 0;
@@ -360,7 +360,7 @@ void actBoss_Omega(npc *boss)
 		break;
 
 	case 140:
-		if (currentPlayer.flag & ground && boss->ym > 0)
+		if (gCurrentPlayer.flag & ground && boss->ym > 0)
 			gBossObj[5].damage = 20;
 		else
 			gBossObj[5].damage = 0;

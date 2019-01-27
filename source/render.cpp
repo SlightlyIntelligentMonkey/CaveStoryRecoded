@@ -336,7 +336,7 @@ void loadImage(const std::string& file, SDL_Texture **tex)
 }
 
 //loads images with limited colors
-uint8_t colorValTbl[] = { 0, 52, 87, 116, 144, 172, 206, 255 };
+uint8_t gColorValTbl[] = { 0, 52, 87, 116, 144, 172, 206, 255 };
 void loadImageBad(const std::string& file, SDL_Texture **tex)
 {
 	SDL_Surface *surface;
@@ -353,9 +353,9 @@ void loadImageBad(const std::string& file, SDL_Texture **tex)
 		SDL_Color *colors = new SDL_Color[4 * surface->format->palette->ncolors]();
 		for (int c = 0; c < surface->format->palette->ncolors; c++)
 		{
-			colors[c].r = colorValTbl[(surface->format->palette->colors[c].r * (sizeof(colorValTbl) - 1)) / 0xFF];
-			colors[c].g = colorValTbl[(surface->format->palette->colors[c].g * (sizeof(colorValTbl) - 1)) / 0xFF];
-			colors[c].b = colorValTbl[(surface->format->palette->colors[c].b * (sizeof(colorValTbl) - 1)) / 0xFF];
+			colors[c].r = gColorValTbl[(surface->format->palette->colors[c].r * (sizeof(gColorValTbl) - 1)) / 0xFF];
+			colors[c].g = gColorValTbl[(surface->format->palette->colors[c].g * (sizeof(gColorValTbl) - 1)) / 0xFF];
+			colors[c].b = gColorValTbl[(surface->format->palette->colors[c].b * (sizeof(gColorValTbl) - 1)) / 0xFF];
 			colors[c].a = surface->format->palette->colors[c].a;
 		}
 		SDL_SetPaletteColors(surface->format->palette, colors, 0, surface->format->palette->ncolors);
@@ -366,7 +366,7 @@ void loadImageBad(const std::string& file, SDL_Texture **tex)
 		uint8_t *pixel = static_cast<uint8_t*>(surface->pixels);
 		for (int p = 0; p < surface->w*surface->h; p++)
 			if (pixel[p])
-				pixel[p] = colorValTbl[(pixel[p] * (sizeof(colorValTbl) - 1)) / 0xFF];
+				pixel[p] = gColorValTbl[(pixel[p] * (sizeof(gColorValTbl) - 1)) / 0xFF];
 	}
 	*tex = SDL_CreateTextureFromSurface(gRenderer, surface);
 

@@ -325,9 +325,9 @@ int bulletJudgeTriangleH(int x, int y, bullet *bul)
 //Main functions
 void bulletHitMap()
 {
-	for (size_t i = 0; i < bullets.size(); i++)
+	for (size_t i = 0; i < gBullets.size(); i++)
 	{
-		bullet *bul = &bullets[i];
+		bullet *bul = &gBullets[i];
 
 		if (bul->cond & 0x80)
 		{
@@ -350,7 +350,7 @@ void bulletHitMap()
 			{
 				for (int j = 0; j < 4; ++j) //Go through each tile
 				{
-					if (bullets[i].cond & 0x80)
+					if (gBullets[i].cond & 0x80)
 					{
 						constexpr int offx[4] = { 0, 1, 0, 1 };
 						constexpr int offy[4] = { 0, 0, 1, 1 };
@@ -420,14 +420,14 @@ void bulletHitNpcs()
 			for (size_t i = 0; ; i++)
 			{
 				//If at end of bullets, kill npc if dead flag is on
-				if (i >= bullets.size())
+				if (i >= gBullets.size())
 				{
 					if (gNPC[n].cond & 8)
 						killNpc(&gNPC[n], true);
 					break;
 				}
 
-				bullet *bul = &bullets[i];
+				bullet *bul = &gBullets[i];
 
 				//Check if the bullet is tangible
 				if (bul->cond & 0x80 && bul->damage != -1)
@@ -484,8 +484,8 @@ void bulletHitNpcs()
 									gNPC[n].damage_view -= bul->damage;
 
 								//Either run event if the run event on death flag's set, or die
-								if (currentPlayer.cond & npccond_alive && gNPC[n].bits & npc_eventDie)
-									startTscEvent(tsc, gNPC[n].code_event);
+								if (gCurrentPlayer.cond & npccond_alive && gNPC[n].bits & npc_eventDie)
+									startTscEvent(gTsc, gNPC[n].code_event);
 								else
 									gNPC[n].cond |= 8;
 							}
@@ -520,9 +520,9 @@ void bulletHitBoss()
 	{
 		if (gBossObj[n].cond & npccond_alive && (!(gBossObj[n].bits & npc_shootable) || !(gBossObj[n].bits & npc_interact)))
 		{
-			for (size_t i = 0; i < bullets.size(); i++)
+			for (size_t i = 0; i < gBullets.size(); i++)
 			{
-				bullet *bul = &bullets[i];
+				bullet *bul = &gBullets[i];
 
 				//Check if the bullet is tangible
 				if (bul->cond & 0x80 && bul->damage != -1)
@@ -578,9 +578,9 @@ void bulletHitBoss()
 								gBossObj[bos_].life = bos_;
 
 								//Either run event if the run event on death flag's set, or die
-								if (currentPlayer.cond & 0x80 && gBossObj[bos_].bits & npc_eventDie)
+								if (gCurrentPlayer.cond & 0x80 && gBossObj[bos_].bits & npc_eventDie)
 								{
-									startTscEvent(tsc, gBossObj[bos_].code_event);
+									startTscEvent(gTsc, gBossObj[bos_].code_event);
 								}
 								else
 								{

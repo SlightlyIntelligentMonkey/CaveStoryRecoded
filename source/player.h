@@ -86,9 +86,9 @@ private:
     void limitSpeed();
 };
 
-extern player currentPlayer;
+extern player gCurrentPlayer;
 
-extern bool disableDamage;
+extern bool gDisableDamage;
 
 enum player_flag
 {

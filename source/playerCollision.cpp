@@ -374,7 +374,7 @@ int playerJudgeCurrentDown(const RECT *rcHit, const player *me, int tx, int ty)
 //Main function
 void playerHitMap()
 {
-	player *me = &currentPlayer;
+	player *me = &gCurrentPlayer;
 	const RECT *rcHit = &me->hit;
 
 	me->flag = 0;
@@ -740,7 +740,7 @@ int playerHitNpcNonSolid(const RECT * /*rcHit*/, const player *me, const npc *NP
 
 void playerHitNpcs()
 {
-	player *me = &currentPlayer;
+	player *me = &gCurrentPlayer;
 	const RECT *rcHit = &me->hit;
 
 	if ((me->cond & player_visible) && !(me->cond & player_removed))
@@ -788,7 +788,7 @@ void playerHitNpcs()
 				}
 
 				if (!(gGameFlags & 4) && hit && gNPC[i].bits & npc_eventTouch)
-					startTscEvent(tsc, gNPC[i].code_event);
+					startTscEvent(gTsc, gNPC[i].code_event);
 
 				if (gGameFlags & 2 && !(gNPC[i].bits & npc_interact))
 				{
@@ -809,7 +809,7 @@ void playerHitNpcs()
 
 				if (!(gGameFlags & 4) && hit && me->cond & player_interact && gNPC[i].bits & npc_interact)
 				{
-					startTscEvent(tsc, gNPC[i].code_event);
+					startTscEvent(gTsc, gNPC[i].code_event);
 					me->xm = 0;
 					me->ques = false;
 				}
@@ -823,7 +823,7 @@ void playerHitNpcs()
 
 void playerHitBosses()
 {
-	player *me = &currentPlayer;
+	player *me = &gCurrentPlayer;
     const RECT *rcHit = &me->hit;
 
     if (me->cond & player_visible && !(me->cond & player_removed))
@@ -848,7 +848,7 @@ void playerHitBosses()
 
                 if (!(gGameFlags & 4) && hit && gBossObj[i].bits & npc_eventTouch)
                 {
-                    startTscEvent(tsc, gBossObj[i].code_event);
+                    startTscEvent(gTsc, gBossObj[i].code_event);
                     me->ques = 0;
                 }
 
@@ -866,7 +866,7 @@ void playerHitBosses()
 				{
 					if (gBossObj[i].bits & npc_interact)
 					{
-						startTscEvent(tsc, gBossObj[i].code_event);
+						startTscEvent(gTsc, gBossObj[i].code_event);
 
 						me->xm = 0;
 						me->ques = 0;
@@ -894,7 +894,7 @@ void playerHitBosses()
 			{
 				if (gBossObj[i].bits & npc_interact)
 				{
-					startTscEvent(tsc, gBossObj[i].code_event);
+					startTscEvent(gTsc, gBossObj[i].code_event);
 
 					me->xm = 0;
 					me->ques = 0;

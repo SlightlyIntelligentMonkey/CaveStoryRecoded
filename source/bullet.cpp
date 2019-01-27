@@ -11,9 +11,9 @@
 #include "game.h"
 #include "log.h"
 
-std::deque<bullet> bullets(0);
+std::deque<bullet> gBullets(0);
 
-BULLETSTATS bulletTable[] =
+BULLETSTATS gBulletTable[] =
 {
 	//null bullet
 	{ 0, 0, 0, 0, 0, 0, 0, 0, { 0, 0, 0, 0 }},
@@ -102,20 +102,20 @@ BULLETSTATS bulletTable[] =
 	{ 1, 1, 1, 36, 1, 1, 1, 1, { 1, 1, 1, 1 }}
 };
 
-int _empty = 0;
+int gEmpty = 0;
 
 //Bullet functions
 void createBullet(int setCode, int setX, int setY, uint8_t setDir, int weapon)
 {
 	bullet *repBullet = nullptr;
 
-	if (bullets.size())
+	if (gBullets.size())
 	{
-		for (size_t i = 0; i < bullets.size(); ++i)
+		for (size_t i = 0; i < gBullets.size(); ++i)
 		{
-			if (!(bullets[i].cond & 0x80))
+			if (!(gBullets[i].cond & 0x80))
 			{
-				repBullet = &bullets[i];
+				repBullet = &gBullets[i];
 				break;
 			}
 		}
@@ -128,22 +128,22 @@ void createBullet(int setCode, int setX, int setY, uint8_t setDir, int weapon)
 	{
 		bullet newBullet;
 		newBullet.init(setCode, setX, setY, setDir, weapon);
-		bullets.push_back(newBullet);
+		gBullets.push_back(newBullet);
 	}
 }
 
 void updateBullets()
 {
-	if (bullets.size())
+	if (gBullets.size())
 	{
-		for (size_t i = 0; i < bullets.size(); i++)
+		for (size_t i = 0; i < gBullets.size(); i++)
 		{
-			if (bullets[i].cond & 0x80)
-				bullets[i].update();
+			if (gBullets[i].cond & 0x80)
+				gBullets[i].update();
 		}
 
-		while (bullets.size() && !(bullets[bullets.size() - 1].cond & 0x80))
-			bullets.erase(bullets.begin() + bullets.size() - 1);
+		while (gBullets.size() && !(gBullets[gBullets.size() - 1].cond & 0x80))
+			gBullets.erase(gBullets.begin() + gBullets.size() - 1);
 	}
 
 	bulletHitMap();
@@ -153,12 +153,12 @@ void updateBullets()
 
 void drawBullets()
 {
-	if (bullets.size())
+	if (gBullets.size())
 	{
-		for (size_t i = 0; i < bullets.size(); i++)
+		for (size_t i = 0; i < gBullets.size(); i++)
 		{
-			if (bullets[i].cond & 0x80)
-				bullets[i].draw();
+			if (gBullets[i].cond & 0x80)
+				gBullets[i].draw();
 		}
 	}
 }
@@ -175,22 +175,22 @@ void bullet::init(int setCode, int setX, int setY, uint8_t setDir, int weaponId)
 	y = setY;
 	direct = setDir;
 
-	damage = bulletTable[setCode].damage;
+	damage = gBulletTable[setCode].damage;
 
-	life = bulletTable[setCode].life;
-	life_count = bulletTable[setCode].life_count;
+	life = gBulletTable[setCode].life;
+	life_count = gBulletTable[setCode].life_count;
 
-	bbits = bulletTable[setCode].bbits;
+	bbits = gBulletTable[setCode].bbits;
 
-	enemyXL = bulletTable[setCode].enemyXL << 9;
-	enemyYL = bulletTable[setCode].enemyYL << 9;
-	blockXL = bulletTable[setCode].blockXL << 9;
-	blockYL = bulletTable[setCode].blockYL << 9;
+	enemyXL = gBulletTable[setCode].enemyXL << 9;
+	enemyYL = gBulletTable[setCode].enemyYL << 9;
+	blockXL = gBulletTable[setCode].blockXL << 9;
+	blockYL = gBulletTable[setCode].blockYL << 9;
 
-	view.right = bulletTable[setCode].view.right << 9;
-	view.left = bulletTable[setCode].view.left << 9;
-	view.top = bulletTable[setCode].view.top << 9;
-	view.bottom = bulletTable[setCode].view.bottom << 9;
+	view.right = gBulletTable[setCode].view.right << 9;
+	view.left = gBulletTable[setCode].view.left << 9;
+	view.top = gBulletTable[setCode].view.top << 9;
+	view.bottom = gBulletTable[setCode].view.bottom << 9;
 
 	weapon = weaponId;
 }
@@ -208,64 +208,64 @@ void bullet::init(int setCode, int setX, int setY, uint8_t setDir, int weaponId)
 #include "spur.h"
 #include "stage.h"
 
-bulletAct bulletActs[46] =
+bulletAct gBulletActs[46] =
 {
 	static_cast<bulletAct>(nullptr),	// There isn't a 0th bullet
-	&actBulletSnake1,	// Snake
-	&actBulletSnake2,
-	&actBulletSnake3,
+	actBulletSnake1,	// Snake
+	actBulletSnake2,
+	actBulletSnake3,
 
-	&actBulletPolarStar1,				// Polar Star
-	&actBulletPolarStar2,
-	&actBulletPolarStar3,
+	actBulletPolarStar1,				// Polar Star
+	actBulletPolarStar2,
+	actBulletPolarStar3,
 
-	&actBulletFireball1,				// Fireball
-	&actBulletFireball2,
-	&actBulletFireball3,
+	actBulletFireball1,				// Fireball
+	actBulletFireball2,
+	actBulletFireball3,
 
-	&actBulletMachineGun1,
-	&actBulletMachineGun2,
-	&actBulletMachineGun3,
+	actBulletMachineGun1,
+	actBulletMachineGun2,
+	actBulletMachineGun3,
 
-	&actBulletMissileLauncher1,
-	&actBulletMissileLauncher2,
-	&actBulletMissileLauncher3,
-	&actBulletBoom1,
-	&actBulletBoom2,
-	&actBulletBoom3,
+	actBulletMissileLauncher1,
+	actBulletMissileLauncher2,
+	actBulletMissileLauncher3,
+	actBulletBoom1,
+	actBulletBoom2,
+	actBulletBoom3,
 
-	&actBulletBubbler1,
-	&actBulletBubbler2,
-	&actBulletBubbler3,
-	&actBulletBubblerSpur,
+	actBulletBubbler1,
+	actBulletBubbler2,
+	actBulletBubbler3,
+	actBulletBubblerSpur,
 
-	&actBulletSlash,
-	&actBulletDrop,
+	actBulletSlash,
+	actBulletDrop,
 
-	&actBulletBlade1,
-	&actBulletBlade2,
-	&actBulletBlade3,
+	actBulletBlade1,
+	actBulletBlade2,
+	actBulletBlade3,
 
-	&actBulletSuperMissileLauncher1,
-	&actBulletSuperMissileLauncher2,
-	&actBulletSuperMissileLauncher3,
-	&actBulletSuperBoom1,
-	&actBulletSuperBoom2,
-	&actBulletSuperBoom3,
+	actBulletSuperMissileLauncher1,
+	actBulletSuperMissileLauncher2,
+	actBulletSuperMissileLauncher3,
+	actBulletSuperBoom1,
+	actBulletSuperBoom2,
+	actBulletSuperBoom3,
 
-	&actBulletNemesis1,
-	&actBulletNemesis2,
-	&actBulletNemesis3,
+	actBulletNemesis1,
+	actBulletNemesis2,
+	actBulletNemesis3,
 
-	&actBulletSpur1,
-	&actBulletSpur2,
-	&actBulletSpur3,
-	&actBulletSpurTrail1,
-	&actBulletSpurTrail2,
-	&actBulletSpurTrail3,
-	&actBulletNemesis3,
-	&actBulletEnemyClear,
-	&actBulletStar
+	actBulletSpur1,
+	actBulletSpur2,
+	actBulletSpur3,
+	actBulletSpurTrail1,
+	actBulletSpurTrail2,
+	actBulletSpurTrail3,
+	actBulletNemesis3,
+	actBulletEnemyClear,
+	actBulletStar
 };
 
 //Update and draw
@@ -273,11 +273,11 @@ void bullet::update()
 {
 	if (life > 0)
 	{
-		if (bulletActs[code_bullet] != nullptr)
-			bulletActs[code_bullet](this);
+		if (gBulletActs[code_bullet] != nullptr)
+			gBulletActs[code_bullet](this);
 		else
 		{
-			static bool wasNotifiedAboutBullet[_countof(bulletActs)] = { false };
+			static bool wasNotifiedAboutBullet[_countof(gBulletActs)] = { false };
 
 			if (wasNotifiedAboutBullet[this->code_bullet])
 				return;
@@ -328,9 +328,9 @@ void bullet::draw()
 	{
 		size_t index = 0;
 
-		for (size_t i = 0; i < bullets.size(); i++)
+		for (size_t i = 0; i < gBullets.size(); i++)
 		{
-			if (&bullets[i] == this)
+			if (&gBullets[i] == this)
 			{
 				index = i;
 				break;

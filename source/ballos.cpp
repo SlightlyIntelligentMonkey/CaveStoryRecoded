@@ -165,8 +165,8 @@ namespace ballos
 		case states::phase1::comeDown:
 			boss.act_no = states::phase1::comeDown + 1;
 			boss.ani_no = 0;
-			boss.x = currentPlayer.x;
-			createNpc(NPC_ProjectileBallosLightning, currentPlayer.x, crashY, 0, 0, dirRight);
+			boss.x = gCurrentPlayer.x;
+			createNpc(NPC_ProjectileBallosLightning, gCurrentPlayer.x, crashY, 0, 0, dirRight);
 			boss.act_wait = 0;
 			// Fallthrough
 		case states::phase1::comeDown + 1:
@@ -187,14 +187,14 @@ namespace ballos
 				boss.act_wait = 0;
 				gViewport.quake2 = 30;
 				playSound(SFX_MissileImpact);
-				if (currentPlayer.y > boss.y + tilesToUnits(3) && boss.getXDistToPlayer() < tilesToUnits(1.5))
-					currentPlayer.damage(16);
+				if (gCurrentPlayer.y > boss.y + tilesToUnits(3) && boss.getXDistToPlayer() < tilesToUnits(1.5))
+					gCurrentPlayer.damage(16);
 
 				for (unsigned i = 0; i < 16; ++i)
 					createNpc(NPC_Smoke, boss.x + pixelsToUnits(random(-40, 40)), boss.y + tilesToUnits(2.5));
 				
-				if (currentPlayer.flag & ground)
-					currentPlayer.ym = pixelsToUnits(-1);
+				if (gCurrentPlayer.flag & ground)
+					gCurrentPlayer.ym = pixelsToUnits(-1);
 			}
 			break;
 
@@ -251,12 +251,12 @@ namespace ballos
 				boss.act_wait = 0;
 				
 				// Player smash damage
-				if (currentPlayer.y > boss.y + tilesToUnits(3.5))
-					currentPlayer.damage(16);
+				if (gCurrentPlayer.y > boss.y + tilesToUnits(3.5))
+					gCurrentPlayer.damage(16);
 
 				// Bounce player
-				if (currentPlayer.flag & ground)
-					currentPlayer.ym = pixelsToUnits(-1);
+				if (gCurrentPlayer.flag & ground)
+					gCurrentPlayer.ym = pixelsToUnits(-1);
 
 				gViewport.quake2 = 30;
 				playSound(SFX_LargeObjectHitGround);
@@ -300,8 +300,8 @@ namespace ballos
 				for (int i = 0; i < 16; ++i)
 					createNpc(NPC_Smoke, boss.x + pixelsToUnits(random(-40, 40)), boss.y + tilesToUnits(2.5));
 				 
-				if (currentPlayer.flag & ground)
-					currentPlayer.flag = pixelsToUnits(-1);
+				if (gCurrentPlayer.flag & ground)
+					gCurrentPlayer.flag = pixelsToUnits(-1);
 			}
 			break;
 
@@ -561,7 +561,7 @@ namespace ballos
 			if (++boss.act_wait > secondsToFrames(6))
 			{
 				boss.act_wait = 0;
-				if (currentPlayer.x <= boss.x)
+				if (gCurrentPlayer.x <= boss.x)
 				{
 					for (unsigned i = 0; i < 8; ++i)
 						createNpc(NPC_EnemyButeArcherRed

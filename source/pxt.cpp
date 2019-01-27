@@ -9,48 +9,48 @@
 #include "filesystem.h"
 #include "sound.h"
 
-SOUND *sounds[0x100];
+SOUND *gSounds[0x100];
 
 //For pxt
-int8_t waveModelTable[6][256];
+int8_t gWaveModelTable[6][256];
 
 void makeWaveTables()
 {
 	//Sine wave
 	for (int i = 0; i < 256; ++i)
-		waveModelTable[0][i] 
+		gWaveModelTable[0][i] 
 			= static_cast<int8_t>(sinl(static_cast<long double>(i) 
 					* (M_PI * 2.0) / 256.0)  * static_cast<long double>(0x40));
 
 	//Triangle
 	int triangle = 0;
 	for (int j = 0; j < 64; ++j) //Upwards
-		waveModelTable[1][j] = (triangle++ << 6) / 0x40;
+		gWaveModelTable[1][j] = (triangle++ << 6) / 0x40;
 	triangle = 0;
 	for (int j = 64; j < 192; ++j) //Downwards
-		waveModelTable[1][j] = 0x40 - (triangle++ << 6) / 0x40;
+		gWaveModelTable[1][j] = 0x40 - (triangle++ << 6) / 0x40;
 	triangle = 0;
 	for (int j = 192; j < 256; ++j) //Back upwards
-		waveModelTable[1][j] = (triangle++ << 6) / 0x40 - 0x40;
+		gWaveModelTable[1][j] = (triangle++ << 6) / 0x40 - 0x40;
 
 	//Saw Up
 	for (int j = 0; j < 256; ++j)
-		waveModelTable[2][j] = j / 2 - 0x40;
+		gWaveModelTable[2][j] = j / 2 - 0x40;
 
 	//Saw Down
 	for (int j = 0; j < 256; ++j)
-		waveModelTable[3][j] = 0x40 - j / 2;
+		gWaveModelTable[3][j] = 0x40 - j / 2;
 
 	//Square
 	for (int j = 0; j < 128; ++j)
-		waveModelTable[4][j] = 0x40;
+		gWaveModelTable[4][j] = 0x40;
 	for (int j = 128; j < 256; ++j)
-		waveModelTable[4][j] = -0x40;
+		gWaveModelTable[4][j] = -0x40;
 
 	//Noise
 	srand(0);
 	for (int j = 0; j < 256; ++j)
-		waveModelTable[5][j] = static_cast<int8_t>(rand()) / 2;
+		gWaveModelTable[5][j] = static_cast<int8_t>(rand()) / 2;
 }
 
 //Pxt loading
@@ -210,10 +210,10 @@ int makePixelWaveData(const std::vector<long double>& pxtData, uint8_t *data)
 		data[i] = static_cast<uint8_t>(
 			envelopeTable[static_cast<uint64_t>(static_cast<long double>(i << 8) / pxtData[1])]
 			* (pxtData[4]
-				* waveModelTable[static_cast<size_t>(pxtData[2])][a]
+				* gWaveModelTable[static_cast<size_t>(pxtData[2])][a]
 				/ 64
 				* (pxtData[12]
-					* waveModelTable[static_cast<size_t>(pxtData[10])][static_cast<int>(static_cast<uint64_t>(volumeOffset)) % 256]
+					* gWaveModelTable[static_cast<size_t>(pxtData[10])][static_cast<int>(static_cast<uint64_t>(volumeOffset)) % 256]
 					/ 64
 					+ 64)
 				/ 64)
@@ -221,9 +221,9 @@ int makePixelWaveData(const std::vector<long double>& pxtData, uint8_t *data)
 			+ 128);	// This was originally -128, but casting a negative double to an unsigned char results in undefined behaviour
 
 		long double newMainOffset;
-		if (waveModelTable[static_cast<size_t>(pxtData[6])][v2] >= 0)
+		if (gWaveModelTable[static_cast<size_t>(pxtData[6])][v2] >= 0)
 			newMainOffset = (mainFreq * 2)
-			* static_cast<long double>(waveModelTable[static_cast<size_t>(pxtData[6])][static_cast<int>(pitchOffset) % 256])
+			* static_cast<long double>(gWaveModelTable[static_cast<size_t>(pxtData[6])][static_cast<int>(pitchOffset) % 256])
 			* pxtData[8]
 			/ 64.0
 			/ 64.0
@@ -233,7 +233,7 @@ int makePixelWaveData(const std::vector<long double>& pxtData, uint8_t *data)
 			newMainOffset = mainFreq
 			- mainFreq
 			* 0.5
-			* static_cast<long double>(-waveModelTable[static_cast<size_t>(pxtData[6])][v2])
+			* static_cast<long double>(-gWaveModelTable[static_cast<size_t>(pxtData[6])][v2])
 			* pxtData[8]
 			/ 64.0
 			/ 64.0
@@ -276,7 +276,7 @@ int loadSound(const std::string& path, int no)
 					size = static_cast<size_t>(lineNumbers[i][1]);
 			}
 
-			sounds[no] = SoundObject_Create(size, 22050);
+			gSounds[no] = SoundObject_Create(size, 22050);
 
 			//Allocate buffers
 			uint8_t *dest = new uint8_t[size];
@@ -313,9 +313,9 @@ int loadSound(const std::string& path, int no)
 
 			//Put data from buffers into main sound buffer
 			uint8_t *object_buffer;
-			SoundObject_Lock(sounds[no], &object_buffer, nullptr);
+			SoundObject_Lock(gSounds[no], &object_buffer, nullptr);
 			memcpy(object_buffer, pBlock, size);
-			SoundObject_Unlock(sounds[no]);
+			SoundObject_Unlock(gSounds[no]);
 
 			//Free the two buffers
 			delete[] dest;

@@ -288,7 +288,7 @@ void npcAct267(npc *NPC) // Muscle Doctor (boss)
     switch (NPC->act_no)
     {
     case init:
-        if (gSuperXPos <= currentPlayer.x)
+        if (gSuperXPos <= gCurrentPlayer.x)
             NPC->direct = dirRight;
         else
             NPC->direct = dirLeft;
@@ -346,20 +346,20 @@ void npcAct267(npc *NPC) // Muscle Doctor (boss)
         {
             if (NPC->life >= NPC->count2 - 20)
                 NPC->animate(10, 1, 2);
-            else if (currentPlayer.flag & ground
-                     && currentPlayer.x > NPC->x - tilesToUnits(3) && currentPlayer.x < NPC->x + tilesToUnits(3)
+            else if (gCurrentPlayer.flag & ground
+                     && gCurrentPlayer.x > NPC->x - tilesToUnits(3) && gCurrentPlayer.x < NPC->x + tilesToUnits(3)
                      && NPC->ani_no != 6)
             {
                 // WHAT THE FUCK ARE YOU SERIOUS ???
                 NPC->ani_no = 6;
-                currentPlayer.damage(5);
+                gCurrentPlayer.damage(5);
                 gViewport.quake = 10;
                 playSound(SFX_LargeObjectHitGround);
-                currentPlayer.ym = pixelsToUnits(-2);
-                if (NPC->x <= currentPlayer.x)
-                    currentPlayer.xm = 0x5FF;
+                gCurrentPlayer.ym = pixelsToUnits(-2);
+                if (NPC->x <= gCurrentPlayer.x)
+                    gCurrentPlayer.xm = 0x5FF;
                 else
-                    currentPlayer.xm = -0x5FF;
+                    gCurrentPlayer.xm = -0x5FF;
 
                 for (size_t i = 0; i < 100; ++i)
                     createNpc(NPC_RedEnergy,
@@ -526,7 +526,7 @@ void npcAct267(npc *NPC) // Muscle Doctor (boss)
         NPC->ym += 0x40;
         NPC->animate(1, 4, 5);
 
-        if (currentPlayer.y > NPC->y && currentPlayer.x > NPC->x - 0x1000 && currentPlayer.x < NPC->x + 0x1000)
+        if (gCurrentPlayer.y > NPC->y && gCurrentPlayer.x > NPC->x - 0x1000 && gCurrentPlayer.x < NPC->x + 0x1000)
         {
             NPC->act_no = 16;
             NPC->ym = 0x5FF;
@@ -552,8 +552,8 @@ void npcAct267(npc *NPC) // Muscle Doctor (boss)
             NPC->act_no = 102;
             NPC->act_wait = 0;
             NPC->ani_no = 0;
-            NPC->tgt_x = currentPlayer.x;
-            NPC->tgt_y = currentPlayer.y - tilesToUnits(2);
+            NPC->tgt_x = gCurrentPlayer.x;
+            NPC->tgt_y = gCurrentPlayer.y - tilesToUnits(2);
             if (NPC->tgt_y < tilesToUnits(4))
                 NPC->tgt_y = tilesToUnits(4);
             if (NPC->tgt_x < tilesToUnits(4))
@@ -755,7 +755,7 @@ void npcAct268(npc *NPC)
 	case walking:
 		NPC->moveInDir(pixelsToUnits(1));
 
-		if (NPC->x < currentPlayer.x + tilesToUnits(4) && NPC->x > currentPlayer.x - tilesToUnits(4))
+		if (NPC->x < gCurrentPlayer.x + tilesToUnits(4) && NPC->x > gCurrentPlayer.x - tilesToUnits(4))
 		{
 			NPC->act_no = 20;
 			NPC->act_wait = 0;

@@ -38,8 +38,8 @@ BOSSLIFE gBossLife;
 
 void SetFrameTargetMyChar(int wait)
 {
-	gViewport.lookX = &currentPlayer.tgt_x;
-	gViewport.lookY = &currentPlayer.tgt_y;
+	gViewport.lookX = &gCurrentPlayer.tgt_x;
+	gViewport.lookY = &gCurrentPlayer.tgt_y;
 	gViewport.speed = wait;
 }
 
@@ -67,8 +67,8 @@ void SetFrameTargetBoss(int no, int wait)
 
 void SetFrameMyChar(void)
 {
-	const int mc_x = currentPlayer.x;
-	const int mc_y = currentPlayer.y;
+	const int mc_x = gCurrentPlayer.x;
+	const int mc_y = gCurrentPlayer.y;
 	const short map_w = gMap.width;
 	const short map_l = gMap.height;
 
@@ -103,10 +103,10 @@ void initGame()
 
 	//Set up fade
 	initFade();
-	fade.bMask = true;
+	gFade.bMask = true;
 
 	//Load stage
-	currentPlayer.init();
+	gCurrentPlayer.init();
 	loadLevel(13, 200, 10, 8);
 	SetFrameMyChar();
 	SetFrameTargetMyChar(16);
@@ -275,9 +275,9 @@ void debugFunction()
 	if (debugFlags & showSlots)
 	{
 		std::string debugStr1 = "There are " + std::to_string(gNPC.size()) + " npc slots.";
-		std::string debugStr2 = "There are " + std::to_string(bullets.size()) + " bullet slots.";
-		std::string debugStr3 = "There are " + std::to_string(carets.size()) + " caret slots.";
-		std::string debugStr4 = "There are " + std::to_string(valueviews.size()) + " valueview slots";
+		std::string debugStr2 = "There are " + std::to_string(gBullets.size()) + " bullet slots.";
+		std::string debugStr3 = "There are " + std::to_string(gCarets.size()) + " caret slots.";
+		std::string debugStr4 = "There are " + std::to_string(gValueviews.size()) + " valueview slots";
 		std::string debugStr5 = "Currently loaded boss is boss " + std::to_string(gBossObj[0].code_char);
 		drawString(8, gScreenHeight - 12, debugStr1);
 		drawString(8, gScreenHeight - 24, debugStr2);
@@ -289,14 +289,14 @@ void debugFunction()
 	if (debugFlags & showPosition)
 	{
 		drawString(gScreenWidth - 96, gScreenHeight - 12, "x:");
-		drawNumber(unitsToTiles(currentPlayer.x), gScreenWidth - 88, gScreenHeight - 8, false);
+		drawNumber(unitsToTiles(gCurrentPlayer.x), gScreenWidth - 88, gScreenHeight - 8, false);
 		drawString(gScreenWidth - 48, gScreenHeight - 12, "y:");
-		drawNumber(unitsToTiles(currentPlayer.y), gScreenWidth - 40, gScreenHeight - 8, false);
+		drawNumber(unitsToTiles(gCurrentPlayer.y), gScreenWidth - 40, gScreenHeight - 8, false);
 	}
 }
 
 //Escape menu
-RECT rcEscape = { 0, 128, 208, 144 };
+RECT gRcEscape = { 0, 128, 208, 144 };
 
 int escapeMenu()
 {
@@ -320,7 +320,7 @@ int escapeMenu()
 		SDL_SetRenderDrawColor(gRenderer, 0, 0, 0, 255);
 		SDL_RenderClear(gRenderer);
 
-		drawTexture(gSprites[0x1A], &rcEscape, (gScreenWidth >> 1) - 104, (gScreenHeight >> 1) - 8);
+		drawTexture(gSprites[0x1A], &gRcEscape, (gScreenWidth >> 1) - 104, (gScreenHeight >> 1) - 8);
 	} while (drawWindow());
 
 	return 0;
@@ -354,9 +354,9 @@ int gameUpdatePlay()
 		if (gGameFlags & 1)
 		{
 			if (gGameFlags & 2)
-				currentPlayer.update(true);
+				gCurrentPlayer.update(true);
 			else
-				currentPlayer.update(false);
+				gCurrentPlayer.update(false);
 			updateNPC();
 			updateBoss();
 			playerHitMap();
@@ -368,9 +368,9 @@ int gameUpdatePlay()
 			updateCarets();
 			updateValueView();
 			if (gGameFlags & 2)
-				currentPlayer.animate(true);
+				gCurrentPlayer.animate(true);
 			else
-				currentPlayer.animate(false);
+				gCurrentPlayer.animate(false);
 
 			handleView();
 		}
@@ -385,7 +385,7 @@ int gameUpdatePlay()
 		drawBoss();
 		drawNPC();
 		drawBullets();
-		currentPlayer.draw();
+		gCurrentPlayer.draw();
 		drawLevel(true);
 		drawCarets();
 		drawValueView();
@@ -402,9 +402,9 @@ int gameUpdatePlay()
 					return 0;
 				if (inventoryRet == 2)
 					return 1;
-				currentPlayer.cond &= ~player_interact;
+				gCurrentPlayer.cond &= ~player_interact;
 			}
-			else if (currentPlayer.equip & equip_mapSystem && isKeyPressed(gKeyMap))
+			else if (gCurrentPlayer.equip & equip_mapSystem && isKeyPressed(gKeyMap))
 			{
 				captureScreen(TEX_SCREENSHOT);
 				const int mapRet = openMapSystem();
@@ -564,7 +564,7 @@ int gameUpdateIntro()
 
 	//Set up fade
 	initFade();
-	fade.bMask = true;
+	gFade.bMask = true;
 
 	while (frame < 500)
 	{
