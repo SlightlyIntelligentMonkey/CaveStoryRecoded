@@ -23,7 +23,6 @@ x86/
 [Aa][Rr][Mm]/
 [Aa][Rr][Mm]64/
 bld/
-[Bb]in/
 [Oo]bj/
 [Ll]og/
 
@@ -105,8 +104,9 @@ ipch/
 
 # ------ Actual stuff that matters ------
 # Files produced by the game
-/source/Profile.dat
-/source/Config.dat
+bin/Profile.dat
+bin/Config.dat
+bin/config.json
 
 # CodeBlocks files
 /*.layout
@@ -181,7 +181,6 @@ $RECYCLE.BIN/
 *.lo
 
 # Executables
-*.exe
 *.out
 *.app
 *.i*86
