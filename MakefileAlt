@@ -11,7 +11,7 @@ MAIN := main
 # game states
 MAIN += game inventory mapSystem stageSelect
 # modules
-MAIN += filesystem flags input loadConfig log mathUtils script stage stdUtils
+MAIN += filesystem flags input loadConfig log mathUtils script shiftJISToUTF8 stage stdUtils
 # collision
 MAIN += bossCollision bulletCollision npcCollision playerCollision
 # drawing

@@ -153,6 +153,10 @@
     <ClCompile Include="script.cpp">
       <Filter>Source Files\modules</Filter>
     </ClCompile>
+    </ClCompile>
+    <ClCompile Include="shiftJISToUTF8.cpp">
+      <Filter>Source Files\modules</Filter>
+    </ClCompile>
     <ClCompile Include="valueview.cpp">
       <Filter>Source Files\classes\value view</Filter>
     </ClCompile>

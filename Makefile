@@ -37,7 +37,8 @@ endif
 # -std=c++17 to activate C++17 features
 # -MMD -MP -MF $@.d to make the compiler generate dependency files
 # -c so the compiler makes a simple compile into an object file
-CXXFLAGS = $(CXX) $(OPTIMISATIONS) $(WARNINGS) `sdl2-config --cflags` -std=c++17 -c -MMD -MP -MF $@.d
+# -DLODEPNG_NO_COMPILE_ENCODER -DLODEPNG_NO_COMPILE_CPP so that lodepng doesn't compile those
+CXXFLAGS = $(CXX) $(OPTIMISATIONS) $(WARNINGS) `sdl2-config --cflags` -std=c++17 -c -MMD -MP -MF $@.d -DLODEPNG_NO_COMPILE_ENCODER -DLODEPNG_NO_COMPILE_CPP
 LDFLAGS := $(CXX) $(OPTIMISATIONS) $(WARNINGS)
 ifeq ($(RELEASE), 1)
 LDFLAGS += -s
@@ -59,7 +60,7 @@ MAIN := main
 # States the game can be in
 MAIN += game inventory mapSystem stageSelect
 # Random utilities
-MAIN += filesystem flags input loadConfig log mathUtils script stage stdUtils
+MAIN += filesystem flags input loadConfig log mathUtils script shiftJISToUTF8 stage stdUtils
 # Collision handling
 MAIN += bossCollision bulletCollision npcCollision playerCollision
 # Drawing-related
@@ -112,7 +113,7 @@ obj/$(TYPEOFBUILD)/%.o: source/%.cpp
 obj/$(TYPEOFBUILD)/lodepng/lodepng.o: source/lodepng/lodepng.cpp
 	@mkdir -p $(@D)
 	@echo Compiling $<...
-	@$(CXXFLAGS) $< -o $@ -DLODEPNG_NO_COMPILE_ENCODER -DLODEPNG_NO_CXXFLAGS -Wno-zero-as-null-pointer-constant -Wno-alloc-zero -Wno-cast-qual -Wno-old-style-cast -Wno-unused-macros -Wno-suggest-attribute=const
+	@$(CXXFLAGS) $< -o $@ -Wno-zero-as-null-pointer-constant -Wno-alloc-zero -Wno-cast-qual -Wno-old-style-cast -Wno-unused-macros -Wno-suggest-attribute=const
 	@echo Finished compiling $<
 	
 ifeq ($(detected_OS),Windows)

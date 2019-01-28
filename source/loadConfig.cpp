@@ -195,6 +195,8 @@ void load()
 	safeGet(jFps, "millisecondsPerFrame", gFramewait);
 	safeGet(jFps, "displayCounter", gDisplayFpsCounter);
 
+	safeGet(jScreen, "convertFromShiftJISToUTF8BeforeRender", gConvertFromShiftJISToUTF8BeforeRender);
+
 	auto jInput = jConfig["input"];
     safeGet(jInput, "useGamepad", gUseGamepad);
 

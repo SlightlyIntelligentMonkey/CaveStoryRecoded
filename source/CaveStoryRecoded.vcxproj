@@ -296,6 +296,7 @@
     <ClCompile Include="pxt.cpp" />
     <ClCompile Include="render.cpp" />
     <ClCompile Include="script.cpp" />
+    <ClCompile Include="shiftJISToUTF8.cpp" />
     <ClCompile Include="snake.cpp" />
     <ClCompile Include="snakeShoot.cpp" />
     <ClCompile Include="sound.cpp" />
