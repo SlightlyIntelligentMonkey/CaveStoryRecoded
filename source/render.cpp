@@ -9,6 +9,7 @@
 #include "input.h"
 #include "log.h"
 #include "filesystem.h"
+#include "shiftJISToUTF8.h"
 #ifdef USE_ICONS_SDL2
 #include "icon_mini.h"
 #endif
@@ -40,6 +41,8 @@ int gCharScale = 2;
 int gFramewait = 20; //17 for 60-ish fps
 
 uint32_t gWindowFlags = 0;
+
+bool gConvertFromShiftJISToUTF8BeforeRender = false;
 
 static SDL_Surface *gCursorSurface;
 static SDL_Cursor *gCursor;
@@ -524,49 +527,47 @@ void drawString(int x, int y, const std::string& str, const uint8_t *flag)
 {
 	RECT rcChar;
 
-	for (int i = 0; ; i++)
-	{
-		if (str[i]) //Go through string until reaching a terminator (0x00) character.
-		{
-			//Get separation value from flag array
-			int sep = 6;
+	std::string realStr;
+	if (gConvertFromShiftJISToUTF8BeforeRender)
+		realStr = shiftJISToUTF8::convert(str);
+	else
+		realStr = str;
 
-			if (flag != nullptr && flag[i] & 1)
-				sep = 5;
-			//Circle thing
-			if (flag != nullptr && flag[i] & 2)
+	for (int i = 0; str[i]; i++)
+	{
+		//Get separation value from flag array
+		int sep = 6;
+		if (flag != nullptr && flag[i] & 1)
+			sep = 5;
+		//Circle thing
+		if (flag != nullptr && flag[i] & 2)
+		{
+			rcChar = { 64, 48, 72, 56 };
+			drawTexture(gSprites[TEX_TEXTBOX], &rcChar, x + (i * sep), y + 2);
+		}
+		else
+		{
+			//Set framerect to what it's supposed to be
+			const int drawIndex = i;
+			if (isMultibyte(str[i]))
 			{
-				rcChar = { 64, 48, 72, 56 };
-				drawTexture(gSprites[TEX_TEXTBOX], &rcChar, x + (i * sep), y + 2);
+				const int localChar = 0x81 + str[i + 1] + ((str[i] - 0x81) * 0x100);
+				rcChar.left = ((localChar % 32) * gCharWidth);
+				rcChar.top = ((localChar >> 5) * gCharHeight);
+				rcChar.right = rcChar.left + gCharWidth;
+				rcChar.bottom = rcChar.top + gCharHeight;
+				i++;
 			}
 			else
 			{
-				//Set framerect to what it's supposed to be
-				const int drawIndex = i;
-
-				if (isMultibyte(str[i]))
-				{
-					const int localChar = 0x81 + str[i + 1] + ((str[i] - 0x81) * 0x100);
-					rcChar.left = ((localChar % 32) * gCharWidth);
-					rcChar.top = ((localChar >> 5) * gCharHeight);
-					rcChar.right = rcChar.left + gCharWidth;
-					rcChar.bottom = rcChar.top + gCharHeight;
-					i++;
-				}
-				else
-				{
-					rcChar.left = ((str[i] % 32) * gCharWidth);
-					rcChar.top = ((str[i] >> 5) * gCharHeight);
-					rcChar.right = rcChar.left + gCharWidth;
-					rcChar.bottom = rcChar.top + gCharHeight;
-				}
-
-				//Draw to the screen
-				drawTextureSize(gSprites[0x26], &rcChar, x + (drawIndex * sep), y, gCharWidth / gCharScale, gCharHeight / gCharScale);
+				rcChar.left = ((str[i] % 32) * gCharWidth);
+				rcChar.top = ((str[i] >> 5) * gCharHeight);
+				rcChar.right = rcChar.left + gCharWidth;
+				rcChar.bottom = rcChar.top + gCharHeight;
 			}
+			//Draw to the screen
+			drawTextureSize(gSprites[0x26], &rcChar, x + (drawIndex * sep), y, gCharWidth / gCharScale, gCharHeight / gCharScale);
 		}
-		else
-			break;
 	}
 }
 

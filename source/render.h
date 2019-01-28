@@ -27,6 +27,8 @@ extern uint32_t gWindowFlags;
 
 extern bool gDisplayFpsCounter;
 
+extern bool gConvertFromShiftJISToUTF8BeforeRender;
+
 enum TextureNums
 {
 	TEX_TITLE = 0,

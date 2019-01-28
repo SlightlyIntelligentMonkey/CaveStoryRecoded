@@ -23,6 +23,7 @@ x86/
 [Aa][Rr][Mm]/
 [Aa][Rr][Mm]64/
 bld/
+bin/Debug/
 [Oo]bj/
 [Ll]og/
 
@@ -104,9 +105,10 @@ ipch/
 
 # ------ Actual stuff that matters ------
 # Files produced by the game
-bin/Profile.dat
-bin/Config.dat
-bin/config.json
+bin/Release/Profile.dat
+bin/Release/Config.dat
+/source/Profile.dat
+/source/Config.dat
 
 # CodeBlocks files
 /*.layout
@@ -228,3 +230,6 @@ CTestTestfile.cmake
 
 # .nfs files are created when an open file is removed but is still being accessed
 .nfs*
+
+# I have no idea what the fuck this is but I don't want it in the git repo
+/source/CaveStoryRecoded.tlog/
