@@ -2161,9 +2161,9 @@ std::string convert(const std::string& sjStr)
             output[indexOutput++] = 0x80 | (unicodeValue & 0x3f);
         }
     }
-	
-	output.resize(indexOutput);	// Remove unnecessary bytes
-	return output;
+
+    output.resize(indexOutput);	// Remove unnecessary bytes
+    return output;
 }
 
 }
