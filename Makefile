@@ -97,8 +97,8 @@ bin/$(TYPEOFBUILD)/CaveStoryRecoded: $(OBJS)
 	@$(LDFLAGS) $(OBJS) -o $@
 	@echo Finished compiling $@
 	@echo Copying data files...
-	@cp bin/Release/config.json bin/$(TYPEOFBUILD)/
-	@cp -R bin/Release/data bin/$(TYPEOFBUILD)/
+	@cp -u bin/Release/config.json bin/$(TYPEOFBUILD)/
+	@cp -u -R bin/Release/data bin/$(TYPEOFBUILD)/
 	@echo Copied data files
 
 # Generic source compile
