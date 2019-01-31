@@ -8,6 +8,7 @@ void actBulletPolarStar1(bullet *bul)
 	{
 		if (bul->act_no)
 		{
+			// Move the bullet
 			bul->x += bul->xm;
 			bul->y += bul->ym;
 		}
@@ -15,6 +16,7 @@ void actBulletPolarStar1(bullet *bul)
 		{
 			bul->act_no = 1;
 
+			// Set bullet speed
 			switch (bul->direct)
 			{
 			case dirLeft:

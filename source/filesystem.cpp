@@ -18,6 +18,7 @@
 #include "script.h"
 #include "org.h"
 #include "log.h"
+#include "noise.h"
 
 uint16_t readLEshort(const uint8_t * data, size_t offset)
 {
@@ -204,6 +205,7 @@ void loadProfile()
 		initFade();
 		SetFrameMyChar();
 		SetFrameTargetMyChar(16);
+		gNoise.cut();
 
 		//Close RW
 		SDL_RWclose(profile);

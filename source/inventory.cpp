@@ -159,10 +159,11 @@ void drawInventory()
 	RECT rcTitle1 = { 80, 48, 144, 56 };
 	RECT rcTitle2 = { 80, 56, 144, 64 };
 
+	// Move titles
 	if (gInventoryTitleY > 16)
 		--gInventoryTitleY;
-
 	drawTexture(gSprites[TEX_TEXTBOX], &rcTitle1, gScreenWidth / 2 - 112, ((gScreenHeight - 240) / 2) + gInventoryTitleY);
+
 	drawTexture(gSprites[TEX_TEXTBOX], &rcTitle2, gScreenWidth / 2 - 112, ((gScreenHeight - 240) / 2) + gInventoryTitleY + 52);
 
 	//Draw weapon selection box
@@ -170,8 +171,10 @@ void drawInventory()
 	rcCur1[0] = { 0, 88, 40, 128 };
 	rcCur1[1] = { 40, 88, 80, 128 };
 
+	// Draw cursor
 	static int inventoryFlash;
 	++inventoryFlash;
+
 	if (gInventoryActive)
 		drawTexture(gSprites[TEX_TEXTBOX], &rcCur1[1], 40 * gSelectedWeapon + gScreenWidth / 2 - 112, ((gScreenHeight - 240) / 2) + 24);
 	else
@@ -196,6 +199,7 @@ void drawInventory()
 
 		drawNumber(gWeapons[i].level, 40 * i + gScreenWidth / 2 - 112, ((gScreenHeight - 240) / 2) + 40, false);
 
+		// Draw ammo
 		if (gWeapons[i].max_num)
 		{
 			drawNumber(gWeapons[i].num, 40 * i + gScreenWidth / 2 - 112, ((gScreenHeight - 240) / 2) + 48, false);
@@ -214,6 +218,7 @@ void drawInventory()
 	rcCur2[0] = { 80, 88, 112, 104 };
 	rcCur2[1] = { 80, 104, 112, 120 };
 
+	// Draw items cursor
 	if (gInventoryActive)
 		drawTexture(
 			gSprites[TEX_TEXTBOX],
