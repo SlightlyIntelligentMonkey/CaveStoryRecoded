@@ -80,7 +80,7 @@ void npcAct001(npc *NPC) // EXP
 		if (NPC->flag & ground)
 		{
 			playSound(SFX_EXPBounce);
-			NPC->ym = pixelsToUnits(1.25);
+			NPC->ym = pixelsToUnits(-1.25);
 			NPC->xm = 2 * NPC->xm / 3;
 		}
 

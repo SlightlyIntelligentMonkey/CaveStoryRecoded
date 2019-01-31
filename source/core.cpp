@@ -8,6 +8,7 @@
 #include "mathUtils.h"
 #include "game.h"
 #include "render.h"
+#include "noise.h"
 
 enum bossNpcSlots
 {
@@ -134,7 +135,7 @@ void actBoss_Core(npc *boss)
 		boss->act_wait = 0;
 		gBossObj[hit4].bits &= ~npc_shootable;
 		gSuperYPos = 0;
-		//CutNoise();
+		gNoise.cut();
 		// Fallthrough
 	case 201:
 		boss->tgt_x = gCurrentPlayer.x;
@@ -209,7 +210,7 @@ void actBoss_Core(npc *boss)
 		gSuperYPos = 1;
 		gBossObj[hit4].bits |= npc_shootable;
 		gViewport.quake = 100;
-		//SetNoise(1, 1000);
+		gNoise.set(1, 1000);
 		// Fallthrough
 	case shootBigAssEnergyBall:
 		++boss->act_wait;
@@ -253,7 +254,7 @@ void actBoss_Core(npc *boss)
 		}
 		break;
 	case iniDeathAnimation:
-		//CutNoise();
+		gNoise.cut();
 		boss->act_no = deathAnimation;
 		boss->act_wait = 0;
 		boss->xm = 0;

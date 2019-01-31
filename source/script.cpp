@@ -22,6 +22,7 @@
 #include "main.h"
 #include "stage.h"
 #include "flash.h"
+#include "noise.h"
 
 //Variables
 TSC gTsc;
@@ -490,13 +491,10 @@ bool doTscCommand(int *retVal, bool *bExit, TSC &ptsc)
 	int w, x, y, z;	// TODO: Merge with the above variables
 
 	static bool notifiedAboutCIL = false;
-	static bool notifiedAboutCPS = false;
 	static bool notifiedAboutCRE = false;
-	static bool notifiedAboutCSS = false;
 	static bool notifiedAboutINP = false;
 	static bool notifiedAboutSIL = false;
 	static bool notifiedAboutSPS = false;
-	static bool notifiedAboutSSS = false;
 	static bool notifiedAboutSTC = false;
 	static bool notifiedAboutXX1 = false;
 
@@ -579,12 +577,7 @@ bool doTscCommand(int *retVal, bool *bExit, TSC &ptsc)
 		tscCleanup(3, ptsc);
 		break;
 	case('<CPS'):
-		if (!notifiedAboutCPS && debugFlags & notifyOnNotImplemented)
-		{
-			notifiedAboutCPS = true;
-			showTSCNotImplementedWarning("<CPS is not implemented");
-		}
-
+		gNoise.cut();
 		tscCleanup(0, ptsc);
 		break;
 	case('<CRE'):
@@ -598,12 +591,7 @@ bool doTscCommand(int *retVal, bool *bExit, TSC &ptsc)
 		tscCleanup(0, ptsc);
 		break;
 	case('<CSS'):
-		if (!notifiedAboutCSS && debugFlags & notifyOnNotImplemented)
-		{
-			notifiedAboutCSS = true;
-			showTSCNotImplementedWarning("<CSS is not implemented");
-		}
-
+		gNoise.cut();
 		tscCleanup(0, ptsc);
 		break;
 	case('<DNA'):
@@ -1010,12 +998,7 @@ bool doTscCommand(int *retVal, bool *bExit, TSC &ptsc)
 		tscCleanup(0, ptsc);
 		break;
 	case('<SSS'):
-		if (!notifiedAboutSSS && debugFlags & notifyOnNotImplemented)
-		{
-			notifiedAboutSSS = true;
-			showTSCNotImplementedWarning("<SSS is not implemented");
-		}
-
+		gNoise.set(1, getTSCNumber(ptsc, ptsc.p_read + 4));
 		tscCleanup(1, ptsc);
 		break;
 	case('<STC'):
