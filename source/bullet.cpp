@@ -210,16 +210,16 @@ void bullet::init(int setCode, int setX, int setY, uint8_t setDir, int weaponId)
 
 bulletAct gBulletActs[46] =
 {
-	static_cast<bulletAct>(nullptr),	// There isn't a 0th bullet
-	actBulletSnake1,	// Snake
+	static_cast<bulletAct>(nullptr),
+	actBulletSnake1,
 	actBulletSnake2,
 	actBulletSnake3,
 
-	actBulletPolarStar1,				// Polar Star
+	actBulletPolarStar1,
 	actBulletPolarStar2,
 	actBulletPolarStar3,
 
-	actBulletFireball1,				// Fireball
+	actBulletFireball1,
 	actBulletFireball2,
 	actBulletFireball3,
 
