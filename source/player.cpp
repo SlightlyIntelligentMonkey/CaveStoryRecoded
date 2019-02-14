@@ -194,6 +194,7 @@ void player::actNormal(bool bKey)
 		int dash2;
 		int resist;
 
+		// Get speeds for how fast you move normally or in water
 		if (flag & water)
 		{
 			max_dash = 406;

@@ -19,7 +19,7 @@ MAIN += fade flash hud render
 # libraries
 MAIN += lodepng/lodepng
 # sound
-MAIN +=	org pxt sound
+MAIN +=	noise org pxt sound
 # classes
 MAIN += boss bullet caret npc player weapons valueview
 # weapon acts

@@ -28,6 +28,7 @@
 #include "main.h"
 #include "playerCollision.h"
 #include "flash.h"
+#include "noise.h"
 
 int gGameMode = INTRO;
 int gGameFlags = 0;
@@ -110,7 +111,7 @@ void initGame()
 	loadLevel(13, 200, 10, 8);
 	SetFrameMyChar();
 	SetFrameTargetMyChar(16);
-	// There's some stuff between these two in the original
+	gNoise.cut();
 	SetFrameTargetMyChar(16);
 }
 
@@ -463,6 +464,8 @@ int gameUpdateMenu()
 	uint32_t frame = 0;
 	const uint8_t frameOrder[] = { 0, 1, 0, 2 };
 
+	gNoise.cut();
+
 	changeOrg(mus_CaveStory);
 
 	bool select;
@@ -561,6 +564,7 @@ int gameUpdateIntro()
 	loadLevel(72, 100, 3, 3);
 	SetFrameTargetMyChar(16);
 	changeOrg(0);
+	gNoise.cut();
 
 	//Set up fade
 	initFade();

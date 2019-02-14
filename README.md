@@ -1,19 +1,19 @@
 # Cave Story Recoded
-An recode of Cave Story.
+A recode of Cave Story.
 
 Attempts to have complete 1:1 compatibility to the original game (except for binary compat, that's pretty much impossible).
 
 ## Build Instructions For Windows 
 
-The provided .sln file should work with Visual Studio 2017
+The provided .sln file should work with Visual Studio 2017.
 
-You can also use the .cbp file with CodeBlocks, but there might be linking problems
+You can also use the .cbp file with CodeBlocks, but there might be linking problems.
 
 ## Build Instructions For Unix-Likes
 
-`make`, combined with possibly some adjustments to the Makefile
+`make`, combined with possibly some adjustments to the Makefile.
 
-You can also use the .cbp file with CodeBlocks, but there might be linking problems
+You can also use the .cbp file with CodeBlocks, but there might be linking problems.
 
 ## License 
 See LICENSE
